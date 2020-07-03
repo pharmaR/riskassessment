@@ -1,0 +1,1 @@
+Best practices in software development and maintenance can significantly reduce the potential for bugs / errors.  Package maintainers are not obliged to share their practices (and rarely do), however the open source community provides several ways of measuring best practice.  The R Validation Hub proposes the following metrics.

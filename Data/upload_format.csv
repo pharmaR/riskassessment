@@ -1,0 +1,4 @@
+package,version
+dplyr,1.2
+shiny,3.1
+DT,2.3

@@ -1,0 +1,472 @@
+---
+title: "R Package Risk Assessment"
+subtitle: "R Validation Hub"
+author: "<br><span style='font-weight:bold'>Author: </span>GSK"
+date: "<span style='font-weight:bold'>Report Date: </span>`r format(Sys.time(), '%B %d, %Y')`"
+always_allow_html: true
+output: pdf_document
+params:
+  package: NA
+  cwd: NA
+---
+
+
+```{r  echo=FALSE,warning=FALSE}
+setwd(params$cwd)
+
+res4 <- db_fun(paste0(
+  "SELECT * FROM Packageinfo WHERE package ='",
+  params$package,
+  "'"
+))
+riskmetrics_tm <-
+    db_fun(
+      paste0(
+        "SELECT * FROM TestMetrics WHERE TestMetrics.tm_id ='",
+        params$package,
+        "'"
+      )
+    )
+ riskmetrics_cum <-
+    db_fun(
+      paste0(
+        "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
+        params$package,
+        "'"
+      )
+    )
+
+riskmetrics_infotimesince <-
+    db_fun(
+      paste0(
+        "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
+        params$package,
+        "'"
+      )
+    )
+  # Load the data table column into reactive variable for time sice first release.
+  time_since_first_release_info <- riskmetrics_infotimesince$time_since_first_release[1] 
+  time_since_version_release_info <-riskmetrics_infotimesince$time_since_version_release[1]
+  riskmetrics_mm <-
+    db_fun(
+      paste(
+        "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
+        params$package,
+        "'",
+        sep = ""
+      )
+    )
+   
+ values$package_has_vignettes <- riskmetrics_mm$package_has_vignettes
+  values$package_has_website <- riskmetrics_mm$package_has_website
+  values$package_has_news <- riskmetrics_mm$package_has_news
+  values$news_is_current <- riskmetrics_mm$news_is_current
+  values$has_bug_reports <- riskmetrics_mm$has_bug_reports
+  values$status_of_last_30_reported_bugs <-
+    riskmetrics_mm$status_of_last_30_reported_bugs
+  values$exported_objects_with_documentation <-
+    riskmetrics_mm$exported_objects_with_documentation
+  values$source_code_is_public <- riskmetrics_mm$source_code_is_public
+  values$has_a_package_maintainer <-
+    riskmetrics_mm$has_a_package_maintainer 
+  
+ comment_mm2 <-
+      db_fun(
+        paste0(
+          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
+          params$package,
+          "' AND comment_type = 'mm'"
+        )
+      )  
+  
+```
+
+### Report of the " `r res4$package` " Package
+
+Write exmaple paragraph for this document When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks.
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(fig.width=5.5, fig.height=3.4)
+
+#Plot parameters
+#define base_size of text
+bsize_text <- 11
+
+#define background color of plots
+p_color <- 'white'
+
+```
+
+
+<hr style="
+  height: 2px;
+  border: none;
+  color: #000000;
+  background-color: #000000">
+
+## General Info
+
+**Package:** `r res4$package`
+
+**Version:** `r res4$version`
+
+**Title:** `r res4$title`
+
+**Description:** `r res4$description`
+
+**Author:** `r res4$author`
+
+**Maintainer:** `r res4$maintainer`
+
+**License:** `r res4$license`
+
+**Published:** `r res4$published`
+
+**Decision:** `r res4$decision`
+
+**Overall Comment:**   
+
+```{r, echo = FALSE}
+
+    # comment_o <-
+    #   db_fun(
+    #     paste0(
+    #       "SELECT * FROM Comments WHERE comm_id = '",
+    #       params$package,
+    #       "' AND comment_type = 'o'"
+    #     )
+    #   )
+    # comment_o <- data.frame(comment_o %>% map(rev))
+    # paste(
+    #   "<div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-4x'></i><h3 class='ml-3'><b class='user-name-color'>",
+    #   "<h3>",
+    #   comment_o$user_name,
+    #   "(",
+    #   comment_o$user_role,
+    #   ")",
+    #   "</b><sub>",
+    #   comment_o$added_on,
+    #   "</sub></h3><h4>",
+    #   comment_o$comment,
+    #   "</h4>"
+    # )
+
+```
+
+
+<br>
+
+## Maintenance Metrics
+
+```{r echo=FALSE}
+ 
+infoBox(
+    title = "Vignette",
+    ifelse(values$package_has_vignettes == 1, "YES", "NO"),
+    width = 3,
+    subtitle = "It is good practice to provide additional help documentation in the form of vignettes",
+    icon = icon(
+      ifelse(values$package_has_vignettes, "thumbs-up", "thumbs-down"),
+      lib = "glyphicon"
+    ),
+    color = ifelse(values$package_has_vignettes, "green", "red"),
+    fill = TRUE
+  )
+  infoBox(
+    title = "Package has website",
+    ifelse(values$package_has_website == 1, "YES", "NO"),
+    width = 3,
+    subtitle = "It is good practice to maintain a website with further supporting information",
+    icon = icon(
+      ifelse(values$package_has_website, "thumbs-up", "thumbs-down"),
+      lib = "glyphicon"
+    ),
+    color = ifelse(values$package_has_website, "green", "red"),
+    fill = TRUE
+  )
+  
+  infoBox(
+    title = "Has News?",
+    ifelse(values$package_has_news == 1, "YES", "NO"),
+    width = 3,
+    subtitle = "A news feed makes users aware of updates to the package and highlights the areas of greatest risk",
+    icon = icon(
+      ifelse(values$package_has_news, "thumbs-up", "thumbs-down"),
+      lib = "glyphicon"
+    ),
+    color = ifelse(values$package_has_news, "green", "red"),
+    fill = TRUE
+  )
+    infoBox(
+    title = "News is Current?",
+    ifelse(values$news_is_current == 1, "YES", "NO"),
+    width = 3,
+    subtitle = "If it is not current, there is a risk that users do not use the package in a way of author/maintainer intends",
+    icon = icon(
+      ifelse(values$news_is_current, "thumbs-up", "thumbs-down"),
+      lib = "glyphicon"
+    ),
+    color = ifelse(values$news_is_current, "green", "red"),
+    fill = TRUE
+  )
+    
+    infoBox(
+    title = "Does the package have Bug Report?",
+    ifelse(values$has_bug_reports == 1, "YES", "NO"),
+    width = 3,
+    subtitle = "Bugs can be logged by emails, but the better practice is to provide a formal mechanism for bug tracking",
+    icon = icon(
+      ifelse(values$has_bug_reports, "thumbs-up", "thumbs-down"),
+      lib = "glyphicon"
+    ),
+    color = ifelse(values$has_bug_reports, "green", "red"),
+    fill = TRUE
+  )
+    infoBox(
+    title = "Bugs Status",
+    values$status_of_last_30_reported_bugs,
+    subtitle = "The higher the percentage of closed bugs/issues, the better",
+    width = 3,
+    fill = TRUE
+  )
+    
+  infoBox(
+    title = "Export Help",
+    values$exported_objects_with_documentation,
+    subtitle = "Higher percentages indicate better documentation coverage",
+    width = 3,
+    fill = TRUE
+  )  
+  
+  infoBox(
+    title = "Source code is public?",
+    ifelse(values$source_code_is_public == 1, "YES", "NO"),
+    width = 3,
+    subtitle = "The use of source control is good practice that facilitates development",
+    icon = icon(
+      ifelse(values$source_code_is_public, "thumbs-up", "thumbs-down"),
+      lib = "glyphicon"
+    ),
+    color = ifelse(values$source_code_is_public, "green", "red"),
+    fill = TRUE
+  )
+  
+  infoBox(
+    title = "Has a package maintainer?",
+    ifelse(values$has_a_package_maintainer == 1, "YES", "NO"),
+    width = 3,
+    subtitle = "Package should be actively maintained to ensure it meets current standards as it presents a risk",
+    icon = icon(
+      ifelse(
+        values$has_a_package_maintainer,
+        "thumbs-up",
+        "thumbs-down"
+      ),
+      lib = "glyphicon"
+    ),
+    color = ifelse(values$has_a_package_maintainer, "green", "red"),
+    fill = TRUE
+  )
+  
+  
+```
+
+<br>
+
+```{r echo=FALSE }
+    # comment_mm2 <- data.frame(comment_mm2 %>% map(rev))
+    # req(comment_mm2$comment)
+    # values$mm_comment_submitted <- "no"
+    # paste("<div class='col-sm-12 comment-border-bottom single-comment-div'><i class='fa fa-user-tie fa-4x'></i><h3 class='ml-3'><b   
+    #       class='user-name-color'>",comment_mm2$user_name, "(",comment_mm2$user_role,")", "</b><sub>", comment_mm2$added_on,"</sub></h3><h4
+    #       class='ml-3 lh-4'>", comment_mm2$comment,"</h4></div>")
+
+```
+
+<br>
+
+## Community Usage Metrics
+
+<br>
+
+```{r echo=FALSE}
+  
+  infoBox(
+    title = "Time Since First Release?",
+    time_since_first_release_info,
+    subtitle = "The longer a package has been in existence, the more exposure it has had to community testing",
+    icon = shiny::icon("calendar"),
+    width = 3,
+    fill = TRUE
+  )
+
+  infoBox(
+    title = "Time Since Version Release?",
+    time_since_version_release_info,
+    subtitle = "The more recent a version, the less exposure it has had to community testing",
+    icon = shiny::icon("calendar"),
+    width = 3,
+    fill = TRUE
+  )
+  
+  infoBox(
+    title = "Total number of downloads last year",
+    sum(riskmetrics_cum$no_of_downloads),
+    width = 3,
+    fill = TRUE
+  )
+  
+if (riskmetrics_cum$no_of_downloads[1] != "NA") {
+    hc <- highchart() %>%
+      hc_xAxis(categories = riskmetrics_cum$month) %>%
+      hc_xAxis(
+        title = list(text = "Months"),
+        plotLines = list(
+          list(
+            label = list(text = riskmetrics_cum$ver_release[1]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[1]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[2]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[2]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[3]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[3]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[4]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[4]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[5]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[5]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[6]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[6]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[7]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[7]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[8]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[8]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[9]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[9]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[10]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[10]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[11]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[11]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[12]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[12]
+          )
+        )
+      ) %>%
+      hc_add_series(
+        name = params$package,
+        data = riskmetrics_cum$no_of_downloads,
+        color = "blue"
+      ) %>%
+      hc_yAxis(title = list(text = "Downloads")) %>%
+      hc_title(text = "Number of Downloads") %>%
+      hc_subtitle(
+        text = paste(
+          "Total Number of Downloads :",
+          sum(riskmetrics_cum$no_of_downloads)
+        ),
+        align = "right",
+        style = list(color = "#2b908f", fontWeight = "bold")
+      ) %>%
+      hc_add_theme(hc_theme_elementary())
+  } else{
+    hc <- highchart() %>%
+      hc_xAxis(categories = NULL) %>%
+      hc_xAxis(title = list(text = "Months")) %>%
+      hc_add_series(name = params$package, data = NULL) %>%
+      hc_yAxis(title = list(text = "Downloads")) %>%
+      hc_title(text = "Number of Downloads") %>%
+      hc_subtitle(
+        text = paste("Number of Downloads in last one year not found"),
+        style = list(color = "#f44336", fontWeight = "bold")
+      ) %>%
+      hc_add_theme(hc_theme_elementary())
+  }
+hc
+
+```
+
+<br>
+
+## Testing Metrics
+```{r echo=FALSE}
+
+  infoBox(
+    title = "Test Coverage",
+    riskmetrics_tm$test_coverage,
+    width = 3,
+    fill = TRUE
+  )
+
+bands = data.frame(
+    start = c(0, 40, 80),
+    end = c(40, 80, 100),
+    color = c("#ea3838", "#ffac29", "#00CC00"),
+    stringsAsFactors = FALSE
+  )
+  bands2 = data.frame(
+    start = c(0, 40, 80),
+    end = c(40, 80, 100),
+    color = c("#ea3838", "#ffac29", "#00CC00"),
+    stringsAsFactors = FALSE
+  )
+  amAngularGauge(
+    x = riskmetrics_tm$test_coverage,
+    start = 0,
+    end = 100,
+    bands = bands,
+    secondAxe = TRUE,
+    start2 = 0,
+    end2 = 100,
+    bands2 = bands2
+  )
+```
+
+ 
+
+
+

@@ -1,0 +1,3 @@
+The user community plays an important role in open source software development.  The more exposure a package has had to the user community, the more ad-hoc testing it has been exposed to.  Over time the better packages tend to rise to the top of the pack, leading to more downloads and increased exposure.
+
+The aim of the community usage metrics is to assess the level of exposure to the wider community and thus the level of risk that a package presents.  The following table highlights some community usage metrics.

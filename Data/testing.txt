@@ -1,0 +1,1 @@
+Testing is a vital component in a well-established Software Development Life Cycle (SDLC).  The more tests the more confident we can be in the stability of the package over time.  The following table highlights two important testing metrics.

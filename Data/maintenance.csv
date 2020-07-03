@@ -1,0 +1,11 @@
+Metric,Measure,Reason for Inclusion
+Package has vignette?,Yes/no,It is good practice to provide additional help documentation for a package in the form of one or more vignettes.
+Package has website?,Yes/no,"It is good practice to maintain a website with further information about the package, contact details, and other supporting information."
+Source code is public?,Yes/no,"The use of source control is good practice that facilitates development.  In general, it will not be possible to determine whether the maintainer is using a source code repository unless this is in the public domain."
+Has BugReports?,Yes/no,"Bugs can be logged by emails, but the better practice is to provide a formal mechanism for bug tracking."
+Has news feed?,Yes/no,"A news feed is good practice as it makes users aware of updates to the package, thereby highlighting the areas of greatest risk."
+Exported objects with documentation,Percentage,"Users could choose to use any of the exported objects in a package.  The percentage of exported objects with documentation is a measure of the extent to which the developers have gone to ensure their package is usable by the end users.  Higher percentages indicate better documentation coverage."
+Status of last 30 reported bugs,Percentage,"Where bugs are identified, it is important that they are dealt with accordingly.  The status of the last 30 bugs (or less) provides a measure of the speed with which bugs are categorised and dealt with.  The higher the percentage of closed bugs/issues, the better."
+News is current,Yes/no,"The news feed is typically used to communicate new features / breaking changes to users.  If it is not current, there is a risk that users do not use the package in the way that it the author / maintainer intends."
+Has a package maintainer,Yes/no,"Over time, there may be changes in the package dependencies (including system / third party dependencies).  Development standards may also evolve.  It is therefore important that a package is actively maintained to ensure it meets current standards and functions as originally intended. The absence of a maintainer therefore presents a risk."
+License,Eg GPL-2,Certain licenses can be prohibitive and restrict the commercial use of a package.  The license should be noted and compared with an acceptable set of licenses as identified by an organisations legal team.

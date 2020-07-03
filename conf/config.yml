@@ -1,0 +1,11 @@
+#####################################################################################################################
+# configr.r - To manage the configuration such as DB Connections, API URLs
+# 
+# Author:
+# Created:
+#####################################################################################################################
+
+
+default:
+  CRAN_URL: "https://CRAN.R-project.org/package="
+  DB_Con:   RSQLite::SQLite(), "./risk_assessment_app.db"

@@ -1,0 +1,453 @@
+---
+title:   "<span style='color: steelblue;'>R Package Risk Assessment </span>"
+subtitle: "R Validation Hub"
+author: "**Author (Role): `r input$name` (`r input$role `)**"
+date: "**Report Date: `r format(Sys.time(), '%B %d, %Y')`**"
+always_allow_html: true
+output:
+  word_document:
+    reference_docx: "D:/FL/Risk_Metrics/GitHub_Refactor-code/Code_Logo/A_Synchr/risk_assessment_app-refactor-code (25)/risk_assessment_app-refactor-code/Reports/rmarkdown_template.docx"
+params:
+  package: NA
+  cwd: NA
+---
+
+
+```{r  echo=FALSE,warning=FALSE }
+
+setwd(params$cwd)
+
+res4 = db_fun(paste0(
+  "SELECT * FROM Packageinfo WHERE package ='",
+  params$package,
+  "'"
+))
+
+comment_o <-
+  db_fun(
+    paste0(
+      "SELECT * FROM Comments WHERE comm_id = '",
+      params$package,
+      "' AND comment_type = 'o'"
+    )
+  )
+
+  values$riskmetrics_tm <-
+    db_fun(
+      paste0(
+        "SELECT * FROM TestMetrics WHERE TestMetrics.tm_id ='",
+        input$select_pack,
+        "'"
+      )
+    )
+  values$riskmetrics_tm <- c(strsplit(values$riskmetrics_tm$test_coverage,",")[[1]][1], strsplit(values$riskmetrics_tm$test_coverage,",")[[1]][2])
+ riskmetrics_cum <-
+    db_fun(
+      paste0(
+        "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
+        params$package,
+        "'"
+      )
+    )
+ 
+   pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
+  
+  if (!(params$package %in% pkgs_in_db$cum_id)) {
+    metric_cum_Info_upload_to_DB(params$package)
+    riskmetrics_cum <- db_fun( paste0("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='", params$package, "'") )
+  } else{
+    riskmetrics_cum <- db_fun( paste0("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='", params$package, "'") )
+  }
+   
+  # Load the data table column into a reactive variable for time since first release.
+  values$time_since_first_release_info <- riskmetrics_cum$time_since_first_release[1] 
+  values$time_since_version_release_info <-riskmetrics_cum$time_since_version_release[1]
+  values$riskmetrics_mm <-
+    db_fun(
+      paste(
+        "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
+        params$package,
+        "'",
+        sep = ""
+      )
+    )
+   
+  values$package_has_vignettes <- c(strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][2])
+  values$package_has_website <- c(strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][2])
+  values$package_has_news <- c(strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][2])
+  values$news_is_current <- c(strsplit(values$riskmetrics_mm$news_is_current,",")[[1]][1], strsplit(values$riskmetrics_mm$news_is_current,",")[[1]][2])
+  values$has_bug_reports <- c(strsplit(values$riskmetrics_mm$has_bug_reports,",")[[1]][1], strsplit(values$riskmetrics_mm$has_bug_reports,",")[[1]][2])
+  values$status_of_last_30_reported_bugs <- c(strsplit(values$riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][1], strsplit(values$riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][2])
+  values$exported_objects_with_documentation <- c(strsplit(values$riskmetrics_mm$exported_objects_with_documentation,",")[[1]][1], strsplit(values$riskmetrics_mm$exported_objects_with_documentation,",")[[1]][2])
+  values$source_code_is_public <- c(strsplit(values$riskmetrics_mm$source_code_is_public,",")[[1]][1], strsplit(values$riskmetrics_mm$source_code_is_public,",")[[1]][2])
+  values$has_a_package_maintainer <- c(strsplit(values$riskmetrics_mm$has_a_package_maintainer,",")[[1]][1], strsplit(values$riskmetrics_mm$has_a_package_maintainer,",")[[1]][2])
+  
+  
+ comment_mm2 <-
+      db_fun(
+        paste0(
+          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
+          params$package,
+          "' AND comment_type = 'mm'"
+        )
+      )  
+
+    comment_tm2 <-
+      db_fun(
+        paste(
+          "SELECT user_name, user_role, comment, added_on FROM Comments WHERE comm_id = '",
+          params$package,
+          "' AND comment_type = 'tm'",
+          sep = ""
+        )
+      )
+
+    comment_mm2 <-
+      db_fun(
+        paste0(
+          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
+          params$package,
+          "' AND comment_type = 'mm'"
+        )
+      )
+
+    comment_cum2 <-
+      db_fun(
+        paste(
+          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
+          params$package,
+          "' AND comment_type = 'cum'",
+          sep = ""
+        )
+      )
+
+```
+
+## Report of the " `r res4$package` " Package: 
+
+This **`r res4$package`** package report was generated using  **`r input$select_ver`** riskmetric version .  Metrics were reviewed via the R Package Risk Assessment Application.</div>
+
+
+
+```{r setup, include=FALSE}
+library(knitr)
+library(shiny)
+
+knitr::opts_chunk$set(echo = F,fig.width=5.5, fig.height=3.4)
+
+#Plot parameters
+#define base_size of text
+bsize_text <- 11
+
+#define background color of plots
+p_color <- 'white'
+
+```
+
+
+<hr style="
+  height: 2px;
+  border: none;
+  color: #3c8dbc;
+  background-color: #3c8dbc">
+
+
+
+**Summary**
+
+Score: `r values$selected_pkg$score`
+```{r echo=FALSE}
+ if (!identical(values$selected_pkg$decision, character(0)) && values$selected_pkg$decision != "") {
+    HTML(paste("<br>", "<h5>Decision: ", "<b>", values$selected_pkg$decision, "</b></h5>"))
+  } else{
+    HTML(paste("<br>", "<h5><b>Decision: Pending</b></h5>"))
+  }
+```
+
+
+**Overall Comments(`r nrow(comment_o)`):**
+
+```{r echo=FALSE}
+  comment_o <- data.frame(comment_o %>% map(rev))
+table_o<-data.frame("User ID"=comment_o$user_name,"Role"= comment_o$user_role, "Time"= comment_o$added_on,"Comments"=comment_o$comment)
+  
+knitr::kable(table_o, format='pandoc')
+  
+```
+
+## General Info
+
+**Package:** `r res4$package`
+
+**Version:** `r res4$version`
+
+**Title:** `r res4$title`
+
+**Description:** `r res4$description`
+
+**Author:** `r res4$author`
+
+**Maintainer:** `r res4$maintainer`
+
+**License:** `r res4$license`
+
+**Published:** `r res4$published`
+
+
+## Maintenance Metrics
+
+```{r echo=FALSE}
+
+Metric<-c("Presence of vignettes?","Associated website URL?","NEWS?","News is current?","Bugs publicly documented?","Bug closure","Documentation","Source code public?","Has a maintainer?")
+
+Result<-c(
+    if(values$package_has_vignettes[2] == -1){"NA"}
+      else{ ifelse(values$package_has_vignettes[1] == 1, "YES", "NO")},
+     if(values$package_has_website[2] == -1){"NA"}
+      else{ ifelse(values$package_has_website[1] == 1, "YES", "NO")},
+     if(values$package_has_news[2] == -1){"NA"}
+      else{ ifelse(values$package_has_news[1] == 1, "YES", "NO")},
+      if(values$news_is_current[2] == -1){"NA"}
+      else{ ifelse(values$news_is_current[1] == 1, "YES", "NO")},
+     if(values$has_bug_reports[2] == -1){"NA"}
+      else{ ifelse(values$has_bug_reports[1] == 1, "YES", "NO")},
+     if(values$status_of_last_30_reported_bugs[2] == -1){"NA"}
+      else{paste0(values$status_of_last_30_reported_bugs[1],"%")},
+     if(values$exported_objects_with_documentation[2] == -1){"NA"}
+      else{paste0(values$exported_objects_with_documentation[1],"%")},
+     if(values$source_code_is_public[2] == -1){"NA"}
+      else{ ifelse(values$source_code_is_public[1] == 1, "YES", "NO")},
+     if(values$has_a_package_maintainer[2] == -1){"NA"}
+      else{ ifelse(values$has_a_package_maintainer[1] == 1, "YES", "NO")}
+    )
+
+Detail<-c(
+          if(values$package_has_vignettes[2] == -1){"Metric is not applicable for this source of package"}
+            else{paste("The package has", values$package_has_vignettes[2], "Vignettes")},
+          if(values$package_has_website[2] == -1){"Metric is not applicable for this source of package"}
+            else{ ifelse(values$package_has_website[1] == 1, paste("Website:",values$package_has_website[2]), "The package does not have an associated website URL")},
+          if(values$package_has_news[2] == -1){"Metric is not applicable for this source of package"}
+            else{ ifelse(values$package_has_news[1] == 1, "The package has a NEWS file.", "The package does not have a NEWS file")},
+          if(values$news_is_current[2] == -1){"Metric is not applicable for this source of package"}
+            else{ ifelse(values$news_is_current[1] == 1, "NEWS file contains entry for current version number", "NEWS file does not contains entry for current version number")},
+          if(values$has_bug_reports[2] == -1){"Metric is not applicable for this source of package"}
+            else{ ifelse(values$has_bug_reports[1] == 1, paste("Bug reports URL:", values$has_bug_reports[2]), "The Bugs are not publicly documented")},
+          if(values$status_of_last_30_reported_bugs[2] == -1){"Metric is not applicable for this source of package"}
+            else{"Percentage of last 30 bugs closed"},
+          if(values$exported_objects_with_documentation[2] == -1){"Metric is not applicable for this source of package"}
+            else{"Proportion of exported objects documented"},
+          if(values$source_code_is_public[2] == -1){"Metric is not applicable for this soucre of package"}
+            else{ ifelse(values$source_code_is_public[1] == 1, paste("Source code URL:", values$source_code_is_public[2]), "Package does not have a Source code URL")},
+          if(values$has_a_package_maintainer[2] == -1){"Metric is not applicable for this soucre of package"}
+              else{ ifelse(values$has_a_package_maintainer[1] == 1, values$has_a_package_maintainer[2], "Package does not have a Maintainer")}
+)
+table_infobox<-data.frame(Metric,Result,Detail)
+
+knitr::kable(table_infobox, format='pandoc')
+
+```
+
+### Comments for Maintenance Metrics(`r nrow(comment_mm2)`):
+
+```{r echo=FALSE}
+comment_mm2 <- data.frame(comment_mm2 %>% map(rev))
+    
+table_mm<-data.frame("User ID"=comment_mm2$user_name,"Role"= comment_mm2$user_role, "Time"= comment_mm2$added_on,"Comments"=comment_mm2$comment)
+  knitr::kable(table_mm, format='pandoc')
+
+```
+
+
+## Community Usage Metrics
+
+```{r echo=FALSE}
+
+Metric<-c("Package Maturity","Version Maturity")
+
+Result<-c(
+     if(values$time_since_first_release_info == -1){"NA"}
+      else{values$time_since_first_release_info},
+     if(values$time_since_version_release_info == -1){"NA"}
+      else{values$time_since_version_release_info}
+)
+
+Detail<-c(
+     if(values$time_since_first_release_info == -1){"Metric is not applicable for this source of package"}
+       else{"Months since first release."},
+     if(values$time_since_version_release_info == -1){"Metric is not applicable for this source of package"}
+       else{"Months since version release."}
+)
+
+table_infobox_cum<-data.frame(Metric,Result,Detail)
+
+knitr::kable(table_infobox_cum, format='pandoc')
+  
+if (riskmetrics_cum$no_of_downloads_last_year[1] != "NA") {
+    hc <- highchart() %>%
+      hc_xAxis(categories = riskmetrics_cum$month) %>%
+      hc_xAxis(
+        title = list(text = "Months"),
+        plotLines = list(
+          list(
+            label = list(text = riskmetrics_cum$ver_release[1]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[1]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[2]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[2]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[3]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[3]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[4]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[4]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[5]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[5]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[6]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[6]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[7]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[7]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[8]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[8]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[9]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[9]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[10]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[10]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[11]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[11]
+          ),
+          list(
+            label = list(text = riskmetrics_cum$ver_release[12]),
+            color = "#FF0000",
+            width = 2,
+            value = riskmetrics_cum$position[12]
+          )
+        )
+      ) %>%
+      hc_add_series(
+        name = params$package,
+        data = riskmetrics_cum$no_of_downloads,
+        color = "blue"
+      ) %>%
+      hc_yAxis(title = list(text = "Downloads")) %>%
+      hc_title(text = "Number of Downloads") %>%
+      hc_subtitle(
+        text = paste(
+          "Total Number of Downloads :",
+          sum(riskmetrics_cum$no_of_downloads)
+        ),
+        align = "right",
+        style = list(color = "#2b908f", fontWeight = "bold")
+      ) %>%
+      hc_add_theme(hc_theme_elementary())
+  } else{
+    hc <- highchart() %>%
+      hc_xAxis(categories = NULL) %>%
+      hc_xAxis(title = list(text = "Months")) %>%
+      hc_add_series(name = params$package, data = NULL) %>%
+      hc_yAxis(title = list(text = "Downloads")) %>%
+      hc_title(text = "NUMBER OF DOWNLOADS IN THE PAST YEAR") %>%
+      hc_subtitle(
+        text = paste("Number of Downloads in the past year not found"),
+        style = list(color = "#f44336", fontWeight = "bold")
+      ) %>%
+      hc_add_theme(hc_theme_elementary())
+  }
+hc
+
+```
+
+### Comments for Community Usage Metrics(`r nrow(comment_cum2)`):
+
+```{r echo=FALSE}
+comment_cum2 <- data.frame(comment_cum2 %>% map(rev))
+  
+table_cum<-data.frame("User ID"=comment_cum2$user_name,"Role"= comment_cum2$user_role, "Time"= comment_cum2$added_on,"Comments"=comment_cum2$comment)
+  knitr::kable(table_cum, format='pandoc')
+  
+```
+
+
+## Testing Metrics
+
+
+```{r echo=FALSE}
+  bands = data.frame(
+    start = c(0, 40, 80),
+    end = c(40, 80, 100),
+    color = ifelse(values$riskmetrics_tm[2] != -1, c("#ea3838", "#ffac29", "#00CC00"), c("#808080", "#808080", "#808080")),
+    stringsAsFactors = FALSE
+  )
+  bands2 = data.frame(
+    start = c(0, 40, 80),
+    end = c(40, 80, 100),
+    color = ifelse(values$riskmetrics_tm[2] != -1, c("#ea3838", "#ffac29", "#00CC00"), c("#808080", "#808080", "#808080")),
+    stringsAsFactors = FALSE
+  )
+  amAngularGauge(
+    x = as.numeric(values$riskmetrics_tm[1]),
+    start = 0,
+    end = 100,
+    bands = bands,
+    secondAxe = TRUE,
+    start2 = 0,
+    end2 = 100,
+    bands2 = bands2
+  )
+```
+
+### Comments for Testing Metrics(`r nrow(comment_tm2)`):
+
+
+```{r echo=FALSE}
+    comment_tm2 <- data.frame(comment_tm2 %>% map(rev))
+    
+table_tm<-data.frame("User ID"=comment_tm2$user_name,"Role"= comment_tm2$user_role, "Time"= comment_tm2$added_on,"Comments"=comment_tm2$comment)
+  knitr::kable(table_tm, format='pandoc')
+
+
+```
+
+
+
+
+
+
