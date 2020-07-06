@@ -34,7 +34,7 @@ output$report_preview<-renderUI({
           class = "text-left",
           htmlOutput("gen_info"),  # Display General Information of the selected Package.
           htmlOutput("decision_display"),  # Display the status of the Decision of a selected Package.
-          h3(tags$b(paste0('Comments(',nrow(values$comment_o2),'):'))),
+          h3(tags$b(paste0('Overall Comments(',nrow(values$comment_o2),'):'))),
           fluidRow(
             class = "overall-comments-row",
             column(
