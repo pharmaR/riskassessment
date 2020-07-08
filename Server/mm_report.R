@@ -1,36 +1,24 @@
-#####################################################################################################################
-# login_screen.R - Maintenance_Metrics Source file for Server Module.
-# 
-# Author: Aravind
-# Created: 02/06/2020.
-#####################################################################################################################
-
-
-# Start of the observe's'
-
-# 1. Observe to load the columns from DB into below reactive values.
-
 observe({
   req(input$select_pack)
   if(input$select_pack != "Select"){
-  values$riskmetrics_mm <-
-    db_fun(
-      paste0(
-        "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
-        input$select_pack,
-        "'"
+    values$riskmetrics_mm <-
+      db_fun(
+        paste0(
+          "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
+          input$select_pack,
+          "'"
+        )
       )
-    )
-  
-  values$package_has_vignettes <- c(strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][2])
-  values$package_has_website <- c(strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][2])
-  values$package_has_news <- c(strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][2])
-  values$news_is_current <- c(strsplit(values$riskmetrics_mm$news_is_current,",")[[1]][1], strsplit(values$riskmetrics_mm$news_is_current,",")[[1]][2])
-  values$has_bug_reports <- c(strsplit(values$riskmetrics_mm$has_bug_reports,",")[[1]][1], strsplit(values$riskmetrics_mm$has_bug_reports,",")[[1]][2])
-  values$status_of_last_30_reported_bugs <- c(strsplit(values$riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][1], strsplit(values$riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][2])
-  values$exported_objects_with_documentation <- c(strsplit(values$riskmetrics_mm$exported_objects_with_documentation,",")[[1]][1], strsplit(values$riskmetrics_mm$exported_objects_with_documentation,",")[[1]][2])
-  values$source_code_is_public <- c(strsplit(values$riskmetrics_mm$source_code_is_public,",")[[1]][1], strsplit(values$riskmetrics_mm$source_code_is_public,",")[[1]][2])
-  values$has_a_package_maintainer <- c(strsplit(values$riskmetrics_mm$has_a_package_maintainer,",")[[1]][1], strsplit(values$riskmetrics_mm$has_a_package_maintainer,",")[[1]][2])
+    
+    values$package_has_vignettes <- c(strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][2])
+    values$package_has_website <- c(strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][2])
+    values$package_has_news <- c(strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][2])
+    values$news_is_current <- c(strsplit(values$riskmetrics_mm$news_is_current,",")[[1]][1], strsplit(values$riskmetrics_mm$news_is_current,",")[[1]][2])
+    values$has_bug_reports <- c(strsplit(values$riskmetrics_mm$has_bug_reports,",")[[1]][1], strsplit(values$riskmetrics_mm$has_bug_reports,",")[[1]][2])
+    values$status_of_last_30_reported_bugs <- c(strsplit(values$riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][1], strsplit(values$riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][2])
+    values$exported_objects_with_documentation <- c(strsplit(values$riskmetrics_mm$exported_objects_with_documentation,",")[[1]][1], strsplit(values$riskmetrics_mm$exported_objects_with_documentation,",")[[1]][2])
+    values$source_code_is_public <- c(strsplit(values$riskmetrics_mm$source_code_is_public,",")[[1]][1], strsplit(values$riskmetrics_mm$source_code_is_public,",")[[1]][2])
+    values$has_a_package_maintainer <- c(strsplit(values$riskmetrics_mm$has_a_package_maintainer,",")[[1]][1], strsplit(values$riskmetrics_mm$has_a_package_maintainer,",")[[1]][2])
   }
 })  # End of the observe.
 
@@ -39,23 +27,17 @@ observe({
 observe({
   req(input$tabs)
   runjs("setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 500);")
-  if (input$tabs == "mm_tab_value") {
-    if (!is.null(input$mm_comment)) {
-      if(values$package_has_vignettes[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('vignette');}, 500);" ) }
-      if(values$package_has_website[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('website');}, 500);" ) }
-      if(values$package_has_news[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('hasnews');}, 500);" ) }
-      if(values$news_is_current[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('newscurrent');}, 500);" ) }
-      if(values$has_bug_reports[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('bugtrack');}, 500);" ) }
-      if(values$status_of_last_30_reported_bugs[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('bugstatus');}, 500);" ) }
-      if(values$exported_objects_with_documentation[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('exporthelp');}, 500);" ) }
-      if(values$source_code_is_public[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('source_pub');}, 500);" ) }
-      if(values$has_a_package_maintainer[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('pack_maint');}, 500);" ) }
-      req(values$selected_pkg$decision)
-      if (values$selected_pkg$decision != "") {
-        runjs("setTimeout(function(){disableUI('mm_comment')}, 500);")
-        runjs("setTimeout(function(){disableUI('submit_mm_comment')}, 500);")
-      }
-  }}
+  if (input$tabs == "reportPreview_tab_value") {
+      if(values$package_has_vignettes[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('vignette1');}, 3000);" ) }
+      if(values$package_has_website[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('website1');}, 3000);" ) }
+      if(values$package_has_news[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('hasnews1');}, 3000);" ) }
+      if(values$news_is_current[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('newscurrent1');}, 3000);" ) }
+      if(values$has_bug_reports[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('bugtrack1');}, 3000);" ) }
+      if(values$status_of_last_30_reported_bugs[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('bugstatus1');}, 3000);" ) }
+      if(values$exported_objects_with_documentation[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('exporthelp1');}, 3000);" ) }
+      if(values$source_code_is_public[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('source_pub1');}, 3000);" ) }
+      if(values$has_a_package_maintainer[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('pack_maint1');}, 3000);" ) }
+    }
 }) # End of the Observe.
 
 # End of the observe's'
@@ -64,7 +46,7 @@ observe({
 
 # 1. Render Output Info box to show the information on VIGNETTE Content.
 
-output$vignette <- renderInfoBox({
+output$vignette1 <- renderInfoBox({
   req(values$package_has_vignettes)
   infoBox(
     title = "Presence of vignettes?",
@@ -85,7 +67,7 @@ output$vignette <- renderInfoBox({
 
 # 2. Render Output Info box to show the information on Package Has Website.
 
-output$website <- renderInfoBox({
+output$website1 <- renderInfoBox({
   req(values$package_has_website)
   infoBox(
     title = "Associated website URL?",
@@ -105,7 +87,7 @@ output$website <- renderInfoBox({
 })  # End of the render Output.
 # 3. Render Output Info box to show the Package Has News? Content.
 
-output$hasnews <- renderInfoBox({
+output$hasnews1 <- renderInfoBox({
   req(values$package_has_news)
   infoBox(
     title = "NEWS?",
@@ -125,7 +107,7 @@ output$hasnews <- renderInfoBox({
 })  # End of the render Output.
 # 4. Render Output Info box to show the information for News is Current?
 
-output$newscurrent <- renderInfoBox({
+output$newscurrent1 <- renderInfoBox({
   req(values$news_is_current)
   infoBox(
     title = "News is current?",
@@ -146,7 +128,7 @@ output$newscurrent <- renderInfoBox({
 
 # 5. Render Output  Info box to show the information for Does the package have Bug Report?
 
-output$bugtrack <- renderInfoBox({
+output$bugtrack1 <- renderInfoBox({
   req(values$has_bug_reports)
   infoBox(
     title = "Bugs publicly documented?",
@@ -167,7 +149,7 @@ output$bugtrack <- renderInfoBox({
 
 # 6. Render Output Info box to show the information on Bugs Status.
 
-output$bugstatus <- renderInfoBox({
+output$bugstatus1 <- renderInfoBox({
   req(values$status_of_last_30_reported_bugs)
   infoBox(
     title = "Bug closure",
@@ -182,7 +164,7 @@ output$bugstatus <- renderInfoBox({
 
 # 7. Render Output Info box to show the information on Export help.
 
-output$exporthelp <- renderInfoBox({
+output$exporthelp1 <- renderInfoBox({
   req(values$exported_objects_with_documentation)
   infoBox(
     title = "Documentation",
@@ -197,7 +179,7 @@ output$exporthelp <- renderInfoBox({
 
 # 8. Render Output Info box to show the information on source code is public?.
 
-output$source_pub <- renderInfoBox({
+output$source_pub1 <- renderInfoBox({
   req(values$source_code_is_public)
   infoBox(
     title = "Source code public?",
@@ -218,7 +200,7 @@ output$source_pub <- renderInfoBox({
 
 # 9. Render Output Info box to show the information on Has a package maintainer?.
 
-output$pack_maint <- renderInfoBox({
+output$pack_maint1 <- renderInfoBox({
   req(values$has_a_package_maintainer)
   infoBox(
     title = "Has a maintainer?",
@@ -231,7 +213,7 @@ output$pack_maint <- renderInfoBox({
     icon = icon(
       ifelse(
         values$has_a_package_maintainer[1] == 1, "thumbs-up", "thumbs-down"),
-        lib = "glyphicon"
+      lib = "glyphicon"
     ),
     color = ifelse(values$has_a_package_maintainer[1] == 1, "green", "red"),
     fill = TRUE
@@ -240,7 +222,7 @@ output$pack_maint <- renderInfoBox({
 
 # 10. Render Output to show the comments on the application.
 
-output$mm_commented <- renderText({
+output$mm_commented1 <- renderText({
   if (values$mm_comment_submitted == "yes" ||
       values$mm_comment_submitted == "no") {
     values$comment_mm1 <-
@@ -270,38 +252,5 @@ output$mm_commented <- renderText({
 })  # End of the render Output.
 
 # End of the Render Output's'.
-
-values$mm_comment_submitted <- "no"
-
-# Observe event for submit button.
-
-observeEvent(input$submit_mm_comment, {
-  if (trimws(input$mm_comment) != "") {
-    db_fun(
-      paste0(
-        "INSERT INTO Comments values('",
-        input$select_pack,
-        "',",
-        "'",
-        values$name,
-        "'," ,
-        "'",
-        values$role,
-        "',",
-        "'",
-        input$mm_comment,
-        "',",
-        "'mm'," ,
-        "'",
-        TimeStamp(),
-        "'"  ,
-        ")"
-      )
-    )
-    values$mm_comment_submitted <- "yes"
-    updateTextAreaInput(session, "mm_comment", value = "")
-  }
-})  # End of the Observe Event.
-
 
 # End of the Maintenance_Metrics Source file for Server Module.

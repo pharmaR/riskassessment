@@ -1,15 +1,14 @@
 ---
-title:   "<span style='color: steelblue;'>R Package Risk Assessment </span>"
-subtitle: "R Validation Hub"
-author: "**Author (Role): `r input$name` (`r input$role `)**"
+title: '<span style=''color: steelblue;''>R Package Risk Assessment </span>'
+author: '**Author (Role): `r input$name` (`r input$role `)**'
 date: "**Report Date: `r format(Sys.time(), '%B %d, %Y')`**"
-always_allow_html: true
 output:
-  word_document:
-    reference_docx: "D:/FL/Risk_Metrics/GitHub_Refactor-code/Code_Logo/A_Synchr/risk_assessment_app-refactor-code (25)/risk_assessment_app-refactor-code/Reports/rmarkdown_template.docx"
+  word_document
 params:
-  package: NA
   cwd: NA
+  package: NA
+subtitle: R Validation Hub
+always_allow_html: yes
 ---
 
 
@@ -158,7 +157,11 @@ p_color <- 'white'
 Score: `r values$selected_pkg$score`
 ```{r echo=FALSE}
  if (!identical(values$selected_pkg$decision, character(0)) && values$selected_pkg$decision != "") {
-    HTML(paste("<br>", "<h5>Decision: ", "<b>", values$selected_pkg$decision, "</b></h5>"))
+       if(values$selected_pkg$decision == "Accept"){
+      HTML(paste("<br>", "<h3>Decision: ", "<b>Accepted</b></h3>"))
+    }else{
+      HTML(paste("<br>", "<h3>Decision: ", "<b>Rejected</b></h3>"))
+    }
   } else{
     HTML(paste("<br>", "<h5><b>Decision: Pending</b></h5>"))
   }
@@ -281,7 +284,7 @@ Detail<-c(
 table_infobox_cum<-data.frame(Metric,Result,Detail)
 
 knitr::kable(table_infobox_cum, format='pandoc')
-  
+
 if (riskmetrics_cum$no_of_downloads_last_year[1] != "NA") {
     hc <- highchart() %>%
       hc_xAxis(categories = riskmetrics_cum$month) %>%
@@ -433,6 +436,7 @@ table_cum<-data.frame("User ID"=comment_cum2$user_name,"Role"= comment_cum2$user
     bands2 = bands2
   )
 ```
+
 
 ### Comments for Testing Metrics(`r nrow(comment_tm2)`):
 

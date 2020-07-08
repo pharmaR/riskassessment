@@ -32,7 +32,7 @@ ui <- dashboardPage(
   
   dashboardHeader(
     title = list("R Package Risk Assessment App"
-                 , tags$a(tags$img(src = "logo.png"))),
+                 , tags$a(title = "Pharmar Home Page", href="https://www.pharmar.org/", target="_blank", tags$img(src = "logo.png", class="logo_1"), tags$img(src = "logo_no_text.png", class="logo_2"))),
     titleWidth = 420,
     tags$li(
       class = "dropdown",
@@ -183,3 +183,6 @@ server <- function(session, input, output) {
 shinyApp(ui = ui, server = server)
 
 # End of the app.R file 
+
+
+

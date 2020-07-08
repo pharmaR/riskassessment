@@ -114,9 +114,9 @@ comment_o <-
 ```
 
 
-<div class="heading_report"> Report of the " `r res4$package` " Package:</div>
+<div class="heading_report"> Report of the "`r res4$package`" Package:</div>
 
-<div class="report">This **`r res4$package`** package report was generated using  **`r input$select_ver`** riskmetric version .  Metrics were reviewed via the R Package Risk Assessment Application.</div>
+<div class="report">This **`r res4$package`** package report was generated using  **`r input$select_ver`** riskmetric version. Metrics were reviewed via the R Package Risk Assessment Application.</div>
 
 
 
@@ -147,8 +147,13 @@ p_color <- 'white'
 
 **Score:** `r values$selected_pkg$score`
 ```{r echo=FALSE}
+#HTML(paste("<br>", "<h3>Score: ", "<b>",values$selected_pkg$score,"</b></h3>"))
  if (!identical(values$selected_pkg$decision, character(0)) && values$selected_pkg$decision != "") {
-    HTML(paste("<br>", "<h5>Decision: ", "<b>", values$selected_pkg$decision, "</b></h5>"))
+       if(values$selected_pkg$decision == "Accept"){
+      HTML(paste("<br>", "<h5>Decision: ", "<b>Accepted</b></h5>"))
+    }else{
+      HTML(paste("<br>", "<h5>Decision: ", "<b>Rejected</b></h5>"))
+    }
   } else{
     HTML(paste("<br>", "<h5><b>Decision: Pending</b></h5>"))
   }
@@ -336,8 +341,10 @@ div(
 )
 
 ```
+
 <div class="row col-md-12 comments">Comments for Maintenance Metrics(`r nrow(comment_mm2)`):</div>
 <div class="col-md-12 comments-box">
+
 ```{r echo=FALSE}
 comment_mm2 <- data.frame(comment_mm2 %>% map(rev))
     HTML(paste(
@@ -354,6 +361,7 @@ comment_mm2 <- data.frame(comment_mm2 %>% map(rev))
  ))
 
 ```
+
 </div>
 <div class="row col-md-12 blue mb-4 para-header">Community Usage Metrics</div>
 
@@ -494,7 +502,24 @@ if (riskmetrics_cum$no_of_downloads_last_year[1] != "NA") {
     }
 
 ```
+
 ```{r echo=FALSE}
+
+tags$script(HTML("setTimeout(function(){
+var element = document.querySelectorAll('.info-box-content');
+for (var i = 0; i < element.length; i++) {
+	if(element[i].innerText.indexOf('NA') > -1) {
+		var iconEle = element[i].previousElementSibling
+		iconEle.firstElementChild.style.background = 'grey';
+        var icn = iconEle.firstElementChild;
+        if(icn.classList.toString().indexOf('fa-calendar') > -1 || icn.classList.toString().indexOf('fa-bar-chart')> -1){
+            
+        } else {
+            icn.classList.add('icon-color-grey');
+        }
+	}}
+},500)" )) 
+
 if (riskmetrics_cum$no_of_downloads_last_year[1] == "NA") {
   tags$script(
     HTML(
@@ -527,6 +552,7 @@ comment_cum2 <- data.frame(comment_cum2 %>% map(rev))
       "</h4></div>"
     ))
 ```
+
 </div>
 <div class="blue para-header">Testing Metrics</div>
 
@@ -595,7 +621,7 @@ if(values$riskmetrics_tm[2] == -1){
           allEle[i+1].textContent = 'NA';
       }
     }
-  }, 5000)
+  }, 500)
   "
   ))
 }
@@ -700,6 +726,8 @@ color: steelblue;
   margin-top: 3rem;
 }
 
+.icon-color-grey::before {
+  color: grey;
 }
 
 </style>

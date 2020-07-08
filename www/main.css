@@ -376,8 +376,13 @@ font-weight: bold;
   margin: 15px;
   margin-top: -10px;
 }
+
+.m-0 {
+  margin: 0px !important;
+}
+
 .mt-2 {
-margin-top: .5rem!important;
+  margin-top: .5rem!important;
 }
 .mt-4 {
 margin-top: 1.5rem!important;
@@ -578,7 +583,7 @@ margin-left: -15px;
 }
 
 .row {
-  margin-right: -19px;
+  margin-right: -17px;
   margin-left: -15px;
 }
 #assessment_criteria_close_mm{
@@ -968,8 +973,16 @@ th.sorting {
 
 
 @media screen and (max-width: 910px) {
+  .logo_1 {
+    display: none;
+  }
+  
+  .logo_2 {
+    display: inherit;
+  }
+  
   .box {
-    height: 50vh!important;
+    height: auto !important;
     width: 50vh;
     margin-left: -8rem!important;
   }
@@ -1149,7 +1162,7 @@ th.sorting {
 
 @media screen and (min-width: 911px) and (max-width: 1023px) {
   .box {
-    height: 70vh !important;
+    height: auto !important;
     width: 60vh !important;
     margin-left: -8rem !important;
   }
@@ -1301,6 +1314,7 @@ th.sorting {
 .na-bg-color {
   background-color: #808080 !important;
 }
+
 
 
 

@@ -13,8 +13,8 @@
 
 output$community_usage_metrics <- renderUI({
   Sys.sleep(0.1)
-  if (!is.null(values$packsDB) &&
-      !identical(values$packsDB, character(0))) {
+  if (!is.null(values$packsDB$package) &&
+      !identical(values$packsDB$package, character(0))) {
     if (input$select_pack != "Select") {
       fluidRow(
         div(style = "height:25px;"),
@@ -25,8 +25,6 @@ output$community_usage_metrics <- renderUI({
           infoBoxOutput("time_since_version_release", width = 5)  # Infor box to show the time since versoin release.
         ),
         fluidRow(
-          #h3("NUMBER OF DOWNLOADS IN THE PAST YEAR"),
-          #uiOutput("no_of_downloads_metric")
           class = "c_u_m_row_graph",
           column(width = 2, ),
           column(width = 8,
@@ -57,11 +55,11 @@ output$community_usage_metrics <- renderUI({
         fluidRow(
           class = "c_u_m_row_comments",
           column(
-          width = 12,
-          align = "left",
-          h3(tags$b(paste0('Comments(',nrow(values$comment_cum2),'):'))),
-          htmlOutput("cum_commented")  # html output to show the comments on applicaiton.
-        ))
+            width = 12,
+            align = "left",
+            h3(tags$b(paste0('Comments(',nrow(values$comment_cum2),'):'))),
+            htmlOutput("cum_commented")  # html output to show the comments on applicaiton.
+          ))
       )
     } 
     # Show the select the package message if user not selected any package from dropdown in the application. 

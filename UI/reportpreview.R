@@ -21,7 +21,7 @@ output$report_preview<-renderUI({
         class="float-right r_p_format_row",
         tags$div(
           class="col-sm W-40 text-left float-right",
-          selectInput("report_format", "Select Format", c("html", "doc")),  # Select input to select the format for report.
+          selectInput("report_format", "Select Format", c("html", "docx")),  # Select input to select the format for report.
         ),
         tags$div(
           class="col-sm float-right",
@@ -30,7 +30,7 @@ output$report_preview<-renderUI({
       ),
       fluidRow(
         column(
-          width = 11,
+          width = 12,
           class = "text-left",
           htmlOutput("gen_info"),  # Display General Information of the selected Package.
           htmlOutput("decision_display"),  # Display the status of the Decision of a selected Package.
@@ -42,7 +42,10 @@ output$report_preview<-renderUI({
               align = "left",
               htmlOutput("overall_comments")  # Display the overall comment for selected Package. 
             )
-          ) 
+          ),
+          source(file.path("UI", "mm_report.R"), local = TRUE)$value,
+          source(file.path("UI", "cum_report.R"), local = TRUE)$value,
+          source(file.path("UI", "tm_report.R"), local = TRUE)$value
         )
       )
     )

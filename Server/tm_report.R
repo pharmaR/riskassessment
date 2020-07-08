@@ -1,17 +1,6 @@
-#####################################################################################################################
-# testing_metrics.R - testing_metrics Source file for server Module.
-# 
-# Author: Aravind
-# Created: 02/06/2020.
-#####################################################################################################################
-
-# Start of the observe's'
-
-# 1. Observe to load the columns from DB into below reactive values.
-
 observe({
   req(input$select_pack)
-  if (input$tabs == "tm_tab_value") {
+  if (input$tabs == "reportPreview_tab_value") {
     if(input$select_pack != "Select"){
       values$riskmetrics_tm <-
         db_fun(
@@ -30,15 +19,9 @@ observe({
 
 observe({
   req(input$tabs)
-  if (input$tabs == "tm_tab_value") {
-    if (!is.null(input$tm_comment)) {
-      if(values$test_coverage[2] == -1){ runjs( "setTimeout(function(){ addTextToGaugeSVG('test_coverage');}, 500);" ) }
-      req(values$selected_pkg$decision)
-      if (values$selected_pkg$decision != "") {
-        runjs("setTimeout(function(){ var ele = document.getElementById('tm_comment'); ele.disabled = true; }, 500);")
-        runjs("setTimeout(function(){ var ele = document.getElementById('submit_tm_comment'); ele.disabled = true; }, 500);")
-      } 
-    }
+  if (input$tabs == "reportPreview_tab_value") {
+    req(values$test_coverage)
+      if(values$test_coverage[2] == -1){ runjs( "setTimeout(function(){ addTextToGaugeSVG('test_coverage1');}, 5000);" ) }
   }
 }) # End of the Observe.
 
@@ -48,7 +31,7 @@ observe({
 
 # 1. Render Output to show the test converage gauage.
 
-output$test_coverage <- renderAmCharts({
+output$test_coverage1 <- renderAmCharts({
   bands = data.frame(
     start = c(0, 40, 80),
     end = c(40, 80, 100),
@@ -75,7 +58,7 @@ output$test_coverage <- renderAmCharts({
 
 # 2. Render Output to show the comments for testing metrics on the application.
 
-output$tm_commented <- renderText({
+output$tm_commented1 <- renderText({
   if (values$tm_comment_submitted == "yes" ||
       values$tm_comment_submitted == "no") {
     values$comment_tm1 <-
@@ -105,37 +88,3 @@ output$tm_commented <- renderText({
     
   }
 })  # End of the render Output.
-
-# Observe event for submit button to submit the comments for testing metrics.
-
-values$tm_comment_submitted <- "no"
-observeEvent(input$submit_tm_comment, {
-  if (trimws(input$tm_comment) != "") {
-    db_fun(
-      paste0(
-        "INSERT INTO Comments values('",
-        input$select_pack,
-        "',",
-        "'",
-        values$name,
-        "'," ,
-        "'",
-        values$role,
-        "',",
-        "'",
-        input$tm_comment,
-        "',",
-        "'tm',",
-        "'",
-        TimeStamp(),
-        "'" ,
-        ")" 
-      )
-    )
-    values$tm_comment_submitted <- "yes"
-    updateTextAreaInput(session, "tm_comment", value = "")
-  }
-})  # End of the observe event.
-
-
-# End of the Testing_metrics Source file for Server Module.

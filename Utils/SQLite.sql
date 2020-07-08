@@ -1,7 +1,3 @@
-CREATE TABLE Select_packages(
-   select_packages CHAR
-);
-
 CREATE TABLE Packageinfo(
    package        CHAR PRIMARY KEY NOT NULL, 
    version        CHAR,

@@ -15,7 +15,7 @@ observe({
       updateRadioButtons(
         session,
         "decision",
-        choices = c("Yes", "No"),
+          choices = c("Accept", "Reject"),
         inline = TRUE,
         selected = character(0)
       )
@@ -58,12 +58,11 @@ observe({
 # Start of the Render Output's'.
 # 1. Render Output to show the select input to select the package from dropdown.
 output$sel_pack <- renderUI({
-  res1 <- db_fun("SELECT select_packages FROM Select_packages")
-  values$packsDB <- res1$select_packages
+  values$packsDB <- db_fun("SELECT package FROM Packageinfo")
   selectizeInput(
     "select_pack",
     h3("Select Package:"),
-    choices = c("Select", values$packsDB),
+    choices = c("Select", values$packsDB$package),
     selected = "Select"
   )
 })  # End of the render Output.
@@ -127,15 +126,6 @@ output$score <- renderText({
 observeEvent(input$select_pack, {
   
   if (trimws(input$select_pack) != "Select" && trimws(input$select_pack) != "") {
-    pkgs_in_db<-db_fun(
-      paste0(
-        "SELECT package FROM Packageinfo"
-      )
-    )
-    if(!(input$select_pack %in% pkgs_in_db$package) || identical(pkgs_in_db$package, character(0))){
-      get_packages_info_from_web(input$select_pack) 
-      metric_mm_tm_Info_upload_to_DB(input$select_pack)
-    }
     pack_ver<-db_fun(paste0("SELECT version FROM Packageinfo WHERE package = '", input$select_pack, "'"))
     updateSelectizeInput(
       session,
@@ -147,6 +137,16 @@ observeEvent(input$select_pack, {
                         selected = "mm_tab_value")
       values$mm_tab_redirect <- "no redirect"
     }
+    values$comment_occ <-
+      db_fun(
+        paste0(
+          "SELECT comment FROM Comments WHERE comm_id = '", input$select_pack, "'
+          AND user_name = '", input$name, "'
+          AND user_role = '", input$role, "'
+          AND comment_type = 'o'"
+        )
+      ) 
+    updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", values$comment_occ$comment))
   }
 })  # End of the observe Event.
 
@@ -162,11 +162,11 @@ observeEvent(input$submit_decision, {
           paste("<h3>Decision:", "<b>", input$decision, "</b></h3>")
         ),
         HTML(
-          "<h5 class = 'mt-25 mb-0'><b>Note: </b>Once submitted the decision cannot be reverted and comments in group and package level will be freezed.</h5>"
+          "<h5 class = 'mt-25 mb-0'><b>Note: </b>Once submitted the decision cannot be reverted and comments in group and package level will be frozen.</h5>"
         ),
         footer = tagList(
           actionButton("submit_confirmed_decision", "Submit", class = "submit_confirmed_decision_class btn-secondary"),
-          actionButton("edit", "Edit", class = "edit_class btn-success")
+          actionButton("edit", "Cancel", class = "edit_class btn-unsuccess")
         )
       )
     ))
@@ -180,37 +180,15 @@ observeEvent(input$submit_decision, {
 # 3. Observe Event for submit the decision.
 observeEvent(input$submit_confirmed_decision, {
   db_fun(
-    paste(
+    paste0(
       "UPDATE Packageinfo SET decision = '",
       input$decision,
       "' WHERE package = '",
       values$selected_pkg$package,
-      "'",
-      sep = ""
+      "'"
     )
   )
-  # Render Output to display the decision to confirm the decision.
-  output$decision_display <- renderText({
-    des <-
-      db_fun(
-        paste(
-          "SELECT decision FROM Packageinfo WHERE package = '",
-          values$selected_pkg$package,
-          "'",
-          sep = ""
-        )
-      )
-    req(des$decision)
-    if (des$decision != "") {
-      paste("<br>",
-            "<h3>Decision: ",
-            "<b>",
-            des$decision,
-            "</b></h3>")
-    }
-  })  # End of the render Output.
-  
-  values$selected_pkg$decision <- "yes/no"
+  values$selected_pkg$decision <- "accept/reject"
   removeModal()
 })  # End of the Observe Event.
 
@@ -241,7 +219,7 @@ observeEvent(input$submit_overall_comment, {
       comment_submitted <-
         filter(
           comments_submitted,
-           comments_submitted$user_name == values$name &
+          comments_submitted$user_name == values$name &
             comments_submitted$user_role == values$role
         )
       showModal(modalDialog(
@@ -276,6 +254,7 @@ observeEvent(input$submit_overall_comment, {
       )
       values$o_comment_submitted <- "yes"
       updateTextAreaInput(session, "overall_comment", value = "")
+      updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", values$overall_comments))
     }
   }
   
@@ -301,6 +280,7 @@ observeEvent(input$submit_overall_comment_yes, {
   )
   values$o_comment_submitted <- "yes"
   updateTextAreaInput(session, "overall_comment", value = "")
+  updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", values$overall_comments))
   removeModal()
 })
 

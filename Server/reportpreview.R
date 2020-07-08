@@ -49,7 +49,11 @@ output$gen_info <- renderText({
 
 output$decision_display <- renderText({
   if (!identical(values$selected_pkg$decision, character(0)) && values$selected_pkg$decision != "") {
-    paste("<br>", "<h3>Decision: ", "<b>", values$selected_pkg$decision, "</b></h3>")
+    if(values$selected_pkg$decision == "Accept"){
+      paste("<br>", "<h3>Decision: ", "<b>Accepted</b></h3>")
+    }else{
+      paste("<br>", "<h3>Decision: ", "<b>Rejected</b></h3>") 
+    }
   } else{
     paste("<br>", "<h3>Decision: Pending</h3>")
   }
@@ -62,11 +66,10 @@ output$overall_comments <- renderText({
       values$o_comment_submitted == "no") {
     values$comment_o1 <-
       db_fun(
-        paste(
+        paste0(
           "SELECT * FROM Comments WHERE comm_id = '",
           values$selected_pkg$package,
-          "' AND comment_type = 'o'",
-          sep = ""
+          "' AND comment_type = 'o'"
         )
       )
     values$comment_o2 <- values$comment_o1 %>% arrange(desc(values$comment_o1$added_on))
@@ -92,7 +95,7 @@ values$cwd<-getwd()
 output$download_report_btn <- downloadHandler(
 
   filename = function() {
-    paste0("Report.", switch(input$report_format, "doc" = "docx", "html" = "html"))
+    paste0("Report.", switch(input$report_format, "docx" = "docx", "html" = "html"))
   },
   content = function(file) {
     shiny::withProgress(message = paste0("Downloading ", input$dataset, " Report"),
@@ -116,5 +119,9 @@ output$download_report_btn <- downloadHandler(
                         })
   }
 )  # End of the render Output for download report.
+
+source(file.path("Server", "mm_report.R"), local = TRUE)$value
+source(file.path("Server", "cum_report.R"), local = TRUE)$value
+source(file.path("Server", "tm_report.R"), local = TRUE)$value
 
 # End of the report preview Source file for Server Module.

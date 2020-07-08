@@ -136,6 +136,7 @@ genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis
     expr = {
       db_fun(paste0( "INSERT INTO Packageinfo values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
                      "'", main, "',", "'", auth, "',", "'", lis, "',", "'", pub, "',", "'',", "''", ")"))
+      pkg_uploaded <<- "uploaded"
     },
     error = function(e) {
       #loggit("ERROR", paste("Error in uploading the package", pkg_name, "info", e), app = "fileupload-DB")
@@ -154,42 +155,42 @@ genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis
 
 metric_mm_tm_Info_upload_to_DB <- function(package_name){
   
-      package_riskmetric1 <<-
-        pkg_ref(package_name) %>%
-        as_tibble() %>%
-        pkg_assess() %>%
-        pkg_score() %>%
-        mutate(risk = summarize_scores(.))
-      
-      package_riskmetric2 <<-
-        pkg_ref(package_name) %>%
-        as_tibble() %>%
-        pkg_assess()
-
-      package_riskmetric1$bugs_status<<-package_riskmetric1$bugs_status*100
-      package_riskmetric1$export_help<<-package_riskmetric1$export_help*100
-      
-      # tryCatch(
-      #   expr = {
-        db_fun(paste0("INSERT INTO MaintenanceMetrics values(", 
-                      "'", package_name, "',", 
-                      "'", package_riskmetric1$has_vignettes[1], ",", ifelse(class(package_riskmetric2$has_vignettes[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_vignettes[[1]][1]), "',",
-                      "'", package_riskmetric1$has_news[1], ",",  ifelse(class(package_riskmetric2$has_news[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_news[[1]][1]), "',", 
-                      "'", package_riskmetric1$news_current[1], ",",  ifelse(class(package_riskmetric2$news_current[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$news_current[[1]][1]), "',",  
-                      "'", package_riskmetric1$has_website[1], ",",  ifelse(class(package_riskmetric2$has_website[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_website[[1]][1]), "',", 
-                      "'", package_riskmetric1$has_bug_reports_url[1], ",",  ifelse(class(package_riskmetric2$has_bug_reports_url[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_bug_reports_url[[1]][1]), "',",
-                      "'", package_riskmetric1$has_maintainer[1], ",",  ifelse(class(package_riskmetric2$has_maintainer[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_maintainer[[1]][1]), "',", 
-                      "'", package_riskmetric1$has_source_control[1], ",",  ifelse(class(package_riskmetric2$has_source_control[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_source_control[[1]][1]), "',",
-                      "'", format(round(package_riskmetric1$export_help[1],2)), ",",  ifelse(class(package_riskmetric2$export_help[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$export_help[[1]][1]), "',",
-                      "'", format(round(package_riskmetric1$bugs_status[1],2)), ",",  ifelse(class(package_riskmetric2$bugs_status[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$bugs_status[[1]][1]), "'", ")"))
-        
-        db_fun(
-          paste0( "INSERT INTO TestMetrics values(",
-                  "'", package_name, "',",  
-                  "'", format(round(package_riskmetric1$covr_coverage[1], 2)),",", ifelse(class(package_riskmetric2$covr_coverage[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$covr_coverage[[1]][1]), "'", ")" )
-        )
-        
-        db_fun(paste0( "UPDATE Packageinfo SET score = '", format(round(package_riskmetric1$pkg_score[1], 2)), "'", " WHERE package = '" ,
+  package_riskmetric1 <<-
+    pkg_ref(package_name) %>%
+    as_tibble() %>%
+    pkg_assess() %>%
+    pkg_score() %>%
+    mutate(risk = summarize_scores(.))
+  
+  package_riskmetric2 <<-
+    pkg_ref(package_name) %>%
+    as_tibble() %>%
+    pkg_assess()
+  
+  package_riskmetric1$bugs_status<<-package_riskmetric1$bugs_status*100
+  package_riskmetric1$export_help<<-package_riskmetric1$export_help*100
+  
+  # tryCatch(
+  #   expr = {
+  db_fun(paste0("INSERT INTO MaintenanceMetrics values(", 
+                "'", package_name, "',", 
+                "'", package_riskmetric1$has_vignettes[1], ",", ifelse(class(package_riskmetric2$has_vignettes[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_vignettes[[1]][1]), "',",
+                "'", package_riskmetric1$has_news[1], ",",  ifelse(class(package_riskmetric2$has_news[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_news[[1]][1]), "',", 
+                "'", package_riskmetric1$news_current[1], ",",  ifelse(class(package_riskmetric2$news_current[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$news_current[[1]][1]), "',",  
+                "'", package_riskmetric1$has_website[1], ",",  ifelse(class(package_riskmetric2$has_website[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_website[[1]][1]), "',", 
+                "'", package_riskmetric1$has_bug_reports_url[1], ",",  ifelse(class(package_riskmetric2$has_bug_reports_url[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_bug_reports_url[[1]][1]), "',",
+                "'", package_riskmetric1$has_maintainer[1], ",",  ifelse(class(package_riskmetric2$has_maintainer[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_maintainer[[1]][1]), "',", 
+                "'", package_riskmetric1$has_source_control[1], ",",  ifelse(class(package_riskmetric2$has_source_control[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_source_control[[1]][1]), "',",
+                "'", format(round(package_riskmetric1$export_help[1],2)), ",",  ifelse(class(package_riskmetric2$export_help[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$export_help[[1]][1]), "',",
+                "'", format(round(package_riskmetric1$bugs_status[1],2)), ",",  ifelse(class(package_riskmetric2$bugs_status[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$bugs_status[[1]][1]), "'", ")"))
+  
+  db_fun(
+    paste0( "INSERT INTO TestMetrics values(",
+            "'", package_name, "',",  
+            "'", format(round(package_riskmetric1$covr_coverage[1], 2)),",", ifelse(class(package_riskmetric2$covr_coverage[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$covr_coverage[[1]][1]), "'", ")" )
+  )
+  
+  db_fun(paste0( "UPDATE Packageinfo SET score = '", format(round(package_riskmetric1$pkg_score[1], 2)), "'", " WHERE package = '" ,
                  package_name, "'"))
   #   },
   # error = function(e) {
@@ -218,11 +219,14 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
       downloads_1yr_br_i <- tail(cran_stats(package_name), n = 13)
       downloads_1yr_br_i <- downloads_1yr_br_i[c(1:nrow(downloads_1yr_br_i)-1),]
       downloads_1yr_br <-data.frame(Month = c(paste(
-          months(downloads_1yr_br_i$end),
-          year(downloads_1yr_br_i$end)
-        )), Downloads = downloads_1yr_br_i$downloads)
+        months(downloads_1yr_br_i$end),
+        year(downloads_1yr_br_i$end)
+      )), Downloads = downloads_1yr_br_i$downloads)
       downloads_1yr <- sum(downloads_1yr_br$Downloads)
       colnames(final) <<- c("Month", "Downloads", "verRelease", "Position")
+      final <- downloads_1yr_br
+      final$Month <- as.character(final$Month)
+      final$Position <- 13
       
       a <- read_html(paste0("https://github.com/cran/", package_name, "/tags"))
       b <- html_nodes(a, 'h4')
@@ -230,8 +234,8 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
       c <- str_split(c,"\n")
       d <- c()
       for (i in 1:length(c)) { 
-             d[i]<-(trimws(c[[i]][3]))
-        }
+        d[i]<-(trimws(c[[i]][3]))
+      }
       d <- d[c(3:length(d))]
       
       d1 <- d[length(d)]
@@ -248,7 +252,7 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
         d1 <- d1[length(d1)]
         if (is.na(d1)) {
           if(loop != "looped"){
-            d2 <- d[length(d)]
+            d1 <- d[length(d)]
             e1 <- html_nodes(a, 'relative-time')
             e1 <- html_text(e1)
             f1 <- str_remove_all(e1[length(e1)], ",")
@@ -260,7 +264,6 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
             break 
           }
         } else{
-          d2 <- d1[length(d1)]
           e1 <- html_nodes(a1, 'relative-time')
           e1 <- html_text(e1)
           f1 <- str_remove_all(e1[length(e1)], ",")
@@ -287,9 +290,6 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
       res$Date <- as.character(res$Date)
       res$Version <- as.character(res$Version)
       
-      final <- downloads_1yr_br
-      final$Month <- as.character(final$Month)
-      
       r <- filter(res, res$Date %in% final$Month)
       
       for (i in 1:length(final$Month)) {
@@ -307,8 +307,8 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
     },
     error = function(e) {
       #loggit("ERROR", paste("Error in uploading the package", package_name, "info", e), app = "fileupload-DB")
-      downloads_1yr<<-NA
-      return()
+      #downloads_1yr<<-NA
+      #return()
     },
     warning = function(w) {
       # (Optional)

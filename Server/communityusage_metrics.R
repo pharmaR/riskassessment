@@ -58,9 +58,9 @@ observe({
   )
   if (input$tabs == "cum_tab_value") {
     if (!is.null(input$cum_comment)) {
-      if(values$time_since_version_release_info == "NA"){ runjs( "setTimeout(function(){ notAvailable2('time_since_version_release');}, 500);" ) }
-      if(values$time_since_first_release_info == "NA"){ runjs( "setTimeout(function(){ notAvailable2('time_since_first_release');}, 500);" ) }
-      if (values$riskmetrics_cum$no_of_downloads_last_year[1] == "NA") { runjs("setTimeout(function(){ updateText();}, 500);") }
+      if(values$time_since_version_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_version_release');}, 500);" ) }
+      if(values$time_since_first_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_first_release');}, 500);" ) }
+      if (values$riskmetrics_cum$no_of_downloads_last_year[1] == "NA") { runjs("setTimeout(function(){ updateText('no_of_downloads');}, 500);") }
       req(values$selected_pkg$decision)
       if (values$selected_pkg$decision != "") {
         runjs("setTimeout(function(){ var ele = document.getElementById('cum_comment'); ele.disabled = true; }, 500);" )

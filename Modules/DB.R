@@ -4,15 +4,7 @@ library(DBI)
 con <- dbConnect(RSQLite::SQLite(), "./risk_assessment_app.db")
 dbListTables(con)
 
-con <- dbConnect(RSQLite::SQLite(), "./risk_assessment_app.db")
-dbSendQuery(con, "delete from Select_packages")
-dbDisconnect(con)
 
-con <- dbConnect(RSQLite::SQLite(), "./risk_assessment_app.db")
-q<-dbSendQuery(con, "select * from select_packages")
-q<-dbFetch(q)
-q
-dbDisconnect(con)
 
 con <- dbConnect(RSQLite::SQLite(), "./risk_assessment_app.db")
 dbSendQuery(con, "delete from Packageinfo")

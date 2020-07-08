@@ -34,20 +34,19 @@ output$screen <- renderUI({
                      h3("Leave Your Overall Comment:"),
                      width = "100%",
                      rows = 5,
-                     placeholder = paste("Commenting as", input$name, "(", input$role, ")")
+                     placeholder = paste("current comment:")
                    ),
                    # Action Button to Submit Overall Comment for selected Package.
                    actionButton("submit_overall_comment", class = "submit_overall_comment_class btn-secondary", "Submit Comment"),
                    tags$div(
                      class = "col-sm-12 decision_div",
-                     
-                     HTML("<i class='fas fa-info-circle fa-2x float-right txt-color cursor-help' title='Decision will change the status'></i>"),
+                     HTML("<i class='fas fa-info-circle fa-2x float-right txt-color cursor-help' title='Once submitted the decision cannot be reverted and comments in group and package level will be frozen'></i>"),
                      # Radio button to select the decition (yes/no) for selected package.
                      radioButtons(
                        "decision",
                        h3("Decision:"),
                        selected = character(0),
-                       c("Yes", "No"),
+                       c("Accept", "Reject"),
                        inline = TRUE
                      ),
                      # Action button to submit decision for selected package.

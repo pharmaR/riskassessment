@@ -43,7 +43,7 @@ output$upload_package<-renderUI({
   column(
     width = 7,
     class = "mb-4 w-80",
-    dataTableOutput("total_new_dup_table"),  # Display the table with total rows in the DB.
+    dataTableOutput("total_new_undis_dup_table"),  # Display the table with total rows in the DB.
   )
  )
 })

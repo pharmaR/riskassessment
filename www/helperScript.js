@@ -87,37 +87,35 @@ function capturingSizeOfInfoBoxes(){
 }
 
 
-function notAvailable1(id){
-  console.log('notAvailable---');
+function updateInfoBoxesWhenNA(id){
   var ele = document.getElementById(id);
   var infoBox = ele.firstChild;
+  console.log('updateInfoBoxesWhenNA---', id, ele, infoBox);
   infoBox.classList.add('na-bg-color');
   
   var icn = infoBox.firstElementChild;
   icn.firstElementChild.style.display = "none";
 }
 
-function notAvailable2(id){
-  console.log('notAvailable---');
+function updateInfoBoxesColorWhenNA(id){
   var ele = document.getElementById(id);
   var infoBox = ele.firstChild;
   infoBox.classList.add('na-bg-color');
   
   var icn = infoBox.firstElementChild;
-  //icn.firstElementChild.style.display = "none";
 }
 
-function updateText() {
-  console.log('updateText---');
+function updateText(id) {
+  //console.log('updateText---', id);
   
-  var element = document.getElementById('no_of_downloads').getElementsByClassName('highcharts-subtitle');
+  var element = document.getElementById(id).getElementsByClassName('highcharts-subtitle');
   element[0].style.fontSize = '16px';
   var xVal = element[0]['x'].baseVal[0].value;
   element[0]['y'].baseVal[0].value = xVal/2;
 }
 
 function disableUI(id) {
-  console.log('disabling---', id);
+  //console.log('disabling---', id);
   
   var ele = document.getElementById(id); 
   ele.disabled = false;
@@ -130,14 +128,13 @@ function disableUI(id) {
   
 }
 
-function addTextToGaugeSVG() {
-  console.log('addTextToGaugeSVG');
+function addTextToGaugeSVG(id) {
   
-  var elementCircle = document.getElementById('test_coverage').getElementsByTagName('circle')[0];
+  var elementCircle = document.getElementById(id).getElementsByTagName('circle')[0];
   elementCircle.nextSibling.remove();
   elementCircle.remove();
   
-  var element = document.getElementById('test_coverage').getElementsByTagName('svg')[0];
+  var element = document.getElementById(id).getElementsByTagName('svg')[0];
   var textElement = document.createElementNS('http://www.w3.org/2000/svg', 'text');
   textElement.setAttributeNS(null, 'x', element.width.baseVal.value/2);
   textElement.setAttributeNS(null, 'y', element.height.baseVal.value/2 +20);
@@ -168,8 +165,4 @@ function addTextToGaugeSVG() {
     }
   }
 }
-
-
-
-
 
