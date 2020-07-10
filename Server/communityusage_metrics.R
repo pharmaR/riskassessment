@@ -60,7 +60,7 @@ observe({
     if (!is.null(input$cum_comment)) {
       if(values$time_since_version_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_version_release');}, 500);" ) }
       if(values$time_since_first_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_first_release');}, 500);" ) }
-      if (values$riskmetrics_cum$no_of_downloads_last_year[1] == "NA") { runjs("setTimeout(function(){ updateText('no_of_downloads');}, 500);") }
+      if (values$riskmetrics_cum$no_of_downloads_last_year[1] == 0) { runjs("setTimeout(function(){ updateText('no_of_downloads');}, 500);") }
       req(values$selected_pkg$decision)
       if (values$selected_pkg$decision != "") {
         runjs("setTimeout(function(){ var ele = document.getElementById('cum_comment'); ele.disabled = true; }, 500);" )
@@ -109,7 +109,7 @@ output$time_since_version_release <- renderInfoBox({
 
 # 3. Render Output to show the highchart for number of downloads on the application.
 output$no_of_downloads <- renderHighchart({
-  if (values$riskmetrics_cum$no_of_downloads_last_year[1] != "NA") {
+  if (values$riskmetrics_cum$no_of_downloads_last_year[1] != 0) {
       hc <- highchart() %>%
         hc_xAxis(categories = values$riskmetrics_cum$month) %>%
         hc_xAxis(
@@ -195,7 +195,7 @@ output$no_of_downloads <- renderHighchart({
           color = "blue"
         ) %>%
         hc_yAxis(title = list(text = "Downloads")) %>%
-        hc_title(text = "NUMBER OF DOWNLOADS IN THE PAST YEAR") %>%
+        hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS 11 MONTHS") %>%
         hc_subtitle(
           text = paste(
             "Total Number of Downloads :",
@@ -211,9 +211,9 @@ output$no_of_downloads <- renderHighchart({
         hc_xAxis(title = list(text = "Months")) %>%
         hc_add_series(name = input$select_pack, data = NULL) %>%
         hc_yAxis(title = list(text = "Downloads")) %>%
-        hc_title(text = "NUMBER OF DOWNLOADS IN THE PAST YEAR") %>%
+        hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS 11 MONTHS") %>%
         hc_subtitle(
-          text = paste("Number of Downloads in the past year not found"),
+          text = paste("Number of Downloads in the 11 previous months are zero"),
           style = list(color = "#f44336", fontWeight = "bold")
         ) %>%
         hc_add_theme(hc_theme_elementary())

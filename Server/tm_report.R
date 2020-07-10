@@ -72,7 +72,6 @@ output$tm_commented1 <- renderText({
     values$comment_tm2 <- data.frame(values$comment_tm1 %>% map(rev))
     req(values$comment_tm2$comment)
     values$tm_comment_submitted <- "no"
-    
     paste(
       "<div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-4x'></i><h3 class='ml-3'><b class='user-name-color'>",
       values$comment_tm2$user_name,

@@ -149,13 +149,9 @@ p_color <- 'white'
 ```{r echo=FALSE}
 #HTML(paste("<br>", "<h3>Score: ", "<b>",values$selected_pkg$score,"</b></h3>"))
  if (!identical(values$selected_pkg$decision, character(0)) && values$selected_pkg$decision != "") {
-       if(values$selected_pkg$decision == "Accept"){
-      HTML(paste("<br>", "<h5>Decision: ", "<b>Accepted</b></h5>"))
-    }else{
-      HTML(paste("<br>", "<h5>Decision: ", "<b>Rejected</b></h5>"))
-    }
+    HTML(paste("<br>", "<h5>Overall Risk: ", "<b>", values$selected_pkg$decision, "</b></h5>"))
   } else{
-    HTML(paste("<br>", "<h5><b>Decision: Pending</b></h5>"))
+    HTML(paste("<br>", "<h5><b>Overall Risk: Pending</b></h5>"))
   }
 ```
 
@@ -389,7 +385,7 @@ comment_mm2 <- data.frame(comment_mm2 %>% map(rev))
     fill = TRUE
   )
   
-if (riskmetrics_cum$no_of_downloads_last_year[1] != "NA") {
+if (riskmetrics_cum$no_of_downloads_last_year[1] != 0) {
       hc <- highchart() %>%
         hc_xAxis(categories = riskmetrics_cum$month) %>%
         hc_xAxis(
@@ -475,7 +471,7 @@ if (riskmetrics_cum$no_of_downloads_last_year[1] != "NA") {
           color = "blue"
         ) %>%
         hc_yAxis(title = list(text = "Downloads")) %>%
-        hc_title(text = "NUMBER OF DOWNLOADS IN THE PAST YEAR") %>%
+        hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS 11 MONTHS") %>%
         hc_subtitle(
           text = paste(
             "Total Number of Downloads :",
@@ -492,9 +488,9 @@ if (riskmetrics_cum$no_of_downloads_last_year[1] != "NA") {
         hc_xAxis(title = list(text = "Months")) %>%
         hc_add_series(name = input$select_pack, data = NULL) %>%
         hc_yAxis(title = list(text = "Downloads")) %>%
-        hc_title(text = "NUMBER OF DOWNLOADS IN THE PAST YEAR") %>%
+        hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS 11 MONTHS") %>%
         hc_subtitle(
-          text = paste("Number of Downloads in the past year not found"),
+          text = paste("Number of Downloads in the 11 previous months are zero"),
           style = list(color = "#f44336", fontWeight = "bold")
         ) %>%
         hc_add_theme(hc_theme_elementary())
@@ -520,7 +516,7 @@ for (var i = 0; i < element.length; i++) {
 	}}
 },500)" )) 
 
-if (riskmetrics_cum$no_of_downloads_last_year[1] == "NA") {
+if (riskmetrics_cum$no_of_downloads_last_year[1] == 0) {
   tags$script(
     HTML(
       "setTimeout(function(){

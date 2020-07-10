@@ -41,13 +41,13 @@ output$screen <- renderUI({
                    tags$div(
                      class = "col-sm-12 decision_div",
                      HTML("<i class='fas fa-info-circle fa-2x float-right txt-color cursor-help' title='Once submitted the decision cannot be reverted and comments in group and package level will be frozen'></i>"),
-                     # Radio button to select the decition (yes/no) for selected package.
-                     radioButtons(
+                     # Slider input to select the decision for selected package.
+                     sliderTextInput(
                        "decision",
-                       h3("Decision:"),
-                       selected = character(0),
-                       c("Accept", "Reject"),
-                       inline = TRUE
+                       h3("Overall Risk:"),
+                       selected = NULL,
+                       grid = TRUE,
+                       c("Low", "Medium", "High")
                      ),
                      # Action button to submit decision for selected package.
                      actionButton("submit_decision", class = "submit_decision_class btn-secondary", "Submit Decision")

@@ -49,13 +49,9 @@ output$gen_info <- renderText({
 
 output$decision_display <- renderText({
   if (!identical(values$selected_pkg$decision, character(0)) && values$selected_pkg$decision != "") {
-    if(values$selected_pkg$decision == "Accept"){
-      paste("<br>", "<h3>Decision: ", "<b>Accepted</b></h3>")
-    }else{
-      paste("<br>", "<h3>Decision: ", "<b>Rejected</b></h3>") 
-    }
+    paste("<br>", "<h3>Overall Risk: ", "<b>", values$selected_pkg$decision, "</b></h3>") 
   } else{
-    paste("<br>", "<h3>Decision: Pending</h3>")
+    paste("<br>", "<h3>Overall Risk: Pending</h3>")
   }
 })    # End of the render Text Output.
 

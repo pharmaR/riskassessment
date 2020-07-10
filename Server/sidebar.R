@@ -11,20 +11,18 @@
 observe({
   req(input$select_pack)
   if (!identical(values$selected_pkg$decision, character(0))) {
-    if (values$selected_pkg$decision == "") {
-      updateRadioButtons(
+    if (values$selected_pkg$decision != "") {
+      updateSliderTextInput(
         session,
         "decision",
-          choices = c("Accept", "Reject"),
-        inline = TRUE,
-        selected = character(0)
+        choices = c("Low", "Medium", "High"),
+        selected = values$selected_pkg$decision
       )
-    } else if (values$selected_pkg$decision != "") {
-      updateRadioButtons(session, "decision", selected = values$selected_pkg$decision)
     }
   }
 })  # End of the Observe.
-# 2. Observe to disable and enable the text area comment box's' if decision of the package is empty.
+
+#2. Observe to disable and enable the text area comment box's' if decision of the package is empty.
 observe({
   req(values$selected_pkg$package)
   if (values$selected_pkg$decision != "") {
@@ -39,6 +37,7 @@ observe({
     enable("submit_overall_comment")
   }
 })  # End of the Observe.
+
 # 3. Observe to disable and enable to side bar elements for select pacakge input.
 observe({
   req(input$select_pack)
@@ -188,7 +187,7 @@ observeEvent(input$submit_confirmed_decision, {
       "'"
     )
   )
-  values$selected_pkg$decision <- "accept/reject"
+  values$selected_pkg$decision <- input$decision
   removeModal()
 })  # End of the Observe Event.
 

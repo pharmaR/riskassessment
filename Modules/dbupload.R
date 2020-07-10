@@ -216,17 +216,20 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
   
   tryCatch(
     expr = {
-      downloads_1yr_br_i <- tail(cran_stats(package_name), n = 13)
-      downloads_1yr_br_i <- downloads_1yr_br_i[c(1:nrow(downloads_1yr_br_i)-1),]
-      downloads_1yr_br <-data.frame(Month = c(paste(
-        months(downloads_1yr_br_i$end),
-        year(downloads_1yr_br_i$end)
-      )), Downloads = downloads_1yr_br_i$downloads)
+      downloads_1yr_br_i <- pkg_ref(package_name)$downloads
+      downloads_1yr_br_i <- filter(downloads_1yr_br_i, months(downloads_1yr_br_i$date) != months(Sys.Date()))
+      downloads_1yr_br_i$date <- paste( months(downloads_1yr_br_i$date), year(downloads_1yr_br_i$date) )
+      count<-c()
+      for (i in 1:length(unique(downloads_1yr_br_i$date))) {
+        count_df <- filter(downloads_1yr_br_i, downloads_1yr_br_i$date == unique(downloads_1yr_br_i$date)[i])
+        count[i] <- sum(count_df$count)
+      }
+      downloads_1yr_br <-data.frame(Month = unique(downloads_1yr_br_i$date), Downloads = count)
       downloads_1yr <- sum(downloads_1yr_br$Downloads)
       colnames(final) <<- c("Month", "Downloads", "verRelease", "Position")
       final <- downloads_1yr_br
       final$Month <- as.character(final$Month)
-      final$Position <- 13
+      final$Position <- 12
       
       a <- read_html(paste0("https://github.com/cran/", package_name, "/tags"))
       b <- html_nodes(a, 'h4')
@@ -300,7 +303,7 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
             break
           } else{
             final$verRelease[i] <- NA
-            final$Position[i] <- 13
+            final$Position[i] <- 12
           }
         }
       }

@@ -1,9 +1,9 @@
 #####################################################################################################################
 # Project: R Validation Hub (R Package Risk Assessment App- R Shiny Application is to pro
 # Author: Aravind
-# Date: June 1st, 2020
+# Date: July 10th, 2020
 # License: MIT License
-# You can run the application by clicking 'Run App' above.
+# You can run the application by 'runApp()' command.
 #####################################################################################################################
 
 # Step 1 -- Loading all required packages.
@@ -93,7 +93,7 @@ server <- function(session, input, output) {
   values$uploaded_file_status <- "no_status"
   values$upload_complete <- "upload_incomplete"
   values$select_pack <- "Select"
-  
+
   # Load Source files of UI and Server modules of Login Screen.
   
   source(file.path("Server", "login_screen.R"), local = TRUE)$value
@@ -149,11 +149,9 @@ server <- function(session, input, output) {
     if (values$current_screen != "dashboard_screen") {
       source(file.path("UI", "login_screen.R"), local = TRUE)$value
       shinyjs::hide("assessment_criteria_bttn")
-      
     } else{
       source(file.path("UI", "dashboard_screen.R"), local = TRUE)$value
       shinyjs::show("assessment_criteria_bttn")
-      
     }
   })  # End of the selected screen observe.
   

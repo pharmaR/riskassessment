@@ -106,7 +106,7 @@ function updateInfoBoxesColorWhenNA(id){
 }
 
 function updateText(id) {
-  //console.log('updateText---', id);
+  console.log('updateText---', id);
   
   var element = document.getElementById(id).getElementsByClassName('highcharts-subtitle');
   element[0].style.fontSize = '16px';
@@ -165,4 +165,3 @@ function addTextToGaugeSVG(id) {
     }
   }
 }
-
