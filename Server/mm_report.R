@@ -9,7 +9,7 @@ observe({
           "'"
         )
       )
-    
+  
     values$package_has_vignettes <- c(strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][2])
     values$package_has_website <- c(strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][2])
     values$package_has_news <- c(strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][2])
@@ -28,6 +28,7 @@ observe({
   req(input$tabs)
   runjs("setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 500);")
   if (input$tabs == "reportPreview_tab_value") {
+    req(values$riskmetrics_mm)
       if(values$package_has_vignettes[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('vignette1');}, 3000);" ) }
       if(values$package_has_website[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('website1');}, 3000);" ) }
       if(values$package_has_news[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('hasnews1');}, 3000);" ) }
