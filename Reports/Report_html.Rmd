@@ -148,7 +148,7 @@ p_color <- 'white'
  if (!identical(pkg_GenInfo$decision, character(0)) && pkg_GenInfo$decision != "") {
     HTML(paste("<br>", "<h5>Overall risk: ", "<b>", pkg_GenInfo$decision, "</b></h5>"))
   } else{
-    HTML(paste("<br>", "<h5><b>overall risk: Pending</b></h5>"))
+    HTML(paste("<br>", "<h5><b>Overall risk: Pending</b></h5>"))
   }
 ```
 
