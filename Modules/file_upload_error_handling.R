@@ -1,9 +1,13 @@
 #####################################################################################################################
 # file_upload_error_handling.r - Handles errors while uploading the CSV file
-# 
-# Author:
-# Created:
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
 #####################################################################################################################
+
+# Start of the functions
+
+# 1. File upload error handling function for upload csv
 
 file_upload_error_handling <- function(UploadFile) {
   if (file_ext(UploadFile)[1] != "csv") {
@@ -13,7 +17,7 @@ file_upload_error_handling <- function(UploadFile) {
     file_to_read <- UploadFile
     if (is.null(file_to_read))
       return()
-    if(UploadFile[1,"size"]==0){
+    if (UploadFile[1, "size"] == 0) {
       showModal(modalDialog(
         h3(
           "This appears to be an empty file. Please upload with valid file."
@@ -27,7 +31,7 @@ file_upload_error_handling <- function(UploadFile) {
                stringsAsFactors = FALSE)
     names(pkgs) <- tolower(names(pkgs))
     
-    upload_format_csv<-read.csv("./Data/upload_format.csv")
+    upload_format_csv <- read.csv("./Data/upload_format.csv")
     
     if (dim(pkgs)[1] == 0) {
       showModal(modalDialog(
@@ -48,3 +52,5 @@ file_upload_error_handling <- function(UploadFile) {
   }
   return("no_error")
 }
+
+# End of the function.

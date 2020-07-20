@@ -1,7 +1,16 @@
+#####################################################################################################################
+# tm_report.R - testing_metrics Source file for server Module for Report Preview section.
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
+#####################################################################################################################
+
+# 1. Observe to check the report preview value
 observe({
   req(input$select_pack)
   if (input$tabs == "reportPreview_tab_value") {
     if(input$select_pack != "Select"){
+    
       values$riskmetrics_tm <-
         db_fun(
           paste0(
@@ -11,19 +20,12 @@ observe({
           )
         )
       values$test_coverage <- c(strsplit(values$riskmetrics_tm$test_coverage,",")[[1]][1], strsplit(values$riskmetrics_tm$test_coverage,",")[[1]][2])
+      
+      req(values$test_coverage)
+      if(values$test_coverage[2] == -1){ runjs( "setTimeout(function(){ addTextToGaugeSVG('test_coverage1');}, 5000);" ) }
     }
   }
 })  # End of the observe.
-
-# 2. Observe to disable and enable the submit and comment box when the decision column is empty.
-
-observe({
-  req(input$tabs)
-  if (input$tabs == "reportPreview_tab_value") {
-    req(values$test_coverage)
-      if(values$test_coverage[2] == -1){ runjs( "setTimeout(function(){ addTextToGaugeSVG('test_coverage1');}, 5000);" ) }
-  }
-}) # End of the Observe.
 
 # End of the observe's'
 
@@ -84,6 +86,5 @@ output$tm_commented1 <- renderText({
       values$comment_tm2$comment,
       "</h4></div>"
     )
-    
   }
 })  # End of the render Output.

@@ -42,7 +42,7 @@ Lead Developer - Aravind Reddy Kallem
 
 ### License
 The MIT License (MIT)<br>
-Copyright © 2020 Fission Labs
+Copyright © 2020 Fission Labs and R Validation Hub contributors
  
 Note: Permission notice and Copyright notice to be added as per client requirements.
 

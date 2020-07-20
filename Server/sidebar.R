@@ -1,13 +1,14 @@
 #####################################################################################################################
 # sidebar.R - Side Bar to display the Input widgets to load the pacakge to application.
-# 
-# Author: Aravind
-# Created: 02/06/2020.
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
 #####################################################################################################################
 
-# Start of the Observe's'.
+# Start of the Observes'.
 
 # 1. Observe to update the radiobutton for decistion of the package.
+
 observe({
   req(input$select_pack)
   if (!identical(values$selected_pkg$decision, character(0))) {
@@ -23,6 +24,7 @@ observe({
 })  # End of the Observe.
 
 #2. Observe to disable and enable the text area comment box's' if decision of the package is empty.
+
 observe({
   req(values$selected_pkg$package)
   if (values$selected_pkg$decision != "") {
@@ -39,6 +41,7 @@ observe({
 })  # End of the Observe.
 
 # 3. Observe to disable and enable to side bar elements for select pacakge input.
+
 observe({
   req(input$select_pack)
   if (input$select_pack == "Select") {
@@ -55,7 +58,9 @@ observe({
 })  # End of the observe.
 
 # Start of the Render Output's'.
+
 # 1. Render Output to show the select input to select the package from dropdown.
+
 output$sel_pack <- renderUI({
   values$packsDB <- db_fun("SELECT package FROM Packageinfo")
   selectizeInput(
@@ -67,6 +72,7 @@ output$sel_pack <- renderUI({
 })  # End of the render Output.
 
 # 2. Render Output to show the select input to select the version of the selected package.
+
 output$sel_ver <- renderUI({
   req(input$select_pack)
   res2 <-
@@ -89,6 +95,7 @@ output$sel_ver <- renderUI({
 })  # End of the render Output.
 
 # 3. Render Output to dispaly the status of the selected package.
+
 output$status <- renderText({
   if (!is.null(input$select_pack)) {
     if (input$select_pack != "Select") {
@@ -122,6 +129,7 @@ output$score <- renderText({
 # Start of the Observe Event.
 
 # 1. Observe Event for select package
+
 observeEvent(input$select_pack, {
   
   if (trimws(input$select_pack) != "Select" && trimws(input$select_pack) != "") {
@@ -150,6 +158,7 @@ observeEvent(input$select_pack, {
 })  # End of the observe Event.
 
 # 2. Observe Event to submit the decision for selected package.
+
 observeEvent(input$submit_decision, {
   if (!is.null(input$decision)) {
     showModal(tags$div(
@@ -176,7 +185,9 @@ observeEvent(input$submit_decision, {
     ))
   }
 })  # End of the Observe Event.
+
 # 3. Observe Event for submit the decision.
+
 observeEvent(input$submit_confirmed_decision, {
   db_fun(
     paste0(
@@ -189,12 +200,16 @@ observeEvent(input$submit_confirmed_decision, {
   )
   values$selected_pkg$decision <- input$decision
   removeModal()
+  loggit("INFO", paste("decision for the package", values$selected_pkg$package, 
+                       "is", input$decision, 
+                       "by", values$name, "(", values$role, ")"))
 })  # End of the Observe Event.
 
 # 4. Observe Event to edit the decision if user need to change.
+
 observeEvent(input$edit, {
   removeModal()
-})  # End of the Observe Evenet.
+})  # End of the Observe Event.
 
 
 # 5. Observe Event to update overall comment.

@@ -1,8 +1,8 @@
 #####################################################################################################################
 # login.R - The login page of the app
-# 
-# Author: Aravind
-# Created: 02/06/2020.
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
 #####################################################################################################################
 
 # Start of the login screen Source file for UI Module.

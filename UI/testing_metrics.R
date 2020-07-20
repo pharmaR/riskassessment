@@ -1,9 +1,9 @@
 #####################################################################################################################
 # testing_metrics.R - Testing Metrics to show the test coverage graph and leave multiple comments 
-# for users and display the comments by users.
-# 
-# Author: Aravind
-# Created: 02/06/2020.
+#                     for users and display the comments by users.
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
 #####################################################################################################################
 
 # Start of the Testing_Metrics Source file for UI Module.
@@ -21,7 +21,7 @@ output$testing_metrics <- renderUI({
         fluidRow(
           h3("TEST COVERAGE(%)"),
           div(style = "height:25px;"),
-          amChartsOutput(outputId = "test_coverage")  #  amchart to display the test converage.
+          amChartsOutput(outputId = "test_coverage")  #  amchart to display the test coverage.
         ),
         div(style = "height:25px;"),
         fluidRow(
@@ -69,7 +69,7 @@ output$testing_metrics <- renderUI({
       )
     }
   }
-  # Show the upload a list of R packages message if application not loaded the pacakges from DB.
+  # Show the upload a list of R packages message if application not loaded the packages from DB.
   
   else{
     fluidRow(

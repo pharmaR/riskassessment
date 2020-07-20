@@ -1,8 +1,8 @@
 #####################################################################################################################
 # testing_metrics.R - testing_metrics Source file for server Module.
-# 
-# Author: Aravind
-# Created: 02/06/2020.
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
 #####################################################################################################################
 
 # Start of the observe's'
@@ -12,7 +12,8 @@
 observe({
   req(input$select_pack)
   if (input$tabs == "tm_tab_value") {
-    if(input$select_pack != "Select"){
+    if (input$select_pack != "Select") {
+    
       values$riskmetrics_tm <-
         db_fun(
           paste0(
@@ -22,15 +23,7 @@ observe({
           )
         )
       values$test_coverage <- c(strsplit(values$riskmetrics_tm$test_coverage,",")[[1]][1], strsplit(values$riskmetrics_tm$test_coverage,",")[[1]][2])
-    }
-  }
-})  # End of the observe.
-
-# 2. Observe to disable and enable the submit and comment box when the decision column is empty.
-
-observe({
-  req(input$tabs)
-  if (input$tabs == "tm_tab_value") {
+      
     if (!is.null(input$tm_comment)) {
       if(values$test_coverage[2] == -1){ runjs( "setTimeout(function(){ addTextToGaugeSVG('test_coverage');}, 500);" ) }
       req(values$selected_pkg$decision)
@@ -38,9 +31,10 @@ observe({
         runjs("setTimeout(function(){ var ele = document.getElementById('tm_comment'); ele.disabled = true; }, 500);")
         runjs("setTimeout(function(){ var ele = document.getElementById('submit_tm_comment'); ele.disabled = true; }, 500);")
       } 
+     }
     }
   }
-}) # End of the Observe.
+})  # End of the observe.
 
 # End of the observe's'
 
@@ -89,7 +83,6 @@ output$tm_commented <- renderText({
     values$comment_tm2 <- data.frame(values$comment_tm1 %>% map(rev))
     req(values$comment_tm2$comment)
     values$tm_comment_submitted <- "no"
-    
     paste(
       "<div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-4x'></i><h3 class='ml-3'><b class='user-name-color'>",
       values$comment_tm2$user_name,
@@ -102,7 +95,6 @@ output$tm_commented <- renderText({
       values$comment_tm2$comment,
       "</h4></div>"
     )
-    
   }
 })  # End of the render Output.
 

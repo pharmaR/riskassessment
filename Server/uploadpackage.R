@@ -1,8 +1,8 @@
 #####################################################################################################################
 # uploadpackage.R - upload pacakge Source file for server Module.
-# 
-# Author: Aravind
-# Created: 02/06/2020.
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
 #####################################################################################################################
 
 
@@ -32,6 +32,7 @@ observe({
 })  # End of the observe.
 
 # 2. Observe to disable the input widgets while the packages uploading into DB.
+
 observe({
   req(input$uploaded_file)
   values$uploaded_file_status <- file_upload_error_handling(input$uploaded_file)
@@ -58,23 +59,21 @@ observe({
   pkgs_db1 <- db_fun("SELECT package FROM Packageinfo")
   values$Dup <- filter(values$Total, values$Total$package %in% pkgs_db1$package)
   values$New <- filter(values$Total, !(values$Total$package %in% pkgs_db1$package))
-  pkg_uploaded <<- ""
   withProgress(message = "Uploading Packages to DB:", value = 0, {
-    if(nrow(values$New) != 0){
+    if (nrow(values$New) != 0) {
       for (i in 1:nrow(values$New)) {
-        get_packages_info_from_web(values$New$package[i])
-        # if (pkg_uploaded == "uploaded") {
-        metric_mm_tm_Info_upload_to_DB(values$New$package[i])
-        metric_cum_Info_upload_to_DB(values$New$package[i])
-        #   pkg_uploaded <<- ""
-        # }
+        new_package<-values$New$package[i]
+          get_packages_info_from_web(new_package)
+          metric_mm_tm_Info_upload_to_DB(new_package)
+          metric_cum_Info_upload_to_DB(new_package)
         incProgress(1 / nrow(values$New), detail = values$New[i, 1])
         Sys.sleep(0.1)
       }
     }
   })
   pkgs_db2 <- db_fun("SELECT package FROM Packageinfo")
-  values$Undis <- filter(values$New, !(values$New$package %in% pkgs_db2$package))
+  values$Undis <-
+    filter(values$New,!(values$New$package %in% pkgs_db2$package))
   values$packsDB <- db_fun("SELECT package FROM Packageinfo")
   updateSelectizeInput(
     session,
@@ -84,12 +83,19 @@ observe({
   )
   showNotification(id = "show_notification_id", "Upload completed to DB", type = "message")
   values$upload_complete <- "upload_complete"
+  loggit("INFO", paste("Summary of the uploaded file:",input$uploaded_file$name, 
+                       "Total Packages:", nrow(values$Total),
+                       "New Packages:", nrow(values$New),
+                       "Undiscovered Packages:", nrow(values$Undis),
+                       "Duplicate Packages:", nrow(values$Dup)))
 })  # End of the Observe.
 
 # End of the observe's'.
 
 # Start of the render Output's'.
+
 # 1. Render Output to download the sample format dataset.
+
 output$upload_format_download <- downloadHandler(
   filename = function() {
     paste("Upload_file_structure", ".csv", sep = "")
@@ -138,6 +144,7 @@ output$upload_summary_select <- renderUI({
 })  # End of the render Output.
 
 # 4. Render Output to show the data table of uploaded csv.
+
 output$total_new_undis_dup_table <- DT::renderDataTable(
   if (values$upload_complete == "upload_complete") {
     datatable(
@@ -158,6 +165,7 @@ output$total_new_undis_dup_table <- DT::renderDataTable(
 # End of the Render Output's'.
 
 # Observe Event for view sample dataset button.
+
 observeEvent(input$upload_format, {
   dataTableOutput("sampletable")
   showModal(modalDialog(

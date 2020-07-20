@@ -1,34 +1,37 @@
+#####################################################################################################################
+# mm_report.R - Maintenance_Metrics Source file for Server Module for Report Preview section.
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
+#####################################################################################################################
+
+# 1. Observe to get the info box information from the risk metric package.
 observe({
   req(input$select_pack)
-  if(input$select_pack != "Select"){
-    values$riskmetrics_mm <-
-      db_fun(
-        paste0(
-          "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
-          input$select_pack,
-          "'"
-        )
-      )
-  
-    values$package_has_vignettes <- c(strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][2])
-    values$package_has_website <- c(strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][2])
-    values$package_has_news <- c(strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][2])
-    values$news_is_current <- c(strsplit(values$riskmetrics_mm$news_is_current,",")[[1]][1], strsplit(values$riskmetrics_mm$news_is_current,",")[[1]][2])
-    values$has_bug_reports <- c(strsplit(values$riskmetrics_mm$has_bug_reports,",")[[1]][1], strsplit(values$riskmetrics_mm$has_bug_reports,",")[[1]][2])
-    values$status_of_last_30_reported_bugs <- c(strsplit(values$riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][1], strsplit(values$riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][2])
-    values$exported_objects_with_documentation <- c(strsplit(values$riskmetrics_mm$exported_objects_with_documentation,",")[[1]][1], strsplit(values$riskmetrics_mm$exported_objects_with_documentation,",")[[1]][2])
-    values$source_code_is_public <- c(strsplit(values$riskmetrics_mm$source_code_is_public,",")[[1]][1], strsplit(values$riskmetrics_mm$source_code_is_public,",")[[1]][2])
-    values$has_a_package_maintainer <- c(strsplit(values$riskmetrics_mm$has_a_package_maintainer,",")[[1]][1], strsplit(values$riskmetrics_mm$has_a_package_maintainer,",")[[1]][2])
-  }
-})  # End of the observe.
-
-# 2. Observe to disable and enable the submit and comment box when the decision column is empty.
-
-observe({
-  req(input$tabs)
-  runjs("setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 500);")
-  if (input$tabs == "reportPreview_tab_value") {
-    req(values$riskmetrics_mm)
+  if(input$tabs == "reportPreview_tab_value"){
+    if(input$select_pack != "Select"){
+    
+      values$riskmetrics_mm <-
+        db_fun(
+          paste0(
+            "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
+            input$select_pack,
+            "'"
+          )
+        )  
+      
+      values$package_has_vignettes <- c(strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][2])
+      values$package_has_website <- c(strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][2])
+      values$package_has_news <- c(strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][2])
+      values$news_is_current <- c(strsplit(values$riskmetrics_mm$news_is_current,",")[[1]][1], strsplit(values$riskmetrics_mm$news_is_current,",")[[1]][2])
+      values$has_bug_reports <- c(strsplit(values$riskmetrics_mm$has_bug_reports,",")[[1]][1], strsplit(values$riskmetrics_mm$has_bug_reports,",")[[1]][2])
+      values$status_of_last_30_reported_bugs <- c(strsplit(values$riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][1], strsplit(values$riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][2])
+      values$exported_objects_with_documentation <- c(strsplit(values$riskmetrics_mm$exported_objects_with_documentation,",")[[1]][1], strsplit(values$riskmetrics_mm$exported_objects_with_documentation,",")[[1]][2])
+      values$source_code_is_public <- c(strsplit(values$riskmetrics_mm$source_code_is_public,",")[[1]][1], strsplit(values$riskmetrics_mm$source_code_is_public,",")[[1]][2])
+      values$has_a_package_maintainer <- c(strsplit(values$riskmetrics_mm$has_a_package_maintainer,",")[[1]][1], strsplit(values$riskmetrics_mm$has_a_package_maintainer,",")[[1]][2])
+    
+      runjs("setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 500);")
+      req(values$riskmetrics_mm)
       if(values$package_has_vignettes[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('vignette1');}, 3000);" ) }
       if(values$package_has_website[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('website1');}, 3000);" ) }
       if(values$package_has_news[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('hasnews1');}, 3000);" ) }
@@ -39,7 +42,8 @@ observe({
       if(values$source_code_is_public[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('source_pub1');}, 3000);" ) }
       if(values$has_a_package_maintainer[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('pack_maint1');}, 3000);" ) }
     }
-}) # End of the Observe.
+  }
+})  # End of the observe.
 
 # End of the observe's'
 

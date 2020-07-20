@@ -1,12 +1,12 @@
 #####################################################################################################################
 # uploadpackage.R - Upload Package to choose the csv file from local and display the upload csv summary
-# and show the tables for new,duplicate and total observations from DB.
-# 
-# Author: Aravind
-# Created: 02/06/2020.
+#                   and show the tables for new,duplicate and total observations from DB.
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
 #####################################################################################################################
 
-# Start of the upload pacakge Source file for UI Module.
+# Start of the upload package Source file for UI Module.
 
 # Render Output UI for upload package.
 

@@ -1,8 +1,5 @@
 //Adding javascript code for dashbord screen
 
-console.log('Javascript added successfully------Hurray');
-
-
 var elementNavbarText = document.getElementsByClassName('myClass');
 elementNavbarText[0].style.marginLeft = '0px';
 
@@ -16,7 +13,6 @@ elementHelpIconHeader[0].style.display = 'block';
 
 
 var elementSidebar = document.getElementsByClassName('sidebar-menu');
-console.log('elementSidebar', elementSidebar);
 
 
 setTimeout(function() {
@@ -30,7 +26,6 @@ function mobileMenuClicked() {
   var mainPanel = document.getElementsByClassName("tabbable");
   var mainPanel_component = document.getElementsByClassName("main-component");
   
-  console.log('Menu bar clicked---2', sidePanel[1], mainPanel, mainPanel_component);
   if (mainPanel[0].style.display === "none") {
     sidePanel[1].style.display = "none";
     mainPanel[0].style.display = "block";
@@ -43,7 +38,6 @@ function mobileMenuClicked() {
 }
 
 function activeTabCapturing () {
-  console.log('Enteered...');
   setTimeout(function() {
     var screenW = window.innerWidth;
     var ele = document.getElementById('tabs');
@@ -51,15 +45,12 @@ function activeTabCapturing () {
       for(let i=0; i<ele.children.length; i++){
       var cnt = ele.children[i];
         if (cnt.classList[0] === 'active' && (cnt.innerText === "Report Preview" || cnt.innerText === "Testing Metrics" || cnt.innerText === "Upload Package") ) {
-          console.log("100");
           var navtab = document.getElementsByClassName('nav-tabs')
           navtab[0].style.width = "100%"
         } else if (cnt.classList[0] === 'active' && (cnt.innerText === "Maintenance Metrics") ){
-          console.log("80");
           var navtab = document.getElementsByClassName('nav-tabs');
           navtab[0].style.width = "80%"
         } else if (cnt.classList[0] === 'active' && (cnt.innerText === "Community Usage Metrics") ){
-          console.log("95");
           var navtab = document.getElementsByClassName('nav-tabs');
           navtab[0].style.width = "95%"
         }
@@ -70,7 +61,6 @@ function activeTabCapturing () {
 
 function capturingSizeOfInfoBoxes(){
   const element = document.querySelectorAll(".info-box-content");
-  console.log('capturingSizeOfInfoBoxes---');
   
   var allClHeight = [];
   for (var i = 0; i < element.length; i++) {
@@ -90,7 +80,6 @@ function capturingSizeOfInfoBoxes(){
 function updateInfoBoxesWhenNA(id){
   var ele = document.getElementById(id);
   var infoBox = ele.firstChild;
-  console.log('updateInfoBoxesWhenNA---', id, ele, infoBox);
   infoBox.classList.add('na-bg-color');
   
   var icn = infoBox.firstElementChild;
@@ -106,7 +95,6 @@ function updateInfoBoxesColorWhenNA(id){
 }
 
 function updateText(id) {
-  console.log('updateText---', id);
   
   var element = document.getElementById(id).getElementsByClassName('highcharts-subtitle');
   element[0].style.fontSize = '16px';
@@ -115,18 +103,13 @@ function updateText(id) {
 }
 
 function disableUI(id) {
-  //console.log('disabling---', id);
   
   var ele = document.getElementById(id); 
   ele.disabled = false;
   if(ele && ele !== null){
-    console.log('disabling if---', ele);
     ele.disabled = true;
-  }else{
-    console.log('disabling else---', ele);
   }
-  
-}
+ }
 
 function addTextToGaugeSVG(id) {
   

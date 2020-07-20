@@ -1,9 +1,9 @@
 #####################################################################################################################
-# Project: R Validation Hub (R Package Risk Assessment App- R Shiny Application is to pro
-# Author: Aravind
-# Date: July 10th, 2020
+# Project: R Validation Hub - R Package Risk Assessment App
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
 # License: MIT License
-# You can run the application by 'runApp()' command.
+# You can run the application by executing 'runApp()' command.
 #####################################################################################################################
 
 # Step 1 -- Loading all required packages.
@@ -16,7 +16,7 @@ source("./Modules/dbupload.R")
 source("./Modules/file_upload_error_handling.R")
 source("./Utils/utils.R")
 
-#config <<- config::get(file = "conf/config.yml")
+set_logfile("loggit.json")
 
 hidden(p(id = "assessment_criteria_bttn"))
 
@@ -29,10 +29,17 @@ options(
 # Step 3 -- Create User Interface (UI).
 
 ui <- dashboardPage(
-  
   dashboardHeader(
-    title = list("R Package Risk Assessment App"
-                 , tags$a(title = "Pharmar Home Page", href="https://www.pharmar.org/", target="_blank", tags$img(src = "logo.png", class="logo_1"), tags$img(src = "logo_no_text.png", class="logo_2"))),
+    title = list(
+      "R Package Risk Assessment App",
+      tags$a(
+        title = "Pharmar Home Page",
+        href = "https://www.pharmar.org/",
+        target = "_blank",
+        tags$img(src = "logo.png", class = "logo_1"),
+        tags$img(src = "logo_no_text.png", class = "logo_2")
+      )
+    ),
     titleWidth = 420,
     tags$li(
       class = "dropdown",
@@ -67,9 +74,7 @@ ui <- dashboardPage(
          })'
       )
     ),
-    
-    
-    
+
     # Including main.css to add the styles and enhancements to the app.
     
     includeCSS("./www/main.css"),
@@ -85,7 +90,6 @@ ui <- dashboardPage(
 # Step 4 -- Create Server Code .
 
 server <- function(session, input, output) {
-  
   # Load reactive values into values.
   
   values <- reactiveValues()
@@ -93,7 +97,7 @@ server <- function(session, input, output) {
   values$uploaded_file_status <- "no_status"
   values$upload_complete <- "upload_incomplete"
   values$select_pack <- "Select"
-
+  
   # Load Source files of UI and Server modules of Login Screen.
   
   source(file.path("Server", "login_screen.R"), local = TRUE)$value
@@ -111,7 +115,7 @@ server <- function(session, input, output) {
   source(file.path("Server", "uploadpackage.R"), local = TRUE)$value
   
   
-  # Load Source files of UI and Server modules of Report Preview Tab 
+  # Load Source files of UI and Server modules of Report Preview Tab
   
   source(file.path("UI", "reportpreview.R"), local = TRUE)$value
   
@@ -165,7 +169,7 @@ server <- function(session, input, output) {
           "'"
         )
       )
-  })  # End of the observe for reactive table. 
+  })  # End of the observe for reactive table.
   # End of the observe's'
   
   # Observe Event to load the source file of UI module when we click on the Assessment Criteria action Link.
@@ -180,7 +184,4 @@ server <- function(session, input, output) {
 
 shinyApp(ui = ui, server = server)
 
-# End of the app.R file 
-
-
-
+# End of the app.R file

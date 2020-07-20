@@ -1,8 +1,8 @@
 #####################################################################################################################
 # login_screen.R - Login Screen Source file for Server Module.  
-# 
-# Author: Aravind
-# Created: 02/06/2020.
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
 #####################################################################################################################
 
 # Observe Event to show the warning modal pop up window for invalid details to proceed the APP.

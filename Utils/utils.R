@@ -1,4 +1,9 @@
-
+#####################################################################################################################
+# utils.R - UI and Server utility functions for the application.
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
+#####################################################################################################################
 
 db_fun<-function(query){
   con <- dbConnect(RSQLite::SQLite(), "./risk_assessment_app.db")
@@ -10,7 +15,6 @@ db_fun<-function(query){
 
 
 TimeStamp<-function(){
-  #with_tz(Sys.time(), "Asia/Kolkata")
   Timestamp_intial<-str_replace(Sys.time()," ", "; ")
   Timestamp<-paste(Timestamp_intial, Sys.timezone())
   return(Timestamp)

@@ -1,8 +1,8 @@
 #####################################################################################################################
 # dashboard_screen.R - The dashboard page of the app
-#
-# Author: Aravind
-# Created: 02/06/2020.
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
 #####################################################################################################################
 # Start of the dashboard_screen Source file for UI Module.
 
@@ -34,7 +34,7 @@ output$screen <- renderUI({
                      h3("Leave Your Overall Comment:"),
                      width = "100%",
                      rows = 5,
-                     placeholder = paste("current comment:")
+                     placeholder = paste("Current Comment:")
                    ),
                    # Action Button to Submit Overall Comment for selected Package.
                    actionButton("submit_overall_comment", class = "submit_overall_comment_class btn-secondary", "Submit Comment"),

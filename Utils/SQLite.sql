@@ -1,3 +1,10 @@
+/*#####################################################################################################################
+# SQLite.sql - R Package Risk Assessment App SQLite schema.
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
+#####################################################################################################################*/
+
 CREATE TABLE Packageinfo(
    package        CHAR PRIMARY KEY NOT NULL, 
    version        CHAR,

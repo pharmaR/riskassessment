@@ -1,14 +1,14 @@
 #####################################################################################################################
 # assessment_criteria.R - Assessment Criteria server source file.  
-# 
-# Author: Aravind
-# Created: 02/06/2020.
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
 #####################################################################################################################
 
 
 # Start of the render outputs
 
-# 1. Output of the render text to Dispaly the Maintenance Metrics content.
+# 1. Output of the render text to Display the Maintenance Metrics content.
 
 output$maintenance_desc <- renderText({
   desc_maintenance <- read_file("./Data/maintenance.txt")
@@ -76,6 +76,7 @@ output$testing_table <- DT::renderDataTable(
     )
   )
 )  # End of the testing table render Output.
+
 # End of the render Output's'
 
 # Start of the observeEvent's'

@@ -1,15 +1,15 @@
 #####################################################################################################################
 # reportpreview.R - Report Preview Source file for Server Module.
-# 
-# Author: Aravind
-# Created: 02/06/2020.
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
 #####################################################################################################################
 
 #Start of the Render Output's'
 
-# 1. Render Output to dispaly the general information of the selected package.
+# 1. Render Output to display the general information of the selected package.
 output$gen_info <- renderText({
-  res4 <-
+  pkg_GenInfo <-
     db_fun(
       paste0(
         "SELECT * FROM Packageinfo WHERE package ='",
@@ -20,27 +20,27 @@ output$gen_info <- renderText({
   
   paste(
     "<h2><b>Package:</b> ",
-    res4$package,
+    pkg_GenInfo$package,
     "</h2>",
     "<h4><b>Version: </b>",
-    res4$version,
+    pkg_GenInfo$version,
     "</h4>",
     "<h4><b>Title: </b>",
-    res4$title,
+    pkg_GenInfo$title,
     "</h4>",
     "<h4><b>Description:</b>",
-    res4$description,
+    pkg_GenInfo$description,
     "</h4>",
     "<h4><b>Author:</b>",
-    res4$author,
+    pkg_GenInfo$author,
     "</h4>",
     "<h4><b>Maintainer: </b>",
-    res4$maintainer,
+    pkg_GenInfo$maintainer,
     "<h4><b>License: </b>",
-    res4$license,
+    pkg_GenInfo$license,
     "</h4>",
     "<h4><b>Published:</b>",
-    res4$published,
+    pkg_GenInfo$published,
     "</h4>"
   )
 })  # End of the render output for genral information.
@@ -49,9 +49,9 @@ output$gen_info <- renderText({
 
 output$decision_display <- renderText({
   if (!identical(values$selected_pkg$decision, character(0)) && values$selected_pkg$decision != "") {
-    paste("<br>", "<h3>Overall Risk: ", "<b>", values$selected_pkg$decision, "</b></h3>") 
+    paste("<br>", "<h3>Decision: ", "<b>", values$selected_pkg$decision, "</b></h3>") 
   } else{
-    paste("<br>", "<h3>Overall Risk: Pending</h3>")
+    paste("<br>", "<h3>Decision: Pending</h3>")
   }
 })    # End of the render Text Output.
 

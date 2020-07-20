@@ -1,23 +1,22 @@
+#####################################################################################################################
+# com_report.R - Community Usage Metrics Source file for Server Module for Report Preview section.  
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
+#####################################################################################################################
+
+# 1. Observe to load the columns to risk metric table.
+
 observe({
   req(input$select_pack)
   if (input$tabs == "reportPreview_tab_value") {
+    if(input$select_pack != "Select"){
     
-    # Load the columns into values$riskmetrics.
-    pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
-    
-    if (input$select_pack %in% pkgs_in_db$cum_id &&
-        !identical(pkgs_in_db$cum_id, character(0))) {
-      values$riskmetrics_cum <-
-        db_fun(
-          paste0(
-            "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-            input$select_pack,
-            "'"
-          )
-        )
-    } else{
-      if (input$select_pack != "Select") {
-        metric_cum_Info_upload_to_DB(input$select_pack)
+      # Load the columns into values$riskmetrics.
+      pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
+      
+      if (input$select_pack %in% pkgs_in_db$cum_id &&
+          !identical(pkgs_in_db$cum_id, character(0))) {
         values$riskmetrics_cum <-
           db_fun(
             paste0(
@@ -26,31 +25,37 @@ observe({
               "'"
             )
           )
+      } else{
+        if (input$select_pack != "Select") {
+          metric_cum_Info_upload_to_DB(input$select_pack)
+          values$riskmetrics_cum <-
+            db_fun(
+              paste0(
+                "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
+                input$select_pack,
+                "'"
+              )
+            )
+        }
       }
-    }
-    
-    # Load the data table column into reactive variable for time sice first release.
-    values$time_since_first_release_info <-
-      values$riskmetrics_cum$time_since_first_release[1]
-    
-    # Load the data table column into reactive variable for time sice version release.
-    values$time_since_version_release_info <-
-      values$riskmetrics_cum$time_since_version_release[1]
-  }
-})  # End of the observe.
-
-# 2. Observe to disable and enable the submit and comment box when the decision column is empty.
-
-observe({
-  req(input$tabs)
-  runjs( "setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 500);" )
-  if (input$tabs == "reportPreview_tab_value") {
-    req(values$riskmetrics_cum)
+      
+      # Load the data table column into reactive variable for time sice first release.
+      values$time_since_first_release_info <-
+        values$riskmetrics_cum$time_since_first_release[1]
+      
+      # Load the data table column into reactive variable for time sice version release.
+      values$time_since_version_release_info <-
+        values$riskmetrics_cum$time_since_version_release[1]
+      
+      runjs( "setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 100);" )
+      
+      req(values$riskmetrics_cum)
       if(values$time_since_version_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_version_release1');}, 3000);" ) }
       if(values$time_since_first_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_first_release1');}, 3000);" ) }
       if (values$riskmetrics_cum$no_of_downloads_last_year[1] == 0) { runjs("setTimeout(function(){ updateText('no_of_downloads1');}, 3000);") }
+    } 
   }
-}) # End of the Observe.
+})  # End of the observe.
 
 # End of the observe's'
 

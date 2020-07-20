@@ -1,9 +1,9 @@
 #####################################################################################################################
-# maintenance_metrics.R - Maintenance Metrics to show the info box's to show the information and leave multiple comments 
-# for users and display the comments by users.
-# 
-# Author: Aravind
-# Created: 02/06/2020.
+# maintenance_metrics.R - Maintenance Metrics to show the info box's to show the information and multiple comments 
+#                         for users and display the comments by users.
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
 #####################################################################################################################
 
 # Start of the Maintenance_Metrics Source file for UI Module.
@@ -60,7 +60,7 @@ output$maintenance_metrics <- renderUI({
             width = 12,
             align = "left",
             h3(tags$b(paste0('Comments(',nrow(values$comment_mm2),'):'))),
-            htmlOutput("mm_commented")  # html output to show the comments on applicaiton.
+            htmlOutput("mm_commented")  # html output to show the comments on application.
           )
         )
       )
@@ -81,7 +81,7 @@ output$maintenance_metrics <- renderUI({
       )
     }
   }
-  # Show the upload a list of R packages message if application not loaded the pacakges from DB.
+  # Show the upload a list of R packages message if application not loaded the packages from DB.
   
   else{
     fluidRow(

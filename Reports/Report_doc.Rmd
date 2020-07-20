@@ -16,7 +16,7 @@ always_allow_html: yes
 
 setwd(params$cwd)
 
-res4 = db_fun(paste0(
+pkg_GenInfo = db_fun(paste0(
   "SELECT * FROM Packageinfo WHERE package ='",
   params$package,
   "'"
@@ -31,16 +31,26 @@ comment_o <-
     )
   )
 
-  values$riskmetrics_tm <-
+  riskmetrics_mm <-
     db_fun(
       paste0(
-        "SELECT * FROM TestMetrics WHERE TestMetrics.tm_id ='",
-        input$select_pack,
+        "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
+        params$package,
         "'"
       )
     )
-  values$riskmetrics_tm <- c(strsplit(values$riskmetrics_tm$test_coverage,",")[[1]][1], strsplit(values$riskmetrics_tm$test_coverage,",")[[1]][2])
- riskmetrics_cum <-
+   
+  package_has_vignettes <- c(strsplit(riskmetrics_mm$package_has_vignettes,",")[[1]][1], strsplit(riskmetrics_mm$package_has_vignettes,",")[[1]][2])
+  package_has_website <- c(strsplit(riskmetrics_mm$package_has_website,",")[[1]][1], strsplit(riskmetrics_mm$package_has_website,",")[[1]][2])
+  package_has_news <- c(strsplit(riskmetrics_mm$package_has_news,",")[[1]][1], strsplit(riskmetrics_mm$package_has_news,",")[[1]][2])
+  news_is_current <- c(strsplit(riskmetrics_mm$news_is_current,",")[[1]][1], strsplit(riskmetrics_mm$news_is_current,",")[[1]][2])
+  has_bug_reports <- c(strsplit(riskmetrics_mm$has_bug_reports,",")[[1]][1], strsplit(riskmetrics_mm$has_bug_reports,",")[[1]][2])
+  status_of_last_30_reported_bugs <- c(strsplit(riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][1], strsplit(riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][2])
+  exported_objects_with_documentation <- c(strsplit(riskmetrics_mm$exported_objects_with_documentation,",")[[1]][1], strsplit(riskmetrics_mm$exported_objects_with_documentation,",")[[1]][2])
+  source_code_is_public <- c(strsplit(riskmetrics_mm$source_code_is_public,",")[[1]][1], strsplit(riskmetrics_mm$source_code_is_public,",")[[1]][2])
+  has_a_package_maintainer <- c(strsplit(riskmetrics_mm$has_a_package_maintainer,",")[[1]][1], strsplit(riskmetrics_mm$has_a_package_maintainer,",")[[1]][2])
+
+  riskmetrics_cum <-
     db_fun(
       paste0(
         "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
@@ -49,7 +59,7 @@ comment_o <-
       )
     )
  
-   pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
+  pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
   
   if (!(params$package %in% pkgs_in_db$cum_id)) {
     metric_cum_Info_upload_to_DB(params$package)
@@ -58,31 +68,21 @@ comment_o <-
     riskmetrics_cum <- db_fun( paste0("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='", params$package, "'") )
   }
    
-  # Load the data table column into a reactive variable for time since first release.
-  values$time_since_first_release_info <- riskmetrics_cum$time_since_first_release[1] 
-  values$time_since_version_release_info <-riskmetrics_cum$time_since_version_release[1]
-  values$riskmetrics_mm <-
+  time_since_first_release_info <- riskmetrics_cum$time_since_first_release[1] 
+  time_since_version_release_info <-riskmetrics_cum$time_since_version_release[1]
+  
+  riskmetrics_tm <-
     db_fun(
-      paste(
-        "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
-        params$package,
-        "'",
-        sep = ""
+      paste0(
+        "SELECT * FROM TestMetrics WHERE TestMetrics.tm_id ='",
+        input$select_pack,
+        "'"
       )
     )
-   
-  values$package_has_vignettes <- c(strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][2])
-  values$package_has_website <- c(strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][2])
-  values$package_has_news <- c(strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][2])
-  values$news_is_current <- c(strsplit(values$riskmetrics_mm$news_is_current,",")[[1]][1], strsplit(values$riskmetrics_mm$news_is_current,",")[[1]][2])
-  values$has_bug_reports <- c(strsplit(values$riskmetrics_mm$has_bug_reports,",")[[1]][1], strsplit(values$riskmetrics_mm$has_bug_reports,",")[[1]][2])
-  values$status_of_last_30_reported_bugs <- c(strsplit(values$riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][1], strsplit(values$riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][2])
-  values$exported_objects_with_documentation <- c(strsplit(values$riskmetrics_mm$exported_objects_with_documentation,",")[[1]][1], strsplit(values$riskmetrics_mm$exported_objects_with_documentation,",")[[1]][2])
-  values$source_code_is_public <- c(strsplit(values$riskmetrics_mm$source_code_is_public,",")[[1]][1], strsplit(values$riskmetrics_mm$source_code_is_public,",")[[1]][2])
-  values$has_a_package_maintainer <- c(strsplit(values$riskmetrics_mm$has_a_package_maintainer,",")[[1]][1], strsplit(values$riskmetrics_mm$has_a_package_maintainer,",")[[1]][2])
+  riskmetrics_tm <- c(strsplit(riskmetrics_tm$test_coverage,",")[[1]][1], strsplit(riskmetrics_tm$test_coverage,",")[[1]][2])
   
-  
- comment_mm2 <-
+
+   comment_mm <-
       db_fun(
         paste0(
           "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
@@ -90,41 +90,30 @@ comment_o <-
           "' AND comment_type = 'mm'"
         )
       )  
-
-    comment_tm2 <-
-      db_fun(
-        paste(
-          "SELECT user_name, user_role, comment, added_on FROM Comments WHERE comm_id = '",
-          params$package,
-          "' AND comment_type = 'tm'",
-          sep = ""
-        )
-      )
-
-    comment_mm2 <-
+ 
+   comment_cum <-
       db_fun(
         paste0(
           "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
           params$package,
-          "' AND comment_type = 'mm'"
+          "' AND comment_type = 'cum'"
         )
       )
 
-    comment_cum2 <-
+    comment_tm <-
       db_fun(
-        paste(
-          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
+        paste0(
+          "SELECT user_name, user_role, comment, added_on FROM Comments WHERE comm_id = '",
           params$package,
-          "' AND comment_type = 'cum'",
-          sep = ""
+          "' AND comment_type = 'tm'"
         )
       )
 
 ```
 
-## Report of the " `r res4$package` " Package: 
+## Report of the " `r pkg_GenInfo$package` " Package: 
 
-This **`r res4$package`** package report was generated using  **`r input$select_ver`** riskmetric version .  Metrics were reviewed via the R Package Risk Assessment Application.</div>
+This **`r pkg_GenInfo$package`** package report was generated using  **`r input$select_ver`** riskmetric version .  Metrics were reviewed via the R Package Risk Assessment Application.</div>
 
 
 
@@ -154,12 +143,12 @@ p_color <- 'white'
 
 **Summary**
 
-Score: `r values$selected_pkg$score`
+Score: `r pkg_GenInfo$score`
 ```{r echo=FALSE}
- if (!identical(values$selected_pkg$decision, character(0)) && values$selected_pkg$decision != "") {
-    HTML(paste("<br>", "<h5>Overall Risk: ", "<b>", values$selected_pkg$decision, "</b></h5>"))
+ if (!identical(pkg_GenInfo$decision, character(0)) && pkg_GenInfo$decision != "") {
+    HTML(paste("<br>", "<h5>Decision: ", "<b>", pkg_GenInfo$decision, "</b></h5>"))
   } else{
-    HTML(paste("<br>", "<h5><b>Overall Risk: Pending</b></h5>"))
+    HTML(paste("<br>", "<h5><b>Decision: Pending</b></h5>"))
   }
 ```
 
@@ -173,25 +162,27 @@ table_o<-data.frame("User ID"=comment_o$user_name,"Role"= comment_o$user_role, "
 knitr::kable(table_o, format='pandoc')
   
 ```
+\newpage
 
 ## General Info
 
-**Package:** `r res4$package`
+**Package:** `r pkg_GenInfo$package`
 
-**Version:** `r res4$version`
+**Version:** `r pkg_GenInfo$version`
 
-**Title:** `r res4$title`
+**Title:** `r pkg_GenInfo$title`
 
-**Description:** `r res4$description`
+**Description:** `r pkg_GenInfo$description`
 
-**Author:** `r res4$author`
+**Author:** `r pkg_GenInfo$author`
 
-**Maintainer:** `r res4$maintainer`
+**Maintainer:** `r pkg_GenInfo$maintainer`
 
-**License:** `r res4$license`
+**License:** `r pkg_GenInfo$license`
 
-**Published:** `r res4$published`
+**Published:** `r pkg_GenInfo$published`
 
+\newpage
 
 ## Maintenance Metrics
 
@@ -200,45 +191,45 @@ knitr::kable(table_o, format='pandoc')
 Metric<-c("Presence of vignettes?","Associated website URL?","NEWS?","News is current?","Bugs publicly documented?","Bug closure","Documentation","Source code public?","Has a maintainer?")
 
 Result<-c(
-    if(values$package_has_vignettes[2] == -1){"NA"}
-      else{ ifelse(values$package_has_vignettes[1] == 1, "YES", "NO")},
-     if(values$package_has_website[2] == -1){"NA"}
-      else{ ifelse(values$package_has_website[1] == 1, "YES", "NO")},
-     if(values$package_has_news[2] == -1){"NA"}
-      else{ ifelse(values$package_has_news[1] == 1, "YES", "NO")},
-      if(values$news_is_current[2] == -1){"NA"}
-      else{ ifelse(values$news_is_current[1] == 1, "YES", "NO")},
-     if(values$has_bug_reports[2] == -1){"NA"}
-      else{ ifelse(values$has_bug_reports[1] == 1, "YES", "NO")},
-     if(values$status_of_last_30_reported_bugs[2] == -1){"NA"}
-      else{paste0(values$status_of_last_30_reported_bugs[1],"%")},
-     if(values$exported_objects_with_documentation[2] == -1){"NA"}
-      else{paste0(values$exported_objects_with_documentation[1],"%")},
-     if(values$source_code_is_public[2] == -1){"NA"}
-      else{ ifelse(values$source_code_is_public[1] == 1, "YES", "NO")},
-     if(values$has_a_package_maintainer[2] == -1){"NA"}
-      else{ ifelse(values$has_a_package_maintainer[1] == 1, "YES", "NO")}
+    if(package_has_vignettes[2] == -1){"NA"}
+      else{ ifelse(package_has_vignettes[1] == 1, "YES", "NO")},
+     if(package_has_website[2] == -1){"NA"}
+      else{ ifelse(package_has_website[1] == 1, "YES", "NO")},
+     if(package_has_news[2] == -1){"NA"}
+      else{ ifelse(package_has_news[1] == 1, "YES", "NO")},
+      if(news_is_current[2] == -1){"NA"}
+      else{ ifelse(news_is_current[1] == 1, "YES", "NO")},
+     if(has_bug_reports[2] == -1){"NA"}
+      else{ ifelse(has_bug_reports[1] == 1, "YES", "NO")},
+     if(status_of_last_30_reported_bugs[2] == -1){"NA"}
+      else{paste0(status_of_last_30_reported_bugs[1],"%")},
+     if(exported_objects_with_documentation[2] == -1){"NA"}
+      else{paste0(exported_objects_with_documentation[1],"%")},
+     if(source_code_is_public[2] == -1){"NA"}
+      else{ ifelse(source_code_is_public[1] == 1, "YES", "NO")},
+     if(has_a_package_maintainer[2] == -1){"NA"}
+      else{ ifelse(has_a_package_maintainer[1] == 1, "YES", "NO")}
     )
 
 Detail<-c(
-          if(values$package_has_vignettes[2] == -1){"Metric is not applicable for this source of package"}
-            else{paste("The package has", values$package_has_vignettes[2], "Vignettes")},
-          if(values$package_has_website[2] == -1){"Metric is not applicable for this source of package"}
-            else{ ifelse(values$package_has_website[1] == 1, paste("Website:",values$package_has_website[2]), "The package does not have an associated website URL")},
-          if(values$package_has_news[2] == -1){"Metric is not applicable for this source of package"}
-            else{ ifelse(values$package_has_news[1] == 1, "The package has a NEWS file.", "The package does not have a NEWS file")},
-          if(values$news_is_current[2] == -1){"Metric is not applicable for this source of package"}
-            else{ ifelse(values$news_is_current[1] == 1, "NEWS file contains entry for current version number", "NEWS file does not contains entry for current version number")},
-          if(values$has_bug_reports[2] == -1){"Metric is not applicable for this source of package"}
-            else{ ifelse(values$has_bug_reports[1] == 1, paste("Bug reports URL:", values$has_bug_reports[2]), "The Bugs are not publicly documented")},
-          if(values$status_of_last_30_reported_bugs[2] == -1){"Metric is not applicable for this source of package"}
+          if(package_has_vignettes[2] == -1){"Metric is not applicable for this source of package"}
+            else{paste("The package has", package_has_vignettes[2], "Vignettes")},
+          if(package_has_website[2] == -1){"Metric is not applicable for this source of package"}
+            else{ ifelse(package_has_website[1] == 1, paste("Website:",package_has_website[2]), "The package does not have an associated website URL")},
+          if(package_has_news[2] == -1){"Metric is not applicable for this source of package"}
+            else{ ifelse(package_has_news[1] == 1, "The package has a NEWS file.", "The package does not have a NEWS file")},
+          if(news_is_current[2] == -1){"Metric is not applicable for this source of package"}
+            else{ ifelse(news_is_current[1] == 1, "NEWS file contains entry for current version number", "NEWS file does not contains entry for current version number")},
+          if(has_bug_reports[2] == -1){"Metric is not applicable for this source of package"}
+            else{ ifelse(has_bug_reports[1] == 1, paste("Bug reports URL:", has_bug_reports[2]), "The Bugs are not publicly documented")},
+          if(status_of_last_30_reported_bugs[2] == -1){"Metric is not applicable for this source of package"}
             else{"Percentage of last 30 bugs closed"},
-          if(values$exported_objects_with_documentation[2] == -1){"Metric is not applicable for this source of package"}
+          if(exported_objects_with_documentation[2] == -1){"Metric is not applicable for this source of package"}
             else{"Proportion of exported objects documented"},
-          if(values$source_code_is_public[2] == -1){"Metric is not applicable for this soucre of package"}
-            else{ ifelse(values$source_code_is_public[1] == 1, paste("Source code URL:", values$source_code_is_public[2]), "Package does not have a Source code URL")},
-          if(values$has_a_package_maintainer[2] == -1){"Metric is not applicable for this soucre of package"}
-              else{ ifelse(values$has_a_package_maintainer[1] == 1, values$has_a_package_maintainer[2], "Package does not have a Maintainer")}
+          if(source_code_is_public[2] == -1){"Metric is not applicable for this soucre of package"}
+            else{ ifelse(source_code_is_public[1] == 1, paste("Source code URL:", source_code_is_public[2]), "Package does not have a Source code URL")},
+          if(has_a_package_maintainer[2] == -1){"Metric is not applicable for this soucre of package"}
+              else{ ifelse(has_a_package_maintainer[1] == 1, has_a_package_maintainer[2], "Package does not have a Maintainer")}
 )
 table_infobox<-data.frame(Metric,Result,Detail)
 
@@ -246,16 +237,17 @@ knitr::kable(table_infobox, format='pandoc')
 
 ```
 
-### Comments for Maintenance Metrics(`r nrow(comment_mm2)`):
+### Comments for Maintenance Metrics(`r nrow(comment_mm)`):
 
 ```{r echo=FALSE}
-comment_mm2 <- data.frame(comment_mm2 %>% map(rev))
+comment_mm <- data.frame(comment_mm %>% map(rev))
     
-table_mm<-data.frame("User ID"=comment_mm2$user_name,"Role"= comment_mm2$user_role, "Time"= comment_mm2$added_on,"Comments"=comment_mm2$comment)
+table_mm<-data.frame("User ID"=comment_mm$user_name,"Role"= comment_mm$user_role, "Time"= comment_mm$added_on,"Comments"=comment_mm$comment)
   knitr::kable(table_mm, format='pandoc')
 
 ```
 
+\newpage
 
 ## Community Usage Metrics
 
@@ -264,16 +256,16 @@ table_mm<-data.frame("User ID"=comment_mm2$user_name,"Role"= comment_mm2$user_ro
 Metric<-c("Package Maturity","Version Maturity")
 
 Result<-c(
-     if(values$time_since_first_release_info == -1){"NA"}
-      else{values$time_since_first_release_info},
-     if(values$time_since_version_release_info == -1){"NA"}
-      else{values$time_since_version_release_info}
+     if(time_since_first_release_info == -1){"NA"}
+      else{time_since_first_release_info},
+     if(time_since_version_release_info == -1){"NA"}
+      else{time_since_version_release_info}
 )
 
 Detail<-c(
-     if(values$time_since_first_release_info == -1){"Metric is not applicable for this source of package"}
+     if(time_since_first_release_info == -1){"Metric is not applicable for this source of package"}
        else{"Months since first release."},
-     if(values$time_since_version_release_info == -1){"Metric is not applicable for this source of package"}
+     if(time_since_version_release_info == -1){"Metric is not applicable for this source of package"}
        else{"Months since version release."}
 )
 
@@ -394,16 +386,17 @@ hc
 
 ```
 
-### Comments for Community Usage Metrics(`r nrow(comment_cum2)`):
+### Comments for Community Usage Metrics(`r nrow(comment_cum)`):
 
 ```{r echo=FALSE}
-comment_cum2 <- data.frame(comment_cum2 %>% map(rev))
+comment_cum <- data.frame(comment_cum %>% map(rev))
   
-table_cum<-data.frame("User ID"=comment_cum2$user_name,"Role"= comment_cum2$user_role, "Time"= comment_cum2$added_on,"Comments"=comment_cum2$comment)
+table_cum<-data.frame("User ID"=comment_cum$user_name,"Role"= comment_cum$user_role, "Time"= comment_cum$added_on,"Comments"=comment_cum$comment)
   knitr::kable(table_cum, format='pandoc')
   
 ```
 
+\newpage
 
 ## Testing Metrics
 
@@ -412,17 +405,17 @@ table_cum<-data.frame("User ID"=comment_cum2$user_name,"Role"= comment_cum2$user
   bands = data.frame(
     start = c(0, 40, 80),
     end = c(40, 80, 100),
-    color = ifelse(values$riskmetrics_tm[2] != -1, c("#ea3838", "#ffac29", "#00CC00"), c("#808080", "#808080", "#808080")),
+    color = ifelse(riskmetrics_tm[2] != -1, c("#ea3838", "#ffac29", "#00CC00"), c("#808080", "#808080", "#808080")),
     stringsAsFactors = FALSE
   )
   bands2 = data.frame(
     start = c(0, 40, 80),
     end = c(40, 80, 100),
-    color = ifelse(values$riskmetrics_tm[2] != -1, c("#ea3838", "#ffac29", "#00CC00"), c("#808080", "#808080", "#808080")),
+    color = ifelse(riskmetrics_tm[2] != -1, c("#ea3838", "#ffac29", "#00CC00"), c("#808080", "#808080", "#808080")),
     stringsAsFactors = FALSE
   )
   amAngularGauge(
-    x = as.numeric(values$riskmetrics_tm[1]),
+    x = as.numeric(riskmetrics_tm[1]),
     start = 0,
     end = 100,
     bands = bands,
@@ -434,13 +427,13 @@ table_cum<-data.frame("User ID"=comment_cum2$user_name,"Role"= comment_cum2$user
 ```
 
 
-### Comments for Testing Metrics(`r nrow(comment_tm2)`):
+### Comments for Testing Metrics(`r nrow(comment_tm)`):
 
 
 ```{r echo=FALSE}
-    comment_tm2 <- data.frame(comment_tm2 %>% map(rev))
+    comment_tm <- data.frame(comment_tm %>% map(rev))
     
-table_tm<-data.frame("User ID"=comment_tm2$user_name,"Role"= comment_tm2$user_role, "Time"= comment_tm2$added_on,"Comments"=comment_tm2$comment)
+table_tm<-data.frame("User ID"=comment_tm$user_name,"Role"= comment_tm$user_role, "Time"= comment_tm$added_on,"Comments"=comment_tm$comment)
   knitr::kable(table_tm, format='pandoc')
 
 

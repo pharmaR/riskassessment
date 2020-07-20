@@ -1,10 +1,10 @@
 #####################################################################################################################
-# communityusage_metrics.R - Display the usage metrics information using info box's' and highchart graph to display 
-# the number of Downloads along with text area input comment box for multiple comments and display the comments 
-# of users on application.   
-# 
-# Author: Aravind
-# Created: 02/06/2020.
+# communityusage_metrics.R - Display the community usage metrics information using info box's' and highchart graph 
+#                            to display the number of Downloads along with text area input comment box for multiple 
+#                            comments and display the comments of users on application.   
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
 #####################################################################################################################
 
 # Start of the Community Usage Metrics Source file for UI Module.
@@ -22,7 +22,7 @@ output$community_usage_metrics <- renderUI({
         fluidRow(
           class = "c_u_m_row_1",
           infoBoxOutput("time_since_first_release", width = 5),  # Info box to show the time since First release.
-          infoBoxOutput("time_since_version_release", width = 5)  # Infor box to show the time since versoin release.
+          infoBoxOutput("time_since_version_release", width = 5)  # Info box to show the time since version release.
         ),
         fluidRow(
           class = "c_u_m_row_graph",

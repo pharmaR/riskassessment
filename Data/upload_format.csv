@@ -1,4 +1,4 @@
 package,version
-dplyr,1.2
-shiny,3.1
-DT,2.3
+dplyr,1.0.0
+shiny,1.5.0
+DT,0.14

@@ -1,9 +1,8 @@
 #####################################################################################################################
-# assessment_criteria.R - Display the modal pop up window with Maintenance Metrics,Community Usage Metrics and Testing Metrics  
-# infomation with tables.
-# 
-# Author: Aravind
-# Created: 02/06/2020.
+# assessment_criteria.R - Display the modal pop up window with Maintenance, Community Usage and Testing Metrics info  
+# Author: K Aravind Reddy
+# Date: July 13th, 2020
+# License: MIT License
 #####################################################################################################################
 
 # Start of the Assessment Criteria Source file for UI Module.
@@ -21,7 +20,7 @@ showModal(tags$div(id = "assessment_criteria_id", modalDialog(
       value = "tab_1",
       tags$b("Maintenance Metrics", class = "txt-color"),
       h3("Description"),
-      htmlOutput("maintenance_desc"),  # html output for maintenacne metrics content.  
+      htmlOutput("maintenance_desc"),  # html output for maintenance metrics content.  
       br(),
       dataTableOutput("maintenance_table")  # data table for maintenance metrics. 
     ),
