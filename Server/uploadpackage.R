@@ -175,10 +175,10 @@ output$total_new_undis_dup_table <- DT::renderDataTable(
 values$cwd<-getwd()
 output$dwnld_all_reports_btn <- downloadHandler(
   filename = function() {
+    # "output.zip"
     paste0(input$upload_summary_select, "_",
            stringr::str_remove(input$uploaded_file$name, ".csv"),
            ".zip")
-    # paste0(input$select_pack,"_",input$select_ver,"_Risk_Assessment.", switch(input$all_reports_format, "docx" = "docx", "html" = "html"))
   },
   content = function(file) {
     n_pkgs <- nrow(values$Total_New_Undis_Dup)
@@ -197,7 +197,7 @@ output$dwnld_all_reports_btn <- downloadHandler(
           file.copy("Reports/Report_doc.Rmd", Report, overwrite = TRUE)
         }
         fs <- c()
-        for (i in n_pkgs) {
+        for (i in 1:n_pkgs) {
           this_pkg <- values$Total_New_Undis_Dup$package[i]
           this_ver <- values$Total_New_Undis_Dup$version[i]
           path <- paste0(this_pkg,"_",this_ver,"_Risk_Assessment.",
@@ -209,6 +209,8 @@ output$dwnld_all_reports_btn <- downloadHandler(
           )
           fs <- c(fs, path)
         }
+        cat(paste("\nfile:",file))
+        cat(paste("\nfs:",fs))
         zip(file, fs)
       })
   },
