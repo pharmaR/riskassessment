@@ -186,7 +186,7 @@ observeEvent(input$upload_format, {
         )
       )
     ),
-    downloadButton("upload_format_download", "Download", class = "downloaddataset_class btn-secondary")
+    downloadButton("upload_format_download", "Download", class = "btn-secondary")
   ))
 })  # End of the observe event for sample button.
 
