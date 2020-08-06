@@ -40,12 +40,14 @@ observe({
     shinyjs::hide("upload_summary_text")
     shinyjs::hide("upload_summary_select")
     shinyjs::hide("total_new_undis_dup_table")
+    shinyjs::hide("dwnld_all_reports_btn")
     reset("uploaded_file") 
     return()
   } else{
     shinyjs::show("upload_summary_text")
     shinyjs::show("upload_summary_select")
     shinyjs::show("total_new_undis_dup_table")
+    shinyjs::show("dwnld_all_reports_btn")
   }
   file_to_read <- input$uploaded_file
   pkgs_file <-
@@ -161,8 +163,39 @@ output$total_new_undis_dup_table <- DT::renderDataTable(
     )
   }
 )  # End of the render Output 
-
 # End of the Render Output's'.
+
+
+# 5. Render Output for download handler to export the report for each .
+# values$cwd<-getwd()
+# output$dwnld_all_reports_btn <- downloadHandler(
+#   filename = function() {
+#     paste0(input$select_pack,"_",input$select_ver,"_Risk_Assessment.", switch(input$report_format, "docx" = "docx", "html" = "html"))
+#   },
+#   content = function(file) {
+#     shiny::withProgress(message = paste0("Downloading ", input$dataset, " Report"),
+#                         value = 0,
+#                         {
+#                           shiny::incProgress(1 / 10)
+#                           shiny::incProgress(5 / 10)
+#                           if (input$report_format == "html") {
+#                             Report <- file.path(tempdir(), "Report_html.Rmd")
+#                             file.copy("Reports/Report_html.Rmd", Report, overwrite = TRUE)
+#                           } else {
+#                             Report <- file.path(tempdir(), "Report_doc.Rmd")
+#                             file.copy("Reports/Report_doc.Rmd", Report, overwrite = TRUE)
+#                           }
+#                           
+#                           rmarkdown::render(
+#                             Report,
+#                             output_file = file,
+#                             params = list(package = values$selected_pkg$package, cwd = values$cwd)
+#                           )
+#                         })
+#   }
+# )  # End of the render Output for download report.
+
+
 
 # Observe Event for view sample dataset button.
 

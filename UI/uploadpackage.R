@@ -38,8 +38,16 @@ output$upload_package<-renderUI({
     )
   ), 
   htmlOutput("upload_summary_text"),  # Display the summary information of the uploaded csv.
-  tags$div(class = "row col-sm-12 mb-4 u_p_dropdown_row",
-           uiOutput("upload_summary_select")), 
+  div(
+    class = "row col-sm-12 mb-4 u_p_dropdown_row",
+    uiOutput("upload_summary_select")
+  ),
+  div(
+    shinyjs::hidden(
+      downloadButton("dwnld_all_reports_btn", "Download All Reports",
+                   class = "download_report_btn_class btn-secondary")
+    )
+  ),
   column(
     width = 7,
     class = "mb-4 w-80",
