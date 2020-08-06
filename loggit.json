@@ -21,3 +21,12 @@
 {"timestamp": "2020-08-06T12:13:03-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 1 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 1"}
 {"timestamp": "2020-08-06T12:14:48-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 1 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 1"}
 {"timestamp": "2020-08-06T12:25:00-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 1 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 1"}
+{"timestamp": "2020-08-06T12:27:16-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 1 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 1"}
+{"timestamp": "2020-08-06T13:39:00-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 1 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 1"}
+{"timestamp": "2020-08-06T13:43:43-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 1 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 1"}
+{"timestamp": "2020-08-06T13:48:27-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 2 New Packages: 1 Undiscovered Packages: 0 Duplicate Packages: 1"}
+{"timestamp": "2020-08-06T13:55:17-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 2 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 2"}
+{"timestamp": "2020-08-06T13:56:11-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 2 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 2"}
+{"timestamp": "2020-08-06T14:05:24-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 2 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 2"}
+{"timestamp": "2020-08-06T14:06:54-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 2 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 2"}
+{"timestamp": "2020-08-06T14:07:55-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 2 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 2"}

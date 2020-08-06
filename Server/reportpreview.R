@@ -109,7 +109,9 @@ output$download_report_btn <- downloadHandler(
                           rmarkdown::render(
                             Report,
                             output_file = file,
-                            params = list(package = values$selected_pkg$package, cwd = values$cwd)
+                            params = list(package = values$selected_pkg$package,
+                                          version = values$selected_pkg$version,
+                                          cwd = values$cwd)
                           )
                         })
   }

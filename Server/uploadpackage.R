@@ -41,6 +41,7 @@ observe({
     shinyjs::hide("upload_summary_select")
     shinyjs::hide("total_new_undis_dup_table")
     shinyjs::hide("dwnld_all_reports_btn")
+    shinyjs::hide("all_reports_format")
     reset("uploaded_file") 
     return()
   } else{
@@ -48,6 +49,7 @@ observe({
     shinyjs::show("upload_summary_select")
     shinyjs::show("total_new_undis_dup_table")
     shinyjs::show("dwnld_all_reports_btn")
+    shinyjs::show("all_reports_format")
   }
   file_to_read <- input$uploaded_file
   pkgs_file <-
@@ -167,33 +169,51 @@ output$total_new_undis_dup_table <- DT::renderDataTable(
 
 
 # 5. Render Output for download handler to export the report for each .
-# values$cwd<-getwd()
-# output$dwnld_all_reports_btn <- downloadHandler(
-#   filename = function() {
-#     paste0(input$select_pack,"_",input$select_ver,"_Risk_Assessment.", switch(input$report_format, "docx" = "docx", "html" = "html"))
-#   },
-#   content = function(file) {
-#     shiny::withProgress(message = paste0("Downloading ", input$dataset, " Report"),
-#                         value = 0,
-#                         {
-#                           shiny::incProgress(1 / 10)
-#                           shiny::incProgress(5 / 10)
-#                           if (input$report_format == "html") {
-#                             Report <- file.path(tempdir(), "Report_html.Rmd")
-#                             file.copy("Reports/Report_html.Rmd", Report, overwrite = TRUE)
-#                           } else {
-#                             Report <- file.path(tempdir(), "Report_doc.Rmd")
-#                             file.copy("Reports/Report_doc.Rmd", Report, overwrite = TRUE)
-#                           }
-#                           
-#                           rmarkdown::render(
-#                             Report,
-#                             output_file = file,
-#                             params = list(package = values$selected_pkg$package, cwd = values$cwd)
-#                           )
-#                         })
-#   }
-# )  # End of the render Output for download report.
+# Data displayed: values$Total_New_Undis_Dup
+# file name uplaoded: input$uploaded_file$name
+# selected type: input$upload_summary_select
+values$cwd<-getwd()
+output$dwnld_all_reports_btn <- downloadHandler(
+  filename = function() {
+    paste0(input$upload_summary_select, "_",
+           stringr::str_remove(input$uploaded_file$name, ".csv"),
+           ".zip")
+    # paste0(input$select_pack,"_",input$select_ver,"_Risk_Assessment.", switch(input$all_reports_format, "docx" = "docx", "html" = "html"))
+  },
+  content = function(file) {
+    n_pkgs <- nrow(values$Total_New_Undis_Dup)
+    req(n_pkgs > 0)
+    shiny::withProgress(
+      message = paste0("Downloading ",n_pkgs," Report",ifelse(n_pkgs > 1,"s","")),
+      value = 0,
+      {
+        shiny::incProgress(1 / 10)
+        shiny::incProgress(5 / 10)
+        if (input$all_reports_format == "html") {
+          Report <- file.path(tempdir(), "Report_html.Rmd")
+          file.copy("Reports/Report_html.Rmd", Report, overwrite = TRUE)
+        } else {
+          Report <- file.path(tempdir(), "Report_doc.Rmd")
+          file.copy("Reports/Report_doc.Rmd", Report, overwrite = TRUE)
+        }
+        fs <- c()
+        for (i in n_pkgs) {
+          this_pkg <- values$Total_New_Undis_Dup$package[i]
+          this_ver <- values$Total_New_Undis_Dup$version[i]
+          path <- paste0(this_pkg,"_",this_ver,"_Risk_Assessment.",
+                         input$all_reports_format)
+          rmarkdown::render(
+            Report,
+            output_file = path,
+            params = list(package = this_pkg, version = this_ver, cwd = values$cwd)
+          )
+          fs <- c(fs, path)
+        }
+        zip(file, fs)
+      })
+  },
+  contentType = "application/zip"
+)  # End of the render Output for download report.
 
 
 

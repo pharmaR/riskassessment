@@ -75,7 +75,7 @@ comment_o <-
     db_fun(
       paste0(
         "SELECT * FROM TestMetrics WHERE TestMetrics.tm_id ='",
-        input$select_pack,
+        params$package,
         "'"
       )
     )
