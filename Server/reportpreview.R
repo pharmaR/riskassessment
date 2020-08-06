@@ -14,7 +14,7 @@ output$gen_info <- renderText({
       paste0(
         "SELECT * FROM Packageinfo WHERE package ='",
         input$select_pack,
-        "'"
+        "' AND version = '",input$select_ver,"'"
       )
     )
   
@@ -89,9 +89,8 @@ output$overall_comments <- renderText({
 # 4. Render Output for download handler to export the report.
 values$cwd<-getwd()
 output$download_report_btn <- downloadHandler(
-
   filename = function() {
-    paste0("Report.", switch(input$report_format, "docx" = "docx", "html" = "html"))
+    paste0(input$select_pack,"_",input$select_ver,"_Risk_Assessment.", switch(input$report_format, "docx" = "docx", "html" = "html"))
   },
   content = function(file) {
     shiny::withProgress(message = paste0("Downloading ", input$dataset, " Report"),

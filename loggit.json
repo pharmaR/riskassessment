@@ -1,1 +1,6 @@
 /* Logs File */
+{"timestamp": "2020-08-06T08:58:58-0400", "log_lvl": "ERROR", "log_msg": "Error in extracting cum metric info of the package: samplesizeCMH info Error in if (pkg_vers_date_final$Month[i] == pkg_vers_date$Date[j]) __LEFTBRACE__: missing value where TRUE/FALSE needed__LF__", "app": "fileupload-webscraping"}
+{"timestamp": "2020-08-06T08:58:59-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 1 New Packages: 1 Undiscovered Packages: 0 Duplicate Packages: 0"}
+{"timestamp": "2020-08-06T09:02:58-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 1 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 1"}
+{"timestamp": "2020-08-06T09:06:57-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 1 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 1"}
+{"timestamp": "2020-08-06T09:31:30-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 1 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 1"}
