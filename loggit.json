@@ -1,1 +1,5 @@
 /* Logs File */
+{"timestamp": "2020-08-10T06:49:32-0700", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: Upload_file_structure.csv Total Packages: 3 New Packages: 3 Undiscovered Packages: 0 Duplicate Packages: 0"}
+{"timestamp": "2020-08-10T11:11:05-0700", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: Upload_file_structure.csv Total Packages: 3 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 3"}
+{"timestamp": "2020-08-10T12:52:15-0700", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: Upload_file_structure.csv Total Packages: 3 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 3"}
+{"timestamp": "2020-08-10T13:33:26-0700", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: Upload_file_structure.csv Total Packages: 3 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 3"}
