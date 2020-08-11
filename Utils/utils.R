@@ -7,10 +7,12 @@
 
 db_fun<-function(query){
   con <- dbConnect(RSQLite::SQLite(), "./risk_assessment_app.db")
-  res <- dbSendQuery(con, query)
-  res <- dbFetch(res)
+  dat <- dbGetQuery(con,query)  # this does SendQuery, Fetch and ClearResult all in one
+  # res <- dbSendQuery(con, query)
+  # dat <- dbFetch(res)
+  # dbClearResult(res)          # Warning messages due to missing ClearResult()
   dbDisconnect(con)
-  return(res)
+  return(dat)
 }
 
 
