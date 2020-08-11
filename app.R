@@ -145,6 +145,17 @@ server <- function(session, input, output) {
   
   source(file.path("Server", "testing_metrics.R"), local = TRUE)$value
   
+  # Create db if it doesnt exist.
+  create_db_exp <- reactive({
+    if(!file.exists(db_name))
+      create_db()
+  })
+  
+  # Run the db creation just once (the used reactive wont change).
+  observeEvent(create_db_exp, {
+    print("it entered here")
+    create_db_exp()
+  })
   
   # Start of the observe's'
   # 1. Observe to Load Source files of UI module of slected screen (Dashboard or Login Screen).
