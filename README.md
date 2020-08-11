@@ -18,7 +18,6 @@ The App is portable without code modifications and can be pulled from GitHub and
 8. www
 9. app.R
 10. loggit.json
-11. risk_assessment_app.db
 
 ### After Installation
 -Open app.R file with RStudio<br>
