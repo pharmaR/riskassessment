@@ -6,7 +6,7 @@
 #####################################################################################################################
 
 # Stores the database name.
-db_name <- "database.db"
+db_name <- "database.sqlite"
 
 # Create a local database.
 create_db <- function(){
