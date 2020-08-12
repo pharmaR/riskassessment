@@ -27,8 +27,8 @@ comment_o <-
   db_fun(
     paste0(
       "SELECT * FROM Comments WHERE comm_id = '",
-      params$package,"'",
-      " AND comment_type = 'o'"
+      params$package,
+      "' AND comment_type = 'o'"
     )
   )
 
@@ -36,7 +36,8 @@ comment_o <-
     db_fun(
       paste0(
         "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
-        params$package,"'"
+        params$package,
+        "'"
       )
     )
    
@@ -54,7 +55,8 @@ comment_o <-
     db_fun(
       paste0(
         "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-        params$package,"'"
+        params$package,
+        "'"
       )
     )
  
