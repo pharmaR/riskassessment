@@ -166,6 +166,7 @@ server <- function(session, input, output) {
         paste0(
           "SELECT package, score, decision FROM Packageinfo WHERE package = '",
           input$select_pack,
+          "'"
         )
       )
   })  # End of the observe for reactive table.

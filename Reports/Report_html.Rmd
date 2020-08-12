@@ -19,8 +19,8 @@ setwd(params$cwd)
 
 pkg_GenInfo = db_fun(paste0(
   "SELECT * FROM Packageinfo WHERE package ='",
-  params$package,"'"
-  # ," AND version = '",params$version,"'"
+  params$package,
+  "'"
 ))
 
 comment_o <-
