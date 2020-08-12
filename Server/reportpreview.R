@@ -13,8 +13,7 @@ output$gen_info <- renderText({
     db_fun(
       paste0(
         "SELECT * FROM Packageinfo WHERE package ='",
-        input$select_pack,
-        "' AND version = '",input$select_ver,"'"
+        input$select_pack,"'"
       )
     )
   

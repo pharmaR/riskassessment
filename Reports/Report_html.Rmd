@@ -19,15 +19,15 @@ setwd(params$cwd)
 
 pkg_GenInfo = db_fun(paste0(
   "SELECT * FROM Packageinfo WHERE package ='",
-  params$package,"'",
-  " AND version = '",params$version,"'"
+  params$package,"'"
+  # ," AND version = '",params$version,"'"
 ))
 
 comment_o <-
   db_fun(
     paste0(
       "SELECT * FROM Comments WHERE comm_id = '",
-      params$package,"'", # ac: specify version in this table?
+      params$package,"'",
       " AND comment_type = 'o'"
     )
   )
@@ -36,7 +36,7 @@ comment_o <-
     db_fun(
       paste0(
         "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
-        params$package,"'" # ac: specify version in this table?
+        params$package,"'"
       )
     )
    
@@ -54,7 +54,7 @@ comment_o <-
     db_fun(
       paste0(
         "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-        params$package,"'" # ac: specify version in this table?
+        params$package,"'"
       )
     )
  
@@ -62,9 +62,9 @@ comment_o <-
   
   if (!(params$package %in% pkgs_in_db$cum_id)) {
     metric_cum_Info_upload_to_DB(params$package)
-    riskmetrics_cum <- db_fun( paste0("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='", params$package, "'") ) # ac: specify version in this table?
+    riskmetrics_cum <- db_fun( paste0("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='", params$package, "'") )
   } else{
-    riskmetrics_cum <- db_fun( paste0("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='", params$package, "'") ) # ac: specify version in this table?
+    riskmetrics_cum <- db_fun( paste0("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='", params$package, "'") )
   }
    
   time_since_first_release_info <- riskmetrics_cum$time_since_first_release[1] 
@@ -74,7 +74,7 @@ comment_o <-
     db_fun(
       paste0(
         "SELECT * FROM TestMetrics WHERE TestMetrics.tm_id ='",
-        params$package, # ac: specify version in this table?
+        params$package,
         "'"
       )
     )

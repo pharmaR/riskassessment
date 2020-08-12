@@ -50,3 +50,4 @@
 {"timestamp": "2020-08-06T16:01:22-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 2 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 2"}
 {"timestamp": "2020-08-06T16:11:13-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 2 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 2"}
 {"timestamp": "2020-08-06T16:16:03-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 2 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 2"}
+{"timestamp": "2020-08-12T09:00:13-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: test_risk_of_packages.csv Total Packages: 2 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 2"}
