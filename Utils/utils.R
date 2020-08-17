@@ -5,24 +5,6 @@
 # License: MIT License
 #####################################################################################################################
 
-db_fun<-function(query){
-  con <- dbConnect(RSQLite::SQLite(), "./risk_assessment_app.db")
-  dat <- dbGetQuery(con,query)  # this does SendQuery, Fetch and ClearResult all in one
-  # res <- dbSendQuery(con, query)
-  # dat <- dbFetch(res)
-  # dbClearResult(res)          # Warning messages due to missing ClearResult()
-  dbDisconnect(con)
-  return(dat)
-}
-
-# You need to use dbExecute() to perform delete, update or insert queries.
-db_ins<-function(query){
-  con <- dbConnect(RSQLite::SQLite(), "./risk_assessment_app.db")
-  dbExecute(con, query)
-  dbDisconnect(con)
-}
-
-
 # Stores the database name.
 db_name <- "database.sqlite"
 
@@ -58,6 +40,21 @@ create_db <- function(){
   
   dbDisconnect(con)
 }
+
+db_fun <- function(query){
+  con <- dbConnect(RSQLite::SQLite(), db_name)
+  dat <- dbGetQuery(con,query)  # this does SendQuery, Fetch and ClearResult all in one
+  dbDisconnect(con)
+  return(dat)
+}
+
+# You need to use dbExecute() to perform delete, update or insert queries.
+db_ins<-function(query){
+  con <- dbConnect(RSQLite::SQLite(), "./risk_assessment_app.db")
+  dbExecute(con, query)
+  dbDisconnect(con)
+}
+
 
 TimeStamp<-function(){
   Timestamp_intial<-str_replace(Sys.time()," ", "; ")
