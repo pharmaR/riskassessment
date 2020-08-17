@@ -23,6 +23,42 @@ db_ins<-function(query){
 }
 
 
+# Stores the database name.
+db_name <- "database.sqlite"
+
+# Create a local database.
+create_db <- function(){
+  
+  # Create an empty database.
+  con <- dbConnect(RSQLite::SQLite(), db_name)
+  
+  # Set the path to the queries.
+  path <- file.path("Utils", "sql_queries")
+  
+  # Queries needed to run the first time the db is created.
+  queries <- c(
+    "create_Packageinfo_table.sql",
+    "create_MaintenanceMetrics_table.sql",
+    "create_CommunityUsageMetrics_table.sql",
+    "create_TestMetrics_table.sql",
+    "create_Comments_table.sql"
+  )
+  
+  # Append path to the queries.
+  queries <- file.path(path, queries)
+  
+  # Apply each query.
+  sapply(queries, function(x){
+    res <- dbSendStatement(
+      con,
+      paste(scan(x, sep = "\n", what = "character"), collapse = ""))
+    
+    dbClearResult(res)
+  })
+  
+  dbDisconnect(con)
+}
+
 TimeStamp<-function(){
   Timestamp_intial<-str_replace(Sys.time()," ", "; ")
   Timestamp<-paste(Timestamp_intial, Sys.timezone())
