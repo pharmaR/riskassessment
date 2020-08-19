@@ -6,13 +6,25 @@
 #####################################################################################################################
 
 # Stores the database name.
-db_name <- "database.sqlite"
+# db_name <- "database.sql"
+# 2. Settings
+db_name <- "mydatabase"
+db_user <- Sys.getenv("USERNAME")
+db_password <- "mysqlpassword"
+
+db_password <- NULL
+db_host <- '127.0.0.1' # for local access
+db_port <- 3306
 
 # Create a local database.
 create_db <- function(){
   
   # Create an empty database.
-  con <- dbConnect(RSQLite::SQLite(), db_name)
+  # con <- dbConnect(RMySQL::MySQL(), db_name)
+
+  # 3. Read data from db
+  con <-  dbConnect(RMySQL::MySQL(), user = db_user, password = db_password,
+                    dbname = db_name, host = db_host, port = db_port)
   
   # Set the path to the queries.
   path <- file.path("Utils", "sql_queries")
@@ -42,12 +54,19 @@ create_db <- function(){
 }
 
 db_fun <- function(query){
-  con <- dbConnect(RSQLite::SQLite(), db_name)
-  res <- dbSendQuery(con, query)
-  res <- dbFetch(res)
+  con <-  dbConnect(RMySQL::MySQL(), user = db_user, password = db_password,
+                    dbname = db_name, host = db_host, port = db_port)
+  dat <- dbGetQuery(con,query)  # this does SendQuery, Fetch and ClearResult all in one
   dbDisconnect(con)
-  
-  return(res)
+  return(dat)
+}
+
+# You need to use dbExecute() to perform delete, update or insert queries.
+db_ins<-function(query){
+  con <-  dbConnect(RMySQL::MySQL(), user = db_user, password = db_password,
+                    dbname = db_name, host = db_host, port = db_port)
+  dbExecute(con, query)
+  dbDisconnect(con)
 }
 
 
