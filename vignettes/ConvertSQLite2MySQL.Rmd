@@ -86,8 +86,6 @@ create_db <- function(){
   
   alltables = dbListTables(con)
   
-  observe(print(paste("alltables:",paste(alltables,collapse=", "))))
-  
   # create tables if there aren't any yet
   if (is_empty(alltables)) {
     
@@ -110,6 +108,22 @@ Now change the code for the `db_fun()` and `db_ins()` functions like this:
                     dbname = db_name, host = db_host, port = db_port)
 ```
 
+One more change.  Again in Utils.R  The Timestamp created is completely non-standard.<br>
+At least using Sys.time() resembles the CURRENT_TIMESTAMP provided in MySQL.
+```{r, eval=FALSE}
+TimeStamp<-function(){
+  # Timestamp_intial<-str_replace(Sys.time()," ", "; ")
+  # Timestamp<-paste(Timestamp_intial, Sys.timezone())
+  # return(Timestamp)
+  # use something MySQL is expecting to see...
+  Sys.time()
+}
+```
+
+Now I am seeing typecasting warnings from specifying a timestamp type.
+ `unrecognized MySQL field type 7 in column 3 imported as character`<br>
+But I understand that MariaDB doesn't have this issue.
+
 ## Setup the Tables
 
 SQLite is very forgiving about specifying data types.  Not so with MySQL.
@@ -117,6 +131,63 @@ SQLite is very forgiving about specifying data types.  Not so with MySQL.
 The easiest way for me to guess what the Types and lengths should be was to take the SQLite database created and dump it using the sqlite3 utility:
 
 `sqlite3 database.sqlite .dump > datadump`
+
+This is what the SQL statements look like now in `Utils\sql_queries`
+Note the `FOREIGN KEY` and `REFERENCES` have been removed.  I did not find them necessary.
+
+```{r, eval=FALSE}
+CREATE TABLE IF NOT EXISTS Comments (   
+comm_id      CHAR(20) NOT NULL,    
+user_name 	 CHAR(40),   
+user_role 	 CHAR(40),   
+comment 		 VARCHAR(1000),   
+comment_type CHAR(10),   
+added_on 	 TIMESTAMP
+); 
+
+CREATE TABLE IF NOT EXISTS CommunityUsageMetrics (  
+cum_id 					            CHAR(20) NOT NULL,   
+no_of_downloads_last_year   INT,  
+month 					            CHAR(20),  
+no_of_downloads 			      INT,  
+ver_release 				        CHAR(5),  
+position					          INT,  
+time_since_first_release    INT,  
+time_since_version_release  INT   
+); 
+
+CREATE TABLE IF NOT EXISTS MaintenanceMetrics (   
+mm_id   								             CHAR(20) NOT NULL,    
+package_has_vignettes				         CHAR(5),   
+package_has_news                     CHAR(5),   
+news_is_current					             CHAR(10),   
+package_has_website				           VARCHAR(200),   
+has_bug_reports					             VARCHAR(200),   
+has_a_package_maintainer			       VARCHAR(200),   
+source_code_is_public   				     VARCHAR(100),   
+exported_objects_with_documentation  VARCHAR(15),   
+status_of_last_30_reported_bugs  	   CHAR(15) 
+); 
+
+CREATE TABLE IF NOT EXISTS Packageinfo(   
+package        CHAR(20) PRIMARY KEY NOT NULL,    
+version        CHAR(10),   
+title          VARCHAR(200),   
+description    TEXT,   
+maintainer     VARCHAR(200),   
+author         VARCHAR(1000),   
+license        CHAR(50),   
+published_on   CHAR(15),   
+score          CHAR(5),   
+decision       CHAR(1)
+); 
+
+CREATE TABLE TestMetrics IF NOT EXISTS(   
+tm_id 		    CHAR(20) NOT NULL,    
+test_coverage CHAR(10)  
+); 
+```
+
 
 
 
