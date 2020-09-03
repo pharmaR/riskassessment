@@ -141,17 +141,21 @@ Now change the code for the `db_fun()` and `db_ins()` functions like this:
 
 Again in Utils.R, the Timestamp created is completely non-standard.<br>
 At least using Sys.time() resembles the CURRENT_TIMESTAMP provided in MySQL and MariaDB.
+I found that a UTC time value was expected and modified as follows:
 ```{r, eval=FALSE}
 TimeStamp<-function(){
   # Timestamp_intial<-str_replace(Sys.time()," ", "; ")
   # Timestamp<-paste(Timestamp_intial, Sys.timezone())
   # return(Timestamp)
   # use something MySQL is expecting to see...
-  as.character(Sys.time())
+  # as.character(Sys.time())
+  lubridate::with_tz(Sys.time(), "UTC")  # lubridate is a tidyverse package
 }
 ```
-
-Update function `genInfo_upload_to_DB()` in `Modules\dbupload.R` as follows:
+I was able to confirm by going back to the MariaDB Command Line Interface:
+ ![](SelectFromComments.png)
+ 
+Finally, update function `genInfo_upload_to_DB()` in `Modules\dbupload.R` as follows:
 
 ```{r, eval = FALSE}
 genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis, pub) {
