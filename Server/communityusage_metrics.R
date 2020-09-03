@@ -104,12 +104,7 @@ output$time_since_version_release <- renderInfoBox({
 
 # 3. Render Output to show the highchart for number of downloads on the application.
 output$no_of_downloads <- renderHighchart({
-  print("in renderHighchart for no_of_downloads")
-  print(paste(values$riskmetrics_cum$ver_release, collapse=","))
-  print(paste(values$riskmetrics_cum$position,collapse=","))
-  print(paste(values$riskmetrics_cum$month,collapse=","))
-  
-  
+
   if (values$riskmetrics_cum$no_of_downloads_last_year[1] != 0) {
       hc <- highchart() %>%
         hc_xAxis(categories = values$riskmetrics_cum$month) %>%
