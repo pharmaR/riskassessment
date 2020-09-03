@@ -1,5 +1,5 @@
 ---
-title: "Converting from SQLite to MySQL or MariaDB"
+title: "Converting from SQLite to MySQL"
 author: "Robert Krajcik"
 date: "September 2, 2020"
 output: html_document
