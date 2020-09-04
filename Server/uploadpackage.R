@@ -54,7 +54,10 @@ observeEvent(input$uploaded_file, {
              stringsAsFactors = FALSE)
   names(pkgs_file) <- tolower(names(pkgs_file))
   pkgs_file$package <- trimws(pkgs_file$package)
-  pkgs_file$version <- trimws(pkgs_file$version)
+  # pkgs_file$version <- trimws(pkgs_file$version)
+  # replace version with the latest version in Packageinfo
+  pkgs_file$version <- NULL
+  pkgs_file <- db_fun("SELECT package, version FROM Packageinfo") %>% left_join(pkgs_file, . , by = "package")
   values$Total <- pkgs_file
   pkgs_db1 <- db_fun("SELECT package FROM Packageinfo")
   values$Dup <- filter(values$Total, values$Total$package %in% pkgs_db1$package)
