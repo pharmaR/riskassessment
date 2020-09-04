@@ -6,7 +6,7 @@
 #####################################################################################################################
 
 # 1. Observe to check the report preview value
-observe({
+observeEvent(input$tabs, {
   req(input$select_pack)
   if (input$tabs == "reportPreview_tab_value") {
     if(input$select_pack != "Select"){
@@ -25,7 +25,7 @@ observe({
       if(values$test_coverage[2] == -1){ runjs( "setTimeout(function(){ addTextToGaugeSVG('test_coverage1');}, 5000);" ) }
     }
   }
-})  # End of the observe.
+}, ignoreInit = TRUE)  # End of the observe.
 
 # End of the observe's'
 
@@ -34,6 +34,8 @@ observe({
 # 1. Render Output to show the test converage gauage.
 
 output$test_coverage1 <- renderAmCharts({
+  suppressWarnings(req(!is.na(as.numeric(values$test_coverage[1])) && !is.na(as.numeric(values$test_coverage[2]))))
+  
   bands = data.frame(
     start = c(0, 40, 80),
     end = c(40, 80, 100),

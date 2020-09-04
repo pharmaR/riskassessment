@@ -9,7 +9,7 @@
 
 # 1. Observe to load the columns from DB into below reactive values.
 
-observe({
+observeEvent(input$tabs, {
   req(input$select_pack)
   if (input$tabs == "tm_tab_value") {
     if (input$select_pack != "Select") {
@@ -34,7 +34,7 @@ observe({
      }
     }
   }
-})  # End of the observe.
+}, ignoreInit = TRUE)  # End of the observe.
 
 # End of the observe's'
 
@@ -43,6 +43,8 @@ observe({
 # 1. Render Output to show the test converage gauage.
 
 output$test_coverage <- renderAmCharts({
+  suppressWarnings(req(!is.na(as.numeric(values$test_coverage[1])) && !is.na(as.numeric(values$test_coverage[2]))))
+  
   bands = data.frame(
     start = c(0, 40, 80),
     end = c(40, 80, 100),
