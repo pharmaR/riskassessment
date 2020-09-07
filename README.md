@@ -1,4 +1,4 @@
-## R Package Risk Assessment Project
+## Risk Assessment Shiny Application
 
 Author: Fission Labs India Pvt Ltd<br>
 Date: June 24, 2020
