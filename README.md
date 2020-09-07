@@ -30,9 +30,9 @@ To run the application, open the `app.R` file with RStudio and click 'Run App'.
 
 - Set of panels that displays the details and metrics of the selected package
 
-- Comment functionality leave a comment for individual metrics as well as (overall comment) on the package
+- Comment functionality that allows users to comment on individual metrics as well as provide an overall comment on the selected package
 
-- Download report functionality to download the package details in html or word doc format
+- Download report functionality to obtain either an html or a word document with the metrics displayed in the application
 
 
 ### License
