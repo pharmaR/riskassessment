@@ -1,6 +1,9 @@
 ## Risk Assessment Shiny Application
 
-Contributors
+Risk Assessment is an interactive web application providing a front end for the collection of metrics for R packages via the [`riskmetric`](https://github.com/pharmaR/riskmetric) package. It includes visualizations and comparison metrics.
+
+
+**Contributors**
 
 - Marly Gotti, Biogen (maintainer)
 - Aaron Clark, Cytel
