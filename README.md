@@ -1,6 +1,6 @@
 ## Risk Assessment Shiny Application
 
-Authors
+Contributors
 
 - Marly Gotti, Biogen (maintainer)
 - Aaron Clark, Cytel
