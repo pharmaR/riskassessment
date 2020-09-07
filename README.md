@@ -39,5 +39,5 @@ To run the application, open the `app.R` file with RStudio and click 'Run App'.
 The MIT License (MIT)<br>
 Copyright © 2020 Fission Labs and R Validation Hub contributors
  
-Note: Permission notice and Copyright notice to be added as per client requirements.
+Note: Permission and Copyright notices to be added as per client requirements.
 
