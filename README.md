@@ -3,14 +3,14 @@
 Risk Assessment is an interactive web application providing a front end for the collection of metrics for R packages via the [`riskmetric`](https://github.com/pharmaR/riskmetric) package. It includes visualizations and comparison metrics.
 
 
-**Contributors**
+**Contributors/Authors**
 
-- Marly Gotti, Biogen (maintainer)
+- [R Validation Hub](https://www.pharmar.org), *Author* & *Maintainer*
+- [Marly Gotti](https://www.marlygotti.com), Biogen, *Maintainer*
 - Aaron Clark, Cytel
 - Maya Gans, Cytel
 - Robert Krajcik, Cytel
 - Aravind Reddy Kallem
-- R Validation Hub
 - Fission Labs India Pvt Ltd
 
 
