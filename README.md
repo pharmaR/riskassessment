@@ -15,7 +15,7 @@ Risk Assessment is an interactive web application providing a front end for the 
 
 
 ### Installation
-The app is portable without code modifications. It can be pulled from GitHub and run in any local environment.
+The application is portable without code modifications. It can be pulled from GitHub and run in any local environment.
 
 
 ### Deployment
