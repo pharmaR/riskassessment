@@ -43,11 +43,17 @@ create_db <- function(){
 
 db_fun <- function(query){
   con <- dbConnect(RSQLite::SQLite(), db_name)
-  res <- dbSendQuery(con, query)
-  res <- dbFetch(res)
+  dat <- dbGetQuery(con,query)  # this does SendQuery, Fetch and ClearResult all in one
   dbDisconnect(con)
-  
-  return(res)
+  return(dat)
+}
+
+# You need to use dbExecute() to perform delete, update or insert queries.
+db_ins<-function(query){
+  # con <- dbConnect(RSQLite::SQLite(), "./risk_assessment_app.db")
+  con <- dbConnect(RSQLite::SQLite(), db_name)
+  dbExecute(con, query)
+  dbDisconnect(con)
 }
 
 

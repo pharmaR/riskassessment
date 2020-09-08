@@ -18,8 +18,8 @@ data <- reactive({
 
 # 1. Observe to load the columns from DB into below reactive values.
 
-observe({
-  req(input$total_new_undis_dup)
+observeEvent(input$total_new_undis_dup, {
+  # req(input$total_new_undis_dup)
   if (input$total_new_undis_dup == "Total") {
     values$Total_New_Undis_Dup <- values$Total
   } else if (input$total_new_undis_dup == "New") {
@@ -29,12 +29,12 @@ observe({
   } else if (input$total_new_undis_dup == "Duplicates") {
     values$Total_New_Undis_Dup <- values$Dup
   } 
-})  # End of the observe.
+}, ignoreInit = TRUE)  # End of the observe.
 
 # 2. Observe to disable the input widgets while the packages uploading into DB.
 
-observe({
-  req(input$uploaded_file)
+observeEvent(input$uploaded_file, {
+  # req(input$uploaded_file)
   values$uploaded_file_status <- file_upload_error_handling(input$uploaded_file)
   if (values$uploaded_file_status != "no_error") {
     shinyjs::hide("upload_summary_text")
@@ -66,15 +66,16 @@ observe({
   withProgress(message = "Uploading Packages to DB:", value = 0, {
     if (nrow(values$New) != 0) {
       for (i in 1:nrow(values$New)) {
-        new_package<-values$New$package[i]
+          new_package<-values$New$package[i]
           get_packages_info_from_web(new_package)
           metric_mm_tm_Info_upload_to_DB(new_package)
           metric_cum_Info_upload_to_DB(new_package)
-        incProgress(1 / nrow(values$New), detail = values$New[i, 1])
-        Sys.sleep(0.1)
+          incProgress(1 / nrow(values$New), detail = values$New[i, 1])
+          Sys.sleep(0.1)
       }
     }
   })
+  
   pkgs_db2 <- db_fun("SELECT package FROM Packageinfo")
   values$Undis <-
     filter(values$New,!(values$New$package %in% pkgs_db2$package))
@@ -85,14 +86,15 @@ observe({
     choices = c("Select", values$packsDB$package),
     selected = "Select"
   )
+  
   showNotification(id = "show_notification_id", "Upload completed to DB", type = "message")
   values$upload_complete <- "upload_complete"
   loggit("INFO", paste("Summary of the uploaded file:",input$uploaded_file$name, 
                        "Total Packages:", nrow(values$Total),
                        "New Packages:", nrow(values$New),
                        "Undiscovered Packages:", nrow(values$Undis),
-                       "Duplicate Packages:", nrow(values$Dup)))
-})  # End of the Observe.
+                       "Duplicate Packages:", nrow(values$Dup)), echo = FALSE)
+}, ignoreInit = TRUE)  # End of the Observe.
 
 # End of the observe's'.
 
