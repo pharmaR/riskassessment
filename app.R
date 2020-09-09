@@ -145,6 +145,9 @@ server <- function(session, input, output) {
   
   source(file.path("Server", "testing_metrics.R"), local = TRUE)$value
   
+  
+  source(file.path("Modules","handle_comments.R"), local = TRUE)$value
+  
   # Create db if it doesnt exist.
   create_db_once <- reactive({
     if(!file.exists(db_name))

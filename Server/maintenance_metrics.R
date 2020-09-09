@@ -267,37 +267,41 @@ output$mm_commented <- renderText({
 
 # End of the Render Output's'.
 
-values$mm_comment_submitted <- "no"
+# values$mm_comment_submitted <- "no"
+# 
+# # Observe event for submit button.
+# 
+# observeEvent(input$submit_mm_comment, {
+#   upd_comments(input$mm_comment)
+# }, ignoreInit = TRUE)  
 
-# Observe event for submit button.
-
-observeEvent(input$submit_mm_comment, {
-  if (trimws(input$mm_comment) != "") {
-    db_fun(
-      paste0(
-        "INSERT INTO Comments values('",
-        input$select_pack,
-        "',",
-        "'",
-        values$name,
-        "'," ,
-        "'",
-        values$role,
-        "',",
-        "'",
-        input$mm_comment,
-        "',",
-        "'mm'," ,
-        "'",
-        TimeStamp(),
-        "'"  ,
-        ")"
-      )
-    )
-    values$mm_comment_submitted <- "yes"
-    updateTextAreaInput(session, "mm_comment", value = "")
-  }
-})  # End of the Observe Event.
+# observeEvent(input$submit_mm_comment, {
+#   if (trimws(input$mm_comment) != "") {
+#     db_fun(
+#       paste0(
+#         "INSERT INTO Comments values('",
+#         input$select_pack,
+#         "',",
+#         "'",
+#         values$name,
+#         "'," ,
+#         "'",
+#         values$role,
+#         "',",
+#         "'",
+#         input$mm_comment,
+#         "',",
+#         "'mm'," ,
+#         "'",
+#         TimeStamp(),
+#         "'"  ,
+#         ")"
+#       )
+#     )
+#     values$mm_comment_submitted <- "yes"
+#     updateTextAreaInput(session, "mm_comment", value = "")
+#   }
+# })  # End of the Observe Event.
 
 
 # End of the Maintenance_Metrics Source file for Server Module.

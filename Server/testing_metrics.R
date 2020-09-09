@@ -100,34 +100,39 @@ output$tm_commented <- renderText({
 
 # Observe event for submit button to submit the comments for testing metrics.
 
-values$tm_comment_submitted <- "no"
-observeEvent(input$submit_tm_comment, {
-  if (trimws(input$tm_comment) != "") {
-    db_fun(
-      paste0(
-        "INSERT INTO Comments values('",
-        input$select_pack,
-        "',",
-        "'",
-        values$name,
-        "'," ,
-        "'",
-        values$role,
-        "',",
-        "'",
-        input$tm_comment,
-        "',",
-        "'tm',",
-        "'",
-        TimeStamp(),
-        "'" ,
-        ")" 
-      )
-    )
-    values$tm_comment_submitted <- "yes"
-    updateTextAreaInput(session, "tm_comment", value = "")
-  }
-})  # End of the observe event.
+# values$tm_comment_submitted <- "no"
+# 
+# observeEvent(input$submit_tm_comment, {
+#   upd_comments(input$tm_comment)
+# }, ignoreInit = TRUE)
+
+# observeEvent(input$submit_tm_comment, {
+#   if (trimws(input$tm_comment) != "") {
+#     db_fun(
+#       paste0(
+#         "INSERT INTO Comments values('",
+#         input$select_pack,
+#         "',",
+#         "'",
+#         values$name,
+#         "'," ,
+#         "'",
+#         values$role,
+#         "',",
+#         "'",
+#         input$tm_comment,
+#         "',",
+#         "'tm',",
+#         "'",
+#         TimeStamp(),
+#         "'" ,
+#         ")" 
+#       )
+#     )
+#     values$tm_comment_submitted <- "yes"
+#     updateTextAreaInput(session, "tm_comment", value = "")
+#   }
+# })  # End of the observe event.
 
 
 # End of the Testing_metrics Source file for Server Module.

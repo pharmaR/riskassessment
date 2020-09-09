@@ -247,40 +247,49 @@ output$cum_commented <- renderText({
 })  # End of the render output for comments.
 
 # End of the Render Output's'.
+# cmnt <- eventReactive(input$submit_cum_comment, {
+#   req(!is.null(input$cum_comment))
+#   input$cum_comment 
+# })
 
-values$cum_comment_submitted <- "no"
+# values$cum_comment_submitted <- "no"
+# 
+# observeEvent(input$submit_cum_comment, {
+#   upd_comments(input$cum_comment)
+# }, ignoreInit = TRUE)  
+#           
 
 # Start of the Observe Events.
 
-# Observe event for cum comment submit button. 
+# Observe event for cum comment submit button.
 
-observeEvent(input$submit_cum_comment, {
-  if (trimws(input$cum_comment) != "") {
-    db_fun(
-      paste0(
-        "INSERT INTO Comments values('",
-        input$select_pack,
-        "',",
-        "'",
-        values$name,
-        "'," ,
-        "'",
-        values$role,
-        "',",
-        "'",
-        input$cum_comment,
-        "',",
-        "'cum',",
-        "'",
-        TimeStamp(),
-        "'"  ,
-        ")" 
-      )
-    )
-    values$cum_comment_submitted <- "yes"
-    updateTextAreaInput(session, "cum_comment", value = "")
-  }
-})  # End of the submit button observe event.
+# observeEvent(input$submit_cum_comment, {
+#   if (trimws(input$cum_comment) != "") {
+#     db_fun(
+#       paste0(
+#         "INSERT INTO Comments values('",
+#         input$select_pack,
+#         "',",
+#         "'",
+#         values$name,
+#         "'," ,
+#         "'",
+#         values$role,
+#         "',",
+#         "'",
+#         input$cum_comment,
+#         "',",
+#         "'cum',",
+#         "'",
+#         TimeStamp(),
+#         "'"  ,
+#         ")"
+#       )
+#     )
+#     values$cum_comment_submitted <- "yes"
+#     updateTextAreaInput(session, "cum_comment", value = "")
+#   }
+# })  # End of the submit button observe event.
 
 
 # End of the Community Usage Metrics server source file.
