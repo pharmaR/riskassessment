@@ -906,8 +906,6 @@ color: #7f7f7f;
 .asmnt-help-icon {
   display: none;
   color: rgb(77, 141, 201);
-  margin-top: 34px;
-  margin-right: 5px;
 }
 
 th.sorting {
@@ -919,8 +917,43 @@ th.sorting {
 }
 
 
+a#assessment_criteria_bttn {
+    border: none;
+    background-color: transparent;
+    
+}
+
+a#assessment_criteria_bttn:hover {
+    border: none;
+    background-color: transparent;
+}
+
+i.fas.fa-info-circle.fa-2x.asmnt-help-icon:hover {
+    color: #87B1DA;
+    border-radius: 5px;
+}
 
 
+.tooltip-help .tooltiptext-help {
+  visibility: hidden;
+  width: 130px;
+  background-color: #87B1DA;
+  color: white;
+  text-align: center;
+  border-radius: 6px;
+  padding: 7px 0;
+  border: solid 1px #CCCACB;
+  
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 1;
+  top: -5px;
+  right: 105%;
+}
+
+.tooltip-help:hover .tooltiptext-help {
+  visibility: visible;
+}
 
 
 
@@ -1233,11 +1266,13 @@ th.sorting {
   .main-component {
     width: 60%;
   }
+  
   .assessment_criteria_bttn_class {
     padding: 4px !important;
     margin-top: 60px !important;
     margin-right: 5px !important;
   }
+  
   #maintenance_metrics-vignette {
     width: 100% !important;
   }
