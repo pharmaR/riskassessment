@@ -135,13 +135,14 @@ get_packages_info_from_web <- function(package_name) {
 genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis, pub) {
   tryCatch(
     expr = {
-      db_fun(paste0( "INSERT INTO Packageinfo values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
+      db_ins(paste0( "INSERT or REPLACE INTO Packageinfo values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
                      "'", main, "',", "'", auth, "',", "'", lis, "',", "'", pub, "',", "'',", "''", ")"))
     },
     error = function(e) {
       loggit("ERROR", paste("Error in uploading the general info of the package", package_name, "info", e), app = "fileupload-DB")
     }
   )# End of try catch 
+
 }
 # End of the function
 
@@ -166,7 +167,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   package_riskmetric1$export_help <- package_riskmetric1$export_help*100
   
 
-  db_fun(paste0("INSERT INTO MaintenanceMetrics values(", 
+  db_ins(paste0("INSERT INTO MaintenanceMetrics values(", 
                 "'", package_name, "',", 
                 "'", package_riskmetric1$has_vignettes[1], ",", ifelse(class(package_riskmetric2$has_vignettes[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_vignettes[[1]][1]), "',",
                 "'", package_riskmetric1$has_news[1], ",",  ifelse(class(package_riskmetric2$has_news[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_news[[1]][1]), "',", 
@@ -178,13 +179,13 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
                 "'", format(round(package_riskmetric1$export_help[1],2)), ",",  ifelse(class(package_riskmetric2$export_help[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$export_help[[1]][1]), "',",
                 "'", format(round(package_riskmetric1$bugs_status[1],2)), ",",  ifelse(class(package_riskmetric2$bugs_status[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$bugs_status[[1]][1]), "'", ")"))
   
-  db_fun(
+  db_ins(
     paste0( "INSERT INTO TestMetrics values(",
             "'", package_name, "',",  
             "'", format(round(package_riskmetric1$covr_coverage[1], 2)),",", ifelse(class(package_riskmetric2$covr_coverage[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$covr_coverage[[1]][1]), "'", ")" )
   )
   
-  db_fun(paste0( "UPDATE Packageinfo SET score = '", format(round(package_riskmetric1$pkg_score[1], 2)), "'", " WHERE package = '" ,
+  db_ins(paste0( "UPDATE Packageinfo SET score = '", format(round(package_riskmetric1$pkg_score[1], 2)), "'", " WHERE package = '" ,
                  package_name, "'"))
  
 }  
@@ -294,7 +295,7 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
   )# End of try catch
   
   for (i in 1:nrow(pkg_vers_date_final)) {
-    db_fun(paste0("INSERT INTO CommunityUsageMetrics values(",
+    db_ins(paste0("INSERT INTO CommunityUsageMetrics values(",
                   "'", package_name,"',", "'", downloads_1yr, "',",
                   "'", pkg_vers_date_final$Month[i], "',", "'", pkg_vers_date_final$Downloads[i], "',", 
                   "'", pkg_vers_date_final$verRelease[i], "',", "'", pkg_vers_date_final$Position[i], "',",

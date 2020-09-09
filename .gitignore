@@ -1,4 +1,6 @@
+*.sqlite
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
+loggit.json
