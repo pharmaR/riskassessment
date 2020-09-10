@@ -27,10 +27,13 @@ upd_comments <- function(cmnt) {
         ")"
       )
     )
-    if (cm_type == "mm")  values$mm_comment_submitted <- "yes"
-    if (cm_type == "tm")  values$tm_comment_submitted <- "yes"
-    if (cm_type == "cum") values$cum_comment_submitted <- "yes"
-    
+    switch(cm_type,
+           "mm" = eval(values$mm_comment_submitted  <- "yes"),
+           "tm" = eval(values$tm_comment_submitted  <- "yes"),
+           "cum" = eval(values$cum_comment_submitted <- "yes"),
+           stop("Invalid cm_type value")
+    )
+
     txt <- paste0(cm_type,"_comment")
     updateTextAreaInput(session, txt , value = "")
   }
