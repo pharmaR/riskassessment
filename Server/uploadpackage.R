@@ -64,10 +64,12 @@ observeEvent(input$uploaded_file, {
       j[i] <- TRUE
     } 
   }
-  # drop the non-existent pacakges
-  pkgs_file <- pkgs_file[-which(j),]
-  # reset the row numbers
-  row.names(pkgs_file) <- NULL
+  if (any(j)) {
+    # drop the non-existent packages
+    pkgs_file <- pkgs_file[-which(j),]
+    # reset the row numbers
+    row.names(pkgs_file) <- NULL
+  }
 
   values$Total <- pkgs_file
   pkgs_db1 <- db_fun("SELECT package FROM Packageinfo")
