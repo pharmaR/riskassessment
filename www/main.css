@@ -251,7 +251,7 @@ textarea:focus {
 .tab-content {
   overflow-y: auto;
   min-height: 50vh;
-  max-height: 635px;
+  max-height: 900px;
   padding: 0px 38px;
   border: 2px solid rgba(0,0,0,.125);
   background: #fff;
