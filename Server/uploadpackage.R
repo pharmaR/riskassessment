@@ -55,6 +55,20 @@ observeEvent(input$uploaded_file, {
   names(pkgs_file) <- tolower(names(pkgs_file))
   pkgs_file$package <- trimws(pkgs_file$package)
   pkgs_file$version <- trimws(pkgs_file$version)
+  
+  # Check if the package is in the vector
+  j <- rep(FALSE, nrow(pkgs_file))
+  for (i in 1:nrow(pkgs_file)) {
+    if (!pkgs_file$package[i] %in% cranvect) {
+      message(paste("Package",pkgs_file$package[i],"not found on CRAN. Names are case-sensitive. Check your spelling."))
+      j[i] <- TRUE
+    } 
+  }
+  # drop the non-existent pacakges
+  pkgs_file <- pkgs_file[-which(j),]
+  # reset the row numbers
+  row.names(pkgs_file) <- NULL
+
   values$Total <- pkgs_file
   pkgs_db1 <- db_fun("SELECT package FROM Packageinfo")
   values$Dup <- filter(values$Total, values$Total$package %in% pkgs_db1$package)

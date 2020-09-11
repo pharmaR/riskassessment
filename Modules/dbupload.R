@@ -308,3 +308,11 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
 }
 
 # End of the functions
+
+# Build vector of existing CRAN packages, if not already in global env
+if (!exists("cranvect")) {
+  webpage <- read_html("https://cran.r-project.org/web/packages/available_packages_by_name.html")
+  hrefs <- webpage %>% html_nodes("a") %>% html_attr("href") 
+  cranvect <- str_extract(hrefs, regex("(?<=packages/)([\\w]+)(?=/index)") ) %>% na.omit()
+  rm(webpage, hrefs)
+}
