@@ -40,13 +40,14 @@ ui <- dashboardPage(
         tags$img(src = "logo_no_text.png", class = "logo_2")
       )
     ),
-    titleWidth = 420,
+    titleWidth = 320,
     tags$li(
       class = "dropdown",
-      HTML(
-        '<i class="fas fa-info-circle fa-2x float-right cursor-help asmnt-help-icon" title="Click to open Assessment Criteria Modal"></i>'
-      ),
-      actionLink("assessment_criteria_bttn", class = "assessment_criteria_bttn_class", "Assessment Criteria")
+      actionLink("assessment_criteria_bttn", class = "assessment_criteria_bttn_class", 
+                 HTML('<div class="tooltip-help">
+                      <i class="fas fa-info-circle fa-2x asmnt-help-icon"></i>
+                      <span class="tooltiptext-help">Assessment Criteria Details</span>
+                      </div>'))
     )
   ),
   
