@@ -8,6 +8,7 @@ output: html_document
 runtime: shiny
 params:
   package: NA
+  version: NA
   cwd: NA
 ---
 
@@ -75,7 +76,7 @@ comment_o <-
     db_fun(
       paste0(
         "SELECT * FROM TestMetrics WHERE TestMetrics.tm_id ='",
-        input$select_pack,
+        params$package,
         "'"
       )
     )
@@ -114,7 +115,7 @@ comment_o <-
 
 <div class="heading_report"> Report of the "`r pkg_GenInfo$package`" Package:</div>
 
-<div class="report">This **`r pkg_GenInfo$package`** package report was generated using  **`r input$select_ver`** riskmetric version. Metrics were reviewed via the R Package Risk Assessment Application.</div>
+<div class="report">This **`r pkg_GenInfo$package`** package report was generated using  **`r params$version`** riskmetric version. Metrics were reviewed via the R Package Risk Assessment Application.</div>
 
 
 
@@ -463,7 +464,7 @@ if (riskmetrics_cum$no_of_downloads_last_year[1] != 0) {
           )
         ) %>%
         hc_add_series(
-          name = input$select_pack,
+          name = params$package,
           data = riskmetrics_cum$no_of_downloads,
           color = "blue"
         ) %>%
@@ -483,7 +484,7 @@ if (riskmetrics_cum$no_of_downloads_last_year[1] != 0) {
       hc <- highchart() %>%
         hc_xAxis(categories = NULL) %>%
         hc_xAxis(title = list(text = "Months")) %>%
-        hc_add_series(name = input$select_pack, data = NULL) %>%
+        hc_add_series(name = params$package, data = NULL) %>%
         hc_yAxis(title = list(text = "Downloads")) %>%
         hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS 11 MONTHS") %>%
         hc_subtitle(

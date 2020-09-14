@@ -40,12 +40,16 @@ observeEvent(input$uploaded_file, {
     shinyjs::hide("upload_summary_text")
     shinyjs::hide("upload_summary_select")
     shinyjs::hide("total_new_undis_dup_table")
+    shinyjs::hide("dwnld_all_reports_btn")
+    shinyjs::hide("all_reports_format")
     reset("uploaded_file") 
     return()
   } else{
     shinyjs::show("upload_summary_text")
     shinyjs::show("upload_summary_select")
     shinyjs::show("total_new_undis_dup_table")
+    shinyjs::show("dwnld_all_reports_btn")
+    shinyjs::show("all_reports_format")
   }
   file_to_read <- input$uploaded_file
   pkgs_file <-
@@ -163,8 +167,66 @@ output$total_new_undis_dup_table <- DT::renderDataTable(
     )
   }
 )  # End of the render Output 
-
 # End of the Render Output's'.
+
+
+# 5. Render Output for download handler to export the report for each .
+# Data displayed: values$Total_New_Undis_Dup
+# file name uplaoded: input$uploaded_file$name
+# selected type: input$upload_summary_select
+values$cwd<-getwd()
+output$dwnld_all_reports_btn <- downloadHandler(
+  filename = function() {
+    # name will include the type of packages selected to display in DT
+    paste0(input$total_new_undis_dup, "_",
+           stringr::str_remove(input$uploaded_file$name, ".csv"),
+           ".zip")
+  },
+  content = function(file) {
+    n_pkgs <- nrow(values$Total_New_Undis_Dup)
+    req(n_pkgs > 0)
+    shiny::withProgress(
+      message = paste0("Downloading ",n_pkgs," Report",ifelse(n_pkgs > 1,"s","")),
+      value = 0,
+      max = n_pkgs + 2, # tell the progress bar the total number of events
+      {
+        shiny::incProgress(1)
+        
+        my_dir <- tempdir()
+        if (input$all_reports_format == "html") {
+          Report <- file.path(my_dir, "Report_html.Rmd")
+          file.copy("Reports/Report_html.Rmd", Report, overwrite = TRUE)
+        } else {
+          Report <- file.path(my_dir, "Report_doc.Rmd")
+          file.copy("Reports/Report_doc.Rmd", Report, overwrite = TRUE)
+        }
+        fs <- c()
+        for (i in 1:n_pkgs) {
+          # grab package name and version, then create filename and path
+          this_pkg <- values$Total_New_Undis_Dup$package[i]
+          this_ver <- values$Total_New_Undis_Dup$version[i]
+          file_named <- paste0(this_pkg,"_",this_ver,"_Risk_Assessment.",input$all_reports_format)
+          path <- file.path(my_dir, file_named)
+          # render the report, passing parameters to the rmd file
+          rmarkdown::render(
+            input = Report,
+            output_file = path,
+            params = list(package = this_pkg,
+                          version = this_ver,
+                          cwd = values$cwd)
+          )
+          fs <- c(fs, path)  # save all the 
+          shiny::incProgress(1) # increment progress bar
+        }
+        # zip all the files up, -j retains just the files in zip file
+        zip(zipfile = file, files = fs ,extras = "-j")
+        shiny::incProgress(1) # increment progress bar
+      })
+  },
+  contentType = "application/zip"
+)  # End of the render Output for download report.
+
+
 
 # Observe Event for view sample dataset button.
 
