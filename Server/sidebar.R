@@ -189,7 +189,7 @@ observeEvent(input$submit_decision, {
 # 3. Observe Event for submit the decision.
 
 observeEvent(input$submit_confirmed_decision, {
-  db_fun(
+  db_ins(
     paste0(
       "UPDATE Packageinfo SET decision = '",
       input$decision,
@@ -255,7 +255,7 @@ observeEvent(input$submit_overall_comment, {
         )
       ))
     } else{
-      db_fun(
+      db_ins(
         paste0(
           "INSERT INTO Comments values('", values$selected_pkg$package, "',",
           "'", values$name, "'," ,
@@ -277,7 +277,7 @@ observeEvent(input$submit_overall_comment, {
 # 6. Observe Event to update overall comment.
 
 observeEvent(input$submit_overall_comment_yes, {
-  db_fun(
+  db_ins(
     paste0(
       "UPDATE Comments SET comment = '",
       values$overall_comments,
