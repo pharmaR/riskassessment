@@ -41,8 +41,7 @@ package.check <- lapply(
 # riskmetric is not yet on CRAN. Until it is, install using devtools.
 
 if(!require(riskmetric)){
-  devtools::install_github("pharmaR/riskmetric@bfda3247563322d051c3aa50875cef9d48729b3a")
+  # Remove hardcoded commit number
+  devtools::install_github("pharmaR/riskmetric")
   library(riskmetric)
-  
 }
-
