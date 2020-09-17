@@ -57,7 +57,7 @@ output$decision_display <- renderText({
 
 # 3. Render Output to display the overall comment of the selected package. 
 output$overall_comments <- renderText({
-  req(values$selected_pkg$package)
+  req(values$selected_pkg)
   if (values$o_comment_submitted == "yes" ||
       values$o_comment_submitted == "no") {
     values$comment_o1 <-
@@ -65,6 +65,8 @@ output$overall_comments <- renderText({
         paste0(
           "SELECT * FROM Comments WHERE comm_id = '",
           values$selected_pkg$package,
+          "' AND comm_ver = '",
+          values$selected_pkg$version,
           "' AND comment_type = 'o'"
         )
       )
@@ -119,6 +121,6 @@ output$download_report_btn <- downloadHandler(
 
 source(file.path("Server", "mm_report.R"), local = TRUE)$value
 source(file.path("Server", "cum_report.R"), local = TRUE)$value
-source(file.path("Server", "tm_report.R"), local = TRUE)$value
+# source(file.path("Server", "tm_report.R"), local = TRUE)$value
 
 # End of the report preview Source file for Server Module.

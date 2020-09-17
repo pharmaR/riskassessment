@@ -35,6 +35,7 @@ observeEvent(input$total_new_undis_dup, {
 
 observeEvent(input$uploaded_file, {
   # req(input$uploaded_file)
+  print("in observe event for input$uploaded_file")
   values$uploaded_file_status <- file_upload_error_handling(input$uploaded_file)
   if (values$uploaded_file_status != "no_error") {
     shinyjs::hide("upload_summary_text")
@@ -67,8 +68,23 @@ observeEvent(input$uploaded_file, {
       j[i] <- TRUE
     }
     if (j[i] == FALSE)  {
+      beg <- Sys.time()
       vrsn_lst <- versions::available.versions(pkgs_file$package[i])
       vrsn_vec <- unlist(vrsn_lst[[1]]$version)
+      # pkg_html <- read_html(paste0("https://github.com/cran/", pkgs_file$package[i], "/tags"))
+      # pkg_nodes_v <- html_nodes(pkg_html, 'h4')
+      # pkg_text_v <- html_text(pkg_nodes_v)
+      # pkg_text_v <- str_split(pkg_text_v,"\n")
+      # pkg_vers <- rep("", length(pkg_text_v))
+      # for (i in 1:length(pkg_text_v)) {
+      #   pkg_vers[i]<-(trimws(pkg_text_v[[i]][3]))
+      # }
+      # pkg_vers <- pkg_vers[c(3:length(pkg_vers))]
+      # print(pkg_vers)
+      # vrsn_vec <- pkg_vers
+      end <- Sys.time()
+      print(end - beg)
+      
       if (!pkgs_file$version[i] %in% vrsn_vec) {
         message(paste("Version",pkgs_file$version[i],"of ",pkgs_file$package[i],"not found on CRAN. Check your spelling."))
         j[i] <- TRUE
@@ -76,14 +92,13 @@ observeEvent(input$uploaded_file, {
     }
   }
   
-  print(j)
-  
   if (any(j)) {
     # drop the non-existent packages
     pkgs_file <- pkgs_file[-which(j),]
     # reset the row numbers
     row.names(pkgs_file) <- NULL
   }
+
   
   values$Total <- pkgs_file
   print(values$Total)

@@ -7,10 +7,11 @@
 
 # Start of the Observes'.
 
-# 1. Observe to update the radiobutton for decistion of the package.
+# 1. Observe to update the radiobutton for decision of the package.
 
 observe({
-  req(input$select_pack)
+  req(values$selected_pkg)
+
   if (!identical(values$selected_pkg$decision, character(0))) {
     if (values$selected_pkg$decision != "") {
       updateSliderTextInput(
@@ -27,6 +28,8 @@ observe({
 
 observe({
   req(values$selected_pkg$package)
+  req(values$selected_pkg$version)
+  
   if (values$selected_pkg$decision != "") {
     disable("decision")
     disable("submit_decision")
@@ -83,10 +86,11 @@ output$sel_ver <- renderUI({
         "'"
       )
     )
-  if (input$select_pack == "Select" || nrow(res2) > 1) {
+  print(c(res2$version))
+  if (input$select_pack == "Select" || nrow(res2) > 1) {  
     Choices <- c("Select", c(res2$version))
   } else{
-    Choices <- c(res2$version)
+    Choices <- res2$version
   }
   selectInput("select_ver",
               h3("Select Version:"),
@@ -97,6 +101,7 @@ output$sel_ver <- renderUI({
 # 3. Render Output to dispaly the status of the selected package.
 
 output$status <- renderText({
+  req(values$selected_pkg)
   if (!is.null(input$select_pack)) {
     if (input$select_pack != "Select") {
       if (!identical(values$selected_pkg$decision, character(0))) {
@@ -131,8 +136,9 @@ output$score <- renderText({
 # 1. Observe Event for select package
 
 observeEvent(input$select_pack, {
-  
-  if (trimws(input$select_pack) != "Select" && trimws(input$select_pack) != "") {
+  req(input$select_pack != "Select")
+
+  # if (trimws(input$select_pack) != "Select" && trimws(input$select_pack) != "") {
     pack_ver<-db_fun(paste0("SELECT version FROM Packageinfo WHERE package = '", input$select_pack, "'"))
     updateSelectizeInput(
       session,
@@ -144,18 +150,27 @@ observeEvent(input$select_pack, {
                         selected = "mm_tab_value")
       values$mm_tab_redirect <- "no redirect"
     }
-    values$comment_occ <-
-      db_fun(
-        paste0(
-          "SELECT comment FROM Comments WHERE comm_id = '", input$select_pack, "'
+
+  # }
+}, ignoreInit = TRUE)  # End of the observe Event.
+
+observeEvent(input$select_ver, {
+  req(input$select_ver != "Select")
+  
+  values$comment_occ <-
+    db_fun(
+      paste0(
+        "SELECT comment FROM Comments WHERE comm_id = '", input$select_pack, "'
+          AND comm_ver = '", input$select_ver, "'
           AND user_name = '", input$name, "'
           AND user_role = '", input$role, "'
           AND comment_type = 'o'"
-        )
-      ) 
-    updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", values$comment_occ$comment))
-  }
-})  # End of the observe Event.
+      )
+    ) 
+  print(values$comment_occ)
+  updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", values$comment_occ$comment))
+
+}, ignoreInit = TRUE)  # End of the observe Event.
 
 # 2. Observe Event to submit the decision for selected package.
 
@@ -201,6 +216,7 @@ observeEvent(input$submit_confirmed_decision, {
   values$selected_pkg$decision <- input$decision
   removeModal()
   loggit("INFO", paste("decision for the package", values$selected_pkg$package, 
+                       "and version", values$selected_pkg$version,
                        "is", input$decision, 
                        "by", values$name, "(", values$role, ")"))
 })  # End of the Observe Event.
@@ -217,6 +233,9 @@ observeEvent(input$edit, {
 values$o_comment_submitted <- "no"
 observeEvent(input$submit_overall_comment, {
   
+  print("in observeEvent for submit_overall_comment")
+  print(values$selected_pkg)
+  
   overall_comment <- input$overall_comment
   values$overall_comments <- trimws(overall_comment)
   if (values$overall_comments != "") {
@@ -225,7 +244,7 @@ observeEvent(input$submit_overall_comment, {
         paste0(
           "SELECT * FROM Comments WHERE comment_type = 'o' AND comm_id = '",
           values$selected_pkg$package,
-          "'"
+          "'"," and comm_ver = '", values$selected_pkg$version, "'", ""
         )
       )
     if (values$name %in% comments_submitted$user_name &&
@@ -255,9 +274,11 @@ observeEvent(input$submit_overall_comment, {
         )
       ))
     } else{
+      print("inserting into comments")
       db_ins(
         paste0(
           "INSERT INTO Comments values('", values$selected_pkg$package, "',",
+          "'", values$selected_pkg$version, "',",
           "'", values$name, "'," ,
           "'", values$role, "',",
           "'", values$overall_comments, "',",
@@ -277,6 +298,7 @@ observeEvent(input$submit_overall_comment, {
 # 6. Observe Event to update overall comment.
 
 observeEvent(input$submit_overall_comment_yes, {
+  print("observeEvent for submit_overall_comment_yes")
   db_ins(
     paste0(
       "UPDATE Comments SET comment = '",
@@ -285,6 +307,8 @@ observeEvent(input$submit_overall_comment_yes, {
       TimeStamp(),
       "' WHERE comm_id = '",
       values$selected_pkg$package,
+      "' AND comm_ver = '",
+      values$selected_pkg$version,
       "' AND user_name = '",
       values$name,
       "' AND user_role = '",

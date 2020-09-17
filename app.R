@@ -171,16 +171,22 @@ server <- function(session, input, output) {
   })  # End of the selected screen observe.
   
   # 2. Observe to select the package,score,decision and load the data into reactive variable.
-  observe({
+  listenForPackVer <- reactive({
+    list(input$select_pack, input$select_ver)
+  })
+  observeEvent(listenForPackVer(), {
+    req(input$select_pack != "Select")
+    req(input$select_ver  != "Select")
+    
     values$selected_pkg <-
       db_fun(
         paste0(
-          "SELECT package, score, decision FROM Packageinfo WHERE package = '",
+          "SELECT package, version, score, decision FROM Packageinfo WHERE package = '",
           input$select_pack,
-          "'"
+          "'"," and version = '", input$select_ver, "'", ""
         )
       )
-  })  # End of the observe for reactive table.
+  }, ignoreInit = TRUE)  # End of the observe for reactive table.
   # End of the observe's'
   
   # Observe Event to load the source file of UI module when we click on the Assessment Criteria action Link.
