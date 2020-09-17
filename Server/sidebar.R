@@ -137,7 +137,7 @@ observeEvent(input$select_pack, {
     updateSelectizeInput(
       session,
       "select_ver",
-      choices = pack_ver[1,1]
+      choices = pack_ver[,1]
     )
     if (values$mm_tab_redirect == "redirect") {
       updateTabsetPanel(session, "tabs",
@@ -195,7 +195,7 @@ observeEvent(input$submit_confirmed_decision, {
       input$decision,
       "' WHERE package = '",
       values$selected_pkg$package,
-      "'"
+      "'"," and version = '", values$selected_pkg$version, "'", ""
     )
   )
   values$selected_pkg$decision <- input$decision

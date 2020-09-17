@@ -10,7 +10,7 @@
 
 # 1. Function to get the package general information from CRAN/local.
 
-get_packages_info_from_web <- function(package_name) {
+get_packages_info_from_web <- function(package_name, package_version) {
   tryCatch(
     expr = {
       webpage <-
@@ -46,6 +46,7 @@ get_packages_info_from_web <- function(package_name) {
       ver <- str_replace_all(ver, "'", "")
       ver <- str_replace_all(ver, '"', "")
       
+      if (ver != package_version) signalCondition(e)
       
       main_html <- html_nodes(webpage, 'td')
       main<-html_text(main_html)
@@ -101,12 +102,13 @@ get_packages_info_from_web <- function(package_name) {
       lis <- str_replace_all(lis, "'", "")
       lis <- str_replace_all(lis, '"', "")
       
-      
       genInfo_upload_to_DB(package_name, ver, title, desc, auth, main, lis, pub)
       
     },
     error = function(e) {
+      print(paste("in error function for",package_name,"version",package_version))
       if (package_name %in% rownames(installed.packages()) == TRUE) {
+        print("package is in installed.packages")
         for (i in .libPaths()) {
           if (file.exists(paste(i, "/", package_name, sep = "")) == TRUE) {
             i <- paste0(i, "/", package_name)
@@ -114,12 +116,14 @@ get_packages_info_from_web <- function(package_name) {
             title <- d$get("Title")
             ver <- d$get("Version")
             desc <- d$get("Description")
+            desc <- gsub("'", "", desc) # remove single quotes
             main <- d$get("Maintainer")
             auth <- d$get("Author")
             lis <- d$get("License")
             pub <- d$get("Packaged")
             
             genInfo_upload_to_DB(package_name, ver, title, desc, auth, main, lis, pub)
+            
           }}
       } else{
         loggit("ERROR", paste("Error in extracting general info of the package", package_name, "info", e), app = "fileupload-webscraping")
@@ -142,7 +146,7 @@ genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis
       loggit("ERROR", paste("Error in uploading the general info of the package", package_name, "info", e), app = "fileupload-DB")
     }
   )# End of try catch 
-
+  
 }
 # End of the function
 
@@ -166,7 +170,9 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   package_riskmetric1$bugs_status <- package_riskmetric1$bugs_status*100
   package_riskmetric1$export_help <- package_riskmetric1$export_help*100
   
-
+  # print("MaintenanceMetrics")
+  # print(head(package_riskmetric1,1))
+  
   db_ins(paste0("INSERT INTO MaintenanceMetrics values(", 
                 "'", package_name, "',", 
                 "'", package_riskmetric1$has_vignettes[1], ",", ifelse(class(package_riskmetric2$has_vignettes[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_vignettes[[1]][1]), "',",
@@ -187,7 +193,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   
   db_ins(paste0( "UPDATE Packageinfo SET score = '", format(round(package_riskmetric1$pkg_score[1], 2)), "'", " WHERE package = '" ,
                  package_name, "'"))
- 
+  
 }  
 
 # End of the function
@@ -294,8 +300,11 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
     }
   )# End of try catch
   
+  # print("CommunityUsageMetrics")
+  # print(pkg_vers_date_final)
+  
   for (i in 1:nrow(pkg_vers_date_final)) {
-    db_ins(paste0("INSERT INTO CommunityUsageMetrics values(",
+    db_ins(paste0("INSERT OR REPLACE INTO CommunityUsageMetrics values(",
                   "'", package_name,"',", "'", downloads_1yr, "',",
                   "'", pkg_vers_date_final$Month[i], "',", "'", pkg_vers_date_final$Downloads[i], "',", 
                   "'", pkg_vers_date_final$verRelease[i], "',", "'", pkg_vers_date_final$Position[i], "',",
@@ -306,5 +315,4 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
   }
   
 }
-
 # End of the functions
