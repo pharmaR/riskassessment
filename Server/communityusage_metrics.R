@@ -10,36 +10,49 @@
 
 # 1. Observe to load the columns from DB into reactive values.
 observe({
-  req(input$select_pack)
+  req(input$select_pack != "Select")
+  req(input$select_ver  != "Select")
+  
   if (input$tabs == "cum_tab_value") {
-    if (input$select_pack != "Select") {
-    
+
       # Load the columns into values$riskmetrics.
-      pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
+      pkgs_in_db <- db_fun(paste0("SELECT DISTINCT cum_id FROM CommunityUsageMetrics"))
       
       if (input$select_pack %in% pkgs_in_db$cum_id &&
           !identical(pkgs_in_db$cum_id, character(0))) {
+        print("getting cum metrics from if...")
         values$riskmetrics_cum <-
           db_fun(
             paste0(
-              "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
+              "SELECT DISTINCT * FROM CommunityUsageMetrics WHERE cum_id ='",
               input$select_pack,
               "'"
             )
           )
       } else{
-        if (input$select_pack != "Select") {
+          print("getting cum metrics from else...")
+          
           metric_cum_Info_upload_to_DB(input$select_pack)
           values$riskmetrics_cum <-
+            # use distinct for now until we can update the DB table
             db_fun(
               paste0(
-                "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
+                "SELECT DISTINCT * FROM CommunityUsageMetrics WHERE cum_id ='",
                 input$select_pack,
                 "'"
               )
             )
-        }
       }
+      
+      # Show metrics up to this version release
+      print(riskmetrics_cum$ver_release)
+      print(input$select_ver)
+      print(which(riskmetrics_cum$ver_release == input$select_ver))
+
+      values$riskmetrics_cum <-
+        slice_head(riskmetrics_cum,n=
+                     which(riskmetrics_cum$ver_release == input$select_ver))
+      
       
       # Load the data table column into reactive variable for time sice first release.
       values$time_since_first_release_info <-
@@ -61,7 +74,6 @@ observe({
           runjs("setTimeout(function(){ var ele = document.getElementById('submit_cum_comment'); ele.disabled = true; }, 500);")
         }
       }
-    }
   }
 })  # End of the observe.
 

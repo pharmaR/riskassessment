@@ -77,28 +77,39 @@ output$sel_pack <- renderUI({
 # 2. Render Output to show the select input to select the version of the selected package.
 
 output$sel_ver <- renderUI({
-  req(input$select_pack)
-  res2 <-
-    db_fun(
-      paste0(
-        "SELECT package, version FROM Packageinfo WHERE package = '",
-        input$select_pack,
-        "'"
-      )
-    )
-  print(c(res2$version))
-  if (input$select_pack == "Select" || nrow(res2) > 1) {  
-    Choices <- c("Select", c(res2$version))
-  } else{
-    Choices <- res2$version
-  }
-  selectInput("select_ver",
-              h3("Select Version:"),
-              choices = Choices,
-              selected = "Select")
-})  # End of the render Output.
 
-# 3. Render Output to dispaly the status of the selected package.
+  selectizeInput("select_ver",
+                 h3("Select Version:"),
+                 choices = c("Select")
+  )
+})  
+
+res2 <- reactive({
+  req(input$select_pack != "Select")
+  
+  # db_fun(
+  #       paste0(
+  #         "SELECT version FROM Packageinfo WHERE package = '",
+  #         input$select_pack,
+  #         "'"
+  #       )
+  #     )
+})
+
+observeEvent(res2(), {
+  print("in observeEvent for res2()")
+  vers <- as.character(res2()$version)
+  print(class(vers))
+  print(vers)
+  updateSelectizeInput(session,
+                       "select_ver",
+                       choices = c("Select", "Robert", vers),
+                       selected =  "Robert")
+  
+}, ignoreInit = TRUE) # End of the render Output.
+
+
+# 3. Render Output to display the status of the selected package.
 
 output$status <- renderText({
   req(values$selected_pkg)
@@ -209,7 +220,8 @@ observeEvent(input$submit_confirmed_decision, {
       input$decision,
       "' WHERE package = '",
       values$selected_pkg$package,
-      "'"," and version = '", values$selected_pkg$version, "'", ""
+      "'"," AND version = '", 
+      values$selected_pkg$version, "'", ""
     )
   )
   values$selected_pkg$decision <- input$decision
@@ -231,6 +243,9 @@ observeEvent(input$edit, {
 
 values$o_comment_submitted <- "no"
 observeEvent(input$submit_overall_comment, {
+  
+  print("in observeEvent for submit_overall_comment")
+  print(values$selected_pkg)
   
   overall_comment <- input$overall_comment
   values$overall_comments <- trimws(overall_comment)
@@ -273,7 +288,7 @@ observeEvent(input$submit_overall_comment, {
       db_ins(
         paste0(
           "INSERT INTO Comments values('", 
-               values$selected_pkg$package, "',",
+          values$selected_pkg$package, "',",
           "'", values$selected_pkg$version, "',",
           "'", values$name, "'," ,
           "'", values$role, "',",

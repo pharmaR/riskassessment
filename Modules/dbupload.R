@@ -108,7 +108,6 @@ get_packages_info_from_web <- function(package_name, package_version) {
     error = function(e) {
       print(paste("in error function for",package_name,"version",package_version))
       if (package_name %in% rownames(installed.packages()) == TRUE) {
-        print("package is in installed.packages")
         for (i in .libPaths()) {
           if (file.exists(paste(i, "/", package_name, sep = "")) == TRUE) {
             i <- paste0(i, "/", package_name)
@@ -234,8 +233,6 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
       pkg_vers <- pkg_vers[c(3:length(pkg_vers))]
       
       pkg_vers1 <- pkg_vers[length(pkg_vers)]
-      print(paste("pkg_vers1 is",pkg_vers1))
-      
       loop<-"not_started"
       while (pkg_vers1 != "") {
         pkg_html1 <- read_html(paste0("https://github.com/cran/",package_name,"/tags?after=",pkg_vers1))

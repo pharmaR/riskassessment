@@ -35,7 +35,6 @@ observeEvent(input$total_new_undis_dup, {
 
 observeEvent(input$uploaded_file, {
   # req(input$uploaded_file)
-  print("in observe event for input$uploaded_file")
   values$uploaded_file_status <- file_upload_error_handling(input$uploaded_file)
   if (values$uploaded_file_status != "no_error") {
     shinyjs::hide("upload_summary_text")

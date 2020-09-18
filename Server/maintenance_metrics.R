@@ -14,12 +14,21 @@ observe({
   req(input$select_pack)
   if(input$tabs == "mm_tab_value"){
     if(input$select_pack != "Select"){
+      cnt <-
+      db_fun(
+        paste0(
+          "SELECT count(*) FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
+          input$select_pack, "'", ""
+          # "'"," and mm_ver = '", input$select_ver, "'", ""
+        )
+      )
+      if (cnt > 0) {
       values$riskmetrics_mm <-
         db_fun(
           paste0(
             "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
-            input$select_pack,
-            "'"," and mm_ver = '", input$select_ver, "'", ""
+            input$select_pack, "'", ""
+            # "'"," and mm_ver = '", input$select_ver, "'", ""
           )
         )
       
@@ -51,6 +60,7 @@ observe({
           }
        }
     }
+   }
   }
 })  # End of the observe.
 
