@@ -156,6 +156,8 @@ output$cum_commented <- renderText({
         paste0(
           "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
           input$select_pack,
+          "' AND comm_ver = '",
+          input$select_ver,
           "' AND comment_type = 'cum'"
         )
       )
@@ -187,24 +189,16 @@ values$cum_comment_submitted <- "no"
 
 observeEvent(input$submit_cum_comment, {
   if (trimws(input$cum_comment) != "") {
-    db_fun(
+    db_ins(
       paste0(
         "INSERT INTO Comments values('",
-        input$select_pack,
-        "',",
-        "'",
-        values$name,
-        "'," ,
-        "'",
-        values$role,
-        "',",
-        "'",
-        input$cum_comment,
-        "',",
-        "'cum',",
-        "'",
-        TimeStamp(),
-        "'"  ,
+              input$select_pack, "',",
+        "'",  input$select_ver,  "',",
+        "'",  values$name, "'," ,
+        "'",  values$role, "',",
+        "'",  input$cum_comment, "',",
+        "'cum',", 
+        "'",  TimeStamp(), "'"  ,
         ")" 
       )
     )

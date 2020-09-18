@@ -19,7 +19,7 @@ observe({
           paste0(
             "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
             input$select_pack,
-            "'"
+            "'"," and mm_ver = '", input$select_ver, "'", ""
           )
         )
       
@@ -244,6 +244,8 @@ output$mm_commented <- renderText({
         paste0(
           "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
           input$select_pack,
+          "' AND comm_ver = '",
+          input$select_ver,
           "' AND comment_type = 'mm'"
         )
       )
@@ -273,24 +275,16 @@ values$mm_comment_submitted <- "no"
 
 observeEvent(input$submit_mm_comment, {
   if (trimws(input$mm_comment) != "") {
-    db_fun(
+    db_ins(
       paste0(
         "INSERT INTO Comments values('",
-        input$select_pack,
-        "',",
-        "'",
-        values$name,
-        "'," ,
-        "'",
-        values$role,
-        "',",
-        "'",
-        input$mm_comment,
-        "',",
-        "'mm'," ,
-        "'",
-        TimeStamp(),
-        "'"  ,
+             input$select_pack, "',",
+        "'", input$select_ver,  "',",
+        "'", values$name,       "',",
+        "'", values$role,       "',",
+        "'", input$mm_comment,  "',",
+        "'mm'," , 
+        "'",  TimeStamp(), "'"  ,
         ")"
       )
     )

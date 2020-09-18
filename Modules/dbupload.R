@@ -170,8 +170,8 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   package_riskmetric1$bugs_status <- package_riskmetric1$bugs_status*100
   package_riskmetric1$export_help <- package_riskmetric1$export_help*100
   
-  # print("MaintenanceMetrics")
-  # print(head(package_riskmetric1,1))
+  print("MaintenanceMetrics")
+  print(head(package_riskmetric1,1))
   
   db_ins(paste0("INSERT INTO MaintenanceMetrics values(", 
                 "'", package_name, "',", 
@@ -234,6 +234,8 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
       pkg_vers <- pkg_vers[c(3:length(pkg_vers))]
       
       pkg_vers1 <- pkg_vers[length(pkg_vers)]
+      print(paste("pkg_vers1 is",pkg_vers1))
+      
       loop<-"not_started"
       while (pkg_vers1 != "") {
         pkg_html1 <- read_html(paste0("https://github.com/cran/",package_name,"/tags?after=",pkg_vers1))
@@ -300,8 +302,8 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
     }
   )# End of try catch
   
-  # print("CommunityUsageMetrics")
-  # print(pkg_vers_date_final)
+  print("CommunityUsageMetrics")
+  print(pkg_vers_date_final)
   
   for (i in 1:nrow(pkg_vers_date_final)) {
     db_ins(paste0("INSERT OR REPLACE INTO CommunityUsageMetrics values(",

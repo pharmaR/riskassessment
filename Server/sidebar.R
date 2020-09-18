@@ -167,7 +167,6 @@ observeEvent(input$select_ver, {
           AND comment_type = 'o'"
       )
     ) 
-  print(values$comment_occ)
   updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", values$comment_occ$comment))
 
 }, ignoreInit = TRUE)  # End of the observe Event.
@@ -233,9 +232,6 @@ observeEvent(input$edit, {
 values$o_comment_submitted <- "no"
 observeEvent(input$submit_overall_comment, {
   
-  print("in observeEvent for submit_overall_comment")
-  print(values$selected_pkg)
-  
   overall_comment <- input$overall_comment
   values$overall_comments <- trimws(overall_comment)
   if (values$overall_comments != "") {
@@ -274,10 +270,10 @@ observeEvent(input$submit_overall_comment, {
         )
       ))
     } else{
-      print("inserting into comments")
       db_ins(
         paste0(
-          "INSERT INTO Comments values('", values$selected_pkg$package, "',",
+          "INSERT INTO Comments values('", 
+               values$selected_pkg$package, "',",
           "'", values$selected_pkg$version, "',",
           "'", values$name, "'," ,
           "'", values$role, "',",

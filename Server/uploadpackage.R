@@ -60,30 +60,34 @@ observeEvent(input$uploaded_file, {
   names(pkgs_file) <- tolower(names(pkgs_file))
   pkgs_file$package <- trimws(pkgs_file$package)
   pkgs_file$version <- trimws(pkgs_file$version)
-  
+
   j <- rep(FALSE, nrow(pkgs_file))
   for (i in 1:nrow(pkgs_file)) {
     if (!pkgs_file$package[i] %in% pkgs_vec) {
       message(paste("Package",pkgs_file$package[i],"not found on CRAN. Names are case-sensitive. Check your spelling."))
       j[i] <- TRUE
     }
+
     if (j[i] == FALSE)  {
       beg <- Sys.time()
-      vrsn_lst <- versions::available.versions(pkgs_file$package[i])
-      vrsn_vec <- unlist(vrsn_lst[[1]]$version)
-      # pkg_html <- read_html(paste0("https://github.com/cran/", pkgs_file$package[i], "/tags"))
-      # pkg_nodes_v <- html_nodes(pkg_html, 'h4')
-      # pkg_text_v <- html_text(pkg_nodes_v)
-      # pkg_text_v <- str_split(pkg_text_v,"\n")
-      # pkg_vers <- rep("", length(pkg_text_v))
-      # for (i in 1:length(pkg_text_v)) {
-      #   pkg_vers[i]<-(trimws(pkg_text_v[[i]][3]))
-      # }
-      # pkg_vers <- pkg_vers[c(3:length(pkg_vers))]
-      # print(pkg_vers)
-      # vrsn_vec <- pkg_vers
+      pkg_html <- read_html(paste0("https://github.com/cran/", pkgs_file$package[i], "/tags"))
+      pkg_nodes_v <- html_nodes(pkg_html, 'h4')
+      pkg_text_v <- html_text(pkg_nodes_v)
+      pkg_text_v <- str_split(pkg_text_v,"\n")
+      pkg_vers <- rep("", length(pkg_text_v))
+      for (k in 1:length(pkg_text_v)) {
+        pkg_vers[k]<-(trimws(pkg_text_v[[k]][3]))
+      }
+      vrsn_vec <- pkg_vers[which(!is.na(pkg_vers))] #pkg_vers[c(3:length(pkg_vers))]
       end <- Sys.time()
       print(end - beg)
+      
+      # beg <- Sys.time()
+      # vrsn_lst <- versions::available.versions(pkgs_file$package[i])
+      # vrsn_vec <- unlist(vrsn_lst[[1]]$version)
+      # print(paste("vrsn_vec is",paste(vrsn_vec, collapse = ", ")))
+      # end <- Sys.time()
+      # print(end - beg)
       
       if (!pkgs_file$version[i] %in% vrsn_vec) {
         message(paste("Version",pkgs_file$version[i],"of ",pkgs_file$package[i],"not found on CRAN. Check your spelling."))
