@@ -66,8 +66,8 @@ which will be added to the `MaintenanceMetrics` table.
 ### Modules
 
 - `DB.R` open connections to each of the tables used within the application. All table names can be found in `Utils/SQLite.sql`
-- `dbupload.R` [TODO Upload the existing packages from within the database and run riskmetric on any new packages added via CSV?]
-- `file_upload_error_handling.R` How to handle corrupt CSV uploads
+- `dbupload.R` contains all the functions that interact with the database, as well the function `get_packages_info_from_web` that gets information from CRAN for each uploaded package.
+- `file_upload_error_handling.R` How to handle corrupt CSV uploads.
 
 ### Utils
   
@@ -92,7 +92,7 @@ Non-R assets for the application: images and a JavaScript helper file to app rea
 
 ### Files created by the app
 
-- `loggit.json`: Log file created each time the application is ran. It contains information about the uploaded packages and application errors. For example, when the user uploads the example csv file `Upload_file_structure.csv` for the first time, a line similar to this one is added to the `loggit.json` file:
+- `loggit.json` Log file created each time the application is ran. It contains information about the uploaded packages and application errors. For example, when the user uploads the example csv file `Upload_file_structure.csv` for the first time, a line similar to this one is added to the `loggit.json` file:
 
   ```
   {"timestamp": "2020-08-28T18:21:29-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: Upload_file_structure.csv Total Packages: 3 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 0"}
@@ -104,7 +104,7 @@ Non-R assets for the application: images and a JavaScript helper file to app rea
   - `./Server/sidebar.R`: Logs whenever there the user makes a final decision on a package, i.e., when the user clicks 'Submit Decision'
   - `./Server/uploadpackage.R`: Logs whenever a csv file is uploaded. In particular, it logs a summary of the uploaded file.
 
-- `database.sqlite`: SQLite database containing the risk, metrics, and comments of each package uploaded. It is created the first time the application is ran. Subsequent runs of the application will update the existing db.
+- `database.sqlite` SQLite database containing the risk, metrics, and comments of each package uploaded. It is created the first time the application is ran. Subsequent runs of the application will update the existing db.
 
    The db is created in the `Utils/utils.R` file. It contains the following tables:
    - `Packageinfo`
