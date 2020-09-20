@@ -61,10 +61,7 @@ which will be added to the `MaintenanceMetrics` table.
 
 - `tm_report.R` [TODO Repeats the code of `testing_metrics.R`]
 
-- `reportpreview.R` Uses `cum_report.R`, `mm_report.R`, and `testing_metrics.R`
-  to repeat the code seen in the other tabs and create a singular, downloadable report.
-  [TODO honestly do we need this tab at all? Can we just have one big download button
-  either in the sidebar or at the top that just prints the contents of the other tabs?]
+- `reportpreview.R` Uses `cum_report.R`, `mm_report.R`, and `testing_metrics.R` to repeat the code seen in the other tabs and create a singular, downloadable report.
 
 ### Modules
 
