@@ -2,11 +2,15 @@
 
 ## Overview:
 
-A CSV with package name and version is uploaded by the user, 
-then their individual risks are assessed using `riskmetric`. The `riskmetric` package is loaded in the `setup.R` file. Then, in the `./Modules/dbupload.R` file, the function `metric_mm_tm_Info_upload_to_DB` calls `riskmetric` and saves the different metric results on the db.
+A CSV with a list of package names and versions is uploaded by the user, then
+their individual risks are assessed using `riskmetric`.
 
-The database (SQLite by default) is updated to include the user specified package 
-and its associated metrics. 
+The `riskmetric` package is loaded in the `setup.R` file. Then, in the `./Modules/dbupload.R` file, the function `metric_mm_tm_Info_upload_to_DB` calls
+`riskmetric` and saves the different metric results on the database (SQLite by
+default).
+
+The database is updated to include the user specified packages and their
+associated metrics.
 
 These metrics are used to populate the UI of the application. 
 Each package only needs to be entered into the database once for the user
