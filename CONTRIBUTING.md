@@ -98,10 +98,10 @@ Non-R assets for the application: images and a JavaScript helper file to app rea
 
 ### Files created by the app
 
-- `loggit.json`: Log file created each time the application is ran. It contains information about the uploaded packages and application errors. For example, when the user uploads the example csv file `Upload_file_structure.csv`, the following line is added to the `loggit.json` file:
+- `loggit.json`: Log file created each time the application is ran. It contains information about the uploaded packages and application errors. For example, when the user uploads the example csv file `Upload_file_structure.csv` for the first time, a line similar to this one is added to the `loggit.json` file:
 
   ```
-  {"timestamp": "2020-08-28T18:21:29-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: Upload_file_structure.csv Total Packages: 3 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 3"}
+  {"timestamp": "2020-08-28T18:21:29-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: Upload_file_structure.csv Total Packages: 3 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 0"}
   ```
 
   The log functionality is handled by the `loggit` package. The following files write to `loggit.json`:
