@@ -48,9 +48,7 @@ maybe also include a schematic of how the files are related]
   - **Duplicates**: The number of those packages that were already in the db.
   - **Undescovered**: The number of packages for which no information was found.
 
-- `communityusage_metrics.R` Using the fields within the table `CommunityUsageMetrics`,
-   create a `Highchart` graph of package downloads and versions over the lifetime of the           package. [TODO do we need to repeat the code to plot every month? Can this be cleaned up?].
-   There is also an area to leave comments, which will be added to the`CommunityUsageMetrics` table. 
+- `communityusage_metrics.R` Using the fields within the table `CommunityUsageMetrics`, create a `Highchart` graph of package downloads and versions over the lifetime of the package. There is also an area to leave comments, which will be added to the`CommunityUsageMetrics` table.
    
 - `cum_report.R` [TODO Repeats the code of `communityusage_metrics.R`]
 
