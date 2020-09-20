@@ -78,8 +78,7 @@ which will be added to the `MaintenanceMetrics` table.
 
 ### Utils
   
-- `SQLite.sql` creates the database schema to be filled in with application data. 
-  [TODO: ....not sure when this script is actually used?]
+
 - `utils.R` 
   - `db_fun` connects to database. This function is called in `app.R` 
      to populate the drop-down of packages either already included in the database
@@ -96,4 +95,19 @@ Text files containing the explanations of all metrics. Files are used to populat
 
 ### www 
     
-Non-R assets for the application: images and a JavaScript helper file to app reactivity. 
+Non-R assets for the application: images and a JavaScript helper file to app reactivity.
+
+### Files created by the app
+
+- `loggit.json`
+
+- `database.sqlite`: SQLite database created the first time the application is ran. Subsequent runs of the application will update the existing db.
+
+   The db is created in the `Utils/utils.R` file. It contains the following tables:
+   - `Packageinfo`
+   - `MaintenanceMetrics`
+   - `CommunityUsageMetrics`
+   - `TestMetrics`
+   - `Comments`
+   
+<center>**Last Updated on 09/2020**</center>
