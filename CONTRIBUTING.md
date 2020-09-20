@@ -1,6 +1,6 @@
 # Guide to Making Developer Contributions
 
-## Overview:
+## Overview
 
 A CSV with a list of package names and versions is uploaded by the user, then
 their individual risks are assessed using `riskmetric`.
@@ -22,13 +22,14 @@ to see its associated risk.
 maybe also include a schematic of how the files are related]
 
 ### Root
-- `setup.R` Load all libraries, install libraries that aren't included. Called in `app.R.`
+- `setup.R` Load all libraries, install libraries that aren't included. Called in `app.R`.
+
 - `app.R` This file contains the server and UI code for displaying the app, 
      calling the files within the Modules, Server, UI, and Utils folders.
 
 ### UI/Server
 
-**Most files are in both the UI and Server folders with the same name. If files are only in one folder, the folder name is included in the extension below:**
+**Most files are in both the UI and Server folders with the same name. If files are only in one folder, then the folder name will be included in the extension below.**
 
 - `UI/dashboard_screen.R` contains the UI layout of the landing page of the application
 
@@ -41,9 +42,9 @@ maybe also include a schematic of how the files are related]
    help modal which describes the criteria used to assess the risk of the application.
    The text to populate this modal is located in the `Data` directory
 
-- `uploadpackage.R` Import the packages from the user supplied csv. The given package names and risk assessments are loaded into the db. This file then reads back from the db and propagates the needed info in the UI. In particular, it will display a table on the 'Upload Package' tab with the following information:
+- `uploadpackage.R` Import the packages from the user supplied CSV. The given package names and risk assessments are loaded into the db. This file then reads back from the db and propagates the needed info in the UI. In particular, it will display a table on the 'Upload Package' tab with the following information:
 
-  - **Total**: The total number of packages in the uploaded csv.
+  - **Total**: The total number of packages in the uploaded CSV.
   - **New**: The number of those packages that were not previously in the db.
   - **Duplicates**: The number of those packages that were already in the db.
   - **Undescovered**: The number of packages for which no information was found.
@@ -65,14 +66,13 @@ which will be added to the `MaintenanceMetrics` table.
 
 ### Modules
 
-- `DB.R` open connections to each of the tables used within the application. All table names can be found in `Utils/SQLite.sql`
 - `dbupload.R` contains all the functions that interact with the database, as well the function `get_packages_info_from_web` that gets information from CRAN for each uploaded package.
 - `file_upload_error_handling.R` How to handle corrupt CSV uploads.
 
 ### Utils
-  
 
-- `utils.R` 
+- `utils.R`
+
   - `db_fun` connects to database. This function is called in `app.R` 
      to populate the drop-down of packages either already included in the database
      or within the uploaded CSV of packages.
@@ -92,7 +92,7 @@ Non-R assets for the application: images and a JavaScript helper file to app rea
 
 ### Files created by the app
 
-- `loggit.json` Log file created each time the application is ran. It contains information about the uploaded packages and application errors. For example, when the user uploads the example csv file `Upload_file_structure.csv` for the first time, a line similar to this one is added to the `loggit.json` file:
+- `loggit.json` Log file created each time the application is ran. It contains information about the uploaded packages and application errors. For example, when the user uploads the example CSV file `Upload_file_structure.csv` for the first time, a line similar to this one is added to the `loggit.json` file:
 
   ```
   {"timestamp": "2020-08-28T18:21:29-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: Upload_file_structure.csv Total Packages: 3 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 0"}
@@ -102,7 +102,7 @@ Non-R assets for the application: images and a JavaScript helper file to app rea
 
   - `/Modules/dbupload.R`: Logs whenever there is an error extracting or uploading info of a package.
   - `./Server/sidebar.R`: Logs whenever there the user makes a final decision on a package, i.e., when the user clicks 'Submit Decision'
-  - `./Server/uploadpackage.R`: Logs whenever a csv file is uploaded. In particular, it logs a summary of the uploaded file.
+  - `./Server/uploadpackage.R`: Logs whenever a CSV file is uploaded. In particular, it logs a summary of the uploaded file.
 
 - `database.sqlite` SQLite database containing the risk, metrics, and comments of each package uploaded. It is created the first time the application is ran. Subsequent runs of the application will update the existing db.
 
