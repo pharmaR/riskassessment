@@ -41,12 +41,12 @@ maybe also include a schematic of how the files are related]
    help modal which describes the criteria used to assess the risk of the application.
    The text to populate this modal is located in the `Data` directory
 
-- `uploadpackage.R` Import the packages from the user supplied CSV. The given package names and risk assessments are loaded into the db. This file then reads back from the db and propagates the needed info in the UI. In particular, it will display a table on the 'Upload Package' tab with the following information:
+- `uploadpackage.R` Import the packages from the user supplied csv. The given package names and risk assessments are loaded into the db. This file then reads back from the db and propagates the needed info in the UI. In particular, it will display a table on the 'Upload Package' tab with the following information:
 
-  - Total: The total number of packages in the uploaded csv.
-  - New: The number of those packages that were not previously in the db.
-  - Duplicates: The number of those packages that were already in the db.
-  - Undescovered: The number of packages for which no information was found.
+  - **Total**: The total number of packages in the uploaded csv.
+  - **New**: The number of those packages that were not previously in the db.
+  - **Duplicates**: The number of those packages that were already in the db.
+  - **Undescovered**: The number of packages for which no information was found.
 
 - `communityusage_metrics.R` Using the fields within the table `CommunityUsageMetrics`,
    create a `Highchart` graph of package downloads and versions over the lifetime of the           package. [TODO do we need to repeat the code to plot every month? Can this be cleaned up?].
