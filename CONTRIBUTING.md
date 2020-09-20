@@ -22,7 +22,6 @@ to see its associated risk.
 maybe also include a schematic of how the files are related]
 
 ### Root
-- `loggit.json` [TODO: log of user collected data within the app?]
 - `setup.R` Load all libraries, install libraries that aren't included. Called in `app.R.`
 - `risk_assessment_app.db` Database connection used within `Modules/DB.R`
 - `app.R` This file contains the server and UI code for displaying the app, 
@@ -99,9 +98,19 @@ Non-R assets for the application: images and a JavaScript helper file to app rea
 
 ### Files created by the app
 
-- `loggit.json`
+- `loggit.json`: Log file created each time the application is ran. It contains information about the uploaded packages and application errors. For example, when the user uploads the example csv file `Upload_file_structure.csv`, the following line is added to the `loggit.json` file:
 
-- `database.sqlite`: SQLite database created the first time the application is ran. Subsequent runs of the application will update the existing db.
+  ```
+  {"timestamp": "2020-08-28T18:21:29-0400", "log_lvl": "INFO", "log_msg": "Summary of the uploaded file: Upload_file_structure.csv Total Packages: 3 New Packages: 0 Undiscovered Packages: 0 Duplicate Packages: 3"}
+  ```
+
+  The log functionality is handled by the `loggit` package. The following files write to `loggit.json`:
+
+  - `/Modules/dbupload.R`: Logs whenever there is an error extracting or uploading info of a package.
+  - `./Server/sidebar.R`: Logs whenever there the user makes a final decision on a package, i.e., when the user clicks 'Submit Decision'
+  - `./Server/uploadpackage.R`: Logs whenever a csv file is uploaded. In particular, it logs a summary of the uploaded file.
+
+- `database.sqlite`: SQLite database containing the risk, metrics, and comments of each package uploaded. It is created the first time the application is ran. Subsequent runs of the application will update the existing db.
 
    The db is created in the `Utils/utils.R` file. It contains the following tables:
    - `Packageinfo`
@@ -109,5 +118,5 @@ Non-R assets for the application: images and a JavaScript helper file to app rea
    - `CommunityUsageMetrics`
    - `TestMetrics`
    - `Comments`
-   
+
 <center>**Last Updated on 09/2020**</center>
