@@ -23,7 +23,6 @@ maybe also include a schematic of how the files are related]
 
 ### Root
 - `setup.R` Load all libraries, install libraries that aren't included. Called in `app.R.`
-- `risk_assessment_app.db` Database connection used within `Modules/DB.R`
 - `app.R` This file contains the server and UI code for displaying the app, 
      calling the files within the Modules, Server, UI, and Utils folders.
 
