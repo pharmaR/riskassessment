@@ -17,6 +17,26 @@ output$report_preview<-renderUI({
     removeUI(selector = "#Upload")
     fluidRow(
       class = "mt-4 r_p_main_row",
+      
+      # Start Package DB Dashboard
+      fluidRow(
+        class="float-right r_p_format_row",
+        tags$div(
+          class="col-sm W-40 text-left float-right",
+          selectInput("report_formats", "Select Format", c("html", "docx")),  # Select input to select the format for report.
+        ),
+        tags$div(
+          class="col-sm float-right",
+          downloadButton("dwnld_sel_db_pkgs_btn", "Dwnld Report for Selection(s)", class = "download_report_btn_class btn-secondary"),  # Download button to export the report.
+        ),
+      ),
+      DT::dataTableOutput("db_pkgs"),
+      br(),
+      br(),
+      br(),
+      br(),
+      # End Package DB Dashboard
+      
       fluidRow(
         class="float-right r_p_format_row",
         tags$div(
