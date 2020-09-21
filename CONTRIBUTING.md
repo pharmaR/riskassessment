@@ -58,7 +58,7 @@ which will be added to the `MaintenanceMetrics` table.
 
 - `mm_report.R` [TODO Repeats the code of `maintenance_metrics.R`]
 
-- `testing_metrics.R` Uses the fields within the table `TestMetrics` to create a `amAngularGauge`. Also includes a comment section which will be added to the `TestMetrics` table.
+- `testing_metrics.R` uses the fields within the table `TestMetrics` to create a `amAngularGauge`. Also, it includes a comment section which will be added to the `TestMetrics` table.
 
 - `tm_report.R` [TODO Repeats the code of `testing_metrics.R`]
 
