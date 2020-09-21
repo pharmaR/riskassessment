@@ -53,8 +53,8 @@ maybe also include a schematic of how the files are related]
    
 - `cum_report.R` [TODO Repeats the code of `communityusage_metrics.R`]
 
-- `maintenance_metrics.R` Uses the table `MaintenanceMetrics` to create the 9 UI badges associated with the risk metric package, and creates an area for leaving comments,
-which will be added to the `MaintenanceMetrics` table. 
+- `maintenance_metrics.R` uses the table `MaintenanceMetrics` to create the 9 UI badges associated with the riskmetric package, and creates an area for leaving comments,
+which will be added to the `MaintenanceMetrics` table.
 
 - `mm_report.R` [TODO Repeats the code of `maintenance_metrics.R`]
 
