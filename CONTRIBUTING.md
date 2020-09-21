@@ -62,7 +62,7 @@ which will be added to the `MaintenanceMetrics` table.
 
 - `tm_report.R` [TODO Repeats the code of `testing_metrics.R`]
 
-- `reportpreview.R` Uses `cum_report.R`, `mm_report.R`, and `testing_metrics.R` to repeat the code seen in the other tabs and create a singular, downloadable report.
+- `reportpreview.R` generates an overall description of the package, the decision status of the package, and the overall comment of the selected package. It uses `cum_report.R`, `mm_report.R`, and `testing_metrics.R` to repeat the code seen in the other tabs above and create a singular, downloadable report.
 
 ### Modules
 
