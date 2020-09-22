@@ -19,7 +19,7 @@ observe({
           paste0(
             "SELECT * FROM TestMetrics WHERE TestMetrics.tm_id ='",
             input$select_pack,
-            "'"
+            "'"," and tm_ver = '", input$select_ver, "'", ""
           )
         )
       values$test_coverage <- c(strsplit(values$riskmetrics_tm$test_coverage,",")[[1]][1], strsplit(values$riskmetrics_tm$test_coverage,",")[[1]][2])
@@ -77,6 +77,8 @@ output$tm_commented <- renderText({
         paste0(
           "SELECT user_name, user_role, comment, added_on FROM Comments WHERE comm_id = '",
           input$select_pack,
+          "' AND comm_ver = '", 
+          input$select_ver,
           "' AND comment_type = 'tm'"
         )
       )
@@ -103,24 +105,16 @@ output$tm_commented <- renderText({
 values$tm_comment_submitted <- "no"
 observeEvent(input$submit_tm_comment, {
   if (trimws(input$tm_comment) != "") {
-    db_fun(
+    db_ins(
       paste0(
         "INSERT INTO Comments values('",
-        input$select_pack,
-        "',",
-        "'",
-        values$name,
-        "'," ,
-        "'",
-        values$role,
-        "',",
-        "'",
-        input$tm_comment,
-        "',",
-        "'tm',",
-        "'",
-        TimeStamp(),
-        "'" ,
+             input$select_pack, "',",
+        "'", input$select_ver,  "',",
+        "'", values$name,  "'," ,
+        "'", values$role,  "',",
+        "'", input$tm_comment,  "',",
+        "'tm',",  
+        "'", TimeStamp(), "'" ,
         ")" 
       )
     )

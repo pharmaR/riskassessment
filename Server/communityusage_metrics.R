@@ -10,12 +10,11 @@
 
 # 1. Observe to load the columns from DB into reactive values.
 observe({
-  req(input$select_pack)
+  req(input$select_pack != "Select", input$select_ver != "Select")
   if (input$tabs == "cum_tab_value") {
-    if (input$select_pack != "Select") {
-    
+
       # Load the columns into values$riskmetrics.
-      pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
+      pkgs_in_db <- db_fun(paste0("SELECT DISTINCT cum_id FROM CommunityUsageMetrics"))
       
       if (input$select_pack %in% pkgs_in_db$cum_id &&
           !identical(pkgs_in_db$cum_id, character(0))) {
@@ -24,22 +23,28 @@ observe({
             paste0(
               "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
               input$select_pack,
-              "'"
+              "'"," and cum_ver = '", input$select_ver, "'", ""
             )
           )
       } else{
-        if (input$select_pack != "Select") {
-          metric_cum_Info_upload_to_DB(input$select_pack)
+          metric_cum_Info_upload_to_DB(input$select_pack, input$select_ver)
           values$riskmetrics_cum <-
             db_fun(
               paste0(
                 "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
                 input$select_pack,
-                "'"
+                "'"," and cum_ver = '", input$select_ver, "'", ""
               )
             )
-        }
       }
+      
+      # Show metrics up to this version release
+      print(values$riskmetrics_cum$ver_release)
+      print(input$select_ver)
+
+      # values$riskmetrics_cum <-
+      #   slice_head(values$riskmetrics_cum,n=
+      #                which(values$riskmetrics_cum$ver_release == input$select_ver))
       
       # Load the data table column into reactive variable for time sice first release.
       values$time_since_first_release_info <-
@@ -62,7 +67,6 @@ observe({
         }
       }
     }
-  }
 })  # End of the observe.
 
 # End of the observe's'
@@ -187,24 +191,16 @@ values$cum_comment_submitted <- "no"
 
 observeEvent(input$submit_cum_comment, {
   if (trimws(input$cum_comment) != "") {
-    db_fun(
+    db_ins(
       paste0(
         "INSERT INTO Comments values('",
-        input$select_pack,
-        "',",
-        "'",
-        values$name,
-        "'," ,
-        "'",
-        values$role,
-        "',",
-        "'",
-        input$cum_comment,
-        "',",
+             input$select_pack, "',",
+        "'", input$select_ver,  "',", 
+        "'", values$name,       "',",
+        "'", values$role,       "',",
+        "'", input$cum_comment, "',",
         "'cum',",
-        "'",
-        TimeStamp(),
-        "'"  ,
+        "'", TimeStamp(), "'",
         ")" 
       )
     )

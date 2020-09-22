@@ -232,6 +232,9 @@ metric_cum_Info_upload_to_DB <- function(package_name, package_version) {
       }
       pkg_vers <- pkg_vers[c(3:length(pkg_vers))]
       
+      print("pkg_vers to upload to db")
+      print(paste("pkg_vers",paste(pkg_vers, collapse = ",")))
+      
       pkg_vers1 <- pkg_vers[length(pkg_vers)]
       loop<-"not_started"
       while (pkg_vers1 != "") {
@@ -263,7 +266,7 @@ metric_cum_Info_upload_to_DB <- function(package_name, package_version) {
           pkg_date1 <- str_remove_all(pkg_text_d1[length(pkg_text_d1)], ",")
           pkg_date1 <- as.Date(pkg_date1, format = "%h %d %Y")
           time_since_first_release <- Sys.Date() - pkg_date1
-          time_since_first_release <- floor(as.numeric(time_since_first_release / 30))
+          time_since_first_release <- floor(as.numeric(time_since_first_release / 30.4375))
           loop<-"looped"
         }
       }
@@ -273,7 +276,7 @@ metric_cum_Info_upload_to_DB <- function(package_name, package_version) {
       pkg_date <- str_remove_all(pkg_text_d, ",")
       pkg_date <- as.Date(pkg_date, format = "%h %d %Y")
       time_since_version_release <- Sys.Date() - pkg_date[1]
-      time_since_version_release <- floor(as.numeric(time_since_version_release / 30))
+      time_since_version_release <- floor(as.numeric(time_since_version_release / 30.4375))
       
       pkg_vers_date <- data.frame(Version = c(pkg_vers), Date = c(paste(months(pkg_date), year(pkg_date))))
       pkg_vers_date <- pkg_vers_date %>% map_df(rev)

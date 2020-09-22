@@ -19,7 +19,7 @@ observe({
           paste0(
             "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
             input$select_pack,
-            "'"
+            "'"," and mm_ver = '", input$select_ver, "'", ""
           )
         )
       
@@ -275,21 +275,13 @@ observeEvent(input$submit_mm_comment, {
     db_fun(
       paste0(
         "INSERT INTO Comments values('",
-        input$select_pack,
-        "',",
-        "'",
-        values$name,
-        "'," ,
-        "'",
-        values$role,
-        "',",
-        "'",
-        input$mm_comment,
-        "',",
+        input$select_pack,      "',",
+        "'", input$select_ver,  "',", 
+        "'", values$name,       "'," ,
+        "'", values$role,       "',",
+        "'", input$mm_comment,  "',",
         "'mm'," ,
-        "'",
-        TimeStamp(),
-        "'"  ,
+        "'", TimeStamp(),       "'"  ,
         ")"
       )
     )
