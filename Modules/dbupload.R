@@ -152,7 +152,7 @@ genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis
 
 # 3. Function to get the maintenance and testing metrics info and upload into DB.
 
-metric_mm_tm_Info_upload_to_DB <- function(package_name){
+metric_mm_tm_Info_upload_to_DB <- function(package_name, package_version){
   
   package_riskmetric1 <<-
     pkg_ref(package_name) %>%
@@ -171,7 +171,8 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   
 
   db_ins(paste0("INSERT INTO MaintenanceMetrics values(", 
-                "'", package_name, "',", 
+                "'", package_name,    "',", 
+                "'", package_version, "',",
                 "'", package_riskmetric1$has_vignettes[1], ",", ifelse(class(package_riskmetric2$has_vignettes[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_vignettes[[1]][1]), "',",
                 "'", package_riskmetric1$has_news[1], ",",  ifelse(class(package_riskmetric2$has_news[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_news[[1]][1]), "',", 
                 "'", package_riskmetric1$news_current[1], ",",  ifelse(class(package_riskmetric2$news_current[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$news_current[[1]][1]), "',",  
@@ -185,6 +186,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   db_ins(
     paste0( "INSERT INTO TestMetrics values(",
             "'", package_name, "',",  
+            "'", package_version, "',",
             "'", format(round(package_riskmetric1$covr_coverage[1], 2)),",", ifelse(class(package_riskmetric2$covr_coverage[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$covr_coverage[[1]][1]), "'", ")" )
   )
   
@@ -197,7 +199,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
 
 # 4. Function to get community usage metrics info and upload into DB.
 
-metric_cum_Info_upload_to_DB <- function(package_name) {
+metric_cum_Info_upload_to_DB <- function(package_name, package_version) {
   pkg_vers_date_final<<-data.frame(matrix(ncol = 4, nrow = 0))
   time_since_first_release<<-NA
   time_since_version_release<<-NA
@@ -299,7 +301,9 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
   
   for (i in 1:nrow(pkg_vers_date_final)) {
     db_ins(paste0("INSERT INTO CommunityUsageMetrics values(",
-                  "'", package_name,"',", "'", downloads_1yr, "',",
+                  "'", package_name,    "',",
+                  "'", package_version, "',",
+                  "'", downloads_1yr,   "',",
                   "'", pkg_vers_date_final$Month[i], "',", "'", pkg_vers_date_final$Downloads[i], "',", 
                   "'", pkg_vers_date_final$verRelease[i], "',", "'", pkg_vers_date_final$Position[i], "',",
                   "'", time_since_first_release, "',", "'", time_since_version_release, "'" , ")"))

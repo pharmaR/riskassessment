@@ -99,9 +99,8 @@ observeEvent(input$uploaded_file, {
           new_package<-values$New$package[i]
           new_version<-values$New$version[i]
           get_packages_info_from_web(new_package,new_version)
-          # get_packages_info_from_web(new_package)
-          metric_mm_tm_Info_upload_to_DB(new_package)
-          metric_cum_Info_upload_to_DB(new_package)
+          metric_mm_tm_Info_upload_to_DB(new_package,new_version)
+          metric_cum_Info_upload_to_DB(new_package,new_version)
           incProgress(1 / nrow(values$New), detail = values$New[i, 1])
           Sys.sleep(0.1)
       }
