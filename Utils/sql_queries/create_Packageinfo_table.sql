@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS Packageinfo(
-   package        CHAR PRIMARY KEY NOT NULL, 
-   version        CHAR,
+   package        CHAR NOT NULL, 
+   version        CHAR NOT NULL,
    title          CHAR,
    description    TEXT,
    maintainer     CHAR,
@@ -8,5 +8,8 @@ CREATE TABLE IF NOT EXISTS Packageinfo(
    license        CHAR,
    published_on   CHAR,
    score          INT,
-   decision       CHAR
+   decision       CHAR,
+   primary key(package, version)
+);
+CREATE UNIQUE INDEX pack_idx ON Packageinfo(package, version);
 );
