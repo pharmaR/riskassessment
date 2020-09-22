@@ -7,10 +7,32 @@
 
 # Start of the Observes'.
 
+selPackVer <- reactive({
+  list(input$select_pack, input$select_ver) 
+})
+
+# 2. Observe to select the package,score,decision and load the data into reactive variable.
+observeEvent(selPackVer(), {
+  req(input$select_pack != "Select", input$select_ver != "Select")
+  print("in observeEvent for selPackVer()")
+  
+  values$selected_pkg <-
+    db_fun(
+      paste0(
+        "SELECT package, version, score, decision FROM Packageinfo WHERE package = '",
+        input$select_pack,
+        "'"," and version = '", input$select_ver, "'", ""
+      )
+    )
+  print("selected_pkg was loaded")
+  print(values$selected_pkg)
+}, ignoreInit = TRUE)  # End of the observe for reactive table.
+
+
 # 1. Observe to update the radiobutton for decision of the package.
 
 observe({
-  req(input$select_pack != "Select", input$select_ver != "Select")
+  req(values$selected_pkg)
   if (!identical(values$selected_pkg$decision, character(0))) {
     if (values$selected_pkg$decision != "") {
       updateSliderTextInput(
@@ -26,7 +48,7 @@ observe({
 #2. Observe to disable and enable the text area comment box's' if decision of the package is empty.
 
 observe({
-  req(values$selected_pkg$package != "Select", values$selected_pkg$version != "Select" )
+  req(values$selected_pkg)
   if (values$selected_pkg$decision != "") {
     disable("decision")
     disable("submit_decision")
@@ -76,14 +98,14 @@ output$sel_pack <- renderUI({
 
 output$sel_ver <- renderUI({
   req(input$select_pack != "Select")
-  res2 <-
-    db_fun(
-      paste0(
-        "SELECT package, version FROM Packageinfo WHERE package = '",
-        input$select_pack,
-        "'"
-      )
-    )
+  # res2 <-
+  #   db_fun(
+  #     paste0(
+  #       "SELECT package, version FROM Packageinfo WHERE package = '",
+  #       input$select_pack,
+  #       "'"
+  #     )
+  #   )
   # if (input$select_pack == "Select" || nrow(res2) > 1) {
   #   Choices <- c("Select", c(res2$version))
   # } else{
@@ -98,8 +120,8 @@ output$sel_ver <- renderUI({
 # 3. Render Output to dispaly the status of the selected package.
 
 output$status <- renderText({
-  # req(input$select_pack != "Select", input$select_ver != "Select")
-    print("in sidebar renderText")
+    req(values$selected_pkg)
+
     if (!is_empty(input$select_pack) && input$select_pack != "Select") {
       if (!identical(values$selected_pkg$decision, character(0))) {
         if (values$selected_pkg$decision != "") {
@@ -116,14 +138,13 @@ output$status <- renderText({
 # 4. Render Output to display the score of the selected package.
 
 output$score <- renderText({
-  if (!is.null(input$select_pack)) {
-    if (input$select_pack != "Select") {
+  req(input$select_pack != "Select", input$select_ver != "Select")
+    if (!is_empty(values$selected_pkg$score) && values$selected_pkg$score != "") {
       paste("<h3>Score: <b>", values$selected_pkg$score, "</b></h3>")
     } else{
       paste("<h3>Score: <b>NA</b></h3>")
     }
-  }
-})  # End of the render output.
+})  # End of the render Text.
 
 # End of the Render Output's'.
 
@@ -141,23 +162,30 @@ observeEvent(input$select_pack, {
       choices = c("Select", pack_ver[,1]),
       selected = "Select"
     )
-    if (values$mm_tab_redirect == "redirect") {
-      updateTabsetPanel(session, "tabs",
-                        selected = "mm_tab_value")
-      values$mm_tab_redirect <- "no redirect"
-    }
+  }
+  }, ignoreInit = TRUE)
+
+observe({
+  req(input$select_pack != "Select", input$select_ver  != "Select")
+
+    # if (values$mm_tab_redirect == "redirect") {
+    #   updateTabsetPanel(session, "tabs",
+    #                     selected = "mm_tab_value")
+    #   values$mm_tab_redirect <- "no redirect"
+    # }
+
     values$comment_occ <-
       db_fun(
         paste0(
           "SELECT comment FROM Comments WHERE comm_id = '", input$select_pack, "'
+          AND comm_ver = '", input$select_ver, "'
           AND user_name = '", input$name, "'
           AND user_role = '", input$role, "'
           AND comment_type = 'o'"
         )
       ) 
     updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", values$comment_occ$comment))
-  }
-})  # End of the observe Event.
+})  # End of the observe.
 
 # 2. Observe Event to submit the decision for selected package.
 
@@ -227,7 +255,8 @@ observeEvent(input$submit_overall_comment, {
         paste0(
           "SELECT * FROM Comments WHERE comment_type = 'o' AND comm_id = '",
           values$selected_pkg$package,
-          "'"
+          "' AND comm_ver = '",
+          values$selected_pkg$version, "'"
         )
       )
     if (values$name %in% comments_submitted$user_name &&
@@ -259,7 +288,9 @@ observeEvent(input$submit_overall_comment, {
     } else{
       db_ins(
         paste0(
-          "INSERT INTO Comments values('", values$selected_pkg$package, "',",
+          "INSERT INTO Comments values('", 
+               values$selected_pkg$package, "',",
+          "'", values$selected_pkg$version, "',",
           "'", values$name, "'," ,
           "'", values$role, "',",
           "'", values$overall_comments, "',",
@@ -287,6 +318,8 @@ observeEvent(input$submit_overall_comment_yes, {
       TimeStamp(),
       "' WHERE comm_id = '",
       values$selected_pkg$package,
+      "' AND comm_ver = '",
+      values$selected_pkg$version,
       "' AND user_name = '",
       values$name,
       "' AND user_role = '",
@@ -311,10 +344,6 @@ observeEvent(input$submit_overall_comment_edit, {
 observeEvent(input$submit_overall_comment_no, {
   updateTextAreaInput(session, "overall_comment", value = "")
   removeModal()
-})
-
-selPackVer <- reactive({
-  list(input$select_pack, input$select_ver) 
 })
 
 # End of the Observe Event's'

@@ -10,9 +10,9 @@
 
 # 1. Observe to load the columns from DB into below reactive values.
 
-observeEvent(selPackVer(), {
+observe({
+  req(input$select_pack != "Select", input$select_ver != "Select")
   if(input$tabs == "mm_tab_value"){
-    if(input$select_pack != "Select" && input$select_ver != "Select"){
       print("in observeEvent for maint metrics")
       values$riskmetrics_mm <-
         db_fun(
@@ -51,8 +51,7 @@ observeEvent(selPackVer(), {
           }
        }
     }
-  }
-}, ignoreInit = TRUE)  # End of the observeEvent.
+})  # End of the observeEvent.
 
 # End of the observe's'
 

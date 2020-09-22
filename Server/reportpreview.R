@@ -56,7 +56,7 @@ output$decision_display <- renderText({
 
 # 3. Render Output to display the overall comment of the selected package. 
 output$overall_comments <- renderText({
-  req(values$selected_pkg$package)
+  req(values$selected_pkg)
   if (values$o_comment_submitted == "yes" ||
       values$o_comment_submitted == "no") {
     values$comment_o1 <-
@@ -64,6 +64,8 @@ output$overall_comments <- renderText({
         paste0(
           "SELECT * FROM Comments WHERE comm_id = '",
           values$selected_pkg$package,
+          "' AND comm_ver = '",
+          values$selected_pkg$version,
           "' AND comment_type = 'o'"
         )
       )
