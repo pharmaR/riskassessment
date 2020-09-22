@@ -515,12 +515,7 @@ margin: 1.5rem!important;
   top: 50% !important;
   transform: translate(-50%, -50%);
 }
-.fa {
-  justify-content: center;
-  transform: translate(-50%, -50%);
-  position: absolute;
-  top: 50%;
-}
+
 
 .info-box-content>p {
 font-size: 11px;
