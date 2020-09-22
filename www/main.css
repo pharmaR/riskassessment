@@ -1365,6 +1365,9 @@ i.fas.fa-info-history.fa-2x.history-help-icon:hover {
   background-color: #808080 !important;
 }
 
+#db_pkgs:hover {
+  cursor: pointer;
+}
 
 
 

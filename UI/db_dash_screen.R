@@ -41,6 +41,7 @@ output$screen <- renderUI({
                downloadButton("dwnld_sel_db_pkgs_btn", "Dwnld Report for Selection(s)", class = "download_report_btn_class btn-secondary"),  # Download button to export the report.
              ),
            ),
+           br(),
            DT::dataTableOutput("db_pkgs"),
            br()
          ) # end tags$section()

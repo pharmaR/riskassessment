@@ -56,6 +56,14 @@ output$db_pkgs <- DT::renderDataTable({
 
 
 # 2. Render Output for download handler to export the report for each .
+# enable the download button when something is selected
+observe({
+  if(!is.null(input$db_pkgs_rows_selected)){
+    shinyjs::enable("dwnld_sel_db_pkgs_btn")
+  } else {
+    shinyjs::disable("dwnld_sel_db_pkgs_btn") # not working...
+  }
+})
 values$cwd<-getwd()
 output$dwnld_sel_db_pkgs_btn <- downloadHandler(
   filename = function() {
