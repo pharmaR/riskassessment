@@ -37,21 +37,25 @@ output$db_pkgs <- DT::renderDataTable({
                   dom = 'Blftpr',
                   pageLength = 10,
                   lengthMenu = list(c(10, 50, 100, -1),c('15', '50', '100', "All")),
-                  columnDefs = list(list(targets = 1, visible = FALSE)),
+                  columnDefs = list(
+                    list(targets = 1, visible = FALSE),
+                    list(className = 'dt-center')
+                    ),
                   buttons = list(list(
                     extend = "excel", 
                     filename = paste("RiskAsses_PkgDB_Dwnld",str_replace_all(str_replace(Sys.time(), " ", "_"),":", "-"), sep = "_")
                   ))
                 )
   ) %>%
-    formatStyle('Selected', target = 'row',
-                backgroundColor = styleEqual(c(1), c('aquamarine'))
-    )
+  formatStyle('Selected', target = 'row',
+              backgroundColor = styleEqual(c(1), c('aquamarine'))
+  ) %>%
+  formatStyle(names(values$db_pkg_overview), textAlign = 'center')
 })
 
 
 
-# 0 (cont'd). Render Output for download handler to export the report for each .
+# 2. Render Output for download handler to export the report for each .
 values$cwd<-getwd()
 output$dwnld_sel_db_pkgs_btn <- downloadHandler(
   filename = function() {
@@ -101,5 +105,11 @@ output$dwnld_sel_db_pkgs_btn <- downloadHandler(
   },
   contentType = "application/zip"
 )  # End of the render Output for download report.
+
+
+# 3. Bring user back to dashboard
+observeEvent(input$back2dash, {
+  values$current_screen<-"dashboard_screen"
+})
 
 # End of the login screen Source File for UI module.
