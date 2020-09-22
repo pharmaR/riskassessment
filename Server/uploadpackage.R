@@ -18,8 +18,8 @@ data <- reactive({
 
 # 1. Observe to load the columns from DB into below reactive values.
 
-observeEvent(input$total_new_undis_dup, {
-  # req(input$total_new_undis_dup)
+observeEvent(list(input$total_new_undis_dup,input$uploaded_file), {
+  req(values$upload_complete == "upload_complete")
   if (input$total_new_undis_dup == "Total") {
     values$Total_New_Undis_Dup <- values$Total
   } else if (input$total_new_undis_dup == "New") {
@@ -150,23 +150,25 @@ output$upload_summary_select <- renderUI({
 })  # End of the render Output.
 
 # 4. Render Output to show the data table of uploaded csv.
-
-output$total_new_undis_dup_table <- DT::renderDataTable(
-  if (values$upload_complete == "upload_complete") {
-    datatable(
-      values$Total_New_Undis_Dup,
-      escape = FALSE,
-      class = "cell-border",
-      selection = 'none',
-      extensions = 'Buttons',
-      options = list(
-        sScrollX = "100%",
-        aLengthMenu = list(c(5, 10, 20, 100,-1), list('5', '10', '20', '100', 'All')),
-        iDisplayLength = 5
+observeEvent(values$Total_New_Undis_Dup, {
+  output$total_new_undis_dup_table <- DT::renderDataTable(
+    if (values$upload_complete == "upload_complete") {
+      datatable(
+        values$Total_New_Undis_Dup,
+        escape = FALSE,
+        class = "cell-border",
+        selection = 'none',
+        extensions = 'Buttons',
+        options = list(
+          sScrollX = "100%",
+          aLengthMenu = list(c(5, 10, 20, 100,-1), list('5', '10', '20', '100', 'All')),
+          iDisplayLength = 5
+        )
       )
-    )
-  }
-)  # End of the render Output 
+    }
+  )
+})
+  # End of the render Output 
 # End of the Render Output's'.
 
 
