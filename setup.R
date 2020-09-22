@@ -24,6 +24,7 @@ packages = c("shiny"
              ,"shinycssloaders"
              ,"rAmCharts"
              ,"devtools"
+             ,"versions"
 )
 
 ## load or install&load all required Packages.
@@ -45,3 +46,8 @@ if(!require(riskmetric)){
   devtools::install_github("pharmaR/riskmetric")
   library(riskmetric)
 }
+
+# load vector of available packages (on CRAN)
+if (!exists("pkgs_vec")) {
+  pkgs_vec <- as.data.frame(utils::available.packages())[[1]]
+} 
