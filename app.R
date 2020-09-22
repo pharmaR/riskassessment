@@ -175,9 +175,9 @@ server <- function(session, input, output) {
     values$selected_pkg <-
       db_fun(
         paste0(
-          "SELECT package, score, decision FROM Packageinfo WHERE package = '",
+          "SELECT package, version, score, decision FROM Packageinfo WHERE package = '",
           input$select_pack,
-          "'"
+          "'"," and version = '", values$selected_pkg$version, "'", ""
         )
       )
   })  # End of the observe for reactive table.

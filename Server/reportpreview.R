@@ -14,8 +14,7 @@ output$gen_info <- renderText({
       paste0(
         "SELECT * FROM Packageinfo WHERE package ='",
         input$select_pack,
-        "'"
-      )
+        "'"," and version = '", input$select_ver, "'", ""      )
     )
   
   paste(

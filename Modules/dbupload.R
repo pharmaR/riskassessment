@@ -10,7 +10,7 @@
 
 # 1. Function to get the package general information from CRAN/local.
 
-get_packages_info_from_web <- function(package_name) {
+get_packages_info_from_web <- function(package_name, package_version) {
   tryCatch(
     expr = {
       webpage <-
@@ -46,6 +46,7 @@ get_packages_info_from_web <- function(package_name) {
       ver <- str_replace_all(ver, "'", "")
       ver <- str_replace_all(ver, '"', "")
       
+      if (ver != package_version) signalCondition(e)
       
       main_html <- html_nodes(webpage, 'td')
       main<-html_text(main_html)
@@ -107,6 +108,7 @@ get_packages_info_from_web <- function(package_name) {
     },
     error = function(e) {
       if (package_name %in% rownames(installed.packages()) == TRUE) {
+        print(paste("in error function for",package_name,"version",package_version))
         for (i in .libPaths()) {
           if (file.exists(paste(i, "/", package_name, sep = "")) == TRUE) {
             i <- paste0(i, "/", package_name)
@@ -114,6 +116,7 @@ get_packages_info_from_web <- function(package_name) {
             title <- d$get("Title")
             ver <- d$get("Version")
             desc <- d$get("Description")
+            desc <- gsub("'", "", desc) # remove single quotes
             main <- d$get("Maintainer")
             auth <- d$get("Author")
             lis <- d$get("License")

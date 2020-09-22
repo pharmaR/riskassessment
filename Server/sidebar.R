@@ -7,10 +7,10 @@
 
 # Start of the Observes'.
 
-# 1. Observe to update the radiobutton for decistion of the package.
+# 1. Observe to update the radiobutton for decision of the package.
 
 observe({
-  req(input$select_pack)
+  req(input$select_pack != "Select", input$select_ver != "Select")
   if (!identical(values$selected_pkg$decision, character(0))) {
     if (values$selected_pkg$decision != "") {
       updateSliderTextInput(
@@ -26,7 +26,7 @@ observe({
 #2. Observe to disable and enable the text area comment box's' if decision of the package is empty.
 
 observe({
-  req(values$selected_pkg$package)
+  req(values$selected_pkg$package != "Select", values$selected_pkg$version != "Select" )
   if (values$selected_pkg$decision != "") {
     disable("decision")
     disable("submit_decision")
@@ -44,7 +44,8 @@ observe({
 
 observe({
   req(input$select_pack)
-  if (input$select_pack == "Select") {
+  req(input$select_ver)
+  if (input$select_pack == "Select" || input$select_ver == "Select") {
     disable("decision")
     disable("submit_decision")
     disable("overall_comment")
@@ -62,7 +63,7 @@ observe({
 # 1. Render Output to show the select input to select the package from dropdown.
 
 output$sel_pack <- renderUI({
-  values$packsDB <- db_fun("SELECT package FROM Packageinfo")
+  values$packsDB <- db_fun("SELECT DISTINCT package FROM Packageinfo")
   selectizeInput(
     "select_pack",
     h3("Select Package:"),
@@ -74,7 +75,7 @@ output$sel_pack <- renderUI({
 # 2. Render Output to show the select input to select the version of the selected package.
 
 output$sel_ver <- renderUI({
-  req(input$select_pack)
+  req(input$select_pack != "Select")
   res2 <-
     db_fun(
       paste0(
@@ -83,33 +84,33 @@ output$sel_ver <- renderUI({
         "'"
       )
     )
-  if (input$select_pack == "Select" || nrow(res2) > 1) {
-    Choices <- c("Select", c(res2$version))
-  } else{
-    Choices <- c(res2$version)
-  }
+  # if (input$select_pack == "Select" || nrow(res2) > 1) {
+  #   Choices <- c("Select", c(res2$version))
+  # } else{
+  #   Choices <- c(res2$version)
+  # }
   selectInput("select_ver",
               h3("Select Version:"),
-              choices = Choices,
+              choices = "Select",
               selected = "Select")
 })  # End of the render Output.
 
 # 3. Render Output to dispaly the status of the selected package.
 
 output$status <- renderText({
-  if (!is.null(input$select_pack)) {
-    if (input$select_pack != "Select") {
+  # req(input$select_pack != "Select", input$select_ver != "Select")
+    print("in sidebar renderText")
+    if (!is_empty(input$select_pack) && input$select_pack != "Select") {
       if (!identical(values$selected_pkg$decision, character(0))) {
         if (values$selected_pkg$decision != "") {
           paste("<h3>Status: <b>Reviewed</b></h3>")
         } else{
           paste("<h3>Status: <b>Under Review</b></h3>")
         }
-      }
     } else{
       paste("<h3>Status: <b>NA</b></h3>")
     }
-  }
+    }
 })  # End of the render Output.
 
 # 4. Render Output to display the score of the selected package.
@@ -137,7 +138,8 @@ observeEvent(input$select_pack, {
     updateSelectizeInput(
       session,
       "select_ver",
-      choices = pack_ver[1,1]
+      choices = c("Select", pack_ver[,1]),
+      selected = "Select"
     )
     if (values$mm_tab_redirect == "redirect") {
       updateTabsetPanel(session, "tabs",
@@ -195,12 +197,12 @@ observeEvent(input$submit_confirmed_decision, {
       input$decision,
       "' WHERE package = '",
       values$selected_pkg$package,
-      "'"
-    )
+      "'"," and version = '", values$selected_pkg$version, "'", ""    )
   )
   values$selected_pkg$decision <- input$decision
   removeModal()
   loggit("INFO", paste("decision for the package", values$selected_pkg$package, 
+                       "and version", values$selected_pkg$version,
                        "is", input$decision, 
                        "by", values$name, "(", values$role, ")"))
 })  # End of the Observe Event.
@@ -311,6 +313,9 @@ observeEvent(input$submit_overall_comment_no, {
   removeModal()
 })
 
+selPackVer <- reactive({
+  list(input$select_pack, input$select_ver) 
+})
 
 # End of the Observe Event's'
 

@@ -84,14 +84,22 @@ observeEvent(input$uploaded_file, {
   }
   
   values$Total <- pkgs_file
-  pkgs_db1 <- db_fun("SELECT package FROM Packageinfo")
-  values$Dup <- filter(values$Total, values$Total$package %in% pkgs_db1$package)
-  values$New <- filter(values$Total, !(values$Total$package %in% pkgs_db1$package))
+  print(values$Total)
+
+  # pkgs_db1 <- db_fun("SELECT package FROM Packageinfo")
+  # values$Dup <- filter(values$Total, values$Total$package %in% pkgs_db1$package)
+  # values$New <- filter(values$Total, !(values$Total$package %in% pkgs_db1$package))
+  pkgs_db1 <- db_fun("SELECT package, version FROM Packageinfo")
+  values$Dup <- filter(values$Total,   values$Total$package %in% pkgs_db1$package & values$Total$version %in% pkgs_db1$version)
+  values$New <- filter(values$Total, !(values$Total$package %in% pkgs_db1$package & values$Total$version %in% pkgs_db1$version))
+  
   withProgress(message = "Uploading Packages to DB:", value = 0, {
     if (nrow(values$New) != 0) {
       for (i in 1:nrow(values$New)) {
           new_package<-values$New$package[i]
-          get_packages_info_from_web(new_package)
+          new_version<-values$New$version[i]
+          get_packages_info_from_web(new_package,new_version)
+          # get_packages_info_from_web(new_package)
           metric_mm_tm_Info_upload_to_DB(new_package)
           metric_cum_Info_upload_to_DB(new_package)
           incProgress(1 / nrow(values$New), detail = values$New[i, 1])
