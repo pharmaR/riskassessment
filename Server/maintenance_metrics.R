@@ -12,9 +12,6 @@
 
 observe({
   req(values$selected_pkg$package != "Select", values$selected_pkg$version != "Select")
-  print("in observe for maint metrics")
-  print(paste("package:",input$select_pack,"version:",input$select_ver))
-  print(paste("package:",values$selected_pkg$package,"version:",values$selected_pkg$version))
 
   if(input$tabs == "mm_tab_value"){
       values$riskmetrics_mm <-

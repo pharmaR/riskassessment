@@ -7,14 +7,18 @@
 
 #Start of the Render Output's'
 
+observe({
+  req(values$selected_pkg$package != "Select", values$selected_pkg$version != "Select")
+  if (input$tabs == "reportPreview_tab_value") {
+    
 # 1. Render Output to display the general information of the selected package.
 output$gen_info <- renderText({
   pkg_GenInfo <-
     db_fun(
       paste0(
         "SELECT * FROM Packageinfo WHERE package ='",
-        input$select_pack,
-        "'"," and version = '", input$select_ver, "'", ""      )
+        values$selected_pkg$package,
+        "'"," and version = '", values$selected_pkg$version, "'", ""      )
     )
   
   paste(
@@ -123,3 +127,5 @@ output$download_report_btn <- downloadHandler(
 # source(file.path("Server", "tm_report.R"), local = TRUE)$value
 
 # End of the report preview Source file for Server Module.
+  }
+})  # End of observe

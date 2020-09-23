@@ -108,7 +108,7 @@ get_packages_info_from_web <- function(package_name, package_version) {
     },
     error = function(e) {
       if (package_name %in% rownames(installed.packages()) == TRUE) {
-        print(paste("in error function for",package_name,"version",package_version))
+        # print(paste("in error function for",package_name,"version",package_version))
         for (i in .libPaths()) {
           if (file.exists(paste(i, "/", package_name, sep = "")) == TRUE) {
             i <- paste0(i, "/", package_name)
@@ -232,8 +232,8 @@ metric_cum_Info_upload_to_DB <- function(package_name, package_version) {
       }
       pkg_vers <- pkg_vers[c(3:length(pkg_vers))]
       
-      print(paste(package_name,"pkg_vers to upload to cum metrics db"))
-      print(paste("pkg_vers",paste(pkg_vers, collapse = ",")))
+      # print(paste(package_name,"pkg_vers to upload to cum metrics db"))
+      # print(paste("pkg_vers",paste(pkg_vers, collapse = ",")))
       
       pkg_vers1 <- pkg_vers[length(pkg_vers)]
       loop<-"not_started"
