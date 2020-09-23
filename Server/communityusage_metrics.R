@@ -10,30 +10,29 @@
 
 # 1. Observe to load the columns from DB into reactive values.
 observe({
-  req(input$select_pack != "Select", input$select_ver != "Select")
+  req(values$selected_pkg$package != "Select", values$selected_pkg$version != "Select")
   if (input$tabs == "cum_tab_value") {
 
       # Load the columns into values$riskmetrics.
       pkgs_in_db <- db_fun(paste0("SELECT DISTINCT cum_id FROM CommunityUsageMetrics"))
       
-      if (input$select_pack %in% pkgs_in_db$cum_id &&
-          !identical(pkgs_in_db$cum_id, character(0))) {
+      if (!is_empty(pkgs_in_db$cum_id) && input$select_pack %in% pkgs_in_db$cum_id) {
         values$riskmetrics_cum <-
           db_fun(
             paste0(
               "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-              input$select_pack,
-              "'"," and cum_ver = '", input$select_ver, "'", ""
+              values$selected_pkg$package,
+              "'"," and cum_ver = '", values$selected_pkg$version, "'", ""
             )
           )
       } else{
-          metric_cum_Info_upload_to_DB(input$select_pack, input$select_ver)
+          metric_cum_Info_upload_to_DB(values$selected_pkg$package, values$selected_pkg$version)
           values$riskmetrics_cum <-
             db_fun(
               paste0(
                 "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-                input$select_pack,
-                "'"," and cum_ver = '", input$select_ver, "'", ""
+                values$selected_pkg$package,
+                "'"," and cum_ver = '", values$selected_pkg$version, "'", ""
               )
             )
       }
@@ -108,7 +107,7 @@ output$time_since_version_release <- renderInfoBox({
 
 # 3. Render Output to show the highchart for number of downloads on the application.
 output$no_of_downloads <- renderHighchart({
-
+  req(values$riskmetrics_cum)
   if (values$riskmetrics_cum$no_of_downloads_last_year[1] != 0) {
       hc <- highchart() %>%
         hc_xAxis(categories = values$riskmetrics_cum$month) %>%

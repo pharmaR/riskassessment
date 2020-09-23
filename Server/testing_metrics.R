@@ -10,16 +10,15 @@
 # 1. Observe to load the columns from DB into below reactive values.
 
 observe({
-  req(input$select_pack, input$select_ver)
+  req(values$selected_pkg$package != "Select", values$selected_pkg$version != "Select")
   if (input$tabs == "tm_tab_value") {
-    if (input$select_pack != "Select" && input$select_ver != "Select") {
-    
+
       values$riskmetrics_tm <-
         db_fun(
           paste0(
             "SELECT * FROM TestMetrics WHERE TestMetrics.tm_id ='",
-            input$select_pack,
-            "'"," and tm_ver = '", input$select_ver, "'", ""
+            values$selected_pkg$package,
+            "'"," and tm_ver = '", values$selected_pkg$version, "'", ""
           )
         )
       values$test_coverage <- c(strsplit(values$riskmetrics_tm$test_coverage,",")[[1]][1], strsplit(values$riskmetrics_tm$test_coverage,",")[[1]][2])
@@ -32,7 +31,6 @@ observe({
         runjs("setTimeout(function(){ var ele = document.getElementById('submit_tm_comment'); ele.disabled = true; }, 500);")
       } 
      }
-    }
   }
 })  # End of the observe.
 

@@ -14,6 +14,7 @@ selPackVer <- reactive({
 # 2. Observe to select the package,score,decision and load the data into reactive variable.
 observeEvent(selPackVer(), {
   req(input$select_pack != "Select", input$select_ver != "Select")
+  print("in observeEvent for selPackVer()")
   
   values$selected_pkg <-
     db_fun(
@@ -44,20 +45,20 @@ observe({
 
 #2. Observe to disable and enable the text area comment box's' if decision of the package is empty.
 
-observe({
-  req(values$selected_pkg)
-  if (values$selected_pkg$decision != "") {
-    disable("decision")
-    disable("submit_decision")
-    disable("overall_comment")
-    disable("submit_overall_comment")
-  } else{
-    enable("decision")
-    enable("submit_decision")
-    enable("overall_comment")
-    enable("submit_overall_comment")
-  }
-})  # End of the Observe.
+# observe({
+#   req(values$selected_pkg)
+#   if (!is_empty(values$selected_pkg$decision)) {
+#     disable("decision")
+#     disable("submit_decision")
+#     disable("overall_comment")
+#     disable("submit_overall_comment")
+#   } else{
+#     enable("decision")
+#     enable("submit_decision")
+#     enable("overall_comment")
+#     enable("submit_overall_comment")
+#   }
+# })  # End of the Observe.
 
 # 3. Observe to disable and enable to side bar elements for select pacakge input.
 
@@ -93,7 +94,6 @@ output$sel_pack <- renderUI({
 # 2. Render Output to show the select input to select the version of the selected package.
 
 output$sel_ver <- renderUI({
-
   selectInput("select_ver",
               h3("Select Version:"),
               choices = c("Select"),
@@ -137,8 +137,8 @@ output$score <- renderText({
 # 1. Observe Event for select package
 
 observeEvent(input$select_pack, {
-  
-  if (trimws(input$select_pack) != "Select" && trimws(input$select_pack) != "") {
+  print("in observe event for input$select_pack")
+  # if (trimws(input$select_pack) != "Select" && trimws(input$select_pack) != "") {
     pack_ver<-db_fun(paste0("SELECT version FROM Packageinfo WHERE package = '", input$select_pack, "'"))
     updateSelectizeInput(
       session,
@@ -146,7 +146,7 @@ observeEvent(input$select_pack, {
       choices = c("Select", pack_ver[,1]),
       selected = "Select"
     )
-  }
+  # }
   }, ignoreInit = TRUE)
 
 observeEvent(selPackVer(), {

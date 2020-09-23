@@ -232,7 +232,7 @@ metric_cum_Info_upload_to_DB <- function(package_name, package_version) {
       }
       pkg_vers <- pkg_vers[c(3:length(pkg_vers))]
       
-      print("pkg_vers to upload to db")
+      print(paste(package_name,"pkg_vers to upload to cum metrics db"))
       print(paste("pkg_vers",paste(pkg_vers, collapse = ",")))
       
       pkg_vers1 <- pkg_vers[length(pkg_vers)]

@@ -11,14 +11,18 @@
 # 1. Observe to load the columns from DB into below reactive values.
 
 observe({
-  req(input$select_pack != "Select", input$select_ver != "Select")
+  req(values$selected_pkg$package != "Select", values$selected_pkg$version != "Select")
+  print("in observe for maint metrics")
+  print(paste("package:",input$select_pack,"version:",input$select_ver))
+  print(paste("package:",values$selected_pkg$package,"version:",values$selected_pkg$version))
+
   if(input$tabs == "mm_tab_value"){
       values$riskmetrics_mm <-
         db_fun(
           paste0(
             "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
-            input$select_pack,
-            "'"," and mm_ver = '", input$select_ver, "'", ""
+            values$selected_pkg$package,
+            "'"," and mm_ver = '", values$selected_pkg$version, "'", ""
           )
         )
       
@@ -50,7 +54,7 @@ observe({
           }
        }
     }
-})  # End of the observeEvent.
+  })  # End of the observeEvent.
 
 # End of the observe's'
 

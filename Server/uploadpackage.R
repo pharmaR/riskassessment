@@ -66,14 +66,25 @@ observeEvent(input$uploaded_file, {
       message(paste("Package",pkgs_file$package[i],"not found on CRAN. Names are case-sensitive. Check your spelling."))
       j[i] <- TRUE
     }
-    # if (j[i] == FALSE)  {
-    #   vrsn_lst <- versions::available.versions(pkgs_file$package[i])
-    #   vrsn_vec <- unlist(vrsn_lst[[1]]$version)
-    #   if (!pkgs_file$version[i] %in% vrsn_vec) {
-    #     message(paste("Version",pkgs_file$version[i],"of ",pkgs_file$package[i],"not found on CRAN. Check your spelling."))
-    #     j[i] <- TRUE
-    #   }
-    # }
+    if (j[i] == FALSE)  {
+      # vrsn_lst <- versions::available.versions(pkgs_file$package[i])
+      # vrsn_vec <- unlist(vrsn_lst[[1]]$version)
+      
+      pkg_html <- read_html(paste0("https://github.com/cran/", pkgs_file$package[i], "/tags"))
+      pkg_nodes_v <- html_nodes(pkg_html, 'h4')
+      pkg_text_v <- html_text(pkg_nodes_v)
+      pkg_text_v <- str_split(pkg_text_v,"\n")
+      pkg_vers <- rep("", length(pkg_text_v))
+      for (k in 1:length(pkg_text_v)) {
+        pkg_vers[k]<-(trimws(pkg_text_v[[k]][3]))
+      }
+      vrsn_vec <- pkg_vers[which(!is.na(pkg_vers))] #pkg_vers[c(3:length(pkg_vers))]
+      
+      if (!pkgs_file$version[i] %in% vrsn_vec) {
+        message(paste("Version",pkgs_file$version[i],"of ",pkgs_file$package[i],"not found on CRAN. Check your spelling."))
+        j[i] <- TRUE
+      }
+    }
   }
   
   if (any(j)) {
