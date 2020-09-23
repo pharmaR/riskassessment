@@ -10,9 +10,9 @@
 # 1. Observe to load the columns from DB into below reactive values.
 
 observe({
-  req(input$select_pack)
+  req(input$select_pack, input$select_ver)
   if (input$tabs == "tm_tab_value") {
-    if (input$select_pack != "Select") {
+    if (input$select_pack != "Select" && input$select_ver != "Select") {
     
       values$riskmetrics_tm <-
         db_fun(
@@ -56,7 +56,7 @@ output$test_coverage <- renderAmCharts({
     stringsAsFactors = FALSE
   )
   amAngularGauge(
-    x = as.numeric(values$test_coverage[1]),
+    x = 0, #as.numeric(values$test_coverage[1]),
     start = 0,
     end = 100,
     bands = bands,

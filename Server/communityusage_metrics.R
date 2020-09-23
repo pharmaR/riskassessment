@@ -39,8 +39,8 @@ observe({
       }
       
       # Show metrics up to this version release
-      print(values$riskmetrics_cum$ver_release)
-      print(input$select_ver)
+      # print(values$riskmetrics_cum$ver_release)
+      # print(input$select_ver)
 
       # values$riskmetrics_cum <-
       #   slice_head(values$riskmetrics_cum,n=
@@ -160,6 +160,7 @@ output$cum_commented <- renderText({
         paste0(
           "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
           input$select_pack,
+          "'"," and comm_ver = '", input$select_ver,  
           "' AND comment_type = 'cum'"
         )
       )

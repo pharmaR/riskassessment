@@ -13,8 +13,8 @@ selPackVer <- reactive({
 
 # 2. Observe to select the package,score,decision and load the data into reactive variable.
 observeEvent(selPackVer(), {
-  req(input$select_pack != "Select", input$select_ver != "Select")
   print("in observeEvent for selPackVer()")
+  req(input$select_pack != "Select", input$select_ver != "Select")
   
   values$selected_pkg <-
     db_fun(
@@ -67,6 +67,7 @@ observe({
 observe({
   req(input$select_pack)
   req(input$select_ver)
+  print("in sidebar observe for decision buttons")
   if (input$select_pack == "Select" || input$select_ver == "Select") {
     disable("decision")
     disable("submit_decision")
@@ -97,24 +98,12 @@ output$sel_pack <- renderUI({
 # 2. Render Output to show the select input to select the version of the selected package.
 
 output$sel_ver <- renderUI({
-  req(input$select_pack != "Select")
-  # res2 <-
-  #   db_fun(
-  #     paste0(
-  #       "SELECT package, version FROM Packageinfo WHERE package = '",
-  #       input$select_pack,
-  #       "'"
-  #     )
-  #   )
-  # if (input$select_pack == "Select" || nrow(res2) > 1) {
-  #   Choices <- c("Select", c(res2$version))
-  # } else{
-  #   Choices <- c(res2$version)
-  # }
+
   selectInput("select_ver",
               h3("Select Version:"),
-              choices = "Select",
-              selected = "Select")
+              choices = c("Select"),
+              selected = "Select"
+  )
 })  # End of the render Output.
 
 # 3. Render Output to dispaly the status of the selected package.
@@ -165,15 +154,16 @@ observeEvent(input$select_pack, {
   }
   }, ignoreInit = TRUE)
 
-observe({
-  req(input$select_pack != "Select", input$select_ver  != "Select")
-
+observeEvent(selPackVer(), {
+  # req(input$select_pack != "Select", input$select_ver  != "Select")
+  print("in observe event for overall comments")
     # if (values$mm_tab_redirect == "redirect") {
     #   updateTabsetPanel(session, "tabs",
     #                     selected = "mm_tab_value")
     #   values$mm_tab_redirect <- "no redirect"
     # }
 
+  # update overall comment placeholder
     values$comment_occ <-
       db_fun(
         paste0(
@@ -185,7 +175,7 @@ observe({
         )
       ) 
     updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", values$comment_occ$comment))
-})  # End of the observe.
+}, ignoreInit = TRUE)  # End of the observe.
 
 # 2. Observe Event to submit the decision for selected package.
 

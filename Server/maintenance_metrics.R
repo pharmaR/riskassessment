@@ -13,7 +13,6 @@
 observe({
   req(input$select_pack != "Select", input$select_ver != "Select")
   if(input$tabs == "mm_tab_value"){
-      print("in observeEvent for maint metrics")
       values$riskmetrics_mm <-
         db_fun(
           paste0(
@@ -243,6 +242,7 @@ output$mm_commented <- renderText({
         paste0(
           "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
           input$select_pack,
+          "'"," and comm_ver = '", input$select_ver,  
           "' AND comment_type = 'mm'"
         )
       )
@@ -272,7 +272,7 @@ values$mm_comment_submitted <- "no"
 
 observeEvent(input$submit_mm_comment, {
   if (trimws(input$mm_comment) != "") {
-    db_fun(
+    db_ins(
       paste0(
         "INSERT INTO Comments values('",
         input$select_pack,      "',",
