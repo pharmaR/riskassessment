@@ -13,7 +13,6 @@ selPackVer <- reactive({
 
 # 2. Observe to select the package,score,decision and load the data into reactive variable.
 observeEvent(selPackVer(), {
-  print("in observeEvent for selPackVer()")
   req(input$select_pack != "Select", input$select_ver != "Select")
   
   values$selected_pkg <-
@@ -24,8 +23,6 @@ observeEvent(selPackVer(), {
         "'"," and version = '", input$select_ver, "'", ""
       )
     )
-  print("selected_pkg was loaded")
-  print(values$selected_pkg)
 }, ignoreInit = TRUE)  # End of the observe for reactive table.
 
 
@@ -65,9 +62,7 @@ observe({
 # 3. Observe to disable and enable to side bar elements for select pacakge input.
 
 observe({
-  req(input$select_pack)
-  req(input$select_ver)
-  print("in sidebar observe for decision buttons")
+  req(input$select_pack, input$select_ver)
   if (input$select_pack == "Select" || input$select_ver == "Select") {
     disable("decision")
     disable("submit_decision")
@@ -155,8 +150,6 @@ observeEvent(input$select_pack, {
   }, ignoreInit = TRUE)
 
 observeEvent(selPackVer(), {
-  # req(input$select_pack != "Select", input$select_ver  != "Select")
-  print("in observe event for overall comments")
     # if (values$mm_tab_redirect == "redirect") {
     #   updateTabsetPanel(session, "tabs",
     #                     selected = "mm_tab_value")
