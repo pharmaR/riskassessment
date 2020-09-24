@@ -89,3 +89,20 @@ GetUserName <- function() {
   
   return(x)
 }
+
+get_versns <- function(package_name) {
+  # given package name, return char vector of versions
+  # package versions does not seem to be working at the moment  
+  # vrsn_lst <- versions::available.versions(pkgs_file$package[i])
+  # vrsn_vec <- unlist(vrsn_lst[[1]]$version)
+  # this code replaces it.
+  pkg_html <- read_html(paste0("https://github.com/cran/", package_name, "/tags"))
+  pkg_nodes_v <- html_nodes(pkg_html, 'h4')
+  pkg_text_v <- html_text(pkg_nodes_v)
+  pkg_text_v <- str_split(pkg_text_v,"\n")
+  pkg_vers <- rep("", length(pkg_text_v))
+  for (k in 1:length(pkg_text_v)) {
+    pkg_vers[k]<-(trimws(pkg_text_v[[k]][3]))
+  }
+  return(pkg_vers[which(!is.na(pkg_vers))]) 
+}
