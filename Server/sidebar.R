@@ -42,22 +42,22 @@ observe({
   }
 })  # End of the Observe.
 
-#2. Observe to disable and enable the text area comment box's' if decision of the package is empty.
+#2. Observe to disable and enable the text area comment boxes if decision of the package is empty.
 
-# observe({
-#   req(values$selected_pkg)
-#   if (!is_empty(values$selected_pkg$decision)) {
-#     disable("decision")
-#     disable("submit_decision")
-#     disable("overall_comment")
-#     disable("submit_overall_comment")
-#   } else{
-#     enable("decision")
-#     enable("submit_decision")
-#     enable("overall_comment")
-#     enable("submit_overall_comment")
-#   }
-# })  # End of the Observe.
+observe({
+  req(values$selected_pkg)
+  if (!is_empty(values$selected_pkg$decision) && values$selected_pkg$decision != "") {
+    disable("decision")
+    disable("submit_decision")
+    disable("overall_comment")
+    disable("submit_overall_comment")
+  } else{
+    enable("decision")
+    enable("submit_decision")
+    enable("overall_comment")
+    enable("submit_overall_comment")
+  }
+})  # End of the Observe.
 
 # 3. Observe to disable and enable to side bar elements for select pacakge input.
 
