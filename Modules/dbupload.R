@@ -124,8 +124,10 @@ get_packages_info_from_web <- function(package_name, package_version) {
             
             genInfo_upload_to_DB(package_name, ver, title, desc, auth, main, lis, pub)
           }}
+        return("")
       } else{
-        loggit("ERROR", paste("Error in extracting general info of the package", package_name, "info", e), app = "fileupload-webscraping")
+        loggit("ERROR", paste("Error in extracting general info of the package", package_name, " and version ", package_version, e), app = "fileupload-webscraping")
+        return("ERROR")
       }
     }
   )# End of try catch

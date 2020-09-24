@@ -86,38 +86,56 @@ observeEvent(input$uploaded_file, {
   }
   
   values$Total <- pkgs_file
-  print(values$Total)
 
   # pkgs_db1 <- db_fun("SELECT package FROM Packageinfo")
   # values$Dup <- filter(values$Total, values$Total$package %in% pkgs_db1$package)
   # values$New <- filter(values$Total, !(values$Total$package %in% pkgs_db1$package))
   pkgs_db1 <- db_fun("SELECT package, version FROM Packageinfo")
-  values$Dup <- filter(values$Total,   values$Total$package %in% pkgs_db1$package & values$Total$version %in% pkgs_db1$version)
-  values$New <- filter(values$Total, !(values$Total$package %in% pkgs_db1$package & values$Total$version %in% pkgs_db1$version))
+  values$Dup <- inner_join(values$Total, pkgs_db1, by = c("package","version"))
+  values$New <- anti_join( values$Total, pkgs_db1, by = c("package","version"))
+  values$Undis <- values$New
+  
+  # values$Dup <- filter(values$Total,   values$Total$package %in% pkgs_db1$package & values$Total$version %in% pkgs_db1$version)
+  # values$New <- filter(values$Total, !(values$Total$package %in% pkgs_db1$package & values$Total$version %in% pkgs_db1$version))
   
   withProgress(message = "Uploading Packages to DB:", value = 0, {
     if (nrow(values$New) != 0) {
+      j <- rep(FALSE, nrow(values$New))
       for (i in 1:nrow(values$New)) {
           new_package<-values$New$package[i]
           new_version<-values$New$version[i]
-          get_packages_info_from_web(new_package,new_version)
+          rc <- get_packages_info_from_web(new_package,new_version)
+          if (rc != "" && rc == "ERROR") {
+            j[i] <- TRUE
+            next
+          }
           metric_mm_tm_Info_upload_to_DB(new_package,new_version)
           metric_cum_Info_upload_to_DB(new_package,new_version)
           incProgress(1 / nrow(values$New), detail = values$New[i, 1])
           Sys.sleep(0.1)
       }
     }
+    if (any(j)) {
+      # drop the non-existent packages
+      values$New <- values$New[-which(j),]
+      # reset the row numbers
+      row.names(values$New) <- NULL
+    }
+    
+    values$Undis <- anti_join(values$Undis, values$New, by = c("package","version"))
+    values$Total <- bind_rows(pkgs_db1, values$New)
   })
   
-  pkgs_db2 <- db_fun("SELECT package FROM Packageinfo")
-  values$Undis <-
-    filter(values$New,!(values$New$package %in% pkgs_db2$package))
-  values$packsDB <- db_fun("SELECT package FROM Packageinfo")
+  # pkgs_db2 <- db_fun("SELECT package FROM Packageinfo")
+  # values$Undis <-
+  #  filter(values$New,!(values$New$package %in% pkgs_db2$package))
+
+  values$packsDB <- db_fun("SELECT DISTINCT package FROM Packageinfo")
   updateSelectizeInput(
-    session,
-    "select_pack",
-    choices = c("Select", values$packsDB$package),
-    selected = "Select"
+   session,
+   "select_pack",
+   choices = c("Select", values$packsDB$package),
+   selected = "Select"
   )
   
   showNotification(id = "show_notification_id", "Upload completed to DB", type = "message")
