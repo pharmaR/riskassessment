@@ -24,6 +24,8 @@ packages = c("shiny"
              ,"shinycssloaders"
              ,"rAmCharts"
              ,"devtools"
+             ,"versions"
+             ,"cranlogs"
 )
 
 ## load or install&load all required Packages.

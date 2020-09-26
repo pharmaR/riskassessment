@@ -15,7 +15,7 @@ observe({
     if (input$select_pack != "Select") {
     
       # Load the columns into values$riskmetrics.
-      pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
+      pkgs_in_db <- db_fun(paste0("SELECT DISTINCT cum_id FROM CommunityUsageMetrics"))
       
       if (input$select_pack %in% pkgs_in_db$cum_id &&
           !identical(pkgs_in_db$cum_id, character(0))) {
@@ -106,40 +106,46 @@ output$time_since_version_release <- renderInfoBox({
 output$no_of_downloads <- renderHighchart({
 
   if (values$riskmetrics_cum$no_of_downloads_last_year[1] != 0) {
-      hc <- highchart() %>%
-        hc_xAxis(categories = values$riskmetrics_cum$month) %>%
-        hc_xAxis(
-          title = list(text = "Months"),
-          
-          plotLines = map2(values$riskmetrics_cum$ver_release, values$riskmetrics_cum$position,
-                function(.x, .y)  list(label = list(text = .x), color = "#FF0000", width = 2, value = .y) )
-          
-        ) %>%
-        hc_add_series(
-          name = input$select_pack,
-          data = values$riskmetrics_cum$no_of_downloads,
-          color = "blue"
-        ) %>%
-        hc_yAxis(title = list(text = "Downloads")) %>%
-        hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS 11 MONTHS") %>%
-        hc_subtitle(
-          text = paste(
-            "Total Number of Downloads :",
-            sum(values$riskmetrics_cum$no_of_downloads)
-          ),
-          align = "right",
-          style = list(color = "#2b908f", fontWeight = "bold")
-        ) %>%
-        hc_add_theme(hc_theme_elementary())
+    
+    package_ver <- gsub("'",'"',packageVersion(input$select_pack)) # get the installed version
+    fr_date <- values$riskmetrics_cum$month[[1]]
+    to_date <- values$riskmetrics_cum$month[[nrow(values$riskmetrics_cum)]]
+    
+    hc <- highchart() %>%
+      hc_xAxis(categories = values$riskmetrics_cum$month) %>%
+      hc_xAxis(
+        title = list(text = "Months"),
+        
+        plotLines = map2(values$riskmetrics_cum$ver_release, values$riskmetrics_cum$position,
+                         function(.x, .y)  list(label = list(text = .x), color = "#FF0000", width = 2, value = .y) )
+        
+      ) %>%
+      hc_add_series(
+        name = input$select_pack,
+        data = values$riskmetrics_cum$no_of_downloads,
+        color = "blue"
+      ) %>%
+      hc_yAxis(title = list(text = "Downloads")) %>%
+      hc_title(text = paste("Number of Downloads from", fr_date,"to", to_date, "for the package:",input$select_pack,"up to version",package_ver)) %>%
+      hc_subtitle(
+        text = paste(
+          "Total Number of Downloads :",
+          unique(values$riskmetrics_cum$no_of_downloads_last_year)
+        ),
+        align = "right",
+        style = list(color = "#2b908f", fontWeight = "bold")
+      ) %>%
+      hc_add_theme(hc_theme_elementary())
+    
     } else {
       hc <- highchart() %>%
         hc_xAxis(categories = NULL) %>%
         hc_xAxis(title = list(text = "Months")) %>%
         hc_add_series(name = input$select_pack, data = NULL) %>%
         hc_yAxis(title = list(text = "Downloads")) %>%
-        hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS 11 MONTHS") %>%
+        hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS MONTHS") %>%
         hc_subtitle(
-          text = paste("Number of Downloads in the 11 previous months are zero"),
+          text = paste("Number of Downloads in the previous months are zero"),
           style = list(color = "#f44336", fontWeight = "bold")
         ) %>%
         hc_add_theme(hc_theme_elementary())
