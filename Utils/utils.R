@@ -88,3 +88,25 @@ GetUserName <- function() {
   
   return(x)
 }
+
+packinfo <- function(package, version) {
+  
+  vrsn_lst <- versions::available.versions(package_name)
+  vrsn_vec <- unlist(vrsn_lst[[1]]$version)
+  if (package %in% installed.packages()[,1] && version == packageVersion(package) 
+      || version == vrsn_vec[[1]]) {
+    # message("packinfo: passing package name to pkg_ref()")
+    package_rm <- pkg_ref(package)
+    descr <- package_rm$description %>% as_tibble()
+  } else {
+    # message("packinfo: installing package in tempdir(), then passing path to pkg_ref()")
+    remotes::install_version(package_name, version = version, lib = tempdir(), repos = "http://cran.us.r-project.org", quiet = TRUE, upgrade = "never")
+    package_rm <- pkg_ref(paste0(gsub("\\\\","/",tempdir()),"/",package)) 
+    descr <- package_rm$description %>% as_tibble()
+    remove.packages(package, lib = tempdir())
+  }
+  descr$Description <- gsub("'", "", descr$Description) # remove single quotes
+  return(list(ver= descr$Version, title= descr$Title, desc= descr$Description, 
+              main= descr$Maintainer, auth= descr$Author, lis= descr$License, pub=descr$Packaged))
+  
+}

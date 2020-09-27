@@ -13,120 +13,133 @@
 get_packages_info_from_web <- function(package_name) {
   tryCatch(
     expr = {
-      webpage <-
-        read_html(paste0(
-          "https://cran.r-project.org/web/packages/",
-          package_name
-        ))
-      
-      title_html <- html_nodes(webpage, 'h2')
-      title <- html_text(title_html)
-      title <- str_replace_all(title, "\n  ", "")
-      title <- str_replace_all(title, "'", "")
-      title <- str_replace_all(title, '"', "")
-      
-      desc_html <- html_nodes(webpage, 'p')
-      desc <- html_text(desc_html)
-      desc <- desc[1]
-      desc <- str_replace_all(desc, "\n  ", "")
-      desc <- str_replace_all(desc, "'", "")
-      desc <- str_replace_all(desc, '"', "")
-      
-      
-      ver_html <- html_nodes(webpage, 'td')
-      ver<-html_text(ver_html)
-      for(i in 1:length(ver)){
-        if(!is.na(ver[i])){
-          if(ver[i] == "Version:"){
-            ver<-ver[i+1]
-          }
-        }
-      }
-      ver <- str_replace_all(ver, "\n  ", "")
-      ver <- str_replace_all(ver, "'", "")
-      ver <- str_replace_all(ver, '"', "")
-      
-      
-      main_html <- html_nodes(webpage, 'td')
-      main<-html_text(main_html)
-      for(i in 1:length(main)){
-        if(!is.na(main[i])){
-          if(main[i] == "Maintainer:"){
-            main<-main[i+1]
-          }
-        }
-      }
-      main <- str_replace_all(main, "\n  ", "")
-      main <- str_replace_all(main, "'", "")
-      main <- str_replace_all(main, '"', "")
-      
-      
-      auth_html <- html_nodes(webpage, 'td')
-      auth<-html_text(auth_html)
-      for(i in 1:length(auth)){
-        if(!is.na(auth[i])){
-          if(auth[i] == "Author:"){
-            auth<-auth[i+1]
-          }
-        }
-      }
-      auth <- str_replace_all(auth, "\n  ", "")
-      auth <- str_replace_all(auth, "'", "")
-      auth <- str_replace_all(auth, '"', "")
-      
-      pub_html <- html_nodes(webpage, 'td')
-      pub<-html_text(pub_html)
-      for(i in 1:length(pub)){
-        if(!is.na(pub[i])){
-          if(pub[i] == "Published:"){
-            pub<-pub[i+1]
-          }
-        }
-      }
-      pub <- str_replace_all(pub, "\n  ", "")
-      pub <- str_replace_all(pub, "'", "")
-      pub <- str_replace_all(pub, '"', "")
-      
-      
-      lis_html <- html_nodes(webpage, 'td')
-      lis<-html_text(lis_html)
-      for(i in 1:length(lis)){
-        if(!is.na(lis[i])){
-          if(lis[i] == "License:"){
-            lis<-lis[i+1]
-          }
-        }
-      }
-      lis <- str_replace_all(lis, "\n  ", "")
-      lis <- str_replace_all(lis, "'", "")
-      lis <- str_replace_all(lis, '"', "")
-      
-      
-      genInfo_upload_to_DB(package_name, ver, title, desc, auth, main, lis, pub)
-      
+      package_ver <- gsub("'",'"',packageVersion(package_name)) # get the installed version
+      print(paste(package_name,package_ver,collapse=","))
+      info <- packinfo(package_name, package_ver)
+      genInfo_upload_to_DB(package_name, info$ver, info$title, info$desc, info$auth, info$main, info$lis, info$pub)   
     },
     error = function(e) {
-      if (package_name %in% rownames(installed.packages()) == TRUE) {
-        for (i in .libPaths()) {
-          if (file.exists(paste(i, "/", package_name, sep = "")) == TRUE) {
-            i <- paste0(i, "/", package_name)
-            d <- description$new(i)
-            title <- d$get("Title")
-            ver <- d$get("Version")
-            desc <- d$get("Description")
-            main <- d$get("Maintainer")
-            auth <- d$get("Author")
-            lis <- d$get("License")
-            pub <- d$get("Packaged")
-            
-            genInfo_upload_to_DB(package_name, ver, title, desc, auth, main, lis, pub)
-          }}
-      } else{
-        loggit("ERROR", paste("Error in extracting general info of the package", package_name, "info", e), app = "fileupload-webscraping")
-      }
+      loggit("ERROR", paste("Error in extracting general info of the package", package_name, "info", e), app = "fileupload-webscraping")
     }
   )# End of try catch
 }
+# get_packages_info_from_web <- function(package_name) {
+#   tryCatch(
+#     expr = {
+#       webpage <-
+#         read_html(paste0(
+#           "https://cran.r-project.org/web/packages/",
+#           package_name
+#         ))
+#       
+#       title_html <- html_nodes(webpage, 'h2')
+#       title <- html_text(title_html)
+#       title <- str_replace_all(title, "\n  ", "")
+#       title <- str_replace_all(title, "'", "")
+#       title <- str_replace_all(title, '"', "")
+#       
+#       desc_html <- html_nodes(webpage, 'p')
+#       desc <- html_text(desc_html)
+#       desc <- desc[1]
+#       desc <- str_replace_all(desc, "\n  ", "")
+#       desc <- str_replace_all(desc, "'", "")
+#       desc <- str_replace_all(desc, '"', "")
+#       
+#       
+#       ver_html <- html_nodes(webpage, 'td')
+#       ver<-html_text(ver_html)
+#       for(i in 1:length(ver)){
+#         if(!is.na(ver[i])){
+#           if(ver[i] == "Version:"){
+#             ver<-ver[i+1]
+#           }
+#         }
+#       }
+#       ver <- str_replace_all(ver, "\n  ", "")
+#       ver <- str_replace_all(ver, "'", "")
+#       ver <- str_replace_all(ver, '"', "")
+#       
+#       
+#       main_html <- html_nodes(webpage, 'td')
+#       main<-html_text(main_html)
+#       for(i in 1:length(main)){
+#         if(!is.na(main[i])){
+#           if(main[i] == "Maintainer:"){
+#             main<-main[i+1]
+#           }
+#         }
+#       }
+#       main <- str_replace_all(main, "\n  ", "")
+#       main <- str_replace_all(main, "'", "")
+#       main <- str_replace_all(main, '"', "")
+#       
+#       
+#       auth_html <- html_nodes(webpage, 'td')
+#       auth<-html_text(auth_html)
+#       for(i in 1:length(auth)){
+#         if(!is.na(auth[i])){
+#           if(auth[i] == "Author:"){
+#             auth<-auth[i+1]
+#           }
+#         }
+#       }
+#       auth <- str_replace_all(auth, "\n  ", "")
+#       auth <- str_replace_all(auth, "'", "")
+#       auth <- str_replace_all(auth, '"', "")
+#       
+#       pub_html <- html_nodes(webpage, 'td')
+#       pub<-html_text(pub_html)
+#       for(i in 1:length(pub)){
+#         if(!is.na(pub[i])){
+#           if(pub[i] == "Published:"){
+#             pub<-pub[i+1]
+#           }
+#         }
+#       }
+#       pub <- str_replace_all(pub, "\n  ", "")
+#       pub <- str_replace_all(pub, "'", "")
+#       pub <- str_replace_all(pub, '"', "")
+#       
+#       
+#       lis_html <- html_nodes(webpage, 'td')
+#       lis<-html_text(lis_html)
+#       for(i in 1:length(lis)){
+#         if(!is.na(lis[i])){
+#           if(lis[i] == "License:"){
+#             lis<-lis[i+1]
+#           }
+#         }
+#       }
+#       lis <- str_replace_all(lis, "\n  ", "")
+#       lis <- str_replace_all(lis, "'", "")
+#       lis <- str_replace_all(lis, '"', "")
+#       
+#       
+#       genInfo_upload_to_DB(package_name, ver, title, desc, auth, main, lis, pub)
+#       
+#     },
+#     error = function(e) {
+#       if (package_name %in% rownames(installed.packages()) == TRUE) {
+#         for (i in .libPaths()) {
+#           if (file.exists(paste(i, "/", package_name, sep = "")) == TRUE) {
+#             i <- paste0(i, "/", package_name)
+#             d <- description$new(i)
+#             title <- d$get("Title")
+#             ver <- d$get("Version")
+#             desc <- d$get("Description")
+#             main <- d$get("Maintainer")
+#             auth <- d$get("Author")
+#             lis <- d$get("License")
+#             pub <- d$get("Packaged")
+#             
+#             genInfo_upload_to_DB(package_name, ver, title, desc, auth, main, lis, pub)
+#           }}
+#       } else{
+#         loggit("ERROR", paste("Error in extracting general info of the package", package_name, "info", e), app = "fileupload-webscraping")
+#       }
+#     }
+#   )# End of try catch
+# }
 
 # End of the function
 
