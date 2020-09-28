@@ -17,6 +17,7 @@ output$report_preview<-renderUI({
     removeUI(selector = "#Upload")
     fluidRow(
       class = "mt-4 r_p_main_row",
+      
       fluidRow(
         class="float-right r_p_format_row",
         tags$div(

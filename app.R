@@ -103,11 +103,16 @@ server <- function(session, input, output) {
   
   source(file.path("Server", "login_screen.R"), local = TRUE)$value
   
+  # Load Server Source module file of Package Review History
+  
+  source(file.path("Server", "db_dash_screen.R"), local = TRUE)$value
+  
   source(file.path("Server", "assessment_criteria.R"), local = TRUE)$value
   
   # Load Server Source module file of Sidebar.
   
   source(file.path("Server", "sidebar.R"), local = TRUE)$value
+  
   
   # Load Source files of UI and Server modules of Upload Package Tab.
   
@@ -157,13 +162,20 @@ server <- function(session, input, output) {
     create_db_once()
   })
   
-  # Start of the observe's'
-  # 1. Observe to Load Source files of UI module of slected screen (Dashboard or Login Screen).
-  
+  # Start of the observes
+  # 1. Observe to Load Source files of UI module of selected screen (Package
+  # Dashboard, DB Dashboard, or Login Screen).
+  observeEvent(input$db_dash_bttn,{
+    req(file.exists(db_name))
+    values$current_screen<-"db_dash_screen"
+  })
   observe({
-    if (values$current_screen != "dashboard_screen") {
+    if (values$current_screen == "login_screen") {
       source(file.path("UI", "login_screen.R"), local = TRUE)$value
       shinyjs::hide("assessment_criteria_bttn")
+    } else if(values$current_screen == "db_dash_screen") {
+      source(file.path("UI", "db_dash_screen.R"), local = TRUE)$value
+      shinyjs::show("assessment_criteria_bttn")
     } else{
       source(file.path("UI", "dashboard_screen.R"), local = TRUE)$value
       shinyjs::show("assessment_criteria_bttn")
