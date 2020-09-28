@@ -105,7 +105,10 @@ packinfo <- function(package, version) {
     descr <- package_rm$description %>% as_tibble()
     remove.packages(package, lib = tempdir())
   }
-  descr$Description <- gsub("'", "", descr$Description) # remove single quotes
+  # Need to remove single quotes from Title and Description
+  descr$Title       <- str_replace_all(descr$Title, "'", "")  
+  descr$Description <- str_replace_all(descr$Description, "'", "")
+  
   return(list(ver= descr$Version, title= descr$Title, desc= descr$Description, 
               main= descr$Maintainer, auth= descr$Author, lis= descr$License, pub=descr$Packaged))
   

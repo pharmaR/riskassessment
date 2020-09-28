@@ -14,7 +14,6 @@ get_packages_info_from_web <- function(package_name) {
   tryCatch(
     expr = {
       package_ver <- gsub("'",'"',packageVersion(package_name)) # get the installed version
-      print(paste(package_name,package_ver,collapse=","))
       info <- packinfo(package_name, package_ver)
       genInfo_upload_to_DB(package_name, info$ver, info$title, info$desc, info$auth, info$main, info$lis, info$pub)   
     },
