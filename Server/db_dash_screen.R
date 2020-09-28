@@ -47,9 +47,7 @@ output$db_pkgs <- DT::renderDataTable({
                   ))
                 )
   ) %>%
-  formatStyle('Selected', target = 'row',
-              backgroundColor = styleEqual(c(1), c('aquamarine'))
-  ) %>%
+  # formatStyle('Selected', target = 'row', backgroundColor = styleEqual(c(1), c('aquamarine'))) %>%
   formatStyle(names(values$db_pkg_overview), textAlign = 'center')
 })
 
