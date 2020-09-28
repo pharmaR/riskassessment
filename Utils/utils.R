@@ -91,7 +91,7 @@ GetUserName <- function() {
 
 packinfo <- function(package, version) {
   
-  vrsn_lst <- versions::available.versions(package_name)
+  vrsn_lst <- versions::available.versions(package)
   vrsn_vec <- unlist(vrsn_lst[[1]]$version)
   if (package %in% installed.packages()[,1] && version == packageVersion(package) 
       || version == vrsn_vec[[1]]) {
