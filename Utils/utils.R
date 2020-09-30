@@ -106,3 +106,46 @@ get_versns <- function(package_name) {
   }
   return(pkg_vers[which(!is.na(pkg_vers))]) 
 }
+
+packinfo <- function(package, versn) {
+  
+  # vrsn_lst <- versions::available.versions(package)
+  # vrsn_vec <- unlist(vrsn_lst[[1]]$version)
+  vrsn_vec <- get_versns(package) # more efficient (in utils.R)
+  
+  if (package %in% installed.packages()[,1] && versn == gsub("'",'"',packageVersion(package)) ) {
+    package_rm <- pkg_ref(package)
+  } else {
+    detach_package(package)
+    # versions::install.versions(package, versn, lib=tempdir(), quiet = TRUE, type = "source")
+    remotes::install_version(package, version = versn, lib = tempdir(), repos = "http://cran.us.r-project.org", quiet = TRUE, upgrade = "never")
+    package_rm <- pkg_ref(paste0(gsub("\\\\","/",tempdir()),"/",package)) 
+    if (package %in% installed.packages()[,1]) {
+    library(package,character.only=TRUE, lib.loc = .libPaths(), verbose = FALSE)
+    }
+  }
+  descr <- package_rm$description %>% as_tibble()
+  
+  # Need to remove single quotes from Title and Description
+  descr$Title       <- str_replace_all(descr$Title, "'", "")  
+  descr$Description <- str_replace_all(descr$Description, "'", "")
+  
+  return(list(ver= descr$Version, title= descr$Title, desc= descr$Description, 
+              main= descr$Maintainer, auth= descr$Author, lis= descr$License, pub=descr$Packaged))
+  
+}
+
+# this is to ensure that all copies of a package are detached.
+detach_package <- function(pkg, character.only = TRUE)
+{
+  if(!character.only)
+  {
+    pkg <- deparse(substitute(pkg))
+  }
+  search_item <- paste("package", pkg, sep = ":")
+  while(search_item %in% search())
+  {
+    print(paste(search_item, "being detached"))
+    detach(search_item, unload = TRUE, character.only = TRUE, force = TRUE)
+  }
+}
