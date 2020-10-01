@@ -8,7 +8,7 @@
 
 # Step 1 -- Loading all required packages.
 
-source("./setup.R")
+source("global.R")
 
 # Step 2 -- Load source files.
 

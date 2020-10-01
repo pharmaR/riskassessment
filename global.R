@@ -1,6 +1,4 @@
-
-
-## Packages to install to run the app.
+# Packages needed for the app.
 packages = c("shiny"
              ,"shinyjs"
              ,"shinydashboard"
@@ -26,8 +24,7 @@ packages = c("shiny"
              ,"devtools"
 )
 
-## load or install&load all required Packages.
-
+# Load or install and load required packages.
 package.check <- lapply(
   packages,
   FUN = function(x) {
@@ -38,8 +35,7 @@ package.check <- lapply(
   }
 )
 
-# riskmetric is not yet on CRAN. Until it is, install using devtools.
-
+# Install and load riskmetric.
 if(!require(riskmetric)){
   # Remove hardcoded commit number
   devtools::install_github("pharmaR/riskmetric")
