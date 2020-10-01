@@ -928,6 +928,21 @@ i.fas.fa-info-circle.fa-2x.asmnt-help-icon:hover {
     border-radius: 5px;
 }
 
+a#db_dash_bttn {
+    border: none;
+    background-color: transparent;
+    
+}
+
+a#db_dash_bttn:hover {
+    border: none;
+    background-color: transparent;
+}
+
+i.fas.fa-info-history.fa-2x.history-help-icon:hover {
+    color: #87B1DA;
+    border-radius: 5px;
+}
 
 .tooltip-help .tooltiptext-help {
   visibility: hidden;
@@ -1345,6 +1360,9 @@ i.fas.fa-info-circle.fa-2x.asmnt-help-icon:hover {
   background-color: #808080 !important;
 }
 
+#db_pkgs:hover {
+  cursor: pointer;
+}
 
 
 
