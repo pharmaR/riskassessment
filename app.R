@@ -12,9 +12,9 @@ source("global.R")
 
 # Step 2 -- Load source files.
 
-source("./Modules/dbupload.R")
-source("./Modules/file_upload_error_handling.R")
-source("./Utils/utils.R")
+source("Modules/dbupload.R")
+source("Modules/file_upload_error_handling.R")
+source("Utils/utils.R")
 
 set_logfile("loggit.json")
 
@@ -78,7 +78,7 @@ ui <- dashboardPage(
 
     # Including main.css to add the styles and enhancements to the app.
     
-    includeCSS("./www/main.css"),
+    includeCSS("www/main.css"),
     
     useShinyjs(),
     
