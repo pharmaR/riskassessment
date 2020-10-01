@@ -18,8 +18,8 @@ data <- reactive({
 
 # 1. Observe to load the columns from DB into below reactive values.
 
-observeEvent(input$total_new_undis_dup, {
-  # req(input$total_new_undis_dup)
+observeEvent(list(input$total_new_undis_dup,input$uploaded_file), {
+  req(values$upload_complete == "upload_complete")
   if (input$total_new_undis_dup == "Total") {
     values$Total_New_Undis_Dup <- values$Total
   } else if (input$total_new_undis_dup == "New") {
