@@ -90,13 +90,13 @@ GetUserName <- function() {
   return(x)
 }
 
-get_versns <- function(package_name) {
+get_versns <- function(package) {
   # given package name, return char vector of versions
-  # package versions does not seem to be working at the moment  
-  # vrsn_lst <- versions::available.versions(pkgs_file$package[i])
+  # using package versions seems really slow  
+  # vrsn_lst <- versions::available.versions(package)
   # vrsn_vec <- unlist(vrsn_lst[[1]]$version)
   # this code replaces it.
-  pkg_html <- read_html(paste0("https://github.com/cran/", package_name, "/tags"))
+  pkg_html <- read_html(paste0("https://github.com/cran/", package, "/tags"))
   pkg_nodes_v <- html_nodes(pkg_html, 'h4')
   pkg_text_v <- html_text(pkg_nodes_v)
   pkg_text_v <- str_split(pkg_text_v,"\n")
@@ -108,21 +108,21 @@ get_versns <- function(package_name) {
 }
 
 packinfo <- function(package, versn) {
-  
-  # vrsn_lst <- versions::available.versions(package)
-  # vrsn_vec <- unlist(vrsn_lst[[1]]$version)
-  vrsn_vec <- get_versns(package) # more efficient (in utils.R)
-  
+
   if (package %in% installed.packages()[,1] && versn == gsub("'",'"',packageVersion(package)) ) {
     package_rm <- pkg_ref(package)
   } else {
+    # is it on the search() path? then detach / install / attach
+    if (package %in% (.packages())) {  
     detach_package(package)
-    # versions::install.versions(package, versn, lib=tempdir(), quiet = TRUE, type = "source")
-    remotes::install_version(package, version = versn, lib = tempdir(), repos = "http://cran.us.r-project.org", quiet = TRUE, upgrade = "never")
+    versions::install.versions(package, versn, lib=tempdir(), quiet = TRUE, type = "source")
+    require(package, character.only=TRUE, lib.loc = .libPaths(), quietly = TRUE, warn.conflicts = FALSE)
+   } else {
+     # using remotes to do the install
+     remotes::install_version(package, version = versn, lib = tempdir(), repos = "http://cran.us.r-project.org", quiet = TRUE, upgrade = FALSE)
+   }
     package_rm <- pkg_ref(paste0(gsub("\\\\","/",tempdir()),"/",package)) 
-    if (package %in% installed.packages()[,1]) {
-    library(package,character.only=TRUE, lib.loc = .libPaths(), verbose = FALSE)
-    }
+    # remove.packages(package, lib = tempdir())
   }
   descr <- package_rm$description %>% as_tibble()
   
@@ -136,16 +136,11 @@ packinfo <- function(package, versn) {
 }
 
 # this is to ensure that all copies of a package are detached.
-detach_package <- function(pkg, character.only = TRUE)
+detach_package <- function(pkg)
 {
-  if(!character.only)
-  {
-    pkg <- deparse(substitute(pkg))
-  }
   search_item <- paste("package", pkg, sep = ":")
   while(search_item %in% search())
   {
-    print(paste(search_item, "being detached"))
-    detach(search_item, unload = TRUE, character.only = TRUE, force = TRUE)
+    detach(search_item, character.only = TRUE, unload = FALSE)
   }
 }

@@ -24,7 +24,9 @@ packages = c("shiny"
              ,"rAmCharts"
              ,"devtools"
              ,"versions"
-             ,'remotes'
+             ,"remotes"
+             ,"purrr"
+             ,"rlang"
 )
 
 ## load or install&load all required Packages.
