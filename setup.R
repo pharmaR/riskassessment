@@ -14,19 +14,20 @@ packages = c("shiny"
              ,"rvest"
              ,"xml2"
              ,"httr"
-             ,"desc"
              ,"dplyr"
+             ,"desc"
              ,"tools"
              ,"stringr"
-             ,"tidyverse"
              ,"loggit"
              ,"highcharter"
              ,"shinycssloaders"
              ,"rAmCharts"
              ,"devtools"
              ,"versions"
+             ,"purrr"
+             ,"rlang"
              ,"cranlogs"
-)
+)    
 
 ## load or install&load all required Packages.
 
