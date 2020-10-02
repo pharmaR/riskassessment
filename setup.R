@@ -24,7 +24,6 @@ packages = c("shiny"
              ,"rAmCharts"
              ,"devtools"
              ,"versions"
-             ,"remotes"
              ,"purrr"
              ,"rlang"
 )

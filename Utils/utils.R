@@ -107,22 +107,36 @@ get_versns <- function(package) {
   return(pkg_vers[which(!is.na(pkg_vers))]) 
 }
 
+install_tempdir <- function(package, versn) {
+  # Use install.versions() unless the MRAN snapshot is not available
+  tryCatch(
+    expr = {
+      versions::install.versions(package, versions= versn, lib=tempdir(), quiet = TRUE, type = "source")
+    },
+    warning = function(w) {
+      if(grepl("cannot open URL 'https://cran.microsoft.com", w$message)){
+        message(paste("MRAN snapshot not available for",package,"version",versn,"using install_version() instead."))
+        # try using install_version instead...
+        devtools::install_version(package, version = versn, lib = tempdir(), repos = "http://cran.us.r-project.org", quiet = TRUE, upgrade = FALSE)
+      }
+    }
+  ) # End of tryCatch
+}
+
 packinfo <- function(package, versn) {
 
   if (package %in% installed.packages()[,1] && versn == gsub("'",'"',packageVersion(package)) ) {
     package_rm <- pkg_ref(package)
   } else {
-    # is it on the search() path? then detach / install / attach
-    if (package %in% (.packages())) {  
-    detach_package(package)
-    versions::install.versions(package, versn, lib=tempdir(), quiet = TRUE, type = "source")
-    require(package, character.only=TRUE, lib.loc = .libPaths(), quietly = TRUE, warn.conflicts = FALSE)
-   } else {
-     # using remotes to do the install
-     remotes::install_version(package, version = versn, lib = tempdir(), repos = "http://cran.us.r-project.org", quiet = TRUE, upgrade = FALSE)
-   }
-    package_rm <- pkg_ref(paste0(gsub("\\\\","/",tempdir()),"/",package)) 
-    # remove.packages(package, lib = tempdir())
+      if (package %in% (.packages())) {  
+      # is it on the search() path? then detach / install / attach
+      detach_package(package)
+      install_tempdir(package, versn)
+      require(package, character.only=TRUE, lib.loc = .libPaths(), quietly = TRUE, warn.conflicts = FALSE)
+     } else {
+       install_tempdir(package, versn)
+     }
+      package_rm <- pkg_ref(paste0(gsub("\\\\","/",tempdir()),"/",package)) 
   }
   descr <- package_rm$description %>% as_tibble()
   
