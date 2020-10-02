@@ -10,56 +10,55 @@
 
 # 1. Observe to load the columns from DB into reactive values.
 observe({
-  req(input$select_pack)
+  
+  req(values$selected_pkg$package != "Select", values$selected_pkg$version != "Select")
   if (input$tabs == "cum_tab_value") {
-    if (input$select_pack != "Select") {
     
-      # Load the columns into values$riskmetrics.
-      pkgs_in_db <- db_fun(paste0("SELECT DISTINCT cum_id FROM CommunityUsageMetrics"))
-      
-      if (input$select_pack %in% pkgs_in_db$cum_id &&
-          !identical(pkgs_in_db$cum_id, character(0))) {
+    # Load the columns into values$riskmetrics.
+    pkgs_in_db <- db_fun(paste0("SELECT DISTINCT cum_id FROM CommunityUsageMetrics"))
+    
+    if (values$selected_pkg$package %in% pkgs_in_db$cum_id &&
+        !identical(pkgs_in_db$cum_id, character(0))) {
+      values$riskmetrics_cum <-
+        db_fun(
+          paste0(
+            "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
+            values$selected_pkg$package,
+            "'"
+          )
+        )
+    } else{
+      if (values$selected_pkg$package != "Select") {
+        metric_cum_Info_upload_to_DB(input$select_pack, input$select_ver)
         values$riskmetrics_cum <-
           db_fun(
             paste0(
               "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-              input$select_pack,
+              values$selected_pkg$package,
               "'"
             )
           )
-      } else{
-        if (input$select_pack != "Select") {
-          metric_cum_Info_upload_to_DB(input$select_pack)
-          values$riskmetrics_cum <-
-            db_fun(
-              paste0(
-                "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-                input$select_pack,
-                "'"
-              )
-            )
-        }
       }
-      
-      # Load the data table column into reactive variable for time sice first release.
-      values$time_since_first_release_info <-
-        values$riskmetrics_cum$time_since_first_release[1]
-      
-      # Load the data table column into reactive variable for time sice version release.
-      values$time_since_version_release_info <-
-        values$riskmetrics_cum$time_since_version_release[1]
-      
-      runjs( "setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 100);" )
-      
-      if (!is.null(input$cum_comment)) {
-        if(values$time_since_version_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_version_release');}, 500);" ) }
-        if(values$time_since_first_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_first_release');}, 500);" ) }
-        if (values$riskmetrics_cum$no_of_downloads_last_year[1] == 0) { runjs("setTimeout(function(){ updateText('no_of_downloads');}, 500);") }
-        req(values$selected_pkg$decision)
-        if (values$selected_pkg$decision != "") {
-          runjs("setTimeout(function(){ var ele = document.getElementById('cum_comment'); ele.disabled = true; }, 500);" )
-          runjs("setTimeout(function(){ var ele = document.getElementById('submit_cum_comment'); ele.disabled = true; }, 500);")
-        }
+    }
+    
+    # Load the data table column into reactive variable for time sice first release.
+    values$time_since_first_release_info <-
+      values$riskmetrics_cum$time_since_first_release[1]
+    
+    # Load the data table column into reactive variable for time sice version release.
+    values$time_since_version_release_info <-
+      values$riskmetrics_cum$time_since_version_release[1]
+    
+    runjs( "setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 100);" )
+    
+    if (!is.null(input$cum_comment)) {
+      if(values$time_since_version_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_version_release');}, 500);" ) }
+      if(values$time_since_first_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_first_release');}, 500);" ) }
+      if (values$riskmetrics_cum$no_of_downloads_last_year[1] == 0) { runjs("setTimeout(function(){ updateText('no_of_downloads');}, 500);") }
+      req(values$selected_pkg$decision)
+      if (values$selected_pkg$decision != "") {
+        runjs("setTimeout(function(){ var ele = document.getElementById('cum_comment'); ele.disabled = true; }, 500);" )
+        runjs("setTimeout(function(){ var ele = document.getElementById('submit_cum_comment'); ele.disabled = true; }, 500);")
       }
     }
   }
@@ -73,6 +72,8 @@ observe({
 
 output$time_since_first_release <- renderInfoBox({
   req(values$time_since_first_release_info)
+  req(input$select_pack != "Select", input$select_ver != "Select")
+  
   infoBox(
     title = "Package Maturity",
     values$time_since_first_release_info,
@@ -89,6 +90,8 @@ output$time_since_first_release <- renderInfoBox({
 
 output$time_since_version_release <- renderInfoBox({
   req(values$time_since_version_release_info)
+  req(input$select_pack != "Select", input$select_ver != "Select")
+  
   infoBox(
     title = "Version Maturity",
     values$time_since_version_release_info,
@@ -104,10 +107,12 @@ output$time_since_version_release <- renderInfoBox({
 
 # 3. Render Output to show the highchart for number of downloads on the application.
 output$no_of_downloads <- renderHighchart({
-
+  
+  req(input$select_pack != "Select", input$select_ver != "Select")
+  
   if (values$riskmetrics_cum$no_of_downloads_last_year[1] != 0) {
     
-    package_ver <- gsub("'",'"',packageVersion(input$select_pack)) # get the installed version
+    package_ver <- input$select_ver # get the installed version
     fr_date <- values$riskmetrics_cum$month[[1]]
     to_date <- values$riskmetrics_cum$month[[nrow(values$riskmetrics_cum)]]
     
@@ -137,24 +142,26 @@ output$no_of_downloads <- renderHighchart({
       ) %>%
       hc_add_theme(hc_theme_elementary())
     
-    } else {
-      hc <- highchart() %>%
-        hc_xAxis(categories = NULL) %>%
-        hc_xAxis(title = list(text = "Months")) %>%
-        hc_add_series(name = input$select_pack, data = NULL) %>%
-        hc_yAxis(title = list(text = "Downloads")) %>%
-        hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS MONTHS") %>%
-        hc_subtitle(
-          text = paste("Number of Downloads in the previous months are zero"),
-          style = list(color = "#f44336", fontWeight = "bold")
-        ) %>%
-        hc_add_theme(hc_theme_elementary())
-    }
+  } else {
+    hc <- highchart() %>%
+      hc_xAxis(categories = NULL) %>%
+      hc_xAxis(title = list(text = "Months")) %>%
+      hc_add_series(name = input$select_pack, data = NULL) %>%
+      hc_yAxis(title = list(text = "Downloads")) %>%
+      hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS MONTHS") %>%
+      hc_subtitle(
+        text = paste("Number of Downloads in the previous months are zero"),
+        style = list(color = "#f44336", fontWeight = "bold")
+      ) %>%
+      hc_add_theme(hc_theme_elementary())
+  }
 })
 
 # 4. Render output to show the comments.
 
 output$cum_commented <- renderText({
+  req(input$select_pack != "Select", input$select_ver != "Select")
+  
   if (values$cum_comment_submitted == "yes" ||
       values$cum_comment_submitted == "no") {
     values$comment_cum1 <-

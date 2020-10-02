@@ -194,13 +194,11 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
 
 # 4. Function to get community usage metrics info and upload into DB.
 
-metric_cum_Info_upload_to_DB <- function(package_name) {
+metric_cum_Info_upload_to_DB <- function(package_name, package_version) {
   pkg_vers_date_final<<-data.frame(matrix(ncol = 4, nrow = 0))
   time_since_first_release<<-NA
   time_since_version_release<<-NA
   total_downloads<<-NA
-  
-  package_ver <- gsub("'",'"',packageVersion(package_name)) # get the installed version
   
   tryCatch(
     expr = {
@@ -210,11 +208,14 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
         mutate(startdt = ymd(floor_date(as.Date(date), unit="month"))) %>% select(-available)
       vrsns_vec <- as.vector(vrsns_df[,"version"])
       
-      ith <- which(vrsns_vec %in% package_ver)
+      ith <- which(vrsns_vec %in% package_version)
       to_date <- as.Date(vrsns_df[ith,"date"])
-      # back3yrs <- to_date - 3*365
+      
+      # go back up to three years
+      back3yrs <- to_date - 3*365
+      onerow <- vrsns_df %>% filter(date >= back3yrs) %>% slice_min(order_by=date)
       nr <- nrow(vrsns_df)
-      fr_date <- as.Date(vrsns_df[nr, "date"])
+      fr_date <- as.Date(onerow[, "date"])
       
       downlds <- cranlogs::cran_downloads(package_name, from=fr_date, to=to_date)
       
@@ -235,7 +236,7 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
       pkg_vers_date_final <- downlds_data %>%
         mutate(Month = as.character(monthyear, format = "%B %Y")) %>%
         mutate(Position = ifelse(is.na(version), nrow(downlds_data) +1, row_number() -1 ))
-
+      
     },
     error = function(e) {
       loggit("ERROR", paste("Error in extracting cum metric info of the package:", package_name, "info", e), app = "versions::available.versions")
@@ -244,10 +245,15 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
   
   for (i in 1:nrow(pkg_vers_date_final)) {
     db_ins(paste0("INSERT INTO CommunityUsageMetrics values(",
-                  "'", package_name,"',", "'", all_of(total_downloads), "',",
-                  "'", pkg_vers_date_final$Month[i], "',", "'", pkg_vers_date_final$Downloads[i], "',", 
-                  "'", pkg_vers_date_final$version[i], "',", "'", pkg_vers_date_final$Position[i], "',",
-                  "'", time_since_first_release, "',", "'", time_since_version_release, "'" , ")"))
+                  "'", package_name,"',", 
+                  "'", package_version, "',", 
+                  "'", all_of(total_downloads), "',",
+                  "'", pkg_vers_date_final$Month[i], "',", 
+                  "'", pkg_vers_date_final$Downloads[i], "',", 
+                  "'", pkg_vers_date_final$version[i], "',", 
+                  "'", pkg_vers_date_final$Position[i], "',",
+                  "'", time_since_first_release, "',", 
+                  "'", time_since_version_release, "'" , ")"))
     if(nrow(pkg_vers_date_final) == 0){
       break
     }
