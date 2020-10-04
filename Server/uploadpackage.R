@@ -116,21 +116,11 @@ output$upload_format_download <- downloadHandler(
 output$upload_summary_text <- renderText({
   if (values$upload_complete == "upload_complete") {
     paste(
-      "<h3><b>Summary of:</b>",
-      input$uploaded_file$name,
-      "</h3>",
-      "<h4>Total Packages: ",
-      nrow(values$Total),
-      "</h4>",
-      "<h4>New Packages:",
-      nrow(values$New),
-      "</h4>",
-      "<h4>Undiscovered Packages:",
-      nrow(values$Undis),
-      "</h4>",
-      "<h4>Duplicate Packages:",
-      nrow(values$Dup),
-      "</h4>",
+      "<h3><b>Summary of uploaded package(s) </b></h3>",
+      "<h4>Total Packages: ", nrow(values$Total), "</h4>",
+      "<h4>New Packages:",  nrow(values$New), "</h4>",
+      "<h4>Undiscovered Packages:", nrow(values$Undis), "</h4>",
+      "<h4>Duplicate Packages:", nrow(values$Dup), "</h4>",
       "<h4><b>Note: The information extracted of the package will be always from latest version irrespective of uploaded version."
     )
   }
