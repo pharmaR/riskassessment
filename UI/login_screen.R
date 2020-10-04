@@ -34,7 +34,7 @@ output$screen <- renderUI({
                    tags$h3("Role", class = "mt-7")
                  ),
                  column(width = 12,
-                        textInput("role", NULL))  # Text input to enter the Role.
+                        disabled(textInput("role", NULL, value = "RinPharma-Participant")))  # Text input to enter the Role.
                ),
                tags$div(class = "col-md-12 proceed-div",
                         column(
