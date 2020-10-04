@@ -45,7 +45,7 @@ ui <- dashboardPage(
       class = "dropdown",
       actionLink("assessment_criteria_bttn", class = "assessment_criteria_bttn_class", 
                  HTML('<div class="tooltip-help">
-                      <i class="fas fa-question-circle fa-2x asmnt-help-icon"></i>
+                      <i class="fas fa-info-circle fa-2x asmnt-help-icon"></i>
                       <span class="tooltiptext-help">Assessment Criteria Details</span>
                       </div>'))
     )
