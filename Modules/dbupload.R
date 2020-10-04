@@ -290,7 +290,8 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
       }
     },
     error = function(e) {
-      loggit("ERROR", paste("Error in extracting cum metric info of the package:", package_name, "info", e), app = "fileupload-webscraping")
+      loggit("ERROR", paste("Error in extracting cum metric info of the package:", package_name, "info", e),
+             app = "fileupload-webscraping", echo = FALSE)
     }
   )# End of try catch
   
