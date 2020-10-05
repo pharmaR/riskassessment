@@ -145,7 +145,7 @@ output$upload_summary_select <- renderUI({
 
 # 4. Render Output to show the data table of uploaded csv.
 
-output$total_new_undis_dup_table <- DT::renderDataTable(
+output$total_new_undis_dup_table <- DT::renderDataTable({
   if (values$upload_complete == "upload_complete") {
     datatable(
       values$Total_New_Undis_Dup,
@@ -154,13 +154,15 @@ output$total_new_undis_dup_table <- DT::renderDataTable(
       selection = 'none',
       extensions = 'Buttons',
       options = list(
+        searching = FALSE,
         sScrollX = "100%",
+        lengthChange = FALSE,
         aLengthMenu = list(c(5, 10, 20, 100,-1), list('5', '10', '20', '100', 'All')),
         iDisplayLength = 5
       )
     )
   }
-)  # End of the render Output 
+}) # End of the render Output 
 # End of the Render Output's'.
 
 
