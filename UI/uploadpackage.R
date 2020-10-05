@@ -10,7 +10,7 @@
 
 # Render Output UI for upload package.
 
-output$upload_package<-renderUI({
+output$upload_package <- renderUI({
  fluidRow(
   class = "u_p_main_row",
   tags$div(class = "row col-sm-12 u_p_heading_row",
@@ -32,29 +32,32 @@ output$upload_package<-renderUI({
       # Click on Button to view the sample format dataset to upload.
       actionLink("upload_format", "View Sample Dataset", class = "sample_dataset_link")
     )
-  ), 
-  htmlOutput("upload_summary_text"),  # Display the summary information of the uploaded csv.
-  div(
-    class = "row col-sm-12 mb-4 u_p_dropdown_row",
-    uiOutput("upload_summary_select")
   ),
-  tags$div(
-    class="col-sm W-40 text-left float-right",
-    shinyjs::hidden(
-      selectInput("all_reports_format", "Select Format", c("html", "docx"))
+  
+  # Display the summary information of the uploaded csv.
+  htmlOutput("upload_summary_text"),
+  
+  fluidRow(
+    column(width = 6,
+           div(class = "row col-sm-12 mb-4 u_p_dropdown_row",
+               uiOutput("upload_summary_select")),
+           # Display the table with total rows in the DB.
+           dataTableOutput("total_new_undis_dup_table"))
+  ),
+  
+  fluidRow(
+    column(width = 6,
+           br(),
+           div(
+             class="col-sm W-40 text-left float-right",
+             shinyjs::hidden(
+               selectInput("all_reports_format", "Select Format", c("html", "docx")))),
+           div(
+             class="col-sm float-right",
+             shinyjs::hidden(
+               downloadButton("dwnld_all_reports_btn", "Download All Reports",
+                              class = "download_report_btn_class btn-secondary")))
     )
-  ),
-  div(
-    class="col-sm float-right",
-    shinyjs::hidden(
-      downloadButton("dwnld_all_reports_btn", "Download All Reports",
-                   class = "download_report_btn_class btn-secondary")
-    )
-  ),
-  column(
-    width = 7,
-    class = "mb-4 w-80",
-    dataTableOutput("total_new_undis_dup_table"),  # Display the table with total rows in the DB.
   )
  )
 })
