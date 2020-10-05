@@ -110,7 +110,7 @@ output$upload_format_download <- downloadHandler(
     paste("Upload_file_structure", ".csv", sep = "")
   },
   content = function(file) {
-    write.csv(read_csv("./Data/upload_format.csv"), file, row.names = F)
+    write.csv(read_csv(file.path("Data", "upload_format.csv")), file, row.names = F)
   }
 )  # End of the render Output.
 
