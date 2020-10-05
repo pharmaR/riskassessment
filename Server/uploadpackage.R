@@ -20,7 +20,7 @@ data <- reactive({
 
 observeEvent(list(input$total_new_undis_dup,input$uploaded_file), {
   req(values$upload_complete == "upload_complete")
-  if (input$total_new_undis_dup == "Total") {
+  if (input$total_new_undis_dup == "All") {
     values$Total_New_Undis_Dup <- values$Total
   } else if (input$total_new_undis_dup == "New") {
     values$Total_New_Undis_Dup <- values$New
@@ -137,8 +137,8 @@ output$upload_summary_select <- renderUI({
     removeUI(selector = "#Upload")
     selectInput(
       "total_new_undis_dup",
-      "",
-      choices = c("Total", "New", "Undiscovered", "Duplicates")
+      "Select which packages to show",
+      choices = c("All", "New", "Undiscovered", "Duplicates")
     )
   } 
 })  # End of the render Output.
