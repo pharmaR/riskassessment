@@ -48,8 +48,6 @@ observeEvent(input$uploaded_file, {
     shinyjs::show("upload_summary_text")
     shinyjs::show("upload_summary_select")
     shinyjs::show("total_new_undis_dup_table")
-    shinyjs::show("dwnld_all_reports_btn")
-    shinyjs::show("all_reports_format")
   }
   file_to_read <- input$uploaded_file
   pkgs_file <-
@@ -89,6 +87,11 @@ observeEvent(input$uploaded_file, {
   
   showNotification(id = "show_notification_id", "Upload completed to DB", type = "message")
   values$upload_complete <- "upload_complete"
+  
+  # Show the download reports buttons after all the packages have been loaded
+  # and the information extracted.
+  shinyjs::show("dwnld_all_reports_btn")
+  shinyjs::show("all_reports_format")
   loggit("INFO", paste("Summary of the uploaded file:",input$uploaded_file$name, 
                        "Total Packages:", nrow(values$Total),
                        "New Packages:", nrow(values$New),
