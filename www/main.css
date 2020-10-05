@@ -11,6 +11,10 @@ body {
   overflow: auto;
 }
 
+.sample_dataset_link{
+  font-size: 15px;
+}
+
 .main-header{
   background: #3c8dbc;
   display: flex;
