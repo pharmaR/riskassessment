@@ -13,7 +13,7 @@ output$report_preview<-renderUI({
  Sys.sleep(0.1)
   if (!is.null(values$packsDB$package) &&
       !identical(values$packsDB$package, character(0))) {
-  if (input$select_pack != "Select") {
+  if (input$select_pack != "Select" && input$select_ver != "Select") {
     removeUI(selector = "#Upload")
     fluidRow(
       class = "mt-4 r_p_main_row",
@@ -62,7 +62,7 @@ output$report_preview<-renderUI({
         width = 12,
         align = "center",
         class = "",
-        h1("Please select the Package")
+        h1("Please select the Package and/or version")
       )
     )
   }
