@@ -116,6 +116,7 @@ output$upload_format_download <- downloadHandler(
 output$upload_summary_text <- renderText({
   if (values$upload_complete == "upload_complete") {
     paste(
+      "<br><br><hr>",
       "<h3><b>Summary of uploaded package(s) </b></h3>",
       "<h4>Total Packages: ", nrow(values$Total), "</h4>",
       "<h4>New Packages:",  nrow(values$New), "</h4>",
