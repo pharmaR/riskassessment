@@ -16,6 +16,7 @@ output$upload_package<-renderUI({
   tags$div(class = "row col-sm-12 u_p_heading_row",
            tags$h2("Upload list of R Packages")),
   fluidRow(
+    style = "text-align: left",
     column(
       width = 4,
       tags$h4("Choose a CSV File", class = "chooseCSVtext"),
@@ -26,15 +27,10 @@ output$upload_package<-renderUI({
         "",
         accept = ".csv",
         placeholder = "No file selected"
-      )
-    ),
-    column(
-      width = 4,
-      class = "col-sm-5 text-left p-0 fs-8 upload_format",
-      
+      ),
+
       # Click on Button to view the sample format dataset to upload.
-      actionButton("upload_format", "View Sample Dataset", class =
-                     "sampledataset_class btn-secondary")
+      actionLink("upload_format", "View Sample Dataset", class = "sample_dataset_link")
     )
   ), 
   htmlOutput("upload_summary_text"),  # Display the summary information of the uploaded csv.
