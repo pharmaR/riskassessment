@@ -162,7 +162,8 @@ output$cum_commented <- renderText({
           " AND  comm_ver = '", input$select_ver,  "'", 
           " AND comment_type = 'cum'"
         )
-      )    values$comment_cum2 <- data.frame(values$comment_cum1 %>% map(rev))
+      )    
+    values$comment_cum2 <- data.frame(values$comment_cum1 %>% map(rev))
     req(values$comment_cum2$comment)
     values$cum_comment_submitted <- "no"
     paste(
