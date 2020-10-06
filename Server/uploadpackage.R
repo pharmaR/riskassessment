@@ -137,7 +137,7 @@ output$upload_summary_select <- renderUI({
     removeUI(selector = "#Upload")
     selectInput(
       "total_new_undis_dup",
-      "Select which packages to show",
+      "",
       choices = c("All", "New", "Undiscovered", "Duplicates")
     )
   } 
