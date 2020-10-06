@@ -7,21 +7,23 @@
 
 # 1. Observe to check the report preview value
 observe({
-  req(values$selected_pkg$package != "Select", values$selected_pkg$version != "Select")
-  if (input$tabs == "tm_tab_value") {
+  req(input$select_pack)
+  if (input$tabs == "reportPreview_tab_value") {
+    if(input$select_pack != "Select"){
     
-    values$riskmetrics_tm <-
-      db_fun(
-        paste0(
-          "SELECT * FROM TestMetrics WHERE TestMetrics.tm_id ='",
-          values$selected_pkg$package,
-          "'"," and tm_ver = '", values$selected_pkg$version, "'", ""
+      values$riskmetrics_tm <-
+        db_fun(
+          paste0(
+            "SELECT * FROM TestMetrics WHERE TestMetrics.tm_id ='",
+            input$select_pack,
+            "'"
+          )
         )
-      )
       values$test_coverage <- c(strsplit(values$riskmetrics_tm$test_coverage,",")[[1]][1], strsplit(values$riskmetrics_tm$test_coverage,",")[[1]][2])
       
       req(values$test_coverage)
       if(values$test_coverage[2] == -1){ runjs( "setTimeout(function(){ addTextToGaugeSVG('test_coverage1');}, 5000);" ) }
+    }
   }
 })  # End of the observe.
 
