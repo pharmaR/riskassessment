@@ -7,18 +7,17 @@
 
 # 1. Observe to get the info box information from the risk metric package.
 observe({
-  req(input$select_pack)
-  if(input$tabs == "reportPreview_tab_value"){
-    if(input$select_pack != "Select"){
-    
-      values$riskmetrics_mm <-
-        db_fun(
-          paste0(
-            "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
-            input$select_pack,
-            "'"
-          )
-        )  
+  req(values$selected_pkg$package != "Select", values$selected_pkg$version != "Select")
+  
+  if(input$tabs == "mm_tab_value"){
+    values$riskmetrics_mm <-
+      db_fun(
+        paste0(
+          "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
+          values$selected_pkg$package,
+          "'"," and mm_ver = '", values$selected_pkg$version, "'", ""
+        )
+      )
       
       values$package_has_vignettes <- c(strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][2])
       values$package_has_website <- c(strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][2])
@@ -41,7 +40,6 @@ observe({
       if(values$exported_objects_with_documentation[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('exporthelp1');}, 3000);" ) }
       if(values$source_code_is_public[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('source_pub1');}, 3000);" ) }
       if(values$has_a_package_maintainer[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('pack_maint1');}, 3000);" ) }
-    }
   }
 })  # End of the observe.
 

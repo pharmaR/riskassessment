@@ -8,36 +8,32 @@
 # 1. Observe to load the columns to risk metric table.
 
 observe({
-  req(input$select_pack)
-  if (input$tabs == "reportPreview_tab_value") {
-    if(input$select_pack != "Select"){
+  req(values$selected_pkg$package != "Select", values$selected_pkg$version != "Select")
+  if (input$tabs == "cum_tab_value") {
     
-      # Load the columns into values$riskmetrics.
-      pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
-      
-      if (input$select_pack %in% pkgs_in_db$cum_id &&
-          !identical(pkgs_in_db$cum_id, character(0))) {
-        values$riskmetrics_cum <-
-          db_fun(
-            paste0(
-              "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-              input$select_pack,
-              "'"
-            )
+    # Load the columns into values$riskmetrics.
+    pkgs_in_db <- db_fun(paste0("SELECT DISTINCT cum_id FROM CommunityUsageMetrics"))
+    
+    if (!is_empty(pkgs_in_db$cum_id) && input$select_pack %in% pkgs_in_db$cum_id) {
+      values$riskmetrics_cum <-
+        db_fun(
+          paste0(
+            "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
+            values$selected_pkg$package,
+            "'"," and cum_ver = '", values$selected_pkg$version, "'", ""
           )
-      } else{
-        if (input$select_pack != "Select") {
-          metric_cum_Info_upload_to_DB(input$select_pack)
-          values$riskmetrics_cum <-
-            db_fun(
-              paste0(
-                "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-                input$select_pack,
-                "'"
-              )
-            )
-        }
-      }
+        )
+    } else{
+      metric_cum_Info_upload_to_DB(values$selected_pkg$package, values$selected_pkg$version)
+      values$riskmetrics_cum <-
+        db_fun(
+          paste0(
+            "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
+            values$selected_pkg$package,
+            "'"," and cum_ver = '", values$selected_pkg$version, "'", ""
+          )
+        )
+    }
       
       # Load the data table column into reactive variable for time sice first release.
       values$time_since_first_release_info <-
@@ -53,7 +49,6 @@ observe({
       if(values$time_since_version_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_version_release1');}, 3000);" ) }
       if(values$time_since_first_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_first_release1');}, 3000);" ) }
       if (values$riskmetrics_cum$no_of_downloads_last_year[1] == 0) { runjs("setTimeout(function(){ updateText('no_of_downloads1');}, 3000);") }
-    } 
   }
 })  # End of the observe.
 
