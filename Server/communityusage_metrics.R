@@ -157,13 +157,12 @@ output$cum_commented <- renderText({
     values$comment_cum1 <-
       db_fun(
         paste0(
-          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
-          input$select_pack,
-          "'"," and comm_ver = '", input$select_ver,  
-          "' AND comment_type = 'cum'"
+          "SELECT user_name, user_role, comment, added_on FROM Comments",
+          " WHERE comm_id = '", input$select_pack, "'",
+          " AND  comm_ver = '", input$select_ver,  "'", 
+          " AND comment_type = 'cum'"
         )
-      )
-    values$comment_cum2 <- data.frame(values$comment_cum1 %>% map(rev))
+      )    values$comment_cum2 <- data.frame(values$comment_cum1 %>% map(rev))
     req(values$comment_cum2$comment)
     values$cum_comment_submitted <- "no"
     paste(

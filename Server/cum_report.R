@@ -215,9 +215,10 @@ output$cum_commented1 <- renderText({
     values$comment_cum1 <-
       db_fun(
         paste0(
-          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
-          input$select_pack,
-          "' AND comment_type = 'cum'"
+          "SELECT user_name, user_role, comment, added_on FROM Comments",
+          " WHERE comm_id = '", input$select_pack, "'",
+          " AND  comm_ver = '", input$select_ver,  "'", 
+          " AND comment_type = 'cum'"
         )
       )
     values$comment_cum2 <- data.frame(values$comment_cum1 %>% map(rev))
