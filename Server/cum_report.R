@@ -8,37 +8,26 @@
 # 1. Observe to load the columns to risk metric table.
 
 observe({
-  req(input$select_pack)
+  req(values$selected_pkg$package != "Select", values$selected_pkg$version != "Select")
   if (input$tabs == "reportPreview_tab_value") {
-    if(input$select_pack != "Select"){
+
+    # Load the columns into values$riskmetrics.
+    pkgs_in_db <- db_fun(paste0("SELECT DISTINCT cum_id, cum_ver FROM CommunityUsageMetrics"))
     
-      # Load the columns into values$riskmetrics.
-      pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
-      
-      if (input$select_pack %in% pkgs_in_db$cum_id &&
-          !identical(pkgs_in_db$cum_id, character(0))) {
-        values$riskmetrics_cum <-
-          db_fun(
-            paste0(
-              "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-              input$select_pack,
-              "'"
-            )
-          )
-      } else{
-        if (input$select_pack != "Select") {
-          metric_cum_Info_upload_to_DB(input$select_pack)
-          values$riskmetrics_cum <-
-            db_fun(
-              paste0(
-                "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-                input$select_pack,
-                "'"
-              )
-            )
-        }
-      }
-      
+    # not in db? add it!
+    if (!input$select_pack %in% pkgs_in_db$cum_id || !input$select_ver %in% pkgs_in_db$cum_ver) {
+      metric_cum_Info_upload_to_DB(values$selected_pkg$package, values$selected_pkg$version)
+    }
+    # now retrieve it
+    values$riskmetrics_cum <-
+      db_fun(
+        paste0(
+          "SELECT * FROM CommunityUsageMetrics",
+          " WHERE cum_id ='", values$selected_pkg$package, "'",
+          " AND cum_ver = '", values$selected_pkg$version, "'", ""
+        )
+      )
+    
       # Load the data table column into reactive variable for time sice first release.
       values$time_since_first_release_info <-
         values$riskmetrics_cum$time_since_first_release[1]
@@ -46,6 +35,17 @@ observe({
       # Load the data table column into reactive variable for time sice version release.
       values$time_since_version_release_info <-
         values$riskmetrics_cum$time_since_version_release[1]
+
+      values$total_downloads <- summarise(values$riskmetrics_cum, sum(no_of_downloads))
+      
+      to <- values$riskmetrics_cum %>% 
+        mutate(date = as.Date(paste("01",month), format = "%d %B %Y")) %>% 
+        slice_max(order_by = date)
+      values$to_date <- to[,"month"]
+      fr <- values$riskmetrics_cum %>% 
+        mutate(date = as.Date(paste("01",month), format = "%d %B %Y")) %>% 
+        slice_min(order_by = date)
+      values$fr_date <- fr[,"month"]
       
       runjs( "setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 100);" )
       
@@ -53,7 +53,6 @@ observe({
       if(values$time_since_version_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_version_release1');}, 3000);" ) }
       if(values$time_since_first_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_first_release1');}, 3000);" ) }
       if (values$riskmetrics_cum$no_of_downloads_last_year[1] == 0) { runjs("setTimeout(function(){ updateText('no_of_downloads1');}, 3000);") }
-    } 
   }
 })  # End of the observe.
 
@@ -96,85 +95,16 @@ output$time_since_version_release1 <- renderInfoBox({
 
 # 3. Render Output to show the highchart for number of downloads on the application.
 output$no_of_downloads1 <- renderHighchart({
-  if (values$riskmetrics_cum$no_of_downloads_last_year[1] != 0) {
+  req(values$riskmetrics_cum)
+  if (values$total_downloads != 0) {
     hc <- highchart() %>%
       hc_xAxis(categories = values$riskmetrics_cum$month) %>%
       hc_xAxis(
         title = list(text = "Months"),
-        plotLines = list(
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[1]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[1]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[2]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[2]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[3]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[3]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[4]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[4]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[5]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[5]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[6]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[6]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[7]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[7]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[8]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[8]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[9]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[9]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[10]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[10]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[11]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[11]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[12]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[12]
-          )
-        )
+        
+        plotLines = map2(values$riskmetrics_cum$ver_release, values$riskmetrics_cum$position,
+                         function(.x, .y)  list(label = list(text = .x), color = "#FF0000", width = 2, value = .y) )
+        
       ) %>%
       hc_add_series(
         name = input$select_pack,
@@ -182,11 +112,11 @@ output$no_of_downloads1 <- renderHighchart({
         color = "blue"
       ) %>%
       hc_yAxis(title = list(text = "Downloads")) %>%
-      hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS 11 MONTHS") %>%
+      hc_title(text = paste("Number of Downloads from", values$fr_date,"to", values$to_date, "for the package:",input$select_pack,"up to version",input$select_ver)) %>%
       hc_subtitle(
         text = paste(
           "Total Number of Downloads :",
-          sum(values$riskmetrics_cum$no_of_downloads)
+          values$total_downloads
         ),
         align = "right",
         style = list(color = "#2b908f", fontWeight = "bold")
@@ -198,9 +128,9 @@ output$no_of_downloads1 <- renderHighchart({
       hc_xAxis(title = list(text = "Months")) %>%
       hc_add_series(name = input$select_pack, data = NULL) %>%
       hc_yAxis(title = list(text = "Downloads")) %>%
-      hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS 11 MONTHS") %>%
+      hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS MONTHS") %>%
       hc_subtitle(
-        text = paste("Number of Downloads in the 11 previous months are zero"),
+        text = paste("Number of Downloads are zero"),
         style = list(color = "#f44336", fontWeight = "bold")
       ) %>%
       hc_add_theme(hc_theme_elementary())

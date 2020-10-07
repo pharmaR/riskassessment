@@ -10,35 +10,26 @@
 
 # 1. Observe to load the columns from DB into reactive values.
 observe({
-  
   req(values$selected_pkg$package != "Select", values$selected_pkg$version != "Select")
   if (input$tabs == "cum_tab_value") {
     
     # Load the columns into values$riskmetrics.
-    pkgs_in_db <- db_fun(paste0("SELECT DISTINCT cum_id FROM CommunityUsageMetrics"))
+    pkgs_in_db <- db_fun(paste0("SELECT DISTINCT cum_id, cum_ver FROM CommunityUsageMetrics"))
     
-    if (input$select_pack %in% pkgs_in_db$cum_id &&
-        !identical(pkgs_in_db$cum_id, character(0))) {
-      values$riskmetrics_cum <-
-        db_fun(
-          paste0(
-            "SELECT * FROM CommunityUsageMetrics",
-            " WHERE cum_id ='", values$selected_pkg$package, "'",
-            " AND cum_ver = '", values$selected_pkg$version, "'", ""
-          )
-        )
-    } else{
+    # not in db? add it!
+    if (!input$select_pack %in% pkgs_in_db$cum_id || !input$select_ver %in% pkgs_in_db$cum_ver) {
       metric_cum_Info_upload_to_DB(values$selected_pkg$package, values$selected_pkg$version)
-      values$riskmetrics_cum <-
-        db_fun(
-          paste0(
-            "SELECT * FROM CommunityUsageMetrics",
-            " WHERE cum_id ='", values$selected_pkg$package, "'",
-            " AND cum_ver = '", values$selected_pkg$version, "'", ""
-          )
-        )
     }
-
+    # now retrieve it
+    values$riskmetrics_cum <-
+      db_fun(
+        paste0(
+          "SELECT * FROM CommunityUsageMetrics",
+          " WHERE cum_id ='", values$selected_pkg$package, "'",
+          " AND cum_ver = '", values$selected_pkg$version, "'", ""
+        )
+      )
+    
     # Load the data table column into reactive variable for time sice first release.
     values$time_since_first_release_info <-
       values$riskmetrics_cum$time_since_first_release[1]
@@ -46,6 +37,17 @@ observe({
     # Load the data table column into reactive variable for time sice version release.
     values$time_since_version_release_info <-
       values$riskmetrics_cum$time_since_version_release[1]
+    
+    values$total_downloads <- summarise(values$riskmetrics_cum, sum(no_of_downloads))
+    
+    to <- values$riskmetrics_cum %>% 
+      mutate(date = as.Date(paste("01",month), format = "%d %B %Y")) %>% 
+      slice_max(order_by = date)
+    values$to_date <- to[,"month"]
+    fr <- values$riskmetrics_cum %>% 
+      mutate(date = as.Date(paste("01",month), format = "%d %B %Y")) %>% 
+      slice_min(order_by = date)
+    values$fr_date <- fr[,"month"]
     
     runjs( "setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 100);" )
     
@@ -70,8 +72,6 @@ observe({
 
 output$time_since_first_release <- renderInfoBox({
   req(values$time_since_first_release_info)
-  req(input$select_pack != "Select", input$select_ver != "Select")
-  
   infoBox(
     title = "Package Maturity",
     values$time_since_first_release_info,
@@ -88,8 +88,6 @@ output$time_since_first_release <- renderInfoBox({
 
 output$time_since_version_release <- renderInfoBox({
   req(values$time_since_version_release_info)
-  req(input$select_pack != "Select", input$select_ver != "Select")
-  
   infoBox(
     title = "Version Maturity",
     values$time_since_version_release_info,
@@ -105,15 +103,8 @@ output$time_since_version_release <- renderInfoBox({
 
 # 3. Render Output to show the highchart for number of downloads on the application.
 output$no_of_downloads <- renderHighchart({
-  
-  req(input$select_pack != "Select", input$select_ver != "Select")
-  
-  if (values$riskmetrics_cum$no_of_downloads_last_year[1] != 0) {
-    
-    package_ver <- input$select_ver # get the installed version
-    fr_date <- values$riskmetrics_cum$month[[1]]
-    to_date <- values$riskmetrics_cum$month[[nrow(values$riskmetrics_cum)]]
-    
+  req(values$riskmetrics_cum)
+  if (values$total_downloads != 0) {
     hc <- highchart() %>%
       hc_xAxis(categories = values$riskmetrics_cum$month) %>%
       hc_xAxis(
@@ -129,17 +120,16 @@ output$no_of_downloads <- renderHighchart({
         color = "blue"
       ) %>%
       hc_yAxis(title = list(text = "Downloads")) %>%
-      hc_title(text = paste("Number of Downloads from", fr_date,"to", to_date, "for the package:",input$select_pack,"up to version",package_ver)) %>%
+      hc_title(text = paste("Number of Downloads from", values$fr_date,"to", values$to_date, "for the package:",input$select_pack,"up to version",input$select_ver)) %>%
       hc_subtitle(
         text = paste(
           "Total Number of Downloads :",
-          unique(values$riskmetrics_cum$no_of_downloads_last_year)
+          values$total_downloads
         ),
         align = "right",
         style = list(color = "#2b908f", fontWeight = "bold")
       ) %>%
       hc_add_theme(hc_theme_elementary())
-    
   } else {
     hc <- highchart() %>%
       hc_xAxis(categories = NULL) %>%
@@ -148,7 +138,7 @@ output$no_of_downloads <- renderHighchart({
       hc_yAxis(title = list(text = "Downloads")) %>%
       hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS MONTHS") %>%
       hc_subtitle(
-        text = paste("Number of Downloads in the previous months are zero"),
+        text = paste("Number of Downloads are zero"),
         style = list(color = "#f44336", fontWeight = "bold")
       ) %>%
       hc_add_theme(hc_theme_elementary())
@@ -158,18 +148,17 @@ output$no_of_downloads <- renderHighchart({
 # 4. Render output to show the comments.
 
 output$cum_commented <- renderText({
-  req(input$select_pack != "Select", input$select_ver != "Select")
-  
   if (values$cum_comment_submitted == "yes" ||
       values$cum_comment_submitted == "no") {
     values$comment_cum1 <-
       db_fun(
         paste0(
-          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
-          input$select_pack,
-          "' AND comment_type = 'cum'"
+          "SELECT user_name, user_role, comment, added_on FROM Comments",
+          " WHERE comm_id = '", input$select_pack, "'",
+          " AND  comm_ver = '", input$select_ver,  "'", 
+          " AND comment_type = 'cum'"
         )
-      )
+      )    
     values$comment_cum2 <- data.frame(values$comment_cum1 %>% map(rev))
     req(values$comment_cum2$comment)
     values$cum_comment_submitted <- "no"
@@ -202,13 +191,13 @@ observeEvent(input$submit_cum_comment, {
       paste0(
         "INSERT INTO Comments values('",
         input$select_pack, "',",
-        "'",  input$select_ver , "',",
-        "'",  values$name,       "',",
-        "'",  values$role,       "',",
-        "'",  cmnt,              "',",
-        "'",  cm_type,           "',",
-        "'",  TimeStamp(),       "'" ,
-        ")"
+        "'", input$select_ver,  "',", 
+        "'", values$name,       "',",
+        "'", values$role,       "',",
+        "'", input$cum_comment, "',",
+        "'cum',",
+        "'", TimeStamp(), "'",
+        ")" 
       )
     )
     values$cum_comment_submitted <- "yes"
