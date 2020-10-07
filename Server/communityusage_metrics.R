@@ -17,30 +17,28 @@ observe({
     # Load the columns into values$riskmetrics.
     pkgs_in_db <- db_fun(paste0("SELECT DISTINCT cum_id FROM CommunityUsageMetrics"))
     
-    if (values$selected_pkg$package %in% pkgs_in_db$cum_id &&
+    if (input$select_pack %in% pkgs_in_db$cum_id &&
         !identical(pkgs_in_db$cum_id, character(0))) {
       values$riskmetrics_cum <-
         db_fun(
           paste0(
-            "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-            values$selected_pkg$package,
-            "'"
+            "SELECT * FROM CommunityUsageMetrics",
+            " WHERE cum_id ='", values$selected_pkg$package, "'",
+            " AND cum_ver = '", values$selected_pkg$version, "'", ""
           )
         )
     } else{
-      if (values$selected_pkg$package != "Select") {
-        metric_cum_Info_upload_to_DB(input$select_pack, input$select_ver)
-        values$riskmetrics_cum <-
-          db_fun(
-            paste0(
-              "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-              values$selected_pkg$package,
-              "'"
-            )
+      metric_cum_Info_upload_to_DB(values$selected_pkg$package, values$selected_pkg$version)
+      values$riskmetrics_cum <-
+        db_fun(
+          paste0(
+            "SELECT * FROM CommunityUsageMetrics",
+            " WHERE cum_id ='", values$selected_pkg$package, "'",
+            " AND cum_ver = '", values$selected_pkg$version, "'", ""
           )
-      }
+        )
     }
-    
+
     # Load the data table column into reactive variable for time sice first release.
     values$time_since_first_release_info <-
       values$riskmetrics_cum$time_since_first_release[1]
@@ -200,25 +198,17 @@ values$cum_comment_submitted <- "no"
 
 observeEvent(input$submit_cum_comment, {
   if (trimws(input$cum_comment) != "") {
-    db_fun(
+    db_ins(
       paste0(
         "INSERT INTO Comments values('",
-        input$select_pack,
-        "',",
-        "'",
-        values$name,
-        "'," ,
-        "'",
-        values$role,
-        "',",
-        "'",
-        input$cum_comment,
-        "',",
-        "'cum',",
-        "'",
-        TimeStamp(),
-        "'"  ,
-        ")" 
+        input$select_pack, "',",
+        "'",  input$select_ver , "',",
+        "'",  values$name,       "',",
+        "'",  values$role,       "',",
+        "'",  cmnt,              "',",
+        "'",  cm_type,           "',",
+        "'",  TimeStamp(),       "'" ,
+        ")"
       )
     )
     values$cum_comment_submitted <- "yes"
