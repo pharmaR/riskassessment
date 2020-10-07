@@ -9,8 +9,8 @@
 
 observe({
   req(values$selected_pkg$package != "Select", values$selected_pkg$version != "Select")
-  if (input$tabs == "cum_tab_value") {
-    
+  if (input$tabs %in% c("cum_tab_value","reportPreview_tab_value")) {
+
     # Load the columns into values$riskmetrics.
     pkgs_in_db <- db_fun(paste0("SELECT DISTINCT cum_id FROM CommunityUsageMetrics"))
     
@@ -96,80 +96,10 @@ output$no_of_downloads1 <- renderHighchart({
       hc_xAxis(categories = values$riskmetrics_cum$month) %>%
       hc_xAxis(
         title = list(text = "Months"),
-        plotLines = list(
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[1]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[1]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[2]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[2]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[3]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[3]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[4]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[4]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[5]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[5]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[6]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[6]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[7]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[7]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[8]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[8]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[9]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[9]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[10]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[10]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[11]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[11]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[12]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[12]
-          )
-        )
+        
+        plotLines = map2(values$riskmetrics_cum$ver_release, values$riskmetrics_cum$position,
+                         function(.x, .y)  list(label = list(text = .x), color = "#FF0000", width = 2, value = .y) )
+        
       ) %>%
       hc_add_series(
         name = input$select_pack,

@@ -8,8 +8,8 @@
 # 1. Observe to get the info box information from the risk metric package.
 observe({
   req(values$selected_pkg$package != "Select", values$selected_pkg$version != "Select")
-  
-  if(input$tabs == "mm_tab_value"){
+  if (input$tabs %in% c("mm_tab_value","reportPreview_tab_value")) {
+    
     values$riskmetrics_mm <-
       db_fun(
         paste0(

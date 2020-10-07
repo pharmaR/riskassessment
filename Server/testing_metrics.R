@@ -41,20 +41,25 @@ observe({
 # 1. Render Output to show the test converage gauage.
 
 output$test_coverage <- renderAmCharts({
+  req(values$test_coverage)
+  # set character missing to zero and -1, respectively
+  test_coverage1 <- str_replace(values$test_coverage[[1]],"NA","0")
+  test_coverage2 <- str_replace(values$test_coverage[[2]],"NA","-1")
+  
   bands = data.frame(
     start = c(0, 40, 80),
     end = c(40, 80, 100),
-    color = ifelse(values$test_coverage[2] != -1, c("#ea3838", "#ffac29", "#00CC00"), c("#808080", "#808080", "#808080")),
+    color = ifelse(test_coverage2 != -1, c("#ea3838", "#ffac29", "#00CC00"), c("#808080", "#808080", "#808080")),
     stringsAsFactors = FALSE
   )
   bands2 = data.frame(
     start = c(0, 40, 80),
     end = c(40, 80, 100),
-    color = ifelse(values$test_coverage[2] != -1, c("#ea3838", "#ffac29", "#00CC00"), c("#808080", "#808080", "#808080")),
+    color = ifelse(test_coverage2 != -1, c("#ea3838", "#ffac29", "#00CC00"), c("#808080", "#808080", "#808080")),
     stringsAsFactors = FALSE
   )
   amAngularGauge(
-    x = 0, #as.numeric(values$test_coverage[1]),
+    x = as.numeric(test_coverage1),
     start = 0,
     end = 100,
     bands = bands,
