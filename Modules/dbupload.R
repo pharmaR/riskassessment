@@ -106,7 +106,24 @@ get_packages_info_from_web <- function(package_name) {
       
     },
     error = function(e) {
+      if (package_name %in% rownames(installed.packages()) == TRUE) {
+        for (i in .libPaths()) {
+          if (file.exists(paste(i, "/", package_name, sep = "")) == TRUE) {
+            i <- paste0(i, "/", package_name)
+            d <- description$new(i)
+            title <- d$get("Title")
+            ver <- d$get("Version")
+            desc <- d$get("Description")
+            main <- d$get("Maintainer")
+            auth <- d$get("Author")
+            lis <- d$get("License")
+            pub <- d$get("Packaged")
+            
+            genInfo_upload_to_DB(package_name, ver, title, desc, auth, main, lis, pub)
+          }}
+      } else{
         loggit("ERROR", paste("Error in extracting general info of the package", package_name, "info", e), app = "fileupload-webscraping")
+      }
     }
   )# End of try catch
 }
