@@ -20,7 +20,7 @@ data <- reactive({
 
 observeEvent(list(input$total_new_undis_dup,input$uploaded_file), {
   req(values$upload_complete == "upload_complete")
-  if (input$total_new_undis_dup == "Total") {
+  if (input$total_new_undis_dup == "All") {
     values$Total_New_Undis_Dup <- values$Total
   } else if (input$total_new_undis_dup == "New") {
     values$Total_New_Undis_Dup <- values$New
@@ -48,8 +48,6 @@ observeEvent(input$uploaded_file, {
     shinyjs::show("upload_summary_text")
     shinyjs::show("upload_summary_select")
     shinyjs::show("total_new_undis_dup_table")
-    shinyjs::show("dwnld_all_reports_btn")
-    shinyjs::show("all_reports_format")
   }
   file_to_read <- input$uploaded_file
   pkgs_file <-
@@ -89,6 +87,11 @@ observeEvent(input$uploaded_file, {
   
   showNotification(id = "show_notification_id", "Upload completed to DB", type = "message")
   values$upload_complete <- "upload_complete"
+  
+  # Show the download reports buttons after all the packages have been loaded
+  # and the information extracted.
+  shinyjs::show("dwnld_all_reports_btn")
+  shinyjs::show("all_reports_format")
   loggit("INFO", paste("Summary of the uploaded file:",input$uploaded_file$name, 
                        "Total Packages:", nrow(values$Total),
                        "New Packages:", nrow(values$New),
@@ -107,7 +110,7 @@ output$upload_format_download <- downloadHandler(
     paste("Upload_file_structure", ".csv", sep = "")
   },
   content = function(file) {
-    write.csv(read_csv("./Data/upload_format.csv"), file, row.names = F)
+    write.csv(read_csv(file.path("Data", "upload_format.csv")), file, row.names = F)
   }
 )  # End of the render Output.
 
@@ -116,21 +119,12 @@ output$upload_format_download <- downloadHandler(
 output$upload_summary_text <- renderText({
   if (values$upload_complete == "upload_complete") {
     paste(
-      "<h3><b>Summary of:</b>",
-      input$uploaded_file$name,
-      "</h3>",
-      "<h4>Total Packages: ",
-      nrow(values$Total),
-      "</h4>",
-      "<h4>New Packages:",
-      nrow(values$New),
-      "</h4>",
-      "<h4>Undiscovered Packages:",
-      nrow(values$Undis),
-      "</h4>",
-      "<h4>Duplicate Packages:",
-      nrow(values$Dup),
-      "</h4>",
+      "<br><br><hr>",
+      "<h3><b>Summary of uploaded package(s) </b></h3>",
+      "<h4>Total Packages: ", nrow(values$Total), "</h4>",
+      "<h4>New Packages:",  nrow(values$New), "</h4>",
+      "<h4>Undiscovered Packages:", nrow(values$Undis), "</h4>",
+      "<h4>Duplicate Packages:", nrow(values$Dup), "</h4>",
       "<h4><b>Note: The information extracted of the package will be always from latest version irrespective of uploaded version."
     )
   }
@@ -144,14 +138,14 @@ output$upload_summary_select <- renderUI({
     selectInput(
       "total_new_undis_dup",
       "",
-      choices = c("Total", "New", "Undiscovered", "Duplicates")
+      choices = c("All", "New", "Undiscovered", "Duplicates")
     )
   } 
 })  # End of the render Output.
 
 # 4. Render Output to show the data table of uploaded csv.
 
-output$total_new_undis_dup_table <- DT::renderDataTable(
+output$total_new_undis_dup_table <- DT::renderDataTable({
   if (values$upload_complete == "upload_complete") {
     datatable(
       values$Total_New_Undis_Dup,
@@ -160,13 +154,15 @@ output$total_new_undis_dup_table <- DT::renderDataTable(
       selection = 'none',
       extensions = 'Buttons',
       options = list(
+        searching = FALSE,
         sScrollX = "100%",
+        lengthChange = FALSE,
         aLengthMenu = list(c(5, 10, 20, 100,-1), list('5', '10', '20', '100', 'All')),
         iDisplayLength = 5
       )
     )
   }
-)  # End of the render Output 
+}) # End of the render Output 
 # End of the Render Output's'.
 
 

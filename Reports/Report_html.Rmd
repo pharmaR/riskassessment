@@ -567,7 +567,7 @@ comment_cum <- data.frame(comment_cum %>% map(rev))
     stringsAsFactors = FALSE
   )
   amAngularGauge(
-    x = as.numeric(riskmetrics_tm[1]),
+    x = as.numeric(ifelse(riskmetrics_tm[1] == "NA", 0, riskmetrics_tm[1])),
     start = 0,
     end = 100,
     bands = bands,

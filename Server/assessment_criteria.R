@@ -11,7 +11,7 @@
 # 1. Output of the render text to Display the Maintenance Metrics content.
 
 output$maintenance_desc <- renderText({
-  desc_maintenance <- read_file("./Data/maintenance.txt")
+  desc_maintenance <- read_file(file.path("Data", "maintenance.txt"))
   paste("<h4>", desc_maintenance, "</h4>")
 })  # End of the maintenance text render Output.
 
@@ -19,7 +19,7 @@ output$maintenance_desc <- renderText({
 
 output$maintenance_table <- DT::renderDataTable(
   datatable(
-    read_csv("./Data/maintenance.csv"),
+    read_csv(file.path("Data", "maintenance.csv")),
     escape = FALSE,
     class = "cell-border",
     selection = 'none',
@@ -34,7 +34,7 @@ output$maintenance_table <- DT::renderDataTable(
 # 3. Output of the render text to Dispaly the Community Usage Metrics content.
 
 output$community_usage_desc <- renderText({
-  desc_community_usage <- read_file("./Data/community.txt")
+  desc_community_usage <- read_file(file.path("Data", "community.txt"))
   paste("<h4>", desc_community_usage, "</h4>")
 })  # End of the Community usage text render output.
 
@@ -42,7 +42,7 @@ output$community_usage_desc <- renderText({
 
 output$community_usage_table <- DT::renderDataTable(
   datatable(
-    read_csv("./Data/community.csv"),
+    read_csv(file.path("Data", "community.csv")),
     escape = FALSE,
     class = "cell-border",
     selection = 'none',
@@ -57,7 +57,7 @@ output$community_usage_table <- DT::renderDataTable(
 # 5. Output of the render text to Dispaly the Testing Metrics content.
 
 output$testing_desc <- renderText({
-  desc_testing <- read_file("./Data/testing.txt")
+  desc_testing <- read_file(file.path("Data", "testing.txt"))
   paste("<h4>", desc_testing, "</h4>")
 })  # End of the testing text render Output
 
@@ -65,7 +65,7 @@ output$testing_desc <- renderText({
 
 output$testing_table <- DT::renderDataTable(
   datatable(
-    read_csv("./Data/testing.csv"),
+    read_csv(file.path("Data", "testing.csv")),
     escape = FALSE,
     class = "cell-border",
     selection = 'none',
