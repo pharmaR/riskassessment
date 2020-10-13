@@ -416,7 +416,7 @@ table_cum<-data.frame("User ID"=comment_cum$user_name,"Role"= comment_cum$user_r
     stringsAsFactors = FALSE
   )
   amAngularGauge(
-    x = as.numeric(riskmetrics_tm[1]),
+    x = as.numeric(ifelse(riskmetrics_tm[1] == "NA", 0, riskmetrics_tm[1])),
     start = 0,
     end = 100,
     bands = bands,

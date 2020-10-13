@@ -24,7 +24,7 @@ output$screen <- renderUI({
                  column(width = 12,
                         tags$h3("User ID", class = "mt-7")),
                  column(width = 12,
-                        disabled(textInput("name", NULL, value = GetUserName(), )))  # Text input to enter the name.
+                        textInput("name", NULL))  # Text input to enter the name.
                ),
                tags$div(
                  class = "col-md-12 role-div",
@@ -34,6 +34,7 @@ output$screen <- renderUI({
                    tags$h3("Role", class = "mt-7")
                  ),
                  column(width = 12,
+                        #disabled(textInput("role", NULL, value = "RinPharma-Participant")))  # Text input to enter the Role.
                         textInput("role", NULL))  # Text input to enter the Role.
                ),
                tags$div(class = "col-md-12 proceed-div",

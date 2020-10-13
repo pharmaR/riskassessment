@@ -56,7 +56,7 @@ output$test_coverage1 <- renderAmCharts({
     stringsAsFactors = FALSE
   )
   amAngularGauge(
-    x = as.numeric(test_coverage1),
+    x = as.numeric(ifelse(values$test_coverage[1] == "NA", 0, values$test_coverage[1])),
     start = 0,
     end = 100,
     bands = bands,
