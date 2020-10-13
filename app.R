@@ -190,6 +190,11 @@ server <- function(session, input, output) {
     source(file.path("UI", "assessment_criteria.R"), local = TRUE)$value
   })  # End of the Observe Event
   
+  # load vector of available packages (on CRAN)
+  if (!exists("pkgs_vec")) {
+    pkgs_vec <- as.data.frame(utils::available.packages())[[1]]
+  } 
+  
 }  # End of the Server Code.
 
 
