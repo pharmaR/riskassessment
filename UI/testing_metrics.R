@@ -64,7 +64,7 @@ output$testing_metrics <- renderUI({
           width = 12,
           align = "center",
           class = "",
-          h1("Please select the Package and/or version")
+          h1("Please select a package and a version")
         )
       )
     }
