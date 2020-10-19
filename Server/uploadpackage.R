@@ -28,7 +28,7 @@ observeEvent(list(input$total_new_undis_dup,input$uploaded_file), {
     values$Total_New_Undis_Dup <- values$Undis
   } else if (input$total_new_undis_dup == "Duplicates") {
     values$Total_New_Undis_Dup <- values$Dup
-  } 
+  }
 }, ignoreInit = TRUE)  # End of the observe.
 
 # 2. Observe to disable the input widgets while the packages uploading into DB.
@@ -58,6 +58,12 @@ observeEvent(input$uploaded_file, {
   pkgs_file$package <- trimws(pkgs_file$package)
   pkgs_file$version <- trimws(pkgs_file$version)
   
+  values$Total <- pkgs_file
+
+  pkgs_db1 <- db_fun("SELECT package, version FROM Packageinfo")
+  # initialize table
+  values$Undis <- anti_join(pkgs_db1, pkgs_db1, by = c("package","version"))
+  
   j <- rep(FALSE, nrow(pkgs_file))
   for (i in 1:nrow(pkgs_file)) {
     if (!pkgs_file$package[i] %in% pkgs_vec) {
@@ -85,14 +91,8 @@ observeEvent(input$uploaded_file, {
     row.names(pkgs_file) <- NULL
   }
 
-  values$Total <- pkgs_file
-
-  # pkgs_db1 <- db_fun("SELECT package FROM Packageinfo")
-  # values$Dup <- filter(values$Total, values$Total$package %in% pkgs_db1$package)
-  # values$New <- filter(values$Total, !(values$Total$package %in% pkgs_db1$package))
-  pkgs_db1 <- db_fun("SELECT package, version FROM Packageinfo")
-  values$Dup <- inner_join(values$Total, pkgs_db1, by = c("package","version"))
-  values$New <- anti_join( values$Total, pkgs_db1, by = c("package","version"))
+  values$Dup <- semi_join(pkgs_file, pkgs_db1, by = c("package","version"))
+  values$New <- anti_join(pkgs_file, pkgs_db1, by = c("package","version"))
   
   # values$Dup <- filter(values$Total,   values$Total$package %in% pkgs_db1$package & values$Total$version %in% pkgs_db1$version)
   # values$New <- filter(values$Total, !(values$Total$package %in% pkgs_db1$package & values$Total$version %in% pkgs_db1$version))
@@ -115,14 +115,16 @@ observeEvent(input$uploaded_file, {
       }
     }
     if (any(j)) {
-      # drop the non-existent packages
+      # add any undiscovered packages here
+      values$Undis <- bind_rows(values$Undis, values$New[which(j),])
+      # drop the undiscovered packages from New
       values$New <- values$New[-which(j),]
       # reset the row numbers
       row.names(values$New) <- NULL
     }
     
-    values$Undis <- anti_join(values$Undis, values$New, by = c("package","version"))
-    values$Total <- bind_rows(pkgs_db1, values$New)
+    # values$Undis <- anti_join(values$Undis, values$New, by = c("package","version"))
+    # values$Total <- bind_rows(pkgs_db1, values$New)
   })
   
   # pkgs_db2 <- db_fun("SELECT package FROM Packageinfo")
@@ -172,12 +174,12 @@ output$upload_summary_text <- renderText({
   if (values$upload_complete == "upload_complete") {
     paste(
       "<br><br><hr>",
-      "<h3><b>Summary of uploaded package(s) </b></h3>",
-      "<h4>Total Packages: ", nrow(values$Total), "</h4>",
-      "<h4>New Packages:",  nrow(values$New), "</h4>",
+      "<h3><b>Summary of uploaded package(s) and version(s) </b></h3>",
+      "<h4>Total Packages:       ", nrow(values$Total), "</h4>",
+      "<h4>New Packages:         ", nrow(values$New), "</h4>",
       "<h4>Undiscovered Packages:", nrow(values$Undis), "</h4>",
-      "<h4>Duplicate Packages:", nrow(values$Dup), "</h4>",
-      "<h4><b>Note: The information extracted of the package will be always from latest version irrespective of uploaded version."
+      "<h4>Duplicate Packages:", nrow(values$Dup), "</h4>"
+      # "<h4><b>Note: The information extracted of the package will be always from latest version irrespective of uploaded version."
     )
   }
 })  # End of the render Output.
