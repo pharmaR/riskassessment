@@ -1,0 +1,241 @@
+---
+title: "Convert from SQLite to MariaDB"
+author: "Robert Krajcik"
+date: "September 3, 2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Why convert from SQLite?
+
+Perhaps you want to use a remote storage location multiple users can access the same data intead of each user having their own "silo" on their own laptop or desktop.  SQLite does not provide remote storage.
+
+Take a look at this blog by Dean Attali:
+[Persistent Data Storage](https://shiny.rstudio.com/articles/persistent-data-storage.html)
+
+## Set up MariaDB
+
+- Download the MariaDB installation software from:
+https://go.mariadb.com/download-mariadb-server-community.html<br>
+You should have `mariadb-10.5.4-winx64.msi` in your download folder
+
+- Next, install (or get IT to install for you) the msi file you downloaded.
+(Go into Biogen Access Management and Chat with IT)
+
+- During installation, set up your root (admin) password and save it.
+It will also ask you to choose a port number, the default being 3306.
+If you already have MySQL running, you will need to choose another port number.
+
+- Keep the MariaDB reference guide nearby:
+https://mariadb.com/kb/en/documentation/
+
+- Go into settings -> Services and check that MariaDB is running<br>
+ ![](Services.png)
+ 
+- Next, start the MariaDB command line client and create a database<br>
+ ![](MariaDB_CLI.png)
+
+- Now it's time to create a database. Note the name is case-sensitive.<br>
+  type: `CREATE DATABASE mymariadatabase;` <br>
+  on the command line.  Note the semicolon at the end.<br>
+  and then type: `USE mymariadatabase;` <br>
+
+- Create a user and grant privileges <br>
+  type: `CREATE USER 'rkrajcik'@'localhost' IDENTIFIED BY 'mysqlpassword';`<br>
+  type: `GRANT ALL PRIVILEGES ON mymariadatabase.* TO 'rkrajcik'@'localhost';`
+
+- Databases are created in "C:\\Program Files\\MariaDB 10.5\\data"
+
+- To remove a database, type: `DROP DATABASE mymariadatabase;`
+
+## Shiny Modifications.
+
+- In R, type: `install.packages("RMariaDB")`
+
+- In `setup.R`, replace `"RSQLite"` with `"RMariaDB"`
+  And add package "glue" to the bottom of the list if it's not already there.
+
+- Add add these two lines at the bottom of `setup.R`
+```{r, eval = FALSE}
+options(shiny.port = 1221)         # default port number for shiny
+options(shiny.host = '127.0.0.1')  # use '127.0.0.1' for local access
+```
+
+In `utils.R` make the following changes:
+```{r, eval = FALSE}
+# Stores the database name.
+# db_name <- "database.sql"
+
+db_name <- "mymariadatabase"
+db_user <- Sys.getenv("USERNAME")
+# db_password <- "mysqlpassword"
+db_password <- rstudioapi::askForPassword("Please enter your password")
+
+db_host <- unlist(unname(options("shiny.host"))) 
+db_port <- 3703  # port for MariaDB (3306 was used by MySQL)
+```
+
+Instead of hardcoding the MariaDB user password, I opted to ask for it the first time around and save it. Note the port number for MariaDB defaults to 3306, but I chose 3703 instead as MySQL was using 3306.
+
+Now for some more changes.
+
+in the `create_db()` function inside `utils.R` 
+```{r, eval = FALSE}
+# Create a local database.
+create_db <- function(){
+  
+  # Create an empty database.
+  # con <- dbConnect(RMySQL::MySQL(), db_name)
+  
+  con <-  dbConnect(RMariaDB::MariaDB(), user = db_user,
+                    password = db_password,
+                    dbname = db_name, host = db_host, port = db_port)
+  
+  alltables = dbListTables(con)  # new line
+  
+  # create tables if there aren't any yet
+  if (is_empty(alltables)) {     # new line
+  
+    message(glue::glue("No tables defined for {db_name}, Creating them now.")) # new line
+    
+    # Set the path to the queries.
+    path <- file.path("Utils", "sql_queries")
+    
+    # Queries needed to run the first time the db is created.
+    queries <- c(
+      "create_Packageinfo_table.sql",
+      "create_MaintenanceMetrics_table.sql",
+      "create_CommunityUsageMetrics_table.sql",
+      "create_TestMetrics_table.sql",
+      "create_Comments_table.sql"
+    )
+    
+    # Append path to the queries.
+    queries <- file.path(path, queries)
+    
+    # Apply each query.
+    sapply(queries, function(x){
+      res <- dbSendStatement(
+        con,
+        paste(scan(x, sep = "\n", what = "character"), collapse = ""))
+      
+      dbClearResult(res)
+    })
+  } # New line -- if (is_empty(alltables))
+  
+  dbDisconnect(con)
+}
+
+```
+
+Now change the code for the `db_fun()` and `db_ins()` functions like this:
+```{r, eval = FALSE}
+ # con <- dbConnect(RSQLite::SQLite(), db_name)
+ 
+  con <-  dbConnect(RMariaDB::MariaDB(), user = db_user, password = db_password,
+                    dbname = db_name, host = db_host, port = db_port)
+```
+
+Again in Utils.R, the Timestamp created is completely non-standard.<br>
+At least using Sys.time() resembles the CURRENT_TIMESTAMP provided in MySQL and MariaDB.
+I found that a UTC time value was expected and modified as follows:
+```{r, eval=FALSE}
+TimeStamp<-function(){
+  # Timestamp_intial<-str_replace(Sys.time()," ", "; ")
+  # Timestamp<-paste(Timestamp_intial, Sys.timezone())
+  # return(Timestamp)
+  # use something MySQL is expecting to see...
+  # as.character(Sys.time())
+  lubridate::with_tz(Sys.time(), "UTC")  # lubridate is a tidyverse package
+}
+```
+I was able to confirm by going back to the MariaDB Command Line Interface:
+ ![](SelectFromComments.png)
+ 
+Finally, update function `genInfo_upload_to_DB()` in `Modules\dbupload.R` as follows:
+
+```{r, eval = FALSE}
+genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis, pub) {
+  tryCatch(
+    expr = {
+      # db_ins(paste0( "INSERT or REPLACE INTO Packageinfo values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
+      #                "'", main, "',", "'", auth, "',", "'", lis, "',", "'", pub, "',", "'',", "''", ")"))
+      db_ins(paste0( "INSERT INTO Packageinfo values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
+                     "'", main, "',", "'", auth, "',", "'", lis, "',", "'", pub, "',", "'',", "''", 
+                     ") ON DUPLICATE KEY UPDATE package = ", "'", package_name, "'" ))
+    },
+    error = function(e) {
+      loggit("ERROR", paste("Error in uploading the general info of the package", package_name, "info", e), app = "fileupload-DB")
+    }
+  )# End of try catch 
+
+} # End of the function
+```
+
+
+## Setup the Tables
+
+SQLite is very forgiving about specifying data types.  Not so with either MySQL or MariaDB.
+
+The easiest way for me to guess what the Types and lengths were needed was to take the SQLite database created and dump it using the sqlite3 utility: `sqlite3 database.sqlite .dump > datadump`
+
+This is what the SQL statements look like now in `Utils\sql_queries`
+Note the `FOREIGN KEY` and `REFERENCES` have been removed.  I did not find them necessary.
+
+```{r, eval=FALSE}
+CREATE TABLE IF NOT EXISTS Comments (   
+comm_id      CHAR(20) NOT NULL,    
+user_name 	 CHAR(40),   
+user_role 	 CHAR(40),   
+comment 		 VARCHAR(1000),   
+comment_type CHAR(10),   
+added_on 	 TIMESTAMP
+); 
+
+CREATE TABLE IF NOT EXISTS CommunityUsageMetrics (  
+cum_id 					            CHAR(20) NOT NULL,   
+no_of_downloads_last_year   INT,  
+month 					            CHAR(20),  
+no_of_downloads 			      INT,  
+ver_release 				        CHAR(5),  
+position					          INT,  
+time_since_first_release    INT,  
+time_since_version_release  INT   
+); 
+
+CREATE TABLE IF NOT EXISTS MaintenanceMetrics (   
+mm_id   								             CHAR(20) NOT NULL,    
+package_has_vignettes				         CHAR(5),   
+package_has_news                     CHAR(5),   
+news_is_current					             CHAR(10),   
+package_has_website				           VARCHAR(200),   
+has_bug_reports					             VARCHAR(200),   
+has_a_package_maintainer			       VARCHAR(200),   
+source_code_is_public   				     VARCHAR(100),   
+exported_objects_with_documentation  VARCHAR(15),   
+status_of_last_30_reported_bugs  	   CHAR(15) 
+); 
+
+CREATE TABLE IF NOT EXISTS Packageinfo(   
+package        CHAR(20) PRIMARY KEY NOT NULL,    
+version        CHAR(10),   
+title          VARCHAR(200),   
+description    TEXT,   
+maintainer     VARCHAR(200),   
+author         VARCHAR(1000),   
+license        CHAR(50),   
+published_on   CHAR(15),   
+score          CHAR(5),   
+decision       CHAR(1)
+); 
+
+CREATE TABLE TestMetrics IF NOT EXISTS(   
+tm_id 		    CHAR(20) NOT NULL,    
+test_coverage CHAR(10)  
+); 
+```
+
+Now run the app and build the tables!
