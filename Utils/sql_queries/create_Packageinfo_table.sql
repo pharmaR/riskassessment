@@ -11,5 +11,3 @@ CREATE TABLE IF NOT EXISTS Packageinfo(
    decision       CHAR,
    primary key(package, version)
 );
-CREATE UNIQUE INDEX pack_idx ON Packageinfo(package, version);
-);
