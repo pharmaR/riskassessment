@@ -77,12 +77,14 @@ observeEvent(input$uploaded_file, {
   }
   
   if (any(j)) {
-    # drop the non-existent packages
+    # non-existent packages go into Undiscovered
+    values$Undis <- pkgs_file[which(j),]
+    # and are dropped from pkgs_file
     pkgs_file <- pkgs_file[-which(j),]
     # reset the row numbers
     row.names(pkgs_file) <- NULL
   }
-  
+
   values$Total <- pkgs_file
 
   # pkgs_db1 <- db_fun("SELECT package FROM Packageinfo")
@@ -91,7 +93,6 @@ observeEvent(input$uploaded_file, {
   pkgs_db1 <- db_fun("SELECT package, version FROM Packageinfo")
   values$Dup <- inner_join(values$Total, pkgs_db1, by = c("package","version"))
   values$New <- anti_join( values$Total, pkgs_db1, by = c("package","version"))
-  values$Undis <- values$New
   
   # values$Dup <- filter(values$Total,   values$Total$package %in% pkgs_db1$package & values$Total$version %in% pkgs_db1$version)
   # values$New <- filter(values$Total, !(values$Total$package %in% pkgs_db1$package & values$Total$version %in% pkgs_db1$version))
