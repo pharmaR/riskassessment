@@ -116,6 +116,9 @@ output$dwnld_sel_db_pkgs_btn <- downloadHandler(
 # 3. Bring user back to dashboard
 observeEvent(input$back2dash, {
   values$current_screen<-"dashboard_screen"
+  
+  updateSelectizeInput(session, "select_pack", selected=input$select_pack)
+  values$select_ver <- input$select_ver
+  values$back2dash <- 1
 })
-
 # End of the login screen Source File for UI module.
