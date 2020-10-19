@@ -15,7 +15,7 @@ output$screen <- renderUI({
       column(8,
         tags$style(".back2dash-icon {float: left;}"),
         actionButton("back2dash",strong("Return to Package Dashboard"),
-                     # icon = icon("arrow-circle-left")
+                     icon = icon("arrow-circle-left")
                      )
       ),
       column(2,"")

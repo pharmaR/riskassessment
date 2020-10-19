@@ -970,7 +970,10 @@ i.fas.fa-info-history.fa-2x.history-help-icon:hover {
 }
 
 
-
+.tooltipreview {
+    top: 5px !important;
+    right: 115% !important;
+}
 
 
 
@@ -1367,9 +1370,3 @@ i.fas.fa-info-history.fa-2x.history-help-icon:hover {
 #db_pkgs:hover {
   cursor: pointer;
 }
-
-
-
-
-
-
