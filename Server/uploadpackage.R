@@ -61,7 +61,7 @@ observeEvent(input$uploaded_file, {
   j <- rep(FALSE, nrow(pkgs_file))
   for (i in 1:nrow(pkgs_file)) {
     if (!pkgs_file$package[i] %in% pkgs_vec) {
-      message(paste("Package",pkgs_file$package[i],"not found on CRAN. Names are case-sensitive. Check your spelling."))
+      message(paste("Package",pkgs_file$package[i],"not found. Names are case-sensitive. Check your spelling."))
       j[i] <- TRUE
     }
     if (j[i] == FALSE)  {
@@ -70,7 +70,7 @@ observeEvent(input$uploaded_file, {
       vrsn_vec <- get_versns(pkgs_file$package[i])
       
       if (!pkgs_file$version[i] %in% vrsn_vec) {
-        message(paste("Version",pkgs_file$version[i],"of ",pkgs_file$package[i],"not found on CRAN. Check your spelling."))
+        message(paste("Version",pkgs_file$version[i],"of ",pkgs_file$package[i],"not found. Check the version carefully."))
         j[i] <- TRUE
       }
     }
