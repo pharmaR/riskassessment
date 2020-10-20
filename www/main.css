@@ -298,7 +298,7 @@ textarea:focus {
   padding: 0px;
   font-size: 2.7rem;
   margin-top: 13px;
-  margin-left: 14%;
+  margin-left: 14% !important;
   color: rgb(77, 141, 201);
 }
 
@@ -970,7 +970,10 @@ i.fas.fa-info-history.fa-2x.history-help-icon:hover {
 }
 
 
-
+.tooltipreview {
+    top: 5px !important;
+    right: 115% !important;
+}
 
 
 
@@ -1367,9 +1370,3 @@ i.fas.fa-info-history.fa-2x.history-help-icon:hover {
 #db_pkgs:hover {
   cursor: pointer;
 }
-
-
-
-
-
-

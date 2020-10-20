@@ -1,7 +1,7 @@
 //Adding javascript code for dashbord screen
 
 var elementNavbarText = document.getElementsByClassName('myClass');
-elementNavbarText[0].style.marginLeft = '0px';
+elementNavbarText[0].setAttribute('style', 'margin-left: -30% !important');
 
 
 var elementNavbar = document.getElementsByClassName('navbar-static-top');
