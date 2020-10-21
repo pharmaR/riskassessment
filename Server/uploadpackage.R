@@ -113,14 +113,14 @@ observeEvent(input$uploaded_file, {
           incProgress(1 / nrow(values$New), detail = values$New[i, 1])
           Sys.sleep(0.1)
       }
-    }
-    if (any(j)) {
-      # add any undiscovered packages here
-      values$Undis <- bind_rows(values$Undis, values$New[which(j),])
-      # drop the undiscovered packages from New
-      values$New <- values$New[-which(j),]
-      # reset the row numbers
-      row.names(values$New) <- NULL
+      if (any(j)) {
+        # add any undiscovered packages here
+        values$Undis <- bind_rows(values$Undis, values$New[which(j),])
+        # drop the undiscovered packages from New
+        values$New <- values$New[-which(j),]
+        # reset the row numbers
+        row.names(values$New) <- NULL
+      }
     }
     
     # values$Undis <- anti_join(values$Undis, values$New, by = c("package","version"))
