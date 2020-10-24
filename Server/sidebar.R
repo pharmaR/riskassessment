@@ -137,7 +137,7 @@ output$score <- renderText({
 # 1. Observe Event for select package
 
 observeEvent(input$select_pack, {
-    req(input$select_pack != "Select")
+    # req(input$select_pack != "Select")
     pack_ver<-db_fun(paste0("SELECT version FROM Packageinfo WHERE package = '", input$select_pack, "'"))
       updateSelectizeInput(
         session,
