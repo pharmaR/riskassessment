@@ -15,7 +15,6 @@ selPackVer <- reactive({
 # 2. Observe to select the package,score,decision and load the data into reactive variable.
 observeEvent(selPackVer(), {
   req(input$select_pack != "Select", input$select_ver != "Select")
-  
   values$selected_pkg <-
     db_fun(
       paste0(
@@ -31,15 +30,13 @@ observeEvent(selPackVer(), {
 
 observe({
   req(values$selected_pkg)
-  if (!identical(values$selected_pkg$decision, character(0))) {
-    if (values$selected_pkg$decision != "") {
+  if (!is_empty(values$selected_pkg$decision) && values$selected_pkg$decision != "") {
       updateSliderTextInput(
         session,
         "decision",
         choices = c("Low", "Medium", "High"),
         selected = values$selected_pkg$decision
       )
-    }
   }
 })  # End of the Observe.
 
@@ -137,7 +134,7 @@ output$score <- renderText({
 # 1. Observe Event for select package
 
 observeEvent(input$select_pack, {
-    # req(input$select_pack != "Select")
+    req(input$select_pack != "Select")
     pack_ver<-db_fun(paste0("SELECT version FROM Packageinfo WHERE package = '", input$select_pack, "'"))
       updateSelectizeInput(
         session,
@@ -145,13 +142,22 @@ observeEvent(input$select_pack, {
         choices = c("Select", pack_ver[,1]),
         selected = "Select"
       )
-      if (values$back2dash == 1) {
-      # update the selection
-      updateSelectizeInput(session, inputId = "select_ver",
-                           selected=values$select_ver)
-      values$back2dash <- 0
-    }
+    #   if (values$back2dash == 1) {
+    #   # update the selection
+    #   updateSelectizeInput(session, inputId = "select_ver",
+    #                        selected=values$select_ver)
+    #   values$back2dash <- 0
+    # }
   }, ignoreInit = TRUE)
+
+observeEvent(input$select_pack, {
+  if (values$back2dash == 1) {
+    # update the selection
+    updateSelectizeInput(session, inputId = "select_ver",
+                         selected=values$select_ver)
+    values$back2dash <- 0
+  }
+}, ignoreInit = TRUE)
 
 observeEvent(selPackVer(), {
     # if (values$mm_tab_redirect == "redirect") {

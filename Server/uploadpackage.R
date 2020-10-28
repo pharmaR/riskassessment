@@ -138,6 +138,14 @@ observeEvent(input$uploaded_file, {
    choices = c("Select", values$packsDB$package),
    selected = "Select"
   )
+  updateSelectizeInput(
+    session,
+    "select_ver",
+    choices = "Select",
+    selected = "Select"
+  )
+  values$selected_pkg$package <- "Select"
+  values$selected_pkg$version <- "Select"
   
   showNotification(id = "show_notification_id", "Upload completed to DB", type = "message")
   values$upload_complete <- "upload_complete"
