@@ -125,7 +125,7 @@ install_tempdir <- function(package, versn) {
 
 packinfo <- function(package, versn) {
 
-  if (package %in% installed.packages()[,1] && versn == gsub("'",'"',packageVersion(package)) ) {
+  if (package %in% installed.packages()[,1] && versn == getNamespaceVersion(package) ) {
     package_rm <- pkg_ref(package)
   } else {
       if (package %in% (.packages())) {  
