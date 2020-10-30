@@ -70,16 +70,16 @@ observeEvent(input$uploaded_file, {
       message(paste("Package",pkgs_file$package[i],"not found. Names are case-sensitive. Check your spelling."))
       j[i] <- TRUE
     }
-    if (j[i] == FALSE)  {
-      # vrsn_lst <- versions::available.versions(pkgs_file$package[i])
-      # vrsn_vec <- unlist(vrsn_lst[[1]]$version)
-      vrsn_vec <- get_versns(pkgs_file$package[i])
-      
-      if (!pkgs_file$version[i] %in% vrsn_vec) {
-        message(paste("Version",pkgs_file$version[i],"of ",pkgs_file$package[i],"not found. Check the version carefully."))
-        j[i] <- TRUE
-      }
-    }
+    # if (j[i] == FALSE)  {
+    #   # vrsn_lst <- versions::available.versions(pkgs_file$package[i])
+    #   # vrsn_vec <- unlist(vrsn_lst[[1]]$version)
+    #   vrsn_vec <- get_versns(pkgs_file$package[i])
+    #   
+    #   if (!pkgs_file$version[i] %in% vrsn_vec) {
+    #     message(paste("Version",pkgs_file$version[i],"of ",pkgs_file$package[i],"not found. Check the version carefully."))
+    #     j[i] <- TRUE
+    #   }
+    # }
   }
   
   if (any(j)) {
