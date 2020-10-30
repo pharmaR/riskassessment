@@ -102,8 +102,7 @@ output$sel_ver <- renderUI({
 
 output$status <- renderText({
     req(values$selected_pkg)
-
-    if (!is_empty(input$select_pack) && input$select_pack != "Select") {
+    if (input$select_pack != "Select" && input$select_ver != "Select") {
       if (!identical(values$selected_pkg$decision, character(0))) {
         if (values$selected_pkg$decision != "") {
           paste("<h3>Status: <b>Reviewed</b></h3>")
