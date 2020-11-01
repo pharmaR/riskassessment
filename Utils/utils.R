@@ -111,7 +111,7 @@ install_tempdir <- function(package, versn) {
   # Use install.versions() unless the MRAN snapshot is not available
   tryCatch(
     expr = {
-      versions::install.versions(package, versions= versn, lib=tempdir(), quiet = TRUE, type = "source")
+      versions::install.versions(package, versions= versn, lib=tempdir(), quiet = TRUE, type = "source", dependencies = FALSE, Ncpus = parallel::detectCores())
     },
     warning = function(w) {
       if(grepl("cannot open URL 'https://cran.microsoft.com", w$message)){
