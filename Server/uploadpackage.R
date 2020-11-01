@@ -51,9 +51,11 @@ observeEvent(input$uploaded_file, {
   }
   file_to_read <- input$uploaded_file
   pkgs_file <-
-    read.csv(file_to_read$datapath,
-             sep = ",",
-             stringsAsFactors = FALSE)
+    readr::read_csv(file_to_read$datapath, col_types = cols(.default = "c"))
+  # pkgs_file <-
+  #   read.csv(file_to_read$datapath,
+  #            sep = ",",
+  #            stringsAsFactors = FALSE)
   names(pkgs_file) <- tolower(names(pkgs_file))
   pkgs_file$package <- trimws(pkgs_file$package)
   pkgs_file$version <- trimws(pkgs_file$version)
