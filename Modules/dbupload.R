@@ -14,7 +14,7 @@ get_packages_info_from_web <- function(package_name, package_ver) {
     expr = {
       info <- packinfo(package_name, package_ver)
       genInfo_upload_to_DB(package_name, info$ver, info$title, info$desc, info$auth, info$main, info$lis, info$pub)   
-      return("")
+      return(info$source)
     },
     error = function(e) {
       loggit("ERROR", paste("Error in extracting general info of the package", package_name, "info", e), app = "using packinfo function")
@@ -167,10 +167,23 @@ genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis
 
 # 3. Function to get the maintenance and testing metrics info and upload into DB.
 
-metric_mm_tm_Info_upload_to_DB <- function(package_name, package_version){
+metric_mm_tm_Info_upload_to_DB <- function(package_name, package_version, info_source){
+  
+  # pkg_source package/versions are installed in tempdir()
+  if (info_source == "pkg_source") {
+    if (package_name %in% (.packages())) {  
+      detach_package(package_name)
+      package_rm <- pkg_ref(paste0(gsub("\\\\","/",tempdir()),"/",package_name)) # pkg_source
+      require(package_name, character.only=TRUE, lib.loc = .libPaths(), quietly = TRUE, warn.conflicts = FALSE)
+    } else {
+      package_rm <- pkg_ref(paste0(gsub("\\\\","/",tempdir()),"/",package_name)) # pkg_source
+    }
+  } else {
+    package_rm <- pkg_ref(package_name) # pkg_install or pkg_remote 
+  }
   
   package_riskmetric2 <<-
-    pkg_ref(package_name) %>%
+    package_rm %>% 
     as_tibble() %>%
     pkg_assess()
   

@@ -110,7 +110,7 @@ observeEvent(input$uploaded_file, {
             j[i] <- TRUE
             next
           }
-          metric_mm_tm_Info_upload_to_DB(new_package,new_version)
+          metric_mm_tm_Info_upload_to_DB(new_package,new_version,rc) # rc = source (pkg_remote, pkg_install, pkg_source)
           metric_cum_Info_upload_to_DB(new_package,new_version)
           incProgress(1 / nrow(values$New), detail = values$New[i, 1])
           Sys.sleep(0.1)
