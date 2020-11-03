@@ -124,27 +124,29 @@ install_tempdir <- function(package, versn) {
 }
 
 packinfo <- function(package, versn) {
-
+  
   if (package %in% installed.packages()[,1] && versn == getNamespaceVersion(package) ) {
-    package_rm <- pkg_ref(package)
+    package_rm <- pkg_ref(package)  # pkg_install
+  } else if(versn == get_versns(package)[[1]]){
+    package_rm <- pkg_ref(package)  # pkg_remote
   } else {
-      if (package %in% (.packages())) {  
+    if (package %in% (.packages())) {  
       # is it on the search() path? then detach / install / attach
       detach_package(package)
       install_tempdir(package, versn)
       require(package, character.only=TRUE, lib.loc = .libPaths(), quietly = TRUE, warn.conflicts = FALSE)
-     } else {
-       install_tempdir(package, versn)
-     }
-      package_rm <- pkg_ref(paste0(gsub("\\\\","/",tempdir()),"/",package)) 
+    } else {
+      install_tempdir(package, versn)
+    }
+    package_rm <- pkg_ref(paste0(gsub("\\\\","/",tempdir()),"/",package)) # pkg_source
   }
-  descr <- package_rm$description %>% as_tibble()
+  descr <- package_rm$description %>% as_tibble() 
   
   # Need to remove single quotes from Title and Description
   descr$Title       <- str_replace_all(descr$Title, "'", "")  
   descr$Description <- str_replace_all(descr$Description, "'", "")
   
-  return(list(ver= descr$Version, title= descr$Title, desc= descr$Description, 
+  return(list(ver= descr$Version, title= descr$Title, desc= descr$Description, source=package_rm$source,
               main= descr$Maintainer, auth= descr$Author, lis= descr$License, pub=descr$Packaged))
   
 }
@@ -157,4 +159,54 @@ detach_package <- function(pkg)
   {
     detach(search_item, character.only = TRUE, unload = FALSE)
   }
+}
+
+# fix for: no applicable method for 'pkg_ref_cache.description' 
+# applied to an object of class __DBLQUOTE__c('pkg_cran_remote'
+pkg_ref_cache.description.pkg_remote <- function(x, name, ...) {
+
+  webpage <-
+    read_html(paste0(
+      "https://cran.r-project.org/package=",
+      x$name
+    ))
+  
+  title_html <- html_nodes(webpage, 'h2')
+  title <- html_text(title_html)
+  title <- str_replace_all(title, "\n  ", "")
+  title <- str_replace_all(title, "'", "")
+  title <- str_replace_all(title, '"', "")
+  
+  desc_html <- html_nodes(webpage, 'p')
+  desc <- html_text(desc_html)
+  desc <- desc[1]
+  desc <- str_replace_all(desc, "\n  ", "")
+  desc <- str_replace_all(desc, "'", "")
+  desc <- str_replace_all(desc, '"', "")
+  
+  this_node <- function(text) {
+    zz_html <- html_nodes(webpage, 'td')
+    zz_text<-html_text(zz_html)
+    for(i in 1:length(zz_text)){
+      if(!is.na(zz_text[i])){
+        if(zz_text[i] == text){
+          zz_text<-zz_text[i+1]
+        }
+      }
+    }
+    zz_text <- str_replace_all(zz_text, "\n  ", "")
+    zz_text <- str_replace_all(zz_text, "'", "")
+    zz_text <- str_replace_all(zz_text, '"', "")
+  }
+  
+  vrsn <- this_node("Version:")
+  dpnd <- this_node("Depends:")
+  main <- this_node("Maintainer:")
+  auth <- this_node("Author:")
+  publ <- this_node("Published:")
+  lisc <- this_node("License:")
+  impr <- this_node("Imports:")
+  
+  return(list(Package = package, Title = title, Version = vrsn, Author = auth, Depends = dpnd,
+              Description = desc, License = lisc, Imports = impr, Maintainer = main, Packaged = publ)) 
 }
