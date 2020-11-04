@@ -103,6 +103,11 @@ observeEvent(input$uploaded_file, {
     if (nrow(values$New) != 0) {
       j <- rep(FALSE, nrow(values$New))
       for (i in 1:nrow(values$New)) {
+          # show package and version on progress bar
+          detl <- paste(values$New[i,1:2],collapse=" ")
+          incProgress(1 / nrow(values$New), detail = detl)
+          Sys.sleep(0.1)
+        
           new_package<-values$New$package[i]
           new_version<-values$New$version[i]
           rc <- get_packages_info_from_web(new_package,new_version)
@@ -112,8 +117,6 @@ observeEvent(input$uploaded_file, {
           }
           metric_mm_tm_Info_upload_to_DB(new_package,new_version,rc) # rc = source (pkg_remote, pkg_install, pkg_source)
           metric_cum_Info_upload_to_DB(new_package,new_version)
-          incProgress(1 / nrow(values$New), detail = values$New[i, 1])
-          Sys.sleep(0.1)
       }
       if (any(j)) {
         # add any undiscovered packages here
