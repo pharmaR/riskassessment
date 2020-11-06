@@ -146,8 +146,13 @@ packinfo <- function(package, versn) {
   descr$Title       <- str_replace_all(descr$Title, "'", "")  
   descr$Description <- str_replace_all(descr$Description, "'", "")
   
+  if (package_rm$source == "pkg_remote") {
+    publ <- descr$Published
+  } else {
+    publ <- descr$`Date/Publication`
+  }
   return(list(ver= descr$Version, title= descr$Title, desc= descr$Description, source=package_rm$source,
-              main= descr$Maintainer, auth= descr$Author, lis= descr$License, pub=descr$Packaged))
+              main= descr$Maintainer, auth= descr$Author, lis= descr$License, pub=publ))
   
 }
 
@@ -167,46 +172,33 @@ pkg_ref_cache.description.pkg_remote <- function(x, name, ...) {
 
   webpage <-
     read_html(paste0(
-      "https://cran.r-project.org/package=",
-      x$name
+      x$repo_base_url,"/package=",x$name
     ))
   
-  title_html <- html_nodes(webpage, 'h2')
-  title <- html_text(title_html)
-  title <- str_replace_all(title, "\n  ", "")
-  title <- str_replace_all(title, "'", "")
-  title <- str_replace_all(title, '"', "")
+  title <- webpage %>% 
+    html_nodes('h2') %>% 
+    html_text() %>% 
+  # remove line breaks, single and double quotes
+    str_replace_all(c("\n |'|\""),"")
   
-  desc_html <- html_nodes(webpage, 'p')
-  desc <- html_text(desc_html)
-  desc <- desc[1]
-  desc <- str_replace_all(desc, "\n  ", "")
-  desc <- str_replace_all(desc, "'", "")
-  desc <- str_replace_all(desc, '"', "")
+  desc <- webpage %>% 
+    html_nodes('p') %>% 
+    html_text() %>% 
+    str_replace_all(c("\n |'|\""), "") %>% 
+    pluck(1) 
+
+  td_nodes <- webpage %>% 
+    html_nodes('td') %>% 
+    html_text()
   
-  this_node <- function(text) {
-    zz_html <- html_nodes(webpage, 'td')
-    zz_text<-html_text(zz_html)
-    for(i in 1:length(zz_text)){
-      if(!is.na(zz_text[i])){
-        if(zz_text[i] == text){
-          zz_text<-zz_text[i+1]
-        }
-      }
-    }
-    zz_text <- str_replace_all(zz_text, "\n  ", "")
-    zz_text <- str_replace_all(zz_text, "'", "")
-    zz_text <- str_replace_all(zz_text, '"', "")
-  }
+  nodnames <- td_nodes[seq_along(td_nodes) %% 2 > 0] %>% 
+    map_chr(~str_replace(.x, ":","")) 
+  nodvalus <- td_nodes[seq_along(td_nodes) %% 2 == 0] %>% 
+    map_chr(~str_replace_all(.x, c("\n|'|\""),"")) 
   
-  vrsn <- this_node("Version:")
-  dpnd <- this_node("Depends:")
-  main <- this_node("Maintainer:")
-  auth <- this_node("Author:")
-  publ <- this_node("Published:")
-  lisc <- this_node("License:")
-  impr <- this_node("Imports:")
+  retlist <- as.list(setNames(nodvalus, nodnames))
+  retlist[["Title"]] <- title
+  retlist[["Description"]] <- desc
   
-  return(list(Package = package, Title = title, Version = vrsn, Author = auth, Depends = dpnd,
-              Description = desc, License = lisc, Imports = impr, Maintainer = main, Packaged = publ)) 
+  return(retlist)
 }
