@@ -138,7 +138,7 @@ packinfo <- function(package, versn) {
     } else {
       install_tempdir(package, versn)
     }
-    package_rm <- pkg_ref(paste0(gsub("\\\\","/",tempdir()),"/",package)) # pkg_source
+    package_rm <- pkg_ref(file.path(gsub("\\\\","/",tempdir()),package)) # pkg_source
   }
   descr <- package_rm$description %>% as_tibble() 
   
@@ -166,36 +166,36 @@ detach_package <- function(pkg)
   }
 }
 
-# fix for: no applicable method for 'pkg_ref_cache.description' 
-# applied to an object of class __DBLQUOTE__c('pkg_cran_remote'
 pkg_ref_cache.description.pkg_remote <- function(x, name, ...) {
 
-  webpage <-
-    read_html(paste0(
-      x$repo_base_url,"/package=",x$name
-    ))
+  webpage <- httr::content(httr::GET(paste0(x$repo_base_url,"/package=",x$name)),
+                           encoding = "UTF-8")
   
   title <- webpage %>% 
-    html_nodes('h2') %>% 
-    html_text() %>% 
-  # remove line breaks, single and double quotes
-    str_replace_all(c("\n |'|\""),"")
-  
-  desc <- webpage %>% 
-    html_nodes('p') %>% 
-    html_text() %>% 
-    str_replace_all(c("\n |'|\""), "") %>% 
-    pluck(1) 
+    rvest::html_nodes('h2') %>% 
+    rvest::html_text() %>% 
+    gsub(c("\n |\n|'|\""),"", .)   # remove line breaks, single and double quotes
 
+  desc <- webpage %>% 
+    rvest::html_nodes('p') %>% 
+    rvest::html_text() %>% 
+    gsub(c("\n |\n|'|\""),"", .)   # remove line breaks, single and double quotes
+  desc <- desc[[1]]
+  
   td_nodes <- webpage %>% 
-    html_nodes('td') %>% 
-    html_text()
+    rvest::html_nodes('td') %>% 
+    rvest::html_text()
   
-  nodnames <- td_nodes[seq_along(td_nodes) %% 2 > 0] %>% 
-    map_chr(~str_replace(.x, ":","")) 
+  nodnames <- td_nodes[seq_along(td_nodes) %% 2 >  0] %>% 
+    lapply(., function(x) trimws(x)) %>%  
+    lapply(., function(x) gsub(":", "", x)) %>% 
+    unlist()
+  
   nodvalus <- td_nodes[seq_along(td_nodes) %% 2 == 0] %>% 
-    map_chr(~str_replace_all(.x, c("\n|'|\""),"")) 
-  
+    lapply(., function(x) trimws(x)) %>%  
+    lapply(., function(x) gsub(c("\n|'|\""),"", x)) %>% 
+    unlist()
+
   retlist <- as.list(setNames(nodvalus, nodnames))
   retlist[["Title"]] <- title
   retlist[["Description"]] <- desc
