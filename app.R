@@ -51,8 +51,10 @@ ui <- dashboardPage(
   ),
   
   dashboardSidebar(disable = TRUE),
+
   dashboardBody(
 
+    # Include js scripts.
     tags$head(tags$script(src = "helperScript.js")),
     
     # Include main.css to add the styles and enhancements to the app.
@@ -62,14 +64,13 @@ ui <- dashboardPage(
     
     # UI screen to load the required screen
     uiOutput("screen")
-    
   )
 )
 
 # Create Server Code.
 server <- function(session, input, output) {
-  # Load reactive values into values.
   
+  # Load reactive values into values.
   values <- reactiveValues()
   values$current_screen <- "login_screen"
   values$uploaded_file_status <- "no_status"
@@ -77,55 +78,33 @@ server <- function(session, input, output) {
   values$select_pack <- "Select"
   
   # Load Source files of UI and Server modules of Login Screen.
-  
   source(file.path("Server", "login_screen.R"), local = TRUE)
   
-  # Load Server Source module file of Package Review History
-  
+  # Load Server Source module file of Package Review History.
   source(file.path("Server", "db_dash_screen.R"), local = TRUE)
-  
   source(file.path("Server", "assessment_criteria.R"), local = TRUE)
   
   # Load Server Source module file of Sidebar.
-  
   source(file.path("Server", "sidebar.R"), local = TRUE)
   
-  
   # Load Source files of UI and Server modules of Upload Package Tab.
-  
   source(file.path("UI", "uploadpackage.R"), local = TRUE)
-  
   source(file.path("Server", "uploadpackage.R"), local = TRUE)
   
-  
   # Load Source files of UI and Server modules of Report Preview Tab
-  
   source(file.path("UI", "reportpreview.R"), local = TRUE)
-  
   source(file.path("Server", "reportpreview.R"), local = TRUE)
   
-  
-  
   # Load Source files of UI and Server modules of Maintenance Metrics Tab.
-  
   source(file.path("UI", "maintenance_metrics.R"), local = TRUE)
-  
   source(file.path("Server", "maintenance_metrics.R"), local = TRUE)
   
-  
-  
-  # Load Source files of UI and Server modules of Community Usage Tab. -
-  
+  # Load Source files of UI and Server modules of Community Usage Tab.
   source(file.path("UI", "communityusage_metrics.R"), local = TRUE)
-  
   source(file.path("Server", "communityusage_metrics.R"), local = TRUE)
   
-  
-  
   # Load Source files of UI and Server modules of Testing Metrics Tab.
-  
   source(file.path("UI", "testing_metrics.R"), local = TRUE)
-  
   source(file.path("Server", "testing_metrics.R"), local = TRUE)
   
   # Create db if it doesnt exist.
@@ -178,10 +157,7 @@ server <- function(session, input, output) {
     source(file.path("UI", "assessment_criteria.R"), local = TRUE)
   })  # End of the Observe Event
   
-  
 }  # End of the Server Code.
 
 
 shinyApp(ui = ui, server = server)
-
-# End of the app.R file
