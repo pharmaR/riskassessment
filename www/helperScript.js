@@ -1,7 +1,12 @@
+// Append dashboard heading text.
+$(document).ready(function() {
+    $("header").find("nav").append('<span class="myClass"> R Package Risk Assessment App </span>');
+});
+
 //Adding javascript code for dashbord screen
 
-var elementNavbarText = document.getElementsByClassName('myClass');
-elementNavbarText[0].setAttribute('style', 'margin-left: -30% !important');
+//var elementNavbarText = document.getElementsByClassName('myClass');
+//elementNavbarText[0].setAttribute('style', 'margin-left: -30% !important');
 
 
 var elementNavbar = document.getElementsByClassName('navbar-static-top');
@@ -19,6 +24,7 @@ setTimeout(function() {
   document.getElementsByClassName('sidebar-menu')[0].addEventListener("click", mobileMenuClicked, false);
   document.getElementById('tabs').addEventListener("click", activeTabCapturing, false);
 }, 10);
+
 
 
 function mobileMenuClicked() {

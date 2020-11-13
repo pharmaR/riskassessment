@@ -105,8 +105,6 @@ output$screen <- renderUI({
                  withSpinner(uiOutput("testing_metrics"), type = 2)  # UI for Testing Metrics tab panel.
                )
              )
-            ,
-             tags$head(tags$script(src = "helperScript.js"))
            ))
   )
 })

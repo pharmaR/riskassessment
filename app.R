@@ -52,14 +52,9 @@ ui <- dashboardPage(
   
   dashboardSidebar(disable = TRUE),
   dashboardBody(
-    tags$script(
-      HTML(
-        '$(document).ready(function() {
-         $("header").find("nav").append(\'<span class="myClass"> R Package Risk Assessment App </span>\');
-         })'
-      )
-    ),
 
+    tags$head(tags$script(src = "helperScript.js")),
+    
     # Include main.css to add the styles and enhancements to the app.
     includeCSS("www/main.css"),
     
