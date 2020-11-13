@@ -10,9 +10,9 @@
 source("global.R")
 
 # Load source files.
-source("Modules/dbupload.R")
-source("Modules/file_upload_error_handling.R")
-source("Utils/utils.R")
+source(file.path("Modules", "dbupload.R"))
+source(file.path("Modules", "file_upload_error_handling.R"))
+source(file.path("Utils", "utils.R"))
 
 # Start logging info.
 set_logfile("loggit.json")
