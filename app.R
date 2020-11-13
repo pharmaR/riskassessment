@@ -52,21 +52,6 @@ ui <- dashboardPage(
   
   dashboardSidebar(disable = TRUE),
   dashboardBody(
-    tags$head(tags$style(
-      HTML(
-        '.myClass {
-        font-size: 25px;
-        line-height: 60px;
-        text-align: center;
-        font-family: "Georgia", Times, "Times New Roman", serif;
-        font-weight: bold;
-        padding: 0 335px;
-        overflow: hidden;
-        color: white;
-       }'
-      )
-    )),
-    
     tags$script(
       HTML(
         '$(document).ready(function() {
