@@ -1,10 +1,10 @@
-#####################################################################################################################
+###############################################################################
 # Project: R Validation Hub - R Package Risk Assessment App
 # Author: K Aravind Reddy
 # Date: July 13th, 2020
 # License: MIT License
 # You can run the application by executing 'runApp()' command.
-#####################################################################################################################
+###############################################################################
 
 # Load required packages.
 source("global.R")
@@ -42,11 +42,13 @@ ui <- dashboardPage(
     titleWidth = 320,
     tags$li(
       class = "dropdown",
-      actionLink("assessment_criteria_bttn", class = "assessment_criteria_bttn_class", 
-                 HTML('<div class="tooltip-help">
-                      <i class="fas fa-info-circle fa-2x asmnt-help-icon"></i>
-                      <span class="tooltiptext-help">Assessment Criteria Details</span>
-                      </div>'))
+      actionLink(
+        inputId = "assessment_criteria_bttn",
+        class = "assessment_criteria_bttn_class",
+        HTML('<div class="tooltip-help">
+        <i class="fas fa-info-circle fa-2x asmnt-help-icon"></i>
+        <span class="tooltiptext-help">Assessment Criteria Details</span>
+        </div>'))
     )
   ),
   
@@ -138,7 +140,8 @@ server <- function(session, input, output) {
     }
   })  # End of the selected screen observe.
   
-  # 2. Observe to select the package,score,decision and load the data into reactive variable.
+  # 2. Observe to select the package, score, decision and load the data into
+  # a reactive variable.
   observe({
     values$selected_pkg <-
       db_fun(
@@ -151,8 +154,8 @@ server <- function(session, input, output) {
   })  # End of the observe for reactive table.
   # End of the observe's'
   
-  # Observe Event to load the source file of UI module when we click on the Assessment Criteria action Link.
-  
+  # Observe Event to load the source file of UI module when we click on the
+  # Assessment Criteria action Link.
   observeEvent(input$assessment_criteria_bttn, {
     source(file.path("UI", "assessment_criteria.R"), local = TRUE)
   })  # End of the Observe Event
