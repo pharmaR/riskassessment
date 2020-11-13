@@ -6,34 +6,33 @@
 # You can run the application by executing 'runApp()' command.
 #####################################################################################################################
 
-# Step 1 -- Loading all required packages.
-
+# Load required packages.
 source("global.R")
 
-# Step 2 -- Load source files.
-
+# Load source files.
 source("Modules/dbupload.R")
 source("Modules/file_upload_error_handling.R")
 source("Utils/utils.R")
 
+# Start logging info.
 set_logfile("loggit.json")
 
 hidden(p(id = "assessment_criteria_bttn"))
 
+# Set spinner options for the tabs.
 options(
   spinner.color = "#0275D8",
   spinner.color.background = "#ffffff",
   spinner.size = 1
 )
 
-# Step 3 -- Create User Interface (UI).
-
+# Create User Interface (UI).
 ui <- dashboardPage(
   dashboardHeader(
     title = list(
       "R Package Risk Assessment App",
       tags$a(
-        title = "Pharmar Home Page",
+        title = "PharmaR Home Page",
         href = "https://www.pharmar.org/",
         target = "_blank",
         tags$img(src = "logo.png", class = "logo_1"),
@@ -76,8 +75,7 @@ ui <- dashboardPage(
       )
     ),
 
-    # Including main.css to add the styles and enhancements to the app.
-    
+    # Include main.css to add the styles and enhancements to the app.
     includeCSS("www/main.css"),
     
     useShinyjs(),
@@ -88,8 +86,7 @@ ui <- dashboardPage(
   )
 )
 
-# Step 4 -- Create Server Code .
-
+# Create Server Code.
 server <- function(session, input, output) {
   # Load reactive values into values.
   
