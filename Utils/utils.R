@@ -56,7 +56,6 @@ db_ins<-function(query){
   dbDisconnect(con)
 }
 
-
 TimeStamp<-function(){
   Timestamp_intial<-str_replace(Sys.time()," ", "; ")
   Timestamp<-paste(Timestamp_intial, Sys.timezone())
