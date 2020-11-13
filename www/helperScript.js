@@ -1,6 +1,6 @@
 // Append dashboard heading text.
 $(document).ready(function() {
-    $("header").find("nav").append('<span class="myClass"> R Package Risk Assessment App </span>');
+    $("header").find("nav").append('<span class="header-txt"> R Package Risk Assessment App </span>');
 });
 
 var elementNavbar = document.getElementsByClassName('navbar-static-top');
