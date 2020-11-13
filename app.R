@@ -101,55 +101,55 @@ server <- function(session, input, output) {
   
   # Load Source files of UI and Server modules of Login Screen.
   
-  source(file.path("Server", "login_screen.R"), local = TRUE)$value
+  source(file.path("Server", "login_screen.R"), local = TRUE)
   
   # Load Server Source module file of Package Review History
   
-  source(file.path("Server", "db_dash_screen.R"), local = TRUE)$value
+  source(file.path("Server", "db_dash_screen.R"), local = TRUE)
   
-  source(file.path("Server", "assessment_criteria.R"), local = TRUE)$value
+  source(file.path("Server", "assessment_criteria.R"), local = TRUE)
   
   # Load Server Source module file of Sidebar.
   
-  source(file.path("Server", "sidebar.R"), local = TRUE)$value
+  source(file.path("Server", "sidebar.R"), local = TRUE)
   
   
   # Load Source files of UI and Server modules of Upload Package Tab.
   
-  source(file.path("UI", "uploadpackage.R"), local = TRUE)$value
+  source(file.path("UI", "uploadpackage.R"), local = TRUE)
   
-  source(file.path("Server", "uploadpackage.R"), local = TRUE)$value
+  source(file.path("Server", "uploadpackage.R"), local = TRUE)
   
   
   # Load Source files of UI and Server modules of Report Preview Tab
   
-  source(file.path("UI", "reportpreview.R"), local = TRUE)$value
+  source(file.path("UI", "reportpreview.R"), local = TRUE)
   
-  source(file.path("Server", "reportpreview.R"), local = TRUE)$value
+  source(file.path("Server", "reportpreview.R"), local = TRUE)
   
   
   
   # Load Source files of UI and Server modules of Maintenance Metrics Tab.
   
-  source(file.path("UI", "maintenance_metrics.R"), local = TRUE)$value
+  source(file.path("UI", "maintenance_metrics.R"), local = TRUE)
   
-  source(file.path("Server", "maintenance_metrics.R"), local = TRUE)$value
+  source(file.path("Server", "maintenance_metrics.R"), local = TRUE)
   
   
   
   # Load Source files of UI and Server modules of Community Usage Tab. -
   
-  source(file.path("UI", "communityusage_metrics.R"), local = TRUE)$value
+  source(file.path("UI", "communityusage_metrics.R"), local = TRUE)
   
-  source(file.path("Server", "communityusage_metrics.R"), local = TRUE)$value
+  source(file.path("Server", "communityusage_metrics.R"), local = TRUE)
   
   
   
   # Load Source files of UI and Server modules of Testing Metrics Tab.
   
-  source(file.path("UI", "testing_metrics.R"), local = TRUE)$value
+  source(file.path("UI", "testing_metrics.R"), local = TRUE)
   
-  source(file.path("Server", "testing_metrics.R"), local = TRUE)$value
+  source(file.path("Server", "testing_metrics.R"), local = TRUE)
   
   # Create db if it doesnt exist.
   create_db_once <- reactive({
@@ -171,13 +171,13 @@ server <- function(session, input, output) {
   })
   observe({
     if (values$current_screen == "login_screen") {
-      source(file.path("UI", "login_screen.R"), local = TRUE)$value
+      source(file.path("UI", "login_screen.R"), local = TRUE)
       shinyjs::hide("assessment_criteria_bttn")
     } else if(values$current_screen == "db_dash_screen") {
-      source(file.path("UI", "db_dash_screen.R"), local = TRUE)$value
+      source(file.path("UI", "db_dash_screen.R"), local = TRUE)
       shinyjs::show("assessment_criteria_bttn")
     } else{
-      source(file.path("UI", "dashboard_screen.R"), local = TRUE)$value
+      source(file.path("UI", "dashboard_screen.R"), local = TRUE)
       shinyjs::show("assessment_criteria_bttn")
     }
   })  # End of the selected screen observe.
@@ -198,7 +198,7 @@ server <- function(session, input, output) {
   # Observe Event to load the source file of UI module when we click on the Assessment Criteria action Link.
   
   observeEvent(input$assessment_criteria_bttn, {
-    source(file.path("UI", "assessment_criteria.R"), local = TRUE)$value
+    source(file.path("UI", "assessment_criteria.R"), local = TRUE)
   })  # End of the Observe Event
   
   
