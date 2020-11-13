@@ -107,20 +107,14 @@ get_versns <- function(package) {
   return(pkg_vers[which(!is.na(pkg_vers))]) 
 }
 
-install_tempdir <- function(package, versn) {
-  # Use install.versions() unless the MRAN snapshot is not available
-  tryCatch(
-    expr = {
-      versions::install.versions(package, versions= versn, lib=tempdir(), quiet = TRUE, type = "source", dependencies = FALSE, Ncpus = parallel::detectCores())
-    },
-    warning = function(w) {
-      if(grepl("cannot open URL 'https://cran.microsoft.com", w$message)){
-        message(paste("MRAN snapshot not available for",package,"version",versn,"using install_version() instead."))
-        # try using install_version instead...
-        devtools::install_version(package, version = versn, lib = tempdir(), repos = "http://cran.us.r-project.org", quiet = TRUE, upgrade = FALSE)
-      }
-    }
-  ) # End of tryCatch
+install_tempdir <- function(package_name, package_ver) {
+  packageurl <- paste0("https://cran.r-project.org/src/contrib/Archive/", package_name, "/", package_name, "_", package_ver, ".tar.gz")
+  temptargz <- tempfile("download", fileext = ".tar.gz")
+  download.file(packageurl, destfile= temptargz, quiet = TRUE)
+  untar(temptargz, files = c(paste0(package_name,"/DESCRIPTION"),
+                             paste0(package_name,"/NEWS.md"),
+                             paste0(package_name,"/vignettes/")),
+        exdir = tempdir() )
 }
 
 packinfo <- function(package, versn) {
