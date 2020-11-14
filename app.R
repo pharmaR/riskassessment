@@ -14,6 +14,9 @@ source(file.path("Modules", "dbupload.R"))
 source(file.path("Modules", "file_upload_error_handling.R"))
 source(file.path("Utils", "utils.R"))
 
+# Create db if it doesn't exist.
+if(!file.exists(db_name)) create_db()
+
 # Start logging info.
 set_logfile("loggit.json")
 
@@ -109,22 +112,10 @@ server <- function(session, input, output) {
   source(file.path("UI", "testing_metrics.R"), local = TRUE)
   source(file.path("Server", "testing_metrics.R"), local = TRUE)
   
-  # Create db if it doesnt exist.
-  create_db_once <- reactive({
-    if(!file.exists(db_name))
-      create_db()
-  })
-  
-  # Run the db creation just once (the used reactive wont change).
-  observeEvent(create_db_once, {
-    create_db_once()
-  })
-  
   # Start of the observes
   # 1. Observe to Load Source files of UI module of selected screen (Package
   # Dashboard, DB Dashboard, or Login Screen).
   observeEvent(input$db_dash_bttn,{
-    req(file.exists(db_name))
     values$current_screen<-"db_dash_screen"
   })
   observe({
