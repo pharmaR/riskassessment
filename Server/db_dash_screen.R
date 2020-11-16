@@ -1,9 +1,9 @@
-#####################################################################################################################
-# login.R - The login page of the app
-# Author: K Aravind Reddy
-# Date: July 13th, 2020
+###############################################################################
+# db_dash_screen - Server functions for the database dashboard.
+# Author: Aaron Clark
+# Date: September 22nd, 2020
 # License: MIT License
-#####################################################################################################################
+###############################################################################
 
 # Start of the login screen Source file for UI Module.
 
