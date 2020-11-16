@@ -1,20 +1,18 @@
-// Append dashboard heading text.
 $(document).ready(function() {
-    $("header").find("nav").append('<span class="header-txt"> R Package Risk Assessment App </span>');
+  // Append dashboard heading text.
+  $("header").find("nav").append('<span class="header-txt"> R Package Risk Assessment App </span>');
+  
+  var elementHelpIconHeader = document.getElementsByClassName('asmnt-help-icon');
+  elementHelpIconHeader[0].style.display = 'block';
+  
+  var elementSidebar = document.getElementsByClassName('sidebar-menu');
+
+  setTimeout(function() {
+    document.getElementsByClassName('sidebar-menu')[0].addEventListener("click", mobileMenuClicked, false);
+    document.getElementById('tabs').addEventListener("click", activeTabCapturing, false);
+  }, 10);
 });
 
-var elementNavbar = document.getElementsByClassName('navbar-static-top');
-elementNavbar[0].style.justifyContent = 'center';
-
-var elementHelpIconHeader = document.getElementsByClassName('asmnt-help-icon');
-elementHelpIconHeader[0].style.display = 'block';
-
-var elementSidebar = document.getElementsByClassName('sidebar-menu');
-
-setTimeout(function() {
-  document.getElementsByClassName('sidebar-menu')[0].addEventListener("click", mobileMenuClicked, false);
-  document.getElementById('tabs').addEventListener("click", activeTabCapturing, false);
-}, 10);
 
 function mobileMenuClicked() {
   var sidePanel = document.getElementsByClassName("sidebar");
