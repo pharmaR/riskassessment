@@ -1,5 +1,5 @@
 ###############################################################################
-# assessment_criteria.R - Assessment Criteria server source file.  
+# assessment_criteria.R - Assessment Criteria server source file.
 # Author: K Aravind Reddy
 # Date: July 13th, 2020
 # License: MIT License
