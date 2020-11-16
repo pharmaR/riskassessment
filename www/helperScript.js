@@ -5,8 +5,6 @@ $(document).ready(function() {
   var elementHelpIconHeader = document.getElementsByClassName('asmnt-help-icon');
   elementHelpIconHeader[0].style.display = 'block';
   
-  var elementSidebar = document.getElementsByClassName('sidebar-menu');
-
   setTimeout(function() {
     document.getElementsByClassName('sidebar-menu')[0].addEventListener("click", mobileMenuClicked, false);
     document.getElementById('tabs').addEventListener("click", activeTabCapturing, false);
