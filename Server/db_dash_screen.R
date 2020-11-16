@@ -7,8 +7,10 @@
 
 # Create table for the db dashboard.
 output$db_pkgs <- DT::renderDataTable({
-  values$db_pkg_overview <- db_fun(paste0("
-      SELECT case when package = '", input$select_pack,
+  values$db_pkg_overview <- db_fun(
+    paste0(
+      "SELECT case when package = '",
+      input$select_pack,
       "' then 1 else 0 end as Selected
       , pi.package
       , pi.version
@@ -25,7 +27,7 @@ output$db_pkgs <- DT::renderDataTable({
       on c.comm_id = pi.package
       ORDER BY 1 DESC
     "
-  ))
+    ))
   
   DT::datatable(
     values$db_pkg_overview,
@@ -48,9 +50,8 @@ output$db_pkgs <- DT::renderDataTable({
           "RiskAsses_PkgDB_Dwnld",
           str_replace_all(str_replace(Sys.time(), " ", "_"), ":", "-"))
       ))
-    )
-  ) %>%
-  formatStyle(names(values$db_pkg_overview), textAlign = 'center')
+    )) %>%
+    formatStyle(names(values$db_pkg_overview), textAlign = 'center')
 })
 
 
@@ -62,14 +63,17 @@ observe({
     shinyjs::disable("dwnld_sel_db_pkgs_btn")
 })
 
+
 values$cwd <- getwd()
+
 
 # Download handler to create a report for each package selected.
 output$dwnld_sel_db_pkgs_btn <- downloadHandler(
   filename = function() {
-    paste("RiskAsses_PkgDB_Dwnld",
-          str_replace_all(
-            str_replace(Sys.time(), " ", "_"), ":", "-"),".zip", sep = "_")
+    paste(
+      "RiskAsses_PkgDB_Dwnld",
+      str_replace_all(
+        str_replace(Sys.time(), " ", "_"), ":", "-"), ".zip", sep = "_")
   },
   content = function(file) {
     these_pkgs <- values$db_pkg_overview %>% slice(input$db_pkgs_rows_selected)
