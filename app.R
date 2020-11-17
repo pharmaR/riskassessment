@@ -131,21 +131,6 @@ server <- function(session, input, output) {
     }
   })  # End of the selected screen observe.
   
-<<<<<<< HEAD
-=======
-  # 2. Observe to select the package, score, decision and load the data into
-  # a reactive variable.
-  observe({
-    values$selected_pkg <-
-      db_fun(
-        paste0(
-          "SELECT package, score, decision FROM Packageinfo WHERE package = '",
-          input$select_pack,
-          "'"
-        )
-      )
-  })  # End of the observe for reactive table.
->>>>>>> master
   # End of the observe's'
   
   # Observe Event to load the source file of UI module when we click on the
@@ -154,14 +139,11 @@ server <- function(session, input, output) {
     source(file.path("UI", "assessment_criteria.R"), local = TRUE)
   })  # End of the Observe Event
   
-<<<<<<< HEAD
   # load vector of available packages (on CRAN)
   if (!exists("pkgs_vec")) {
     pkgs_vec <- as.data.frame(utils::available.packages())[[1]]
   } 
   
-=======
->>>>>>> master
 }  # End of the Server Code.
 
 
