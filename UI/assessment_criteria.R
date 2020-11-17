@@ -1,14 +1,13 @@
-#####################################################################################################################
-# assessment_criteria.R - Display the modal pop up window with Maintenance, Community Usage and Testing Metrics info  
+###############################################################################
+# assessment_criteria.R - Display the modal pop up window with Maintenance,
+# Community Usage, and Testing Metrics info.
 # Author: K Aravind Reddy
 # Date: July 13th, 2020
 # License: MIT License
-#####################################################################################################################
+###############################################################################
 
-# Start of the Assessment Criteria Source file for UI Module.
 
-# Show modal pop window for assessment criteria action link
-
+# Show modal pop window for assessment criteria action link.
 showModal(tags$div(id = "assessment_criteria_id", modalDialog(
  
   actionButton("assessment_criteria_close", "X"),  # Action button to close the window.
@@ -45,5 +44,3 @@ showModal(tags$div(id = "assessment_criteria_id", modalDialog(
   ),
   footer = NULL, easyClose = TRUE
 )))  
-
-# End of the Assessment Criteria Source file for UI Module.

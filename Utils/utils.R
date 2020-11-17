@@ -49,13 +49,12 @@ db_fun <- function(query){
 }
 
 # You need to use dbExecute() to perform delete, update or insert queries.
-db_ins<-function(query){
+db_ins <- function(query){
   # con <- dbConnect(RSQLite::SQLite(), "./risk_assessment_app.db")
   con <- dbConnect(RSQLite::SQLite(), db_name)
   dbExecute(con, query)
   dbDisconnect(con)
 }
-
 
 TimeStamp<-function(){
   # Timestamp_intial<-str_replace(Sys.time()," ", "; ")

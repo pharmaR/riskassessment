@@ -1,24 +1,15 @@
-//Adding javascript code for dashbord screen
-
-var elementNavbarText = document.getElementsByClassName('myClass');
-elementNavbarText[0].style.marginLeft = '0px';
-
-
-var elementNavbar = document.getElementsByClassName('navbar-static-top');
-elementNavbar[0].style.justifyContent = 'center';
-
-
-var elementHelpIconHeader = document.getElementsByClassName('asmnt-help-icon');
-elementHelpIconHeader[0].style.display = 'block';
-
-
-var elementSidebar = document.getElementsByClassName('sidebar-menu');
-
-
-setTimeout(function() {
-  document.getElementsByClassName('sidebar-menu')[0].addEventListener("click", mobileMenuClicked, false);
-  document.getElementById('tabs').addEventListener("click", activeTabCapturing, false);
-}, 10);
+$(document).ready(function() {
+  // Append dashboard heading text.
+  $("header").find("nav").append('<span class="header-txt"> R Package Risk Assessment App </span>');
+  
+  var elementHelpIconHeader = document.getElementsByClassName('asmnt-help-icon');
+  elementHelpIconHeader[0].style.display = 'block';
+  
+  setTimeout(function() {
+    document.getElementsByClassName('sidebar-menu')[0].addEventListener("click", mobileMenuClicked, false);
+    document.getElementById('tabs').addEventListener("click", activeTabCapturing, false);
+  }, 10);
+});
 
 
 function mobileMenuClicked() {
@@ -29,11 +20,11 @@ function mobileMenuClicked() {
   if (mainPanel[0].style.display === "none") {
     sidePanel[1].style.display = "none";
     mainPanel[0].style.display = "block";
-    mainPanel_component[0].style.width = "90%"
+    mainPanel_component[0].style.width = "90%";
   } else {
     sidePanel[1].style.display = "block";
     mainPanel[0].style.display = "none";
-    mainPanel_component[0].style.width = "10%"
+    mainPanel_component[0].style.width = "10%";
   }
 }
 
@@ -45,14 +36,14 @@ function activeTabCapturing () {
       for(let i=0; i<ele.children.length; i++){
       var cnt = ele.children[i];
         if (cnt.classList[0] === 'active' && (cnt.innerText === "Report Preview" || cnt.innerText === "Testing Metrics" || cnt.innerText === "Upload Package") ) {
-          var navtab = document.getElementsByClassName('nav-tabs')
-          navtab[0].style.width = "100%"
+          var navtab = document.getElementsByClassName('nav-tabs');
+          navtab[0].style.width = "100%";
         } else if (cnt.classList[0] === 'active' && (cnt.innerText === "Maintenance Metrics") ){
           var navtab = document.getElementsByClassName('nav-tabs');
-          navtab[0].style.width = "80%"
+          navtab[0].style.width = "80%";
         } else if (cnt.classList[0] === 'active' && (cnt.innerText === "Community Usage Metrics") ){
           var navtab = document.getElementsByClassName('nav-tabs');
-          navtab[0].style.width = "95%"
+          navtab[0].style.width = "95%";
         }
       }
     }
@@ -141,10 +132,10 @@ function addTextToGaugeSVG(id) {
   element.appendChild(textElement2);
 
   //Code to replace 0 with NA
-  var allEle = element.querySelectorAll('text')
+  var allEle = element.querySelectorAll('text');
   for(let i=0; i<allEle.length; i++){
     if(allEle[i].textContent == 100 && allEle[i+1].textContent == 0){
-        allEle[i+1].textContent = "NA"
+        allEle[i+1].textContent = "NA";
     }
   }
 }

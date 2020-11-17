@@ -67,7 +67,7 @@ output$screen <- renderUI({
               actionLink("db_dash_bttn", class = "assessment_criteria_bttn_class",
                          HTML('<div class="tooltip-help">
                       <i class="fas fa-history fa-2x history-help-icon"></i>
-                      <span class="tooltiptext-help">Package Review History</span>
+                      <span class="tooltiptext-help tooltipreview">Package Review History</span>
                       </div>'))
              ),
              br(),
@@ -105,8 +105,6 @@ output$screen <- renderUI({
                  withSpinner(uiOutput("testing_metrics"), type = 2)  # UI for Testing Metrics tab panel.
                )
              )
-            ,
-             tags$head(tags$script(src = "helperScript.js"))
            ))
   )
 })
