@@ -19,23 +19,27 @@ output$maintenance_metrics <- renderUI({
         div(style = "height:25px;"),
         class = "mm-main-row",
         fluidRow(
-          class = "mm-row-1",
-          infoBoxOutput("vignette"),  # Info box to show the information on VIGNETTE Content.
-          infoBoxOutput("website"),  # Info box to show the information on Package Has Website.
-          infoBoxOutput("hasnews"),  # Info box to show the Package Has News? Content.
-        ),
-        fluidRow(
-          class = "mm-row-2",
-          infoBoxOutput("newscurrent"),  # Info box to show the information for News is Current?
-          infoBoxOutput("bugtrack"),  # Info box to show the information for Does the package have Bug Report?
-          infoBoxOutput("bugstatus"),  # Info box to show the information on Bugs Status.
-        ),
-        fluidRow(
-          class = "mm-row-3",
-          infoBoxOutput("exporthelp"),  # Info box to show the information on Export help.
-          infoBoxOutput("source_pub"),  # Info box to show the information on source code is public?
-          infoBoxOutput("pack_maint"),  # Info box to show the information on Has a package maintainer?
-        ),
+          uiOutput("myboxes")
+        ),  
+        
+        # fluidRow(
+        #   class = "mm-row-1",
+        #   infoBoxOutput("vignette"),  # Info box to show the information on VIGNETTE Content.
+        #   infoBoxOutput("website"),  # Info box to show the information on Package Has Website.
+        #   infoBoxOutput("hasnews"),  # Info box to show the Package Has News? Content.
+        # ),
+        # fluidRow(
+        #   class = "mm-row-2",
+        #   infoBoxOutput("newscurrent"),  # Info box to show the information for News is Current?
+        #   infoBoxOutput("bugtrack"),  # Info box to show the information for Does the package have Bug Report?
+        #   infoBoxOutput("bugstatus"),  # Info box to show the information on Bugs Status.
+        # ),
+        # fluidRow(
+        #   class = "mm-row-3",
+        #   infoBoxOutput("exporthelp"),  # Info box to show the information on Export help.
+        #   infoBoxOutput("source_pub"),  # Info box to show the information on source code is public?
+        #   infoBoxOutput("pack_maint"),  # Info box to show the information on Has a package maintainer?
+        # ),
         fluidRow(
           class = "mm-row-comments-box",
           column(

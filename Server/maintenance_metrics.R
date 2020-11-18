@@ -14,7 +14,6 @@ observe({
   req(input$select_pack)
   if(input$tabs == "mm_tab_value"){
     if(input$select_pack != "Select"){
-      print(paste("input$select_pack is",input$select_pack))
       values$riskmetrics_mm <-
         db_fun(
           paste0(
@@ -62,220 +61,22 @@ observe({
 
 # Start of the render Output's'
 
-# 1. Render Output Info box to show the information on VIGNETTE Content.
+output$myboxes <- renderUI({
+  boxes <- list()
+  for (i in 1:length(values$riskmetrics_mm$mm_label)){
+    if (grepl("\\?$",values$riskmetrics_mm$mm_label[[i]]) == FALSE) {
+      boxes[[i]] <- info_percnt(values$riskmetrics_mm$mm_label[[i]], values$vals[[i]], 
+                            eval(ifelse(values$vals[[i]][2] == -1, "Not Applicable", "Percentage of above")))
+    } else {
+      boxes[[i]] <- info_thumb(values$riskmetrics_mm$mm_label[[i]], values$vals[[i]], 
+                           eval(ifelse(values$vals[[i]][2] == -1, "Not Applicable", 
+                                       ifelse(values$vals[[i]][1] == 1, values$vals[[i]][2], "Nothing to see here.")))) 
+    }
+  }
+  boxes
+})
 
-output$vignette <- renderInfoBox({
-  # req(values$package_has_vignettes)
-  req(values$riskmetrics_mm)
-  info_thumb(values$riskmetrics_mm$mm_label[[2]], values$vals[[2]], paste("The package has", values$vals[[2]][2], "Vignettes"))
-  # infoBox(
-  #   title = "Presence of vignettes?",
-  #   if(values$package_has_vignettes[1] == 1){"YES"}
-  #   else if(values$package_has_vignettes[2] == -1){"NA"}
-  #   else{"NO"},
-  #   width = 3,
-  #   if(values$package_has_vignettes[2] == -1){"Metric is not applicable for this source of package"}
-  #   else{paste("The package has", values$package_has_vignettes[2], "Vignettes")},
-  #   icon = icon(
-  #     ifelse(values$package_has_vignettes[1] == 1, "thumbs-up", "thumbs-down"),
-  #     lib = "glyphicon"
-  #   ),
-  #   color = ifelse(values$package_has_vignettes[1] == 1, "green", "red"),
-  #   fill = TRUE
-  # )
-})  # End of the render Output.
 
-# 2. Render Output Info box to show the information on Package Has Website.
-
-output$website <- renderInfoBox({
-  req(values$riskmetrics_mm)
-  info_thumb(values$riskmetrics_mm$mm_label[[6]], values$vals[[6]], 
-             eval(ifelse(values$vals[[6]][1] == 1, paste("Website:",values$vals[[6]][2]),
-                         "The package does not have an associated website URL")))
-  # req(values$package_has_website)
-  # infoBox(
-  #   title = "Associated website URL?",
-  #   if(values$package_has_website[1] == 1){"YES"}
-  #   else if(values$package_has_website[2] == -1){"NA"}
-  #   else{"NO"},
-  #   width = 3,
-  #   if(values$package_has_website[2] == -1){"Metric is not applicable for this source of package"}
-  #   else{ ifelse(values$package_has_website[1] == 1, paste("Website:",values$package_has_website[2]), "The package does not have an associated website URL")},
-  #   icon = icon(
-  #     ifelse(values$package_has_website[1] == 1, "thumbs-up", "thumbs-down"),
-  #     lib = "glyphicon"
-  #   ),
-  #   color = ifelse(values$package_has_website[1] == 1, "green", "red"),
-  #   fill = TRUE
-  # )
-})  # End of the render Output.
-# 3. Render Output Info box to show the Package Has News? Content.
-
-output$hasnews <- renderInfoBox({
-  req(values$riskmetrics_mm)
-  info_thumb(values$riskmetrics_mm$mm_label[[8]], values$vals[[8]], eval(ifelse(values$vals[[8]][1] == 1, 
-                                                           "The package has a NEWS file.", 
-                                                           "The package does not have a NEWS file")))
-  # req(values$package_has_news)
-  # infoBox(
-  #   title = "NEWS?",
-  #   if(values$package_has_news[1] == 1){"YES"}
-  #   else if(values$package_has_news[2] == -1){"NA"}
-  #   else{"NO"},
-  #   width = 3,
-  #   if(values$package_has_news[2] == -1){"Metric is not applicable for this source of package"}
-  #   else{ ifelse(values$package_has_news[1] == 1, "The package has a NEWS file.", "The package does not have a NEWS file")},
-  #   icon = icon(
-  #     ifelse(values$package_has_news[1] == 1, "thumbs-up", "thumbs-down"),
-  #     lib = "glyphicon"
-  #   ),
-  #   color = ifelse(values$package_has_news[1] == 1, "green", "red"),
-  #   fill = TRUE
-  # )
-})  # End of the render Output.
-# 4. Render Output Info box to show the information for News is Current?
-
-output$newscurrent <- renderInfoBox({
-  req(values$riskmetrics_mm)
-  info_thumb(values$riskmetrics_mm$mm_label[[1]], values$vals[[1]], 
-             eval(ifelse(values$vals[[1]][1] == 1, 
-                         "NEWS file contains entry for current version number",
-                         "Metric is not applicable for this source of package")))
-  # req(values$news_is_current)
-  # infoBox(
-  #   title = "News is current?",
-  #   if(values$news_is_current[1] == 1){"YES"}
-  #   else if(values$news_is_current[2] == -1){"NA"}
-  #   else{"NO"},
-  #   width = 3,
-  #   if(values$news_is_current[2] == -1){"Metric is not applicable for this source of package"}
-  #   else{ ifelse(values$news_is_current[1] == 1, "NEWS file contains entry for current version number", "NEWS file does not contains entry for current version number")},
-  #   icon = icon(
-  #     ifelse(values$news_is_current[1] == 1, "thumbs-up", "thumbs-down"),
-  #     lib = "glyphicon"
-  #   ),
-  #   color = ifelse(values$news_is_current[1] == 1, "green", "red"),
-  #   fill = TRUE
-  # )
-})  # End of the render Output.
-
-# 5. Render Output  Info box to show the information for Does the package have Bug Report?
-
-output$bugtrack <- renderInfoBox({
-  req(values$riskmetrics_mm)
-  info_thumb(values$riskmetrics_mm$mm_label[[3]], values$vals[[3]], 
-             eval(ifelse(values$vals[[3]][1] == 1, 
-                         paste("Bug reports URL:", values$vals[[3]][2]),
-                         "The Bugs are not publicly documented")))
-  # req(values$has_bug_reports)
-  # infoBox(
-  #   title = "Bugs publicly documented?",
-  #   if(values$has_bug_reports[1] == 1){"YES"}
-  #   else if(values$has_bug_reports[2] == -1){"NA"}
-  #   else{"NO"},
-  #   width = 3,
-  #   if(values$has_bug_reports[2] == -1){"Metric is not applicable for this source of package"}
-  #   else{ ifelse(values$has_bug_reports[1] == 1, paste("Bug reports URL:", values$has_bug_reports[2]), "The Bugs are not publicly documented")},
-  #   icon = icon(
-  #     ifelse(values$has_bug_reports[1] == 1, "thumbs-up", "thumbs-down"),
-  #     lib = "glyphicon"
-  #   ),
-  #   color = ifelse(values$has_bug_reports[1] == 1, "green", "red"),
-  #   fill = TRUE
-  # )
-})  # End of the render Output.
-
-# 6. Render Output Info box to show the information on Bugs Status.
-
-output$bugstatus <- renderInfoBox({
-  req(values$riskmetrics_mm)
-  info_percnt(values$riskmetrics_mm$mm_label[[4]], values$vals[[4]],  eval(ifelse(values$vals[[4]][2] == -1, 
-                                                             "Metric is not applicable for this source of package",
-                                                             "Percentage of last 30 bugs closed")))
-  
-  # req(values$status_of_last_30_reported_bugs)
-  # infoBox(
-  #   title = "Bug closure",
-  #   if(values$status_of_last_30_reported_bugs[2] == -1){"NA"}
-  #   else{paste0(values$status_of_last_30_reported_bugs[1],"%")},
-  #   subtitle = if(values$status_of_last_30_reported_bugs[2] == -1){"Metric is not applicable for this source of package"}
-  #   else{"Percentage of last 30 bugs closed"},
-  #   width = 3,
-  #   fill = TRUE
-  # )
-})  # End of the render Output.
-
-# 7. Render Output Info box to show the information on Export help.
-
-output$exporthelp <- renderInfoBox({
-  req(values$riskmetrics_mm)
-  # req(values$exported_objects_with_documentation)
-  info_percnt(values$riskmetrics_mm$mm_label[[5]], values$vals[[5]],  eval(ifelse(values$vals[[5]][2] == -1, 
-                                                             "Metric is not applicable for this source of package",
-                                                             "Proportion of exported objects documented")))
-  # infoBox(
-  #   title = "Documentation",
-  #   if(values$exported_objects_with_documentation[2] == -1){"NA"}
-  #   else{paste0(values$exported_objects_with_documentation[1],"%")},
-  #   subtitle = if(values$exported_objects_with_documentation[2] == -1){"Metric is not applicable for this source of package"}
-  #   else{"Proportion of exported objects documented"},
-  #   width = 3,
-  #   fill = TRUE
-  # )
-}) # End of the render Output.
-
-# 8. Render Output Info box to show the information on source code is public?.
-
-output$source_pub <- renderInfoBox({
-  req(values$riskmetrics_mm)
-  info_thumb(values$riskmetrics_mm$mm_label[[9]], values$vals[[9]],  
-             eval(ifelse(values$vals[[9]][1] == 1, 
-                         paste("Source code URL:", values$vals[[9]][2]), 
-                         "Package does not have a Source code URL")))
-  # req(values$source_code_is_public)
-  # infoBox(
-  #   title = "Source code public?",
-  #   if(values$source_code_is_public[1] == 1){"YES"}
-  #   else if(values$source_code_is_public[2] == -1){"NA"}
-  #   else{"NO"},
-  #   width = 3,
-  #   if(values$source_code_is_public[2] == -1){"Metric is not applicable for this soucre of package"}
-  #   else{ ifelse(values$source_code_is_public[1] == 1, paste("Source code URL:", values$source_code_is_public[2]), "Package does not have a Source code URL")},
-  #   icon = icon(
-  #     ifelse(values$source_code_is_public[1] == 1, "thumbs-up", "thumbs-down"),
-  #     lib = "glyphicon"
-  #   ),
-  #   color = ifelse(values$source_code_is_public[1] == 1, "green", "red"),
-  #   fill = TRUE
-  # )
-})  # End of the Render Output.
-
-# 9. Render Output Info box to show the information on Has a package maintainer?.
-
-output$pack_maint <- renderInfoBox({
-  req(values$riskmetrics_mm)
-  info_thumb(values$riskmetrics_mm$mm_label[[7]], values$vals[[7]], 
-             eval(ifelse(values$vals[[7]][1] == 1, 
-                         values$vals[[7]][2],
-                         "Package does not have a Maintainer")))
-  # req(values$has_a_package_maintainer)
-  # infoBox(
-  #   title = "Has a maintainer?",
-  #   if(values$has_a_package_maintainer[1] == 1){"YES"}
-  #   else if(values$has_a_package_maintainer[2] == -1){"NA"}
-  #   else{"NO"},
-  #   width = 3,
-  #   if(values$has_a_package_maintainer[2] == -1){"Metric is not applicable for this soucre of package"}
-  #   else{ ifelse(values$has_a_package_maintainer[1] == 1, values$has_a_package_maintainer[2], "Package does not have a Maintainer")},
-  #   icon = icon(
-  #     ifelse(
-  #       values$has_a_package_maintainer[1] == 1, "thumbs-up", "thumbs-down"),
-  #       lib = "glyphicon"
-  #   ),
-  #   color = ifelse(values$has_a_package_maintainer[1] == 1, "green", "red"),
-  #   fill = TRUE
-  # )
-})  # End of the render Output.
 
 
 # 10. Render Output to show the comments on the application.
