@@ -24,7 +24,7 @@ observe({
         )
       
       risk_mm <- values$riskmetrics_mm
-      vals <- map(risk_mm$mm_values, ~unlist(stringr::str_split(.x, ",", 2)))
+      vals <- map(risk_mm$mm_value, ~unlist(stringr::str_split(.x, ",",2)))
 
       # values$package_has_vignettes <- c(strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][2])
       # values$package_has_website <- c(strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][2])
@@ -66,7 +66,7 @@ observe({
 output$vignette <- renderInfoBox({
   # req(values$package_has_vignettes)
   req(values$riskmetrics_mm)
-  info_thumb(risk_mm$mm_label[[1]], vals[[1]], paste("The package has", vals[[1]][2], "Vignettes"))
+  info_thumb(risk_mm$mm_label[[2]], vals[[2]], paste("The package has", vals[[2]][2], "Vignettes"))
   # infoBox(
   #   title = "Presence of vignettes?",
   #   if(values$package_has_vignettes[1] == 1){"YES"}
@@ -88,8 +88,8 @@ output$vignette <- renderInfoBox({
 
 output$website <- renderInfoBox({
   req(values$riskmetrics_mm)
-  info_thumb(risk_mm$mm_label[[4]], vals[[4]], 
-             eval(ifelse(vals[[4]][1] == 1, paste("Website:",vals[[4]][2]),
+  info_thumb(risk_mm$mm_label[[6]], vals[[6]], 
+             eval(ifelse(vals[[6]][1] == 1, paste("Website:",vals[[6]][2]),
                          "The package does not have an associated website URL")))
   # req(values$package_has_website)
   # infoBox(
@@ -112,7 +112,7 @@ output$website <- renderInfoBox({
 
 output$hasnews <- renderInfoBox({
   req(values$riskmetrics_mm)
-  info_thumb(risk_mm$mm_label[[2]], vals[[2]], eval(ifelse(vals[[2]][1] == 1, 
+  info_thumb(risk_mm$mm_label[[8]], vals[[8]], eval(ifelse(vals[[8]][1] == 1, 
                                                            "The package has a NEWS file.", 
                                                            "The package does not have a NEWS file")))
   # req(values$package_has_news)
@@ -136,8 +136,8 @@ output$hasnews <- renderInfoBox({
 
 output$newscurrent <- renderInfoBox({
   req(values$riskmetrics_mm)
-  info_thumb(risk_mm$mm_label[[3]], vals[[3]], 
-             eval(ifelse(vals[[3]][1] == 1, 
+  info_thumb(risk_mm$mm_label[[1]], vals[[1]], 
+             eval(ifelse(vals[[1]][1] == 1, 
                          "NEWS file contains entry for current version number",
                          "Metric is not applicable for this source of package")))
   # req(values$news_is_current)
@@ -162,9 +162,9 @@ output$newscurrent <- renderInfoBox({
 
 output$bugtrack <- renderInfoBox({
   req(values$riskmetrics_mm)
-  info_thumb(risk_mm$mm_label[[5]], vals[[5]], 
-             eval(ifelse(vals[[5]][1] == 1, 
-                         paste("Bug reports URL:", vals[[5]][2]),
+  info_thumb(risk_mm$mm_label[[3]], vals[[3]], 
+             eval(ifelse(vals[[3]][1] == 1, 
+                         paste("Bug reports URL:", vals[[3]][2]),
                          "The Bugs are not publicly documented")))
   # req(values$has_bug_reports)
   # infoBox(
@@ -188,7 +188,7 @@ output$bugtrack <- renderInfoBox({
 
 output$bugstatus <- renderInfoBox({
   req(values$riskmetrics_mm)
-  info_percnt(risk_mm$mm_label[[9]], vals[[9]],  eval(ifelse(vals[[9]][2] == -1, 
+  info_percnt(risk_mm$mm_label[[4]], vals[[4]],  eval(ifelse(vals[[4]][2] == -1, 
                                                              "Metric is not applicable for this source of package",
                                                              "Percentage of last 30 bugs closed")))
   
@@ -209,7 +209,7 @@ output$bugstatus <- renderInfoBox({
 output$exporthelp <- renderInfoBox({
   req(values$riskmetrics_mm)
   # req(values$exported_objects_with_documentation)
-  info_percnt(risk_mm$mm_label[[8]], vals[[8]],  eval(ifelse(vals[[8]][2] == -1, 
+  info_percnt(risk_mm$mm_label[[5]], vals[[5]],  eval(ifelse(vals[[5]][2] == -1, 
                                                              "Metric is not applicable for this source of package",
                                                              "Proportion of exported objects documented")))
   # infoBox(
@@ -227,9 +227,9 @@ output$exporthelp <- renderInfoBox({
 
 output$source_pub <- renderInfoBox({
   req(values$riskmetrics_mm)
-  info_thumb(risk_mm$mm_label[[7]], vals[[7]],  
-             eval(ifelse(vals[[7]][1] == 1, 
-                         paste("Source code URL:", vals[[5]][2]), 
+  info_thumb(risk_mm$mm_label[[9]], vals[[9]],  
+             eval(ifelse(vals[[9]][1] == 1, 
+                         paste("Source code URL:", vals[[9]][2]), 
                          "Package does not have a Source code URL")))
   # req(values$source_code_is_public)
   # infoBox(
@@ -253,9 +253,9 @@ output$source_pub <- renderInfoBox({
 
 output$pack_maint <- renderInfoBox({
   req(values$riskmetrics_mm)
-  info_thumb(risk_mm$mm_label[[6]], vals[[6]], 
-             eval(ifelse(vals[[6]][1] == 1, 
-                         vals[[6]][2],
+  info_thumb(risk_mm$mm_label[[7]], vals[[7]], 
+             eval(ifelse(vals[[7]][1] == 1, 
+                         vals[[7]][2],
                          "Package does not have a Maintainer")))
   # req(values$has_a_package_maintainer)
   # infoBox(
