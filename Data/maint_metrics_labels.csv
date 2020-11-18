@@ -1,0 +1,10 @@
+names,mm_label
+news_current,News is current?
+has_vignettes,Presence of vignettes?
+has_bug_reports_url,Bugs publicly documented?
+bugs_status,Bug closure
+export_help,Documentation
+has_website,Associated website URL?
+has_maintainer,Has a maintainer?
+has_news,Has NEWS?
+has_source_control,Source code public?

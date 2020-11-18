@@ -174,14 +174,17 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   
   # create tbl of names and labels
   # colnames(pkrm3)
-  vartibbl <- tibble(
-    names = c("news_current", "has_vignettes", "has_bug_reports_url",
-              "bugs_status",  "export_help",   "has_website",        
-              "has_maintainer", "has_news",     "has_source_control" ),
-    mm_label = c("News is current?","Presence of vignettes?","Bugs publicly documented?",
-                 "Bug closure","Documentation","Associated website URL?",
-                 "Has a maintainer?","Has NEWS?", "Source code public?")
-  )
+  # vartibbl <- tibble(
+  #   names = c("news_current", "has_vignettes", "has_bug_reports_url",
+  #             "bugs_status",  "export_help",   "has_website",        
+  #             "has_maintainer", "has_news",     "has_source_control" ),
+  #   mm_label = c("News is current?","Presence of vignettes?","Bugs publicly documented?",
+  #                "Bug closure","Documentation","Associated website URL?",
+  #                "Has a maintainer?","Has NEWS?", "Source code public?")
+  # )
+  
+  metrics_to_read <- file.path("Data", "maint_metrics_labels.csv")
+  vartibbl <- readr::read_csv(metrics_to_read, col_types = cols(.default = "c"))
   
   # any label that does not have "?" at the end is assumed percentage
   for (i in 1:length(pkrm1)) {
