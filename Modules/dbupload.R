@@ -163,31 +163,79 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
     as_tibble() %>%
     pkg_assess()
   
-  package_riskmetric1$bugs_status <- package_riskmetric1$bugs_status*100
-  package_riskmetric1$export_help <- package_riskmetric1$export_help*100
+  excl_name <- c("package","version","pkg_ref","license","downloads_1yr","covr_coverage","pkg_score","risk")
   
-
-  db_ins(paste0("INSERT INTO MaintenanceMetrics values(", 
-                "'", package_name, "',", 
-                "'", package_riskmetric1$has_vignettes[1], ",", ifelse(class(package_riskmetric2$has_vignettes[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_vignettes[[1]][1]), "',",
-                "'", package_riskmetric1$has_news[1], ",",  ifelse(class(package_riskmetric2$has_news[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_news[[1]][1]), "',", 
-                "'", package_riskmetric1$news_current[1], ",",  ifelse(class(package_riskmetric2$news_current[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$news_current[[1]][1]), "',",  
-                "'", package_riskmetric1$has_website[1], ",",  ifelse(class(package_riskmetric2$has_website[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_website[[1]][1]), "',", 
-                "'", package_riskmetric1$has_bug_reports_url[1], ",",  ifelse(class(package_riskmetric2$has_bug_reports_url[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_bug_reports_url[[1]][1]), "',",
-                "'", package_riskmetric1$has_maintainer[1], ",",  ifelse(class(package_riskmetric2$has_maintainer[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_maintainer[[1]][1]), "',", 
-                "'", package_riskmetric1$has_source_control[1], ",",  ifelse(class(package_riskmetric2$has_source_control[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_source_control[[1]][1]), "',",
-                "'", format(round(package_riskmetric1$export_help[1],2)), ",",  ifelse(class(package_riskmetric2$export_help[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$export_help[[1]][1]), "',",
-                "'", format(round(package_riskmetric1$bugs_status[1],2)), ",",  ifelse(class(package_riskmetric2$bugs_status[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$bugs_status[[1]][1]), "'", ")"))
+  pkrm1 <- package_riskmetric1[- which(colnames(package_riskmetric1) %in% excl_name)]
+  pkrm2 <- package_riskmetric2[- which(colnames(package_riskmetric2) %in% excl_name)]
+  
+  # package_riskmetric1$bugs_status <- package_riskmetric1$bugs_status*100
+  # package_riskmetric1$export_help <- package_riskmetric1$export_help*100
+  
+  
+  # create tbl of names and labels
+  # colnames(pkrm3)
+  vartibbl <- tibble(
+    names = c("news_current", "has_vignettes", "has_bug_reports_url",
+              "bugs_status",  "export_help",   "has_website",        
+              "has_maintainer", "has_news",     "has_source_control" ),
+    mm_label = c("News is current?","Presence of vignettes?","Bugs publicly documented?",
+                 "Bug closure","Documentation","Associated website URL?",
+                 "Has a maintainer?","Has NEWS?", "Source code public?")
+  )
+  
+  # any label that does not have "?" at the end is assumed percentage
+  for (i in 1:length(pkrm1)) {
+    if (match(colnames(pkrm1)[[i]], vartibbl$names[[i]]) 
+        && grepl("\\?$",vartibbl$mm_label[[i]]) == FALSE) {
+      pkrm1[[i]][1] <- pkrm1[[i]][1] * 100
+    }
+  }
+  
+  # combine rm1 (score) and rm2 (assess) values into one string
+  pkrm3 <- map2(pkrm1, pkrm2, ~ unique(paste(.x[1], ifelse(class(.y[1]) == "pkg_metric_error", -1, .y[1]), sep = ",")))
+  pkrm3 <- as_tibble(pkrm3)
+  
+  # collect all the names and values into mm_name and mm_value
+  mm_tbl <- tidyr::pivot_longer(pkrm3, 
+                                cols = colnames(pkrm3),
+                                names_to = "mm_name", 
+                                values_to = "mm_value")
+  # add labels
+  mm_tbl <- left_join(mm_tbl, vartibbl, by = c("mm_name" = "names"))
+  
+  package_version <- package_riskmetric1$version
+  
+  # load db table MaintenanceMetrics
+  db_ins(paste0("INSERT INTO MaintenanceMetrics values(",
+                "'", package_name,    "',",
+                "'", package_version,    "',",
+                "'", mm_tbl$mm_name,    "',",
+                "'", mm_tbl$mm_value,    "',",
+                "'", mm_tbl$mm_label,    "',"
+  ))
+  
+  # db_ins(paste0("INSERT INTO MaintenanceMetrics values(", 
+  #               "'", package_name, "',", 
+  #               "'", package_riskmetric1$has_vignettes[1], ",", ifelse(class(package_riskmetric2$has_vignettes[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_vignettes[[1]][1]), "',",
+  #               "'", package_riskmetric1$has_news[1], ",",  ifelse(class(package_riskmetric2$has_news[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_news[[1]][1]), "',", 
+  #               "'", package_riskmetric1$news_current[1], ",",  ifelse(class(package_riskmetric2$news_current[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$news_current[[1]][1]), "',",  
+  #               "'", package_riskmetric1$has_website[1], ",",  ifelse(class(package_riskmetric2$has_website[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_website[[1]][1]), "',", 
+  #               "'", package_riskmetric1$has_bug_reports_url[1], ",",  ifelse(class(package_riskmetric2$has_bug_reports_url[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_bug_reports_url[[1]][1]), "',",
+  #               "'", package_riskmetric1$has_maintainer[1], ",",  ifelse(class(package_riskmetric2$has_maintainer[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_maintainer[[1]][1]), "',", 
+  #               "'", package_riskmetric1$has_source_control[1], ",",  ifelse(class(package_riskmetric2$has_source_control[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_source_control[[1]][1]), "',",
+  #               "'", format(round(package_riskmetric1$export_help[1],2)), ",",  ifelse(class(package_riskmetric2$export_help[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$export_help[[1]][1]), "',",
+  #               "'", format(round(package_riskmetric1$bugs_status[1],2)), ",",  ifelse(class(package_riskmetric2$bugs_status[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$bugs_status[[1]][1]), "'", ")"))
   
   db_ins(
     paste0( "INSERT INTO TestMetrics values(",
-            "'", package_name, "',",  
+            "'", package_name, "',", 
+            "'", package_version, "',",  
             "'", format(round(package_riskmetric1$covr_coverage[1], 2)),",", ifelse(class(package_riskmetric2$covr_coverage[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$covr_coverage[[1]][1]), "'", ")" )
   )
   
   db_ins(paste0( "UPDATE Packageinfo SET score = '", format(round(package_riskmetric1$pkg_score[1], 2)), "'", " WHERE package = '" ,
                  package_name, "'"))
- 
+  
 }  
 
 # End of the function
