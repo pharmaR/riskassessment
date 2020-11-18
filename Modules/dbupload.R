@@ -187,7 +187,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   for (i in 1:length(pkrm1)) {
     if (match(colnames(pkrm1)[[i]], vartibbl$names[[i]]) 
         && grepl("\\?$",vartibbl$mm_label[[i]]) == FALSE) {
-      pkrm1[[i]][1] <- pkrm1[[i]][1] * 100
+      pkrm1[[i]][1] <- format(round(pkrm1[[i]][1] * 100, 2))
     }
   }
   
