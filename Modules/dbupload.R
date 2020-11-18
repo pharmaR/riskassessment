@@ -205,14 +205,19 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   
   package_version <- package_riskmetric1$version
   
-  # load db table MaintenanceMetrics
-  db_ins(paste0("INSERT INTO MaintenanceMetrics values(",
-                "'", package_name,    "',",
-                "'", package_version,    "',",
-                "'", mm_tbl$mm_name,    "',",
-                "'", mm_tbl$mm_value,    "',",
-                "'", mm_tbl$mm_label,    "',"
-  ))
+  # load db table MaintenanceMetrics -- loading multiple rows per package/version
+  con <- dbConnect(RSQLite::SQLite(), db_name)
+  for (i in 1:nrow(mm_tbl)) {
+    query <- paste0("INSERT INTO MaintenanceMetrics values(",
+                    "'", package_name,    "',",
+                    "'", package_version,    "',",
+                    "'", mm_tbl$mm_name[[i]],    "',",
+                    "'", mm_tbl$mm_value[[i]],    "',",
+                    "'", mm_tbl$mm_label[[i]],    "'", ")"
+    )
+    dbExecute(con, query)
+  }
+  dbDisconnect(con)
   
   # db_ins(paste0("INSERT INTO MaintenanceMetrics values(", 
   #               "'", package_name, "',", 
