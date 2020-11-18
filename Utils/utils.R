@@ -96,7 +96,7 @@ info_thumb <- function(title, values, message) {
       values[2] == -1 ~ "NA",
       TRUE ~ "NO"
     ),
-    width = 3,
+    width = 4,
     subtitle = ifelse(values[2] == -1, 
                       "Metric is not applicable for this source of package", 
                       message),
@@ -114,7 +114,7 @@ info_percnt <- function(title, values, message) {
     title = title,
     value = ifelse(values[2] == -1, "NA", paste0(values[1],"%")),
     subtitle = message,
-    width = 3,
+    width = 4,
     fill = TRUE
   )
 }
