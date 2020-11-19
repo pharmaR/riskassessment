@@ -66,11 +66,15 @@ output$myboxes <- renderUI({
   for (i in 1:length(values$riskmetrics_mm$mm_label)){
     if (grepl("\\?$",values$riskmetrics_mm$mm_label[[i]]) == FALSE) {
       boxes[[i]] <- info_percnt(values$riskmetrics_mm$mm_label[[i]], values$vals[[i]], 
-                            eval(ifelse(values$vals[[i]][2] == -1, "Not Applicable", "Percentage of above")))
+                                eval(ifelse(values$vals[[i]][2] == -1, "Not Applicable", 
+                                            paste("Percentage of",tolower(values$riskmetrics_mm$mm_name[[i]])) )))
     } else {
+      if (values$vals[[i]][2] %in% as.character(seq(1:9))) {
+        values$vals[[i]][2] <- paste(values$riskmetrics_mm$mm_name[[i]],"Has",values$vals[[i]][2])
+      }
       boxes[[i]] <- info_thumb(values$riskmetrics_mm$mm_label[[i]], values$vals[[i]], 
-                           eval(ifelse(values$vals[[i]][2] == -1, "Not Applicable", 
-                                       ifelse(values$vals[[i]][1] == 1, values$vals[[i]][2], "Nothing to see here.")))) 
+                               eval(ifelse(values$vals[[i]][2] == -1, "Not Applicable", 
+                                           ifelse(values$vals[[i]][1] == 1, values$vals[[i]][2], "Nothing to see here.")))) 
     }
   }
   boxes
