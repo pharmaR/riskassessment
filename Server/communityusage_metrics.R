@@ -102,49 +102,119 @@ output$time_since_version_release <- renderInfoBox({
   
 })  # End of the time since version release render Output.
 
+output$no_of_downloads_data <- renderTable({
+  values$riskmetrics_cum
+})
+
 # 3. Render Output to show the highchart for number of downloads on the application.
 output$no_of_downloads <- 
   plotly::renderPlotly({
   # renderHighchart({
 
   if (values$riskmetrics_cum$no_of_downloads_last_year[1] != 0) {
-      hc <- highchart() %>%
-        hc_xAxis(categories = values$riskmetrics_cum$month) %>%
-        hc_xAxis(
-          title = list(text = "Months"),
-          
-          plotLines = map2(values$riskmetrics_cum$ver_release, values$riskmetrics_cum$position,
-                function(.x, .y)  list(label = list(text = .x), color = "#FF0000", width = 2, value = .y) )
-          
-        ) %>%
-        hc_add_series(
-          name = input$select_pack,
-          data = values$riskmetrics_cum$no_of_downloads,
-          color = "blue"
-        ) %>%
-        hc_yAxis(title = list(text = "Downloads")) %>%
-        hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS 11 MONTHS") %>%
-        hc_subtitle(
-          text = paste(
-            "Total Number of Downloads :",
-            sum(values$riskmetrics_cum$no_of_downloads)
-          ),
-          align = "right",
-          style = list(color = "#2b908f", fontWeight = "bold")
-        ) %>%
-        hc_add_theme(hc_theme_elementary())
+      # hc <- highchart() %>%
+      #   hc_xAxis(categories = values$riskmetrics_cum$month) %>%
+      #   hc_xAxis(
+      #     title = list(text = "Months"),
+      #     
+      #     plotLines = map2(values$riskmetrics_cum$ver_release, values$riskmetrics_cum$position,
+      #           function(.x, .y)  list(label = list(text = .x), color = "#FF0000", width = 2, value = .y) )
+      #     
+      #   ) %>%
+      #   hc_add_series(
+      #     name = input$select_pack,
+      #     data = values$riskmetrics_cum$no_of_downloads,
+      #     color = "blue"
+      #   ) %>%
+      #   hc_yAxis(title = list(text = "Downloads")) %>%
+      #   hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS 11 MONTHS") %>%
+      #   hc_subtitle(
+      #     text = paste(
+      #       "Total Number of Downloads :",
+      #       sum(values$riskmetrics_cum$no_of_downloads)
+      #     ),
+      #     align = "right", 
+      #     style = list(color = "#2b908f", fontWeight = "bold")
+      #   ) %>%
+      #   hc_add_theme(hc_theme_elementary())
+    swap <- data.frame(month_num = paste(1:12), month_name = month.name)
+    plot_dat <- values$riskmetrics_cum %>%
+      mutate(month_name = stringr::word(month),
+             year = stringr::word(month, -1)) %>%
+      left_join(swap) %>%
+      mutate(month_date = as.Date(
+        paste("01", month_num, year, sep = "-")
+        , "%d-%m-%Y", origin = "1970-01-01")
+      )
+    
+    fig <- plot_ly(plot_dat, x = ~month_date, y = ~no_of_downloads,
+                   name = "# Downloads", type = 'scatter', 
+                   mode = 'lines+markers', line = list(color = "blue"),
+                   hoverinfo = "text",
+                   text = ~paste0('# Dwnlds: ', formatC(no_of_downloads, format="f", big.mark=",", digits=0),
+                                  '<br>', month)) %>%
+      layout(title = ~paste("NUMBER OF DOWNLOADS BY MONTH:", input$select_pack),
+             showlegend = FALSE,
+             yaxis = list(title = "Downloads"),
+             xaxis = list(title = "Month")
+      ) %>%
+      plotly::config(displaylogo = FALSE, 
+                     modeBarButtonsToRemove= c('sendDataToCloud', 'hoverCompareCartesian','hoverClosestCartesian','autoScale2d'
+                                               ,'select2d', 'lasso2d', 'toggleSpikelines'
+                                               # , 'toImage', 'resetScale2d', 'zoomIn2d', 'zoomOut2d','zoom2d', 'pan2d'
+                     ))
+    fig <- fig %>% add_segments(x = ~if_else(ver_release != "NA", month_date, NA_Date_),
+                                xend = ~if_else(ver_release != "NA", month_date, NA_Date_),
+                                y = ~.98*min(no_of_downloads),
+                                yend = ~1.02*max(no_of_downloads),
+                                name = "Version Release",
+                                hoverinfo = "text",
+                                text = ~paste0('Version: ', ver_release, '<br>', month),
+                                line = list(color = "#FF0000")
+    )
+    fig <- fig %>% layout(
+      xaxis = list(
+        rangeselector = list(
+          buttons = list(
+            list(
+              count = 3,
+              label = "3 mo",
+              step = "month",
+              stepmode = "backward"),
+            list(
+              count = 6,
+              label = "6 mo",
+              step = "month",
+              stepmode = "backward"),
+            list(
+              count = 1,
+              label = "1 yr",
+              step = "year",
+              stepmode = "backward"),
+            list(
+              count = 2,
+              label = "2 yr",
+              step = "year",
+              stepmode = "year"),
+            list(step = "all"))),
+        
+        rangeslider = list(type = "date"))
+    )
+    # reveal plot
+    fig
     } else {
-      hc <- highchart() %>%
-        hc_xAxis(categories = NULL) %>%
-        hc_xAxis(title = list(text = "Months")) %>%
-        hc_add_series(name = input$select_pack, data = NULL) %>%
-        hc_yAxis(title = list(text = "Downloads")) %>%
-        hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS 11 MONTHS") %>%
-        hc_subtitle(
-          text = paste("Number of Downloads in the 11 previous months are zero"),
-          style = list(color = "#f44336", fontWeight = "bold")
-        ) %>%
-        hc_add_theme(hc_theme_elementary())
+      stop("Plot for packages with 0 downloads in last year has not been set up yet")
+      # hc <- highchart() %>%
+      #   hc_xAxis(categories = NULL) %>%
+      #   hc_xAxis(title = list(text = "Months")) %>%
+      #   hc_add_series(name = input$select_pack, data = NULL) %>%
+      #   hc_yAxis(title = list(text = "Downloads")) %>%
+      #   hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS 11 MONTHS") %>%
+      #   hc_subtitle(
+      #     text = paste("Number of Downloads in the 11 previous months are zero"),
+      #     style = list(color = "#f44336", fontWeight = "bold")
+      #   ) %>%
+      #   hc_add_theme(hc_theme_elementary())
     }
 })
 

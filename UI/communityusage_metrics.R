@@ -35,6 +35,8 @@ output$community_usage_metrics <- renderUI({
           column(width = 2, )
         ),
         
+        fluidRow(tableOutput("no_of_downloads_data")),
+        
         fluidRow(
           class = "c_u_m_row_comments_box",
           column(
