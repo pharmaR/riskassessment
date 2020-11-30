@@ -102,9 +102,10 @@ output$time_since_version_release <- renderInfoBox({
   
 })  # End of the time since version release render Output.
 
-output$no_of_downloads_data <- renderTable({
-  values$riskmetrics_cum
-})
+# For previewing data being plotted
+# output$no_of_downloads_data <- renderTable({
+#   values$riskmetrics_cum
+# })
 
 # 3. Render Output to show the highchart for number of downloads on the application.
 output$no_of_downloads <- 
@@ -143,8 +144,7 @@ output$no_of_downloads <-
              year = stringr::word(month, -1)) %>%
       left_join(swap) %>%
       mutate(month_date = as.Date(
-        paste("01", month_num, year, sep = "-")
-        , "%d-%m-%Y", origin = "1970-01-01")
+        paste("01", month_num, year, sep = "-"), "%d-%m-%Y")
       )
     
     fig <- plot_ly(plot_dat, x = ~month_date, y = ~no_of_downloads,
@@ -156,7 +156,8 @@ output$no_of_downloads <-
       layout(title = ~paste("NUMBER OF DOWNLOADS BY MONTH:", input$select_pack),
              showlegend = FALSE,
              yaxis = list(title = "Downloads"),
-             xaxis = list(title = "Month")
+             xaxis = list(title = "Month"),
+             margin = list(t = 80)
       ) %>%
       plotly::config(displaylogo = FALSE, 
                      modeBarButtonsToRemove= c('sendDataToCloud', 'hoverCompareCartesian','hoverClosestCartesian','autoScale2d'
