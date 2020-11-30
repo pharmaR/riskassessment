@@ -29,7 +29,9 @@ output$community_usage_metrics <- renderUI({
           column(width = 2, ),
           column(width = 8,
                  class = "w-90",
-                 highchartOutput("no_of_downloads")),
+                 plotly::plotlyOutput("no_of_downloads")
+                 # highchartOutput("no_of_downloads")
+                 ),
           column(width = 2, )
         ),
         

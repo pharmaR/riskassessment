@@ -103,7 +103,9 @@ output$time_since_version_release <- renderInfoBox({
 })  # End of the time since version release render Output.
 
 # 3. Render Output to show the highchart for number of downloads on the application.
-output$no_of_downloads <- renderHighchart({
+output$no_of_downloads <- 
+  plotly::renderPlotly({
+  # renderHighchart({
 
   if (values$riskmetrics_cum$no_of_downloads_last_year[1] != 0) {
       hc <- highchart() %>%
