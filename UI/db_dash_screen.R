@@ -21,7 +21,7 @@ output$screen <- renderUI({
       column(
         align = "center",
         width = 8,
-        tags$h2("History of Packages Reviewed",
+        tags$h2("Package Upload History",
                 class = "card-title text-center txt-color font-weight-bold"),
         tags$hr(class = "bg-color"),
         id = "db_dash_screen",
