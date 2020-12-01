@@ -151,17 +151,15 @@ genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis
 
 metric_mm_tm_Info_upload_to_DB <- function(package_name){
   
-  package_riskmetric1 <<-
-    pkg_ref(package_name) %>%
-    as_tibble() %>%
-    pkg_assess() %>%
-    pkg_score() %>%
-    mutate(risk = summarize_scores(.))
-  
   package_riskmetric2 <<-
     pkg_ref(package_name) %>%
     as_tibble() %>%
     pkg_assess()
+  
+  package_riskmetric1 <<-
+    package_riskmetric2 %>%
+    pkg_score() %>%
+    mutate(risk = summarize_scores(.))
   
   package_riskmetric1$bugs_status <- package_riskmetric1$bugs_status*100
   package_riskmetric1$export_help <- package_riskmetric1$export_help*100
