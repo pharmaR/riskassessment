@@ -149,7 +149,7 @@ output$no_of_downloads <-
 
     # how many months since the last release? + 1
     curr_mth <- plot_dat$month_date[nrow(plot_dat)]
-    rel_mths <- plot_dat$month_date[plot_dat$ver_release != 'NA']
+    rel_mths <- plot_dat$month_date[!(plot_dat$ver_release %in% c("",'NA'))]
     lst_rel_mth <- rel_mths[length(rel_mths)]
     mnths2_lst_rel <- mondf(lst_rel_mth, curr_mth) + ifelse(lst_rel_mth == curr_mth, 2, 1)
     
@@ -171,44 +171,75 @@ output$no_of_downloads <-
                                                ,'select2d', 'lasso2d', 'toggleSpikelines'
                                                # , 'toImage', 'resetScale2d', 'zoomIn2d', 'zoomOut2d','zoom2d', 'pan2d'
                      ))
-    fig <- fig %>% add_segments(x = ~if_else(ver_release != "NA", month_date, NA_Date_),
-                                xend = ~if_else(ver_release != "NA", month_date, NA_Date_),
-                                y = ~.98*min(no_of_downloads),
-                                yend = ~1.02*max(no_of_downloads),
-                                name = "Version Release",
-                                hoverinfo = "text",
-                                text = ~paste0('Version: ', ver_release, '<br>', month),
-                                line = list(color = "#FF0000")
-    )
-    fig <- fig %>% layout(
-      xaxis = list(
-        rangeselector = list(
-          buttons = list(
-            list(
-              count = 6,
-              label = "6 mo",
-              step = "month",
-              stepmode = "backward"),
-            list(
-              count = 1,
-              label = "1 yr",
-              step = "year",
-              stepmode = "backward"),
-            list(
-              count = 2,
-              label = "2 yr",
-              step = "year",
-              stepmode = "year"),
-            list(step = "all"),
-            list(count = mnths2_lst_rel,
-                 label = "Last Release",
-                 step = "month",
-                 stepmode = "backward"))),
-        
-        rangeslider = list(type = "date"))
-    )
+    # any versions?
+    any_ver_rel <- any(!(plot_dat$ver_release %in% c("","NA")))
+    if(any_ver_rel){
+      fig <- fig %>% add_segments(x = ~if_else(!(ver_release %in% c("","NA")), month_date, NA_Date_),
+                                  xend = ~if_else(!(ver_release %in% c("","NA")), month_date, NA_Date_),
+                                  y = ~.98*min(no_of_downloads),
+                                  yend = ~1.02*max(no_of_downloads),
+                                  name = "Version Release",
+                                  hoverinfo = "text",
+                                  text = ~paste0('Version: ', ver_release, '<br>', month),
+                                  line = list(color = "#FF0000")
+      )
+      fig <- fig %>% layout(
+        xaxis = list(
+          rangeselector = list(
+            buttons = list(
+              list(
+                count = 6,
+                label = "6 mo",
+                step = "month",
+                stepmode = "backward"),
+              list(
+                count = 1,
+                label = "1 yr",
+                step = "year",
+                stepmode = "backward"),
+              list(
+                count = 2,
+                label = "2 yr",
+                step = "year",
+                stepmode = "year"),
+              list(step = "all", label = "All"),
+              list(count = mnths2_lst_rel,
+                   label = "Last Release",
+                   step = "month",
+                   stepmode = "backward"))),
+          
+          rangeslider = list(type = "date"))
+      )
+    } else { # no 'Last Release' option
+      fig <- fig %>% layout(
+        xaxis = list(
+          rangeselector = list(
+            buttons = list(
+              list(
+                count = 6,
+                label = "6 mo",
+                step = "month",
+                stepmode = "backward"),
+              list(
+                count = 1,
+                label = "1 yr",
+                step = "year",
+                stepmode = "backward"),
+              list(
+                count = 2,
+                label = "2 yr",
+                step = "year",
+                stepmode = "year"),
+              list(step = "all", label = "All"))),
+          
+          rangeslider = list(type = "date"))
+      )
+    }
+    
     # reveal plot
     fig
+    
+    
     } else {
       stop("Plot for packages with 0 downloads in last year has not been set up yet")
       # hc <- highchart() %>%
