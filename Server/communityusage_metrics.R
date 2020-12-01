@@ -146,6 +146,13 @@ output$no_of_downloads <-
       mutate(month_date = as.Date(
         paste("01", month_num, year, sep = "-"), "%d-%m-%Y")
       )
+
+    # how many months since the last release? + 1
+    curr_mth <- plot_dat$month_date[nrow(plot_dat)]
+    rel_mths <- plot_dat$month_date[plot_dat$ver_release != 'NA']
+    lst_rel_mth <- rel_mths[length(rel_mths)]
+    mnths2_lst_rel <- mondf(lst_rel_mth, curr_mth) + ifelse(lst_rel_mth == curr_mth, 2, 1)
+    
     
     fig <- plot_ly(plot_dat, x = ~month_date, y = ~no_of_downloads,
                    name = "# Downloads", type = 'scatter', 
@@ -178,11 +185,6 @@ output$no_of_downloads <-
         rangeselector = list(
           buttons = list(
             list(
-              count = 3,
-              label = "3 mo",
-              step = "month",
-              stepmode = "backward"),
-            list(
               count = 6,
               label = "6 mo",
               step = "month",
@@ -197,7 +199,11 @@ output$no_of_downloads <-
               label = "2 yr",
               step = "year",
               stepmode = "year"),
-            list(step = "all"))),
+            list(step = "all"),
+            list(count = mnths2_lst_rel,
+                 label = "Last Release",
+                 step = "month",
+                 stepmode = "backward"))),
         
         rangeslider = list(type = "date"))
     )
