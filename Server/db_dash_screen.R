@@ -9,10 +9,8 @@
 output$db_pkgs <- DT::renderDataTable({
   values$db_pkg_overview <- db_fun(
     paste0(
-      "SELECT case when package = '",
-      input$select_pack,
-      "' then 1 else 0 end as Selected
-      , pi.package
+      "SELECT 
+       pi.package
       , pi.version
       , pi.score
       , pi.decision
@@ -33,18 +31,18 @@ output$db_pkgs <- DT::renderDataTable({
     values$db_pkg_overview,
     selection = list(mode = 'multiple'),
     extensions = "Buttons",
-    colnames = c("Selected", "Package", "Version",
+    colnames = c("Package", "Version",
                  "Score", "Decision", "Last Comment"),
     options = list(
       dom = 'Blftpr',
       pageLength = 10,
       lengthMenu = list(c(10, 50, 100, -1), c('15', '50', '100', "All")),
       columnDefs = list(
-        list(targets = 1, visible = FALSE),
         list(className = 'dt-center')
       ),
       buttons = list(list(
-        extend = "excel", 
+        extend = "excel",
+        title = "R Package Risk Assessment App: Package Upload History",
         filename = paste(
           sep = "_", 
           "RiskAsses_PkgDB_Dwnld",
