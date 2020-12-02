@@ -1,9 +1,10 @@
-#####################################################################################################################
-# cum_utils.R - UI and Server utility functions for the community usage portion of the app
+#################################################################################
+# cum_utils.R - UI and Server utility functions for the community usage metric
+# portion of the app
 # Author: Aaron Clark
 # Date: Dec 2nd, 2020
 # License: MIT License
-#####################################################################################################################
+#################################################################################
 
 
 # turn a date into a 'monthnumber' relative to an origin

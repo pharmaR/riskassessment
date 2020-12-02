@@ -47,6 +47,10 @@ observe({
       values$time_since_version_release_info <-
         values$riskmetrics_cum$time_since_version_release[1]
       
+      # Load the data table column into reactive variable for num dwnlds in year
+      values$no_of_downloads_last_year_info <-
+        values$riskmetrics_cum$no_of_downloads_last_year[1]
+      
       runjs( "setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 100);" )
       
       req(values$riskmetrics_cum)
