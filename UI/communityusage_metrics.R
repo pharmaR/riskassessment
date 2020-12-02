@@ -21,8 +21,9 @@ output$community_usage_metrics <- renderUI({
         class = "c_u_m_row_main",
         fluidRow(
           class = "c_u_m_row_1",
-          infoBoxOutput("time_since_first_release", width = 5),  # Info box to show the time since First release.
-          infoBoxOutput("time_since_version_release", width = 5)  # Info box to show the time since version release.
+          infoBoxOutput("time_since_first_release", width = 4),  # Info box to show the time since First release.
+          infoBoxOutput("time_since_version_release", width = 4),  # Info box to show the time since version release.
+          infoBoxOutput("dwnlds_last_yr", width = 4)  # Info box to show the total # of Downloads in the last year.
         ),
         fluidRow(
           class = "c_u_m_row_graph",
@@ -34,9 +35,6 @@ output$community_usage_metrics <- renderUI({
                  ),
           column(width = 2, )
         ),
-        
-        # For previewing data being plotted
-        # fluidRow(tableOutput("no_of_downloads_data")),
         
         fluidRow(
           class = "c_u_m_row_comments_box",

@@ -41,13 +41,17 @@ observe({
         }
       }
       
-      # Load the data table column into reactive variable for time sice first release.
+      # Load the data table column into reactive variable for time since first release.
       values$time_since_first_release_info <-
         values$riskmetrics_cum$time_since_first_release[1]
       
-      # Load the data table column into reactive variable for time sice version release.
+      # Load the data table column into reactive variable for time since version release.
       values$time_since_version_release_info <-
         values$riskmetrics_cum$time_since_version_release[1]
+      
+      # Load the data table column into reactive variable for time since version release.
+      values$no_of_downloads_last_year_info <-
+        values$riskmetrics_cum$no_of_downloads_last_year[1]
       
       runjs( "setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 100);" )
       
@@ -102,10 +106,25 @@ output$time_since_version_release <- renderInfoBox({
   
 })  # End of the time since version release render Output.
 
-# For previewing data being plotted
-# output$no_of_downloads_data <- renderTable({
-#   values$riskmetrics_cum
-# })
+
+
+# 2.5 Render Output info box to show the number of downloads last year
+
+output$dwnlds_last_yr <- renderInfoBox({
+  req(values$no_of_downloads_last_year_info)
+  infoBox(
+    title = "Download Count",
+    formatC(values$no_of_downloads_last_year_info, format="f", big.mark=",", digits=0),
+    subtitle = ifelse(values$no_of_downloads_last_year_info != "NA",
+                      "Downloads in Last Year",
+                      "Metric is not applicable for this source of package."),
+    icon = shiny::icon("signal"),
+    width = 3,
+    fill = TRUE
+  )
+
+})  # End of the time since version release render Output.
+
 
 # 3. Render Output to show the highchart for number of downloads on the application.
 output$no_of_downloads <- 
