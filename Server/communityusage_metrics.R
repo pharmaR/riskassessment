@@ -123,172 +123,17 @@ output$dwnlds_last_yr <- renderInfoBox({
     fill = TRUE
   )
 
-})  # End of the time since version release render Output.
+})  # End 
 
 
-# 3. Render Output to show the highchart for number of downloads on the application.
+# 3. Render Output to show the plot for number of downloads on the application.
 output$no_of_downloads <- 
   plotly::renderPlotly({
-  # renderHighchart({
-
-  if (values$riskmetrics_cum$no_of_downloads_last_year[1] != 0) {
-      # hc <- highchart() %>%
-      #   hc_xAxis(categories = values$riskmetrics_cum$month) %>%
-      #   hc_xAxis(
-      #     title = list(text = "Months"),
-      #     
-      #     plotLines = map2(values$riskmetrics_cum$ver_release, values$riskmetrics_cum$position,
-      #           function(.x, .y)  list(label = list(text = .x), color = "#FF0000", width = 2, value = .y) )
-      #     
-      #   ) %>%
-      #   hc_add_series(
-      #     name = input$select_pack,
-      #     data = values$riskmetrics_cum$no_of_downloads,
-      #     color = "blue"
-      #   ) %>%
-      #   hc_yAxis(title = list(text = "Downloads")) %>%
-      #   hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS 11 MONTHS") %>%
-      #   hc_subtitle(
-      #     text = paste(
-      #       "Total Number of Downloads :",
-      #       sum(values$riskmetrics_cum$no_of_downloads)
-      #     ),
-      #     align = "right", 
-      #     style = list(color = "#2b908f", fontWeight = "bold")
-      #   ) %>%
-      #   hc_add_theme(hc_theme_elementary())
-    swap <- data.frame(month_num = paste(1:12), month_name = month.name)
-    plot_dat <- values$riskmetrics_cum %>%
-      mutate(month_name = stringr::word(month),
-             year = stringr::word(month, -1)) %>%
-      left_join(swap) %>%
-      mutate(month_date = as.Date(
-        paste("01", month_num, year, sep = "-"), "%d-%m-%Y")
-      )
-
-    # how many months since the last release? + 1
-    curr_mth <- plot_dat$month_date[nrow(plot_dat)]
-    rel_mths <- plot_dat$month_date[!(plot_dat$ver_release %in% c("",'NA'))]
-    lst_rel_mth <- rel_mths[length(rel_mths)]
-    mnths2_lst_rel <- mondf(lst_rel_mth, curr_mth) + ifelse(lst_rel_mth == curr_mth, 2, 1)
-    
-    
-    fig <- plot_ly(plot_dat, x = ~month_date, y = ~no_of_downloads,
-                   name = "# Downloads", type = 'scatter', 
-                   mode = 'lines+markers', line = list(color = "blue"),
-                   hoverinfo = "text",
-                   text = ~paste0('# Dwnlds: ', formatC(no_of_downloads, format="f", big.mark=",", digits=0),
-                                  '<br>', month)) %>%
-      layout(title = ~paste("Number of Downloads by Month:", input$select_pack),
-             showlegend = FALSE,
-             yaxis = list(title = "Downloads"),
-             xaxis = list(title = "Month"),
-             margin = list(t = 80)
-      ) %>%
-      plotly::config(displaylogo = FALSE, 
-                     modeBarButtonsToRemove= c('sendDataToCloud', 'hoverCompareCartesian','hoverClosestCartesian','autoScale2d'
-                                               ,'select2d', 'lasso2d', 'toggleSpikelines'
-                                               # , 'toImage', 'resetScale2d', 'zoomIn2d', 'zoomOut2d','zoom2d', 'pan2d'
-                     ))
-    # any versions?
-    ver_dat <- plot_dat %>% filter(!(ver_release %in% c("","NA")))
-    any_ver_rel <- nrow(ver_dat) > 0
-    # any_ver_rel <- any(!(plot_dat$ver_release %in% c("","NA")))
-    if(any_ver_rel){
-      fig <- fig %>% 
-        add_segments(
-          x = ~if_else(!(ver_release %in% c("","NA")), month_date, NA_Date_),
-          xend = ~if_else(!(ver_release %in% c("","NA")), month_date, NA_Date_),
-          y = ~.98*min(no_of_downloads),
-          yend = ~1.02*max(no_of_downloads),
-          name = "Version Release",
-          hoverinfo = "text",
-          text = ~paste0('Version ', ver_release, '<br>', month),
-          line = list(color = "#FF0000")
-        ) %>% 
-        add_annotations(
-          yref = 'paper', 
-          xref = "x", 
-          y = .93, 
-          x = ver_dat$month_date,
-          xanchor = 'left',
-          showarrow = F,
-          textangle = 90,
-          font = list(size = 14, color = '#000000'),
-          text = ver_dat$ver_release
-        )
-      fig <- fig %>% layout(
-        xaxis = list(
-          rangeselector = list(
-            buttons = list(
-              list(
-                count = 6,
-                label = "6 mo",
-                step = "month",
-                stepmode = "backward"),
-              list(
-                count = 1,
-                label = "1 yr",
-                step = "year",
-                stepmode = "backward"),
-              list(
-                count = 2,
-                label = "2 yr",
-                step = "year",
-                stepmode = "year"),
-              list(step = "all", label = "All"),
-              list(count = mnths2_lst_rel,
-                   label = "Last Release",
-                   step = "month",
-                   stepmode = "backward"))),
-          
-          rangeslider = list(type = "date"))
-      )
-    } else { # no 'Last Release' option
-      fig <- fig %>% layout(
-        xaxis = list(
-          rangeselector = list(
-            buttons = list(
-              list(
-                count = 6,
-                label = "6 mo",
-                step = "month",
-                stepmode = "backward"),
-              list(
-                count = 1,
-                label = "1 yr",
-                step = "year",
-                stepmode = "backward"),
-              list(
-                count = 2,
-                label = "2 yr",
-                step = "year",
-                stepmode = "year"),
-              list(step = "all", label = "All"))),
-          
-          rangeslider = list(type = "date"))
-      )
-    }
-    
-    # reveal plot
-    fig
-    
-    
-    } else {
-      stop("Plot for packages with 0 downloads in last year has not been set up yet")
-      # hc <- highchart() %>%
-      #   hc_xAxis(categories = NULL) %>%
-      #   hc_xAxis(title = list(text = "Months")) %>%
-      #   hc_add_series(name = input$select_pack, data = NULL) %>%
-      #   hc_yAxis(title = list(text = "Downloads")) %>%
-      #   hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS 11 MONTHS") %>%
-      #   hc_subtitle(
-      #     text = paste("Number of Downloads in the 11 previous months are zero"),
-      #     style = list(color = "#f44336", fontWeight = "bold")
-      #   ) %>%
-      #   hc_add_theme(hc_theme_elementary())
-    }
+    num_dwnlds_plot(data = values$riskmetrics_cum,
+                    input_select_pack = input$select_pack)
 })
+
+
 
 # 4. Render output to show the comments.
 
