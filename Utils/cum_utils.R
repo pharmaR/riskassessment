@@ -24,7 +24,7 @@ num_dwnlds_plot <- function(data = values$riskmetrics_cum,
   plot_dat <- data %>%
     mutate(month_name = stringr::word(month),
            year = stringr::word(month, -1)) %>%
-    left_join(swap) %>%
+    left_join(swap, by = "month_name") %>%
     mutate(month_date = as.Date(
       paste("01", month_num, year, sep = "-"), "%d-%m-%Y")
     )
@@ -139,4 +139,4 @@ num_dwnlds_plot <- function(data = values$riskmetrics_cum,
   fig
 }
 # test output
-# num_dwnlds_plot(data = values$riskmetrics_cum, input_select_pack = "dplyr")
+num_dwnlds_plot(data = values$riskmetrics_cum, input_select_pack = "dplyr")
