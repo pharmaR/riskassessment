@@ -191,17 +191,32 @@ output$no_of_downloads <-
                                                # , 'toImage', 'resetScale2d', 'zoomIn2d', 'zoomOut2d','zoom2d', 'pan2d'
                      ))
     # any versions?
-    any_ver_rel <- any(!(plot_dat$ver_release %in% c("","NA")))
+    ver_dat <- plot_dat %>% filter(!(ver_release %in% c("","NA")))
+    any_ver_rel <- nrow(ver_dat) > 0
+    # any_ver_rel <- any(!(plot_dat$ver_release %in% c("","NA")))
     if(any_ver_rel){
-      fig <- fig %>% add_segments(x = ~if_else(!(ver_release %in% c("","NA")), month_date, NA_Date_),
-                                  xend = ~if_else(!(ver_release %in% c("","NA")), month_date, NA_Date_),
-                                  y = ~.98*min(no_of_downloads),
-                                  yend = ~1.02*max(no_of_downloads),
-                                  name = "Version Release",
-                                  hoverinfo = "text",
-                                  text = ~paste0('Version: ', ver_release, '<br>', month),
-                                  line = list(color = "#FF0000")
-      )
+      fig <- fig %>% 
+        add_segments(
+          x = ~if_else(!(ver_release %in% c("","NA")), month_date, NA_Date_),
+          xend = ~if_else(!(ver_release %in% c("","NA")), month_date, NA_Date_),
+          y = ~.98*min(no_of_downloads),
+          yend = ~1.02*max(no_of_downloads),
+          name = "Version Release",
+          hoverinfo = "text",
+          text = ~paste0('Version ', ver_release, '<br>', month),
+          line = list(color = "#FF0000")
+        ) %>% 
+        add_annotations(
+          yref = 'paper', 
+          xref = "x", 
+          y = .93, 
+          x = ver_dat$month_date,
+          xanchor = 'left',
+          showarrow = F,
+          textangle = 90,
+          font = list(size = 14, color = '#000000'),
+          text = ver_dat$ver_release
+        )
       fig <- fig %>% layout(
         xaxis = list(
           rangeselector = list(
