@@ -27,13 +27,13 @@ output$community_usage_metrics <- renderUI({
         ),
         fluidRow(
           class = "c_u_m_row_graph",
-          column(width = 2, ),
-          column(width = 8,
+          column(width = 1, ),
+          column(width = 10,
                  class = "w-90",
                  plotly::plotlyOutput("no_of_downloads")
                  # highchartOutput("no_of_downloads")
                  ),
-          column(width = 2, )
+          column(width = 1, )
         ),
         
         fluidRow(
