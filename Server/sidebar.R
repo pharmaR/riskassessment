@@ -7,17 +7,14 @@
 
 
 # Update the radiobutton if decision was previously made.
-observe({
-  req(input$select_pack)
-  if (!identical(values$selected_pkg$decision, character(0))) {
-    if (values$selected_pkg$decision != "") {
-      updateSliderTextInput(
-        session,
-        "decision",
-        choices = c("Low", "Medium", "High"),
-        selected = values$selected_pkg$decision
-      )
-    }
+observeEvent(input$select_pack, {
+  if (nrow(values$selected_pkg) != 0 && values$selected_pkg$decision != "") {
+    updateSliderTextInput(
+      session,
+      "decision",
+      choices = c("Low", "Medium", "High"),
+      selected = values$selected_pkg$decision
+    )
   }
 })
 
