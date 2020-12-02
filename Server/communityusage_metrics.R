@@ -179,7 +179,7 @@ output$no_of_downloads <-
                    hoverinfo = "text",
                    text = ~paste0('# Dwnlds: ', formatC(no_of_downloads, format="f", big.mark=",", digits=0),
                                   '<br>', month)) %>%
-      layout(title = ~paste("NUMBER OF DOWNLOADS BY MONTH:", input$select_pack),
+      layout(title = ~paste("Number of Downloads by Month:", input$select_pack),
              showlegend = FALSE,
              yaxis = list(title = "Downloads"),
              xaxis = list(title = "Month"),
