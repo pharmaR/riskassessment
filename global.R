@@ -22,6 +22,7 @@ packages = c("shiny"
              ,"shinycssloaders"
              ,"rAmCharts"
              ,"devtools"
+             ,"glue"
 )
 
 # Install and load required packages.

@@ -11,10 +11,10 @@
 # 1. Observe to load the columns from DB into below reactive values.
 
 observe({
-  req(input$select_pack)
+  req(input$select_pack != "Select")
   if(input$tabs == "mm_tab_value"){
     if(input$select_pack != "Select"){
-      values$riskmetrics_mm <-
+      risk_mm <-
         db_fun(
           paste0(
             "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
@@ -23,8 +23,22 @@ observe({
           )
         )
       
-      risk_mm <- values$riskmetrics_mm
-      values$vals <- map(risk_mm$mm_value, ~unlist(stringr::str_split(.x, ",",2)))
+      # create tbl of names and labels
+      # colnames(pkrm3)
+      # vartibbl <- tibble(
+      #   names = c("news_current", "has_vignettes", "has_bug_reports_url",
+      #             "bugs_status",  "export_help",   "has_website",        
+      #             "has_maintainer", "has_news",     "has_source_control" ),
+      #   mm_label = c("News is current?","Presence of vignettes?","Bugs publicly documented?",
+      #                "Bug closure","Documentation","Associated website URL?",
+      #                "Has a maintainer?","Has NEWS?", "Source code public?")
+      # )
+      
+      metrics_to_read <- file.path("Data", "maint_metrics_labels.csv")
+      vartibbl <- readr::read_csv(metrics_to_read, col_types = cols(.default = "c", is_thumb = "l"))
+
+      # add labels
+      values$risk_mm <- left_join(risk_mm, vartibbl, by = c("mm_name" = "names"))
 
       # values$package_has_vignettes <- c(strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][2])
       # values$package_has_website <- c(strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][2])
@@ -63,18 +77,24 @@ observe({
 
 output$myboxes <- renderUI({
   boxes <- list()
-  for (i in 1:length(values$riskmetrics_mm$mm_label)){
-    if (grepl("\\?$",values$riskmetrics_mm$mm_label[[i]]) == FALSE) {
-      boxes[[i]] <- info_percnt(values$riskmetrics_mm$mm_label[[i]], values$vals[[i]], 
-                                eval(ifelse(values$vals[[i]][2] == -1, "Not Applicable", 
-                                            paste("Percentage of",tolower(values$riskmetrics_mm$mm_name[[i]])) )))
+  vals <- map(values$risk_mm$mm_value, ~unlist(stringr::str_split(.x, ",",2)))
+
+  for (i in 1:nrow(values$risk_mm)){
+    if (values$risk_mm$is_thumb[[i]] == FALSE) {
+      # convert proportion to percentage
+      vals[[i]][1] <- format(round(as.numeric(vals[[i]][1]) * 100, 2))
+      boxes[[i]] <- info_percnt(values$risk_mm$mm_label[[i]], vals[[i]], 
+                                eval(ifelse(vals[[i]][2] == -1, "Not Applicable",
+                                            ifelse(is.na(values$risk_mm$mm_detail[[i]]),
+                                            paste("Percentage of",tolower(values$risk_mm$mm_name[[i]])),
+                                            eval(parse(text = values$risk_mm$mm_detail[[i]]))) )))
     } else {
-      if (values$vals[[i]][2] %in% as.character(seq(1:9))) {
-        values$vals[[i]][2] <- paste(values$riskmetrics_mm$mm_name[[i]],"Has",values$vals[[i]][2])
-      }
-      boxes[[i]] <- info_thumb(values$riskmetrics_mm$mm_label[[i]], values$vals[[i]], 
-                               eval(ifelse(values$vals[[i]][2] == -1, "Not Applicable", 
-                                           ifelse(values$vals[[i]][1] == 1, values$vals[[i]][2], "Nothing to see here.")))) 
+      boxes[[i]] <- info_thumb(values$risk_mm$mm_label[[i]], vals[[i]], 
+                               eval(ifelse(vals[[i]][2] == -1, "Not Applicable", 
+                                           ifelse(vals[[i]][1] == 1, 
+                                                  ifelse(is.na(values$risk_mm$mm_detail[[i]]), vals[[i]][2], 
+                                                         eval(parse(text = values$risk_mm$mm_detail[[i]]))),
+                                                  "Nothing to see here.")))) 
     }
   }
   boxes

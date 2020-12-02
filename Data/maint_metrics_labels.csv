@@ -1,10 +1,10 @@
-names,mm_label
-news_current,News is current?
-has_vignettes,Presence of vignettes?
-has_bug_reports_url,Bugs publicly documented?
-bugs_status,Bug closure
-export_help,Documentation
-has_website,Associated website URL?
-has_maintainer,Has a maintainer?
-has_news,Has NEWS?
-has_source_control,Source code public?
+names,is_thumb,mm_label,mm_detail
+news_current,TRUE,News is current?,"glue(""NEWS file contains entry for current version number"")"
+has_vignettes,TRUE,Presence of vignettes?,"glue(""The package has {vals[[i]][2]} Vignettes"")"
+has_bug_reports_url,TRUE,Bugs publicly documented?,
+bugs_status,FALSE,Bug closure,"glue(""Percent of last 30 bugs closed"")"
+export_help,FALSE,Documentation,"glue(""Percent of exported objects documented"")"
+has_website,TRUE,Associated website URL?,
+has_maintainer,TRUE,Has a maintainer?,
+has_news,TRUE,Has NEWS?,"glue(""The package has a NEWS files"")"
+has_source_control,TRUE,Source code public?,

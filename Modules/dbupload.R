@@ -171,29 +171,6 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   # package_riskmetric1$bugs_status <- package_riskmetric1$bugs_status*100
   # package_riskmetric1$export_help <- package_riskmetric1$export_help*100
   
-  
-  # create tbl of names and labels
-  # colnames(pkrm3)
-  # vartibbl <- tibble(
-  #   names = c("news_current", "has_vignettes", "has_bug_reports_url",
-  #             "bugs_status",  "export_help",   "has_website",        
-  #             "has_maintainer", "has_news",     "has_source_control" ),
-  #   mm_label = c("News is current?","Presence of vignettes?","Bugs publicly documented?",
-  #                "Bug closure","Documentation","Associated website URL?",
-  #                "Has a maintainer?","Has NEWS?", "Source code public?")
-  # )
-  
-  metrics_to_read <- file.path("Data", "maint_metrics_labels.csv")
-  vartibbl <- readr::read_csv(metrics_to_read, col_types = cols(.default = "c"))
-  
-  # any label that does not have "?" at the end is assumed percentage
-  for (i in 1:length(pkrm1)) {
-    if (match(colnames(pkrm1)[[i]], vartibbl$names[[i]]) 
-        && grepl("\\?$",vartibbl$mm_label[[i]]) == FALSE) {
-      pkrm1[[i]][1] <- format(round(pkrm1[[i]][1] * 100, 2))
-    }
-  }
-  
   # combine rm1 (score) and rm2 (assess) values into one string
   pkrm3 <- map2(pkrm1, pkrm2, ~ unique(paste(.x[1], ifelse(class(.y[1]) == "pkg_metric_error", -1, .y[1]), sep = ",")))
   pkrm3 <- as_tibble(pkrm3)
@@ -203,8 +180,6 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
                                 cols = colnames(pkrm3),
                                 names_to = "mm_name", 
                                 values_to = "mm_value")
-  # add labels
-  mm_tbl <- left_join(mm_tbl, vartibbl, by = c("mm_name" = "names"))
   
   package_version <- package_riskmetric1$version
   
@@ -215,8 +190,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
                     "'", package_name,    "',",
                     "'", package_version,    "',",
                     "'", mm_tbl$mm_name[[i]],    "',",
-                    "'", mm_tbl$mm_value[[i]],    "',",
-                    "'", mm_tbl$mm_label[[i]],    "'", ")"
+                    "'", mm_tbl$mm_value[[i]],    "'", ")"
     )
     dbExecute(con, query)
   }
