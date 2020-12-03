@@ -139,4 +139,4 @@ num_dwnlds_plot <- function(data = values$riskmetrics_cum,
   fig
 }
 # test output
-num_dwnlds_plot(data = values$riskmetrics_cum, input_select_pack = "dplyr")
+# num_dwnlds_plot(data = values$riskmetrics_cum, input_select_pack = "dplyr")
