@@ -174,7 +174,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
                 "'", riskmetric_score$has_bug_reports_url[1], ",",  ifelse(class(riskmetric_assess$has_bug_reports_url[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$has_bug_reports_url[[1]][1]), "',",
                 "'", riskmetric_score$has_maintainer[1], ",",  ifelse(class(riskmetric_assess$has_maintainer[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$has_maintainer[[1]][1]), "',",
                 "'", riskmetric_score$has_source_control[1], ",",  ifelse(class(riskmetric_assess$has_source_control[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$has_source_control[[1]][1]), "',",
-                "'", format(round(riskmetric_score$export_help[1],2)), ",",  ifelse(class(riskmetric_assess$export_help[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$export_help[[1]][1]), "',",
+                "'", format(round(riskmetric_score$export_help[1],2)), ",",  ifelse(class(riskmetric_assess$export_help[[1]])[1] == "pkg_metric_error" || is.na(riskmetric_assess$export_help[[1]]), -1, riskmetric_assess$export_help[[1]][1]), "',",
                 "'", format(round(riskmetric_score$bugs_status[1],2)), ",",  ifelse(class(riskmetric_assess$bugs_status[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$bugs_status[[1]][1]), "'", ")"))
   
   db_ins(
