@@ -1,6 +1,6 @@
 ## Risk Assessment Shiny Application
 
-Risk Assessment is an interactive web application providing a front end for the collection of metrics for R packages via the [`riskmetric`](https://github.com/pharmaR/riskmetric) package. It includes visualizations and comparison metrics.
+The Risk Assessment App is an interactive web application providing a front end for a collection of metrics for R packages via the [`riskmetric`](https://github.com/pharmaR/riskmetric) package. It includes visualizations and comparison metrics.
 
 
 **Contributors/Authors**
@@ -14,19 +14,28 @@ Risk Assessment is an interactive web application providing a front end for the 
 - Fission Labs India Pvt Ltd
 
 
+### Contributing
+The Risk Assessment App team meets every Monday from 3-4pm EST. You can join the meeting using the following link:
+https://www.gotomeet.me/marlycormar/risk-assessment-app
+
+
+### Issues and feature requests
+If you encounter a bug or would like to request a new feature, please file an issue with a minimal reproducible example or a feature request description.
+
+
 ### Installation
 The application is portable without code modifications. It can be pulled from GitHub and run in any local environment.
 
 
 ### Deployment
-To run the application, open the `app.R` file with RStudio and click 'Run App'.
+Open the RStudio project `risk_assessment.Rproj` and then open the `app.R` file. To run the app, click 'Run App'.
 
 
 ### Key features
 
 - An interactive UI platform that allows users to upload a list of packages to assess
 
-- Sidebar panel to select a package and version number from the list of uploaded packages
+- Sidebar panel to select a package from the list of uploaded packages
 
 - Set of panels that displays the details and metrics of the selected package
 
@@ -36,8 +45,8 @@ To run the application, open the `app.R` file with RStudio and click 'Run App'.
 
 
 ### License
-The MIT License (MIT)<br>
-Copyright © 2020 Fission Labs and R Validation Hub contributors
- 
+MIT License (MIT)
+
+Copyright © 2020 Fission Labs and R Validation Hub contributors <br>
 Note: Permission and Copyright notices to be added as per client requirements.
 
