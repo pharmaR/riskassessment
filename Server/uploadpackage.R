@@ -64,12 +64,11 @@ observeEvent(input$uploaded_file, {
   withProgress(message = "Uploading Packages to DB:", value = 0, {
     if (nrow(values$New) != 0) {
       for (i in 1:nrow(values$New)) {
-          new_package<-values$New$package[i]
-          get_packages_info_from_web(new_package)
-          metric_mm_tm_Info_upload_to_DB(new_package)
-          metric_cum_Info_upload_to_DB(new_package)
-          incProgress(1 / nrow(values$New), detail = values$New[i, 1])
-          Sys.sleep(0.1)
+        incProgress(1 / (nrow(values$New) + 1), detail = values$New[i, 1])
+        new_package<-values$New$package[i]
+        get_packages_info_from_web(new_package)
+        metric_mm_tm_Info_upload_to_DB(new_package)
+        metric_cum_Info_upload_to_DB(new_package)
       }
     }
   })
