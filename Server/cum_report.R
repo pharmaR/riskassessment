@@ -47,6 +47,10 @@ observe({
       values$time_since_version_release_info <-
         values$riskmetrics_cum$time_since_version_release[1]
       
+      # Load the data table column into reactive variable for num dwnlds in year
+      values$no_of_downloads_last_year_info <-
+        values$riskmetrics_cum$no_of_downloads_last_year[1]
+      
       runjs( "setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 100);" )
       
       req(values$riskmetrics_cum)
@@ -94,121 +98,32 @@ output$time_since_version_release1 <- renderInfoBox({
   
 })  # End of the time since version release render Output.
 
-# 3. Render Output to show the highchart for number of downloads on the application.
-output$no_of_downloads1 <- renderHighchart({
-  if (values$riskmetrics_cum$no_of_downloads_last_year[1] != 0) {
-    hc <- highchart() %>%
-      hc_xAxis(categories = values$riskmetrics_cum$month) %>%
-      hc_xAxis(
-        title = list(text = "Months"),
-        plotLines = list(
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[1]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[1]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[2]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[2]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[3]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[3]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[4]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[4]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[5]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[5]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[6]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[6]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[7]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[7]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[8]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[8]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[9]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[9]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[10]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[10]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[11]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[11]
-          ),
-          list(
-            label = list(text = values$riskmetrics_cum$ver_release[12]),
-            color = "#FF0000",
-            width = 2,
-            value = values$riskmetrics_cum$position[12]
-          )
-        )
-      ) %>%
-      hc_add_series(
-        name = input$select_pack,
-        data = values$riskmetrics_cum$no_of_downloads,
-        color = "blue"
-      ) %>%
-      hc_yAxis(title = list(text = "Downloads")) %>%
-      hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS 11 MONTHS") %>%
-      hc_subtitle(
-        text = paste(
-          "Total Number of Downloads :",
-          sum(values$riskmetrics_cum$no_of_downloads)
-        ),
-        align = "right",
-        style = list(color = "#2b908f", fontWeight = "bold")
-      ) %>%
-      hc_add_theme(hc_theme_elementary())
-  } else {
-    hc <- highchart() %>%
-      hc_xAxis(categories = NULL) %>%
-      hc_xAxis(title = list(text = "Months")) %>%
-      hc_add_series(name = input$select_pack, data = NULL) %>%
-      hc_yAxis(title = list(text = "Downloads")) %>%
-      hc_title(text = "NUMBER OF DOWNLOADS IN PREVIOUS 11 MONTHS") %>%
-      hc_subtitle(
-        text = paste("Number of Downloads in the 11 previous months are zero"),
-        style = list(color = "#f44336", fontWeight = "bold")
-      ) %>%
-      hc_add_theme(hc_theme_elementary())
-  }
-})
+# 2.5 Render Output info box to show the number of downloads last year
+
+output$dwnlds_last_yr1 <- renderInfoBox({
+  req(values$no_of_downloads_last_year_info)
+  infoBox(
+    title = "Download Count",
+    formatC(values$no_of_downloads_last_year_info, format="f", big.mark=",", digits=0),
+    subtitle = ifelse(values$no_of_downloads_last_year_info != "NA",
+                      "Downloads in Last Year",
+                      "Metric is not applicable for this source of package."),
+    icon = shiny::icon("signal"),
+    width = 3,
+    fill = TRUE
+  )
+  
+})  # End 
+
+# 3. Render Output to show the plot for number of downloads on the application.
+output$no_of_downloads1 <- 
+  plotly::renderPlotly({
+    num_dwnlds_plot(data = values$riskmetrics_cum,
+                    input_select_pack = input$select_pack)
+  })
+  
 
 # 4. Render output to show the comments.
-
 output$cum_commented1 <- renderText({
   if (values$cum_comment_submitted == "yes" ||
       values$cum_comment_submitted == "no") {
