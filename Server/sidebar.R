@@ -6,9 +6,11 @@
 #####################################################################################################################
 
 
-# Update the radiobutton if decision was previously made.
+# Update the sidebar if a decision was previously made.
 observeEvent(input$select_pack, {
+  # Suppose package has been selected with a previously made decision.
   if (nrow(values$selected_pkg) != 0 && values$selected_pkg$decision != "") {
+    # Update the risk slider using the info saved.
     updateSliderTextInput(
       session,
       "decision",
@@ -23,6 +25,7 @@ observeEvent(input$select_pack, {
 observe({
   req(values$selected_pkg$package)
   if (values$selected_pkg$decision != "") {
+    # Disable all the decision-related choices.
     disable("decision")
     disable("submit_decision")
     disable("overall_comment")
@@ -149,7 +152,7 @@ observeEvent(input$select_pack, {
       ) 
     updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", values$comment_occ$comment))
   }
-})  # End of the observe Event.
+})
 
 # 2. Observe Event to submit the decision for selected package.
 
@@ -304,8 +307,3 @@ observeEvent(input$submit_overall_comment_no, {
   updateTextAreaInput(session, "overall_comment", value = "")
   removeModal()
 })
-
-
-# End of the Observe Event's'
-
-# End of the Sidebar server Module.
