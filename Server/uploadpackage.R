@@ -85,7 +85,7 @@ observeEvent(input$uploaded_file, {
     selected = "Select"
   )
   
-  showNotification(id = "show_notification_id", "Upload completed to DB", type = "message")
+  showNotification(id = "show_notification_id", "Upload completed", type = "message")
   values$upload_complete <- "upload_complete"
   
   # Show the download reports buttons after all the packages have been loaded
