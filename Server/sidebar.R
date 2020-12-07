@@ -7,17 +7,17 @@
 
 
 # Update the sidebar if a decision was previously made.
-observeEvent(input$select_pack, {
+observeEvent(c(input$select_pack, values$selected_pkg), {
   # Suppose package has been selected with a previously made decision.
-  if (nrow(values$selected_pkg) != 0 && values$selected_pkg$decision != "") {
-    # Update the risk slider using the info saved.
-    updateSliderTextInput(
-      session,
-      "decision",
-      choices = c("Low", "Medium", "High"),
-      selected = values$selected_pkg$decision
-    )
-  }
+  req(input$select_pack != "Select")
+  
+  # Update the risk slider using the info saved.
+  updateSliderTextInput(
+    session,
+    "decision",
+    choices = c("Low", "Medium", "High"),
+    selected = values$selected_pkg$decision
+  )
 })
 
 
