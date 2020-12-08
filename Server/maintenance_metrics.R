@@ -81,8 +81,10 @@ output$myboxes <- renderUI({
 
   for (i in 1:nrow(values$risk_mm)){
     if (values$risk_mm$is_thumb[[i]] == FALSE) {
+      # if NA set to -1 for function to work properly
+      vals[[i]][2] <- ifelse(vals[[i]][2] == "NA", -1, vals[[i]][2])
       # convert proportion to percentage
-      vals[[i]][1] <- format(round(as.numeric(vals[[i]][1]) * 100, 2))
+      vals[[i]][1] <- ifelse(vals[[i]][1] == "NA", NA, format(round(as.numeric(vals[[i]][1]) * 100, 2)))
       boxes[[i]] <- info_percnt(values$risk_mm$mm_label[[i]], vals[[i]], 
                                 eval(ifelse(vals[[i]][2] == -1, "Not Applicable",
                                             ifelse(is.na(values$risk_mm$mm_detail[[i]]),
