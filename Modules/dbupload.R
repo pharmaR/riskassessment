@@ -161,12 +161,6 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
     pkg_score() %>%
     mutate(risk = summarize_scores(.))
   
-<<<<<<< HEAD
-  package_riskmetric2 <<-
-    pkg_ref(package_name) %>%
-    as_tibble() %>%
-    pkg_assess()
-  
   excl_name <- c("package","version","pkg_ref","license","downloads_1yr","covr_coverage","pkg_score","risk")
   
   pkrm1 <- riskmetric_score[- which(colnames(riskmetric_score) %in% excl_name)]
