@@ -18,11 +18,11 @@ packages = c("shiny"
              ,"stringr"
              ,"tidyverse"
              ,"loggit"
-             ,"highcharter"
              ,"shinycssloaders"
              ,"rAmCharts"
              ,"devtools"
              ,"glue"
+             ,"plotly"
 )
 
 # Install and load required packages.
@@ -67,8 +67,8 @@ if(!require(riskmetric)){
 # library(stringr)
 # library(tidyverse)
 # library(loggit)
-# library(highcharter)
 # library(shinycssloaders)
 # library(rAmCharts)
 # library(devtools)
+# library(plotly)
 # library(riskmetric) # devtools::install_github("pharmaR/riskmetric")

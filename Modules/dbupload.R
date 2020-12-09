@@ -151,13 +151,17 @@ genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis
 
 metric_mm_tm_Info_upload_to_DB <- function(package_name){
   
-  package_riskmetric1 <<-
+  riskmetric_assess <-
     pkg_ref(package_name) %>%
     as_tibble() %>%
-    pkg_assess() %>%
+    pkg_assess()
+  
+  riskmetric_score <-
+    riskmetric_assess %>%
     pkg_score() %>%
     mutate(risk = summarize_scores(.))
   
+<<<<<<< HEAD
   package_riskmetric2 <<-
     pkg_ref(package_name) %>%
     as_tibble() %>%
@@ -165,11 +169,8 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   
   excl_name <- c("package","version","pkg_ref","license","downloads_1yr","covr_coverage","pkg_score","risk")
   
-  pkrm1 <- package_riskmetric1[- which(colnames(package_riskmetric1) %in% excl_name)]
-  pkrm2 <- package_riskmetric2[- which(colnames(package_riskmetric2) %in% excl_name)]
-  
-  # package_riskmetric1$bugs_status <- package_riskmetric1$bugs_status*100
-  # package_riskmetric1$export_help <- package_riskmetric1$export_help*100
+  pkrm1 <- riskmetric_score[- which(colnames(riskmetric_score) %in% excl_name)]
+  pkrm2 <- riskmetric_assess[- which(colnames(riskmetric_assess) %in% excl_name)]
   
   # combine rm1 (score) and rm2 (assess) values into one string
   pkrm3 <- map2(pkrm1, pkrm2, ~ unique(paste(.x[1], ifelse(class(.y[1]) == "pkg_metric_error", -1, .y[1]), sep = ",")))
@@ -196,18 +197,6 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   }
   dbDisconnect(con)
   
-  # db_ins(paste0("INSERT INTO MaintenanceMetrics values(", 
-  #               "'", package_name, "',", 
-  #               "'", package_riskmetric1$has_vignettes[1], ",", ifelse(class(package_riskmetric2$has_vignettes[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_vignettes[[1]][1]), "',",
-  #               "'", package_riskmetric1$has_news[1], ",",  ifelse(class(package_riskmetric2$has_news[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_news[[1]][1]), "',", 
-  #               "'", package_riskmetric1$news_current[1], ",",  ifelse(class(package_riskmetric2$news_current[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$news_current[[1]][1]), "',",  
-  #               "'", package_riskmetric1$has_website[1], ",",  ifelse(class(package_riskmetric2$has_website[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_website[[1]][1]), "',", 
-  #               "'", package_riskmetric1$has_bug_reports_url[1], ",",  ifelse(class(package_riskmetric2$has_bug_reports_url[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_bug_reports_url[[1]][1]), "',",
-  #               "'", package_riskmetric1$has_maintainer[1], ",",  ifelse(class(package_riskmetric2$has_maintainer[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_maintainer[[1]][1]), "',", 
-  #               "'", package_riskmetric1$has_source_control[1], ",",  ifelse(class(package_riskmetric2$has_source_control[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$has_source_control[[1]][1]), "',",
-  #               "'", format(round(package_riskmetric1$export_help[1],2)), ",",  ifelse(class(package_riskmetric2$export_help[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$export_help[[1]][1]), "',",
-  #               "'", format(round(package_riskmetric1$bugs_status[1],2)), ",",  ifelse(class(package_riskmetric2$bugs_status[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$bugs_status[[1]][1]), "'", ")"))
-  
   db_ins(
     paste0( "INSERT INTO TestMetrics values(",
             "'", package_name, "',", 
@@ -215,7 +204,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
             "'", format(round(package_riskmetric1$covr_coverage[1], 2)),",", ifelse(class(package_riskmetric2$covr_coverage[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$covr_coverage[[1]][1]), "'", ")" )
   )
   
-  db_ins(paste0( "UPDATE Packageinfo SET score = '", format(round(package_riskmetric1$pkg_score[1], 2)), "'", " WHERE package = '" ,
+  db_ins(paste0( "UPDATE Packageinfo SET score = '", format(round(riskmetric_score$pkg_score[1], 2)), "'", " WHERE package = '" ,
                  package_name, "'"))
   
 }  

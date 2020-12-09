@@ -5,29 +5,27 @@
 # License: MIT License
 #####################################################################################################################
 
-# Start of the Observes'.
 
-# 1. Observe to update the radiobutton for decistion of the package.
+# Update the sidebar if a decision was previously made.
+observeEvent(c(input$select_pack, values$selected_pkg), {
+  # Suppose package has been selected with a previously made decision.
+  req(input$select_pack != "Select")
+  
+  # Update the risk slider using the info saved.
+  updateSliderTextInput(
+    session,
+    "decision",
+    choices = c("Low", "Medium", "High"),
+    selected = values$selected_pkg$decision
+  )
+})
 
-observe({
-  req(input$select_pack)
-  if (!identical(values$selected_pkg$decision, character(0))) {
-    if (values$selected_pkg$decision != "") {
-      updateSliderTextInput(
-        session,
-        "decision",
-        choices = c("Low", "Medium", "High"),
-        selected = values$selected_pkg$decision
-      )
-    }
-  }
-})  # End of the Observe.
 
-#2. Observe to disable and enable the text area comment box's' if decision of the package is empty.
-
+# Disable/enable the comments depending on wether a decision has been made.
 observe({
   req(values$selected_pkg$package)
   if (values$selected_pkg$decision != "") {
+    # Disable all the decision-related choices.
     disable("decision")
     disable("submit_decision")
     disable("overall_comment")
@@ -38,9 +36,8 @@ observe({
     enable("overall_comment")
     enable("submit_overall_comment")
   }
-})  # End of the Observe.
+})
 
-# 3. Observe to disable and enable to side bar elements for select pacakge input.
 
 observe({
   req(input$select_pack)
@@ -55,12 +52,10 @@ observe({
     enable("overall_comment")
     enable("submit_overall_comment")
   }
-})  # End of the observe.
+})
 
-# Start of the Render Output's'.
 
-# 1. Render Output to show the select input to select the package from dropdown.
-
+# Output a dropdown ui with available packages.
 output$sel_pack <- renderUI({
   values$packsDB <- db_fun("SELECT package FROM Packageinfo")
   selectizeInput(
@@ -69,10 +64,10 @@ output$sel_pack <- renderUI({
     choices = c("Select", values$packsDB$package),
     selected = "Select"
   )
-})  # End of the render Output.
+})
 
-# 2. Render Output to show the select input to select the version of the selected package.
 
+# Output a dropdown ui with the available versions given the selected package.
 output$sel_ver <- renderUI({
   req(input$select_pack)
   res2 <-
@@ -83,19 +78,21 @@ output$sel_ver <- renderUI({
         "'"
       )
     )
+  
   if (input$select_pack == "Select" || nrow(res2) > 1) {
     Choices <- c("Select", c(res2$version))
   } else{
     Choices <- c(res2$version)
   }
+  
   selectInput("select_ver",
               h3("Select Version:"),
               choices = Choices,
               selected = "Select")
-})  # End of the render Output.
+})
 
-# 3. Render Output to dispaly the status of the selected package.
 
+# Display the review status of the selected package.
 output$status <- renderText({
   if (!is.null(input$select_pack)) {
     if (input$select_pack != "Select") {
@@ -110,10 +107,10 @@ output$status <- renderText({
       paste("<h3>Status: <b>NA</b></h3>")
     }
   }
-})  # End of the render Output.
+})
 
-# 4. Render Output to display the score of the selected package.
 
+# Display the risk score of the selected package.
 output$score <- renderText({
   if (!is.null(input$select_pack)) {
     if (input$select_pack != "Select") {
@@ -122,7 +119,7 @@ output$score <- renderText({
       paste("<h3>Score: <b>NA</b></h3>")
     }
   }
-})  # End of the render output.
+})
 
 # End of the Render Output's'.
 
@@ -155,7 +152,7 @@ observeEvent(input$select_pack, {
       ) 
     updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", values$comment_occ$comment))
   }
-})  # End of the observe Event.
+})
 
 # 2. Observe Event to submit the decision for selected package.
 
@@ -310,8 +307,3 @@ observeEvent(input$submit_overall_comment_no, {
   updateTextAreaInput(session, "overall_comment", value = "")
   removeModal()
 })
-
-
-# End of the Observe Event's'
-
-# End of the Sidebar server Module.
