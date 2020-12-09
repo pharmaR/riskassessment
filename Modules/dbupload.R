@@ -176,7 +176,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
                                 names_to = "mm_name", 
                                 values_to = "mm_value")
   
-  package_version <- package_riskmetric1$version
+  package_version <- riskmetric_assess$version
   
   # load db table MaintenanceMetrics -- loading multiple rows per package/version
   con <- dbConnect(RSQLite::SQLite(), db_name)
@@ -195,7 +195,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
     paste0( "INSERT INTO TestMetrics values(",
             "'", package_name, "',", 
             "'", package_version, "',",  
-            "'", format(round(package_riskmetric1$covr_coverage[1], 2)),",", ifelse(class(package_riskmetric2$covr_coverage[[1]])[1] == "pkg_metric_error", -1, package_riskmetric2$covr_coverage[[1]][1]), "'", ")" )
+            "'", format(round(riskmetric_assess$covr_coverage[[1]][1], 2)),",", ifelse(class(riskmetric_score$covr_coverage[[1]])[1] == "pkg_metric_error", -1, riskmetric_score$covr_coverage[[1]][1]), "'", ")" )
   )
   
   db_ins(paste0( "UPDATE Packageinfo SET score = '", format(round(riskmetric_score$pkg_score[1], 2)), "'", " WHERE package = '" ,
