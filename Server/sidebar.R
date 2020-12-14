@@ -4,7 +4,7 @@
 # Date: July 13th, 2020
 # License: MIT License
 #####################################################################################################################
-
+values$back2dash <- 0
 
 # Update the sidebar if a decision was previously made.
 observeEvent(c(input$select_pack, values$selected_pkg), {
@@ -128,6 +128,7 @@ output$score <- renderText({
 # 1. Observe Event for select package
 
 observeEvent(input$select_pack, {
+  req(input$select_pack != "Select")
   
   if (trimws(input$select_pack) != "Select" && trimws(input$select_pack) != "") {
     pack_ver<-db_fun(paste0("SELECT version FROM Packageinfo WHERE package = '", input$select_pack, "'"))
@@ -136,6 +137,12 @@ observeEvent(input$select_pack, {
       "select_ver",
       choices = pack_ver[1,1]
     )
+    if (values$back2dash == 1) {
+      # update the selection
+      updateSelectizeInput(session, inputId = "select_ver",
+                           selected=values$select_ver)
+      values$back2dash <- 0
+    }
     if (values$mm_tab_redirect == "redirect") {
       updateTabsetPanel(session, "tabs",
                         selected = "mm_tab_value")
@@ -152,7 +159,7 @@ observeEvent(input$select_pack, {
       ) 
     updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", values$comment_occ$comment))
   }
-})
+}, ignoreInit = TRUE)
 
 # 2. Observe Event to submit the decision for selected package.
 
