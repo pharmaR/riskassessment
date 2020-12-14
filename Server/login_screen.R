@@ -15,7 +15,7 @@ observeEvent(input$submit_details, {
   if(values$name != "" && values$role != ""){
     values$current_screen <- "dashboard_screen"
     shinyjs::show("assessment_criteria_bttn")
-    values$mm_tab_redirect <- "redirect"
+    values$mm_tab_redirect <- "no redirect"
   } else{
     showModal(
       modalDialog(
