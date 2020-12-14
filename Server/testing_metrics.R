@@ -103,7 +103,7 @@ output$tm_commented <- renderText({
 values$tm_comment_submitted <- "no"
 observeEvent(input$submit_tm_comment, {
   if (trimws(input$tm_comment) != "") {
-    db_fun(
+    db_ins(
       paste0(
         "INSERT INTO Comments values('",
         input$select_pack,
