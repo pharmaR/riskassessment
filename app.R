@@ -68,6 +68,8 @@ ui <- dashboardPage(
     
     useShinyjs(),
     
+    tags$style(".info-box.bg-black { background-color: #808080 !important; }"),
+
     # UI screen to load the required screen
     uiOutput("screen")
   )
