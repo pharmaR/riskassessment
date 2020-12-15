@@ -115,6 +115,7 @@ info_percnt <- function(title, values, message) {
     value = ifelse(values[2] == -1, "NA", paste0(values[1],"%")),
     subtitle = message,
     width = 4,
+    color = ifelse(values[2] == -1, "black", "light-blue"),
     fill = TRUE
   )
 }
