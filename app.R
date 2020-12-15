@@ -34,14 +34,14 @@ options(
 ui <- dashboardPage(
   dashboardHeader(
     title = list(
-      "R Package Risk Assessment App",
-      tags$a(
-        title = "PharmaR Home Page",
-        href = "https://www.pharmar.org/",
-        target = "_blank",
-        tags$img(src = "logo.png", class = "logo_1"),
-        tags$img(src = "logo_no_text.png", class = "logo_2")
-      )
+      "R Package Risk Assessment App"
+      # tags$a(
+      #   title = "PharmaR Home Page",
+      #   href = "https://www.pharmar.org/",
+      #   target = "_blank",
+      #   tags$img(src = "logo.png", class = "logo_1"),
+      #   tags$img(src = "logo_no_text.png", class = "logo_2")
+      # )
     ),
     titleWidth = 320,
     tags$li(
