@@ -23,50 +23,12 @@ observe({
           )
         )
       
-      # create tbl of names and labels
-      # colnames(pkrm3)
-      # vartibbl <- tibble(
-      #   names = c("news_current", "has_vignettes", "has_bug_reports_url",
-      #             "bugs_status",  "export_help",   "has_website",        
-      #             "has_maintainer", "has_news",     "has_source_control" ),
-      #   mm_label = c("News is current?","Presence of vignettes?","Bugs publicly documented?",
-      #                "Bug closure","Documentation","Associated website URL?",
-      #                "Has a maintainer?","Has NEWS?", "Source code public?")
-      # )
-      
       metrics_to_read <- file.path("Data", "maint_metrics_labels.csv")
       vartibbl <- readr::read_csv(metrics_to_read, col_types = cols(.default = "c", is_thumb = "l"))
 
       # add labels
       values$risk_mm <- left_join(risk_mm, vartibbl, by = c("mm_name" = "names"))
 
-      # values$package_has_vignettes <- c(strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][2])
-      # values$package_has_website <- c(strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][2])
-      # values$package_has_news <- c(strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][2])
-      # values$news_is_current <- c(strsplit(values$riskmetrics_mm$news_is_current,",")[[1]][1], strsplit(values$riskmetrics_mm$news_is_current,",")[[1]][2])
-      # values$has_bug_reports <- c(strsplit(values$riskmetrics_mm$has_bug_reports,",")[[1]][1], strsplit(values$riskmetrics_mm$has_bug_reports,",")[[1]][2])
-      # values$status_of_last_30_reported_bugs <- c(strsplit(values$riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][1], strsplit(values$riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][2])
-      # values$exported_objects_with_documentation <- c(strsplit(values$riskmetrics_mm$exported_objects_with_documentation,",")[[1]][1], strsplit(values$riskmetrics_mm$exported_objects_with_documentation,",")[[1]][2])
-      # values$source_code_is_public <- c(strsplit(values$riskmetrics_mm$source_code_is_public,",")[[1]][1], strsplit(values$riskmetrics_mm$source_code_is_public,",")[[1]][2])
-      # values$has_a_package_maintainer <- c(strsplit(values$riskmetrics_mm$has_a_package_maintainer,",")[[1]][1], strsplit(values$riskmetrics_mm$has_a_package_maintainer,",")[[1]][2])
-  
-      # runjs("setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 500);")
-      # if (!is.null(input$mm_comment)) {
-      #     if(values$package_has_vignettes[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('vignette');}, 500);" ) }
-      #     if(values$package_has_website[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('website');}, 500);" ) }
-      #     if(values$package_has_news[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('hasnews');}, 500);" ) }
-      #     if(values$news_is_current[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('newscurrent');}, 500);" ) }
-      #     if(values$has_bug_reports[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('bugtrack');}, 500);" ) }
-      #     if(values$status_of_last_30_reported_bugs[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('bugstatus');}, 500);" ) }
-      #     if(values$exported_objects_with_documentation[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('exporthelp');}, 500);" ) }
-      #     if(values$source_code_is_public[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('source_pub');}, 500);" ) }
-      #     if(values$has_a_package_maintainer[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('pack_maint');}, 500);" ) }
-      #     req(values$selected_pkg$decision)
-      #     if (values$selected_pkg$decision != "") {
-      #       runjs("setTimeout(function(){disableUI('mm_comment')}, 500);")
-      #       runjs("setTimeout(function(){disableUI('submit_mm_comment')}, 500);")
-      #     }
-      #  }
     }
   }
 })  # End of the observe.
@@ -107,10 +69,7 @@ output$myboxes <- renderUI({
   boxes
 })
 
-
-
-
-# 10. Render Output to show the comments on the application.
+# Render Output to show the comments on the application.
 
 output$mm_commented <- renderText({
   if (values$mm_comment_submitted == "yes" ||
