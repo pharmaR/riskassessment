@@ -74,10 +74,14 @@ output$myboxes1 <- renderUI({
                                                    paste("Percentage of",tolower(values$risk_mm$mm_name[[i]])),
                                                    eval(parse(text = values$risk_mm$mm_detail[[i]]))) )))
     } else {
+      # if we have a c() of text strings, take the first one.
+      text <- str_split(vals[[i]][2],",")[[1]][1]
+      text <- gsub('[\"]', '', text)
+      text <- ifelse(str_detect(text,"[(]"),str_sub(text,3,nchar(text)),text)
       boxes[[i]] <- info_thumb(values$risk_mm$mm_label[[i]], vals[[i]], 
                                eval(ifelse(vals[[i]][2] == -1, "Not Applicable", 
                                            ifelse(vals[[i]][1] == 1, 
-                                                  ifelse(is.na(values$risk_mm$mm_detail[[i]]), vals[[i]][2], 
+                                                  ifelse(is.na(values$risk_mm$mm_detail[[i]]), text, 
                                                          eval(parse(text = values$risk_mm$mm_detail[[i]]))),
                                                   "Nothing to see here.")))) 
     }
