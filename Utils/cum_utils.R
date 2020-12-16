@@ -101,7 +101,6 @@ num_dwnlds_plot <- function(data = values$riskmetrics_cum,
               label = "2 yr",
               step = "year",
               stepmode = "year"),
-            list(step = "all", label = "All"),
             list(count = mnths2_lst_rel,
                  label = "Last Release",
                  step = "month",
@@ -128,8 +127,7 @@ num_dwnlds_plot <- function(data = values$riskmetrics_cum,
               count = 2,
               label = "2 yr",
               step = "year",
-              stepmode = "year"),
-            list(step = "all", label = "All"))),
+              stepmode = "year"))),
         
         rangeslider = list(type = "date"))
     )
