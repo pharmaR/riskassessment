@@ -44,7 +44,7 @@ output$gen_info <- renderText({
     "<h4><b>Published:</b>",
     pkg_GenInfo$published,
     "</h4>",
-    "<h4> Using riskmetric version",riskinfo$loadedversion,"</h4>"
+    "<br><h3><b>riskmetric version:</b>",riskinfo$loadedversion,"</h3>"
   )
 })  # End of the render output for genral information.
 
