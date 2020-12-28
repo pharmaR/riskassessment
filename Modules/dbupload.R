@@ -178,12 +178,16 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   
   package_version <- riskmetric_assess$version
   
+  riskinfo <- package_info("riskmetric", dependencies = FALSE)
+  
   # load db table MaintenanceMetrics -- loading multiple rows per package/version
   con <- dbConnect(RSQLite::SQLite(), db_name)
   for (i in 1:nrow(mm_tbl)) {
     query <- paste0("INSERT INTO MaintenanceMetrics values(",
                     "'", package_name,    "',",
                     "'", package_version,    "',",
+                    "'", riskinfo$loadedversion,    "',",
+                    "'", riskinfo$date,    "',",
                     "'", mm_tbl$mm_name[[i]],    "',",
                     "'", mm_tbl$mm_value[[i]],    "'", ")"
     )
