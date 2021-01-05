@@ -22,6 +22,7 @@ packages = c("shiny"
              ,"rAmCharts"
              ,"devtools"
              ,"plotly"
+             ,"cranlogs"
 )
 
 # Install and load required packages.

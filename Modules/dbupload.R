@@ -200,7 +200,8 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
   
   tryCatch(
     expr = {
-      downloads_1yr_br_i <- pkg_ref(package_name)$downloads
+      downloads_1yr_br_i <- cranlogs::cran_downloads(package_name, from=Sys.Date()-730, to=Sys.Date())
+      # downloads_1yr_br_i <- pkg_ref(package_name)$downloads
       downloads_1yr_br_i <- filter(downloads_1yr_br_i, months(downloads_1yr_br_i$date) != months(Sys.Date()))
       downloads_1yr_br_i$date <- paste( months(downloads_1yr_br_i$date), year(downloads_1yr_br_i$date) )
       count<-c()
