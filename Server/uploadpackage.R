@@ -20,6 +20,10 @@ data <- reactive({
 
 observeEvent(list(input$total_new_undis_dup,input$uploaded_file), {
   req(values$upload_complete == "upload_complete")
+  
+  # After upload complete, update db dash screen with new package(s)
+  values$db_pkg_overview <- update_db_dash()
+  
   if (input$total_new_undis_dup == "All") {
     values$Total_New_Undis_Dup <- values$Total
   } else if (input$total_new_undis_dup == "New") {

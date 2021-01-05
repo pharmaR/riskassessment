@@ -5,27 +5,11 @@
 # License: MIT License
 ###############################################################################
 
+
 # Create table for the db dashboard.
 output$db_pkgs <- DT::renderDataTable({
-  values$db_pkg_overview <- db_fun(
-    paste0(
-      "SELECT 
-       pi.package
-      , pi.version
-      , pi.score
-      , pi.decision
-      , c.last_comment
-      FROM Packageinfo as pi
-      LEFT JOIN (
-        SELECT comm_id
-             , max(added_on) as last_comment
-        FROM Comments
-        GROUP BY comm_id
-      ) as c
-      on c.comm_id = pi.package
-      ORDER BY 1 DESC
-    "
-    ))
+  
+  values$db_pkg_overview <- update_db_dash()
   
   DT::datatable(
     values$db_pkg_overview,
@@ -44,12 +28,12 @@ output$db_pkgs <- DT::renderDataTable({
         extend = "excel",
         title = "R Package Risk Assessment App: Package Upload History",
         filename = paste(
-          sep = "_", 
+          sep = "_",
           "RiskAsses_PkgDB_Dwnld",
           str_replace_all(str_replace(Sys.time(), " ", "_"), ":", "-"))
       ))
-    )) %>%
-    formatStyle(names(values$db_pkg_overview), textAlign = 'center')
+  )) %>%
+  formatStyle(names(values$db_pkg_overview), textAlign = 'center')
 })
 
 

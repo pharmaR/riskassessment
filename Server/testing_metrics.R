@@ -126,6 +126,8 @@ observeEvent(input$submit_tm_comment, {
     )
     values$tm_comment_submitted <- "yes"
     updateTextAreaInput(session, "tm_comment", value = "")
+    # After comment added to Comments table, update db dash
+    values$db_pkg_overview <- update_db_dash()
   }
 })  # End of the observe event.
 
