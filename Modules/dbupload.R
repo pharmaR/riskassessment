@@ -200,19 +200,19 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
   
   tryCatch(
     expr = {
-      downloads_1yr_br_i <- cranlogs::cran_downloads(package_name, from=Sys.Date()-730, to=Sys.Date())
-      # downloads_1yr_br_i <- pkg_ref(package_name)$downloads
-      downloads_1yr_br_i <- filter(downloads_1yr_br_i, months(downloads_1yr_br_i$date) != months(Sys.Date()))
-      downloads_1yr_br_i$date <- paste( months(downloads_1yr_br_i$date), year(downloads_1yr_br_i$date) )
+      downloads_yrs_br_i <- cranlogs::cran_downloads(package_name, from=Sys.Date()-730, to=Sys.Date())
+      downloads_yrs_br_i <- filter(downloads_yrs_br_i, months(downloads_yrs_br_i$date) != months(Sys.Date()))
+      downloads_yrs_br_i$date <- paste( months(downloads_yrs_br_i$date), year(downloads_yrs_br_i$date) )
       count<-c()
-      for (i in 1:length(unique(downloads_1yr_br_i$date))) {
-        count_df <- filter(downloads_1yr_br_i, downloads_1yr_br_i$date == unique(downloads_1yr_br_i$date)[i])
+      for (i in 1:length(unique(downloads_yrs_br_i$date))) {
+        count_df <- filter(downloads_yrs_br_i, downloads_yrs_br_i$date == unique(downloads_yrs_br_i$date)[i])
         count[i] <- sum(count_df$count)
       }
-      downloads_1yr_br <-data.frame(Month = unique(downloads_1yr_br_i$date), Downloads = count)
-      downloads_1yr <- sum(downloads_1yr_br$Downloads)
+      downloads_yrs_br <-data.frame(Month = unique(downloads_yrs_br_i$date), Downloads = count)
+      downloads_1yr <- sum(downloads_yrs_br$Downloads[(nrow(downloads_yrs_br)-11):nrow(downloads_yrs_br)])
+      
       colnames(pkg_vers_date_final) <<- c("Month", "Downloads", "verRelease", "Position")
-      pkg_vers_date_final <- downloads_1yr_br
+      pkg_vers_date_final <- downloads_yrs_br
       pkg_vers_date_final$Month <- as.character(pkg_vers_date_final$Month)
       pkg_vers_date_final$Position <- 12
       
