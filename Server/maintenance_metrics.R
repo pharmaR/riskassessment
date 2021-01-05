@@ -273,7 +273,7 @@ values$mm_comment_submitted <- "no"
 
 observeEvent(input$submit_mm_comment, {
   if (trimws(input$mm_comment) != "") {
-    db_fun(
+    db_ins(
       paste0(
         "INSERT INTO Comments values('",
         input$select_pack,
