@@ -33,7 +33,7 @@ num_dwnlds_plot <- function(data = values$riskmetrics_cum,
   curr_mth <- plot_dat$month_date[nrow(plot_dat)]
   rel_mths <- plot_dat$month_date[!(plot_dat$ver_release %in% c("",'NA'))]
   lst_rel_mth <- rel_mths[length(rel_mths)]
-  mnths2_lst_rel <- mondf(lst_rel_mth, curr_mth) + ifelse(lst_rel_mth == curr_mth, 2, 1)
+  mnths2_lst_rel <- mondf(lst_rel_mth, curr_mth) + 2 #ifelse(lst_rel_mth == curr_mth, 2, 1)
   
   
   fig <- plot_ly(plot_dat, x = ~month_date, y = ~no_of_downloads,
@@ -101,7 +101,6 @@ num_dwnlds_plot <- function(data = values$riskmetrics_cum,
               label = "2 yr",
               step = "year",
               stepmode = "year"),
-            list(step = "all", label = "All"),
             list(count = mnths2_lst_rel,
                  label = "Last Release",
                  step = "month",
@@ -128,8 +127,7 @@ num_dwnlds_plot <- function(data = values$riskmetrics_cum,
               count = 2,
               label = "2 yr",
               step = "year",
-              stepmode = "year"),
-            list(step = "all", label = "All"))),
+              stepmode = "year"))),
         
         rangeslider = list(type = "date"))
     )
