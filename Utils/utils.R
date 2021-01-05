@@ -119,3 +119,26 @@ info_percnt <- function(title, values, message) {
     fill = TRUE
   )
 }
+
+# function to re-run everytime a package is uploaded to db, or
+# when a comment is submitted
+update_db_dash <- function(){
+  db_fun(
+    "SELECT 
+       pi.package
+      , pi.version
+      , pi.score
+      , pi.decision
+      , c.last_comment
+      FROM Packageinfo as pi
+      LEFT JOIN (
+        SELECT comm_id
+             , max(added_on) as last_comment
+        FROM Comments
+        GROUP BY comm_id
+      ) as c
+      on c.comm_id = pi.package
+      ORDER BY 1 DESC
+    "
+  )
+}

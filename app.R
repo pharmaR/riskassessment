@@ -32,9 +32,9 @@ options(
 
 # Create User Interface (UI).
 ui <- dashboardPage(
+  title = "R Package Risk Assessment App",
   dashboardHeader(
     title = list(
-      "R Package Risk Assessment App",
       tags$a(
         title = "PharmaR Home Page",
         href = "https://www.pharmar.org/",

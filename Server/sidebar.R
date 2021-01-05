@@ -200,6 +200,9 @@ observeEvent(input$submit_confirmed_decision, {
   loggit("INFO", paste("decision for the package", values$selected_pkg$package, 
                        "is", input$decision, 
                        "by", values$name, "(", values$role, ")"))
+  # After decision submitted, update db dash
+  values$db_pkg_overview <- update_db_dash()
+  
 })  # End of the Observe Event.
 
 # 4. Observe Event to edit the decision if user need to change.
@@ -217,6 +220,7 @@ observeEvent(input$submit_overall_comment, {
   overall_comment <- input$overall_comment
   values$overall_comments <- trimws(overall_comment)
   if (values$overall_comments != "") {
+    
     comments_submitted <-
       db_fun(
         paste0(
@@ -267,6 +271,9 @@ observeEvent(input$submit_overall_comment, {
       updateTextAreaInput(session, "overall_comment", value = "")
       updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", values$overall_comments))
     }
+    
+    # After comment added to Comments table, update db dash
+    values$db_pkg_overview <- update_db_dash()
   }
   
 })  # End of the observe Event.
