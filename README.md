@@ -15,8 +15,7 @@ The Risk Assessment App is an interactive web application providing a front end 
 
 
 ### Contributing
-The Risk Assessment App team meets every Monday from 3-4pm EST. You can join the meeting using the following link:
-https://www.gotomeet.me/marlycormar/risk-assessment-app
+The Risk Assessment App team meets every Tuesday from 11-11:40pm EST. You can join the meeting using the following link: [Zoom meeting link](https://us04web.zoom.us/j/73311338024?pwd=QkV1M1VJck4vemptT01oMVRxajkzZz09).
 
 
 ### Issues and feature requests
