@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS package(
-   id             INTEGER AUTO_INCREMENT,
+   id             INTEGER PRIMARY KEY AUTOINCREMENT,
    name           CHAR, 
    version        CHAR,
    title          CHAR,
@@ -10,6 +10,5 @@ CREATE TABLE IF NOT EXISTS package(
    published_on   CHAR,
    score          INT,
    weigthed_score INT,
-   decision       CHAR,
-   PRIMARY KEY (id)
+   decision       CHAR
 );
