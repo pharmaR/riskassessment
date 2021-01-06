@@ -18,7 +18,7 @@ params:
 setwd(params$cwd)
 
 pkg_GenInfo = db_fun(paste0(
-  "SELECT * FROM Packageinfo WHERE package ='",
+  "SELECT * FROM package WHERE name ='",
   params$package,
   "'"
 ))
