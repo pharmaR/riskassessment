@@ -57,7 +57,7 @@ observe({
 
 # Output a dropdown ui with available packages.
 output$sel_pack <- renderUI({
-  values$packsDB <- db_fun("SELECT package FROM Packageinfo")
+  values$packsDB <- db_fun("SELECT name FROM package")
   selectizeInput(
     "select_pack",
     h3("Select Package:"),
@@ -73,7 +73,7 @@ output$sel_ver <- renderUI({
   res2 <-
     db_fun(
       paste0(
-        "SELECT package, version FROM Packageinfo WHERE package = '",
+        "SELECT name, version FROM package WHERE name = '",
         input$select_pack,
         "'"
       )
@@ -130,7 +130,7 @@ output$score <- renderText({
 observeEvent(input$select_pack, {
   
   if (trimws(input$select_pack) != "Select" && trimws(input$select_pack) != "") {
-    pack_ver<-db_fun(paste0("SELECT version FROM Packageinfo WHERE package = '", input$select_pack, "'"))
+    pack_ver <- db_fun(paste0("SELECT version FROM package WHERE name = '", input$select_pack, "'"))
     updateSelectizeInput(
       session,
       "select_ver",
