@@ -185,7 +185,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
             "'", format(round(riskmetric_score$covr_coverage[1], 2)),",", ifelse(class(riskmetric_assess$covr_coverage[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$covr_coverage[[1]][1]), "'", ")" )
   )
   
-  db_ins(paste0( "UPDATE Packageinfo SET score = '", format(round(riskmetric_score$pkg_score[1], 2)), "'", " WHERE package = '" ,
+  db_ins(paste0( "UPDATE package SET score = '", format(round(riskmetric_score$pkg_score[1], 2)), "'", " WHERE name = '" ,
                  package_name, "'"))
  
 }  
