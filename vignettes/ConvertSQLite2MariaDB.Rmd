@@ -161,7 +161,7 @@ Finally, update function `genInfo_upload_to_DB()` in `Modules\dbupload.R` as fol
 genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis, pub) {
   tryCatch(
     expr = {
-      # db_ins(paste0( "INSERT or REPLACE INTO Packageinfo values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
+      # db_ins(paste0( "INSERT or REPLACE INTO package values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
       #                "'", main, "',", "'", auth, "',", "'", lis, "',", "'", pub, "',", "'',", "''", ")"))
       db_ins(paste0( "INSERT INTO Packageinfo values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
                      "'", main, "',", "'", auth, "',", "'", lis, "',", "'", pub, "',", "'',", "''", 
