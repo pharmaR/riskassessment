@@ -93,19 +93,19 @@ GetUserName <- function() {
 update_db_dash <- function(){
   db_fun(
     "SELECT 
-       pi.package
+       pi.name
       , pi.version
       , pi.score
       , pi.decision
       , c.last_comment
-      FROM Packageinfo as pi
+      FROM package as pi
       LEFT JOIN (
         SELECT comm_id
              , max(added_on) as last_comment
         FROM Comments
         GROUP BY comm_id
       ) as c
-      on c.comm_id = pi.package
+      on c.comm_id = pi.name
       ORDER BY 1 DESC
     "
   )
