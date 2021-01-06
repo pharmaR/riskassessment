@@ -188,7 +188,7 @@ observeEvent(input$submit_decision, {
 observeEvent(input$submit_confirmed_decision, {
   db_ins(
     paste0(
-      "UPDATE Packageinfo SET decision = '",
+      "UPDATE package SET decision = '",
       input$decision,
       "' WHERE name = '",
       values$selected_pkg$name,
