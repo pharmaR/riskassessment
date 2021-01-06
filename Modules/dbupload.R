@@ -136,9 +136,9 @@ genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis
   tryCatch(
     expr = {
       db_ins(paste0("INSERT or REPLACE INTO package
-                    (name, version, title, description, maintainer, author, license, published_on)
+                    (name, version, title, description, maintainer, author, license, published_on, decision)
                     values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
-                     "'", main, "',", "'", auth, "',", "'", lis, "',", "'", pub, "')"))
+                     "'", main, "',", "'", auth, "',", "'", lis, "',", "'", pub, "', '')"))
     },
     error = function(e) {
       loggit("ERROR", paste("Error in uploading the general info of the package", package_name, "info", e), app = "fileupload-DB")
