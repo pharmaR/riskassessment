@@ -12,7 +12,7 @@ output$gen_info <- renderText({
   pkg_GenInfo <-
     db_fun(
       paste0(
-        "SELECT * FROM Packageinfo WHERE package ='",
+        "SELECT * FROM package WHERE name ='",
         input$select_pack,
         "'"
       )
