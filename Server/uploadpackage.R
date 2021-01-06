@@ -62,9 +62,9 @@ observeEvent(input$uploaded_file, {
   pkgs_file$package <- trimws(pkgs_file$package)
   pkgs_file$version <- trimws(pkgs_file$version)
   values$Total <- pkgs_file
-  pkgs_db1 <- db_fun("SELECT package FROM Packageinfo")
-  values$Dup <- filter(values$Total, values$Total$package %in% pkgs_db1$package)
-  values$New <- filter(values$Total, !(values$Total$package %in% pkgs_db1$package))
+  pkgs_db1 <- db_fun("SELECT name FROM package")
+  values$Dup <- filter(values$Total, values$Total$package %in% pkgs_db1$name)
+  values$New <- filter(values$Total, !(values$Total$package %in% pkgs_db1$name))
   withProgress(message = "Uploading Packages to DB:", value = 0, {
     if (nrow(values$New) != 0) {
       for (i in 1:nrow(values$New)) {
@@ -77,14 +77,14 @@ observeEvent(input$uploaded_file, {
     }
   })
   
-  pkgs_db2 <- db_fun("SELECT package FROM Packageinfo")
+  pkgs_db2 <- db_fun("SELECT name FROM package")
   values$Undis <-
-    filter(values$New,!(values$New$package %in% pkgs_db2$package))
-  values$packsDB <- db_fun("SELECT package FROM Packageinfo")
+    filter(values$New,!(values$New$package %in% pkgs_db2$name))
+  values$packsDB <- db_fun("SELECT name FROM package")
   updateSelectizeInput(
     session,
     "select_pack",
-    choices = c("Select", values$packsDB$package),
+    choices = c("Select", values$packsDB$name),
     selected = "Select"
   )
   
@@ -204,7 +204,8 @@ output$dwnld_all_reports_btn <- downloadHandler(
           # grab package name and version, then create filename and path
           this_pkg <- values$Total_New_Undis_Dup$package[i]
           this_ver <- values$Total_New_Undis_Dup$version[i]
-          file_named <- paste0(this_pkg,"_",this_ver,"_Risk_Assessment.",input$all_reports_format)
+          file_named <- paste0(this_pkg,"_", this_ver, "_Risk_Assessment.",
+                               input$all_reports_format)
           path <- file.path(my_dir, file_named)
           # render the report, passing parameters to the rmd file
           rmarkdown::render(
