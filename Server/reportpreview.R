@@ -12,7 +12,7 @@ output$gen_info <- renderText({
   pkg_GenInfo <-
     db_fun(
       paste0(
-        "SELECT * FROM Packageinfo WHERE package ='",
+        "SELECT * FROM package WHERE name ='",
         input$select_pack,
         "'"
       )
@@ -20,7 +20,7 @@ output$gen_info <- renderText({
   
   paste(
     "<h2><b>Package:</b> ",
-    pkg_GenInfo$package,
+    pkg_GenInfo$name,
     "</h2>",
     "<h4><b>Version: </b>",
     pkg_GenInfo$version,
@@ -57,14 +57,14 @@ output$decision_display <- renderText({
 
 # 3. Render Output to display the overall comment of the selected package. 
 output$overall_comments <- renderText({
-  req(values$selected_pkg$package)
+  req(values$selected_pkg$name)
   if (values$o_comment_submitted == "yes" ||
       values$o_comment_submitted == "no") {
     values$comment_o1 <-
       db_fun(
         paste0(
           "SELECT * FROM Comments WHERE comm_id = '",
-          values$selected_pkg$package,
+          values$selected_pkg$name,
           "' AND comment_type = 'o'"
         )
       )
@@ -109,7 +109,7 @@ output$download_report_btn <- downloadHandler(
                           rmarkdown::render(
                             Report,
                             output_file = file,
-                            params = list(package = values$selected_pkg$package,
+                            params = list(package = values$selected_pkg$name,
                                           version = values$selected_pkg$version,
                                           cwd = values$cwd)
                           )

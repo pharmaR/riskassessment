@@ -106,7 +106,7 @@ create_db <- function(){
     
     # Queries needed to run the first time the db is created.
     queries <- c(
-      "create_Packageinfo_table.sql",
+      "create_package_table.sql",
       "create_MaintenanceMetrics_table.sql",
       "create_CommunityUsageMetrics_table.sql",
       "create_TestMetrics_table.sql",
@@ -161,9 +161,9 @@ Finally, update function `genInfo_upload_to_DB()` in `Modules\dbupload.R` as fol
 genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis, pub) {
   tryCatch(
     expr = {
-      # db_ins(paste0( "INSERT or REPLACE INTO Packageinfo values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
+      # db_ins(paste0( "INSERT or REPLACE INTO package values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
       #                "'", main, "',", "'", auth, "',", "'", lis, "',", "'", pub, "',", "'',", "''", ")"))
-      db_ins(paste0( "INSERT INTO Packageinfo values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
+      db_ins(paste0( "INSERT INTO package values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
                      "'", main, "',", "'", auth, "',", "'", lis, "',", "'", pub, "',", "'',", "''", 
                      ") ON DUPLICATE KEY UPDATE package = ", "'", package_name, "'" ))
     },
@@ -186,7 +186,7 @@ This is what the SQL statements look like now in `Utils\sql_queries`
 Note the `FOREIGN KEY` and `REFERENCES` have been removed.  I did not find them necessary.
 
 ```{r, eval=FALSE}
-CREATE TABLE IF NOT EXISTS Comments (   
+CREATE TABLE IF NOT EXISTS Comments (
 comm_id      CHAR(20) NOT NULL,    
 user_name 	 CHAR(40),   
 user_role 	 CHAR(40),   
@@ -195,7 +195,7 @@ comment_type CHAR(10),
 added_on 	 TIMESTAMP
 ); 
 
-CREATE TABLE IF NOT EXISTS CommunityUsageMetrics (  
+CREATE TABLE IF NOT EXISTS CommunityUsageMetrics (
 cum_id 					            CHAR(20) NOT NULL,   
 no_of_downloads_last_year   INT,  
 month 					            CHAR(20),  
@@ -206,7 +206,7 @@ time_since_first_release    INT,
 time_since_version_release  INT   
 ); 
 
-CREATE TABLE IF NOT EXISTS MaintenanceMetrics (   
+CREATE TABLE IF NOT EXISTS MaintenanceMetrics (
 mm_id   								             CHAR(20) NOT NULL,    
 package_has_vignettes				         CHAR(5),   
 package_has_news                     CHAR(5),   
@@ -219,8 +219,9 @@ exported_objects_with_documentation  VARCHAR(15),
 status_of_last_30_reported_bugs  	   CHAR(15) 
 ); 
 
-CREATE TABLE IF NOT EXISTS Packageinfo(   
-package        CHAR(20) PRIMARY KEY NOT NULL,    
+CREATE TABLE IF NOT EXISTS package(
+id             INTEGER AUTO_INCREMENT,
+name           CHAR(20) PRIMARY KEY NOT NULL,
 version        CHAR(10),   
 title          VARCHAR(200),   
 description    TEXT,   
@@ -228,11 +229,13 @@ maintainer     VARCHAR(200),
 author         VARCHAR(1000),   
 license        CHAR(50),   
 published_on   CHAR(15),   
-score          CHAR(5),   
-decision       CHAR(1)
+score          CHAR(5),
+weigthed_score INT,
+decision       CHAR(1),
+PRIMARY KEY (id)
 ); 
 
-CREATE TABLE TestMetrics IF NOT EXISTS(   
+CREATE TABLE TestMetrics IF NOT EXISTS(
 tm_id 		    CHAR(20) NOT NULL,    
 test_coverage CHAR(10)  
 ); 

@@ -18,7 +18,7 @@ params:
 setwd(params$cwd)
 
 pkg_GenInfo = db_fun(paste0(
-  "SELECT * FROM Packageinfo WHERE package ='",
+  "SELECT * FROM package WHERE name ='",
   params$package,
   "'"
 ))
@@ -115,9 +115,9 @@ comment_o <-
 ```
 
 
-<div class="heading_report"> Report of the "`r pkg_GenInfo$package`" Package:</div>
+<div class="heading_report"> Report of the "`r pkg_GenInfo$name`" Package:</div>
 
-<div class="report">This **`r pkg_GenInfo$package`** package report was generated using  **`r params$version`** riskmetric version. Metrics were reviewed via the R Package Risk Assessment Application.</div>
+<div class="report">This **`r pkg_GenInfo$name`** package report was generated using  **`r params$version`** riskmetric version. Metrics were reviewed via the R Package Risk Assessment Application.</div>
 
 
 
@@ -177,7 +177,7 @@ p_color <- 'white'
 </div>
 <div class="blue para-header">General Info</div>
 
-**Package:** `r pkg_GenInfo$package`
+**Package:** `r pkg_GenInfo$name`
 
 **Version:** `r pkg_GenInfo$version`
 

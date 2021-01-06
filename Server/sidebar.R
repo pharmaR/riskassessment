@@ -23,7 +23,7 @@ observeEvent(c(input$select_pack, values$selected_pkg), {
 
 # Disable/enable the comments depending on wether a decision has been made.
 observe({
-  req(values$selected_pkg$package)
+  req(values$selected_pkg$name)
   if (values$selected_pkg$decision != "") {
     # Disable all the decision-related choices.
     disable("decision")
@@ -57,11 +57,11 @@ observe({
 
 # Output a dropdown ui with available packages.
 output$sel_pack <- renderUI({
-  values$packsDB <- db_fun("SELECT package FROM Packageinfo")
+  values$packsDB <- db_fun("SELECT name FROM package")
   selectizeInput(
     "select_pack",
     h3("Select Package:"),
-    choices = c("Select", values$packsDB$package),
+    choices = c("Select", values$packsDB$name),
     selected = "Select"
   )
 })
@@ -73,7 +73,7 @@ output$sel_ver <- renderUI({
   res2 <-
     db_fun(
       paste0(
-        "SELECT package, version FROM Packageinfo WHERE package = '",
+        "SELECT name, version FROM package WHERE name = '",
         input$select_pack,
         "'"
       )
@@ -130,7 +130,7 @@ output$score <- renderText({
 observeEvent(input$select_pack, {
   
   if (trimws(input$select_pack) != "Select" && trimws(input$select_pack) != "") {
-    pack_ver<-db_fun(paste0("SELECT version FROM Packageinfo WHERE package = '", input$select_pack, "'"))
+    pack_ver <- db_fun(paste0("SELECT version FROM package WHERE name = '", input$select_pack, "'"))
     updateSelectizeInput(
       session,
       "select_ver",
@@ -188,19 +188,20 @@ observeEvent(input$submit_decision, {
 observeEvent(input$submit_confirmed_decision, {
   db_ins(
     paste0(
-      "UPDATE Packageinfo SET decision = '",
+      "UPDATE package SET decision = '",
       input$decision,
-      "' WHERE package = '",
-      values$selected_pkg$package,
+      "' WHERE name = '",
+      values$selected_pkg$name,
       "'"
     )
   )
   values$selected_pkg$decision <- input$decision
   removeModal()
-  loggit("INFO", paste("decision for the package", values$selected_pkg$package, 
+  loggit("INFO", paste("decision for the package", values$selected_pkg$name,
                        "is", input$decision, 
                        "by", values$name, "(", values$role, ")"))
-  # After decision submitted, update db dash
+  
+  # After decision submitted, update db dash.
   values$db_pkg_overview <- update_db_dash()
   
 })  # End of the Observe Event.
@@ -225,7 +226,7 @@ observeEvent(input$submit_overall_comment, {
       db_fun(
         paste0(
           "SELECT * FROM Comments WHERE comment_type = 'o' AND comm_id = '",
-          values$selected_pkg$package,
+          values$selected_pkg$name,
           "'"
         )
       )
@@ -258,7 +259,7 @@ observeEvent(input$submit_overall_comment, {
     } else{
       db_ins(
         paste0(
-          "INSERT INTO Comments values('", values$selected_pkg$package, "',",
+          "INSERT INTO Comments values('", values$selected_pkg$name, "',",
           "'", values$name, "'," ,
           "'", values$role, "',",
           "'", values$overall_comments, "',",
@@ -288,7 +289,7 @@ observeEvent(input$submit_overall_comment_yes, {
       "', added_on = '",
       TimeStamp(),
       "' WHERE comm_id = '",
-      values$selected_pkg$package,
+      values$selected_pkg$name,
       "' AND user_name = '",
       values$name,
       "' AND user_role = '",

@@ -1,5 +1,6 @@
-CREATE TABLE IF NOT EXISTS Packageinfo(
-   package        CHAR PRIMARY KEY NOT NULL, 
+CREATE TABLE IF NOT EXISTS package(
+   id             INTEGER PRIMARY KEY AUTOINCREMENT,
+   name           CHAR, 
    version        CHAR,
    title          CHAR,
    description    TEXT,
@@ -8,5 +9,6 @@ CREATE TABLE IF NOT EXISTS Packageinfo(
    license        CHAR,
    published_on   CHAR,
    score          INT,
+   weigthed_score INT,
    decision       CHAR
 );

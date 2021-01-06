@@ -135,8 +135,10 @@ get_packages_info_from_web <- function(package_name) {
 genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis, pub) {
   tryCatch(
     expr = {
-      db_ins(paste0( "INSERT or REPLACE INTO Packageinfo values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
-                     "'", main, "',", "'", auth, "',", "'", lis, "',", "'", pub, "',", "'',", "''", ")"))
+      db_ins(paste0("INSERT or REPLACE INTO package
+                    (name, version, title, description, maintainer, author, license, published_on, decision)
+                    values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
+                     "'", main, "',", "'", auth, "',", "'", lis, "',", "'", pub, "', '')"))
     },
     error = function(e) {
       loggit("ERROR", paste("Error in uploading the general info of the package", package_name, "info", e), app = "fileupload-DB")
@@ -183,7 +185,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
             "'", format(round(riskmetric_score$covr_coverage[1], 2)),",", ifelse(class(riskmetric_assess$covr_coverage[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$covr_coverage[[1]][1]), "'", ")" )
   )
   
-  db_ins(paste0( "UPDATE Packageinfo SET score = '", format(round(riskmetric_score$pkg_score[1], 2)), "'", " WHERE package = '" ,
+  db_ins(paste0( "UPDATE package SET score = '", format(round(riskmetric_score$pkg_score[1], 2)), "'", " WHERE name = '" ,
                  package_name, "'"))
  
 }  

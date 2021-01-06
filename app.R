@@ -138,7 +138,7 @@ server <- function(session, input, output) {
     values$selected_pkg <-
       db_fun(
         paste0(
-          "SELECT package, score, decision FROM Packageinfo WHERE package = '",
+          "SELECT name, score, decision FROM package WHERE name = '",
           input$select_pack,
           "'"
         )

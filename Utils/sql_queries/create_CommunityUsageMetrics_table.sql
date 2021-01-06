@@ -7,5 +7,5 @@ CREATE TABLE IF NOT EXISTS CommunityUsageMetrics (
   position					      INT,
   time_since_first_release    INT,
   time_since_version_release  INT,
-   FOREIGN KEY(cum_id) REFERENCES Packageinfo(package)
+   FOREIGN KEY(cum_id) REFERENCES package(name)
 );
