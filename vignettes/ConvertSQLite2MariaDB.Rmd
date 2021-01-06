@@ -220,7 +220,8 @@ status_of_last_30_reported_bugs  	   CHAR(15)
 ); 
 
 CREATE TABLE IF NOT EXISTS package(
-package        CHAR(20) PRIMARY KEY NOT NULL,    
+id             INTEGER AUTO_INCREMENT,
+name           CHAR(20) PRIMARY KEY NOT NULL,
 version        CHAR(10),   
 title          VARCHAR(200),   
 description    TEXT,   
@@ -228,8 +229,10 @@ maintainer     VARCHAR(200),
 author         VARCHAR(1000),   
 license        CHAR(50),   
 published_on   CHAR(15),   
-score          CHAR(5),   
-decision       CHAR(1)
+score          CHAR(5),
+weigthed_score INT,
+decision       CHAR(1),
+PRIMARY KEY (id)
 ); 
 
 CREATE TABLE TestMetrics IF NOT EXISTS(
