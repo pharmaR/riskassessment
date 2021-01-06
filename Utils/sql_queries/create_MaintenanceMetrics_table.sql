@@ -9,5 +9,5 @@ CREATE TABLE IF NOT EXISTS MaintenanceMetrics (
    source_code_is_public   				 CHAR,
    exported_objects_with_documentation  CHAR,
    status_of_last_30_reported_bugs  	 CHAR,
-   FOREIGN KEY(mm_id) REFERENCES Packageinfo(package)
+   FOREIGN KEY(mm_id) REFERENCES package(name)
 );
