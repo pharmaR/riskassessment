@@ -11,8 +11,8 @@
 
 output$report_preview<-renderUI({
  Sys.sleep(0.1)
-  if (!is.null(values$packsDB$package) &&
-      !identical(values$packsDB$package, character(0))) {
+  if (!is.null(values$packsDB$name) &&
+      !identical(values$packsDB$name, character(0))) {
   if (input$select_pack != "Select") {
     removeUI(selector = "#Upload")
     fluidRow(
