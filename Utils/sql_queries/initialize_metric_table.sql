@@ -8,4 +8,4 @@ INSERT INTO metric (name, description, class, weight) values
 ('source_code_is_public', '', 'maintenance', 1),
 ('exported_objects_with_documentation', '', 'maintenance', 1),
 ('status_of_last_30_reported_bugs', '', 'maintenance', 1),
-('covr_coverage', '', 'code_coverage', 1);
+('covr_coverage', '', 'test', 1);
