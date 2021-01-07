@@ -9,7 +9,7 @@
 
 # 1. Observe to load the columns from DB into below reactive values.
 
-observe({
+observeEvent(input$tabs, {
   req(input$select_pack)
   if (input$tabs == "tm_tab_value") {
     if (input$select_pack != "Select") {

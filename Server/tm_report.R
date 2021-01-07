@@ -6,7 +6,7 @@
 #####################################################################################################################
 
 # 1. Observe to check the report preview value
-observe({
+observeEvent(input$tabs, {
   req(input$select_pack)
   if (input$tabs == "reportPreview_tab_value") {
     if(input$select_pack != "Select"){
