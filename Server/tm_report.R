@@ -12,8 +12,8 @@ observeEvent(input$tabs, {
     if(input$select_pack != "Select"){
       
       package_id <- db_fun(paste0("SELECT id FROM package WHERE name = ", "'", input$select_pack, "'", ";"))
-      metric_id <- db_fun(paste0("SELECT id FROM metric WHERE class = 'code_coverage';"))
-      values$code_coverage <- db_fun(
+      metric_id <- db_fun(paste0("SELECT id FROM metric WHERE name = 'covr_coverage';"))
+      values$covr_coverage <- db_fun(
         paste0("SELECT value FROM package_metrics WHERE ",
                "package_id = ", package_id,
                " AND ",
