@@ -17,7 +17,7 @@ observeEvent(input$tabs, {
       package_id <- db_fun(paste0("SELECT id FROM package WHERE name = ", "'", input$select_pack, "'", ";"))
       metric_id <- db_fun(paste0("SELECT id FROM metric WHERE name = 'covr_coverage';"))
       
-      values$code_coverage <- db_fun(
+      values$covr_coverage <- db_fun(
         paste0("SELECT value FROM package_metrics WHERE ",
                "package_id = ", package_id,
                " AND ",
@@ -25,10 +25,10 @@ observeEvent(input$tabs, {
                ";"
         )
       )
-      values$code_coverage <- values$code_coverage$value
+      values$covr_coverage <- values$covr_coverage$value
       
       if (!is.null(input$tm_comment)) {
-        if(values$code_coverage == "pkg_metric_error")
+        if(values$covr_coverage == "pkg_metric_error")
           runjs( "setTimeout(function(){ addTextToGaugeSVG('test_coverage');}, 500);" )
         
         req(values$selected_pkg$decision)
@@ -52,7 +52,7 @@ output$test_coverage <- renderAmCharts({
   bands = data.frame(
     start = c(0, 40, 80),
     end = c(40, 80, 100),
-    color = ifelse(values$code_coverage != "pkg_metric_error",
+    color = ifelse(values$covr_coverage != "pkg_metric_error",
                    c("#ea3838", "#ffac29", "#00CC00"),
                    c("#808080", "#808080", "#808080")),
     stringsAsFactors = FALSE
@@ -60,13 +60,13 @@ output$test_coverage <- renderAmCharts({
   bands2 = data.frame(
     start = c(0, 40, 80),
     end = c(40, 80, 100),
-    color = ifelse(values$code_coverage != "pkg_metric_error",
+    color = ifelse(values$covr_coverage != "pkg_metric_error",
                    c("#ea3838", "#ffac29", "#00CC00"),
                    c("#808080", "#808080", "#808080")),
     stringsAsFactors = FALSE
   )
   amAngularGauge(
-    x = as.numeric(ifelse(values$code_coverage == "NA", 0, values$code_coverage)),
+    x = as.numeric(ifelse(values$covr_coverage == "NA", 0, values$covr_coverage)),
     start = 0,
     end = 100,
     bands = bands,
