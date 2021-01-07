@@ -189,7 +189,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
             "'", ifelse(
               class(riskmetric_assess$covr_coverage[[1]])[1] == "pkg_metric_error",
               "pkg_metric_error",
-              riskmetric_assess$covr_coverage[1]), "'",
+              riskmetric_assess$covr_coverage[[1]][1]), "'",
             ")" )
   )
 
