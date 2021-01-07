@@ -167,8 +167,8 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   riskmetric_score$export_help <- riskmetric_score$export_help*100
   
 
-  db_ins(paste0("INSERT INTO MaintenanceMetrics values(", 
-                "'", package_name, "',", 
+  db_ins(paste0("INSERT INTO MaintenanceMetrics values(",
+                "'", package_name, "',",
                 "'", riskmetric_score$has_vignettes[1], ",", ifelse(class(riskmetric_assess$has_vignettes[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$has_vignettes[[1]][1]), "',",
                 "'", riskmetric_score$has_news[1], ",",  ifelse(class(riskmetric_assess$has_news[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$has_news[[1]][1]), "',",
                 "'", riskmetric_score$news_current[1], ",",  ifelse(class(riskmetric_assess$news_current[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$news_current[[1]][1]), "',",
@@ -179,12 +179,20 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
                 "'", format(round(riskmetric_score$export_help[1],2)), ",",  ifelse(class(riskmetric_assess$export_help[[1]])[1] == "pkg_metric_error" || is.na(riskmetric_assess$export_help[[1]]), -1, riskmetric_assess$export_help[[1]][1]), "',",
                 "'", format(round(riskmetric_score$bugs_status[1],2)), ",",  ifelse(class(riskmetric_assess$bugs_status[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$bugs_status[[1]][1]), "'", ")"))
   
+  metric_id <- db_fun(paste0("SELECT id FROM metric WHERE name = 'covr_coverage';"))
+  package_id <- db_fun(paste0("SELECT id FROM package WHERE name = ", "'", package_name, "';"))
   db_ins(
-    paste0( "INSERT INTO TestMetrics values(",
-            "'", package_name, "',",  
-            "'", format(round(riskmetric_score$covr_coverage[1], 2)),",", ifelse(class(riskmetric_assess$covr_coverage[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$covr_coverage[[1]][1]), "'", ")" )
+    paste0( "INSERT INTO package_metrics (package_id, metric_id, weight, value) values(",
+            package_id, ",",
+            metric_id, ",",
+            "1" , "," ,
+            "'", ifelse(
+              class(riskmetric_assess$covr_coverage[[1]])[1] == "pkg_metric_error",
+              "pkg_metric_error",
+              riskmetric_assess$covr_coverage[1]), "'",
+            ")" )
   )
-  
+
   db_ins(paste0( "UPDATE package SET score = '", format(round(riskmetric_score$pkg_score[1], 2)), "'", " WHERE name = '" ,
                  package_name, "'"))
  
@@ -195,7 +203,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
 # 4. Function to get community usage metrics info and upload into DB.
 
 metric_cum_Info_upload_to_DB <- function(package_name) {
-  pkg_vers_date_final<<-data.frame(matrix(ncol = 4, nrow = 0))
+  pkg_vers_date_final <<- data.frame(matrix(ncol = 4, nrow = 0))
   time_since_first_release<<-NA
   time_since_version_release<<-NA
   downloads_1yr<<-NA
@@ -295,7 +303,7 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
              app = "fileupload-webscraping", echo = FALSE)
     }
   )# End of try catch
-  
+
   for (i in 1:nrow(pkg_vers_date_final)) {
     db_ins(paste0("INSERT INTO CommunityUsageMetrics values(",
                   "'", package_name,"',", "'", downloads_1yr, "',",
