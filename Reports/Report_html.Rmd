@@ -76,8 +76,8 @@ comment_o <-
   
 
   package_id <- db_fun(paste0("SELECT id FROM package WHERE name = ", "'", input$select_pack, "'", ";"))
-  metric_id <- db_fun(paste0("SELECT id FROM metric WHERE class = 'code_coverage';"))
-  code_coverage <- db_fun(
+  metric_id <- db_fun(paste0("SELECT id FROM metric WHERE name = 'covr_coverage';"))
+  covr_coverage <- db_fun(
     paste0("SELECT value FROM package_metrics WHERE ",
            "package_id = ", package_id,
            " AND ",
@@ -85,7 +85,7 @@ comment_o <-
            ";"
     )
   )
-  code_coverage <- code_coverage$value
+  covr_coverage <- covr_coverage$value
   
 
    comment_mm <-
@@ -482,7 +482,7 @@ comment_cum <- data.frame(comment_cum %>% map(rev))
   bands = data.frame(
     start = c(0, 40, 80),
     end = c(40, 80, 100),
-    color = ifelse(code_coverage != "pkg_metric_error",
+    color = ifelse(covr_coverage != "pkg_metric_error",
                    c("#ea3838", "#ffac29", "#00CC00"),
                    c("#808080", "#808080", "#808080")),
     stringsAsFactors = FALSE
@@ -490,13 +490,13 @@ comment_cum <- data.frame(comment_cum %>% map(rev))
   bands2 = data.frame(
     start = c(0, 40, 80),
     end = c(40, 80, 100),
-    color = ifelse(code_coverage != "pkg_metric_error",
+    color = ifelse(covr_coverage != "pkg_metric_error",
                    c("#ea3838", "#ffac29", "#00CC00"),
                    c("#808080", "#808080", "#808080")),
     stringsAsFactors = FALSE
   )
   amAngularGauge(
-    x = as.numeric(ifelse(code_coverage == "NA", 0, code_coverage)),
+    x = as.numeric(ifelse(covr_coverage == "NA", 0, covr_coverage)),
     start = 0,
     end = 100,
     bands = bands,
@@ -509,7 +509,7 @@ comment_cum <- data.frame(comment_cum %>% map(rev))
 
 ```{r echo=FALSE}
 
-if(code_coverage == "pkg_metric_error"){
+if(covr_coverage == "pkg_metric_error"){
   tags$script(HTML(
   "
   setTimeout(function() {
