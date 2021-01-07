@@ -21,10 +21,10 @@ observeEvent(input$tabs, {
                ";"
         )
       )
-      values$code_coverage <- values$code_coverage$value
+      values$covr_coverage <- values$covr_coverage$value
       
-      req(values$code_coverage)
-      if(values$code_coverage == "pkg_metric_error")
+      req(values$covr_coverage)
+      if(values$covr_coverage == "pkg_metric_error")
         runjs("setTimeout(function(){ addTextToGaugeSVG('test_coverage1');}, 5000);")
     }
   }
@@ -40,7 +40,7 @@ output$test_coverage1 <- renderAmCharts({
   bands = data.frame(
     start = c(0, 40, 80),
     end = c(40, 80, 100),
-    color = ifelse(values$code_coverage != "pkg_metric_error",
+    color = ifelse(values$covr_coverage != "pkg_metric_error",
                    c("#ea3838", "#ffac29", "#00CC00"),
                    c("#808080", "#808080", "#808080")),
     stringsAsFactors = FALSE
@@ -48,13 +48,13 @@ output$test_coverage1 <- renderAmCharts({
   bands2 = data.frame(
     start = c(0, 40, 80),
     end = c(40, 80, 100),
-    color = ifelse(values$code_coverage != "pkg_metric_error",
+    color = ifelse(values$covr_coverage != "pkg_metric_error",
                    c("#ea3838", "#ffac29", "#00CC00"),
                    c("#808080", "#808080", "#808080")),
     stringsAsFactors = FALSE
   )
   amAngularGauge(
-    x = as.numeric(ifelse(values$code_coverage == "NA", 0, values$code_coverage)),
+    x = as.numeric(ifelse(values$covr_coverage == "NA", 0, values$covr_coverage)),
     start = 0,
     end = 100,
     bands = bands,
