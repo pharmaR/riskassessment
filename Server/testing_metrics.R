@@ -9,29 +9,35 @@
 
 # 1. Observe to load the columns from DB into below reactive values.
 
-observe({
+observeEvent(input$tabs, {
   req(input$select_pack)
   if (input$tabs == "tm_tab_value") {
     if (input$select_pack != "Select") {
-    
-      values$riskmetrics_tm <-
-        db_fun(
-          paste0(
-            "SELECT * FROM TestMetrics WHERE TestMetrics.tm_id ='",
-            input$select_pack,
-            "'"
-          )
-        )
-      values$test_coverage <- c(strsplit(values$riskmetrics_tm$test_coverage,",")[[1]][1], strsplit(values$riskmetrics_tm$test_coverage,",")[[1]][2])
       
-    if (!is.null(input$tm_comment)) {
-      if(values$test_coverage[2] == -1){ runjs( "setTimeout(function(){ addTextToGaugeSVG('test_coverage');}, 500);" ) }
-      req(values$selected_pkg$decision)
-      if (values$selected_pkg$decision != "") {
-        runjs("setTimeout(function(){ var ele = document.getElementById('tm_comment'); ele.disabled = true; }, 500);")
-        runjs("setTimeout(function(){ var ele = document.getElementById('submit_tm_comment'); ele.disabled = true; }, 500);")
-      } 
-     }
+      package_id <- db_fun(paste0("SELECT id FROM package WHERE name = ", "'", input$select_pack, "'", ";"))
+      metric_id <- db_fun(paste0("SELECT id FROM metric WHERE name = 'covr_coverage';"))
+      
+      values$covr_coverage <- db_fun(
+        paste0("SELECT value FROM package_metrics WHERE ",
+               "package_id = ", package_id,
+               " AND ",
+               "metric_id = ", metric_id,
+               ";"
+        )
+      )
+      values$covr_coverage <- values$covr_coverage$value
+      
+      if (!is.null(input$tm_comment)) {
+        if(values$covr_coverage == "pkg_metric_error")
+          runjs( "setTimeout(function(){ addTextToGaugeSVG('test_coverage');}, 500);" )
+        
+        req(values$selected_pkg$decision)
+        
+        if (values$selected_pkg$decision != "") {
+          runjs("setTimeout(function(){ var ele = document.getElementById('tm_comment'); ele.disabled = true; }, 500);")
+          runjs("setTimeout(function(){ var ele = document.getElementById('submit_tm_comment'); ele.disabled = true; }, 500);")
+        }
+      }
     }
   }
 })  # End of the observe.
@@ -46,17 +52,21 @@ output$test_coverage <- renderAmCharts({
   bands = data.frame(
     start = c(0, 40, 80),
     end = c(40, 80, 100),
-    color = ifelse(values$test_coverage[2] != -1, c("#ea3838", "#ffac29", "#00CC00"), c("#808080", "#808080", "#808080")),
+    color = ifelse(values$covr_coverage != "pkg_metric_error",
+                   c("#ea3838", "#ffac29", "#00CC00"),
+                   c("#808080", "#808080", "#808080")),
     stringsAsFactors = FALSE
   )
   bands2 = data.frame(
     start = c(0, 40, 80),
     end = c(40, 80, 100),
-    color = ifelse(values$test_coverage[2] != -1, c("#ea3838", "#ffac29", "#00CC00"), c("#808080", "#808080", "#808080")),
+    color = ifelse(values$covr_coverage != "pkg_metric_error",
+                   c("#ea3838", "#ffac29", "#00CC00"),
+                   c("#808080", "#808080", "#808080")),
     stringsAsFactors = FALSE
   )
   amAngularGauge(
-    x = as.numeric(ifelse(values$test_coverage[1] == "NA", 0, values$test_coverage[1])),
+    x = as.numeric(ifelse(values$covr_coverage == "NA", 0, values$covr_coverage)),
     start = 0,
     end = 100,
     bands = bands,
