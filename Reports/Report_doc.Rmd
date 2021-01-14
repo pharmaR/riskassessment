@@ -111,14 +111,15 @@ comment_o <-
           "' AND comment_type = 'tm'"
         )
       )
-
+    
+    riskinfo <- package_info("riskmetric", dependencies = FALSE)
 ```
 
 ## Report of the " `r pkg_GenInfo$name` " Package:
 
-This **`r pkg_GenInfo$name`** package report was generated using  **`r params$version`** riskmetric version .  Metrics were reviewed via the R Package Risk Assessment Application.</div>
+This **`r pkg_GenInfo$package`** package report was generated using riskmetric version **`r riskinfo$loadedversion`**
 
-
+Metrics were reviewed via the R Package Risk Assessment Application.
 
 ```{r setup, include=FALSE}
 library(knitr)

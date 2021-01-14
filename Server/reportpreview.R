@@ -18,6 +18,8 @@ output$gen_info <- renderText({
       )
     )
   
+  riskinfo <- package_info("riskmetric", dependencies = FALSE)
+  
   paste(
     "<h2><b>Package:</b> ",
     pkg_GenInfo$name,
@@ -41,7 +43,8 @@ output$gen_info <- renderText({
     "</h4>",
     "<h4><b>Published:</b>",
     pkg_GenInfo$published,
-    "</h4>"
+    "</h4>",
+    "<br><h3><b>riskmetric version:</b>",riskinfo$loadedversion,"</h3>"
   )
 })  # End of the render output for genral information.
 
