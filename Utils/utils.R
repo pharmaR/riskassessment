@@ -57,9 +57,7 @@ db_ins <- function(query){
 }
 
 TimeStamp <- function(){
-  Timestamp_intial<-str_replace(Sys.time()," ", "; ")
-  Timestamp <- paste(Timestamp_intial, Sys.timezone())
-  return(Timestamp)
+  return(lubridate::with_tz(Sys.time(), "UTC"))
 }
 
 GetUserName <- function() {
