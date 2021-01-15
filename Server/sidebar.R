@@ -228,14 +228,7 @@ observeEvent(input$submit_overall_comment, {
   values$overall_comments <- trimws(overall_comment)
   if (values$overall_comments != "") {
     
-    comments_submitted <-
-      db_fun(
-        paste0(
-          "SELECT * FROM Comments WHERE comment_type = 'o' AND comm_id = '",
-          values$selected_pkg$package,
-          "'"
-        )
-      )
+    comments_submitted <- sel_cmts(values$selected_pkg$package, "o")
     if (values$name %in% comments_submitted$user_name &&
         values$role %in% comments_submitted$user_role) {
       comment_submitted <-
@@ -263,17 +256,7 @@ observeEvent(input$submit_overall_comment, {
         )
       ))
     } else{
-      db_ins(
-        paste0(
-          "INSERT INTO Comments values('", values$selected_pkg$package, "',",
-          "'", values$name, "'," ,
-          "'", values$role, "',",
-          "'", values$overall_comments, "',",
-          "'o',",
-          "'", TimeStamp(), "'" ,
-          ")"
-        )
-      )
+      ins_cmts(input$select_pack, input$select_ver, values$name, values$role, values$overall_comments, cm_type = "o")
       values$o_comment_submitted <- "yes"
       updateTextAreaInput(session, "overall_comment", value = "")
       updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", values$overall_comments))
