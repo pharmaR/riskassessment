@@ -109,14 +109,14 @@ update_db_dash <- function(){
   )
 }
 
-ins_cmts <- function(package, versn, comment, cm_type) {
+ins_cmts <- function(package, versn, name, role, comment, cm_type) {
   db_ins(
     paste0(
       "INSERT INTO Comments values('",
-      package,      "',",
+      package,            "',",
       "'",  versn,        "',",
-      "'",  values$name,  "',",
-      "'",  values$role,  "',",
+      "'",  name,         "',",
+      "'",  role,         "',",
       "'",  comment,      "',",
       "'",  cm_type,      "',",
       "'",  TimeStamp(),  "'" ,
