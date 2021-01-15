@@ -273,27 +273,8 @@ values$mm_comment_submitted <- "no"
 
 observeEvent(input$submit_mm_comment, {
   if (trimws(input$mm_comment) != "") {
-    db_ins(
-      paste0(
-        "INSERT INTO Comments values('",
-        input$select_pack,
-        "',",
-        "'",
-        values$name,
-        "'," ,
-        "'",
-        values$role,
-        "',",
-        "'",
-        input$mm_comment,
-        "',",
-        "'mm'," ,
-        "'",
-        TimeStamp(),
-        "'"  ,
-        ")"
-      )
-    )
+    # insert into comments table
+    ins_cmts(input$select_pack, input$select_ver, values$name, values$role, input$mm_comment, cm_type = "mm")
     values$mm_comment_submitted <- "yes"
     updateTextAreaInput(session, "mm_comment", value = "")
     # After comment added to Comments table, update db dash
