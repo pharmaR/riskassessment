@@ -8,3 +8,4 @@ has_website,TRUE,Associated website URL?,
 has_maintainer,TRUE,Has a maintainer?,
 has_news,TRUE,Has NEWS?,The package has at least one NEWS file
 has_source_control,TRUE,Source code public?,
+covr_coverage,TRUE,Package unit test coverage,
