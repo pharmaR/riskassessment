@@ -163,21 +163,39 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
     pkg_score() %>%
     mutate(risk = summarize_scores(.))
   
-  riskmetric_score$bugs_status <- riskmetric_score$bugs_status*100
-  riskmetric_score$export_help <- riskmetric_score$export_help*100
+  excl_name <- c("package","version","pkg_ref","license","downloads_1yr","pkg_score","risk")
   
-
-  db_ins(paste0("INSERT INTO MaintenanceMetrics values(",
-                "'", package_name, "',",
-                "'", riskmetric_score$has_vignettes[1], ",", ifelse(class(riskmetric_assess$has_vignettes[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$has_vignettes[[1]][1]), "',",
-                "'", riskmetric_score$has_news[1], ",",  ifelse(class(riskmetric_assess$has_news[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$has_news[[1]][1]), "',",
-                "'", riskmetric_score$news_current[1], ",",  ifelse(class(riskmetric_assess$news_current[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$news_current[[1]][1]), "',",
-                "'", riskmetric_score$has_website[1], ",",  ifelse(class(riskmetric_assess$has_website[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$has_website[[1]][1]), "',",
-                "'", riskmetric_score$has_bug_reports_url[1], ",",  ifelse(class(riskmetric_assess$has_bug_reports_url[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$has_bug_reports_url[[1]][1]), "',",
-                "'", riskmetric_score$has_maintainer[1], ",",  ifelse(class(riskmetric_assess$has_maintainer[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$has_maintainer[[1]][1]), "',",
-                "'", riskmetric_score$has_source_control[1], ",",  ifelse(class(riskmetric_assess$has_source_control[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$has_source_control[[1]][1]), "',",
-                "'", format(round(riskmetric_score$export_help[1],2)), ",",  ifelse(class(riskmetric_assess$export_help[[1]])[1] == "pkg_metric_error" || is.na(riskmetric_assess$export_help[[1]]), -1, riskmetric_assess$export_help[[1]][1]), "',",
-                "'", format(round(riskmetric_score$bugs_status[1],2)), ",",  ifelse(class(riskmetric_assess$bugs_status[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$bugs_status[[1]][1]), "'", ")"))
+  pkrm1 <- riskmetric_score[- which(colnames(riskmetric_score) %in% excl_name)]
+  pkrm2 <- riskmetric_assess[- which(colnames(riskmetric_assess) %in% excl_name)]
+  
+  # combine rm1 (score) and rm2 (assess) values into one string
+  pkrm3 <- map2(pkrm1, pkrm2, ~ unique(paste(.x[1], ifelse(class(.y[1]) == "pkg_metric_error", -1, .y[1]), sep = ",")))
+  pkrm3 <- as_tibble(pkrm3)
+  
+  # collect all the names and values into mm_name and mm_value
+  mm_tbl <- tidyr::pivot_longer(pkrm3, 
+                                cols = colnames(pkrm3),
+                                names_to = "mm_name", 
+                                values_to = "mm_value")
+  
+  package_version <- riskmetric_assess$version
+  
+  riskinfo <- package_info("riskmetric", dependencies = FALSE)
+  
+  # load db table MaintenanceMetrics -- loading multiple rows per package/version
+  con <- dbConnect(RSQLite::SQLite(), db_name)
+  for (i in 1:nrow(mm_tbl)) {
+    query <- paste0("INSERT INTO MaintenanceMetrics values(",
+                    "'", package_name,    "',",
+                    "'", package_version,    "',",
+                    "'", riskinfo$loadedversion,    "',",
+                    "'", riskinfo$date,    "',",
+                    "'", mm_tbl$mm_name[[i]],    "',",
+                    "'", mm_tbl$mm_value[[i]],    "'", ")"
+    )
+    dbExecute(con, query)
+  }
+  dbDisconnect(con)
   
   metric_id <- db_fun(paste0("SELECT id FROM metric WHERE name = 'covr_coverage';"))
   package_id <- db_fun(paste0("SELECT id FROM package WHERE name = ", "'", package_name, "';"))
