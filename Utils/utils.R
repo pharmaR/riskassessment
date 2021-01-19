@@ -113,3 +113,34 @@ update_db_dash <- function(){
   )
 }
   
+info_thumb <- function(title, values, message) {
+  infoBox(
+    title = title,
+    value = case_when(
+      values[1] ==  1 ~ "YES",
+      values[2] == -1 ~ "NA",
+      TRUE ~ "NO"
+    ),
+    width = 4,
+    subtitle = ifelse(values[2] == -1, 
+                      "Metric is not applicable for this source of package", 
+                      message),
+    icon = icon(
+      ifelse(values[1] == 1, "thumbs-up", "thumbs-down"),
+      lib = "glyphicon"
+    ),
+    color = ifelse(values[1] == 1, "green", "red"),
+    fill = TRUE
+  )
+}
+
+info_percnt <- function(title, values, message) {
+  infoBox(
+    title = title,
+    value = ifelse(values[2] == -1, "NA", paste0(values[1],"%")),
+    subtitle = message,
+    width = 4,
+    color = ifelse(values[2] == -1, "black", "light-blue"),
+    fill = TRUE
+  )
+}
