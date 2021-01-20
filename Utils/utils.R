@@ -21,7 +21,6 @@ create_db <- function(){
   queries <- c(
     "create_package_table.sql",
     "create_metric_table.sql",
-    "initialize_metric_table.sql",
     "create_package_metrics_table.sql",
     "create_MaintenanceMetrics_table.sql",
     "create_CommunityUsageMetrics_table.sql",
@@ -40,6 +39,40 @@ create_db <- function(){
     dbClearResult(res)
   })
   
+  # build the table to initialize the metric db and run the query
+  package_name <- "riskmetric"
+  
+  riskmetric_assess <-
+    pkg_ref(package_name) %>%
+    as_tibble() %>%
+    pkg_assess()
+  
+  # exclude the following names
+  excl_name <- c("package","version","pkg_ref","license","downloads_1yr","pkg_score","risk")
+  
+  rm_abbrev <- select(riskmetric_assess, 
+                      which(!names(riskmetric_assess) %in% excl_name))
+  
+  # get name and description directly from abbreviated riskmetric_assess
+  name        <- names(rm_abbrev)
+  description <- map_chr(rm_abbrev, ~attr(.x, "label") )
+  
+  # build tbl
+  df_metric <- tibble(name,description) %>% 
+    mutate(class = ifelse(name == "covr_coverage", "test", "maintenance")) %>% 
+    mutate(weight = 1)
+  
+  # transpose it
+  t_dfm <- t(df_metric)
+  
+  # build query -- assumes weight is always initalized to 1
+  query <- paste0("INSERT INTO metric (name, description, class, weight) values('",
+                  paste(t_dfm, collapse="','"), "')")
+  query <- gsub("'1',","1),(",query)  # separate rows with "),("
+  query <- gsub("'1'","1",query)
+  
+  # initialize the table
+  dbExecute(con, query)
   dbDisconnect(con)
 }
 
