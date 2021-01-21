@@ -20,12 +20,13 @@ observe({
           )
         )  
       
-      metrics_to_read <- file.path("Data", "maint_metrics_labels.csv")
-      maint_tbl <- readr::read_csv(metrics_to_read, col_types = cols(.default = "c", is_thumb = "l"))
+      metrics_to_read <- file.path("Data", "metric.csv")
+      maint_tbl <- readr::read_csv(metrics_to_read, col_types = cols(.default = "c", id = "i", weight = "n", is_thumb = "l"))
       
       # add labels
-      values$risk_mm <- left_join(risk_mm, maint_tbl, by = "mm_name")
-
+      values$risk_mm <- left_join(risk_mm, maint_tbl, by = c("mm_name" = "name")) %>% 
+        filter(class == "maintenance") %>% 
+        rename(mm_label = as_label, mm_detail = sc_descr)
     }
   }
 })  # End of the observe.
@@ -43,21 +44,23 @@ output$myboxes1 <- renderUI({
       vals[[i]][2] <- ifelse(vals[[i]][2] == "NA", -1, vals[[i]][2])
       # convert proportion to percentage
       vals[[i]][1] <- ifelse(vals[[i]][1] == "NA", NA, format(round(as.numeric(vals[[i]][1]) * 100, 2)))
-      boxes[[i]] <- info_percnt(values$risk_mm$mm_label[[i]], vals[[i]], 
-                                eval(ifelse(vals[[i]][2] == -1, "Not Applicable",
-                                            ifelse(is.na(values$risk_mm$mm_detail[[i]]),
-                                                   paste("Percentage of",tolower(values$risk_mm$mm_name[[i]])),
-                                                   values$risk_mm$mm_detail[[i]]))) )
+      boxes[[i]] <- info_percnt(values$risk_mm$mm_name[[i]], vals[[i]], 
+                                eval(ifelse(vals[[i]][2] == -1, "Metric is not applicable",
+                                            values$risk_mm$mm_detail[[i]]))) 
     } else {
       # if we have a c() of text strings, take the first one.
       text <- str_split(vals[[i]][2],",")[[1]][1]
       text <- gsub('[\"]', '', text)
       text <- ifelse(str_detect(text,"[(]"),str_sub(text,3,nchar(text)),text)
-      boxes[[i]] <- info_thumb(values$risk_mm$mm_label[[i]], vals[[i]], 
-                               eval(ifelse(vals[[i]][2] == -1, "Not Applicable", 
+      boxes[[i]] <- info_thumb(values$risk_mm$mm_name[[i]], vals[[i]], 
+                               eval(ifelse(vals[[i]][2] == -1, "Metric is not applicable", 
                                            ifelse(vals[[i]][1] == 1, 
-                                                  ifelse(is.na(values$risk_mm$mm_detail[[i]]), text, 
-                                                         values$risk_mm$mm_detail[[i]]),
+                                                  # if mm_label contains "vector" or "url" just show the text (the url)
+                                                  ifelse(str_detect(values$risk_mm$mm_label[[i]],paste(c("vector","url"),collapse="|")), text,
+                                                         # if this is a logical TRUE|FALSE just show the label
+                                                         ifelse(vals[[i]][2] %in% c("TRUE","FALSE"), values$risk_mm$mm_label[[i]], 
+                                                                # Number of...  
+                                                                paste0(values$risk_mm$mm_label[[i]], ": ", vals[[i]][2])) ),
                                                   "Nothing to see here.")))) 
     }
   }

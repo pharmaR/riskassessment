@@ -1,0 +1,11 @@
+id,name,as_label,sc_descr,is_thumb,class,weight
+1,news_current,NEWS file contains entry for current version number,A binary indicator of whether the associated NEWS file has an entry for the current version of the package.,TRUE,maintenance,1
+2,has_vignettes,number of discovered vignettes files,A binary indicator of whether the package has any vignettes.,TRUE,maintenance,1
+3,has_bug_reports_url,presence of a bug reports url in repository,A binary indicator of whether a package links to a location to file bug reports.,TRUE,maintenance,1
+4,bugs_status,vector indicating whether BugReports status is closed,The percentage of the last 30 bugs which have already been closed.,FALSE,maintenance,1
+5,export_help,exported objects have documentation,The percentage of exported objects that are documented.,FALSE,maintenance,1
+6,has_website,a vector of associated website urls,A binary indicator of whether the package has an acompanying website.,TRUE,maintenance,1
+7,has_maintainer,a vector of associated maintainers,A binary indicator of whether a package has a maintainer.,TRUE,maintenance,1
+8,has_news,number of discovered NEWS files,A binary indicator of whether a package has an associated NEWS file.,TRUE,maintenance,1
+9,has_source_control,a vector of associated source control urls,A binary indicator of whether the package has an associated version-controled repository.,TRUE,maintenance,1
+10,covr_coverage,Package unit test coverage,The percentage of lines of code which are covered by a unit test.,FALSE,test,1
