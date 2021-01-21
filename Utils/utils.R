@@ -47,18 +47,29 @@ create_db <- function(){
     as_tibble() %>%
     pkg_assess()
   
+  riskmetric_score <-
+    riskmetric_assess %>%
+    pkg_score() %>%
+    mutate(risk = summarize_scores(.))
+  
   # exclude the following names
   excl_name <- c("package","version","pkg_ref","license","downloads_1yr","pkg_score","risk")
   
-  rm_abbrev <- select(riskmetric_assess, 
+  rm_assess <- select(riskmetric_assess, 
                       which(!names(riskmetric_assess) %in% excl_name))
-  
+  rm_score  <- select(riskmetric_score, 
+                      which(!names(riskmetric_score) %in% excl_name))
+
   # get name and description directly from abbreviated riskmetric_assess
-  name        <- names(rm_abbrev)
-  description <- map_chr(rm_abbrev, ~attr(.x, "label") )
+  # get name and description directly from riskmetric_assess
+  name        <- names(rm_assess)
+  as_label    <- map_chr(rm_assess, ~attr(.x, "label") )
+  sc_descr    <- map_chr(rm_score,  ~attr(.x, "label") )
   
   # build tbl
-  df_metric <- tibble(name,description) %>% 
+  df_metric <- tibble(name,as_label,sc_descr) %>% 
+    mutate(is_thumb = ifelse(str_detect(sc_descr,"fraction"), FALSE, TRUE)) %>% 
+    mutate(sc_descr = str_replace(sc_descr,"fraction","percentage")) %>% 
     mutate(class = ifelse(name == "covr_coverage", "test", "maintenance")) %>% 
     mutate(weight = 1)
   
@@ -66,9 +77,9 @@ create_db <- function(){
   t_dfm <- t(df_metric)
   
   # build query -- assumes weight is always initalized to 1
-  query <- paste0("INSERT INTO metric (name, description, class, weight) values('",
+  query <- paste0("INSERT INTO metric (name, as_label, sc_descr, is_thumb, class, weight) values('",
                   paste(t_dfm, collapse="','"), "')")
-  query <- gsub("'1',","1),(",query)  # separate rows with "),("
+  query <- gsub("'1',","1),(",query)  # separate new rows with )(
   query <- gsub("'1'","1",query)
   
   # initialize the table
