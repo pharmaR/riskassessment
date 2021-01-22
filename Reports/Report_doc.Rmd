@@ -41,15 +41,15 @@ comment_o <-
       )
     )
    
-  package_has_vignettes <- c(strsplit(riskmetrics_mm$package_has_vignettes,",")[[1]][1], strsplit(riskmetrics_mm$package_has_vignettes,",")[[1]][2])
-  package_has_website <- c(strsplit(riskmetrics_mm$package_has_website,",")[[1]][1], strsplit(riskmetrics_mm$package_has_website,",")[[1]][2])
-  package_has_news <- c(strsplit(riskmetrics_mm$package_has_news,",")[[1]][1], strsplit(riskmetrics_mm$package_has_news,",")[[1]][2])
-  news_is_current <- c(strsplit(riskmetrics_mm$news_is_current,",")[[1]][1], strsplit(riskmetrics_mm$news_is_current,",")[[1]][2])
-  has_bug_reports <- c(strsplit(riskmetrics_mm$has_bug_reports,",")[[1]][1], strsplit(riskmetrics_mm$has_bug_reports,",")[[1]][2])
-  status_of_last_30_reported_bugs <- c(strsplit(riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][1], strsplit(riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][2])
-  exported_objects_with_documentation <- c(strsplit(riskmetrics_mm$exported_objects_with_documentation,",")[[1]][1], strsplit(riskmetrics_mm$exported_objects_with_documentation,",")[[1]][2])
-  source_code_is_public <- c(strsplit(riskmetrics_mm$source_code_is_public,",")[[1]][1], strsplit(riskmetrics_mm$source_code_is_public,",")[[1]][2])
-  has_a_package_maintainer <- c(strsplit(riskmetrics_mm$has_a_package_maintainer,",")[[1]][1], strsplit(riskmetrics_mm$has_a_package_maintainer,",")[[1]][2])
+  has_vignettes <- c(strsplit(riskmetrics_mm$has_vignettes,",")[[1]][1], strsplit(riskmetrics_mm$has_vignettes,",")[[1]][2])
+  has_website <- c(strsplit(riskmetrics_mm$has_website,",")[[1]][1], strsplit(riskmetrics_mm$has_website,",")[[1]][2])
+  has_news <- c(strsplit(riskmetrics_mm$has_news,",")[[1]][1], strsplit(riskmetrics_mm$has_news,",")[[1]][2])
+  news_current <- c(strsplit(riskmetrics_mm$news_current,",")[[1]][1], strsplit(riskmetrics_mm$news_current,",")[[1]][2])
+  has_bug_reports_url <- c(strsplit(riskmetrics_mm$has_bug_reports_url,",")[[1]][1], strsplit(riskmetrics_mm$has_bug_reports_url,",")[[1]][2])
+  bugs_status <- c(strsplit(riskmetrics_mm$bugs_status,",")[[1]][1], strsplit(riskmetrics_mm$bugs_status,",")[[1]][2])
+  export_help <- c(strsplit(riskmetrics_mm$export_help,",")[[1]][1], strsplit(riskmetrics_mm$export_help,",")[[1]][2])
+  has_source_control <- c(strsplit(riskmetrics_mm$has_source_control,",")[[1]][1], strsplit(riskmetrics_mm$has_source_control,",")[[1]][2])
+  has_maintainer <- c(strsplit(riskmetrics_mm$has_maintainer,",")[[1]][1], strsplit(riskmetrics_mm$has_maintainer,",")[[1]][2])
 
   riskmetrics_cum <-
     db_fun(
@@ -195,45 +195,45 @@ knitr::kable(table_o, format='pandoc')
 Metric<-c("Presence of vignettes?","Associated website URL?","NEWS?","News is current?","Bugs publicly documented?","Bug closure","Documentation","Source code public?","Has a maintainer?")
 
 Result<-c(
-    if(package_has_vignettes[2] == -1){"NA"}
-      else{ ifelse(package_has_vignettes[1] == 1, "YES", "NO")},
-     if(package_has_website[2] == -1){"NA"}
-      else{ ifelse(package_has_website[1] == 1, "YES", "NO")},
-     if(package_has_news[2] == -1){"NA"}
-      else{ ifelse(package_has_news[1] == 1, "YES", "NO")},
-      if(news_is_current[2] == -1){"NA"}
-      else{ ifelse(news_is_current[1] == 1, "YES", "NO")},
-     if(has_bug_reports[2] == -1){"NA"}
-      else{ ifelse(has_bug_reports[1] == 1, "YES", "NO")},
-     if(status_of_last_30_reported_bugs[2] == -1){"NA"}
-      else{paste0(status_of_last_30_reported_bugs[1],"%")},
-     if(exported_objects_with_documentation[2] == -1){"NA"}
-      else{paste0(exported_objects_with_documentation[1],"%")},
-     if(source_code_is_public[2] == -1){"NA"}
-      else{ ifelse(source_code_is_public[1] == 1, "YES", "NO")},
-     if(has_a_package_maintainer[2] == -1){"NA"}
-      else{ ifelse(has_a_package_maintainer[1] == 1, "YES", "NO")}
+    if(has_vignettes[2] == -1){"NA"}
+      else{ ifelse(has_vignettes[1] == 1, "YES", "NO")},
+     if(has_website[2] == -1){"NA"}
+      else{ ifelse(has_website[1] == 1, "YES", "NO")},
+     if(has_news[2] == -1){"NA"}
+      else{ ifelse(has_news[1] == 1, "YES", "NO")},
+      if(news_current[2] == -1){"NA"}
+      else{ ifelse(news_current[1] == 1, "YES", "NO")},
+     if(has_bug_reports_url[2] == -1){"NA"}
+      else{ ifelse(has_bug_reports_url[1] == 1, "YES", "NO")},
+     if(bugs_status[2] == -1){"NA"}
+      else{paste0(bugs_status[1],"%")},
+     if(export_help[2] == -1){"NA"}
+      else{paste0(export_help[1],"%")},
+     if(has_source_control[2] == -1){"NA"}
+      else{ ifelse(has_source_control[1] == 1, "YES", "NO")},
+     if(has_maintainer[2] == -1){"NA"}
+      else{ ifelse(has_maintainer[1] == 1, "YES", "NO")}
     )
 
 Detail<-c(
-          if(package_has_vignettes[2] == -1){"Metric is not applicable for this source of package"}
-            else{paste("The package has", package_has_vignettes[2], "Vignettes")},
-          if(package_has_website[2] == -1){"Metric is not applicable for this source of package"}
-            else{ ifelse(package_has_website[1] == 1, paste("Website:",package_has_website[2]), "The package does not have an associated website URL")},
-          if(package_has_news[2] == -1){"Metric is not applicable for this source of package"}
-            else{ ifelse(package_has_news[1] == 1, "The package has a NEWS file.", "The package does not have a NEWS file")},
-          if(news_is_current[2] == -1){"Metric is not applicable for this source of package"}
-            else{ ifelse(news_is_current[1] == 1, "NEWS file contains entry for current version number", "NEWS file does not contains entry for current version number")},
-          if(has_bug_reports[2] == -1){"Metric is not applicable for this source of package"}
-            else{ ifelse(has_bug_reports[1] == 1, paste("Bug reports URL:", has_bug_reports[2]), "The Bugs are not publicly documented")},
-          if(status_of_last_30_reported_bugs[2] == -1){"Metric is not applicable for this source of package"}
+          if(has_vignettes[2] == -1){"Metric is not applicable for this source of package"}
+            else{paste("The package has", has_vignettes[2], "Vignettes")},
+          if(has_website[2] == -1){"Metric is not applicable for this source of package"}
+            else{ ifelse(has_website[1] == 1, paste("Website:",has_website[2]), "The package does not have an associated website URL")},
+          if(has_news[2] == -1){"Metric is not applicable for this source of package"}
+            else{ ifelse(has_news[1] == 1, "The package has a NEWS file.", "The package does not have a NEWS file")},
+          if(news_current[2] == -1){"Metric is not applicable for this source of package"}
+            else{ ifelse(news_current[1] == 1, "NEWS file contains entry for current version number", "NEWS file does not contains entry for current version number")},
+          if(has_bug_reports_url[2] == -1){"Metric is not applicable for this source of package"}
+            else{ ifelse(has_bug_reports_url[1] == 1, paste("Bug reports URL:", has_bug_reports_url[2]), "The Bugs are not publicly documented")},
+          if(bugs_status[2] == -1){"Metric is not applicable for this source of package"}
             else{"Percentage of last 30 bugs closed"},
-          if(exported_objects_with_documentation[2] == -1){"Metric is not applicable for this source of package"}
+          if(export_help[2] == -1){"Metric is not applicable for this source of package"}
             else{"Proportion of exported objects documented"},
-          if(source_code_is_public[2] == -1){"Metric is not applicable for this soucre of package"}
-            else{ ifelse(source_code_is_public[1] == 1, paste("Source code URL:", source_code_is_public[2]), "Package does not have a Source code URL")},
-          if(has_a_package_maintainer[2] == -1){"Metric is not applicable for this soucre of package"}
-              else{ ifelse(has_a_package_maintainer[1] == 1, has_a_package_maintainer[2], "Package does not have a Maintainer")}
+          if(has_source_control[2] == -1){"Metric is not applicable for this soucre of package"}
+            else{ ifelse(has_source_control[1] == 1, paste("Source code URL:", has_source_control[2]), "Package does not have a Source code URL")},
+          if(has_maintainer[2] == -1){"Metric is not applicable for this soucre of package"}
+              else{ ifelse(has_maintainer[1] == 1, has_maintainer[2], "Package does not have a Maintainer")}
 )
 table_infobox<-data.frame(Metric,Result,Detail)
 

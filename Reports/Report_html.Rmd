@@ -41,15 +41,15 @@ comment_o <-
       )
     )
    
-  package_has_vignettes <- c(strsplit(riskmetrics_mm$package_has_vignettes,",")[[1]][1], strsplit(riskmetrics_mm$package_has_vignettes,",")[[1]][2])
-  package_has_website <- c(strsplit(riskmetrics_mm$package_has_website,",")[[1]][1], strsplit(riskmetrics_mm$package_has_website,",")[[1]][2])
-  package_has_news <- c(strsplit(riskmetrics_mm$package_has_news,",")[[1]][1], strsplit(riskmetrics_mm$package_has_news,",")[[1]][2])
-  news_is_current <- c(strsplit(riskmetrics_mm$news_is_current,",")[[1]][1], strsplit(riskmetrics_mm$news_is_current,",")[[1]][2])
-  has_bug_reports <- c(strsplit(riskmetrics_mm$has_bug_reports,",")[[1]][1], strsplit(riskmetrics_mm$has_bug_reports,",")[[1]][2])
-  status_of_last_30_reported_bugs <- c(strsplit(riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][1], strsplit(riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][2])
-  exported_objects_with_documentation <- c(strsplit(riskmetrics_mm$exported_objects_with_documentation,",")[[1]][1], strsplit(riskmetrics_mm$exported_objects_with_documentation,",")[[1]][2])
-  source_code_is_public <- c(strsplit(riskmetrics_mm$source_code_is_public,",")[[1]][1], strsplit(riskmetrics_mm$source_code_is_public,",")[[1]][2])
-  has_a_package_maintainer <- c(strsplit(riskmetrics_mm$has_a_package_maintainer,",")[[1]][1], strsplit(riskmetrics_mm$has_a_package_maintainer,",")[[1]][2])
+  has_vignettes <- c(strsplit(riskmetrics_mm$has_vignettes,",")[[1]][1], strsplit(riskmetrics_mm$has_vignettes,",")[[1]][2])
+  has_website <- c(strsplit(riskmetrics_mm$has_website,",")[[1]][1], strsplit(riskmetrics_mm$has_website,",")[[1]][2])
+  has_news <- c(strsplit(riskmetrics_mm$has_news,",")[[1]][1], strsplit(riskmetrics_mm$has_news,",")[[1]][2])
+  news_current <- c(strsplit(riskmetrics_mm$news_current,",")[[1]][1], strsplit(riskmetrics_mm$news_current,",")[[1]][2])
+  has_bug_reports_url <- c(strsplit(riskmetrics_mm$has_bug_reports_url,",")[[1]][1], strsplit(riskmetrics_mm$has_bug_reports_url,",")[[1]][2])
+  bugs_status <- c(strsplit(riskmetrics_mm$bugs_status,",")[[1]][1], strsplit(riskmetrics_mm$bugs_status,",")[[1]][2])
+  export_help <- c(strsplit(riskmetrics_mm$export_help,",")[[1]][1], strsplit(riskmetrics_mm$export_help,",")[[1]][2])
+  has_source_control <- c(strsplit(riskmetrics_mm$has_source_control,",")[[1]][1], strsplit(riskmetrics_mm$has_source_control,",")[[1]][2])
+  has_maintainer <- c(strsplit(riskmetrics_mm$has_maintainer,",")[[1]][1], strsplit(riskmetrics_mm$has_maintainer,",")[[1]][2])
 
   riskmetrics_cum <-
     db_fun(
@@ -203,47 +203,47 @@ div(
 class = "row mb-3",
   infoBox(
     title = "Presence of vignettes?",
-    if(package_has_vignettes[1] == 1){"YES"}
-    else if(package_has_vignettes[2] == -1){"NA"}
+    if(has_vignettes[1] == 1){"YES"}
+    else if(has_vignettes[2] == -1){"NA"}
     else{"NO"},
     width = 3,
-    if(package_has_vignettes[2] == -1){"Metric is not applicable for this source of package"}
-    else{paste("The package has", package_has_vignettes[2], "Vignettes")},
+    if(has_vignettes[2] == -1){"Metric is not applicable for this source of package"}
+    else{paste("The package has", has_vignettes[2], "Vignettes")},
     icon = icon(
-      ifelse(package_has_vignettes[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(has_vignettes[1] == 1, "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(package_has_vignettes[1] == 1, "green", "red"),
+    color = ifelse(has_vignettes[1] == 1, "green", "red"),
     fill = TRUE
   ),
   infoBox(
     title = "Associated website URL?",
-    if(package_has_website[1] == 1){"YES"}
-    else if(package_has_website[2] == -1){"NA"}
+    if(has_website[1] == 1){"YES"}
+    else if(has_website[2] == -1){"NA"}
     else{"NO"},
     width = 3,
-    if(package_has_website[2] == -1){"Metric is not applicable for this source of package"}
-    else{ ifelse(package_has_website[1] == 1, paste("Website:",package_has_website[2]), "The package does not have an associated website URL")},
+    if(has_website[2] == -1){"Metric is not applicable for this source of package"}
+    else{ ifelse(has_website[1] == 1, paste("Website:",has_website[2]), "The package does not have an associated website URL")},
     icon = icon(
-      ifelse(package_has_website[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(has_website[1] == 1, "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(package_has_website[1] == 1, "green", "red"),
+    color = ifelse(has_website[1] == 1, "green", "red"),
     fill = TRUE
   ),
   infoBox(
     title = "NEWS?",
-    if(package_has_news[1] == 1){"YES"}
-    else if(package_has_news[2] == -1){"NA"}
+    if(has_news[1] == 1){"YES"}
+    else if(has_news[2] == -1){"NA"}
     else{"NO"},
     width = 3,
-    if(package_has_news[2] == -1){"Metric is not applicable for this source of package"}
-    else{ ifelse(package_has_news[1] == 1, "The package has a NEWS file.", "The package does not have a NEWS file")},
+    if(has_news[2] == -1){"Metric is not applicable for this source of package"}
+    else{ ifelse(has_news[1] == 1, "The package has a NEWS file.", "The package does not have a NEWS file")},
     icon = icon(
-      ifelse(package_has_news[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(has_news[1] == 1, "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(package_has_news[1] == 1, "green", "red"),
+    color = ifelse(has_news[1] == 1, "green", "red"),
     fill = TRUE
   )
 )
@@ -254,39 +254,39 @@ div(
 class = "row mb-3",
   infoBox(
     title = "News is current?",
-    if(news_is_current[1] == 1){"YES"}
-    else if(news_is_current[2] == -1){"NA"}
+    if(news_current[1] == 1){"YES"}
+    else if(news_current[2] == -1){"NA"}
     else{"NO"},
     width = 3,
-    if(news_is_current[2] == -1){"Metric is not applicable for this source of package"}
-    else{ ifelse(news_is_current[1] == 1, "NEWS file contains entry for current version number", "NEWS file does not contains entry for current version number")},
+    if(news_current[2] == -1){"Metric is not applicable for this source of package"}
+    else{ ifelse(news_current[1] == 1, "NEWS file contains entry for current version number", "NEWS file does not contains entry for current version number")},
     icon = icon(
-      ifelse(news_is_current[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(news_current[1] == 1, "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(news_is_current[1] == 1, "green", "red"),
+    color = ifelse(news_current[1] == 1, "green", "red"),
     fill = TRUE
   ),
   infoBox(
     title = "Bugs publicly documented?",
-    if(has_bug_reports[1] == 1){"YES"}
-    else if(has_bug_reports[2] == -1){"NA"}
+    if(has_bug_reports_url[1] == 1){"YES"}
+    else if(has_bug_reports_url[2] == -1){"NA"}
     else{"NO"},
     width = 3,
-    if(has_bug_reports[2] == -1){"Metric is not applicable for this source of package"}
-    else{ ifelse(has_bug_reports[1] == 1, paste("Bug reports URL:", has_bug_reports[2]), "The Bugs are not publicly documented")},
+    if(has_bug_reports_url[2] == -1){"Metric is not applicable for this source of package"}
+    else{ ifelse(has_bug_reports_url[1] == 1, paste("Bug reports URL:", has_bug_reports_url[2]), "The Bugs are not publicly documented")},
     icon = icon(
-      ifelse(has_bug_reports[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(has_bug_reports_url[1] == 1, "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(has_bug_reports[1] == 1, "green", "red"),
+    color = ifelse(has_bug_reports_url[1] == 1, "green", "red"),
     fill = TRUE
   ),
   infoBox(
     title = "Bug closure",
-    if(status_of_last_30_reported_bugs[2] == -1){"NA"}
-    else{paste0(status_of_last_30_reported_bugs[1],"%")},
-    subtitle = if(status_of_last_30_reported_bugs[2] == -1){"Metric is not applicable for this source of package"}
+    if(bugs_status[2] == -1){"NA"}
+    else{paste0(bugs_status[1],"%")},
+    subtitle = if(bugs_status[2] == -1){"Metric is not applicable for this source of package"}
     else{"Percentage of last 30 bugs closed"},
     width = 3,
     fill = TRUE
@@ -299,42 +299,42 @@ div(
   class = "row mb-3",
   infoBox(
     title = "Documentation",
-    if(exported_objects_with_documentation[2] == -1){"NA"}
-    else{paste0(exported_objects_with_documentation[1],"%")},
-    subtitle = if(exported_objects_with_documentation[2] == -1){"Metric is not applicable for this source of package"}
+    if(export_help[2] == -1){"NA"}
+    else{paste0(export_help[1],"%")},
+    subtitle = if(export_help[2] == -1){"Metric is not applicable for this source of package"}
     else{"Proportion of exported objects documented"},
     width = 3,
     fill = TRUE
   ),
   infoBox(
     title = "Source code public?",
-    if(source_code_is_public[1] == 1){"YES"}
-    else if(source_code_is_public[2] == -1){"NA"}
+    if(has_source_control[1] == 1){"YES"}
+    else if(has_source_control[2] == -1){"NA"}
     else{"NO"},
     width = 3,
-    if(source_code_is_public[2] == -1){"Metric is not applicable for this soucre of package"}
-    else{ ifelse(source_code_is_public[1] == 1, paste("Source code URL:", source_code_is_public[2]), "Package does not have a Source code URL")},
+    if(has_source_control[2] == -1){"Metric is not applicable for this soucre of package"}
+    else{ ifelse(has_source_control[1] == 1, paste("Source code URL:", has_source_control[2]), "Package does not have a Source code URL")},
     icon = icon(
-      ifelse(source_code_is_public[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(has_source_control[1] == 1, "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(source_code_is_public[1] == 1, "green", "red"),
+    color = ifelse(has_source_control[1] == 1, "green", "red"),
     fill = TRUE
   ),
   infoBox(
     title = "Has a maintainer?",
-    if(has_a_package_maintainer[1] == 1){"YES"}
-    else if(has_a_package_maintainer[2] == -1){"NA"}
+    if(has_maintainer[1] == 1){"YES"}
+    else if(has_maintainer[2] == -1){"NA"}
     else{"NO"},
     width = 3,
-    if(has_a_package_maintainer[2] == -1){"Metric is not applicable for this soucre of package"}
-    else{ ifelse(has_a_package_maintainer[1] == 1, has_a_package_maintainer[2], "Package does not have a Maintainer")},
+    if(has_maintainer[2] == -1){"Metric is not applicable for this soucre of package"}
+    else{ ifelse(has_maintainer[1] == 1, has_maintainer[2], "Package does not have a Maintainer")},
     icon = icon(
       ifelse(
-        has_a_package_maintainer[1] == 1, "thumbs-up", "thumbs-down"),
+        has_maintainer[1] == 1, "thumbs-up", "thumbs-down"),
         lib = "glyphicon"
     ),
-    color = ifelse(has_a_package_maintainer[1] == 1, "green", "red"),
+    color = ifelse(has_maintainer[1] == 1, "green", "red"),
     fill = TRUE
   )
 )
