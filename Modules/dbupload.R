@@ -165,20 +165,6 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   riskmetric_score$bugs_status <- riskmetric_score$bugs_status*100
   riskmetric_score$export_help <- riskmetric_score$export_help*100
   
-
-  db_ins(paste0("INSERT INTO MaintenanceMetrics values(",
-                "'", package_name, "',",
-                "'", riskmetric_score$has_vignettes[1], ",", ifelse(class(riskmetric_assess$has_vignettes[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$has_vignettes[[1]][1]), "',",
-                "'", riskmetric_score$has_news[1], ",",  ifelse(class(riskmetric_assess$has_news[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$has_news[[1]][1]), "',",
-                "'", riskmetric_score$news_current[1], ",",  ifelse(class(riskmetric_assess$news_current[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$news_current[[1]][1]), "',",
-                "'", riskmetric_score$has_website[1], ",",  ifelse(class(riskmetric_assess$has_website[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$has_website[[1]][1]), "',",
-                "'", riskmetric_score$has_bug_reports_url[1], ",",  ifelse(class(riskmetric_assess$has_bug_reports_url[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$has_bug_reports_url[[1]][1]), "',",
-                "'", riskmetric_score$has_maintainer[1], ",",  ifelse(class(riskmetric_assess$has_maintainer[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$has_maintainer[[1]][1]), "',",
-                "'", riskmetric_score$has_source_control[1], ",",  ifelse(class(riskmetric_assess$has_source_control[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$has_source_control[[1]][1]), "',",
-                "'", format(round(riskmetric_score$export_help[1],2)), ",",  ifelse(class(riskmetric_assess$export_help[[1]])[1] == "pkg_metric_error" || is.na(riskmetric_assess$export_help[[1]]), -1, riskmetric_assess$export_help[[1]][1]), "',",
-                "'", format(round(riskmetric_score$bugs_status[1],2)), ",",  ifelse(class(riskmetric_assess$bugs_status[[1]])[1] == "pkg_metric_error", -1, riskmetric_assess$bugs_status[[1]][1]), "'", ")"))
-  
-  metric_id <- db_fun(paste0("SELECT id FROM metric WHERE name = 'covr_coverage';"))
   package_id <- db_fun(paste0("SELECT id FROM package WHERE name = ", "'", package_name, "';"))
   db_ins(
     paste0( "INSERT INTO package_metrics (package_id, metric_id, weight, value) values(",
