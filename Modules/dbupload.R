@@ -160,8 +160,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   
   riskmetric_score <-
     riskmetric_assess %>%
-    pkg_score() %>%
-    mutate(risk = summarize_scores(.))
+    pkg_score()
   
   riskmetric_score$bugs_status <- riskmetric_score$bugs_status*100
   riskmetric_score$export_help <- riskmetric_score$export_help*100
