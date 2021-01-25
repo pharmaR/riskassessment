@@ -117,7 +117,7 @@ insert_comment <- function(package, versn, name, role, comment, cm_type) {
       "'",  versn,        "',",
       "'",  name,         "',",
       "'",  role,         "',",
-      "'",  comment,      "',",
+      "'",  gsub("'","''",comment),      "',",
       "'",  cm_type,      "',",
       "'",  TimeStamp(),  "'" ,
       ")"
