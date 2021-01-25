@@ -109,7 +109,7 @@ update_db_dash <- function(){
   )
 }
 
-ins_cmts <- function(package, versn, name, role, comment, cm_type) {
+insert_comment <- function(package, versn, name, role, comment, cm_type) {
   db_ins(
     paste0(
       "INSERT INTO Comments values('",
@@ -125,7 +125,7 @@ ins_cmts <- function(package, versn, name, role, comment, cm_type) {
   )
 }
 
-sel_cmts <- function(package_name, cm_type) {
+select_comments <- function(package_name, cm_type) {
   comment_one <-
     db_fun(
       paste0(
@@ -137,7 +137,7 @@ sel_cmts <- function(package_name, cm_type) {
   data.frame(comment_one %>% map(rev))
 }
 
-dsp_cmts <- function(cmt_tbl) {
+display_comments <- function(cmt_tbl) {
   return(
     paste(
       "<div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-4x'></i><h3 class='ml-3'><b class='user-name-color'>",

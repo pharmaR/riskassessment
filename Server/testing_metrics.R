@@ -72,10 +72,10 @@ output$test_coverage <- renderAmCharts({
 output$tm_commented <- renderText({
   if (values$tm_comment_submitted == "yes" ||
       values$tm_comment_submitted == "no") {
-    values$comment_tm2 <- sel_cmts(input$select_pack, "tm")
+    values$comment_tm2 <- select_comments(input$select_pack, "tm")
     req(values$comment_tm2$comment)
     values$tm_comment_submitted <- "no"
-    dsp_cmts(values$comment_tm2)
+    display_comments(values$comment_tm2)
   }
 })  # End of the render Output.
 
@@ -85,7 +85,7 @@ values$tm_comment_submitted <- "no"
 observeEvent(input$submit_tm_comment, {
   if (trimws(input$tm_comment) != "") {
     # insert into comments table
-    ins_cmts(input$select_pack, input$select_ver, values$name, values$role, input$tm_comment, cm_type = "tm")
+    insert_comment(input$select_pack, input$select_ver, values$name, values$role, input$tm_comment, cm_type = "tm")
     values$tm_comment_submitted <- "yes"
     updateTextAreaInput(session, "tm_comment", value = "")
     # After comment added to Comments table, update db dash

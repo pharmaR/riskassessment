@@ -160,7 +160,7 @@ p_color <- 'white'
 ```{r echo=FALSE}
 
   comment_o <- data.frame(comment_o %>% map(rev))
-   HTML(dsp_cmts(comment_o))
+   HTML(display_comments(comment_o))
 ```
 </div>
 <div class="blue para-header">General Info</div>
@@ -331,7 +331,7 @@ div(
 
 ```{r echo=FALSE}
 comment_mm <- data.frame(comment_mm %>% map(rev))
-   HTML(dsp_cmts(comment_mm))
+   HTML(display_comments(comment_mm))
 ```
 
 </div>
@@ -431,7 +431,7 @@ if (riskmetrics_cum$no_of_downloads_last_year[1] == 0) {
 
 ```{r echo=FALSE}
 comment_cum <- data.frame(comment_cum %>% map(rev))
-   HTML(dsp_cmts(comment_cum))
+   HTML(display_comments(comment_cum))
 ```
 
 </div>
@@ -617,7 +617,7 @@ color: steelblue;
 
 ```{r echo=FALSE}
     comment_tm <- data.frame(comment_tm %>% map(rev))
-   HTML(dsp_cmts(comment_tm))
+   HTML(display_comments(comment_tm))
 ```
 </div>
 

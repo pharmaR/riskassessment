@@ -140,10 +140,10 @@ output$no_of_downloads <-
 output$cum_commented <- renderText({
   if (values$cum_comment_submitted == "yes" ||
       values$cum_comment_submitted == "no") {
-    values$comment_cum2 <- sel_cmts(input$select_pack, "cum")
+    values$comment_cum2 <- select_comments(input$select_pack, "cum")
     req(values$comment_cum2$comment)
     values$cum_comment_submitted <- "no"
-    dsp_cmts(values$comment_cum2)
+    display_comments(values$comment_cum2)
   }
 })  # End of the render output for comments.
 
@@ -158,7 +158,7 @@ values$cum_comment_submitted <- "no"
 observeEvent(input$submit_cum_comment, {
   if (trimws(input$cum_comment) != "") {
     # insert into comments table
-    ins_cmts(input$select_pack, input$select_ver, values$name, values$role, input$cum_comment, cm_type = "cum")
+    insert_comment(input$select_pack, input$select_ver, values$name, values$role, input$cum_comment, cm_type = "cum")
     values$cum_comment_submitted <- "yes"
     updateTextAreaInput(session, "cum_comment", value = "")
     # After comment added to Comments table, update db dash

@@ -63,9 +63,9 @@ output$test_coverage1 <- renderAmCharts({
 output$tm_commented1 <- renderText({
   if (values$tm_comment_submitted == "yes" ||
       values$tm_comment_submitted == "no") {
-    values$comment_tm2 <- sel_cmts(input$select_pack, "tm")
+    values$comment_tm2 <- select_comments(input$select_pack, "tm")
     req(values$comment_tm2$comment)
     values$tm_comment_submitted <- "no"
-    dsp_cmts(values$comment_tm2)
+    display_comments(values$comment_tm2)
   }
 })  # End of the render Output.

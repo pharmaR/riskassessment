@@ -127,10 +127,10 @@ output$no_of_downloads1 <-
 output$cum_commented1 <- renderText({
   if (values$cum_comment_submitted == "yes" ||
       values$cum_comment_submitted == "no") {
-    values$comment_cum2 <- sel_cmts(input$select_pack, "cum")
+    values$comment_cum2 <- select_comments(input$select_pack, "cum")
     req(values$comment_cum2$comment)
     values$cum_comment_submitted <- "no"
-    dsp_cmts(values$comment_cum2)
+    display_comments(values$comment_cum2)
   }
 })  # End of the render output for comments.
 

@@ -230,10 +230,10 @@ output$pack_maint1 <- renderInfoBox({
 output$mm_commented1 <- renderText({
   if (values$mm_comment_submitted == "yes" ||
       values$mm_comment_submitted == "no") {
-    values$comment_mm2 <- sel_cmts(input$select_pack, "mm")
+    values$comment_mm2 <- select_comments(input$select_pack, "mm")
     req(values$comment_mm2$comment)
     values$mm_comment_submitted <- "no"
-    dsp_cmts(values$comment_mm2)
+    display_comments(values$comment_mm2)
   }
 })  # End of the render Output.
 

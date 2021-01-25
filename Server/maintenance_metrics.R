@@ -239,10 +239,10 @@ output$pack_maint <- renderInfoBox({
 output$mm_commented <- renderText({
   if (values$mm_comment_submitted == "yes" ||
       values$mm_comment_submitted == "no") {
-    values$comment_mm2 <- sel_cmts(input$select_pack, "mm")
+    values$comment_mm2 <- select_comments(input$select_pack, "mm")
     req(values$comment_mm2$comment)
     values$mm_comment_submitted <- "no"
-    dsp_cmts(values$comment_mm2)
+    display_comments(values$comment_mm2)
   }
 })  # End of the render Output.
 
@@ -255,7 +255,7 @@ values$mm_comment_submitted <- "no"
 observeEvent(input$submit_mm_comment, {
   if (trimws(input$mm_comment) != "") {
     # insert into comments table
-    ins_cmts(input$select_pack, input$select_ver, values$name, values$role, input$mm_comment, cm_type = "mm")
+    insert_comment(input$select_pack, input$select_ver, values$name, values$role, input$mm_comment, cm_type = "mm")
     values$mm_comment_submitted <- "yes"
     updateTextAreaInput(session, "mm_comment", value = "")
     # After comment added to Comments table, update db dash

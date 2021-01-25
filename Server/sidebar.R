@@ -228,7 +228,7 @@ observeEvent(input$submit_overall_comment, {
   values$overall_comments <- trimws(overall_comment)
   if (values$overall_comments != "") {
     
-    comments_submitted <- sel_cmts(values$selected_pkg$package, "o")
+    comments_submitted <- select_comments(values$selected_pkg$package, "o")
     if (values$name %in% comments_submitted$user_name &&
         values$role %in% comments_submitted$user_role) {
       comment_submitted <-
@@ -256,7 +256,7 @@ observeEvent(input$submit_overall_comment, {
         )
       ))
     } else{
-      ins_cmts(input$select_pack, input$select_ver, values$name, values$role, values$overall_comments, cm_type = "o")
+      insert_comment(input$select_pack, input$select_ver, values$name, values$role, values$overall_comments, cm_type = "o")
       values$o_comment_submitted <- "yes"
       updateTextAreaInput(session, "overall_comment", value = "")
       updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", values$overall_comments))

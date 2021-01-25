@@ -65,10 +65,10 @@ output$overall_comments <- renderText({
   req(values$selected_pkg$package)
   if (values$o_comment_submitted == "yes" ||
       values$o_comment_submitted == "no") {
-    values$comment_o2 <- sel_cmts(input$select_pack, "o")
+    values$comment_o2 <- select_comments(input$select_pack, "o")
     req(values$comment_o2$comment)
     values$o_comment_submitted <- "no"
-    dsp_cmts(values$comment_o2)
+    display_comments(values$comment_o2)
   }
 })  # End of the render Text Output.
 
