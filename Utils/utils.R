@@ -108,4 +108,48 @@ update_db_dash <- function(){
     "
   )
 }
-  
+
+insert_comment <- function(package, versn, name, role, comment, cm_type) {
+  db_ins(
+    paste0(
+      "INSERT INTO Comments values('",
+      package,            "',",
+      "'",  versn,        "',",
+      "'",  name,         "',",
+      "'",  role,         "',",
+      "'",  gsub("'","''",comment),      "',",
+      "'",  cm_type,      "',",
+      "'",  TimeStamp(),  "'" ,
+      ")"
+    )
+  )
+}
+
+select_comments <- function(package_name, cm_type) {
+  comment_one <-
+    db_fun(
+      paste0(
+        "SELECT user_name, user_role, comment, added_on FROM Comments WHERE comm_id = '",
+        package_name,
+        "' AND comment_type = '", cm_type, "'" 
+      )
+    )
+  data.frame(comment_one %>% map(rev))
+}
+
+display_comments <- function(cmt_tbl) {
+  return(
+    paste(
+      "<div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-4x'></i><h3 class='ml-3'><b class='user-name-color'>",
+      cmt_tbl$user_name,
+      "(",
+      cmt_tbl$user_role,
+      ")",
+      "</b><sub>",
+      cmt_tbl$added_on,
+      "</sub></h3><h4 class='ml-3 lh-4'>",
+      cmt_tbl$comment,
+      "</h4></div>"
+    )
+  )
+}

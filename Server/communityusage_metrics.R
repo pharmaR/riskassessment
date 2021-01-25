@@ -140,29 +140,10 @@ output$no_of_downloads <-
 output$cum_commented <- renderText({
   if (values$cum_comment_submitted == "yes" ||
       values$cum_comment_submitted == "no") {
-    values$comment_cum1 <-
-      db_fun(
-        paste0(
-          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
-          input$select_pack,
-          "' AND comment_type = 'cum'"
-        )
-      )
-    values$comment_cum2 <- data.frame(values$comment_cum1 %>% map(rev))
+    values$comment_cum2 <- select_comments(input$select_pack, "cum")
     req(values$comment_cum2$comment)
     values$cum_comment_submitted <- "no"
-    paste(
-      "<div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-4x'></i><h3 class='ml-3'><b class='user-name-color'>",
-      values$comment_cum2$user_name,
-      "(",
-      values$comment_cum2$user_role,
-      ")",
-      "</b><sub>",
-      values$comment_cum2$added_on,
-      "</sub></h3><h4 class='ml-3 lh-4'>",
-      values$comment_cum2$comment,
-      "</h4></div>"
-    )
+    display_comments(values$comment_cum2)
   }
 })  # End of the render output for comments.
 
@@ -176,27 +157,8 @@ values$cum_comment_submitted <- "no"
 
 observeEvent(input$submit_cum_comment, {
   if (trimws(input$cum_comment) != "") {
-    db_ins(
-      paste0(
-        "INSERT INTO Comments values('",
-        input$select_pack,
-        "',",
-        "'",
-        values$name,
-        "'," ,
-        "'",
-        values$role,
-        "',",
-        "'",
-        input$cum_comment,
-        "',",
-        "'cum',",
-        "'",
-        TimeStamp(),
-        "'"  ,
-        ")" 
-      )
-    )
+    # insert into comments table
+    insert_comment(input$select_pack, input$select_ver, values$name, values$role, input$cum_comment, cm_type = "cum")
     values$cum_comment_submitted <- "yes"
     updateTextAreaInput(session, "cum_comment", value = "")
     # After comment added to Comments table, update db dash

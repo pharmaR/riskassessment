@@ -44,7 +44,9 @@ output$gen_info <- renderText({
     "<h4><b>Published:</b>",
     pkg_GenInfo$published,
     "</h4>",
-    "<br><h3><b>riskmetric version:</b>",riskinfo$loadedversion,"</h3>"
+    "<br><h3><b>riskmetric version:</b>",
+    riskinfo$loadedversion,
+    "</h3>"
   )
 })  # End of the render output for genral information.
 
@@ -63,29 +65,10 @@ output$overall_comments <- renderText({
   req(values$selected_pkg$package)
   if (values$o_comment_submitted == "yes" ||
       values$o_comment_submitted == "no") {
-    values$comment_o1 <-
-      db_fun(
-        paste0(
-          "SELECT * FROM Comments WHERE comm_id = '",
-          values$selected_pkg$package,
-          "' AND comment_type = 'o'"
-        )
-      )
-    values$comment_o2 <- values$comment_o1 %>% arrange(desc(values$comment_o1$added_on))
+    values$comment_o2 <- select_comments(input$select_pack, "o")
     req(values$comment_o2$comment)
     values$o_comment_submitted <- "no"
-     paste(
-      "<div class='col-sm-12 comment-border-bottom single-comment-div'><i class='fa fa-user-tie fa-4x'></i><h3 class='ml-3'><b class='user-name-color'>",
-      values$comment_o2$user_name,
-      "(",
-      values$comment_o2$user_role,
-      ")",
-      "</b><sub>",
-      values$comment_o2$added_on,
-      "</sub></h3><h4 class='ml-3 lh-4'>",
-      values$comment_o2$comment,
-      "</h4></div>"
-    )
+    display_comments(values$comment_o2)
   }
 })  # End of the render Text Output.
 

@@ -239,29 +239,10 @@ output$pack_maint <- renderInfoBox({
 output$mm_commented <- renderText({
   if (values$mm_comment_submitted == "yes" ||
       values$mm_comment_submitted == "no") {
-    values$comment_mm1 <-
-      db_fun(
-        paste0(
-          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
-          input$select_pack,
-          "' AND comment_type = 'mm'"
-        )
-      )
-    values$comment_mm2 <- data.frame(values$comment_mm1 %>% map(rev))
+    values$comment_mm2 <- select_comments(input$select_pack, "mm")
     req(values$comment_mm2$comment)
     values$mm_comment_submitted <- "no"
-    paste(
-      "<div class='col-sm-12 comment-border-bottom single-comment-div'><i class='fa fa-user-tie fa-4x'></i><h3 class='ml-3'><b class='user-name-color'>",
-      values$comment_mm2$user_name,
-      "(",
-      values$comment_mm2$user_role,
-      ")",
-      "</b><sub>",
-      values$comment_mm2$added_on,
-      "</sub></h3><h4 class='ml-3 lh-4'>",
-      values$comment_mm2$comment,
-      "</h4></div>"
-    )
+    display_comments(values$comment_mm2)
   }
 })  # End of the render Output.
 
@@ -273,27 +254,8 @@ values$mm_comment_submitted <- "no"
 
 observeEvent(input$submit_mm_comment, {
   if (trimws(input$mm_comment) != "") {
-    db_ins(
-      paste0(
-        "INSERT INTO Comments values('",
-        input$select_pack,
-        "',",
-        "'",
-        values$name,
-        "'," ,
-        "'",
-        values$role,
-        "',",
-        "'",
-        input$mm_comment,
-        "',",
-        "'mm'," ,
-        "'",
-        TimeStamp(),
-        "'"  ,
-        ")"
-      )
-    )
+    # insert into comments table
+    insert_comment(input$select_pack, input$select_ver, values$name, values$role, input$mm_comment, cm_type = "mm")
     values$mm_comment_submitted <- "yes"
     updateTextAreaInput(session, "mm_comment", value = "")
     # After comment added to Comments table, update db dash
