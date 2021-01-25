@@ -97,13 +97,13 @@ output$screen <- renderUI({
                  value = "cum_tab_value",
                  tags$b("Community Usage Metrics"),
                  withSpinner(uiOutput("community_usage_metrics"), type = 2)  # UI for Community Usage Metrics tab panel.
-               ),
-               tabPanel(
-                 id = "tm_tab_id",
-                 value = "tm_tab_value",
-                 tags$b("Testing Metrics"),
-                 withSpinner(uiOutput("testing_metrics"), type = 2)  # UI for Testing Metrics tab panel.
                )
+               # tabPanel(
+               #   id = "tm_tab_id",
+               #   value = "tm_tab_value",
+               #   tags$b("Testing Metrics"),
+               #   withSpinner(uiOutput("testing_metrics"), type = 2)  # UI for Testing Metrics tab panel.
+               # )
              )
            ))
   )
