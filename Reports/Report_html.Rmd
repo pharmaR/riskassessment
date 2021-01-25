@@ -160,18 +160,7 @@ p_color <- 'white'
 ```{r echo=FALSE}
 
   comment_o <- data.frame(comment_o %>% map(rev))
-   HTML(paste(
-      "<div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-2x d-inline'></i><h3 class='ml-3 d-inline'><b class='user-name-color'>",
-      comment_o$user_name,
-      "(",
-      comment_o$user_role,
-      ")",
-      "</b><sub>",
-      comment_o$added_on,
-      "</sub></h3><h4 class='ml-3 lh-4'>",
-      comment_o$comment,
-      "</h4></div>"
-    ))
+   HTML(display_comments(comment_o))
 ```
 </div>
 <div class="blue para-header">General Info</div>
@@ -342,19 +331,7 @@ div(
 
 ```{r echo=FALSE}
 comment_mm <- data.frame(comment_mm %>% map(rev))
-    HTML(paste(
-      "<div class='col-sm-12 comment-border-bottom single-comment-div'><i class='fa fa-user-tie fa-2x d-inline'></i><h3 class='ml-3 d-inline'><b class='user-name-color'>",
-      comment_mm$user_name,
-      "(",
-      comment_mm$user_role,
-      ")",
-      "</b><sub>",
-      comment_mm$added_on,
-      "</sub></h3><h4 class='ml-3 lh-4'>",
-      comment_mm$comment,
-      "</h4></div>"
- ))
-
+   HTML(display_comments(comment_mm))
 ```
 
 </div>
@@ -454,18 +431,7 @@ if (riskmetrics_cum$no_of_downloads_last_year[1] == 0) {
 
 ```{r echo=FALSE}
 comment_cum <- data.frame(comment_cum %>% map(rev))
-   HTML(paste(
-      "<div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-2x d-inline'></i><h3 class='ml-3 d-inline'><b class='user-name-color'>",
-      comment_cum$user_name,
-      "(",
-      comment_cum$user_role,
-      ")",
-      "</b><sub>",
-      comment_cum$added_on,
-      "</sub></h3><h4 class='ml-3 lh-4'>",
-      comment_cum$comment,
-      "</h4></div>"
-    ))
+   HTML(display_comments(comment_cum))
 ```
 
 </div>
@@ -651,19 +617,7 @@ color: steelblue;
 
 ```{r echo=FALSE, results='hide'}
     comment_tm <- data.frame(comment_tm %>% map(rev))
-    HTML(paste(
-      "<div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-2x d-inline'></i><h3 class='ml-3 d-inline'><b class='user-name-color'>",
-      comment_tm$user_name,
-      "(",
-      comment_tm$user_role,
-      ")",
-      "</b><sub>",
-      comment_tm$added_on,
-      "</sub></h3><h4 class='ml-3 lh-4'>",
-      comment_tm$comment,
-      "</h4></div>"
-    ))
-
+   HTML(display_comments(comment_tm))
 ```
 <!-- </div> -->
 

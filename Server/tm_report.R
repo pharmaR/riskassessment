@@ -63,28 +63,9 @@ output$test_coverage1 <- renderAmCharts({
 output$tm_commented1 <- renderText({
   if (values$tm_comment_submitted == "yes" ||
       values$tm_comment_submitted == "no") {
-    values$comment_tm1 <-
-      db_fun(
-        paste0(
-          "SELECT user_name, user_role, comment, added_on FROM Comments WHERE comm_id = '",
-          input$select_pack,
-          "' AND comment_type = 'tm'"
-        )
-      )
-    values$comment_tm2 <- data.frame(values$comment_tm1 %>% map(rev))
+    values$comment_tm2 <- select_comments(input$select_pack, "tm")
     req(values$comment_tm2$comment)
     values$tm_comment_submitted <- "no"
-    paste(
-      "<div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-4x'></i><h3 class='ml-3'><b class='user-name-color'>",
-      values$comment_tm2$user_name,
-      "(",
-      values$comment_tm2$user_role,
-      ")",
-      "</b><sub>",
-      values$comment_tm2$added_on,
-      "</sub></h3><h4 class='ml-3 lh-4'>",
-      values$comment_tm2$comment,
-      "</h4></div>"
-    )
+    display_comments(values$comment_tm2)
   }
 })  # End of the render Output.

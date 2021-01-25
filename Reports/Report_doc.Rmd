@@ -161,10 +161,7 @@ Score: `r pkg_GenInfo$score`
 
 ```{r echo=FALSE}
   comment_o <- data.frame(comment_o %>% map(rev))
-table_o<-data.frame("User ID"=comment_o$user_name,"Role"= comment_o$user_role, "Time"= comment_o$added_on,"Comments"=comment_o$comment)
-  
-knitr::kable(table_o, format='pandoc')
-  
+  HTML(display_comments(comment_o))
 ```
 \newpage
 
@@ -245,10 +242,7 @@ knitr::kable(table_infobox, format='pandoc')
 
 ```{r echo=FALSE}
 comment_mm <- data.frame(comment_mm %>% map(rev))
-    
-table_mm<-data.frame("User ID"=comment_mm$user_name,"Role"= comment_mm$user_role, "Time"= comment_mm$added_on,"Comments"=comment_mm$comment)
-  knitr::kable(table_mm, format='pandoc')
-
+HTML(display_comments(comment_mm))
 ```
 
 \newpage
@@ -290,10 +284,7 @@ num_dwnlds_plot(data = riskmetrics_cum,
 
 ```{r echo=FALSE}
 comment_cum <- data.frame(comment_cum %>% map(rev))
-  
-table_cum<-data.frame("User ID"=comment_cum$user_name,"Role"= comment_cum$user_role, "Time"= comment_cum$added_on,"Comments"=comment_cum$comment)
-  knitr::kable(table_cum, format='pandoc')
-  
+HTML(display_comments(comment_cum))
 ```
 
 \newpage
@@ -332,11 +323,6 @@ table_cum<-data.frame("User ID"=comment_cum$user_name,"Role"= comment_cum$user_r
 
 ```{r echo=FALSE, fig.show='hide', results='hide'}
     comment_tm <- data.frame(comment_tm %>% map(rev))
-    
-table_tm<-data.frame("User ID"=comment_tm$user_name,"Role"= comment_tm$user_role, "Time"= comment_tm$added_on,"Comments"=comment_tm$comment)
-  # knitr::kable(table_tm, format='pandoc')
-
-
 ```
 
 
