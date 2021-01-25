@@ -298,10 +298,10 @@ table_cum<-data.frame("User ID"=comment_cum$user_name,"Role"= comment_cum$user_r
 
 \newpage
 
-## Testing Metrics
+<!-- ## Testing Metrics -->
 
 
-```{r echo=FALSE}
+```{r echo=FALSE, eval=FALSE, fig.show='hide', results='hide'}
   bands = data.frame(
     start = c(0, 40, 80),
     end = c(40, 80, 100),
@@ -327,14 +327,14 @@ table_cum<-data.frame("User ID"=comment_cum$user_name,"Role"= comment_cum$user_r
 ```
 
 
-### Comments for Testing Metrics(`r nrow(comment_tm)`):
+<!-- ### Comments for Testing Metrics(`r nrow(comment_tm)`): -->
 
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.show='hide', results='hide'}
     comment_tm <- data.frame(comment_tm %>% map(rev))
     
 table_tm<-data.frame("User ID"=comment_tm$user_name,"Role"= comment_tm$user_role, "Time"= comment_tm$added_on,"Comments"=comment_tm$comment)
-  knitr::kable(table_tm, format='pandoc')
+  # knitr::kable(table_tm, format='pandoc')
 
 
 ```

@@ -469,11 +469,11 @@ comment_cum <- data.frame(comment_cum %>% map(rev))
 ```
 
 </div>
-<div class="blue para-header">Testing Metrics</div>
+<!-- <div class="blue para-header">Testing Metrics</div> -->
 
-<br>
+<!-- <br> -->
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.show='hide', results='hide'}
 
   bands = data.frame(
     start = c(0, 40, 80),
@@ -499,7 +499,7 @@ comment_cum <- data.frame(comment_cum %>% map(rev))
   )
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.show='hide', results='hide'}
 
 if(riskmetrics_tm[2] == -1){
   tags$script(HTML(
@@ -543,7 +543,7 @@ if(riskmetrics_tm[2] == -1){
 ```
 
 <br>
-<div class="row col-md-12 comments">Comments for Testing Metrics(`r nrow(comment_tm)`):</div>
+<!-- <div class="row col-md-12 comments">Comments for Testing Metrics(`r nrow(comment_tm)`):</div> -->
 
 <style>
 .user-name-color {
@@ -647,9 +647,9 @@ color: steelblue;
 
 </style>
 
-<div class="col-md-12 comments-box">
+<!-- <div class="col-md-12 comments-box"> -->
 
-```{r echo=FALSE}
+```{r echo=FALSE, results='hide'}
     comment_tm <- data.frame(comment_tm %>% map(rev))
     HTML(paste(
       "<div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-2x d-inline'></i><h3 class='ml-3 d-inline'><b class='user-name-color'>",
@@ -665,5 +665,5 @@ color: steelblue;
     ))
 
 ```
-</div>
+<!-- </div> -->
 
