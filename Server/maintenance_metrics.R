@@ -314,25 +314,39 @@ output$has_source_control <- renderInfoBox({
   )
 })
 
-output$pack_maint <- renderInfoBox({
+# Render infobox for has_maintainer metric.
+output$has_maintainer <- renderInfoBox({
   req(values$has_maintainer)
+  
+  has_metric <- !(values$has_maintainer %in% c("NA", "pkg_metric_error"))
+  
+  # Maintainer name(s).e
+  value <- values$has_maintainer
+  
   infoBox(
-    title = "Has a maintainer?",
-    if(values$has_maintainer[1] == 1){"YES"}
-    else if(values$has_maintainer[2] == -1){"NA"}
-    else{"NO"},
     width = 3,
-    if(values$has_maintainer[2] == -1){"Metric is not applicable for this soucre of package"}
-    else{ ifelse(values$has_maintainer[1] == 1, values$has_maintainer[2], "Package does not have a Maintainer")},
+    fill = TRUE,
+    title = "Has a maintainer?",
     icon = icon(
       ifelse(
-        values$has_maintainer[1] == 1, "thumbs-up", "thumbs-down"),
-        lib = "glyphicon"
+        has_metric && value != "", "thumbs-up", "thumbs-down"),
+      lib = "glyphicon"
     ),
-    color = ifelse(values$has_maintainer[1] == 1, "green", "red"),
-    fill = TRUE
+    color = ifelse(has_metric && value != "", "green", "red"),
+    
+    # Output
+    #   YES (if metric has value),
+    #   NO (if metric doesnt have any value),
+    #   or NA (if metric equals NA or pkg_metric_error).
+    if(!has_metric){"NA"}
+    else if(value == ""){"NO"}
+    else{"YES"},
+    
+    # Output an affirmative/nevative message if metric has a value.
+    if(!has_metric){"Metric is not applicable for this source of package"}
+    else{ifelse(value != "", value, "Package does not have a maintainer")}
   )
-})  # End of the render Output.
+})
 
 # 10. Render Output to show the comments on the application.
 
