@@ -162,31 +162,63 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
     riskmetric_assess %>%
     pkg_score()
   
-  riskmetric_score$bugs_status <- riskmetric_score$bugs_status*100
-  riskmetric_score$export_help <- riskmetric_score$export_help*100
-  
   package_id <- db_fun(paste0("SELECT id FROM package WHERE name = ", "'", package_name, "';"))
-  db_ins(
-    paste0( "INSERT INTO package_metrics (package_id, metric_id, weight, value) values(",
-            package_id, ",",
-            metric_id, ",",
-            "1" , "," ,
-            "'", ifelse(
-              class(riskmetric_assess$covr_coverage[[1]])[1] == "pkg_metric_error",
-              "pkg_metric_error",
-              riskmetric_assess$covr_coverage[[1]][1]), "'",
-            ")" )
-  )
+  
+  # Leave method if package not found.
+  # TODO: save this to the json file.
+  if(nrow(package_id) == 0){
+    print("PACKAGE NOT FOUND.")
+    return()
+  }
+  
+  # Insert all the metrics (columns of class "pkg_score") into the db.
+  # TODO: Are pkg_score and pkg_metric_error mutually exclusive?
+  for(metric_name in colnames(riskmetric_score)){
+    if("pkg_score" %in% class(riskmetric_score[[metric_name]])){
+      
+      metric_id <- db_fun(paste0("SELECT id, class
+                                 FROM metric
+                                 WHERE name = ", "'", metric_name, "'", ";"))
+      
+      # Skip if the metric is not on the metrics table.
+      if(nrow(metric_id) == 0) next
+      
+      # If the metric errors out,
+      #   then save "pkg_metric_error" as the value of the metric.
+      # If the metric has NA or 0,
+      #   then save such value as the metric value.
+      # Otherwise, save all the possible values of the metric
+      #   (note: has_website for instance may have multiple values).
+      metric_value <- ifelse(
+        "pkg_metric_error" %in% class(riskmetric_assess[[metric_name]][[1]]),
+        "pkg_metric_error",
+        # Since the actual value of these metrics appear on riskmetric_score
+        #   and not on riskmetric_assess, they need to be treated differently.
+        # TODO: this code is not clean, fix it. Changes to riskmetric?
+        ifelse(metric_name %in% c('bugs_status', 'export_help'),
+               round(riskmetric_score[[metric_name]]*100, 2),
+               riskmetric_assess[[metric_name]][[1]][1:length(riskmetric_assess[[metric_name]])]))
 
-  db_ins(paste0( "UPDATE package SET score = '", format(round(riskmetric_score$pkg_score[1], 2)), "'", " WHERE name = '" ,
-                 package_name, "'"))
- 
-}  
+      db_ins(
+        paste0("INSERT INTO package_metrics
+               (package_id, metric_id, weight, value) values(",
+                package_id, ",",
+                metric_id$id, ",",
+                "1" , "," ,
+                "'", metric_value, "'",
+                ")"
+        )
+      )
+    }
+  }
 
-# End of the function
+  db_ins(paste0("UPDATE package
+                SET score = '", format(round(riskmetric_score$pkg_score[1], 2)), "'",
+                " WHERE name = '" , package_name, "'"))
+}
 
-# 4. Function to get community usage metrics info and upload into DB.
 
+# Get community usage metrics info and upload into DB.
 metric_cum_Info_upload_to_DB <- function(package_name) {
   pkg_vers_date_final <<- data.frame(matrix(ncol = 4, nrow = 0))
   time_since_first_release<<-NA
