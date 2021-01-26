@@ -23,7 +23,6 @@ create_db <- function(){
     "create_metric_table.sql",
     "initialize_metric_table.sql",
     "create_package_metrics_table.sql",
-    "create_MaintenanceMetrics_table.sql",
     "create_CommunityUsageMetrics_table.sql",
     "create_Comments_table.sql"
   )
