@@ -224,20 +224,33 @@ output$has_bug_reports_url <- renderInfoBox({
   )
 })
 
-output$bugstatus <- renderInfoBox({
+# Render infobox for bugs_status metric.
+output$bugs_status <- renderInfoBox({
   req(values$bugs_status)
+  
+  has_metric <- !(values$bugs_status %in% c("NA", "pkg_metric_error"))
+  
+  # Percentage of last 30 bugs closed.
+  value <- values$bugs_status
+  
   infoBox(
-    title = "Bug closure",
-    if(values$bugs_status[2] == -1){"NA"}
-    else{paste0(values$bugs_status[1],"%")},
-    subtitle = if(values$bugs_status[2] == -1){"Metric is not applicable for this source of package"}
-    else{"Percentage of last 30 bugs closed"},
     width = 3,
-    fill = TRUE
-  )
-})  # End of the render Output.
+    fill = TRUE,
+    title = "Bug closure",
+    color = ifelse(has_metric && value != "", "blue", "black"),
 
-# 7. Render Output Info box to show the information on Export help.
+    # Output
+    #   value% (if metric has a value),
+    #   or NA (if metric equals doesnt have a value
+    #   or euqls NA or pkg_metric_error).
+    if(!has_metric || value == ""){"NA"}
+    else if(value != ""){paste0(value, "%")},
+    
+    # Output metric percentage value or generic message.
+    if(!has_metric){"Metric is not applicable for this source of package"}
+    else{"Percentage of last 30 bugs closed"}
+  )
+})
 
 output$exporthelp <- renderInfoBox({
   req(values$export_help)
