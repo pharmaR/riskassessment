@@ -10,44 +10,33 @@ observe({
   req(input$select_pack)
   if(input$tabs == "reportPreview_tab_value"){
     if(input$select_pack != "Select"){
-    
-      values$riskmetrics_mm <-
-        db_fun(
-          paste0(
-            "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
-            input$select_pack,
-            "'"
-          )
-        )  
       
-      values$has_vignettes <- c(strsplit(values$riskmetrics_mm$has_vignettes,",")[[1]][1], strsplit(values$riskmetrics_mm$has_vignettes,",")[[1]][2])
-      values$has_website <- c(strsplit(values$riskmetrics_mm$has_website,",")[[1]][1], strsplit(values$riskmetrics_mm$has_website,",")[[1]][2])
-      values$has_news <- c(strsplit(values$riskmetrics_mm$has_news,",")[[1]][1], strsplit(values$riskmetrics_mm$has_news,",")[[1]][2])
-      values$news_current <- c(strsplit(values$riskmetrics_mm$news_current,",")[[1]][1], strsplit(values$riskmetrics_mm$news_current,",")[[1]][2])
-      values$has_bug_reports_url <- c(strsplit(values$riskmetrics_mm$has_bug_reports_url,",")[[1]][1], strsplit(values$riskmetrics_mm$has_bug_reports_url,",")[[1]][2])
-      values$bugs_status <- c(strsplit(values$riskmetrics_mm$bugs_status,",")[[1]][1], strsplit(values$riskmetrics_mm$bugs_status,",")[[1]][2])
-      values$export_help <- c(strsplit(values$riskmetrics_mm$export_help,",")[[1]][1], strsplit(values$riskmetrics_mm$export_help,",")[[1]][2])
-      values$has_source_control <- c(strsplit(values$riskmetrics_mm$has_source_control,",")[[1]][1], strsplit(values$riskmetrics_mm$has_source_control,",")[[1]][2])
-      values$has_maintainer <- c(strsplit(values$riskmetrics_mm$has_maintainer,",")[[1]][1], strsplit(values$riskmetrics_mm$has_maintainer,",")[[1]][2])
-    
+      package_id <- db_fun(paste0("SELECT id
+                                  FROM package
+                                  WHERE name = ", "'", input$select_pack, "';"))
+      
+      # Leave method if package not found.
+      # TODO: save this to the json file.
+      if(nrow(package_id) == 0){
+        print("PACKAGE NOT FOUND.")
+        return()
+      }
+      
+      # Collect all the metric names and values associated to package_id.
+      values$riskmetrics_mm <- db_fun(paste0(
+        "SELECT metric.name, package_metrics.value
+        FROM metric
+        INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
+        WHERE package_metrics.package_id = ", "'", package_id, "'", " AND ",
+        "metric.class = 'maintenance' ;"))
+      
       runjs("setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 500);")
-      req(values$riskmetrics_mm)
-      if(values$has_vignettes[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('vignette1');}, 3000);" ) }
-      if(values$has_website[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('website1');}, 3000);" ) }
-      if(values$has_news[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('hasnews1');}, 3000);" ) }
-      if(values$news_current[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('newscurrent1');}, 3000);" ) }
-      if(values$has_bug_reports_url[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('bugtrack1');}, 3000);" ) }
-      if(values$bugs_status[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('bugstatus1');}, 3000);" ) }
-      if(values$export_help[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('exporthelp1');}, 3000);" ) }
-      if(values$has_source_control[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('source_pub1');}, 3000);" ) }
-      if(values$has_maintainer[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('pack_maint1');}, 3000);" ) }
+      
+      for(i in 1:nrow(values$riskmetrics_mm))
+        values[[values$riskmetrics_mm$name[i]]] <- values$riskmetrics_mm$value[i]
     }
   }
-})  # End of the observe.
-
-# End of the observe's'
-
-# Start of the render Output's'
+})
 
 # 1. Render Output Info box to show the information on VIGNETTE Content.
 
