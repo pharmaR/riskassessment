@@ -190,26 +190,39 @@ output$news_current <- renderInfoBox({
   )
 })
 
-output$bugtrack <- renderInfoBox({
+# Render infobox for has_bug_reports_url metric.
+output$has_bug_reports_url <- renderInfoBox({
   req(values$has_bug_reports_url)
+  
+  has_metric <- !(values$has_bug_reports_url == "pkg_metric_error")
+  
+  # URL(s) of the the bug reports.
+  value <- values$has_bug_reports_url
+  
   infoBox(
-    title = "Bugs publicly documented?",
-    if(values$has_bug_reports_url[1] == 1){"YES"}
-    else if(values$has_bug_reports_url[2] == -1){"NA"}
-    else{"NO"},
     width = 3,
-    if(values$has_bug_reports_url[2] == -1){"Metric is not applicable for this source of package"}
-    else{ ifelse(values$has_bug_reports_url[1] == 1, paste("Bug reports URL:", values$has_bug_reports_url[2]), "The Bugs are not publicly documented")},
+    fill = TRUE,
+    title = "Bugs publicly documented?",
     icon = icon(
-      ifelse(values$has_bug_reports_url[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(has_metric && value != "NA", "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(values$has_bug_reports_url[1] == 1, "green", "red"),
-    fill = TRUE
+    color = ifelse(has_metric && value != "NA", "green", "red"),
+    
+    # Output
+    #   YES (if metric has value),
+    #   NO (if metric doesnt have any value),
+    #   or NA (if metric equals NA or pkg_metric_error).
+    if(!has_metric){"NA"}
+    else if(value == "NA"){"NO"}
+    else{"YES"},
+    
+    # Output an affirmative/nevative message if metric has a value.
+    if(!has_metric){"Metric is not applicable for this source of package"}
+    else{ifelse(value != "NA", paste("Bug reports URL:", value),
+                "The bugs are not publicly documented")}
   )
-})  # End of the render Output.
-
-# 6. Render Output Info box to show the information on Bugs Status.
+})
 
 output$bugstatus <- renderInfoBox({
   req(values$bugs_status)
