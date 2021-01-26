@@ -80,25 +80,42 @@ output$has_vignettes <- renderInfoBox({
   )
 })
 
-output$website <- renderInfoBox({
+# Render infobox for has_website metric.
+output$has_website <- renderInfoBox({
   req(values$has_website)
+
+  has_metric <- !(values$has_website == "pkg_metric_error")
+  
+  # URL(s) of the package website(s).
+  value <- values$has_website
+  
   infoBox(
-    title = "Associated website URL?",
-    if(values$has_website[1] == 1){"YES"}
-    else if(values$has_website[2] == -1){"NA"}
-    else{"NO"},
     width = 3,
-    if(values$has_website[2] == -1){"Metric is not applicable for this source of package"}
-    else{ ifelse(values$has_website[1] == 1, paste("Website:",values$has_website[2]), "The package does not have an associated website URL")},
+    fill = TRUE,
+    title = "Associated website URL?",
     icon = icon(
-      ifelse(values$has_website[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(has_metric && value != "NA", "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(values$has_website[1] == 1, "green", "red"),
-    fill = TRUE
+    color = ifelse(has_metric && value != "NA", "green", "red"),
+    
+    # Output
+    #   YES (if metric has value),
+    #   NO (if metric doesnt have any value),
+    #   or NA (if metric equals NA or pkg_metric_error).
+    if(!has_metric){"NA"}
+    else if(value == "NA"){"NO"}
+    else{"YES"},
+    
+    # Output metric value if it exists or
+    #   a generic message if NA or error occurred.
+    if(!has_metric){"Metric is not applicable for this source of package"}
+    else{
+      ifelse(value != "NA", paste("Website:", value),
+             "The package does not have an associated website URL")
+    }
   )
-})  # End of the render Output.
-# 3. Render Output Info box to show the Package Has News? Content.
+})
 
 output$hasnews <- renderInfoBox({
   req(values$has_news)
