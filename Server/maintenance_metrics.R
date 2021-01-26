@@ -252,20 +252,33 @@ output$bugs_status <- renderInfoBox({
   )
 })
 
-output$exporthelp <- renderInfoBox({
+# Render infobox for export_help metric.
+output$export_help <- renderInfoBox({
   req(values$export_help)
+  
+  has_metric <- !(values$export_help %in% c("NA", "pkg_metric_error"))
+  
+  # Percentage of exported objects.
+  value <- values$export_help
+  
   infoBox(
-    title = "Documentation",
-    if(values$export_help[2] == -1){"NA"}
-    else{paste0(values$export_help[1],"%")},
-    subtitle = if(values$export_help[2] == -1){"Metric is not applicable for this source of package"}
-    else{"Proportion of exported objects documented"},
     width = 3,
-    fill = TRUE
+    fill = TRUE,
+    title = "Documentation",
+    color = ifelse(has_metric && value != "", "blue", "black"),
+    
+    # Output
+    #   value% (if metric has a value),
+    #   or NA (if metric equals doesnt have a value
+    #   or euqls NA or pkg_metric_error).
+    if(!has_metric || value == ""){"NA"}
+    else if(value != ""){paste0(value, "%")},
+    
+    # Output metric percentage value or generic message.
+    if(!has_metric){"Metric is not applicable for this source of package"}
+    else{"Percentage of exported objects documented"}
   )
-}) # End of the render Output.
-
-# 8. Render Output Info box to show the information on source code is public?.
+})
 
 output$source_pub <- renderInfoBox({
   req(values$has_source_control)
