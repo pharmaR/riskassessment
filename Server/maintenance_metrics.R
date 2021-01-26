@@ -153,26 +153,42 @@ output$has_news <- renderInfoBox({
   )
 })
 
-output$newscurrent <- renderInfoBox({
+# Render infobox for news_current metric.
+output$news_current <- renderInfoBox({
   req(values$news_current)
+  
+  has_metric <- !(values$news_current %in% c("NA", "pkg_metric_error"))
+  
+  # "TRUE": if news file is current, "FALSE": otherwise.
+  value <- values$news_current
+
   infoBox(
-    title = "News is current?",
-    if(values$news_current[1] == 1){"YES"}
-    else if(values$news_current[2] == -1){"NA"}
-    else{"NO"},
     width = 3,
-    if(values$news_current[2] == -1){"Metric is not applicable for this source of package"}
-    else{ ifelse(values$news_current[1] == 1, "NEWS file contains entry for current version number", "NEWS file does not contains entry for current version number")},
+    fill = TRUE,
+    title = "News is current?",
     icon = icon(
-      ifelse(values$news_current[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(has_metric && value == "TRUE", "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(values$news_current[1] == 1, "green", "red"),
-    fill = TRUE
+    color = ifelse(!has_metric, "black", ifelse(value == "TRUE", "green", "red")),
+    
+    # Output
+    #   YES (if metric has value "TRUE"),
+    #   NO (if metric has value "FALSE"),
+    #   or NA (if metric equals NA or pkg_metric_error).
+    if(!has_metric){"NA"}
+    else if(value == "FALSE"){"NO"}
+    else{"YES"},
+    
+    # Output an affirmative/nevative message if metric's valus is "TRUE"/"FALSE" or
+    #   a generic message if NA or error occurred.
+    if(!has_metric){"Metric is not applicable for this source of package"}
+    else{
+      paste("NEWS file",
+            ifelse(value == "TRUE", "contains", "does not contain"),
+            "an entry for the current version number")}
   )
-})  # End of the render Output.
-
-# 5. Render Output  Info box to show the information for Does the package have Bug Report?
+})
 
 output$bugtrack <- renderInfoBox({
   req(values$has_bug_reports_url)
