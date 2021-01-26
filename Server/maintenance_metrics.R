@@ -280,26 +280,39 @@ output$export_help <- renderInfoBox({
   )
 })
 
-output$source_pub <- renderInfoBox({
+# Render infobox for has_source_control metric.
+output$has_source_control <- renderInfoBox({
   req(values$has_source_control)
+  
+  has_metric <- !(values$has_source_control == "pkg_metric_error")
+  
+  # Percentage of exported objects.
+  value <- values$has_source_control
+  
   infoBox(
-    title = "Source code public?",
-    if(values$has_source_control[1] == 1){"YES"}
-    else if(values$has_source_control[2] == -1){"NA"}
-    else{"NO"},
     width = 3,
-    if(values$has_source_control[2] == -1){"Metric is not applicable for this soucre of package"}
-    else{ ifelse(values$has_source_control[1] == 1, paste("Source code URL:", values$has_source_control[2]), "Package does not have a Source code URL")},
+    fill = TRUE,
+    title = "Source code public?",
     icon = icon(
-      ifelse(values$has_source_control[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(has_metric && value != "NA", "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(values$has_source_control[1] == 1, "green", "red"),
-    fill = TRUE
-  )
-})  # End of the Render Output.
+    color = ifelse(has_metric && value != "NA", "green", "red"),
+    
+    # Output
+    #   YES (if metric has value),
+    #   NO (if metric doesnt have any value),
+    #   or NA (if metric equals NA or pkg_metric_error).
+    if(!has_metric){"NA"}
+    else if(value == "NA"){"NO"}
+    else{"YES"},
 
-# 9. Render Output Info box to show the information on Has a package maintainer?.
+    # Output an affirmative/nevative message if metric has a value.
+    if(!has_metric){"Metric is not applicable for this source of package"}
+    else{ifelse(value != "NA", paste("Source code URL:", value),
+                "Package does not have a Source code URL")}
+  )
+})
 
 output$pack_maint <- renderInfoBox({
   req(values$has_maintainer)
