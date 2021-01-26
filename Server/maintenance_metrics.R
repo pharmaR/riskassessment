@@ -117,25 +117,41 @@ output$has_website <- renderInfoBox({
   )
 })
 
-output$hasnews <- renderInfoBox({
+# Render infobox for has_news metric.
+output$has_news <- renderInfoBox({
   req(values$has_news)
+  
+  has_metric <- !(values$has_news %in% c("NA", "pkg_metric_error"))
+  
+  # "1": if it has news, "0": otherwise.
+  value <- values$has_news
+
   infoBox(
-    title = "NEWS?",
-    if(values$has_news[1] == 1){"YES"}
-    else if(values$has_news[2] == -1){"NA"}
-    else{"NO"},
     width = 3,
-    if(values$has_news[2] == -1){"Metric is not applicable for this source of package"}
-    else{ ifelse(values$has_news[1] == 1, "The package has a NEWS file.", "The package does not have a NEWS file")},
+    fill = TRUE,
+    title = "NEWS?",
     icon = icon(
-      ifelse(values$has_news[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(has_metric && value == "1", "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(values$has_news[1] == 1, "green", "red"),
-    fill = TRUE
+    color = ifelse(has_metric && value == "1", "green", "red"),
+    
+    # Output
+    #   YES (if metric has value),
+    #   NO (if metric has value "0"),
+    #   or NA (if metric equals NA or pkg_metric_error).
+    if(!has_metric){"NA"}
+    else if(value == "0"){"NO"}
+    else{"YES"},
+    
+    # Output an affirmative/nevative message if metric's valus is "1"/"0" or
+    #   a generic message if NA or error occurred.
+    if(!has_metric){"Metric is not applicable for this source of package"}
+    else{paste("The package",
+               ifelse(value == "1", "has", "does not have"),
+               "a NEWS file")}
   )
-})  # End of the render Output.
-# 4. Render Output Info box to show the information for News is Current?
+})
 
 output$newscurrent <- renderInfoBox({
   req(values$news_current)
