@@ -12,21 +12,21 @@ fluidRow(
   h3(tags$b("Maintenance Metrics"), class = "text-left"),
   fluidRow(
     class = "mm-row-1",
-    infoBoxOutput("vignette1"),  # Info box to show the information on VIGNETTE Content.
-    infoBoxOutput("website1"),  # Info box to show the information on Package Has Website.
-    infoBoxOutput("hasnews1"),  # Info box to show the Package Has News? Content.
+    infoBoxOutput("has_vignettes1"),  # Info box for 'has_vignettes' metric.
+    infoBoxOutput("has_website1"),  # Info box for 'has_website' metric.
+    infoBoxOutput("has_news1"),  # Info box for 'has_news' metric.
   ),
   fluidRow(
     class = "mm-row-2",
-    infoBoxOutput("newscurrent1"),  # Info box to show the information for News is Current?
-    infoBoxOutput("bugtrack1"),  # Info box to show the information for Does the package have Bug Report?
-    infoBoxOutput("bugstatus1"),  # Info box to show the information on Bugs Status.
+    infoBoxOutput("news_current1"),  # Info box for 'news_current' metric.
+    infoBoxOutput("has_bug_reports_url1"),  # Info box for 'has_bug_reports_url' metric.
+    infoBoxOutput("bugs_status1"),  # Info box for 'bugs_status' metric.
   ),
   fluidRow(
     class = "mm-row-3",
-    infoBoxOutput("exporthelp1"),  # Info box to show the information on Export help.
-    infoBoxOutput("source_pub1"),  # Info box to show the information on source code is public?
-    infoBoxOutput("pack_maint1"),  # Info box to show the information on Has a package maintainer?
+    infoBoxOutput("export_help1"),  # Info box for 'export_help' metric.
+    infoBoxOutput("has_source_control1"),  # Info box for 'has_source_control' metric.
+    infoBoxOutput("has_maintainer1"),  # Info box for 'has_maintainer' metric.
   ),
   fluidRow(
     class = "mm-row-comments",
