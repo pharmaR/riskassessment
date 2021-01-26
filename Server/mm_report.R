@@ -38,181 +38,310 @@ observe({
   }
 })
 
-# 1. Render Output Info box to show the information on VIGNETTE Content.
 
-output$vignette1 <- renderInfoBox({
+# Render infobox for has_vignettes metric.
+output$has_vignettes1 <- renderInfoBox({
   req(values$has_vignettes)
+  
+  has_metric <- !(values$has_vignettes %in% c("NA", "pkg_metric_error"))
+  
+  # Total number of vignettes.
+  value <- as.numeric(values$has_vignettes)
+  
   infoBox(
+    width = 3,
+    fill = TRUE,
     title = "Presence of vignettes?",
-    if(values$has_vignettes[1] == 1){"YES"}
-    else if(values$has_vignettes[2] == -1){"NA"}
-    else{"NO"},
-    width = 3,
-    if(values$has_vignettes[2] == -1){"Metric is not applicable for this source of package"}
-    else{paste("The package has", values$has_vignettes[2], "Vignettes")},
     icon = icon(
-      ifelse(values$has_vignettes[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(has_metric && value >= 1, "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(values$has_vignettes[1] == 1, "green", "red"),
-    fill = TRUE
+    color = ifelse(has_metric && value >= 1, "green", "red"),
+    
+    # Output
+    #   YES (if metric has value),
+    #   NO (if metric doesnt have any value),
+    #   or NA (if metric equals NA or pkg_metric_error).
+    if(!has_metric){"NA"}
+    else if(value == 0){"NO"}
+    else{"YES"},
+    
+    # Output metric value if it exists or
+    #   a generic message if NA or error occurred.
+    if(!has_metric) {"Metric is not applicable for this source of package"}
+    else{
+      paste(
+        "The package has", value, if(value == 1) "vignette" else "vignettes")},
   )
-})  # End of the render Output.
+})
 
-# 2. Render Output Info box to show the information on Package Has Website.
-
-output$website1 <- renderInfoBox({
+# Render infobox for has_website metric.
+output$has_website1 <- renderInfoBox({
   req(values$has_website)
+  
+  has_metric <- !(values$has_website == "pkg_metric_error")
+  
+  # URL(s) of the package website(s).
+  value <- values$has_website
+  
   infoBox(
+    width = 3,
+    fill = TRUE,
     title = "Associated website URL?",
-    if(values$has_website[1] == 1){"YES"}
-    else if(values$has_website[2] == -1){"NA"}
-    else{"NO"},
-    width = 3,
-    if(values$has_website[2] == -1){"Metric is not applicable for this source of package"}
-    else{ ifelse(values$has_website[1] == 1, paste("Website:",values$has_website[2]), "The package does not have an associated website URL")},
     icon = icon(
-      ifelse(values$has_website[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(has_metric && value != "NA", "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(values$has_website[1] == 1, "green", "red"),
-    fill = TRUE
+    color = ifelse(has_metric && value != "NA", "green", "red"),
+    
+    # Output
+    #   YES (if metric has value),
+    #   NO (if metric doesnt have any value),
+    #   or NA (if metric equals NA or pkg_metric_error).
+    if(!has_metric){"NA"}
+    else if(value == "NA"){"NO"}
+    else{"YES"},
+    
+    # Output metric value if it exists or
+    #   a generic message if NA or error occurred.
+    if(!has_metric){"Metric is not applicable for this source of package"}
+    else{
+      ifelse(value != "NA", paste("Website:", value),
+             "The package does not have an associated website URL")
+    }
   )
-})  # End of the render Output.
-# 3. Render Output Info box to show the Package Has News? Content.
+})
 
-output$hasnews1 <- renderInfoBox({
+# Render infobox for has_news metric.
+output$has_news1 <- renderInfoBox({
   req(values$has_news)
+  
+  has_metric <- !(values$has_news %in% c("NA", "pkg_metric_error"))
+  
+  # "1": if it has news, "0": otherwise.
+  value <- values$has_news
+  
   infoBox(
+    width = 3,
+    fill = TRUE,
     title = "NEWS?",
-    if(values$has_news[1] == 1){"YES"}
-    else if(values$has_news[2] == -1){"NA"}
-    else{"NO"},
-    width = 3,
-    if(values$has_news[2] == -1){"Metric is not applicable for this source of package"}
-    else{ ifelse(values$has_news[1] == 1, "The package has a NEWS file.", "The package does not have a NEWS file")},
     icon = icon(
-      ifelse(values$has_news[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(has_metric && value == "1", "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(values$has_news[1] == 1, "green", "red"),
-    fill = TRUE
+    color = ifelse(has_metric && value == "1", "green", "red"),
+    
+    # Output
+    #   YES (if metric has value),
+    #   NO (if metric has value "0"),
+    #   or NA (if metric equals NA or pkg_metric_error).
+    if(!has_metric){"NA"}
+    else if(value == "0"){"NO"}
+    else{"YES"},
+    
+    # Output an affirmative/nevative message if metric's valus is "1"/"0" or
+    #   a generic message if NA or error occurred.
+    if(!has_metric){"Metric is not applicable for this source of package"}
+    else{paste("The package",
+               ifelse(value == "1", "has", "does not have"),
+               "a NEWS file")}
   )
-})  # End of the render Output.
-# 4. Render Output Info box to show the information for News is Current?
+})
 
-output$newscurrent1 <- renderInfoBox({
+# Render infobox for news_current metric.
+output$news_current1 <- renderInfoBox({
   req(values$news_current)
+  
+  has_metric <- !(values$news_current %in% c("NA", "pkg_metric_error"))
+  
+  # "TRUE": if news file is current, "FALSE": otherwise.
+  value <- values$news_current
+  
   infoBox(
+    width = 3,
+    fill = TRUE,
     title = "News is current?",
-    if(values$news_current[1] == 1){"YES"}
-    else if(values$news_current[2] == -1){"NA"}
-    else{"NO"},
-    width = 3,
-    if(values$news_current[2] == -1){"Metric is not applicable for this source of package"}
-    else{ ifelse(values$news_current[1] == 1, "NEWS file contains entry for current version number", "NEWS file does not contains entry for current version number")},
     icon = icon(
-      ifelse(values$news_current[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(has_metric && value == "TRUE", "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(values$news_current[1] == 1, "green", "red"),
-    fill = TRUE
+    color = ifelse(!has_metric, "black", ifelse(value == "TRUE", "green", "red")),
+    
+    # Output
+    #   YES (if metric has value "TRUE"),
+    #   NO (if metric has value "FALSE"),
+    #   or NA (if metric equals NA or pkg_metric_error).
+    if(!has_metric){"NA"}
+    else if(value == "FALSE"){"NO"}
+    else{"YES"},
+    
+    # Output an affirmative/nevative message if metric's valus is "TRUE"/"FALSE" or
+    #   a generic message if NA or error occurred.
+    if(!has_metric){"Metric is not applicable for this source of package"}
+    else{
+      paste("NEWS file",
+            ifelse(value == "TRUE", "contains", "does not contain"),
+            "an entry for the current version number")}
   )
-})  # End of the render Output.
+})
 
-# 5. Render Output  Info box to show the information for Does the package have Bug Report?
-
-output$bugtrack1 <- renderInfoBox({
+# Render infobox for has_bug_reports_url metric.
+output$has_bug_reports_url1 <- renderInfoBox({
   req(values$has_bug_reports_url)
+  
+  has_metric <- !(values$has_bug_reports_url == "pkg_metric_error")
+  
+  # URL(s) of the the bug reports.
+  value <- values$has_bug_reports_url
+  
   infoBox(
+    width = 3,
+    fill = TRUE,
     title = "Bugs publicly documented?",
-    if(values$has_bug_reports_url[1] == 1){"YES"}
-    else if(values$has_bug_reports_url[2] == -1){"NA"}
-    else{"NO"},
-    width = 3,
-    if(values$has_bug_reports_url[2] == -1){"Metric is not applicable for this source of package"}
-    else{ ifelse(values$has_bug_reports_url[1] == 1, paste("Bug reports URL:", values$has_bug_reports_url[2]), "The Bugs are not publicly documented")},
     icon = icon(
-      ifelse(values$has_bug_reports_url[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(has_metric && value != "NA", "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(values$has_bug_reports_url[1] == 1, "green", "red"),
-    fill = TRUE
+    color = ifelse(has_metric && value != "NA", "green", "red"),
+    
+    # Output
+    #   YES (if metric has value),
+    #   NO (if metric doesnt have any value),
+    #   or NA (if metric equals NA or pkg_metric_error).
+    if(!has_metric){"NA"}
+    else if(value == "NA"){"NO"}
+    else{"YES"},
+    
+    # Output an affirmative/nevative message if metric has a value.
+    if(!has_metric){"Metric is not applicable for this source of package"}
+    else{ifelse(value != "NA", paste("Bug reports URL:", value),
+                "The bugs are not publicly documented")}
   )
-})  # End of the render Output.
+})
 
-# 6. Render Output Info box to show the information on Bugs Status.
-
-output$bugstatus1 <- renderInfoBox({
+# Render infobox for bugs_status metric.
+output$bugs_status1 <- renderInfoBox({
   req(values$bugs_status)
+  
+  has_metric <- !(values$bugs_status %in% c("NA", "pkg_metric_error"))
+  
+  # Percentage of last 30 bugs closed.
+  value <- values$bugs_status
+  
   infoBox(
+    width = 3,
+    fill = TRUE,
     title = "Bug closure",
-    if(values$bugs_status[2] == -1){"NA"}
-    else{paste0(values$bugs_status[1],"%")},
-    subtitle = if(values$bugs_status[2] == -1){"Metric is not applicable for this source of package"}
-    else{"Percentage of last 30 bugs closed"},
-    width = 3,
-    fill = TRUE
+    color = ifelse(has_metric && value != "", "blue", "black"),
+    
+    # Output
+    #   value% (if metric has a value),
+    #   or NA (if metric equals doesnt have a value
+    #   or euqls NA or pkg_metric_error).
+    if(!has_metric || value == ""){"NA"}
+    else if(value != ""){paste0(value, "%")},
+    
+    # Output metric percentage value or generic message.
+    if(!has_metric){"Metric is not applicable for this source of package"}
+    else{"Percentage of last 30 bugs closed"}
   )
-})  # End of the render Output.
+})
 
-# 7. Render Output Info box to show the information on Export help.
-
-output$exporthelp1 <- renderInfoBox({
+# Render infobox for export_help metric.
+output$export_help1 <- renderInfoBox({
   req(values$export_help)
+  
+  has_metric <- !(values$export_help %in% c("NA", "pkg_metric_error"))
+  
+  # Percentage of exported objects.
+  value <- values$export_help
+  
   infoBox(
+    width = 3,
+    fill = TRUE,
     title = "Documentation",
-    if(values$export_help[2] == -1){"NA"}
-    else{paste0(values$export_help[1],"%")},
-    subtitle = if(values$export_help[2] == -1){"Metric is not applicable for this source of package"}
-    else{"Proportion of exported objects documented"},
-    width = 3,
-    fill = TRUE
+    color = ifelse(has_metric && value != "", "blue", "black"),
+    
+    # Output
+    #   value% (if metric has a value),
+    #   or NA (if metric equals doesnt have a value
+    #   or euqls NA or pkg_metric_error).
+    if(!has_metric || value == ""){"NA"}
+    else if(value != ""){paste0(value, "%")},
+    
+    # Output metric percentage value or generic message.
+    if(!has_metric){"Metric is not applicable for this source of package"}
+    else{"Percentage of exported objects documented"}
   )
-}) # End of the render Output.
+})
 
-# 8. Render Output Info box to show the information on source code is public?.
-
-output$source_pub1 <- renderInfoBox({
+# Render infobox for has_source_control metric.
+output$has_source_control1 <- renderInfoBox({
   req(values$has_source_control)
+  
+  has_metric <- !(values$has_source_control == "pkg_metric_error")
+  
+  # Percentage of exported objects.
+  value <- values$has_source_control
+  
   infoBox(
-    title = "Source code public?",
-    if(values$has_source_control[1] == 1){"YES"}
-    else if(values$has_source_control[2] == -1){"NA"}
-    else{"NO"},
     width = 3,
-    if(values$has_source_control[2] == -1){"Metric is not applicable for this soucre of package"}
-    else{ ifelse(values$has_source_control[1] == 1, paste("Source code URL:", values$has_source_control[2]), "Package does not have a Source code URL")},
+    fill = TRUE,
+    title = "Source code public?",
     icon = icon(
-      ifelse(values$has_source_control[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(has_metric && value != "NA", "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(values$has_source_control[1] == 1, "green", "red"),
-    fill = TRUE
+    color = ifelse(has_metric && value != "NA", "green", "red"),
+    
+    # Output
+    #   YES (if metric has value),
+    #   NO (if metric doesnt have any value),
+    #   or NA (if metric equals NA or pkg_metric_error).
+    if(!has_metric){"NA"}
+    else if(value == "NA"){"NO"}
+    else{"YES"},
+    
+    # Output an affirmative/nevative message if metric has a value.
+    if(!has_metric){"Metric is not applicable for this source of package"}
+    else{ifelse(value != "NA", paste("Source code URL:", value),
+                "Package does not have a Source code URL")}
   )
-})  # End of the Render Output.
+})
 
-# 9. Render Output Info box to show the information on Has a package maintainer?.
-
-output$pack_maint1 <- renderInfoBox({
+# Render infobox for has_maintainer metric.
+output$has_maintainer1 <- renderInfoBox({
   req(values$has_maintainer)
+  
+  has_metric <- !(values$has_maintainer %in% c("NA", "pkg_metric_error"))
+  
+  # Maintainer name(s).e
+  value <- values$has_maintainer
+  
   infoBox(
-    title = "Has a maintainer?",
-    if(values$has_maintainer[1] == 1){"YES"}
-    else if(values$has_maintainer[2] == -1){"NA"}
-    else{"NO"},
     width = 3,
-    if(values$has_maintainer[2] == -1){"Metric is not applicable for this soucre of package"}
-    else{ ifelse(values$has_maintainer[1] == 1, values$has_maintainer[2], "Package does not have a Maintainer")},
+    fill = TRUE,
+    title = "Has a maintainer?",
     icon = icon(
       ifelse(
-        values$has_maintainer[1] == 1, "thumbs-up", "thumbs-down"),
+        has_metric && value != "", "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(values$has_maintainer[1] == 1, "green", "red"),
-    fill = TRUE
+    color = ifelse(has_metric && value != "", "green", "red"),
+    
+    # Output
+    #   YES (if metric has value),
+    #   NO (if metric doesnt have any value),
+    #   or NA (if metric equals NA or pkg_metric_error).
+    if(!has_metric){"NA"}
+    else if(value == ""){"NO"}
+    else{"YES"},
+    
+    # Output an affirmative/nevative message if metric has a value.
+    if(!has_metric){"Metric is not applicable for this source of package"}
+    else{ifelse(value != "", value, "Package does not have a maintainer")}
   )
-})  # End of the render Output.
+})
 
 # 10. Render Output to show the comments on the application.
 
