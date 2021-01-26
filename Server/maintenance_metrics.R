@@ -44,30 +44,41 @@ observe({
   }
 })
 
-# Start of the render Output's'
-
-# 1. Render Output Info box to show the information on VIGNETTE Content.
-
-output$vignette <- renderInfoBox({
+# Render infobox for has_vignettes metric.
+output$has_vignettes <- renderInfoBox({
   req(values$has_vignettes)
+  
+  has_metric <- !(values$has_vignettes %in% c("NA", "pkg_metric_error"))
+  
+  # Total number of vignettes.
+  value <- as.numeric(values$has_vignettes)
+  
   infoBox(
-    title = "Presence of vignettes?",
-    if(values$has_vignettes[1] == 1){"YES"}
-    else if(values$has_vignettes[2] == -1){"NA"}
-    else{"NO"},
     width = 3,
-    if(values$has_vignettes[2] == -1){"Metric is not applicable for this source of package"}
-    else{paste("The package has", values$has_vignettes[2], "Vignettes")},
+    fill = TRUE,
+    title = "Presence of vignettes?",
     icon = icon(
-      ifelse(values$has_vignettes[1] == 1, "thumbs-up", "thumbs-down"),
+      ifelse(has_metric && value >= 1, "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
-    color = ifelse(values$has_vignettes[1] == 1, "green", "red"),
-    fill = TRUE
+    color = ifelse(has_metric && value >= 1, "green", "red"),
+    
+    # Output
+    #   YES (if metric has value),
+    #   NO (if metric doesnt have any value),
+    #   or NA (if metric equals NA or pkg_metric_error).
+    if(!has_metric){"NA"}
+    else if(value == 0){"NO"}
+    else{"YES"},
+    
+    # Output metric value if it exists or
+    #   a generic message if NA or error occurred.
+    if(!has_metric) {"Metric is not applicable for this source of package"}
+    else{
+      paste(
+        "The package has", value, if(value == 1) "vignette" else "vignettes")},
   )
-})  # End of the render Output.
-
-# 2. Render Output Info box to show the information on Package Has Website.
+})
 
 output$website <- renderInfoBox({
   req(values$has_website)
