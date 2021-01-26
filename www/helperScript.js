@@ -67,24 +67,6 @@ function capturingSizeOfInfoBoxes(){
   }
 }
 
-
-function updateInfoBoxesWhenNA(id){
-  var ele = document.getElementById(id);
-  var infoBox = ele.firstChild;
-  infoBox.classList.add('na-bg-color');
-  
-  var icn = infoBox.firstElementChild;
-  icn.firstElementChild.style.display = "none";
-}
-
-function updateInfoBoxesColorWhenNA(id){
-  var ele = document.getElementById(id);
-  var infoBox = ele.firstChild;
-  infoBox.classList.add('na-bg-color');
-  
-  var icn = infoBox.firstElementChild;
-}
-
 function updateText(id) {
   
   var element = document.getElementById(id).getElementsByClassName('highcharts-subtitle');
