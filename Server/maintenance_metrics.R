@@ -6,55 +6,43 @@
 #####################################################################################################################
 
 
-# Start of the observe's'
-
-# 1. Observe to load the columns from DB into below reactive values.
-
+# Save each metric information into variables.
 observe({
   req(input$select_pack)
   if(input$tabs == "mm_tab_value"){
     if(input$select_pack != "Select"){
-      values$riskmetrics_mm <-
-        db_fun(
-          paste0(
-            "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
-            input$select_pack,
-            "'"
-          )
-        )
       
-      values$package_has_vignettes <- c(strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_vignettes,",")[[1]][2])
-      values$package_has_website <- c(strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_website,",")[[1]][2])
-      values$package_has_news <- c(strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][1], strsplit(values$riskmetrics_mm$package_has_news,",")[[1]][2])
-      values$news_is_current <- c(strsplit(values$riskmetrics_mm$news_is_current,",")[[1]][1], strsplit(values$riskmetrics_mm$news_is_current,",")[[1]][2])
-      values$has_bug_reports <- c(strsplit(values$riskmetrics_mm$has_bug_reports,",")[[1]][1], strsplit(values$riskmetrics_mm$has_bug_reports,",")[[1]][2])
-      values$status_of_last_30_reported_bugs <- c(strsplit(values$riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][1], strsplit(values$riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][2])
-      values$exported_objects_with_documentation <- c(strsplit(values$riskmetrics_mm$exported_objects_with_documentation,",")[[1]][1], strsplit(values$riskmetrics_mm$exported_objects_with_documentation,",")[[1]][2])
-      values$source_code_is_public <- c(strsplit(values$riskmetrics_mm$source_code_is_public,",")[[1]][1], strsplit(values$riskmetrics_mm$source_code_is_public,",")[[1]][2])
-      values$has_a_package_maintainer <- c(strsplit(values$riskmetrics_mm$has_a_package_maintainer,",")[[1]][1], strsplit(values$riskmetrics_mm$has_a_package_maintainer,",")[[1]][2])
-  
+      package_id <- db_fun(paste0("SELECT id
+                                  FROM package
+                                  WHERE name = ", "'", input$select_pack, "';"))
+      
+      # Leave method if package not found.
+      # TODO: save this to the json file.
+      if(nrow(package_id) == 0){
+        print("PACKAGE NOT FOUND.")
+        return()
+      }
+      
+      # Collect all the metric names and values associated to package_id.
+      values$riskmetrics_mm <- db_fun(paste0(
+        "SELECT metric.name, package_metrics.value
+        FROM metric
+        INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
+        WHERE package_metrics.package_id = ", "'", package_id, "'", " AND ",
+        "metric.class = 'maintenance' ;"))
+
       runjs("setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 500);")
-      if (!is.null(input$mm_comment)) {
-          if(values$has_vignettes[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('vignette');}, 500);" ) }
-          if(values$has_website[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('website');}, 500);" ) }
-          if(values$has_news[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('hasnews');}, 500);" ) }
-          if(values$news_current[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('newscurrent');}, 500);" ) }
-          if(values$has_bug_reports_url[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('bugtrack');}, 500);" ) }
-          if(values$bugs_status[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('bugstatus');}, 500);" ) }
-          if(values$export_help[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('exporthelp');}, 500);" ) }
-          if(values$has_source_control[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('source_pub');}, 500);" ) }
-          if(values$has_maintainer[2] == -1){ runjs( "setTimeout(function(){ updateInfoBoxesWhenNA('pack_maint');}, 500);" ) }
-          req(values$selected_pkg$decision)
-          if (values$selected_pkg$decision != "") {
-            runjs("setTimeout(function(){disableUI('mm_comment')}, 500);")
-            runjs("setTimeout(function(){disableUI('submit_mm_comment')}, 500);")
-          }
-       }
+      
+      for(i in 1:nrow(values$riskmetrics_mm))
+        values[[values$riskmetrics_mm$name[i]]] <- values$riskmetrics_mm$value[i]
+      
+      if (values$selected_pkg$decision != "") {
+        runjs("setTimeout(function(){disableUI('mm_comment')}, 500);")
+        runjs("setTimeout(function(){disableUI('submit_mm_comment')}, 500);")
+      }
     }
   }
-})  # End of the observe.
-
-# End of the observe's'
+})
 
 # Start of the render Output's'
 
