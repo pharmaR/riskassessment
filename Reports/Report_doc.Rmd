@@ -287,7 +287,7 @@ comment_cum <- data.frame(comment_cum %>% map(rev))
 HTML(display_comments(comment_cum))
 ```
 
-\newpage
+<!-- \newpage -->
 
 <!-- ## Testing Metrics -->
 
