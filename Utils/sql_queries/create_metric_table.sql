@@ -3,5 +3,5 @@ CREATE TABLE IF NOT EXISTS metric(
    name         CHAR, 
    description  CHAR,
    class        CHAR, /*class = maintenance or test*/
-   weight       INT
+   weight       DECIMAL
 );
