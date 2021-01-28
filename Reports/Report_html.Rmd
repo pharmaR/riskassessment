@@ -32,89 +32,92 @@ comment_o <-
     )
   )
 
-  riskmetrics_mm <-
-    db_fun(
-      paste0(
-        "SELECT * FROM MaintenanceMetrics WHERE MaintenanceMetrics.mm_id ='",
-        params$package,
-        "'"
-      )
-    )
-   
-  package_has_vignettes <- c(strsplit(riskmetrics_mm$package_has_vignettes,",")[[1]][1], strsplit(riskmetrics_mm$package_has_vignettes,",")[[1]][2])
-  package_has_website <- c(strsplit(riskmetrics_mm$package_has_website,",")[[1]][1], strsplit(riskmetrics_mm$package_has_website,",")[[1]][2])
-  package_has_news <- c(strsplit(riskmetrics_mm$package_has_news,",")[[1]][1], strsplit(riskmetrics_mm$package_has_news,",")[[1]][2])
-  news_is_current <- c(strsplit(riskmetrics_mm$news_is_current,",")[[1]][1], strsplit(riskmetrics_mm$news_is_current,",")[[1]][2])
-  has_bug_reports <- c(strsplit(riskmetrics_mm$has_bug_reports,",")[[1]][1], strsplit(riskmetrics_mm$has_bug_reports,",")[[1]][2])
-  status_of_last_30_reported_bugs <- c(strsplit(riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][1], strsplit(riskmetrics_mm$status_of_last_30_reported_bugs,",")[[1]][2])
-  exported_objects_with_documentation <- c(strsplit(riskmetrics_mm$exported_objects_with_documentation,",")[[1]][1], strsplit(riskmetrics_mm$exported_objects_with_documentation,",")[[1]][2])
-  source_code_is_public <- c(strsplit(riskmetrics_mm$source_code_is_public,",")[[1]][1], strsplit(riskmetrics_mm$source_code_is_public,",")[[1]][2])
-  has_a_package_maintainer <- c(strsplit(riskmetrics_mm$has_a_package_maintainer,",")[[1]][1], strsplit(riskmetrics_mm$has_a_package_maintainer,",")[[1]][2])
+package_id <- db_fun(paste0("SELECT id
+                                  FROM package
+                                  WHERE name = ", "'", params$package, "';"))
 
-  riskmetrics_cum <-
-    db_fun(
-      paste0(
-        "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-        params$package,
-        "'"
-      )
-    )
- 
-  pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
-  
-  if (!(params$package %in% pkgs_in_db$cum_id)) {
-    metric_cum_Info_upload_to_DB(params$package)
-    riskmetrics_cum <- db_fun( paste0("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='", params$package, "'") )
-  } else{
-    riskmetrics_cum <- db_fun( paste0("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='", params$package, "'") )
-  }
-   
-  time_since_first_release_info <- riskmetrics_cum$time_since_first_release[1] 
-  time_since_version_release_info <- riskmetrics_cum$time_since_version_release[1]
-  no_of_downloads_last_year_info <-
-        riskmetrics_cum$no_of_downloads_last_year[1]
-  
+# Leave method if package not found.
+# TODO: save this to the json file.
+if(nrow(package_id) == 0){
+  print("PACKAGE NOT FOUND.")
+  return()
+}
 
-  package_id <- db_fun(paste0("SELECT id FROM package WHERE name = ", "'", input$select_pack, "'", ";"))
-  metric_id <- db_fun(paste0("SELECT id FROM metric WHERE name = 'covr_coverage';"))
-  covr_coverage <- db_fun(
-    paste0("SELECT value FROM package_metrics WHERE ",
-           "package_id = ", package_id,
-           " AND ",
-           "metric_id = ", metric_id,
-           ";"
+# Collect all the metric names and values associated to package_id.
+values$riskmetrics_mm <- db_fun(paste0(
+  "SELECT metric.name, package_metrics.value
+        FROM metric
+        INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
+        WHERE package_metrics.package_id = ", "'", package_id, "'", " AND ",
+  "metric.class = 'maintenance' ;"))
+
+for(i in 1:nrow(values$riskmetrics_mm))
+  values[[values$riskmetrics_mm$name[i]]] <- values$riskmetrics_mm$value[i]
+
+riskmetrics_cum <-
+  db_fun(
+    paste0(
+      "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
+      params$package,
+      "'"
     )
   )
-  covr_coverage <- covr_coverage$value
-  
 
-   comment_mm <-
-      db_fun(
-        paste0(
-          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
-          params$package,
-          "' AND comment_type = 'mm'"
-        )
-      )  
- 
-   comment_cum <-
-      db_fun(
-        paste0(
-          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
-          params$package,
-          "' AND comment_type = 'cum'"
-        )
-      )
+pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
 
-    comment_tm <-
-      db_fun(
-        paste0(
-          "SELECT user_name, user_role, comment, added_on FROM Comments WHERE comm_id = '",
-          params$package,
-          "' AND comment_type = 'tm'"
-        )
-      )
- 
+if (!(params$package %in% pkgs_in_db$cum_id)) {
+  metric_cum_Info_upload_to_DB(params$package)
+  riskmetrics_cum <- db_fun( paste0("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='", params$package, "'") )
+} else{
+  riskmetrics_cum <- db_fun( paste0("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='", params$package, "'") )
+}
+
+time_since_first_release_info <- riskmetrics_cum$time_since_first_release[1] 
+time_since_version_release_info <- riskmetrics_cum$time_since_version_release[1]
+no_of_downloads_last_year_info <-
+  riskmetrics_cum$no_of_downloads_last_year[1]
+
+
+package_id <- db_fun(paste0("SELECT id FROM package WHERE name = ", "'", input$select_pack, "'", ";"))
+metric_id <- db_fun(paste0("SELECT id FROM metric WHERE name = 'covr_coverage';"))
+covr_coverage <- db_fun(
+  paste0("SELECT value FROM package_metrics WHERE ",
+         "package_id = ", package_id,
+         " AND ",
+         "metric_id = ", metric_id,
+         ";"
+  )
+)
+covr_coverage <- covr_coverage$value
+
+
+comment_mm <-
+  db_fun(
+    paste0(
+      "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
+      params$package,
+      "' AND comment_type = 'mm'"
+    )
+  )  
+
+comment_cum <-
+  db_fun(
+    paste0(
+      "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
+      params$package,
+      "' AND comment_type = 'cum'"
+    )
+  )
+
+comment_tm <-
+  db_fun(
+    paste0(
+      "SELECT user_name, user_role, comment, added_on FROM Comments WHERE comm_id = '",
+      params$package,
+      "' AND comment_type = 'tm'"
+    )
+  )
+
 ```
 
 
@@ -201,142 +204,27 @@ p_color <- 'white'
 ```{r echo=FALSE, results="asis"}
 div(
 class = "row mb-3",
-  infoBox(
-    title = "Presence of vignettes?",
-    if(package_has_vignettes[1] == 1){"YES"}
-    else if(package_has_vignettes[2] == -1){"NA"}
-    else{"NO"},
-    width = 3,
-    if(package_has_vignettes[2] == -1){"Metric is not applicable for this source of package"}
-    else{paste("The package has", package_has_vignettes[2], "Vignettes")},
-    icon = icon(
-      ifelse(package_has_vignettes[1] == 1, "thumbs-up", "thumbs-down"),
-      lib = "glyphicon"
-    ),
-    color = ifelse(package_has_vignettes[1] == 1, "green", "red"),
-    fill = TRUE
-  ),
-  infoBox(
-    title = "Associated website URL?",
-    if(package_has_website[1] == 1){"YES"}
-    else if(package_has_website[2] == -1){"NA"}
-    else{"NO"},
-    width = 3,
-    if(package_has_website[2] == -1){"Metric is not applicable for this source of package"}
-    else{ ifelse(package_has_website[1] == 1, paste("Website:",package_has_website[2]), "The package does not have an associated website URL")},
-    icon = icon(
-      ifelse(package_has_website[1] == 1, "thumbs-up", "thumbs-down"),
-      lib = "glyphicon"
-    ),
-    color = ifelse(package_has_website[1] == 1, "green", "red"),
-    fill = TRUE
-  ),
-  infoBox(
-    title = "NEWS?",
-    if(package_has_news[1] == 1){"YES"}
-    else if(package_has_news[2] == -1){"NA"}
-    else{"NO"},
-    width = 3,
-    if(package_has_news[2] == -1){"Metric is not applicable for this source of package"}
-    else{ ifelse(package_has_news[1] == 1, "The package has a NEWS file.", "The package does not have a NEWS file")},
-    icon = icon(
-      ifelse(package_has_news[1] == 1, "thumbs-up", "thumbs-down"),
-      lib = "glyphicon"
-    ),
-    color = ifelse(package_has_news[1] == 1, "green", "red"),
-    fill = TRUE
-  )
+  has_vignettes_infobox(values),
+  has_website_infobox(values),
+  has_news_infobox(values)
 )
 ```
 
 ```{r echo=FALSE}
 div(
 class = "row mb-3",
-  infoBox(
-    title = "News is current?",
-    if(news_is_current[1] == 1){"YES"}
-    else if(news_is_current[2] == -1){"NA"}
-    else{"NO"},
-    width = 3,
-    if(news_is_current[2] == -1){"Metric is not applicable for this source of package"}
-    else{ ifelse(news_is_current[1] == 1, "NEWS file contains entry for current version number", "NEWS file does not contains entry for current version number")},
-    icon = icon(
-      ifelse(news_is_current[1] == 1, "thumbs-up", "thumbs-down"),
-      lib = "glyphicon"
-    ),
-    color = ifelse(news_is_current[1] == 1, "green", "red"),
-    fill = TRUE
-  ),
-  infoBox(
-    title = "Bugs publicly documented?",
-    if(has_bug_reports[1] == 1){"YES"}
-    else if(has_bug_reports[2] == -1){"NA"}
-    else{"NO"},
-    width = 3,
-    if(has_bug_reports[2] == -1){"Metric is not applicable for this source of package"}
-    else{ ifelse(has_bug_reports[1] == 1, paste("Bug reports URL:", has_bug_reports[2]), "The Bugs are not publicly documented")},
-    icon = icon(
-      ifelse(has_bug_reports[1] == 1, "thumbs-up", "thumbs-down"),
-      lib = "glyphicon"
-    ),
-    color = ifelse(has_bug_reports[1] == 1, "green", "red"),
-    fill = TRUE
-  ),
-  infoBox(
-    title = "Bug closure",
-    if(status_of_last_30_reported_bugs[2] == -1){"NA"}
-    else{paste0(status_of_last_30_reported_bugs[1],"%")},
-    subtitle = if(status_of_last_30_reported_bugs[2] == -1){"Metric is not applicable for this source of package"}
-    else{"Percentage of last 30 bugs closed"},
-    width = 3,
-    fill = TRUE
-  )
+  news_current_infobox(values),
+  has_bug_reports_url_infobox(values),
+  bugs_status_infobox(values)
 )
 ```    
 
 ```{r echo= FALSE}
 div(
   class = "row mb-3",
-  infoBox(
-    title = "Documentation",
-    if(exported_objects_with_documentation[2] == -1){"NA"}
-    else{paste0(exported_objects_with_documentation[1],"%")},
-    subtitle = if(exported_objects_with_documentation[2] == -1){"Metric is not applicable for this source of package"}
-    else{"Proportion of exported objects documented"},
-    width = 3,
-    fill = TRUE
-  ),
-  infoBox(
-    title = "Source code public?",
-    if(source_code_is_public[1] == 1){"YES"}
-    else if(source_code_is_public[2] == -1){"NA"}
-    else{"NO"},
-    width = 3,
-    if(source_code_is_public[2] == -1){"Metric is not applicable for this soucre of package"}
-    else{ ifelse(source_code_is_public[1] == 1, paste("Source code URL:", source_code_is_public[2]), "Package does not have a Source code URL")},
-    icon = icon(
-      ifelse(source_code_is_public[1] == 1, "thumbs-up", "thumbs-down"),
-      lib = "glyphicon"
-    ),
-    color = ifelse(source_code_is_public[1] == 1, "green", "red"),
-    fill = TRUE
-  ),
-  infoBox(
-    title = "Has a maintainer?",
-    if(has_a_package_maintainer[1] == 1){"YES"}
-    else if(has_a_package_maintainer[2] == -1){"NA"}
-    else{"NO"},
-    width = 3,
-    if(has_a_package_maintainer[2] == -1){"Metric is not applicable for this soucre of package"}
-    else{ ifelse(has_a_package_maintainer[1] == 1, has_a_package_maintainer[2], "Package does not have a Maintainer")},
-    icon = icon(
-      ifelse(
-        has_a_package_maintainer[1] == 1, "thumbs-up", "thumbs-down"),
-        lib = "glyphicon"
-    ),
-    color = ifelse(has_a_package_maintainer[1] == 1, "green", "red"),
-    fill = TRUE
-  )
+  export_help_infobox(values),
+  has_source_control_infobox(values),
+  has_maintainer_infobox(values)
 )
 
 ```
@@ -423,21 +311,6 @@ tagList(p)
 ```
 
 ```{r echo=FALSE}
-
-tags$script(HTML("setTimeout(function(){
-var element = document.querySelectorAll('.info-box-content');
-for (var i = 0; i < element.length; i++) {
-	if(element[i].innerText.indexOf('NA') > -1) {
-		var iconEle = element[i].previousElementSibling
-		iconEle.firstElementChild.style.background = 'grey';
-        var icn = iconEle.firstElementChild;
-        if(icn.classList.toString().indexOf('fa-calendar') > -1 || icn.classList.toString().indexOf('fa-bar-chart')> -1){
-            
-        } else {
-            icn.classList.add('icon-color-grey');
-        }
-	}}
-},500)" )) 
 
 if (riskmetrics_cum$no_of_downloads_last_year[1] == 0) {
   tags$script(
@@ -600,25 +473,21 @@ color: steelblue;
 }
 
 .glyphicon-thumbs-up {
-  background: green;
-  color: #fff;
   padding: 3px;
 }
 
 .glyphicon-thumbs-down {
-  background: red;
-  color: #fff;
   padding: 3px;
 }
 
 .fa-bar-chart, .fa-calendar {
-  background: deepskyblue;
-  color: #fff;
   padding: 3px;
 }
+
 .mb-3 {
   margin-bottom: 1rem;
 }
+
 .mb-4 {
   margin-bottom: 1.5rem;
 }
