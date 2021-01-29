@@ -20,21 +20,21 @@ output$maintenance_metrics <- renderUI({
         class = "mm-main-row",
         fluidRow(
           class = "mm-row-1",
-          infoBoxOutput("vignette"),  # Info box to show the information on VIGNETTE Content.
-          infoBoxOutput("website"),  # Info box to show the information on Package Has Website.
-          infoBoxOutput("hasnews"),  # Info box to show the Package Has News? Content.
+          infoBoxOutput("has_vignettes"),  # Info box for 'has_vignettes' metric.
+          infoBoxOutput("has_website"),  # Info box for 'has_website' metric.
+          infoBoxOutput("has_news"),  # Info box for 'has_news' metric.
         ),
         fluidRow(
           class = "mm-row-2",
-          infoBoxOutput("newscurrent"),  # Info box to show the information for News is Current?
-          infoBoxOutput("bugtrack"),  # Info box to show the information for Does the package have Bug Report?
-          infoBoxOutput("bugstatus"),  # Info box to show the information on Bugs Status.
+          infoBoxOutput("news_current"),  # Info box for 'news_current' metric.
+          infoBoxOutput("has_bug_reports_url"),  # Info box for 'has_bug_reports_url' metric.
+          infoBoxOutput("bugs_status"),  # Info box for 'bugs_status' metric.
         ),
         fluidRow(
           class = "mm-row-3",
-          infoBoxOutput("exporthelp"),  # Info box to show the information on Export help.
-          infoBoxOutput("source_pub"),  # Info box to show the information on source code is public?
-          infoBoxOutput("pack_maint"),  # Info box to show the information on Has a package maintainer?
+          infoBoxOutput("export_help"),  # Info box for 'export_help' metric.
+          infoBoxOutput("has_source_control"),  # Info box for 'has_source_control' metric.
+          infoBoxOutput("has_maintainer"),  # Info box for 'has_maintainer' metric.
         ),
         fluidRow(
           class = "mm-row-comments-box",

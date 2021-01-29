@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS package(
    author         CHAR,
    license        CHAR,
    published_on   CHAR,
-   score          INT,
-   weigthed_score INT,
+   score          REAL,
+   weigthed_score REAL,
    decision       CHAR
 );

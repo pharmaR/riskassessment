@@ -1296,33 +1296,6 @@ i.fas.fa-info-history.fa-2x.history-help-icon:hover {
     margin-right: 5px !important;
   }
   
-  #maintenance_metrics-vignette {
-    width: 100% !important;
-  }
-  #maintenance_metrics-website {
-    width: 100% !important;
-  }
-  #maintenance_metrics-hasnews {
-    width: 100% !important;
-  }
-  #maintenance_metrics-newscurrent {
-    width: 100% !important;
-  }
-  #maintenance_metrics-bugtrack {
-    width: 100% !important;
-  }
-  #maintenance_metrics-bugstatus {
-    width: 100% !important;
-  }
-  #maintenance_metrics-exporthelp {
-    width: 100% !important;
-  }
-  #maintenance_metrics-source_pub {
-    width: 100% !important;
-  }
-  #maintenance_metrics-pack_maint {
-    width: 100% !important;
-  }
   .label-float-left {
     width: 100% !important;
   }
