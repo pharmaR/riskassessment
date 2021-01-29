@@ -48,11 +48,10 @@ create_db <- function(){
   
   riskmetric_score <-
     riskmetric_assess %>%
-    pkg_score() %>%
-    mutate(risk = summarize_scores(.))
-  
+    pkg_score()
+
   # exclude the following names
-  excl_name <- c("package","version","pkg_ref","license","downloads_1yr","pkg_score","risk")
+  excl_name <- c("package","version","pkg_ref","license","downloads_1yr","pkg_score")
   
   rm_assess <- select(riskmetric_assess, 
                       which(!names(riskmetric_assess) %in% excl_name))
