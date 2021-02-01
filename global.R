@@ -1,5 +1,6 @@
 # Packages needed for the app.
 packages = c("shiny"
+             ,"shinyhelper"
              ,"shinyjs"
              ,"shinydashboard"
              ,"shinyWidgets"
@@ -51,6 +52,7 @@ source("Utils/infoboxes.R")
 # uncommenting the lines below.
 
 # library(shiny)
+# library(shinyhelper)
 # library(shinyjs)
 # library(shinydashboard)
 # library(shinyWidgets)
