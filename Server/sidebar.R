@@ -160,8 +160,7 @@ observeEvent(input$select_pack, {
   }
 })
 
-# 2. Observe Event to submit the decision for selected package.
-
+# Show a confirmation modal when submitting a decision.
 observeEvent(input$submit_decision, {
   if (!is.null(input$decision)) {
     showModal(tags$div(
@@ -187,10 +186,9 @@ observeEvent(input$submit_decision, {
       tags$h4("Please select a Decision!")
     ))
   }
-})  # End of the Observe Event.
+})
 
-# 3. Observe Event for submit the decision.
-
+# Update database info after decision is submitted.
 observeEvent(input$submit_confirmed_decision, {
   db_ins(
     paste0(
@@ -210,13 +208,12 @@ observeEvent(input$submit_confirmed_decision, {
   # After decision submitted, update db dash.
   values$db_pkg_overview <- update_db_dash()
   
-})  # End of the Observe Event.
+})
 
 # 4. Observe Event to edit the decision if user need to change.
-
 observeEvent(input$edit, {
   removeModal()
-})  # End of the Observe Event.
+})
 
 
 # 5. Observe Event to update overall comment.
@@ -282,11 +279,9 @@ observeEvent(input$submit_overall_comment, {
     # After comment added to Comments table, update db dash
     values$db_pkg_overview <- update_db_dash()
   }
-  
-})  # End of the observe Event.
+})
 
 # 6. Observe Event to update overall comment.
-
 observeEvent(input$submit_overall_comment_yes, {
   db_ins(
     paste0(
