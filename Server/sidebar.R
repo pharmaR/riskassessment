@@ -166,24 +166,22 @@ observeEvent(input$submit_decision, {
     showModal(tags$div(
       id = "confirmation_id",
       modalDialog(
-        title = h1("CONFIRMATION!", class = "mb-0 mt-0 txt-color"),
-        tags$h2("Please confirm your decision", class = "mt-0"),
-        HTML(
-          paste("<h3>Decision:", "<b>", input$decision, "</b></h3>")
-        ),
-        HTML(
-          "<h5 class = 'mt-25 mb-0'><b>Note: </b>Once submitted the decision cannot be reverted and comments in group and package level will be frozen.</h5>"
-        ),
+        title = h2("Submit Decision", class = "mb-0 mt-0 txt-color"),
+        h2("Please confirm your decision", class = "mt-0"),
+        h3("Decision:", strong(input$decision)),
+        h5(strong("Note:"), "Once submitted the decision cannot be reverted and
+           comments in group and package level will be frozen.", class = "mt-25 mb-0"),
         footer = tagList(
-          actionButton("submit_confirmed_decision", "Submit", class = "submit_confirmed_decision_class btn-secondary"),
+          actionButton("submit_confirmed_decision", "Submit",
+                       class = "submit_confirmed_decision_class btn-secondary"),
           actionButton("edit", "Cancel", class = "edit_class btn-unsuccess")
         )
       )
     ))
   } else{
     showModal(modalDialog(
-      title = HTML("<h3 class = 'txt-danger'>WARNING!</h3>"),
-      tags$h4("Please select a Decision!")
+      title = h3("WARNING!", class = 'txt-danger'),
+      h4("Please select a Decision!")
     ))
   }
 })
@@ -242,14 +240,13 @@ observeEvent(input$submit_overall_comment, {
             comments_submitted$user_role == values$role
         )
       showModal(modalDialog(
-        title = h1("CONFIRMATION!", class = "mb-0 mt-0 txt-color"),
-        HTML(
-          paste("<b><h3>Previous Comment:</b>", "<br>", "<h4>", comment_submitted$comment, "</h4>")
-        ),
-        tags$h3("Do you want to update your previous comment?", class = "mt-0"),
-        HTML(
-          paste("<b><h3>Current Comment:</b>", "<br>", "<h4>", values$overall_comments, "</h4>")
-        ),
+        title = h2("Update Comment", class = "mb-0 mt-0 txt-color"),
+        h3("Do you want to update your previous comment?", class = "mt-0"),
+        br(),
+        h4(strong("Previous Comment:")),
+        h5(comment_submitted$comment),
+        h4(strong("Current Comment:")),
+        h5(values$overall_comments),
         HTML(
           "<h5 class = 'mt-25 mb-0'><b>Note: </b> <br>Yes - Overwrites the previous comment.<br>Edit - Go back to editing the comment.<br>No - Exits from window and removes the text in comment box.</h5>"
         ),
