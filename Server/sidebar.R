@@ -93,7 +93,7 @@ output$sel_ver <- renderUI({
 
 
 # Display the review status of the selected package.
-output$status <- renderText({
+output$status <- renderUI({
   if (!is.null(input$select_pack)) {
     if (input$select_pack != "Select") {
       if (!identical(values$selected_pkg$decision, character(0))) {
@@ -111,7 +111,7 @@ output$status <- renderText({
 
 
 # Display the risk score of the selected package.
-output$score <- renderText({
+output$score <- renderUI({
   if (!is.null(input$select_pack)) {
     if (input$select_pack != "Select") {
       paste("<h3>Score: <b>", values$selected_pkg$score, "</b></h3>")
