@@ -124,24 +124,15 @@ output$score <- renderUI({
     if(input$select_pack != "Select")
       score_output <- values$selected_pkg$score
 
-    tagList(
-      h4("Score:", strong(score_output)) %>% 
-        helper(icon = "fas fa-info-circle fa-2x", 
+      h4("Score:", strong(score_output)) %>%
+        helper(icon = "fas fa-info-circle fa-2x",
                colour = "rgb(77, 141, 201)",
                type = "inline",
                title = "Current Details",
                content = "Some dummy text")
-    )
-  }
-  
-})
-
-# End of the Render Output's'.
-
-# Start of the Observe Event.
+}})
 
 # 1. Observe Event for select package
-
 observeEvent(input$select_pack, {
   
   if (trimws(input$select_pack) != "Select" && trimws(input$select_pack) != "") {
