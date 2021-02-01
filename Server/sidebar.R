@@ -110,16 +110,30 @@ output$status <- renderUI({
   }
 })
 
+# Required for shinyhelper to work.
+observe_helpers()
 
 # Display the risk score of the selected package.
 output$score <- renderUI({
   if (!is.null(input$select_pack)) {
-    if (input$select_pack != "Select") {
-      paste("<h3>Score: <b>", values$selected_pkg$score, "</b></h3>")
-    } else{
-      paste("<h3>Score: <b>NA</b></h3>")
-    }
+    
+    # Score defaults to NA.
+    score_output <- "NA"
+    
+    # If a package is selected, then display the package score.
+    if(input$select_pack != "Select")
+      score_output <- values$selected_pkg$score
+
+    tagList(
+      h4("Score:", strong(score_output)) %>% 
+        helper(icon = "fas fa-info-circle fa-2x", 
+               colour = "rgb(77, 141, 201)",
+               type = "inline",
+               title = "Current Details",
+               content = "Some dummy text")
+    )
   }
+  
 })
 
 # End of the Render Output's'.
