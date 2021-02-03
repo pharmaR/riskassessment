@@ -1,3 +1,7 @@
+# Default infobox settings.
+width <- 4
+fill <- TRUE
+
 # Infobox for has_vignettes.
 has_vignettes_infobox <- function(values) {
   req(values$has_vignettes)
@@ -8,15 +12,15 @@ has_vignettes_infobox <- function(values) {
   value <- as.numeric(values$has_vignettes)
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "Presence of vignettes?",
     icon = icon(
       ifelse(has_metric && value >= 1, "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
     color = ifelse(has_metric && value >= 1, "green", "red"),
-    
+
     # Output
     #   YES (if metric has value),
     #   NO (if metric doesnt have any value),
@@ -44,8 +48,8 @@ has_website_infobox <- function(values) {
   value <- values$has_website
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "Associated website URL?",
     icon = icon(
       ifelse(has_metric && value != "NA", "thumbs-up", "thumbs-down"),
@@ -81,8 +85,8 @@ has_news_infobox <- function(values){
   value <- values$has_news
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "NEWS?",
     icon = icon(
       ifelse(has_metric && value == "1", "thumbs-up", "thumbs-down"),
@@ -117,8 +121,8 @@ news_current_infobox <- function(values){
   value <- values$news_current
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "News is current?",
     icon = icon(
       ifelse(has_metric && value == "TRUE", "thumbs-up", "thumbs-down"),
@@ -154,8 +158,8 @@ has_bug_reports_url_infobox <- function(values){
   value <- values$has_bug_reports_url
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "Bugs publicly documented?",
     icon = icon(
       ifelse(has_metric && value != "NA", "thumbs-up", "thumbs-down"),
@@ -188,8 +192,8 @@ bugs_status_infobox <- function(values){
   value <- values$bugs_status
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "Bug closure",
     color = ifelse(has_metric && value != "", "blue", "black"),
     
@@ -216,8 +220,8 @@ export_help_infobox <- function(values){
   value <- values$export_help
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "Documentation",
     color = ifelse(has_metric && value != "", "blue", "black"),
     
@@ -244,8 +248,8 @@ has_source_control_infobox <- function(values){
   value <- values$has_source_control
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "Source code public?",
     icon = icon(
       ifelse(has_metric && value != "NA", "thumbs-up", "thumbs-down"),
@@ -278,8 +282,8 @@ has_maintainer_infobox <- function(values){
   value <- values$has_maintainer
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "Has a maintainer?",
     icon = icon(
       ifelse(
