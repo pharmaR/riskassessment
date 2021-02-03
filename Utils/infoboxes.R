@@ -31,10 +31,9 @@ has_vignettes_infobox <- function(values) {
     
     # Output metric value if it exists or
     #   a generic message if NA or error occurred.
-    if(!has_metric) {"Metric is not applicable for this source of package"}
-    else{
-      paste(
-        "The package has", value, if(value == 1) "vignette" else "vignettes")},
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else
+      paste("The package has", value, if(value == 1) "vignette" else "vignettes")
   )
 }
 
@@ -67,11 +66,10 @@ has_website_infobox <- function(values) {
     
     # Output metric value if it exists or
     #   a generic message if NA or error occurred.
-    if(!has_metric){"Metric is not applicable for this source of package"}
-    else{
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else
       ifelse(value != "NA", paste("Website:", value),
              "The package does not have an associated website URL")
-    }
   )
 }
 
@@ -104,10 +102,10 @@ has_news_infobox <- function(values){
     
     # Output an affirmative/nevative message if metric's valus is "1"/"0" or
     #   a generic message if NA or error occurred.
-    if(!has_metric){"Metric is not applicable for this source of package"}
-    else{paste("The package",
-               ifelse(value == "1", "has", "does not have"),
-               "a NEWS file")}
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else
+      paste("The package", ifelse(value == "1", "has", "does not have"),
+               "a NEWS file")
   )
 }
 
@@ -140,11 +138,11 @@ news_current_infobox <- function(values){
     
     # Output an affirmative/nevative message if metric's valus is "TRUE"/"FALSE" or
     #   a generic message if NA or error occurred.
-    if(!has_metric){"Metric is not applicable for this source of package"}
-    else{
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else
       paste("NEWS file",
             ifelse(value == "TRUE", "contains", "does not contain"),
-            "an entry for the current version number")}
+            "an entry for the current version number")
   )
 }
 
@@ -176,9 +174,10 @@ has_bug_reports_url_infobox <- function(values){
     else{"YES"},
     
     # Output an affirmative/nevative message if metric has a value.
-    if(!has_metric){"Metric is not applicable for this source of package"}
-    else{ifelse(value != "NA", paste("Bug reports URL:", value),
-                "The bugs are not publicly documented")}
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else
+      ifelse(value != "NA", paste("Bug reports URL:", value),
+                "The bugs are not publicly documented")
   )
 }
 
@@ -205,8 +204,8 @@ bugs_status_infobox <- function(values){
     else if(value != ""){paste0(value, "%")},
     
     # Output metric percentage value or generic message.
-    if(!has_metric){"Metric is not applicable for this source of package"}
-    else{"Percentage of last 30 bugs closed"}
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else "Percentage of last 30 bugs closed"
   )
 }
 
@@ -233,8 +232,8 @@ export_help_infobox <- function(values){
     else if(value != ""){paste0(value, "%")},
     
     # Output metric percentage value or generic message.
-    if(!has_metric){"Metric is not applicable for this source of package"}
-    else{"Percentage of exported objects documented"}
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else "Percentage of exported objects documented"
   )
 }
 
@@ -266,8 +265,9 @@ has_source_control_infobox <- function(values){
     else{"YES"},
     
     # Output an affirmative/nevative message if metric has a value.
-    if(!has_metric){"Metric is not applicable for this source of package"}
-    else{ifelse(value != "NA", paste("Source code URL:", value),
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else{
+      ifelse(value != "NA", paste("Source code URL:", value),
                 "Package does not have a source code URL")}
   )
 }
@@ -301,7 +301,7 @@ has_maintainer_infobox <- function(values){
     else{"YES"},
     
     # Output an affirmative/nevative message if metric has a value.
-    if(!has_metric){"Metric is not applicable for this source of package"}
-    else{ifelse(value != "", value, "Package does not have a maintainer")}
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else ifelse(value != "", value, "Package does not have a maintainer")
   )
 }
