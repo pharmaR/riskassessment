@@ -6,10 +6,7 @@
 #####################################################################################################################
 
 
-# Start of the functions
-
-# 1. Function to get the package general information from CRAN/local.
-
+# Get the package general information from CRAN/local.
 get_packages_info_from_web <- function(package_name) {
   tryCatch(
     expr = {
@@ -32,9 +29,8 @@ get_packages_info_from_web <- function(package_name) {
       desc <- str_replace_all(desc, "'", "")
       desc <- str_replace_all(desc, '"', "")
       
-      
       ver_html <- html_nodes(webpage, 'td')
-      ver<-html_text(ver_html)
+      ver <- html_text(ver_html)
       for(i in 1:length(ver)){
         if(!is.na(ver[i])){
           if(ver[i] == "Version:"){
@@ -75,7 +71,7 @@ get_packages_info_from_web <- function(package_name) {
       auth <- str_replace_all(auth, '"', "")
       
       pub_html <- html_nodes(webpage, 'td')
-      pub<-html_text(pub_html)
+      pub <- html_text(pub_html)
       for(i in 1:length(pub)){
         if(!is.na(pub[i])){
           if(pub[i] == "Published:"){
@@ -101,7 +97,6 @@ get_packages_info_from_web <- function(package_name) {
       lis <- str_replace_all(lis, "'", "")
       lis <- str_replace_all(lis, '"', "")
       
-      
       genInfo_upload_to_DB(package_name, ver, title, desc, auth, main, lis, pub)
       
     },
@@ -125,13 +120,10 @@ get_packages_info_from_web <- function(package_name) {
         loggit("ERROR", paste("Error in extracting general info of the package", package_name, "info", e), app = "fileupload-webscraping")
       }
     }
-  )# End of try catch
+  )
 }
 
-# End of the function
-
-# 2. Function to upload the general info into DB.
-
+# Upload the general info into DB.
 genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis, pub) {
   tryCatch(
     expr = {
@@ -143,14 +135,11 @@ genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis
     error = function(e) {
       loggit("ERROR", paste("Error in uploading the general info of the package", package_name, "info", e), app = "fileupload-DB")
     }
-  )# End of try catch 
-
+  )
 }
-# End of the function
 
 
-# 3. Function to get the maintenance and testing metrics info and upload into DB.
-
+# Get the maintenance and testing metrics info and upload into DB.
 metric_mm_tm_Info_upload_to_DB <- function(package_name){
   
   riskmetric_assess <-
@@ -221,9 +210,9 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
 # Get community usage metrics info and upload into DB.
 metric_cum_Info_upload_to_DB <- function(package_name) {
   pkg_vers_date_final <<- data.frame(matrix(ncol = 4, nrow = 0))
-  time_since_first_release<<-NA
-  time_since_version_release<<-NA
-  downloads_1yr<<-NA
+  time_since_first_release <<- NA
+  time_since_version_release <<- NA
+  downloads_1yr <<- NA
   
   tryCatch(
     expr = {
