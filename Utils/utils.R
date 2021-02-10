@@ -37,7 +37,8 @@ create_db <- function(){
     
     dbClearResult(res)
   })
-  
+  dbDisconnect(con)
+
   # build the table to initialize the metric db and run the query
   package_name <- "riskmetric"
   
@@ -61,28 +62,41 @@ create_db <- function(){
   # get name and description directly from abbreviated riskmetric_assess
   # get name and description directly from riskmetric_assess
   name        <- names(rm_assess)
-  as_label    <- map_chr(rm_assess, ~attr(.x, "label") )
-  sc_descr    <- map_chr(rm_score,  ~attr(.x, "label") )
+  label       <- map_chr(rm_assess, ~attr(.x, "label") )
+  description <- map_chr(rm_score,  ~attr(.x, "label") )
+  
+  add_cmts <- tibble(
+    name = c("news_current","has_vignettes","has_bug_reports_url",
+             "bugs_status","export_help","has_website",
+             "has_maintainer","has_news","has_source_control"),
+    comment = c("News is current?","Presence of vignettes?",
+                "Bugs publicly documented?",
+                "Bug closure","Documentation","Associated website URL?",
+                "Has a maintainer?","NEWS?","Source code public?")
+    )
   
   # build tbl
-  df_metric <- tibble(name,as_label,sc_descr) %>% 
-    mutate(is_thumb = ifelse(str_detect(sc_descr,"fraction"), FALSE, TRUE)) %>% 
-    mutate(sc_descr = str_replace(sc_descr,"fraction","percentage")) %>% 
+  df_metric <- tibble(name,label,description) %>% 
+    mutate(info_type = ifelse(str_detect(description,"fraction"), "percent", "binary")) %>% 
+    mutate(description = str_replace(description,"fraction","percentage")) %>% 
     mutate(class = ifelse(name == "covr_coverage", "test", "maintenance")) %>% 
     mutate(weight = 1)
+  
+  df_metric <- left_join(df_metric, add_cmts, by = "name") %>% 
+    mutate(comment = ifelse(is.na(comment), "", comment)) %>% 
+    select(name, comment, label, description, info_type, class, weight)
   
   # transpose it
   t_dfm <- t(df_metric)
   
   # build query -- assumes weight is always initalized to 1
-  query <- paste0("INSERT INTO metric (name, as_label, sc_descr, is_thumb, class, weight) values('",
-                  paste(t_dfm, collapse="','"), "')")
+  query <- paste0("INSERT INTO metric (name, comment, label, description, info_type, class, weight) 
+                  values('",paste(t_dfm, collapse="','"), "')")
   query <- gsub("'1',","1),(",query)  # separate new rows with )(
   query <- gsub("'1'","1",query)
   
   # initialize the table
-  dbExecute(con, query)
-  dbDisconnect(con)
+  db_ins(query)
 }
 
 db_fun <- function(query){
