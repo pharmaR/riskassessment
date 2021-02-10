@@ -38,6 +38,9 @@ create_db <- function(){
     dbClearResult(res)
   })
   dbDisconnect(con)
+}
+
+init_metric <- function() {
 
   # build the table to initialize the metric db and run the query
   package_name <- "riskmetric"
@@ -65,6 +68,7 @@ create_db <- function(){
   label       <- map_chr(rm_assess, ~attr(.x, "label") )
   description <- map_chr(rm_score,  ~attr(.x, "label") )
   
+  # this will need to be maintained
   add_cmts <- tibble(
     name = c("news_current","has_vignettes","has_bug_reports_url",
              "bugs_status","export_help","has_website",

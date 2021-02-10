@@ -16,8 +16,10 @@ source(file.path("Utils", "utils.R"))
 source(file.path("Utils", "cum_utils.R"))
 
 # Create db if it doesn't exist.
-if(!file.exists(db_name)) create_db()
-
+if(!file.exists(db_name)) {
+  create_db()
+  init_metric()
+}
 # Start logging info.
 set_logfile("loggit.json")
 
