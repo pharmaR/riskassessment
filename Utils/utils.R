@@ -72,7 +72,8 @@ create_db <- function(){
     comment = c("News is current?","Presence of vignettes?",
                 "Bugs publicly documented?",
                 "Bug closure","Documentation","Associated website URL?",
-                "Has a maintainer?","NEWS?","Source code public?")
+                "Has a maintainer?","NEWS?","Source code public?"),
+    ord = c(4,1,5,6,7,2,9,3,8)
     )
   
   # build tbl
@@ -84,6 +85,7 @@ create_db <- function(){
   
   df_metric <- left_join(df_metric, add_cmts, by = "name") %>% 
     mutate(comment = ifelse(is.na(comment), "", comment)) %>% 
+    arrange(ord) %>% 
     select(name, comment, label, description, info_type, class, weight)
   
   # transpose it
