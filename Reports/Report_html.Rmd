@@ -78,7 +78,6 @@ no_of_downloads_last_year_info <-
   riskmetrics_cum$no_of_downloads_last_year[1]
 
 
-package_id <- db_fun(paste0("SELECT id FROM package WHERE name = ", "'", input$select_pack, "'", ";"))
 metric_id <- db_fun(paste0("SELECT id FROM metric WHERE name = 'covr_coverage';"))
 covr_coverage <- db_fun(
   paste0("SELECT value FROM package_metrics WHERE ",
