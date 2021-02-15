@@ -455,14 +455,6 @@ margin: 1.5rem!important;
   position: absolute;
   right: 0px;
 }
-#status>h3, #score>h3, .control-label>h3 {
-  font-size: 2rem !important;
-  color: #2c3e50;
-}
-
-#status>h3>b, #score>h3>b{
-  font-size: 1.7rem !important;
-}
 
 .shiny-input-radiogroup.shiny-input-container-inline label ~ .shiny-options-group {
   margin-top: 10px;
