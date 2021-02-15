@@ -119,6 +119,7 @@ server <- function(session, input, output) {
   observeEvent(input$db_dash_bttn,{
     values$current_screen<-"db_dash_screen"
   })
+
   observe({
     if (values$current_screen == "login_screen") {
       source(file.path("UI", "login_screen.R"), local = TRUE)
@@ -130,7 +131,7 @@ server <- function(session, input, output) {
       source(file.path("UI", "dashboard_screen.R"), local = TRUE)
       shinyjs::show("assessment_criteria_bttn")
     }
-  })  # End of the selected screen observe.
+  })
   
   # 2. Observe to select the package, score, decision and load the data into
   # a reactive variable.
@@ -143,16 +144,14 @@ server <- function(session, input, output) {
           "'"
         )
       )
-  })  # End of the observe for reactive table.
-  # End of the observe's'
+  })
   
   # Observe Event to load the source file of UI module when we click on the
   # Assessment Criteria action Link.
   observeEvent(input$assessment_criteria_bttn, {
     source(file.path("UI", "assessment_criteria.R"), local = TRUE)
-  })  # End of the Observe Event
+  })
   
-}  # End of the Server Code.
-
+}
 
 shinyApp(ui = ui, server = server)
