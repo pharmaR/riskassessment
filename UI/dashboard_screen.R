@@ -64,10 +64,10 @@ output$screen <- renderUI({
              tags$li(
               class = "dropdown",
               style = "float: right; padding-right: 75px; padding-top: 25px;",
-              actionLink("db_dash_bttn", class = "assessment_criteria_bttn_class",
+              actionLink("db_dash_bttn",
                          HTML('<div class="tooltip-help">
-                      <i class="fas fa-history fa-2x history-help-icon"></i>
-                      <span class="tooltiptext-help tooltipreview">Package Review History</span>
+                      <i class="fas fa-database fa-2x database-icon"></i>
+                      <span class="tooltiptext-help fa-database-tooltiptext-help">Database</span>
                       </div>'))
              ),
              br(),

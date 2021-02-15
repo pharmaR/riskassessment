@@ -533,9 +533,6 @@ font-size: 11px;
   margin-bottom: 19px;
 }
 
-.assessment_criteria_bttn_class{
-font-size: 15px;
-}
 
 .chooseCSVtext{
 float: left;
@@ -941,20 +938,24 @@ a#db_dash_bttn:hover {
     background-color: transparent;
 }
 
-i.fas.fa-info-history.fa-2x.history-help-icon:hover {
+i.fas.fa-info-database.fa-2x.database-help-icon:hover {
     color: #87B1DA;
     border-radius: 5px;
+}
+
+.fas.fa-database.fa-2x.database-icon {
+    font-size: 30px;
 }
 
 .tooltip-help .tooltiptext-help {
   visibility: hidden;
   width: 130px;
-  background-color: #87B1DA;
+  background-color: rgba(135, 177, 218, 0.6);
   color: white;
   text-align: center;
   border-radius: 6px;
   padding: 7px 0;
-  border: solid 1px #CCCACB;
+  border: solid 1px rgba(135, 177, 218, 0.4);
   
   /* Position the tooltip */
   position: absolute;
@@ -965,17 +966,14 @@ i.fas.fa-info-history.fa-2x.history-help-icon:hover {
 
 .tooltip-help:hover .tooltiptext-help {
   visibility: visible;
+  font-size: 15px;
+  font-weight: bold;
 }
 
-
-.tooltipreview {
+.fa-database-tooltiptext-help {
     top: 5px !important;
     right: 115% !important;
 }
-
-
-
-
 
 @media screen and (max-width: 600px) {
   span.header-txt {
