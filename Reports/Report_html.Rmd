@@ -303,11 +303,13 @@ comment_mm <- data.frame(comment_mm %>% map(rev))
 <br>
 <br>
 
+<div style="margin-top: 100px"></div>
 ```{r echo=FALSE}
 p <- num_dwnlds_plot(data = riskmetrics_cum,
                     input_select_pack = params$package)
 tagList(p)
 ```
+
 
 ```{r echo=FALSE}
 
