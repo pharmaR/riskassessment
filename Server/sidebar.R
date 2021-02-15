@@ -124,12 +124,7 @@ output$score <- renderUI({
     if(input$select_pack != "Select")
       score_output <- values$selected_pkg$score
 
-      h4("Score:", strong(score_output)) %>%
-        helper(icon = "fas fa-info-circle fa-2x",
-               colour = "rgb(77, 141, 201)",
-               type = "inline",
-               title = "Current Details",
-               content = "Some dummy text")
+      h3("Score:", strong(score_output))
 }})
 
 # 1. Observe Event for select package
