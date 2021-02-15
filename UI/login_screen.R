@@ -35,14 +35,14 @@ output$screen <- renderUI({
                  ),
                  column(width = 12,
                         #disabled(textInput("role", NULL, value = "RinPharma-Participant")))  # Text input to enter the Role.
-                        textInput("role", NULL))  # Text input to enter the Role.
+                        textInput("role", NULL, value = "Admin"))  # Text input to enter the Role.
                ),
                tags$div(class = "col-md-12 proceed-div",
                         column(
                           width = 12,
                           align = "center",
                           actionButton("submit_details", class = "btn btn-secondary p-3 btn-block mb-4 mt-4", "PROCEED TO APP"),  # Action Button to proceed the app.
-                          p(class = "card-text", "*This information will be stored in DB along with comments")
+                          p(class = "card-text", "*This information will be stored in the DB")
                         ))
              ),
             
