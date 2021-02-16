@@ -116,7 +116,7 @@ output$upload_summary_text <- renderText({
       "<h4>New Packages:",  nrow(values$New), "</h4>",
       "<h4>Undiscovered Packages:", nrow(values$Undis), "</h4>",
       "<h4>Duplicate Packages:", nrow(values$Dup), "</h4>",
-      "<h4><b>Note: The information extracted of the package will be always from latest version irrespective of uploaded version."
+      "<h4><b>Note: The assessment will be performed on the latest version of each package, irrespective of the uploaded version."
     )
   }
 })  # End of the render Output.
