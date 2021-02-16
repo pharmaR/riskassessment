@@ -8,7 +8,7 @@
 # Start of the login screen Source file for UI Module.
 
 output$screen <- renderUI({
- fluidRow(class = "first_screen",
+ fluidRow(id = "first_screen",
          column(
            width = 12,
            class = "container",

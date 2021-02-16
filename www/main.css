@@ -76,7 +76,8 @@ element.style {
   margin-right: auto;
   margin-left: auto;
 }
-.box {
+
+#first_screen .box {
  padding: 1.5rem!important;
  height: 400px;
  margin: 0px;
@@ -87,7 +88,7 @@ element.style {
  width: 465px;
 }
 
-.first_screen {
+#first_screen {
   background: rgb(250, 250, 250);
 }
 
@@ -996,7 +997,7 @@ i.fas.fa-info-database.fa-2x.database-help-icon:hover {
 }
 
 @media screen and (max-width: 600px) {
-  div.box {
+  #first_screen .box {
     height: 60vh !important;
     width: 50vh;
     margin-left: 0rem !important;
@@ -1028,7 +1029,7 @@ i.fas.fa-info-database.fa-2x.database-help-icon:hover {
     display: inherit;
   }
   
-  .box {
+  #first_screen .box {
     height: auto !important;
     width: 50vh;
     margin-left: -8rem!important;
@@ -1054,7 +1055,7 @@ i.fas.fa-info-database.fa-2x.database-help-icon:hover {
 }
 
 @media screen and (max-width: 768px) {
-  .box {
+  #first_screen .box {
     height: 520px!important;
     width: 350px!important;
     margin-left: -4rem!important;
@@ -1087,7 +1088,7 @@ i.fas.fa-info-database.fa-2x.database-help-icon:hover {
 }
 
 @media screen and (min-width: 320px) and (max-width: 360px) {
-  div.box {
+  #first_screen .box {
     height: 450px !important;
     margin-left: 0rem;
   }
@@ -1204,7 +1205,7 @@ i.fas.fa-info-database.fa-2x.database-help-icon:hover {
 }
 
 @media screen and (min-width: 911px) and (max-width: 1023px) {
-  .box {
+  #first_screen .box {
     height: auto !important;
     width: 60vh !important;
     margin-left: -8rem !important;
@@ -1237,7 +1238,7 @@ i.fas.fa-info-database.fa-2x.database-help-icon:hover {
 }
 
 @media screen and (max-width: 1024px) {
-  .box {
+  #first_screen .box {
     height: 45vh;
     width: 50vh;
     margin-left: -20rem;
