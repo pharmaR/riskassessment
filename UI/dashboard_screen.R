@@ -78,8 +78,8 @@ output$screen <- renderUI({
                        data.intro = "Use this slider to provide your take on the overall risk of the selected package"
                      )
                    )
-                 ),
-               ),)
+                 )
+               ))
     )
   ),
   tags$div(class = "main-component justify-content-center text-center",
