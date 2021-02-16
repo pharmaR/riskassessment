@@ -14,7 +14,14 @@ output$upload_package <- renderUI({
     style = "padding-left: 30px; padding-right: 30px; padding-bottom: 50px",
     class = "u_p_main_row",
     tags$div(class = "row col-sm-12 u_p_heading_row",
-             tags$h2("Upload list of R Packages")),
+             tags$h2("Upload list of R Packages"),
+             introBox(
+               actionBttn("help", "Need help?", color = "success",
+                          icon = icon("star-of-life"),
+                          block = FALSE, style = "bordered", size = "sm"),
+               data.step = 1,
+               data.intro = "Click here anytime you need help"
+             )),
     fluidRow(
       style = "text-align: left;",
       column(
@@ -29,10 +36,8 @@ output$upload_package <- renderUI({
             placeholder = "No file selected"
           ),
           data.step = 2,
-          data.intro = "Upload a CSV file with the package(s) you would like to assess",
-          data.hint = "you can whattt??"
+          data.intro = "Upload a CSV file with the package(s) you would like to assess"
         ),
-        
         # Click on Button to view the sample format dataset to upload.
         introBox(
           actionLink("upload_format", "View Sample Dataset",
@@ -40,14 +45,6 @@ output$upload_package <- renderUI({
           data.step = 3,
           data.intro = "You can use this sample dataset to explore the app"
         )
-      ),
-      column(width = 8, align = "right",
-             br(), br(), br(),
-             introBox(
-               actionButton("help", "Need help?"),
-               data.step = 1,
-               data.intro = "Click here anytime you need help"
-             )
       )
     ),
     
