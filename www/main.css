@@ -15,6 +15,14 @@ body {
   font-size: 15px;
 }
 
+.introjs-tooltip {
+  font-size: 15px;
+}
+
+.introjs-button {
+  font-size: 15px;
+}
+
 .main-header{
   background: #3c8dbc;
   display: flex;

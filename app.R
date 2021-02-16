@@ -59,7 +59,9 @@ ui <- dashboardPage(
   dashboardSidebar(disable = TRUE),
 
   dashboardBody(
-
+    
+    introjsUI(),
+    
     # Include js scripts.
     tags$head(tags$script(src = "helperScript.js")),
     

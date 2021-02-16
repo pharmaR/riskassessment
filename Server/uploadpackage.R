@@ -5,6 +5,12 @@
 # License: MIT License
 #####################################################################################################################
 
+# Start introjs when help button is pressed.
+observeEvent(input$help,
+             introjs(session, options = list("nextLabel" = "Next Tip",
+                                             "prevLabel" = "Previous Tip",
+                                             "skipLabel" = "Close"))
+)
 
 # Reactive variable to load the sample csv file into data().
 data <- reactive({
@@ -12,7 +18,6 @@ data <- reactive({
   data1<-data.table(data1)
   data1
 })
-
 
 # Load the columns from DB into reactive values.
 observeEvent(list(input$total_new_undis_dup,input$uploaded_file), {
