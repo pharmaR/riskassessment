@@ -21,7 +21,7 @@ output$screen <- renderUI({
         tags$section(
           br(), br(),
           box(width = 12, collapsible = TRUE, status = "primary",
-              title = h3("Uploaded Packages"),
+              title = h3("Uploaded Packages", style = "margin-top: 5px"),
               solidHeader = TRUE,
               DT::dataTableOutput("db_pkgs"),
               br(),
