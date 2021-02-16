@@ -12,7 +12,9 @@ output$db_pkgs <- DT::renderDataTable({
   values$db_pkg_overview <- update_db_dash() %>%
     mutate(last_comment = as.character(as_datetime(last_comment))) %>%
     mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
-    mutate(decision = ifelse(decision == "", "-", decision))
+    mutate(decision = ifelse(decision != "", paste(decision, "Risk"), "-")) %>%
+    mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
+    select(name, version, score, was_decision_made, decision, last_comment)
   
   as.datatable(
     formattable(
@@ -24,10 +26,20 @@ output$db_pkgs <- DT::renderDataTable({
                             "border-radius" = "4px",
                             "padding-right" = "4px",
                             color = "white",
-                            "background-color" = rgb(0.4, (1-x)^2, 0)))
+                            "background-color" = rgb(x, (1-x)^2, 0))),
+        was_decision_made = formatter("span",
+                                      style = x ~ style(color = ifelse(x, "#0668A3", "gray")),
+                                      x ~ icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No"))),
+        decision = formatter(
+          "span",
+          style = x ~ style(
+            color = ifelse(x == "High Risk", "#FF0000",
+                           ifelse(x == "Medium Risk", "#804000",
+                                  ifelse(x == "Low Risk", "#1BC91B", "black")))
+        ))
     )),
     selection = list(mode = 'multiple'),
-    colnames = c("Package", "Version", "Score", "Decision", "Last Comment"),
+    colnames = c("Package", "Version", "Score", "Decision Made?", "Decision", "Last Comment"),
     rownames = FALSE,
     options = list(
       searching = FALSE,
