@@ -33,10 +33,11 @@ output$db_pkgs <- DT::renderDataTable({
         decision = formatter(
           "span",
           style = x ~ style(
+            "font-weight" = "bold",
             color = ifelse(x == "High Risk", "#FF0000",
                            ifelse(x == "Medium Risk", "#804000",
-                                  ifelse(x == "Low Risk", "#1BC91B", "black")))
-        ))
+                                  ifelse(x == "Low Risk", "#1BC91B", "black"))))
+        )
     )),
     selection = list(mode = 'multiple'),
     colnames = c("Package", "Version", "Score", "Decision Made?", "Decision", "Last Comment"),
