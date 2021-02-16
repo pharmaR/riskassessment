@@ -14,10 +14,9 @@ output$screen <- renderUI({
            class = "container",
            box(
              width = 4,
-             class = "card w-40 p-4 box_initial_screen",
+             class = "card w-40 p-4",
              tags$h2("Please fill in your details", class = "card-title text-center txt-color font-weight-bold"),
              tags$hr(class = "bg-color"),
-             id = "initial_screen",
              tags$section(
                tags$div(
                  class = "col-md-12 mt-4 name-div",
