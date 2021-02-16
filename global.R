@@ -24,6 +24,7 @@ packages = c("shiny"
              ,"devtools"
              ,"plotly"
              ,"cranlogs"
+             ,"formattable"
 )
 
 # Install and load required packages.
@@ -76,3 +77,4 @@ source("Utils/infoboxes.R")
 # library(devtools)
 # library(plotly)
 # library(riskmetric) # devtools::install_github("pharmaR/riskmetric")
+# library(formattable)

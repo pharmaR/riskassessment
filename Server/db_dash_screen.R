@@ -9,31 +9,36 @@
 # Create table for the db dashboard.
 output$db_pkgs <- DT::renderDataTable({
   
-  values$db_pkg_overview <- update_db_dash()
+  values$db_pkg_overview <- update_db_dash() %>%
+    mutate(last_comment = as.character(as_datetime(last_comment))) %>%
+    mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
+    mutate(decision = ifelse(decision == "", "-", decision))
   
-  DT::datatable(
-    values$db_pkg_overview,
+  as.datatable(
+    formattable(
+      values$db_pkg_overview,
+      list(
+        score = formatter(
+          "span",
+          style = x ~ style(display = "block",
+                            "border-radius" = "4px",
+                            "padding-right" = "4px",
+                            color = "white",
+                            "background-color" = rgb(0.4, (1-x)^2, 0)))
+    )),
     selection = list(mode = 'multiple'),
-    extensions = "Buttons",
-    colnames = c("Package", "Version",
-                 "Score", "Decision", "Last Comment"),
+    colnames = c("Package", "Version", "Score", "Decision", "Last Comment"),
+    rownames = FALSE,
     options = list(
-      dom = 'Blftpr',
+      searching = FALSE,
+      lengthChange = FALSE,
+      #dom = 'Blftpr',
       pageLength = 10,
       lengthMenu = list(c(10, 50, 100, -1), c('15', '50', '100', "All")),
-      columnDefs = list(
-        list(className = 'dt-center')
-      ),
-      buttons = list(list(
-        extend = "excel",
-        title = "R Package Risk Assessment App: Package Upload History",
-        filename = paste(
-          sep = "_",
-          "RiskAsses_PkgDB_Dwnld",
-          str_replace_all(str_replace(Sys.time(), " ", "_"), ":", "-"))
-      ))
-  )) %>%
-  formatStyle(names(values$db_pkg_overview), textAlign = 'center')
+      columnDefs = list(list(className = 'dt-center'))
+    )
+  ) %>%
+    formatStyle(names(values$db_pkg_overview), textAlign = 'center')
 })
 
 
