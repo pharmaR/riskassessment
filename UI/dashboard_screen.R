@@ -25,63 +25,38 @@ output$screen <- renderUI({
                tags$div(
                  sidebarPanel(
                    width = 12,
-                   introBox(
-                     uiOutput("sel_pack"), # UI for select package.
-                     data.step = 4,
-                     data.intro = "Once you upload your packages, click this dropdown to choose one"
+                   uiOutput("sel_pack"), # UI for select package.
+                   uiOutput("sel_ver"), # UI for version of the selected package.
+                   uiOutput("status"), # Display the status of the package.
+                   uiOutput("score"), # Display the score of the package.
+                   textAreaInput(
+                     "overall_comment",
+                     h3("Leave Your Overall Comment:"),
+                     width = "100%",
+                     rows = 5,
+                     placeholder = paste("Current Comment:")
                    ),
-                   introBox(
-                     uiOutput("sel_ver"), # UI for version of the selected package.
-                     data.step = 5,
-                     data.intro = "The latest package version will autopopulate here"
-                   ),
-                   introBox(
-                     uiOutput("status"), # Display the status of the package.
-                     data.step = 6,
-                     data.intro = "The status can be either 'Under Review' or 'Reviewed'"
-                   ),
-                   introBox(
-                     uiOutput("score"), # Display the score of the package.
-                     data.step = 7,
-                     data.intro = "The score can take any value between 0 (e.g. no risk) and 1 (e.g. highest risk)"
-                   ),
-                   introBox(
-                     textAreaInput(
-                       "overall_comment",
-                       h3("Leave Your Overall Comment:"),
-                       width = "100%",
-                       rows = 5,
-                       placeholder = paste("Current Comment:")
-                     ),
-                     # Action Button to Submit Overall Comment for selected Package.
-                     actionButton("submit_overall_comment",
-                                  class = "submit_overall_comment_class btn-secondary",
-                                  "Submit Comment"),
-                     data.step = 8,
-                     data.intro = "After reviewing your package, you can leave an overall comment"
-                   ),
+                   # Action Button to Submit Overall Comment for selected Package.
+                   actionButton("submit_overall_comment",
+                                class = "submit_overall_comment_class btn-secondary",
+                                "Submit Comment"),
                    tags$div(
                      class = "col-sm-12 decision_div",
                      HTML("<i class='fas fa-info-circle fa-2x float-right txt-color cursor-help' title='Once submitted the decision cannot be reverted and comments in group and package level will be frozen'></i>"),
                      # Slider input to select the decision for selected package.
-                     introBox(
-                       sliderTextInput(
-                         "decision",
-                         h3("Overall Risk:"),
-                         selected = NULL,
-                         grid = TRUE,
-                         c("Low", "Medium", "High")
-                       ),
-                       # Action button to submit decision for selected package.
-                       actionButton("submit_decision", class = "submit_decision_class btn-secondary", "Submit Decision"),
-                       data.step = 9,
-                       data.intro = "Use this slider to provide your take on the overall risk of the selected package"
-                     )
+                     sliderTextInput(
+                       "decision",
+                       h3("Overall Risk:"),
+                       selected = NULL,
+                       grid = TRUE,
+                       c("Low", "Medium", "High")
+                     ),
+                     # Action button to submit decision for selected package.
+                     actionButton("submit_decision", class = "submit_decision_class btn-secondary", "Submit Decision")
                    )
-                 )
                ))
-    )
-  ),
+      )
+  )),
   tags$div(class = "main-component justify-content-center text-center",
            mainPanel(
             class="main-component-child",

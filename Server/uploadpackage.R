@@ -5,11 +5,36 @@
 # License: MIT License
 #####################################################################################################################
 
+# Implement the intro logic.
+steps <- reactive(
+  data.frame(
+    # Note that we access chooseCSVtext with '.' instead of '#', because we track its class and not its id.
+    element = c("#help", ".chooseCSVtext", ".sample_dataset_link", "#sel_pack", "#sel_ver",
+                "#status", "#score", "#overall_comment", "#decision"),
+    intro = c(
+      "Click here anytime you need help.",
+      "Upload a CSV file with the package(s) you would like to assess.",
+      "You can use this sample dataset to explore the app.",
+      "Once you upload your packages, click this dropdown to choose one.",
+      "The latest package version will autopopulate here.",
+      "The status can be either 'Under Review' or 'Reviewed'.",
+      "The score can take any value between 0 (e.g., no risk) and 1 (e.g., highest risk).",
+      "After reviewing your package, you can leave an overall comment.",
+      "Use this slider to provide your take on the overall risk of the selected package."
+    ),
+    position = c("right", rep("top", 3), rep("bottom", 5))
+  )
+)
+
 # Start introjs when help button is pressed.
 observeEvent(input$help,
-             introjs(session, options = list("nextLabel" = "Next Tip",
-                                             "prevLabel" = "Previous Tip",
-                                             "skipLabel" = "Close"))
+             introjs(session,
+                     options = list(steps = steps(),
+                                    "nextLabel"="Next",
+                                    "prevLabel"="Previous",
+                                    "skipLabel"="Skip"
+                     )
+             )
 )
 
 # Reactive variable to load the sample csv file into data().
