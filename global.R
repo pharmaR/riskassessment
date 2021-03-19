@@ -1,5 +1,6 @@
 # Packages needed for the app.
 packages = c("shiny"
+             ,"shinyhelper"
              ,"shinyjs"
              ,"shinydashboard"
              ,"shinyWidgets"
@@ -23,6 +24,8 @@ packages = c("shiny"
              ,"devtools"
              ,"plotly"
              ,"cranlogs"
+             ,"formattable"
+             ,"rintrojs"
 )
 
 # Install and load required packages.
@@ -51,6 +54,7 @@ source("Utils/infoboxes.R")
 # uncommenting the lines below.
 
 # library(shiny)
+# library(shinyhelper)
 # library(shinyjs)
 # library(shinydashboard)
 # library(shinyWidgets)
@@ -74,3 +78,5 @@ source("Utils/infoboxes.R")
 # library(devtools)
 # library(plotly)
 # library(riskmetric) # devtools::install_github("pharmaR/riskmetric")
+# library(formattable)
+# library(rintrojs)

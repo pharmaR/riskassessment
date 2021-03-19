@@ -1,3 +1,7 @@
+# Default infobox settings.
+width <- 4
+fill <- TRUE
+
 # Infobox for has_vignettes.
 has_vignettes_infobox <- function(values) {
   req(values$has_vignettes)
@@ -8,15 +12,15 @@ has_vignettes_infobox <- function(values) {
   value <- as.numeric(values$has_vignettes)
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "Presence of vignettes?",
     icon = icon(
       ifelse(has_metric && value >= 1, "thumbs-up", "thumbs-down"),
       lib = "glyphicon"
     ),
     color = ifelse(has_metric && value >= 1, "green", "red"),
-    
+
     # Output
     #   YES (if metric has value),
     #   NO (if metric doesnt have any value),
@@ -27,10 +31,9 @@ has_vignettes_infobox <- function(values) {
     
     # Output metric value if it exists or
     #   a generic message if NA or error occurred.
-    if(!has_metric) {"Metric is not applicable for this source of package"}
-    else{
-      paste(
-        "The package has", value, if(value == 1) "vignette" else "vignettes")},
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else
+      paste("The package has", value, if(value == 1) "vignette" else "vignettes")
   )
 }
 
@@ -44,8 +47,8 @@ has_website_infobox <- function(values) {
   value <- values$has_website
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "Associated website URL?",
     icon = icon(
       ifelse(has_metric && value != "NA", "thumbs-up", "thumbs-down"),
@@ -63,11 +66,10 @@ has_website_infobox <- function(values) {
     
     # Output metric value if it exists or
     #   a generic message if NA or error occurred.
-    if(!has_metric){"Metric is not applicable for this source of package"}
-    else{
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else
       ifelse(value != "NA", paste("Website:", value),
              "The package does not have an associated website URL")
-    }
   )
 }
 
@@ -81,8 +83,8 @@ has_news_infobox <- function(values){
   value <- values$has_news
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "NEWS?",
     icon = icon(
       ifelse(has_metric && value == "1", "thumbs-up", "thumbs-down"),
@@ -100,10 +102,10 @@ has_news_infobox <- function(values){
     
     # Output an affirmative/nevative message if metric's valus is "1"/"0" or
     #   a generic message if NA or error occurred.
-    if(!has_metric){"Metric is not applicable for this source of package"}
-    else{paste("The package",
-               ifelse(value == "1", "has", "does not have"),
-               "a NEWS file")}
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else
+      paste("The package", ifelse(value == "1", "has", "does not have"),
+               "a NEWS file")
   )
 }
 
@@ -117,8 +119,8 @@ news_current_infobox <- function(values){
   value <- values$news_current
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "News is current?",
     icon = icon(
       ifelse(has_metric && value == "TRUE", "thumbs-up", "thumbs-down"),
@@ -136,11 +138,11 @@ news_current_infobox <- function(values){
     
     # Output an affirmative/nevative message if metric's valus is "TRUE"/"FALSE" or
     #   a generic message if NA or error occurred.
-    if(!has_metric){"Metric is not applicable for this source of package"}
-    else{
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else
       paste("NEWS file",
             ifelse(value == "TRUE", "contains", "does not contain"),
-            "an entry for the current version number")}
+            "an entry for the current version number")
   )
 }
 
@@ -154,8 +156,8 @@ has_bug_reports_url_infobox <- function(values){
   value <- values$has_bug_reports_url
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "Bugs publicly documented?",
     icon = icon(
       ifelse(has_metric && value != "NA", "thumbs-up", "thumbs-down"),
@@ -172,9 +174,10 @@ has_bug_reports_url_infobox <- function(values){
     else{"YES"},
     
     # Output an affirmative/nevative message if metric has a value.
-    if(!has_metric){"Metric is not applicable for this source of package"}
-    else{ifelse(value != "NA", paste("Bug reports URL:", value),
-                "The bugs are not publicly documented")}
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else
+      ifelse(value != "NA", paste("Bug reports URL:", value),
+                "The bugs are not publicly documented")
   )
 }
 
@@ -188,8 +191,8 @@ bugs_status_infobox <- function(values){
   value <- values$bugs_status
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "Bug closure",
     color = ifelse(has_metric && value != "", "blue", "black"),
     
@@ -201,8 +204,8 @@ bugs_status_infobox <- function(values){
     else if(value != ""){paste0(value, "%")},
     
     # Output metric percentage value or generic message.
-    if(!has_metric){"Metric is not applicable for this source of package"}
-    else{"Percentage of last 30 bugs closed"}
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else "Percentage of last 30 bugs closed"
   )
 }
 
@@ -216,8 +219,8 @@ export_help_infobox <- function(values){
   value <- values$export_help
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "Documentation",
     color = ifelse(has_metric && value != "", "blue", "black"),
     
@@ -229,8 +232,8 @@ export_help_infobox <- function(values){
     else if(value != ""){paste0(value, "%")},
     
     # Output metric percentage value or generic message.
-    if(!has_metric){"Metric is not applicable for this source of package"}
-    else{"Percentage of exported objects documented"}
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else "Percentage of exported objects documented"
   )
 }
 
@@ -244,8 +247,8 @@ has_source_control_infobox <- function(values){
   value <- values$has_source_control
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "Source code public?",
     icon = icon(
       ifelse(has_metric && value != "NA", "thumbs-up", "thumbs-down"),
@@ -262,8 +265,9 @@ has_source_control_infobox <- function(values){
     else{"YES"},
     
     # Output an affirmative/nevative message if metric has a value.
-    if(!has_metric){"Metric is not applicable for this source of package"}
-    else{ifelse(value != "NA", paste("Source code URL:", value),
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else{
+      ifelse(value != "NA", paste("Source code URL:", value),
                 "Package does not have a source code URL")}
   )
 }
@@ -278,8 +282,8 @@ has_maintainer_infobox <- function(values){
   value <- values$has_maintainer
   
   infoBox(
-    width = 3,
-    fill = TRUE,
+    width = width,
+    fill = fill,
     title = "Has a maintainer?",
     icon = icon(
       ifelse(
@@ -297,7 +301,7 @@ has_maintainer_infobox <- function(values){
     else{"YES"},
     
     # Output an affirmative/nevative message if metric has a value.
-    if(!has_metric){"Metric is not applicable for this source of package"}
-    else{ifelse(value != "", value, "Package does not have a maintainer")}
+    if(!has_metric) "Metric is not applicable for this source of package"
+    else ifelse(value != "", value, "Package does not have a maintainer")
   )
 }

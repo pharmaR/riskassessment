@@ -9,31 +9,74 @@
 # Create table for the db dashboard.
 output$db_pkgs <- DT::renderDataTable({
   
-  values$db_pkg_overview <- update_db_dash()
+  values$db_pkg_overview <- update_db_dash() %>%
+    mutate(last_comment = as.character(as_datetime(last_comment))) %>%
+    mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
+    mutate(decision = ifelse(decision != "", paste(decision, "Risk"), "-")) %>%
+    mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
+    select(name, version, score, was_decision_made, decision, last_comment)
   
-  DT::datatable(
-    values$db_pkg_overview,
+  low_risk_color <- "#3da32e"
+  high_risk_color <- "#c7143e"
+  med_risk_color <- "#804000"
+  
+  as.datatable(
+    formattable(
+      values$db_pkg_overview,
+      list(
+        score = formatter(
+          "span",
+          style = x ~ style(display = "block",
+                            "border-radius" = "4px",
+                            "padding-right" = "4px",
+                            "font-weight" = "bold",
+                            "color" = "white",
+                            "background-color" = csscolor(
+                              gradient(as.numeric(x),
+                                       low_risk_color,
+                                       high_risk_color)))),
+        decision = formatter(
+          "span",
+          style = x ~ style(display = "block",
+                            "border-radius" = "4px",
+                            "padding-right" = "4px",
+                            "font-weight" = "bold",
+                            "color" = "white",
+                            "background-color" = 
+                              ifelse(x == "High Risk", high_risk_color,
+                                     ifelse(x == "Medium Risk", med_risk_color,
+                                            ifelse(x == "Low Risk", low_risk_color, "transparent"))))),
+                            #"background-color" = rgb(x, (1-x)^2, 0))),
+        #score = color_tile("transparent", "red"),
+        # score = formatter(
+        #   "span",
+        #   style = x ~ style(display = "block",
+        #                     "border-radius" = "4px",
+        #                     "padding-right" = "4px",
+        #                     color = "white")),
+        was_decision_made = formatter("span",
+                                      style = x ~ style(color = ifelse(x, "#0668A3", "gray")),
+                                      x ~ icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))#,
+        # decision = formatter(
+        #   "span",
+        #   style = x ~ style(
+        #     color = ifelse(x == "High Risk", "#FF0000",
+        #                    ifelse(x == "Medium Risk", "#804000", "rgb(51, 51, 51)")))
+        # )
+    )),
     selection = list(mode = 'multiple'),
-    extensions = "Buttons",
-    colnames = c("Package", "Version",
-                 "Score", "Decision", "Last Comment"),
+    colnames = c("Package", "Version", "Score", "Decision Made?", "Decision", "Last Comment"),
+    rownames = FALSE,
     options = list(
-      dom = 'Blftpr',
+      searching = FALSE,
+      lengthChange = FALSE,
+      #dom = 'Blftpr',
       pageLength = 10,
       lengthMenu = list(c(10, 50, 100, -1), c('15', '50', '100', "All")),
-      columnDefs = list(
-        list(className = 'dt-center')
-      ),
-      buttons = list(list(
-        extend = "excel",
-        title = "R Package Risk Assessment App: Package Upload History",
-        filename = paste(
-          sep = "_",
-          "RiskAsses_PkgDB_Dwnld",
-          str_replace_all(str_replace(Sys.time(), " ", "_"), ":", "-"))
-      ))
-  )) %>%
-  formatStyle(names(values$db_pkg_overview), textAlign = 'center')
+      columnDefs = list(list(className = 'dt-center'))
+    )
+  ) %>%
+    formatStyle(names(values$db_pkg_overview), textAlign = 'center')
 })
 
 

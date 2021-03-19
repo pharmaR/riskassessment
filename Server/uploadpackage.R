@@ -5,19 +5,46 @@
 # License: MIT License
 #####################################################################################################################
 
+# Implement the intro logic.
+steps <- reactive(
+  data.frame(
+    # Note that we access chooseCSVtext with '.' instead of '#', because we track its class and not its id.
+    element = c("#help", ".chooseCSVtext", ".sample_dataset_link", "#sel_pack", "#sel_ver",
+                "#status", "#score", "#overall_comment", "#decision"),
+    intro = c(
+      "Click here anytime you need help.",
+      "Upload a CSV file with the package(s) you would like to assess.",
+      "You can use this sample dataset to explore the app.",
+      "Once you upload your packages, click this dropdown to choose one.",
+      "The latest package version will autopopulate here.",
+      "The status can be either 'Under Review' or 'Reviewed'.",
+      "The score can take any value between 0 (e.g., no risk) and 1 (e.g., highest risk).",
+      "After reviewing your package, you can leave an overall comment.",
+      "Use this slider to provide your take on the overall risk of the selected package."
+    ),
+    position = c("right", rep("top", 3), rep("bottom", 5))
+  )
+)
+
+# Start introjs when help button is pressed.
+observeEvent(input$help,
+             introjs(session,
+                     options = list(steps = steps(),
+                                    "nextLabel"="Next",
+                                    "prevLabel"="Previous",
+                                    "skipLabel"="Skip"
+                     )
+             )
+)
 
 # Reactive variable to load the sample csv file into data().
-
 data <- reactive({
   data1<-read_csv("./Data/upload_format.csv")
   data1<-data.table(data1)
   data1
-})  # End of the reactive.
+})
 
-# Start of the observe's'
-
-# 1. Observe to load the columns from DB into below reactive values.
-
+# Load the columns from DB into reactive values.
 observeEvent(list(input$total_new_undis_dup,input$uploaded_file), {
   req(values$upload_complete == "upload_complete")
   
@@ -44,8 +71,6 @@ observeEvent(input$uploaded_file, {
     shinyjs::hide("upload_summary_text")
     shinyjs::hide("upload_summary_select")
     shinyjs::hide("total_new_undis_dup_table")
-    shinyjs::hide("dwnld_all_reports_btn")
-    shinyjs::hide("all_reports_format")
     reset("uploaded_file") 
     return()
   } else{
@@ -93,8 +118,6 @@ observeEvent(input$uploaded_file, {
   
   # Show the download reports buttons after all the packages have been loaded
   # and the information extracted.
-  shinyjs::show("dwnld_all_reports_btn")
-  shinyjs::show("all_reports_format")
   loggit("INFO", paste("Summary of the uploaded file:",input$uploaded_file$name, 
                        "Total Packages:", nrow(values$Total),
                        "New Packages:", nrow(values$New),
@@ -102,12 +125,7 @@ observeEvent(input$uploaded_file, {
                        "Duplicate Packages:", nrow(values$Dup)), echo = FALSE)
 }, ignoreInit = TRUE)  # End of the Observe.
 
-# End of the observe's'.
-
-# Start of the render Output's'.
-
 # 1. Render Output to download the sample format dataset.
-
 output$upload_format_download <- downloadHandler(
   filename = function() {
     paste("Upload_file_structure", ".csv", sep = "")
@@ -115,7 +133,7 @@ output$upload_format_download <- downloadHandler(
   content = function(file) {
     write.csv(read_csv(file.path("Data", "upload_format.csv")), file, row.names = F)
   }
-)  # End of the render Output.
+)
 
 # 2. Render Output to show the summary of the uploaded csv into application.
 
@@ -128,7 +146,7 @@ output$upload_summary_text <- renderText({
       "<h4>New Packages:",  nrow(values$New), "</h4>",
       "<h4>Undiscovered Packages:", nrow(values$Undis), "</h4>",
       "<h4>Duplicate Packages:", nrow(values$Dup), "</h4>",
-      "<h4><b>Note: The information extracted of the package will be always from latest version irrespective of uploaded version."
+      "<h4><b>Note: The assessment will be performed on the latest version of each package, irrespective of the uploaded version."
     )
   }
 })  # End of the render Output.
@@ -168,68 +186,7 @@ output$total_new_undis_dup_table <- DT::renderDataTable({
 }) # End of the render Output 
 # End of the Render Output's'.
 
-
-# 5. Render Output for download handler to export the report for each .
-# Data displayed: values$Total_New_Undis_Dup
-# file name uplaoded: input$uploaded_file$name
-# selected type: input$upload_summary_select
-values$cwd<-getwd()
-output$dwnld_all_reports_btn <- downloadHandler(
-  filename = function() {
-    # name will include the type of packages selected to display in DT
-    paste0(input$total_new_undis_dup, "_",
-           stringr::str_remove(input$uploaded_file$name, ".csv"),
-           ".zip")
-  },
-  content = function(file) {
-    n_pkgs <- nrow(values$Total_New_Undis_Dup)
-    req(n_pkgs > 0)
-    shiny::withProgress(
-      message = paste0("Downloading ",n_pkgs," Report",ifelse(n_pkgs > 1,"s","")),
-      value = 0,
-      max = n_pkgs + 2, # tell the progress bar the total number of events
-      {
-        shiny::incProgress(1)
-        
-        my_dir <- tempdir()
-        if (input$all_reports_format == "html") {
-          Report <- file.path(my_dir, "Report_html.Rmd")
-          file.copy("Reports/Report_html.Rmd", Report, overwrite = TRUE)
-        } else {
-          Report <- file.path(my_dir, "Report_doc.Rmd")
-          file.copy("Reports/Report_doc.Rmd", Report, overwrite = TRUE)
-        }
-        fs <- c()
-        for (i in 1:n_pkgs) {
-          # grab package name and version, then create filename and path
-          this_pkg <- values$Total_New_Undis_Dup$package[i]
-          this_ver <- values$Total_New_Undis_Dup$version[i]
-          file_named <- paste0(this_pkg,"_", this_ver, "_Risk_Assessment.",
-                               input$all_reports_format)
-          path <- file.path(my_dir, file_named)
-          # render the report, passing parameters to the rmd file
-          rmarkdown::render(
-            input = Report,
-            output_file = path,
-            params = list(package = this_pkg,
-                          version = this_ver,
-                          cwd = values$cwd)
-          )
-          fs <- c(fs, path)  # save all the 
-          shiny::incProgress(1) # increment progress bar
-        }
-        # zip all the files up, -j retains just the files in zip file
-        zip(zipfile = file, files = fs ,extras = "-j")
-        shiny::incProgress(1) # increment progress bar
-      })
-  },
-  contentType = "application/zip"
-)  # End of the render Output for download report.
-
-
-
 # Observe Event for view sample dataset button.
-
 observeEvent(input$upload_format, {
   dataTableOutput("sampletable")
   showModal(modalDialog(

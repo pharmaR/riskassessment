@@ -15,6 +15,14 @@ body {
   font-size: 15px;
 }
 
+.introjs-tooltip {
+  font-size: 15px;
+}
+
+.introjs-button {
+  font-size: 15px;
+}
+
 .main-header{
   background: #3c8dbc;
   display: flex;
@@ -76,7 +84,8 @@ element.style {
   margin-right: auto;
   margin-left: auto;
 }
-.box {
+
+#first_screen .box {
  padding: 1.5rem!important;
  height: 400px;
  margin: 0px;
@@ -86,7 +95,8 @@ element.style {
  border-radius: .25rem;
  width: 465px;
 }
-.first_screen {
+
+#first_screen {
   background: rgb(250, 250, 250);
 }
 
@@ -255,7 +265,7 @@ textarea:focus {
 .tab-content {
   overflow-y: auto;
   min-height: 50vh;
-  max-height: 635px;
+  max-height: 85vh; /* Height of the body part of the dashboard (i.e. the tabs). */
   padding: 0px 38px;
   border: 2px solid rgba(0,0,0,.125);
   background: #fff;
@@ -455,14 +465,6 @@ margin: 1.5rem!important;
   position: absolute;
   right: 0px;
 }
-#status>h3, #score>h3, .control-label>h3 {
-  font-size: 2rem !important;
-  color: #2c3e50;
-}
-
-#status>h3>b, #score>h3>b{
-  font-size: 1.7rem !important;
-}
 
 .shiny-input-radiogroup.shiny-input-container-inline label ~ .shiny-options-group {
   margin-top: 10px;
@@ -541,9 +543,6 @@ font-size: 11px;
   margin-bottom: 19px;
 }
 
-body .assessment_criteria_bttn_class{
-font-size: 15px;
-}
 
 .chooseCSVtext{
 float: left;
@@ -949,20 +948,24 @@ a#db_dash_bttn:hover {
     background-color: transparent;
 }
 
-i.fas.fa-info-history.fa-2x.history-help-icon:hover {
+i.fas.fa-info-database.fa-2x.database-help-icon:hover {
     color: #87B1DA;
     border-radius: 5px;
+}
+
+.fas.fa-database.fa-2x.database-icon {
+    font-size: 30px;
 }
 
 .tooltip-help .tooltiptext-help {
   visibility: hidden;
   width: 130px;
-  background-color: #87B1DA;
+  background-color: rgba(135, 177, 218, 0.6);
   color: white;
   text-align: center;
   border-radius: 6px;
   padding: 7px 0;
-  border: solid 1px #CCCACB;
+  border: solid 1px rgba(135, 177, 218, 0.4);
   
   /* Position the tooltip */
   position: absolute;
@@ -973,17 +976,14 @@ i.fas.fa-info-history.fa-2x.history-help-icon:hover {
 
 .tooltip-help:hover .tooltiptext-help {
   visibility: visible;
+  font-size: 15px;
+  font-weight: bold;
 }
 
-
-.tooltipreview {
+.fa-database-tooltiptext-help {
     top: 5px !important;
     right: 115% !important;
 }
-
-
-
-
 
 @media screen and (max-width: 600px) {
   span.header-txt {
@@ -1005,7 +1005,7 @@ i.fas.fa-info-history.fa-2x.history-help-icon:hover {
 }
 
 @media screen and (max-width: 600px) {
-  div.box {
+  #first_screen .box {
     height: 60vh !important;
     width: 50vh;
     margin-left: 0rem !important;
@@ -1037,7 +1037,7 @@ i.fas.fa-info-history.fa-2x.history-help-icon:hover {
     display: inherit;
   }
   
-  .box {
+  #first_screen .box {
     height: auto !important;
     width: 50vh;
     margin-left: -8rem!important;
@@ -1063,7 +1063,7 @@ i.fas.fa-info-history.fa-2x.history-help-icon:hover {
 }
 
 @media screen and (max-width: 768px) {
-  .box {
+  #first_screen .box {
     height: 520px!important;
     width: 350px!important;
     margin-left: -4rem!important;
@@ -1096,7 +1096,7 @@ i.fas.fa-info-history.fa-2x.history-help-icon:hover {
 }
 
 @media screen and (min-width: 320px) and (max-width: 360px) {
-  div.box {
+  #first_screen .box {
     height: 450px !important;
     margin-left: 0rem;
   }
@@ -1154,10 +1154,6 @@ i.fas.fa-info-history.fa-2x.history-help-icon:hover {
   .card-text {
     font-size: 1.2rem !important;
   }
-  
-  
-  
-  
   .nav-tabs {
     width: 100%;
     display: grid;
@@ -1217,7 +1213,7 @@ i.fas.fa-info-history.fa-2x.history-help-icon:hover {
 }
 
 @media screen and (min-width: 911px) and (max-width: 1023px) {
-  .box {
+  #first_screen .box {
     height: auto !important;
     width: 60vh !important;
     margin-left: -8rem !important;
@@ -1250,7 +1246,7 @@ i.fas.fa-info-history.fa-2x.history-help-icon:hover {
 }
 
 @media screen and (max-width: 1024px) {
-  .box {
+  #first_screen .box {
     height: 45vh;
     width: 50vh;
     margin-left: -20rem;

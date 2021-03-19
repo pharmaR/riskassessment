@@ -25,10 +25,10 @@ output$screen <- renderUI({
                tags$div(
                  sidebarPanel(
                    width = 12,
-                   uiOutput("sel_pack"),  # UI for select package.
-                   uiOutput("sel_ver"),  # UI for version of the selected Package.
-                   htmlOutput("status"),  # Display the status of the Package.
-                   htmlOutput("score"),  # Display the Score of the Package.
+                   uiOutput("sel_pack"), # UI for select package.
+                   uiOutput("sel_ver"), # UI for version of the selected package.
+                   uiOutput("status"), # Display the status of the package.
+                   uiOutput("score"), # Display the score of the package.
                    textAreaInput(
                      "overall_comment",
                      h3("Leave Your Overall Comment:"),
@@ -37,7 +37,9 @@ output$screen <- renderUI({
                      placeholder = paste("Current Comment:")
                    ),
                    # Action Button to Submit Overall Comment for selected Package.
-                   actionButton("submit_overall_comment", class = "submit_overall_comment_class btn-secondary", "Submit Comment"),
+                   actionButton("submit_overall_comment",
+                                class = "submit_overall_comment_class btn-secondary",
+                                "Submit Comment"),
                    tags$div(
                      class = "col-sm-12 decision_div",
                      HTML("<i class='fas fa-info-circle fa-2x float-right txt-color cursor-help' title='Once submitted the decision cannot be reverted and comments in group and package level will be frozen'></i>"),
@@ -52,10 +54,9 @@ output$screen <- renderUI({
                      # Action button to submit decision for selected package.
                      actionButton("submit_decision", class = "submit_decision_class btn-secondary", "Submit Decision")
                    )
-                 ),
-               ),)
-    )
-  ),
+               ))
+      )
+  )),
   tags$div(class = "main-component justify-content-center text-center",
            mainPanel(
             class="main-component-child",
@@ -64,10 +65,10 @@ output$screen <- renderUI({
              tags$li(
               class = "dropdown",
               style = "float: right; padding-right: 75px; padding-top: 25px;",
-              actionLink("db_dash_bttn", class = "assessment_criteria_bttn_class",
+              actionLink("db_dash_bttn",
                          HTML('<div class="tooltip-help">
-                      <i class="fas fa-history fa-2x history-help-icon"></i>
-                      <span class="tooltiptext-help tooltipreview">Package Review History</span>
+                      <i class="fas fa-database fa-2x database-icon"></i>
+                      <span class="tooltiptext-help fa-database-tooltiptext-help">Database</span>
                       </div>'))
              ),
              br(),
