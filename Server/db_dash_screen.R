@@ -149,4 +149,6 @@ output$dwnld_sel_db_pkgs_btn <- downloadHandler(
 # Bring back user to the main dashboard.
 observeEvent(input$back2dash, {
   values$current_screen <- "dashboard_screen"
+  updateSelectizeInput(session, "select_pack", selected=input$select_pack)
+  updateSelectizeInput(session, "select_ver" , selected=input$select_ver)
 })

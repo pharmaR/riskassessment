@@ -79,16 +79,16 @@ output$sel_ver <- renderUI({
       )
     )
   
-  if (input$select_pack == "Select" || nrow(res2) > 1) {
-    Choices <- c("Select", c(res2$version))
+  if (input$select_pack == "Select") {
+    Choices <- "Select"
   } else{
-    Choices <- c(res2$version)
+    Choices <- res2$version[[1]] 
   }
   
-  selectInput("select_ver",
+  selectizeInput("select_ver",
               h3("Select Version:"),
-              choices = Choices,
-              selected = "Select")
+              choices =  Choices,
+              selected = Choices)
 })
 
 
@@ -135,8 +135,9 @@ observeEvent(input$select_pack, {
     updateSelectizeInput(
       session,
       "select_ver",
-      choices = pack_ver[1,1]
+      selected = pack_ver
     )
+
     if (values$mm_tab_redirect == "redirect") {
       updateTabsetPanel(session, "tabs",
                         selected = "mm_tab_value")
