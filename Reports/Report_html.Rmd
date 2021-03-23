@@ -427,103 +427,103 @@ comment_cum <- data.frame(comment_cum %>% map(rev))
 <!-- <br> -->
 <!-- <div class="row col-md-12 comments">Comments for Testing Metrics(`r nrow(comment_tm)`):</div> -->
 
-<!-- <style> -->
-<!-- .user-name-color { -->
-<!-- color: #7f7f7f; -->
-<!-- } -->
-<!-- .ml-3 { -->
-<!--     margin-left: 1rem!important; -->
-<!--     font-size: 17px; -->
-<!-- } -->
-<!-- .comment-border-bottom { -->
-<!--   padding:0px; -->
-<!--   border-bottom: 1px solid rgba(0,0,0,.125); -->
-<!--   margin-bottom: 2rem; -->
-<!-- } -->
+<style>
+.user-name-color {
+color: #7f7f7f;
+}
+.ml-3 {
+    margin-left: 1rem!important;
+    font-size: 17px;
+}
+.comment-border-bottom {
+  padding:0px;
+  border-bottom: 1px solid rgba(0,0,0,.125);
+  margin-bottom: 2rem;
+}
 
-<!-- .fa-user-tie { -->
-<!--   color: rgba(77,141,201,.70); -->
-<!--   top: 35%; -->
-<!--   left: 0px; -->
-<!-- } -->
+.fa-user-tie {
+  color: rgba(77,141,201,.70);
+  top: 35%;
+  left: 0px;
+}
 
-<!-- .blue { -->
-<!--     color: steelblue; -->
-<!--     font-size: 30px; -->
-<!-- } -->
-<!-- .comments{ -->
-<!--   color:steelblue; -->
-<!--   font-size:22px; -->
-<!--   margin-top: 2rem; -->
-<!-- } -->
-<!-- .report{ -->
-<!-- font-size:14px -->
-<!-- color: steelblue; -->
-<!-- } -->
-<!-- .heading_report { -->
-<!--     font-size: 23px; -->
-<!--     font-weight: bold; -->
+.blue {
+    color: steelblue;
+    font-size: 30px;
+}
+.comments{
+  color:steelblue;
+  font-size:22px;
+  margin-top: 2rem;
+}
+.report{
+font-size:14px
+color: steelblue;
+}
+.heading_report {
+    font-size: 23px;
+    font-weight: bold;
 
-<!-- } -->
-<!-- .d-inline { -->
-<!--   display: inline; -->
-<!-- } -->
+}
+.d-inline {
+  display: inline;
+}
 
-<!-- .info-box-content, .info-box-icon { -->
-<!--   display: inline; -->
-<!-- } -->
+.info-box-content, .info-box-icon {
+  display: inline;
+}
 
-<!-- .glyphicon-thumbs-up { -->
-<!--   padding: 3px; -->
-<!-- } -->
+.glyphicon-thumbs-up {
+  padding: 3px;
+}
 
-<!-- .glyphicon-thumbs-down { -->
-<!--   padding: 3px; -->
-<!-- } -->
+.glyphicon-thumbs-down {
+  padding: 3px;
+}
 
-<!-- .fa-bar-chart, .fa-calendar { -->
-<!--   padding: 3px; -->
-<!-- } -->
+.fa-bar-chart, .fa-calendar {
+  padding: 3px;
+}
 
-<!-- .mb-3 { -->
-<!--   margin-bottom: 1rem; -->
-<!-- } -->
+.mb-3 {
+  margin-bottom: 1rem;
+}
 
-<!-- .mb-4 { -->
-<!--   margin-bottom: 1.5rem; -->
-<!-- } -->
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
 
-<!-- .comments-box { -->
-<!--   max-height: 300px; -->
-<!--   overflow-y: auto; -->
-<!--   padding: 10px; -->
-<!--   border: 1px solid rgb(0, 0, 0.125); -->
-<!--   margin-bottom: 2rem; -->
-<!-- } -->
-<!-- .amcharts-chart-div > a { -->
-<!--   display: none !important; -->
-<!-- } -->
-<!-- .info-box-number { -->
-<!--   font-weight: bold; -->
-<!-- } -->
-<!-- .title.toc-ignore { -->
-<!--   text-align: center; -->
-<!-- } -->
-<!-- .para-header{ -->
-<!--   text-align: left; -->
-<!--   text-decoration: none; -->
-<!--   text-underline-position: under; -->
-<!-- } -->
+.comments-box {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 10px;
+  border: 1px solid rgb(0, 0, 0.125);
+  margin-bottom: 2rem;
+}
+.amcharts-chart-div > a {
+  display: none !important;
+}
+.info-box-number {
+  font-weight: bold;
+}
+.title.toc-ignore {
+  text-align: center;
+}
+.para-header{
+  text-align: left;
+  text-decoration: none;
+  text-underline-position: under;
+}
 
-<!-- .highcharts-container { -->
-<!--   margin-top: 3rem; -->
-<!-- } -->
+.highcharts-container {
+  margin-top: 3rem;
+}
 
-<!-- .icon-color-grey::before { -->
-<!--   color: grey; -->
-<!-- } -->
+.icon-color-grey::before {
+  color: grey;
+}
 
-<!-- </style> -->
+</style>
 
 <!-- <div class="col-md-12 comments-box"> -->
 
