@@ -382,17 +382,10 @@ table_cum<-data.frame("User ID"=comment_cum$user_name,"Role"= comment_cum$user_r
 # ```
 -->
 
-<!-- ### Comments for Testing Metrics(`r nrow(comment_tm)`): -->
+<!-- ### Comments for Testing Metrics(`r nrow(comment_tm)`):  -->
 
-<!--
-# ```{r echo=FALSE}
-#     comment_tm <- data.frame(comment_tm %>% map(rev))
-#     
-# table_tm<-data.frame("User ID"=comment_tm$user_name,"Role"= comment_tm$user_role, "Time"= comment_tm$added_on,"Comments"=comment_tm$comment)
-#   knitr::kable(table_tm, format='pandoc')
-# 
-# 
-# ```
--->
-
-
+<!-- ```{r echo=FALSE} -->
+<!-- comment_tm <- data.frame(comment_tm %>% map(rev)) -->
+<!-- table_tm<-data.frame("User ID"=comment_tm$user_name,"Role"= comment_tm$user_role, "Time"= comment_tm$added_on,"Comments"=comment_tm$comment) -->
+<!--  knitr::kable(table_tm, format='pandoc') -->
+<!-- ``` -->
