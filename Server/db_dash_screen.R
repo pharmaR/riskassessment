@@ -16,9 +16,13 @@ output$db_pkgs <- DT::renderDataTable({
     mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
     select(name, version, score, was_decision_made, decision, last_comment)
   
-  low_risk_color <- "#3da32e"
-  high_risk_color <- "#c7143e"
-  med_risk_color <- "#804000"
+  # https://www.rapidtables.com/web/color/html-color-codes.html
+  low_risk_color  <- "#228B22"  # forest green
+  med_risk_color  <- "#FFD700"  # gold
+  high_risk_color <- "#B22222"  # firebrick
+  
+  colfunc <- colorRampPalette(c(low_risk_color, med_risk_color, high_risk_color))
+  # plot(rep(1,100),col=colfunc(100),pch=19,cex=3)
   
   as.datatable(
     formattable(
@@ -31,10 +35,9 @@ output$db_pkgs <- DT::renderDataTable({
                             "padding-right" = "4px",
                             "font-weight" = "bold",
                             "color" = "white",
+                            "order" = x,
                             "background-color" = csscolor(
-                              gradient(as.numeric(x),
-                                       low_risk_color,
-                                       high_risk_color)))),
+                              colfunc(100)[round(as.numeric(x)*100)]))),
         decision = formatter(
           "span",
           style = x ~ style(display = "block",
@@ -46,24 +49,10 @@ output$db_pkgs <- DT::renderDataTable({
                               ifelse(x == "High Risk", high_risk_color,
                                      ifelse(x == "Medium Risk", med_risk_color,
                                             ifelse(x == "Low Risk", low_risk_color, "transparent"))))),
-                            #"background-color" = rgb(x, (1-x)^2, 0))),
-        #score = color_tile("transparent", "red"),
-        # score = formatter(
-        #   "span",
-        #   style = x ~ style(display = "block",
-        #                     "border-radius" = "4px",
-        #                     "padding-right" = "4px",
-        #                     color = "white")),
         was_decision_made = formatter("span",
                                       style = x ~ style(color = ifelse(x, "#0668A3", "gray")),
-                                      x ~ icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))#,
-        # decision = formatter(
-        #   "span",
-        #   style = x ~ style(
-        #     color = ifelse(x == "High Risk", "#FF0000",
-        #                    ifelse(x == "Medium Risk", "#804000", "rgb(51, 51, 51)")))
-        # )
-    )),
+                                      x ~ icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))
+      )),
     selection = list(mode = 'multiple'),
     colnames = c("Package", "Version", "Score", "Decision Made?", "Decision", "Last Comment"),
     rownames = FALSE,
@@ -71,14 +60,13 @@ output$db_pkgs <- DT::renderDataTable({
       searching = FALSE,
       lengthChange = FALSE,
       #dom = 'Blftpr',
-      pageLength = 10,
-      lengthMenu = list(c(10, 50, 100, -1), c('15', '50', '100', "All")),
+      pageLength = 15,
+      lengthMenu = list(c(15, 60, 120, -1), c('15', '60', '120', "All")),
       columnDefs = list(list(className = 'dt-center'))
     )
   ) %>%
     formatStyle(names(values$db_pkg_overview), textAlign = 'center')
 })
-
 
 # Enable the download button when a package is selected.
 observe({
