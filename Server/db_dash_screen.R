@@ -16,12 +16,13 @@ output$db_pkgs <- DT::renderDataTable({
     mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
     select(name, version, score, was_decision_made, decision, last_comment)
   
-  low_risk_color  <- "#3da32e"
-  med_risk_color  <- "#804000"
-  high_risk_color <- "#c7143e"
+  # https://www.rapidtables.com/web/color/html-color-codes.html
+  low_risk_color  <- "#228B22"  # forest green
+  med_risk_color  <- "#FFD700"  # gold
+  high_risk_color <- "#B22222"  # firebrick
   
-  # colfunc <- colorRampPalette(c("green","yellow","red"))
-  colfunc <- colorRampPalette(c(low_risk_color, "gold", high_risk_color))
+  colfunc <- colorRampPalette(c(low_risk_color, med_risk_color, high_risk_color))
+  # plot(rep(1,100),col=colfunc(100),pch=19,cex=3)
   
   as.datatable(
     formattable(
@@ -46,7 +47,7 @@ output$db_pkgs <- DT::renderDataTable({
                             "color" = "white",
                             "background-color" = 
                               ifelse(x == "High Risk", high_risk_color,
-                                     ifelse(x == "Medium Risk", "yellow",
+                                     ifelse(x == "Medium Risk", med_risk_color,
                                             ifelse(x == "Low Risk", low_risk_color, "transparent"))))),
         was_decision_made = formatter("span",
                                       style = x ~ style(color = ifelse(x, "#0668A3", "gray")),
