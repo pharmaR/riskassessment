@@ -346,53 +346,46 @@ table_cum<-data.frame("User ID"=comment_cum$user_name,"Role"= comment_cum$user_r
   knitr::kable(table_cum, format='pandoc')
   
 ```
+<!--
 
 \newpage
-
 ## Testing Metrics
 
 
-```{r echo=FALSE}
-  bands = data.frame(
-    start = c(0, 40, 80),
-    end = c(40, 80, 100),
-    color = ifelse(covr_coverage != "pkg_metric_error",
-                   c("#ea3838", "#ffac29", "#00CC00"),
-                   c("#808080", "#808080", "#808080")),
-    stringsAsFactors = FALSE
-  )
-  bands2 = data.frame(
-    start = c(0, 40, 80),
-    end = c(40, 80, 100),
-    color = ifelse(covr_coverage != "pkg_metric_error",
-                   c("#ea3838", "#ffac29", "#00CC00"),
-                   c("#808080", "#808080", "#808080")),
-    stringsAsFactors = FALSE
-  )
-  amAngularGauge(
-    x = as.numeric(ifelse(covr_coverage == "NA", 0, covr_coverage)),
-    start = 0,
-    end = 100,
-    bands = bands,
-    secondAxe = TRUE,
-    start2 = 0,
-    end2 = 100,
-    bands2 = bands2
-  )
-```
+# ```{r echo=FALSE}
+#   bands = data.frame(
+#     start = c(0, 40, 80),
+#     end = c(40, 80, 100),
+#     color = ifelse(covr_coverage != "pkg_metric_error",
+#                    c("#ea3838", "#ffac29", "#00CC00"),
+#                    c("#808080", "#808080", "#808080")),
+#     stringsAsFactors = FALSE
+#   )
+#   bands2 = data.frame(
+#     start = c(0, 40, 80),
+#     end = c(40, 80, 100),
+#     color = ifelse(covr_coverage != "pkg_metric_error",
+#                    c("#ea3838", "#ffac29", "#00CC00"),
+#                    c("#808080", "#808080", "#808080")),
+#     stringsAsFactors = FALSE
+#   )
+#   amAngularGauge(
+#     x = as.numeric(ifelse(covr_coverage == "NA", 0, covr_coverage)),
+#     start = 0,
+#     end = 100,
+#     bands = bands,
+#     secondAxe = TRUE,
+#     start2 = 0,
+#     end2 = 100,
+#     bands2 = bands2
+#   )
+# ```
+-->
 
+<!-- ### Comments for Testing Metrics(`r nrow(comment_tm)`):  -->
 
-### Comments for Testing Metrics(`r nrow(comment_tm)`):
-
-
-```{r echo=FALSE}
-    comment_tm <- data.frame(comment_tm %>% map(rev))
-    
-table_tm<-data.frame("User ID"=comment_tm$user_name,"Role"= comment_tm$user_role, "Time"= comment_tm$added_on,"Comments"=comment_tm$comment)
-  knitr::kable(table_tm, format='pandoc')
-
-
-```
-
-
-
+<!-- ```{r echo=FALSE} -->
+<!-- comment_tm <- data.frame(comment_tm %>% map(rev)) -->
+<!-- table_tm<-data.frame("User ID"=comment_tm$user_name,"Role"= comment_tm$user_role, "Time"= comment_tm$added_on,"Comments"=comment_tm$comment) -->
+<!--  knitr::kable(table_tm, format='pandoc') -->
+<!-- ``` -->
