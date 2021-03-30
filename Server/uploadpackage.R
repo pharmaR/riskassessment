@@ -30,18 +30,16 @@ steps <- reactive(
 observeEvent(input$help,
              introjs(session,
                      options = list(steps = steps(),
-                                    "nextLabel"="Next",
-                                    "prevLabel"="Previous",
-                                    "skipLabel"="Skip"
+                                    "nextLabel" = "Next",
+                                    "prevLabel" = "Previous",
+                                    "skipLabel" = "Close"
                      )
              )
 )
 
-# Reactive variable to load the sample csv file into data().
+# Sample csv file content.
 data <- reactive({
-  data1<-read_csv("./Data/upload_format.csv")
-  data1<-data.table(data1)
-  data1
+  data.table(read_csv(file.path("Data", "upload_format.csv")))
 })
 
 # Load the columns from DB into reactive values.
@@ -186,7 +184,7 @@ output$total_new_undis_dup_table <- DT::renderDataTable({
 }) # End of the render Output 
 # End of the Render Output's'.
 
-# Observe Event for view sample dataset button.
+# View sample dataset
 observeEvent(input$upload_format, {
   dataTableOutput("sampletable")
   showModal(modalDialog(
