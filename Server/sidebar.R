@@ -10,7 +10,6 @@
 observeEvent(c(input$select_pack, values$selected_pkg), {
   # Suppose package has been selected with a previously made decision.
   req(input$select_pack != "Select")
-  
   # Update the risk slider using the info saved.
   updateSliderTextInput(
     session,
@@ -20,39 +19,23 @@ observeEvent(c(input$select_pack, values$selected_pkg), {
   )
 })
 
-
-# Disable/enable the comments depending on wether a decision has been made.
-observe({
-  req(values$selected_pkg$name)
-  if (values$selected_pkg$decision != "") {
-    # Disable all the decision-related choices.
-    disable("decision")
-    disable("submit_decision")
-    disable("overall_comment")
-    disable("submit_overall_comment")
-  } else{
-    enable("decision")
-    enable("submit_decision")
-    enable("overall_comment")
-    enable("submit_overall_comment")
-  }
-})
-
-
-observe({
+# Disable/enable the comments depending package selected and no decision made yet.
+observeEvent(list(input$select_pack, values$selected_pkg$decision), {
   req(input$select_pack)
-  if (input$select_pack == "Select") {
-    disable("decision")
-    disable("submit_decision")
-    disable("overall_comment")
-    disable("submit_overall_comment")
-  } else{
+  if (input$select_pack != "Select" && (is_empty(values$selected_pkg$decision) || values$selected_pkg$decision == "")) {
     enable("decision")
     enable("submit_decision")
     enable("overall_comment")
     enable("submit_overall_comment")
+
+  } else{
+    disable("decision")
+    disable("submit_decision")
+    disable("overall_comment")
+    disable("submit_overall_comment")
+
   }
-})
+}, ignoreInit = TRUE)
 
 
 # Output a dropdown ui with available packages.
@@ -79,16 +62,16 @@ output$sel_ver <- renderUI({
       )
     )
   
-  if (input$select_pack == "Select" || nrow(res2) > 1) {
-    Choices <- c("Select", c(res2$version))
+  if (input$select_pack == "Select") {
+    Choices <- "Select"
   } else{
-    Choices <- c(res2$version)
+    Choices <- res2$version[[1]] 
   }
   
-  selectInput("select_ver",
+  selectizeInput("select_ver",
               h3("Select Version:"),
-              choices = Choices,
-              selected = "Select")
+              choices =  Choices,
+              selected = Choices)
 })
 
 
@@ -135,8 +118,9 @@ observeEvent(input$select_pack, {
     updateSelectizeInput(
       session,
       "select_ver",
-      choices = pack_ver[1,1]
+      selected = pack_ver
     )
+
     if (values$mm_tab_redirect == "redirect") {
       updateTabsetPanel(session, "tabs",
                         selected = "mm_tab_value")
