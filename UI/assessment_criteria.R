@@ -19,7 +19,7 @@ showModal(tags$div(id = "assessment_criteria_id", modalDialog(
       value = "tab_1",
       tags$b("Maintenance Metrics", class = "txt-color"),
       h3("Description"),
-      htmlOutput("maintenance_desc"),  # html output for maintenance metrics content.  
+      uiOutput("maintenance_desc"),  # Maintenance metrics description.
       br(),
       dataTableOutput("maintenance_table")  # data table for maintenance metrics. 
     ),
