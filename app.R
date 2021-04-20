@@ -8,7 +8,9 @@
 
 # Load required packages.
 source("global.R")
+library(shinymanager)
 
+# db_fun("SELECT * FROM sqlite_master where type='table'")
 # Load source files.
 source(file.path("Modules", "dbupload.R"))
 source(file.path("Modules", "file_upload_error_handling.R"))
@@ -75,8 +77,23 @@ ui <- dashboardPage(
   )
 )
 
+ui <- shinymanager::secure_app(ui, enable_admin = TRUE)
+
 # Create Server Code.
 server <- function(session, input, output) {
+  
+  # check_credentials directly on sqlite db
+  res_auth <- secure_server(
+    check_credentials = check_credentials(
+      file.path("credentials.sqlite"),
+      passphrase = key_get("R-shinymanager-key", "obiwankenobi")
+      # passphrase = "passphrase_wihtout_keyring"
+    )
+  )
+
+  output$auth_output <- renderPrint({
+    reactiveValuesToList(res_auth)
+  })
   
   # Load reactive values into values.
   values <- reactiveValues()
