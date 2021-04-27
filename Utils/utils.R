@@ -124,7 +124,7 @@ get_metric_weights <- function(){
 update_metric_weight <- function(metric_name, metric_weight){
   db_ins(paste0(
     "UPDATE metric ",
-    "SET weight = ", "'", metric_weight, "'", " ",
+    "SET weight = ", metric_weight, " ",
     "WHERE name = ", "'", metric_name, "'"
   ))
 }
