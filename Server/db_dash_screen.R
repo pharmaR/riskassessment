@@ -179,6 +179,7 @@ output$admins_view <- renderUI({
                    h3("View/select metrics"),
                    dataTableOutput("weights_table"))
           ),
+          br(),
           fluidRow(
             column(width = 12, 
                    h5(em("Note: Changing the weights of the metrics will not update the
