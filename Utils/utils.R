@@ -15,7 +15,6 @@ credentials <- data.frame(
 )
 
 # you can use keyring package to set database key
-library(keyring)
 key_set_with_value("R-shinymanager-key", "obiwankenobi", password = "secret")
 
 # Stores the database name.

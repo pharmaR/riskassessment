@@ -8,7 +8,6 @@
 
 # Load required packages.
 source("global.R")
-library(shinymanager)
 
 # db_fun("SELECT * FROM sqlite_master where type='table'")
 # Load source files.
@@ -95,6 +94,10 @@ server <- function(session, input, output) {
     reactiveValuesToList(res_auth)
   })
   
+  observe({
+    req(!is_empty(res_auth$user))
+    print(paste("is user", res_auth$user, "an admin?", res_auth$admin))
+  })
   # Load reactive values into values.
   values <- reactiveValues()
   values$current_screen <- "login_screen"
