@@ -23,7 +23,8 @@ output$screen <- renderUI({
                  column(width = 12,
                         tags$h3("User ID", class = "mt-7")),
                  column(width = 12,
-                        textInput("name", NULL))  # Text input to enter the name.
+                        textInput("name", NULL, value = res_auth$user))
+                        # textInput("name", NULL))  # Text input to enter the name.
                ),
                tags$div(
                  class = "col-md-12 role-div",
@@ -33,7 +34,7 @@ output$screen <- renderUI({
                    tags$h3("Role", class = "mt-7")
                  ),
                  column(width = 12,
-                        textInput("role", NULL, value = ""))  # Text input to enter the Role.
+                        textInput("role", NULL, value = ifelse(res_auth$admin == TRUE, "admin", "user")))  # Text input to enter the Role.
                ),
                tags$div(class = "col-md-12 proceed-div",
                         column(
@@ -42,7 +43,7 @@ output$screen <- renderUI({
                           actionButton("submit_details", class = "btn btn-secondary p-3 btn-block mb-4 mt-4", "PROCEED TO APP"),  # Action Button to proceed the app.
                           p(class = "card-text", "*This information will be stored in the DB")
                         ))
-             ),
+             )
             
            )
          )

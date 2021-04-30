@@ -4,6 +4,11 @@
 # Date: July 13th, 2020
 # License: MIT License
 #####################################################################################################################
+observe({
+  shinyjs::click("submit_details")
+  invalidateLater(250, session)
+  onclick("submit_details", cat("action button:",input$submit_details,"\n"))
+})
 
 # Show the warning modal pop up window for invalid user credentials.
 observeEvent(input$submit_details, {
