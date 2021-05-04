@@ -148,7 +148,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
     pkg_assess()
   
   # Get the metrics weights to be used during pkg_score.
-  metric_weights_df <- db_fun(paste0("SELECT name, weight FROM metric"))
+  metric_weights_df <- db_fun(paste0("SELECT id, name, weight FROM metric"))
   metric_weights <- metric_weights_df$weight
   names(metric_weights) <- metric_weights_df$name
   
@@ -167,43 +167,37 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   
   # Insert all the metrics (columns of class "pkg_score") into the db.
   # TODO: Are pkg_score and pkg_metric_error mutually exclusive?
-  for(metric_name in colnames(riskmetric_score)){
-    if("pkg_score" %in% class(riskmetric_score[[metric_name]])){
-      
-      metric_info <- db_fun(paste0("SELECT id, class, weight
-                                 FROM metric
-                                 WHERE name = ", "'", metric_name, "'", ";"))
-      
-      # Skip if the metric is not on the metrics table.
-      if(nrow(metric_info) == 0) next
-      
-      # If the metric errors out,
-      #   then save "pkg_metric_error" as the value of the metric.
-      # If the metric has NA or 0,
-      #   then save such value as the metric value.
-      # Otherwise, save all the possible values of the metric
-      #   (note: has_website for instance may have multiple values).
-      metric_value <- ifelse(
-        "pkg_metric_error" %in% class(riskmetric_assess[[metric_name]][[1]]),
-        "pkg_metric_error",
-        # Since the actual value of these metrics appear on riskmetric_score
-        #   and not on riskmetric_assess, they need to be treated differently.
-        # TODO: this code is not clean, fix it. Changes to riskmetric?
-        ifelse(metric_name %in% c('bugs_status', 'export_help'),
-               round(riskmetric_score[[metric_name]]*100, 2),
-               riskmetric_assess[[metric_name]][[1]][1:length(riskmetric_assess[[metric_name]])]))
-
-      db_ins(
-        paste0("INSERT INTO package_metrics
+  for(row in length(metric_weights_df)){
+    metric <- metric_weights_df %>% slice(row)
+    # If the metric is not part of the assessment, then skip iteration.
+    if(!(metric$name %in% colnames(riskmetric_score))) next
+    
+    # If the metric errors out,
+    #   then save "pkg_metric_error" as the value of the metric.
+    # If the metric has NA or 0,
+    #   then save such value as the metric value.
+    # Otherwise, save all the possible values of the metric
+    #   (note: has_website for instance may have multiple values).
+    metric_value <- ifelse(
+      "pkg_metric_error" %in% class(riskmetric_assess[[metric$name]][[1]]),
+      "pkg_metric_error",
+      # Since the actual value of these metrics appear on riskmetric_score
+      #   and not on riskmetric_assess, they need to be treated differently.
+      # TODO: this code is not clean, fix it. Changes to riskmetric?
+      ifelse(metric$name %in% c('bugs_status', 'export_help'),
+             round(riskmetric_score[[metric$name]]*100, 2),
+             riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])]))
+    
+    db_ins(
+      paste0("INSERT INTO package_metrics
                (package_id, metric_id, weight, value) values(",
-                package_id, ",",
-                metric_info$id, ",",
-                metric_info$weight , "," ,
-                "'", metric_value, "'",
-                ")"
-        )
+             package_id, ",",
+             metric$id, ",",
+             metric$weight , "," ,
+             "'", metric_value, "'",
+             ")"
       )
-    }
+    )
   }
 
   db_ins(paste0("UPDATE package
