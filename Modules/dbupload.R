@@ -170,12 +170,12 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   for(metric_name in colnames(riskmetric_score)){
     if("pkg_score" %in% class(riskmetric_score[[metric_name]])){
       
-      metric_id <- db_fun(paste0("SELECT id, class
+      metric_info <- db_fun(paste0("SELECT id, class, weight
                                  FROM metric
                                  WHERE name = ", "'", metric_name, "'", ";"))
       
       # Skip if the metric is not on the metrics table.
-      if(nrow(metric_id) == 0) next
+      if(nrow(metric_info) == 0) next
       
       # If the metric errors out,
       #   then save "pkg_metric_error" as the value of the metric.
@@ -197,8 +197,8 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
         paste0("INSERT INTO package_metrics
                (package_id, metric_id, weight, value) values(",
                 package_id, ",",
-                metric_id$id, ",",
-                "1" , "," ,
+                metric_info$id, ",",
+                metric_info$weight , "," ,
                 "'", metric_value, "'",
                 ")"
         )
