@@ -167,7 +167,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   
   # Insert all the metrics (columns of class "pkg_score") into the db.
   # TODO: Are pkg_score and pkg_metric_error mutually exclusive?
-  for(row in 1:length(metric_weights_df)){
+  for(row in 1:nrow(metric_weights_df)){
     metric <- metric_weights_df %>% slice(row)
     # If the metric is not part of the assessment, then skip iteration.
     if(!(metric$name %in% colnames(riskmetric_score))) next
