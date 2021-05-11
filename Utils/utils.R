@@ -139,25 +139,19 @@ update_db_dash <- function(){
   )
 }
 
-#' Function taken from formattable and modified for the risk assessment app.
-#' Normalize a vector to fit zero-to-one scale
-#'
-#' @param x a numeric vector
-#' @param min numeric value. The lower bound of the interval to normalize \code{x}.
-#' @param max numeric value. The upper bound of the interval to normalize \code{x}.
-#' @param na.rm a logical indicating whether missing values should be removed
-#' @export
-#' @examples
-#' normalize(mtcars$mpg)
-normalize <- function(x, min = 0, max = 1, na.rm = FALSE) {
-  if (all(is.na(x))) return(rep(0, length(x)))
-  if (!is.numeric(x)) stop("x must be numeric")
-  x <- unclass(x)
-  if (min > max) stop("min <= max must be satisfied")
-  if (all(x == 0, na.rm = na.rm)) return(x)
-  xmax <- 1
-  xmin <- 0
-  if (xmax == xmin) return(rep(1, length(x)))
-  min + (max - min) * (x - xmin) / (xmax - xmin)
+# Get each metric's weight.
+get_metric_weights <- function(){
+  db_fun(
+    "SELECT name, weight
+    FROM metric"
+  )
 }
-  
+
+# Update metric's weight.
+update_metric_weight <- function(metric_name, metric_weight){
+  db_ins(paste0(
+    "UPDATE metric ",
+    "SET weight = ", metric_weight, " ",
+    "WHERE name = ", "'", metric_name, "'"
+  ))
+}

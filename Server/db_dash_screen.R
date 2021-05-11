@@ -140,3 +140,85 @@ observeEvent(input$back2dash, {
   updateSelectizeInput(session, "select_pack", selected=input$select_pack)
   updateSelectizeInput(session, "select_ver" , selected=input$select_ver)
 })
+
+metrics_weight <- reactive({
+  input$update_weight
+  get_metric_weights()
+})
+
+output$weights_table <- DT::renderDataTable({
+  
+  as.datatable(
+    formattable(metrics_weight()),
+    selection = list(mode = 'single'),
+    colnames = c("Name", "Weight"),
+    rownames = FALSE,
+    options = list(
+      searching = FALSE,
+      lengthChange = FALSE,
+      pageLength = 10,
+      columnDefs = list(list(className = 'dt-center'))
+    )
+  )
+})
+
+# Section displayed only for authorized users.
+output$admins_view <- renderUI({
+  tagList(
+    tags$section(
+      br(), br(),
+      box(width = 12, collapsible = TRUE, status = "primary",
+          title = h3("View/Change Weights", style = "margin-top: 5px"),
+          solidHeader = TRUE,
+          br(), br(), br(),
+          fluidRow(
+            column(width = 4,
+                   h3("Update weights"),
+                   selectInput("metric_name", "Select metric", metrics_weight()$name, selected = metrics_weight()$name[1]),
+                   numericInput("metric_weight", "Choose new weight", min = 0, value = metrics_weight()$weight[1]),
+                   actionButton("update_weight", "Update weight")),
+            column(width = 8,
+                   h3("View/select metrics"),
+                   dataTableOutput("weights_table"))
+          ),
+          br(),
+          fluidRow(
+            column(width = 12, 
+                   h5(em("Note: Changing the weights of the metrics will not update the
+               risk of the packages on the database. Assessments of 
+               future packages will use these new weights.
+               ")))
+          )
+      )
+    )
+  )
+})
+
+# Update metric weight dropdown so that it matches the metric name.
+observeEvent(input$metric_name, {
+  # Display the weight of the selected metric.
+  updateNumericInput(session, "metric_weight",
+                     value = metrics_weight() %>%
+                       filter(name == input$metric_name) %>%
+                       select(weight) %>%
+                       pull())
+})
+
+# Update metric name dropdown based on the selected row on the table.
+# Note that another of the observeEvents will update the metric weight after
+# the selected metric name is updated.
+observeEvent(input$weights_table_rows_selected, {
+  updateSelectInput(session, "metric_name",
+                     selected = metrics_weight()$name[input$weights_table_rows_selected])
+})
+
+
+
+# Save new weight into db.
+observeEvent(input$update_weight, {
+  validate(
+    need(is.numeric(input$metric_weight), "Please select a valid numeric weight.")
+  )
+  
+  update_metric_weight(input$metric_name, input$metric_weight)
+})

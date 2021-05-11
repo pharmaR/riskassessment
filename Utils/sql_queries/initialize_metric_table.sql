@@ -8,4 +8,6 @@ INSERT INTO metric (name, description, class, weight) values
 ('has_source_control', '', 'maintenance', 1),
 ('export_help', '', 'maintenance', 1),
 ('bugs_status', '', 'maintenance', 1),
-('covr_coverage', '', 'test', 1);
+('license', '', 'maintenance', 1),
+('covr_coverage', '', 'test', 1),
+('downloads_1yr', '', 'community', 1);

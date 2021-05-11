@@ -43,6 +43,9 @@ output$screen <- renderUI({
                     selectInput("report_formats", "Select Format", c("html", "docx"))
                   )
                 )
-              )))))
+              ))),
+        br(), br(),
+        uiOutput("admins_view")
+      ))
   )
 })

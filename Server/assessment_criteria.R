@@ -5,11 +5,19 @@
 # License: MIT License
 ###############################################################################
 
+maintenance_metrics_text <- "<h4>Best practices in software development and
+maintenance can significantly reduce the potential for bugs / errors.
+Package maintainers are not obliged to share their practices (and rarely do),
+however the open source community provides several ways of measuring software
+development best practices. The R Validation Hub proposes the following
+metrics based on the white paper
+<a target='_blank' href='https://www.pharmar.org/presentations/r_packages-white_paper.pdf'>
+A Risk-based Approach for Assessing R package Accuracy within a Validated
+Infrastructure</a>.</h4>"
 
-# Display the Maintenance Metrics text content.
-output$maintenance_desc <- renderText({
-  desc_maintenance <- read_file(file.path("Data", "maintenance.txt"))
-  paste("<h4>", desc_maintenance, "</h4>")
+# Display the Maintenance Metrics description.
+output$maintenance_desc <- renderUI({
+  HTML(maintenance_metrics_text)
 })
 
 
