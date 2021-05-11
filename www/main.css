@@ -1345,3 +1345,8 @@ i.fas.fa-info-database.fa-2x.database-help-icon:hover {
 #db_pkgs:hover {
   cursor: pointer;
 }
+
+/* Change appearance of introjs help button */
+#help {
+  background-color: #49a0f2;
+}

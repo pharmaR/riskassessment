@@ -15,9 +15,9 @@ output$upload_package <- renderUI({
     class = "u_p_main_row",
     tags$div(class = "row col-sm-12 u_p_heading_row",
              tags$h2("Upload list of R Packages"),
-             actionBttn("help", "Need help?", color = "success",
-                        icon = icon("star-of-life"),
-                        block = FALSE, style = "bordered", size = "sm")
+             actionBttn("help", "Need help?", color = "primary",
+                        icon = icon("far fa-star"),
+                        block = FALSE, style = "simple", size = "sm")
     ),
     fluidRow(
       style = "text-align: left;",
