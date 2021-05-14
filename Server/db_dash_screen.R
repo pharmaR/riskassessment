@@ -252,16 +252,21 @@ observeEvent(input$confirm_update_weights, {
 
   # Reset any decisions made prior to this.
   db_ins(paste0("UPDATE package SET decision = ''"))
-  values$db_pkg_overview <- update_db_dash()
-  if (length(values$selected_pkg) > 0) print(values$selected_pkg)
   
+  values$db_pkg_overview <- update_db_dash()
+
   # add a comment on every tab saying how the risk and weights
   # changed, and that the comments, final decision may no longer be 
   # applicable. 
-  cmts_db <- db_fun("select distinct comm_id as package_name from Comments")
-  db_ins("delete from Comments where comment_type = 'o'")
   overall_comments <- paste("Since the package weights and risk have changed",
-  "the overall comments and final decision may no longer be applicable")
+        "the overall comments and final decision may no longer be applicable")
+
+  cmts_db <- db_fun("select distinct comm_id as package_name from Comments")
+  
+  # clear out any prior overall comments
+  db_ins("delete from Comments where comment_type = 'o'")
+  
+  # insert new overall comments
   for (i in 1:nrow(cmts_db)) {
   db_ins(
     paste0(
@@ -278,4 +283,18 @@ observeEvent(input$confirm_update_weights, {
 
   #	Write to the log file
   loggit("INFO", paste("package weights and risks will be updated for all packages"))
+  
+  # update for each package
+  pkg <- db_fun("select distinct name as package_name from package")
+  
+  withProgress(message = "Updating package weights and scores \n", value = 0, {
+  for (i in 1:nrow(pkg)) {
+    incProgress(1 / (nrow(pkg) + 1), detail = pkg$package_name[i])
+    db_ins(paste0("delete from package_metrics where package_id = ", 
+                  "(select id from package where name = ","'", pkg$package_name[i], "')") )
+    metric_mm_tm_Info_upload_to_DB(pkg$package_name[i])
+   }
+  })
+  showNotification(id = "show_notification_id", "Updates completed", type = "message")
+  
 }, ignoreInit = TRUE)
