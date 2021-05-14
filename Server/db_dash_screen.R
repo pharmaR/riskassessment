@@ -176,7 +176,11 @@ output$admins_view <- renderUI({
                    h3("Update weights"),
                    selectInput("metric_name", "Select metric", metrics_weight()$name, selected = metrics_weight()$name[1]),
                    numericInput("metric_weight", "Choose new weight", min = 0, value = metrics_weight()$weight[1]),
-                   actionButton("update_weight", "Update weight")),
+                   actionButton("update_weight", "Update weight"),
+                   br(),br(),br(),br(),br(),
+                   h3("Update risk and package weights"),
+                   actionButton("update_pkgwt", "Update pkgwt")
+                   ),
             column(width = 8,
                    h3("View/select metrics"),
                    dataTableOutput("weights_table"))
