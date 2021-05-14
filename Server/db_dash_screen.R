@@ -229,8 +229,7 @@ observeEvent(input$update_weight, {
 
 # Save new weight into db.
 observeEvent(input$update_pkgwt, {
-print("update_pkgwt pushed.")
-  
+
   showModal(tags$div(
     id = "confirmation_id",
     modalDialog(
@@ -250,5 +249,33 @@ print("update_pkgwt pushed.")
 
 observeEvent(input$confirm_update_weights, {
   removeModal()
+
+  # Reset any decisions made prior to this.
+  db_ins(paste0("UPDATE package SET decision = ''"))
+  values$db_pkg_overview <- update_db_dash()
+  if (length(values$selected_pkg) > 0) print(values$selected_pkg)
+  
+  # add a comment on every tab saying how the risk and weights
+  # changed, and that the comments, final decision may no longer be 
+  # applicable. 
+  cmts_db <- db_fun("select distinct comm_id as package_name from Comments")
+  db_ins("delete from Comments where comment_type = 'o'")
+  overall_comments <- paste("Since the package weights and risk have changed",
+  "the overall comments and final decision may no longer be applicable")
+  for (i in 1:nrow(cmts_db)) {
+  db_ins(
+    paste0(
+      "INSERT INTO Comments values('", cmts_db$package_name[i], "',",
+      "'", values$name, "'," ,
+      "'", values$role, "',",
+      "'", overall_comments, "',",
+      "'o',",
+      "'", TimeStamp(), "'" ,
+      ")"
+    )
+  )
+  }
+
+  #	Write to the log file
   loggit("INFO", paste("package weights and risks will be updated for all packages"))
 }, ignoreInit = TRUE)
