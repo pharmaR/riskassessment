@@ -9,6 +9,6 @@ CREATE TABLE IF NOT EXISTS package(
    license        CHAR,
    published_on   CHAR,
    score          REAL,
-   weigthed_score REAL,
+   weighted_score REAL,
    decision       CHAR
 );
