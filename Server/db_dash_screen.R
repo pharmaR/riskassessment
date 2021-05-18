@@ -177,7 +177,16 @@ output$admins_view <- renderUI({
                    selectInput("metric_name", "Select metric", metrics_weight()$name, selected = metrics_weight()$name[1]),
                    numericInput("metric_weight", "Choose new weight", min = 0, value = metrics_weight()$weight[1]),
                    actionButton("update_weight", "Update weight"),
-                   br(),br(),br(),br(),br(),
+                   br(),br(),br(),br(),br(),br(),
+                   column(width = 6,
+                   downloadButton("dwnld_package_db_btn",
+                                  "Download package snapshot?",
+                                  class = "download_report_btn_class btn-secondary")
+                   ),
+                   column(width = 6,
+                   selectInput("dwnld_pkg_formats", "Select Format", c("html", "docx"))
+                   ),
+                   br(),
                    h3("Update risk and package weights"),
                    actionButton("update_pkgwt", "Update pkgwt")
                    ),
@@ -298,3 +307,14 @@ observeEvent(input$confirm_update_weights, {
   showNotification(id = "show_notification_id", "Updates completed", type = "message")
   
 }, ignoreInit = TRUE)
+
+output$dwnld_package_db_btn <- downloadHandler(
+  
+    filename = function() {
+      paste("package-table-", Sys.Date(), ".csv", sep="")
+    },
+    content = function(file) {
+      packagedb <- db_fun("select * from package")
+      write.csv(packagedb, file)
+    }
+)
