@@ -239,8 +239,7 @@ observeEvent(input$update_pkgwt, {
     modalDialog(
       title = h2("Confirm Decision", class = "mb-0 mt-0 txt-color"),
       h2("Please confirm your decision", class = "mt-0"),
-      h3(strong("Note:"), "Updating the package weights and risk measures cannot be reverted and
-         comments in group and package level will be frozen.", class = "mt-25 mb-0"),
+      h3(strong("Note:"), "Updating the package weights and risk metrics cannot be reverted.", class = "mt-25 mb-0"),
       footer = tagList(
         actionButton("confirm_update_weights", "Submit",
                      class = "submit_confirmed_decision_class btn-secondary"),
