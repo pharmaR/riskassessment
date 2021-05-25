@@ -96,7 +96,10 @@ server <- function(session, input, output) {
   
   observe({
     req(!is_empty(res_auth$user))
-    print(paste("is user", res_auth$user, "an admin?", res_auth$admin))
+    # log any admin sign-ons
+    if (res_auth$admin == TRUE) {
+      loggit("INFO", paste("User", res_auth$user, "signed on as admin"))
+    }
   })
   # Load reactive values into values.
   values <- reactiveValues()
