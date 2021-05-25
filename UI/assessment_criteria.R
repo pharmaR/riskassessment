@@ -15,6 +15,16 @@ showModal(tags$div(id = "assessment_criteria_id", modalDialog(
   tabsetPanel(
     id = "assessment_criteria_tabs_id",
     tabPanel(
+      id = "tab0",
+      value = "tab_0",
+      tags$b("Risk Calculation", class = "txt-color"),
+      h3("Description"),
+      uiOutput("riskcalc_desc"),  # Maintenance metrics description.
+      br(),
+      div(style = "display: block;margin-left: auto; margin-right: auto; width:50%;",
+        dataTableOutput("riskcalc_weights_table"))  # data table for maintenance metrics.
+    ),
+    tabPanel(
       id = "tab1",
       value = "tab_1",
       tags$b("Maintenance Metrics", class = "txt-color"),
