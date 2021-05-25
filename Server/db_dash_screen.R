@@ -238,8 +238,16 @@ observeEvent(input$update_pkgwt, {
     id = "confirmation_id",
     modalDialog(
       title = h2("Confirm Decision", class = "mb-0 mt-0 txt-color"),
-      h2("Please confirm your decision", class = "mt-0"),
-      h3(strong("Note:"), "Updating the package weights and risk metrics cannot be reverted.", class = "mt-25 mb-0"),
+      h3("Once you push the submit button:",
+        tags$ul(
+          tags$li("The package weights will be updated."),
+          tags$li("The risk metric scores will be updated."),
+          tags$li("Final decisions on packages will be reversed."),
+          tags$li("Overall Comments will be added for each package that had a comment.")
+        )
+      ),
+      h3(strong("Note:"), "Updating the risk metrics cannot be reverted.", class = "mt-25 mb-0"),
+      h3("Be sure you click on 'Download Package Snapshot' before continuing."),
       footer = tagList(
         actionButton("confirm_update_weights", "Submit",
                      class = "submit_confirmed_decision_class btn-secondary"),
@@ -253,9 +261,14 @@ observeEvent(input$update_pkgwt, {
 observeEvent(input$confirm_update_weights, {
   removeModal()
 
-  # Reset any decisions made prior to this.
-  db_ins(paste0("UPDATE package SET decision = ''"))
+  pkg <- db_fun("select distinct name as package_name from package where decision != ''")
   
+  for (i in 1:nrow(pkg)) {
+    # Reset any decisions made prior to this.
+    print(paste("resetting", pkg$package_name[i]))
+    db_ins(paste0("UPDATE package SET decision = '' where name = '",pkg$package_name[1],"'"))
+  }
+
   values$db_pkg_overview <- update_db_dash()
 
   # add a comment on every tab saying how the risk and weights
@@ -283,9 +296,11 @@ observeEvent(input$confirm_update_weights, {
     )
   )
   }
+  values$o_comment_submitted <- "yes"
+  
 
   #	Write to the log file
-  loggit("INFO", paste("package weights and risks will be updated for all packages"))
+  loggit("INFO", paste("package weights and risk metric scores will be updated for all packages"))
   
   # update for each package
   pkg <- db_fun("select distinct name as package_name from package")
