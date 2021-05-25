@@ -32,10 +32,20 @@ create_db <- function(){
   
   # Apply each query.
   sapply(queries, function(x){
-    res <- dbSendStatement(
-      con,
-      paste(scan(x, sep = "\n", what = "character"), collapse = ""))
     
+    tryCatch({
+      res <- dbSendStatement(
+        con,
+        paste(scan(x, sep = "\n", what = "character"), collapse = ""))
+    }, error = function(err) {
+      # If there is an error, then log it, close the connection, inform the
+      # user, and leave method.
+      loggit("ERROR", paste("create_db error: ", err))
+      dbDisconnect(con)
+      # TODO: show pop up message.
+      return()
+    })
+
     dbClearResult(res)
   })
   
