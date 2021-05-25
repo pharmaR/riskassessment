@@ -182,7 +182,7 @@ output$admins_view <- renderUI({
                                   "Download package snapshot?",
                                   class = "download_report_btn_class btn-secondary"),
                    br(),
-                   h3("Update risk and package weights"),
+                   h3("Re-calculate risk for each package"),
                    actionButton("update_pkgwt", "Update pkgwt")
                    ),
             column(width = 8,
