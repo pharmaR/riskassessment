@@ -32,10 +32,7 @@ output$riskcalc_weights_table <- DT::renderDataTable({
   d <- get_metric_weights() %>%
     formattable() %>%
     mutate(standardized_weight = weight / sum(weight, na.rm = TRUE))
-  # tot <- data.frame(name = "Column Sums", weight = sum(d$weight, na.rm = T),
-  #                   standardized_weight = round(sum(d$standardized_weight, na.rm = T)), 4)
-  # print(names(d))
-  # DT::datatable(d %>% union(tot),
+
   as.datatable(d,
     selection = list(mode = 'single'),
     colnames = c("Metric Name", "Admin Weight", "Standardized Weight"),
