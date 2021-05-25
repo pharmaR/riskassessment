@@ -73,9 +73,19 @@ db_fun <- function(query){
 
 # You need to use dbExecute() to perform delete, update or insert queries.
 db_ins <- function(query){
-  # con <- dbConnect(RSQLite::SQLite(), "./risk_assessment_app.db")
   con <- dbConnect(RSQLite::SQLite(), db_name)
-  dbExecute(con, query)
+  
+  tryCatch({
+    dbExecute(con, query)
+  }, error = function(err) {
+    # If there is an error, then log it, close the connection, inform the
+    # user, and leave method.
+    loggit("ERROR", paste("db_ins error: ", err))
+    dbDisconnect(con)
+    # TODO: show pop up message.
+    return()
+  })
+  
   dbDisconnect(con)
 }
 
