@@ -54,7 +54,19 @@ create_db <- function(){
 
 db_fun <- function(query){
   con <- dbConnect(RSQLite::SQLite(), db_name)
-  dat <- dbGetQuery(con,query)  # this does SendQuery, Fetch and ClearResult all in one
+  
+  tryCatch({
+    dat <- dbGetQuery(con,query)
+  }, error = function(err) {
+    # If there is an error, then log it, close the connection, inform the
+    # user, and leave method.
+    loggit("ERROR", paste("db_fun error: ", err))
+    dbDisconnect(con)
+    # TODO: show pop up message.
+    return()
+  })
+  
+    # this does SendQuery, Fetch and ClearResult all in one
   dbDisconnect(con)
   return(dat)
 }
