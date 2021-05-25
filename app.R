@@ -94,22 +94,27 @@ server <- function(session, input, output) {
     reactiveValuesToList(res_auth)
   })
   
+  # Load reactive values into values.
+  values <- reactiveValues()
+  values$current_screen <- "dashboard_screen" # "login_screen"
+  values$uploaded_file_status <- "no_status"
+  values$upload_complete <- "upload_incomplete"
+  values$select_pack <- "Select"
+  
   observe({
     req(!is_empty(res_auth$user))
     # log any admin sign-ons
     if (res_auth$admin == TRUE) {
       loggit("INFO", paste("User", res_auth$user, "signed on as admin"))
     }
+    name <- res_auth$user
+    values$name <- trimws(name)
+    role <- ifelse(res_auth$admin == TRUE, "admin", "user")
+    values$role <- trimws(role)
   })
-  # Load reactive values into values.
-  values <- reactiveValues()
-  values$current_screen <- "login_screen"
-  values$uploaded_file_status <- "no_status"
-  values$upload_complete <- "upload_incomplete"
-  values$select_pack <- "Select"
   
   # Load Source files of UI and Server modules of Login Screen.
-  source(file.path("Server", "login_screen.R"), local = TRUE)
+  # source(file.path("Server", "login_screen.R"), local = TRUE)
   
   # Load Server Source module file of Package Review History.
   source(file.path("Server", "db_dash_screen.R"), local = TRUE)
@@ -146,10 +151,7 @@ server <- function(session, input, output) {
   })
 
   observe({
-    if (values$current_screen == "login_screen") {
-      source(file.path("UI", "login_screen.R"), local = TRUE)
-      shinyjs::hide("assessment_criteria_bttn")
-    } else if(values$current_screen == "db_dash_screen") {
+      if(values$current_screen == "db_dash_screen") {
       source(file.path("UI", "db_dash_screen.R"), local = TRUE)
       shinyjs::show("assessment_criteria_bttn")
     } else{
