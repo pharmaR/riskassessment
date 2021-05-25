@@ -43,7 +43,7 @@ create_db <- function(){
       loggit("ERROR", paste("create_db error: ", err))
       dbDisconnect(con)
       # TODO: show pop up message.
-      return()
+      stop(err)
     })
 
     dbClearResult(res)
@@ -63,7 +63,7 @@ db_fun <- function(query){
     loggit("ERROR", paste("db_fun error: ", err))
     dbDisconnect(con)
     # TODO: show pop up message.
-    return()
+    stop(err)
   })
   
     # this does SendQuery, Fetch and ClearResult all in one
@@ -83,7 +83,7 @@ db_ins <- function(query){
     loggit("ERROR", paste("db_ins error: ", err))
     dbDisconnect(con)
     # TODO: show pop up message.
-    return()
+    stop(err)
   })
   
   dbDisconnect(con)
