@@ -97,28 +97,6 @@ output$status <- renderUI({
 })
 
 
-# # change the color of the wellPanel
-# # observeEvent(list(input$select_pack, values$selected_pkg$decision), {
-# observe({
-#   req(input$select_pack)
-#   print(values$selected_pkg$decision)
-#   print(".")
-#   low_risk_color  <- "#228B22"  # dodger blue
-#   na_risk_color  <- "#C0C0C0"   # silver
-#   if(input$select_pack == "Select"){
-#     valBoxColorStatus <- na_risk_color
-#   } else {
-#     if(values$selected_pkg$decision == ""){
-#       valBoxColorStatus <- na_risk_color
-#     } else {
-#       valBoxColorStatus <- low_risk_color
-#     }
-#   }
-#   runjs(sprintf("
-#             document.getElementById('%s').style.backgroundColor = '%s';
-#         ", "diyValBoxStatus", valBoxColorStatus))
-#   print(valBoxColorStatus)
-# })
 
 # Required for shinyhelper to work.
 observe_helpers()
