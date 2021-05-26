@@ -16,14 +16,6 @@ output$db_pkgs <- DT::renderDataTable({
     mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
     select(name, version, score, was_decision_made, decision, last_comment)
   
-  # https://www.rapidtables.com/web/color/html-color-codes.html
-  low_risk_color  <- "#228B22"  # forest green
-  med_risk_color  <- "#d1b000"  # dark gold
-  high_risk_color <- "#B22222"  # firebrick
-  
-  colfunc <- colorRampPalette(c(low_risk_color, med_risk_color, high_risk_color))
-  # plot(rep(1,100),col=colfunc(100),pch=19,cex=3)
-  
   as.datatable(
     formattable(
       values$db_pkg_overview,

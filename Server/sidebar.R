@@ -75,40 +75,74 @@ output$sel_ver <- renderUI({
 })
 
 
+
+
+
+
+
 # Display the review status of the selected package.
+
 output$status <- renderUI({
-  if (!is.null(input$select_pack)) {
-    
-    # Defaults to NA.
-    status_output <- "NA"
-    
-    if (input$select_pack != "Select") {
-        status_output <- ifelse(
-          values$selected_pkg$decision == "",
-          "Under Review",
-          "Reviewed")
-    }
-    
-    h3("Status:", strong(status_output))
-  }
+  req(input$select_pack)
+    # status_output <-
+      if(input$select_pack == "Select"){
+        h1(strong("NA"))
+      } else {
+        if(values$selected_pkg$decision == ""){
+          h3("Under Review")
+        } else {
+          h2("Reviewed")
+        }
+      }
 })
+
+
+# # change the color of the wellPanel
+# # observeEvent(list(input$select_pack, values$selected_pkg$decision), {
+# observe({
+#   req(input$select_pack)
+#   print(values$selected_pkg$decision)
+#   print(".")
+#   low_risk_color  <- "#228B22"  # dodger blue
+#   na_risk_color  <- "#C0C0C0"   # silver
+#   if(input$select_pack == "Select"){
+#     valBoxColorStatus <- na_risk_color
+#   } else {
+#     if(values$selected_pkg$decision == ""){
+#       valBoxColorStatus <- na_risk_color
+#     } else {
+#       valBoxColorStatus <- low_risk_color
+#     }
+#   }
+#   runjs(sprintf("
+#             document.getElementById('%s').style.backgroundColor = '%s';
+#         ", "diyValBoxStatus", valBoxColorStatus))
+#   print(valBoxColorStatus)
+# })
 
 # Required for shinyhelper to work.
 observe_helpers()
 
 # Display the risk score of the selected package.
 output$score <- renderUI({
-  if (!is.null(input$select_pack)) {
+  req(input$select_pack)
     
-    # Score defaults to NA.
-    score_output <- "NA"
-    
-    # If a package is selected, then display the package score.
-    if(input$select_pack != "Select")
-      score_output <- values$selected_pkg$score
+  # Score defaults to NA.
+  score_output <- ifelse(input$select_pack != "Select", values$selected_pkg$score, "NA")
+  h1(strong(score_output))
+})
 
-      h3("Score:", strong(score_output))
-}})
+# change the color of the wellPanel
+observe({
+  req(input$select_pack)
+  score_output_num <- ifelse(input$select_pack != "Select", values$selected_pkg$score, NA_integer_)
+  valBoxColor <- ifelse(is.na(score_output_num), "#1E90FF", colfunc(100)[round(as.numeric(score_output_num)*100)])
+  runjs(sprintf("
+            document.getElementById('%s').style.backgroundColor = '%s';
+        ", "diyValBoxScore", valBoxColor))
+})
+
+
 
 # 1. Observe Event for select package
 observeEvent(input$select_pack, {

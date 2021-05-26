@@ -27,8 +27,24 @@ output$screen <- renderUI({
                    width = 12,
                    uiOutput("sel_pack"), # UI for select package.
                    uiOutput("sel_ver"), # UI for version of the selected package.
-                   uiOutput("status"), # Display the status of the package.
-                   uiOutput("score"), # Display the score of the package.
+                   # uiOutput("status"), # Display the status of the package.
+                   fixedRow(
+                     column(6, wellPanel(
+                       id = "diyValBoxStatus",
+                       style = "height: 150px; border-radius: 25px; border-style: dotted; background-color: #C0C0C0 !important; color: #FFFFFF !important;",
+                       uiOutput("status"), # Display the score of the package.
+                       h3("Status")
+                     )),
+                     column(6, wellPanel(
+                       id = "diyValBoxScore",
+                       style = "height: 150px; border-radius: 25px; border-style: dotted; background-color: #1E90FF !important; color: #FFFFFF !important;",
+                       uiOutput("score"), # Display the score of the package.
+                       h3("Risk Score")
+                       # shinydashboard::valueBoxOutput("score", width = 12),
+                     ))
+                   ),
+                   
+                   
                    textAreaInput(
                      "overall_comment",
                      h3("Leave Your Overall Comment:"),
