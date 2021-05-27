@@ -48,6 +48,21 @@ if(!require(riskmetric)){
 # Load the functions to create infoboxes.
 source("Utils/infoboxes.R")
 
+# does this belong in utils or global.r? It is static, and non-functional
+sidebar_steps <-
+  data.frame(
+    element = c("#sel_pack", "#sel_ver","#status", "#score", "#overall_comment", "#decision"),
+    intro = c(
+      "Click this dropdown to select a package one.",
+      "The latest package version will autopopulate here.",
+      "The status can be either 'Under Review' or 'Reviewed'.",
+      "The score can take any value between 0 (no risk) and 1 (highest risk).",
+      "After reviewing your package, you can leave an overall comment.",
+      "Provide your input on the overall risk of the selected package."
+    ),
+    position = c(rep("bottom", 6))
+  )
+
 # Note: If deploying the app to shinyapps.io, then the code to directly install
 # missing packages will need to be removed as the app will fail to deploy.
 # Instead comment the code that install packages and attach them directly by

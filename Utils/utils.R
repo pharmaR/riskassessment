@@ -128,3 +128,5 @@ update_metric_weight <- function(metric_name, metric_weight){
     "WHERE name = ", "'", metric_name, "'"
   ))
 }
+
+
