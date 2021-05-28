@@ -6,6 +6,38 @@
 #####################################################################################################################
 
 
+# Implement the intro logic. Sidebar steps are listed in global.r
+# this dataset is also static... perhaps it should be sourced from global.r?
+cum_steps <- reactive(
+  data.frame(
+    # Note that we access chooseCSVtext with '.' instead of '#', because we track its class and not its id.
+    element = c("#cum_infoboxes", "#cum_plot", "#cum_add_comment", "#cum_prev_comments"),
+    intro = c(
+      "Several ways of measuring cummunity usage assessed here. Please review!",
+      "Digest downloads per month by selecting a pre-defined time periods or toggling the date slider at bottom of plot for custom date range",
+      "Have something to share within your organization? Add a comment.",
+      "Keep track of the on-going conversation for this package's community usage"
+    ),
+    position = c("bottom", rep("top", 3))
+  )
+)
+
+
+# Start introjs when help button is pressed.
+observeEvent(input$help_cum,
+             introjs(session,
+                     options = list(
+                       steps = 
+                         cum_steps() %>%
+                         union(sidebar_steps),
+                       "nextLabel" = "Next",
+                       "prevLabel" = "Previous",
+                       "skipLabel" = "Close"
+                     )
+             )
+)
+
+
 # Start of the observe's'
 
 # 1. Observe to load the columns from DB into reactive values.

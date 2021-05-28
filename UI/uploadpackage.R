@@ -43,10 +43,12 @@ output$upload_package <- renderUI({
     fluidRow(
       style = "padding-left: 50px; padding-bottom: 10px",
       column(width = 6,
-             div(class = "row col-sm-12 mb-4 u_p_dropdown_row",
-                 uiOutput("upload_summary_select")),
-             # Display the table with total rows in the DB.
-             dataTableOutput("total_new_undis_dup_table"))
+             div(id = "upload_summary",
+                 div(class = "row col-sm-12 mb-4 u_p_dropdown_row",
+                     uiOutput("upload_summary_select")),
+                 # Display the table with total rows in the DB.
+                 dataTableOutput("total_new_undis_dup_table"))
+      )
     )
   )
 })
