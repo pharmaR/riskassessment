@@ -5,6 +5,14 @@
 # License: MIT License
 #####################################################################################################################
 
+# function defined to provide consistent risk color palettes across multiple "modules"
+# https://www.rapidtables.com/web/color/html-color-codes.html
+low_risk_color  <- "#228B22"  # forest green
+med_risk_color  <- "#d1b000"  # dark gold
+high_risk_color <- "#B22222"  # firebrick
+colfunc <- colorRampPalette(c(low_risk_color, med_risk_color, high_risk_color))
+
+
 # Stores the database name.
 db_name <- "database.sqlite"
 
