@@ -110,6 +110,19 @@ output$score <- renderUI({
   h1(strong(score_output))
 })
 
+# change the color of the status wellPanel
+observe({
+  req(input$select_pack)
+  valBoxColor <- case_when(
+    input$select_pack == "Select" ~ "white",
+    !is_empty(values$selected_pkg$decision) && values$selected_pkg$decision == "" ~ "black",
+    TRUE ~ "blue"
+  )
+  runjs(sprintf("
+                document.getElementById('%s').style.color = '%s';
+                ", "diyValBoxStatus", valBoxColor))
+})
+
 # change the color of the wellPanel
 observe({
   req(input$select_pack)
