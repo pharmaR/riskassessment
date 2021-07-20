@@ -42,60 +42,66 @@ create_db <- function(){
   sapply(queries, function(x){
     
     tryCatch({
-      res <- dbSendStatement(
-        con,
-        paste(scan(x, sep = "\n", what = "character"), collapse = ""))
+      rs <- dbSendQuery(con, query)
     }, error = function(err) {
-      # If there is an error, then log it, close the connection, inform the
-      # user, and leave method.
-      loggit("ERROR", paste("create_db error: ", err))
+      message <- paste("dbSendQuery returned",err)
+      message(message, .loggit = FALSE)
+      loggit("ERROR", message)
       dbDisconnect(con)
-      # TODO: show pop up message.
-      stop(err)
     })
-
-    dbClearResult(res)
+    
+    dbClearResult(rs)
   })
   
   dbDisconnect(con)
 }
 
 db_fun <- function(query){
+  errFlag <- FALSE
   con <- dbConnect(RSQLite::SQLite(), db_name)
+  tryCatch(
+    expr = {
+      rs <- dbSendQuery(con, query)
+    },
+    warning = function(warn) {
+      message <- paste0("db_fun warning:\n",query,"\nresulted in\n",warn)
+      message(message, .loggit = FALSE)
+      loggit("WARN", message)
+      errFlag <<- TRUE
+    },
+    error = function(err) {
+      message <- paste0("db_fun error:\n",query,"\nresulted in\n",err)
+      message(message, .loggit = FALSE)
+      loggit("ERROR", message)
+      dbDisconnect(con)
+      errFlag <<- TRUE
+    },
+    finally ={
+      if (errFlag) return(NULL) 
+    })
   
-  tryCatch({
-    dat <- dbGetQuery(con,query)
-  }, error = function(err) {
-    # If there is an error, then log it, close the connection, inform the
-    # user, and leave method.
-    loggit("ERROR", paste("db_fun error: ", err))
-    dbDisconnect(con)
-    # TODO: show pop up message.
-    stop(err)
-  })
-  
-    # this does SendQuery, Fetch and ClearResult all in one
+  dat <- dbFetch(rs)
+  dbClearResult(rs)
+  if (nrow(dat) == 0) message(paste0("No rows were returned from db_fun query\n",query))
   dbDisconnect(con)
   return(dat)
 }
 
 # You need to use dbExecute() to perform delete, update or insert queries.
-db_ins <- function(query){
+db_ins <- function(statement){
   con <- dbConnect(RSQLite::SQLite(), db_name)
-  
   tryCatch({
-    dbExecute(con, query)
+    rs <- dbSendStatement(con, statement)
   }, error = function(err) {
-    # If there is an error, then log it, close the connection, inform the
-    # user, and leave method.
-    loggit("ERROR", paste("db_ins error: ", err))
+    message(paste("db_ins statement returned",err))
     dbDisconnect(con)
-    # TODO: show pop up message.
-    stop(err)
   })
-  
+  nr <- dbGetRowsAffected(rs)
+  dbClearResult(rs)
+  if (nr == 0) message("zero rows were affected by db_ins statement.")
   dbDisconnect(con)
 }
+
 
 TimeStamp <- function(){
   Timestamp_intial<-str_replace(Sys.time()," ", "; ")
