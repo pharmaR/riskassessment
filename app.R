@@ -112,9 +112,10 @@ server <- function(session, input, output) {
       if (res_auth$user == "shinyadmin") {
         showModal(tags$div(
           id = "credentials_id",
-          modalDialog(
+          modalDialog(size = "l",
             title = h2("Note: Credentials", class = "mb-0 mt-0 txt-color"),
-            h3("Please update the login credentials!", class = "mt-0")
+            h3(HTML(paste("Please open 'administration mode' to create a username with admin rights.",
+                     "'shinyadmin' is one-time usage only.", sep="<br/>")), class = "mt-0")
           )
         ))
       }
