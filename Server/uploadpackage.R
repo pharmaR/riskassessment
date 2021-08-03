@@ -5,36 +5,49 @@
 # License: MIT License
 #####################################################################################################################
 
-# Implement the intro logic.
-steps <- reactive(
+# Implement the intro logic. Sidebar steps are listed in global.r
+# this dataset is also static... perhaps it should be sourced from global.r?
+upload_pkg_initial_steps <- reactive(
   data.frame(
     # Note that we access chooseCSVtext with '.' instead of '#', because we track its class and not its id.
-    element = c("#help", ".chooseCSVtext", ".sample_dataset_link", "#sel_pack", "#sel_ver",
-                "#status", "#score", "#overall_comment", "#decision"),
+    element = c("#help", ".chooseCSVtext", ".sample_dataset_link"),
     intro = c(
       "Click here anytime you need help.",
       "Upload a CSV file with the package(s) you would like to assess.",
-      "You can use this sample dataset to explore the app.",
-      "Once you upload your packages, click this dropdown to choose one.",
-      "The latest package version will autopopulate here.",
-      "The status can be either 'Under Review' or 'Reviewed'.",
-      "The score can take any value between 0 (e.g., no risk) and 1 (e.g., highest risk).",
-      "After reviewing your package, you can leave an overall comment.",
-      "Use this slider to provide your take on the overall risk of the selected package."
+      "You can use this sample dataset to explore the app."
     ),
-    position = c("right", rep("top", 3), rep("bottom", 5))
+    position = c("right", rep("top", 2))
   )
+)
+upload_pkg_steps <- reactive(
+  if(values$upload_complete == "upload_complete"){
+    data.frame(
+      element = c("#upload_summary_text", "#upload_summary"),
+      intro = c(
+        "Text description of packages uploaded. Counts by type: 'Total', 'New', 'Undiscovered', 'Duplicate'.",
+        "Confirm uploaded packages list, filter by type"
+      ),
+      position = c("bottom", "top")
+    )
+  } else {
+    data.frame(element = character(0) , intro = character(0), position = character(0))
+  }
+
 )
 
 # Start introjs when help button is pressed.
 observeEvent(input$help,
-             introjs(session,
-                     options = list(steps = steps(),
-                                    "nextLabel" = "Next",
-                                    "prevLabel" = "Previous",
-                                    "skipLabel" = "Close"
-                     )
-             )
+   introjs(session,
+     options = list(
+       steps = 
+          upload_pkg_initial_steps() %>%
+          union(upload_pkg_steps()) %>%
+          union(sidebar_steps),
+        "nextLabel" = "Next",
+        "prevLabel" = "Previous",
+        "skipLabel" = "Close"
+     )
+   )
 )
 
 # Sample csv file content.
