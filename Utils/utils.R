@@ -42,9 +42,11 @@ create_db <- function(){
   sapply(queries, function(x){
     
     tryCatch({
-      rs <- dbSendQuery(con, query)
+      rs <- dbSendStatement(
+        con,
+        paste(scan(x, sep = "\n", what = "character"), collapse = ""))
     }, error = function(err) {
-      message <- paste("dbSendQuery returned",err)
+      message <- paste("dbSendStatement",err)
       message(message, .loggit = FALSE)
       loggit("ERROR", message)
       dbDisconnect(con)
@@ -82,7 +84,9 @@ db_fun <- function(query){
   
   dat <- dbFetch(rs)
   dbClearResult(rs)
-  if (nrow(dat) == 0) message(paste0("No rows were returned from db_fun query\n",query))
+  if (nrow(dat) == 0 & str_detect(strng, "'Select'") == FALSE) {
+    message(paste0("No rows were returned from db_fun query\n",query))
+  }
   dbDisconnect(con)
   return(dat)
 }
