@@ -168,7 +168,15 @@ output$admins_view <- renderUI({
                    h3("Update weights"),
                    selectInput("metric_name", "Select metric", metrics_weight()$name, selected = metrics_weight()$name[1]),
                    numericInput("metric_weight", "Choose new weight", min = 0, value = metrics_weight()$weight[1]),
-                   actionButton("update_weight", "Update weight")),
+                   actionButton("update_weight", "Update weight"),
+                   br(),br(),br(),br(),br(),br(),
+                   downloadButton("dwnld_package_db_btn",
+                                  "Download package snapshot?",
+                                  class = "download_report_btn_class btn-secondary"),
+                   br(),
+                   h3("Update risk and package weights"),
+                   actionButton("update_pkgwt", "Update pkgwt")
+                   ),
             column(width = 8,
                    h3("View/select metrics"),
                    dataTableOutput("weights_table"))
@@ -214,3 +222,85 @@ observeEvent(input$update_weight, {
   
   update_metric_weight(input$metric_name, input$metric_weight)
 })
+
+# Save new weight into db.
+observeEvent(input$update_pkgwt, {
+
+  showModal(tags$div(
+    id = "confirmation_id",
+    modalDialog(
+      title = h2("Confirm Decision", class = "mb-0 mt-0 txt-color"),
+      h2("Please confirm your decision", class = "mt-0"),
+      h3(strong("Note:"), "Updating the package weights and risk metrics cannot be reverted.", class = "mt-25 mb-0"),
+      footer = tagList(
+        actionButton("confirm_update_weights", "Submit",
+                     class = "submit_confirmed_decision_class btn-secondary"),
+        actionButton("edit", "Cancel", class = "edit_class btn-unsuccess")
+      )
+      )
+  ))
+  
+}, ignoreInit = TRUE)
+
+observeEvent(input$confirm_update_weights, {
+  removeModal()
+
+  # Reset any decisions made prior to this.
+  db_ins(paste0("UPDATE package SET decision = ''"))
+  
+  values$db_pkg_overview <- update_db_dash()
+
+  # add a comment on every tab saying how the risk and weights
+  # changed, and that the comments, final decision may no longer be 
+  # applicable. 
+  overall_comments <- paste("Since the package weights and risk have changed",
+        "the overall comments and final decision may no longer be applicable")
+
+  cmts_db <- db_fun("select distinct comm_id as package_name from Comments")
+  
+  # clear out any prior overall comments
+  db_ins("delete from Comments where comment_type = 'o'")
+  
+  # insert new overall comments
+  for (i in 1:nrow(cmts_db)) {
+  db_ins(
+    paste0(
+      "INSERT INTO Comments values('", cmts_db$package_name[i], "',",
+      "'", values$name, "'," ,
+      "'", values$role, "',",
+      "'", overall_comments, "',",
+      "'o',",
+      "'", TimeStamp(), "'" ,
+      ")"
+    )
+  )
+  }
+
+  #	Write to the log file
+  loggit("INFO", paste("package weights and risks will be updated for all packages"))
+  
+  # update for each package
+  pkg <- db_fun("select distinct name as package_name from package")
+  
+  withProgress(message = "Updating package weights and scores \n", value = 0, {
+  for (i in 1:nrow(pkg)) {
+    incProgress(1 / (nrow(pkg) + 1), detail = pkg$package_name[i])
+    db_ins(paste0("delete from package_metrics where package_id = ", 
+                  "(select id from package where name = ","'", pkg$package_name[i], "')") )
+    metric_mm_tm_Info_upload_to_DB(pkg$package_name[i])
+   }
+  })
+  showNotification(id = "show_notification_id", "Updates completed", type = "message")
+  
+}, ignoreInit = TRUE)
+
+output$dwnld_package_db_btn <- downloadHandler(
+  
+    filename = function() {
+      paste("package-table-", Sys.Date(), ".csv", sep="")
+    },
+    content = function(file) {
+      packagedb <- db_fun("select * from package")
+      write.csv(packagedb, file)
+    }
+)
