@@ -12,6 +12,17 @@ med_risk_color  <- "#d1b000"  # dark gold
 high_risk_color <- "#B22222"  # firebrick
 colfunc <- colorRampPalette(c(low_risk_color, med_risk_color, high_risk_color))
 
+# Init DB using credentials data
+credentials <- data.frame(
+  user = c("shinyuser", "shinyadmin"),
+  password = c("qwerty", "asdfgh"),
+  # password will automatically be hashed
+  admin = c(FALSE, TRUE),
+  stringsAsFactors = FALSE
+)
+
+# you can use keyring package to set database key
+key_set_with_value("R-shinymanager-key", "obiwankenobi", password = "secret")
 
 # Stores the database name.
 db_name <- "database.sqlite"
@@ -48,18 +59,33 @@ create_db <- function(){
   })
   
   dbDisconnect(con)
+
+  # Init the credentials database
+  shinymanager::create_db(
+    credentials_data = credentials,
+    sqlite_path = file.path("credentials.sqlite"), 
+    passphrase = key_get("R-shinymanager-key", "obiwankenobi")
+    # passphrase = "passphrase_without_keyring"
+  )
 }
 
-db_fun <- function(query){
+db_fun <- function(query, db_name = "database.sqlite"){
   con <- dbConnect(RSQLite::SQLite(), db_name)
   dat <- dbGetQuery(con,query)  # this does SendQuery, Fetch and ClearResult all in one
   dbDisconnect(con)
   return(dat)
 }
 
+db_rde <- function(query, db_name = "credentials.sqlite") {
+  con <- dbConnect(RSQLite::SQLite(), db_name)
+  dat <- read_db_decrypt(con, name = "credentials", 
+         passphrase = key_get("R-shinymanager-key", "obiwankenobi"))
+  dbDisconnect(con)
+  return(dat)
+}
+
 # You need to use dbExecute() to perform delete, update or insert queries.
-db_ins <- function(query){
-  # con <- dbConnect(RSQLite::SQLite(), "./risk_assessment_app.db")
+db_ins <- function(query, db_name = "database.sqlite"){
   con <- dbConnect(RSQLite::SQLite(), db_name)
   dbExecute(con, query)
   dbDisconnect(con)

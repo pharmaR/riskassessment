@@ -26,6 +26,8 @@ packages = c("shiny"
              ,"cranlogs"
              ,"formattable"
              ,"rintrojs"
+             ,"shinymanager"
+             ,"keyring"
 )
 
 # Install and load required packages.

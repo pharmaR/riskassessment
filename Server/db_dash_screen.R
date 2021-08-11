@@ -156,6 +156,7 @@ output$weights_table <- DT::renderDataTable({
 
 # Section displayed only for authorized users.
 output$admins_view <- renderUI({
+  req(res_auth$admin == TRUE)  # show this only if user is an admin
   tagList(
     tags$section(
       br(), br(),
