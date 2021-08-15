@@ -15,10 +15,10 @@ colfunc <- colorRampPalette(c(low_risk_color, med_risk_color, high_risk_color))
 
 # Init DB using credentials data
 credentials <- data.frame(
-  user = c("shinyuser", "shinyadmin"),
-  password = c("qwerty", "asdfgh"),
+  user = "shinyadmin",
+  password = "qwerty",
   # password will automatically be hashed
-  admin = c(FALSE, TRUE),
+  admin = TRUE,
   stringsAsFactors = FALSE
 )
 
