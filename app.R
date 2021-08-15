@@ -109,13 +109,13 @@ server <- function(session, input, output) {
       
       # we may have to alert admins (a modal?) 
       # that update these credentials the first time the app is loaded.
-      if (res_auth$user == "shinyadmin") {
+      if (res_auth$user == "admin") {
         showModal(tags$div(
           id = "credentials_id",
           modalDialog(size = "l",
             title = h2("Warning: Credentials", class = "txt-danger"),
             h3(HTML("Please open 'administration mode' to create a username with admin rights.",
-                     "'shinyadmin' is a one-time use only account. It is not secure!"))
+                     "'admin' is a one-time use only account. It is not secure!"))
           )
         ))
       }

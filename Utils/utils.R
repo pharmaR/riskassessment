@@ -13,16 +13,16 @@ high_risk_color <- "#B22222"  # firebrick
 colfunc <- colorRampPalette(c(low_risk_color, med_risk_color, high_risk_color))
 
 
-# Init DB using credentials data
+# Init DB using credentials data.
 credentials <- data.frame(
-  user = "shinyadmin",
+  user = "admin",
   password = "qwerty",
   # password will automatically be hashed
   admin = TRUE,
   stringsAsFactors = FALSE
 )
 
-# you can use keyring package to set database key
+# Use keyring package to set database key.
 key_set_with_value("R-shinymanager-key", "obiwankenobi", password = "secret")
 
 
