@@ -113,9 +113,9 @@ server <- function(session, input, output) {
         showModal(tags$div(
           id = "credentials_id",
           modalDialog(size = "l",
-            title = h2("Note: Credentials", class = "mb-0 mt-0 txt-color"),
-            h3(HTML(paste("Please open 'administration mode' to create a username with admin rights.",
-                     "'shinyadmin' is one-time usage only.", sep="<br/>")), class = "mt-0")
+            title = h2("Warning: Credentials", class = "txt-danger"),
+            h3(HTML("Please open 'administration mode' to create a username with admin rights.",
+                     "'shinyadmin' is a one-time use only account. It is not secure!"))
           )
         ))
       }
