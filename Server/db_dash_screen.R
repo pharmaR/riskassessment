@@ -172,26 +172,36 @@ output$admins_view <- renderUI({
           solidHeader = TRUE,
           br(), br(), br(),
           fluidRow(
-            column(width = 4,
+            column(width = 3, offset = 1, align = "center",
                    h3("Update weights"),
                    selectInput("metric_name", "Select metric", metrics_weight()$name, selected = metrics_weight()$name[1]),
                    numericInput("metric_weight", "Choose new weight", min = 0, value = metrics_weight()$weight[1]),
-                   actionButton("update_weight", "Update weight"),
-                   br(),br(),br(),br(),br(),br(),
+                   actionButton("update_weight", "Update weight", class = "btn-secondary"),
+                   
+                   br(), br(), br(), 
+                   tags$hr(class = "hr_sep"),
+                   br(), br(),
+                   
+                   h3("Update risk for each package"),
+                   actionButton("update_pkgwt", "Update risk", class = "btn-secondary"),
+                   
+                   br(), br(), br(), 
+                   tags$hr(class = "hr_sep"),
+                   br(), br(),
+                   
+                   h3("Download package snapshot"),
                    downloadButton("dwnld_package_db_btn",
-                                  "Download package snapshot?",
-                                  class = "download_report_btn_class btn-secondary"),
-                   br(),
-                   h3("Re-calculate risk for each package"),
-                   actionButton("update_pkgwt", "Update pkgwt")
-                   ),
-            column(width = 8,
-                   h3("View/select metrics"),
+                                  "Download",
+                                  class = "btn-secondary")
+            ),
+            column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
+                   offset = 1,
+                   h3("Select metric"),
                    dataTableOutput("weights_table"))
           ),
-          br(),
+          br(), br(), br(),
           fluidRow(
-            column(width = 12, 
+            column(width = 12,
                    h5(em("Note: Changing the weights of the metrics will not update the
                risk of the packages on the database. Assessments of 
                future packages will use these new weights.
