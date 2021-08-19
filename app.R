@@ -192,6 +192,8 @@ server <- function(session, input, output) {
   # 2. Observe to select the package, score, decision and load the data into
   # a reactive variable.
   observe({
+    values$mm_tab_redirect <- "redirect"
+    
     values$selected_pkg <-
       db_fun(
         paste0(
