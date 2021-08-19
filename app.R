@@ -169,6 +169,9 @@ server <- function(session, input, output) {
   # source(file.path("UI", "testing_metrics.R"), local = TRUE)
   # source(file.path("Server", "testing_metrics.R"), local = TRUE)
   
+  source(file.path("UI", "db_dash_screen.R"), local = TRUE)
+  source(file.path("UI", "dashboard_screen.R"), local = TRUE)
+  
   # Start of the observes
   # 1. Observe to Load Source files of UI module of selected screen (Package
   # Dashboard, DB Dashboard, or Login Screen).
@@ -176,15 +179,15 @@ server <- function(session, input, output) {
     values$current_screen<-"db_dash_screen"
   })
 
-  observe({
-      if(values$current_screen == "db_dash_screen") {
-      source(file.path("UI", "db_dash_screen.R"), local = TRUE)
-      shinyjs::show("assessment_criteria_bttn")
-    } else{
-      source(file.path("UI", "dashboard_screen.R"), local = TRUE)
-      shinyjs::show("assessment_criteria_bttn")
-    }
-  })
+  # observe({
+  #     if(values$current_screen == "db_dash_screen") {
+  #     source(file.path("UI", "db_dash_screen.R"), local = TRUE)
+  #     shinyjs::show("assessment_criteria_bttn")
+  #   } else{
+  #     source(file.path("UI", "dashboard_screen.R"), local = TRUE)
+  #     shinyjs::show("assessment_criteria_bttn")
+  #   }
+  # })
   
   # 2. Observe to select the package, score, decision and load the data into
   # a reactive variable.
