@@ -115,7 +115,7 @@ server <- function(session, input, output) {
           modalDialog(size = "l",
             title = h2("Warning: Credentials", class = "txt-danger"),
             h3(HTML("Please open 'administration mode' to create a username with admin rights.",
-                     "'admin' is a one-time use only account. It is not secure!"))
+                     "<br/>'admin' is a one-time use only account. It is not secure!"))
           )
         ))
       }
