@@ -174,8 +174,8 @@ output$admins_view <- renderUI({
                    tags$hr(class = "hr_sep"),
                    br(), br(),
                    
-                   h3("Update risk for each package"),
-                   actionButton("update_pkgwt", "Update risk", class = "btn-secondary"),
+                   h3("Re-calculate risk for each package"),
+                   actionButton("update_pkgwt", "Re-calculate", class = "btn-secondary"),
                    
                    br(), br(), br(), 
                    tags$hr(class = "hr_sep"),
