@@ -5,6 +5,35 @@
 # Date: June 13th, 2020
 #####################################################################################################################
 
+# Implement the intro logic. Sidebar steps are listed in global.r
+# this dataset is also static... perhaps it should be sourced from global.r?
+mm_steps <- reactive(
+  data.frame(
+    # Note that we access chooseCSVtext with '.' instead of '#', because we track its class and not its id.
+    element = c("#mm_infoboxes", "#mm_add_comment", "#mm_prev_comments"),
+    intro = c(
+      "Several ways of measuring package maintenance best practices are assessed here. Please review!",
+      "Have something to share within your organization? Add a comment.",
+      "Keep track of the on-going conversation for this package's maintainence metrics"
+    ),
+    position = c(rep("top", 3))
+  )
+)
+
+
+# Start introjs when help button is pressed.
+observeEvent(input$help_mm,
+   introjs(session,
+     options = list(
+       steps = 
+         mm_steps() %>%
+         union(sidebar_steps),
+       "nextLabel" = "Next",
+       "prevLabel" = "Previous",
+       "skipLabel" = "Close"
+     )
+   )
+)
 
 # Save each metric information into variables.
 observe({
