@@ -103,8 +103,8 @@ get_packages_info_from_web <- function(package_name) {
     error = function(e) {
       if (package_name %in% rownames(installed.packages()) == TRUE) {
         for (i in .libPaths()) {
-          if (file.exists(paste(i, "/", package_name, sep = "")) == TRUE) {
-            i <- paste0(i, "/", package_name)
+          if(file.exists(file.path(i, package_name)) == TRUE) {
+            i <- file.path(i, package_name)
             d <- description$new(i)
             title <- d$get("Title")
             ver <- d$get("Version")
