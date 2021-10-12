@@ -61,11 +61,16 @@ output$db_pkgs <- DT::renderDataTable({
 })
 
 # Enable the download button when a package is selected.
+# and do the same for copy_database_btn
 observe({
-  if(!is.null(input$db_pkgs_rows_selected))
+  if(!is.null(input$db_pkgs_rows_selected)) {
     shinyjs::enable("dwnld_sel_db_pkgs_btn")
-  else
+    shinyjs::enable("copy_database_btn")
+  }
+  else {
     shinyjs::disable("dwnld_sel_db_pkgs_btn")
+    shinyjs::disable("copy_database_btn")
+  }
 })
 
 
@@ -182,10 +187,10 @@ output$admins_view <- renderUI({
                    br(), br(),
                    
                    h3("Copy database to backup"),
-                   actionButton("dwnld_package_db_btn",
+                   actionButton("copy_database_btn",
                                 "Backup database",
                                 class = "btn-secondary")
-                   # downloadButton("dwnld_package_db_btn",
+                   # downloadButton("copy_database_btn",
                    #                "Download",
                    #                class = "btn-secondary")
             ),
@@ -320,7 +325,7 @@ observeEvent(input$confirm_update_weights, {
   
 }, ignoreInit = TRUE)
 
-observeEvent(input$dwnld_package_db_btn, {
+observeEvent(input$copy_database_btn, {
   con <- dbConnect(RSQLite::SQLite(), db_name)
   cbk <- dbConnect(RSQLite::SQLite(), bk_name)
   RSQLite::sqliteCopyDatabase(con, cbk)
@@ -334,7 +339,7 @@ observeEvent(input$dwnld_package_db_btn, {
          
 }, ignoreInit =  TRUE)
 
-# output$dwnld_package_db_btn <- downloadHandler(
+# output$copy_database_btn <- downloadHandler(
 #   
 #     filename = function() {
 #       paste("package-table-", Sys.Date(), ".csv", sep="")
