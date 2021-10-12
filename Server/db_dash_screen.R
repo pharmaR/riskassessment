@@ -61,18 +61,14 @@ output$db_pkgs <- DT::renderDataTable({
 })
 
 # Enable the download button when a package is selected.
-# and do the same for copy_database_btn
 observe({
   if(!is.null(input$db_pkgs_rows_selected)) {
     shinyjs::enable("dwnld_sel_db_pkgs_btn")
-    shinyjs::enable("copy_database_btn")
   }
   else {
     shinyjs::disable("dwnld_sel_db_pkgs_btn")
-    shinyjs::disable("copy_database_btn")
   }
 })
-
 
 values$cwd <- getwd()
 
