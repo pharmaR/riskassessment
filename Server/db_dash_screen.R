@@ -181,10 +181,13 @@ output$admins_view <- renderUI({
                    tags$hr(class = "hr_sep"),
                    br(), br(),
                    
-                   h3("Download package snapshot"),
-                   downloadButton("dwnld_package_db_btn",
-                                  "Download",
-                                  class = "btn-secondary")
+                   h3("Copy database to backup"),
+                   actionButton("dwnld_package_db_btn",
+                                "Backup database",
+                                class = "btn-secondary")
+                   # downloadButton("dwnld_package_db_btn",
+                   #                "Download",
+                   #                class = "btn-secondary")
             ),
             column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
                    offset = 1,
@@ -249,7 +252,7 @@ observeEvent(input$update_pkgwt, {
         )
       ),
       h3(strong("Note:"), "Updating the risk metrics cannot be reverted.", class = "mt-25 mb-0"),
-      h3("Be sure you click on 'Download Package Snapshot' before continuing."),
+      h3("Be sure you click on 'Copy database to backup' before continuing."),
       footer = tagList(
         actionButton("confirm_update_weights", "Submit",
                      class = "submit_confirmed_decision_class btn-secondary"),
@@ -317,13 +320,27 @@ observeEvent(input$confirm_update_weights, {
   
 }, ignoreInit = TRUE)
 
-output$dwnld_package_db_btn <- downloadHandler(
-  
-    filename = function() {
-      paste("package-table-", Sys.Date(), ".csv", sep="")
-    },
-    content = function(file) {
-      packagedb <- db_fun("select * from package")
-      write.csv(packagedb, file)
-    }
-)
+observeEvent(input$dwnld_package_db_btn, {
+  con <- dbConnect(RSQLite::SQLite(), db_name)
+  cbk <- dbConnect(RSQLite::SQLite(), bk_name)
+  RSQLite::sqliteCopyDatabase(con, cbk)
+  dbDisconnect(con)
+  dbDisconnect(cbk)
+  showModal(tags$div(
+    id = "confirmation_id",
+    modalDialog(
+      title = h2("database copied.", class = "mb-0 mt-0 txt-color"),
+      h3(paste(db_name, "has been copied to", bk_name)))))
+         
+}, ignoreInit =  TRUE)
+
+# output$dwnld_package_db_btn <- downloadHandler(
+#   
+#     filename = function() {
+#       paste("package-table-", Sys.Date(), ".csv", sep="")
+#     },
+#     content = function(file) {
+#       packagedb <- db_fun("select * from package")
+#       write.csv(packagedb, file)
+#     }
+# )
