@@ -15,6 +15,8 @@ colfunc <- colorRampPalette(c(low_risk_color, med_risk_color, high_risk_color))
 
 # Stores the database name.
 db_name <- "database.sqlite"
+# Store default backup name.
+bk_name <- "dbbackup.sqlite"
 
 # Create a local database.
 create_db <- function(){
