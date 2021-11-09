@@ -86,12 +86,12 @@ output$status <- renderUI({
   req(input$select_pack)
     # status_output <-
       if(input$select_pack == "Select"){
-        h1(strong("NA"))
+        h3(strong("NA"))
       } else {
         if(values$selected_pkg$decision == ""){
           h3("Under Review")
         } else {
-          h2("Reviewed")
+          h3("Reviewed")
         }
       }
 })
@@ -119,7 +119,7 @@ output$score <- renderUI({
     
   # Score defaults to NA.
   score_output <- ifelse(input$select_pack != "Select", values$selected_pkg$score, "NA")
-  h1(strong(score_output))
+  h3(strong(score_output))
 })
 
 
@@ -128,7 +128,7 @@ output$score <- renderUI({
 observe({
   req(input$select_pack)
   score_output_num <- ifelse(input$select_pack != "Select", values$selected_pkg$score, NA_integer_)
-  valBoxColor <- ifelse(is.na(score_output_num), "#1E90FF", colfunc(100)[round(as.numeric(score_output_num)*100)])
+  valBoxColor <- ifelse(is.na(score_output_num), "#C0C0C0", colfunc(100)[round(as.numeric(score_output_num)*100)])
   runjs(sprintf("
             document.getElementById('%s').style.backgroundColor = '%s';
         ", "diyValBoxScore", valBoxColor))
