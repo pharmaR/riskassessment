@@ -26,7 +26,7 @@ output$screen <- renderUI({
                  sidebarPanel(
                    width = 12,
                    uiOutput("sel_pack"), # UI for select package.
-                   uiOutput("sel_ver"), # UI for version of the selected package.
+                   #uiOutput("sel_ver"), # UI for version of the selected package.
                    # uiOutput("status"), # Display the status of the package.
                    fixedRow(
                      column(6, wellPanel(
