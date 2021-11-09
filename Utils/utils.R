@@ -84,7 +84,8 @@ db_fun <- function(query){
   
   dat <- dbFetch(rs)
   dbClearResult(rs)
-  if (nrow(dat) == 0 & str_detect(strng, "'Select'") == FALSE) {
+  if (nrow(dat) == 0 
+     & (str_detect(query, "name = 'Select'") == FALSE) && str_detect(query, "name = ''") == FALSE) {
     message(paste0("No rows were returned from db_fun query\n",query))
   }
   dbDisconnect(con)
