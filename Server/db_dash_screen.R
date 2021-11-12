@@ -183,9 +183,6 @@ output$admins_view <- renderUI({
                    br(), br(),
                    
                    h3("Copy database to backup"),
-                   # actionButton("copy_database_btn",
-                   #              "Backup database",
-                   #              class = "btn-secondary")
                    downloadButton("copy_database_btn",
                                   "Download",
                                   class = "btn-secondary")
@@ -320,20 +317,6 @@ observeEvent(input$confirm_update_weights, {
   showNotification(id = "show_notification_id", "Updates completed", type = "message")
   
 }, ignoreInit = TRUE)
-
-# observeEvent(input$copy_database_btn, {
-#   con <- dbConnect(RSQLite::SQLite(), db_name)
-#   cbk <- dbConnect(RSQLite::SQLite(), bk_name)
-#   RSQLite::sqliteCopyDatabase(con, cbk)
-#   dbDisconnect(con)
-#   dbDisconnect(cbk)
-#   showModal(tags$div(
-#     id = "confirmation_id",
-#     modalDialog(
-#       title = h2("database copied.", class = "mb-0 mt-0 txt-color"),
-#       h3(paste(db_name, "has been copied to", bk_name)))))
-#          
-# }, ignoreInit =  TRUE)
 
 output$copy_database_btn <- downloadHandler(
   
