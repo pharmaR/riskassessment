@@ -282,13 +282,14 @@ observeEvent(input$confirm_update_weights, {
   # applicable. 
   weight_risk_comment <- paste(Sys.Date(), "Since the package weights and risk have changed",
         "the overall comments and final decision may no longer be applicable")
-
-  cmts_db <- db_fun("select distinct comm_id as package_name from Comments")
+  
+  # update for each package
+  pkg <- db_fun("select distinct name as package_name from package")
   
   # clear out any prior overall comments
   db_ins("delete from Comments where comment_type = 'o'")
   
-  for (i in 1:nrow(cmts_db)) {
+  for (i in 1:nrow(pkg)) {
   # insert comment for both mm and cum tabs
     for (typ in c("mm","cum")) {
       db_ins(
@@ -307,10 +308,7 @@ observeEvent(input$confirm_update_weights, {
 
   #	Write to the log file
   loggit("INFO", paste("package weights and risk metric scores will be updated for all packages"))
-  
-  # update for each package
-  pkg <- db_fun("select distinct name as package_name from package")
-  
+
   withProgress(message = "Updating package weights and scores \n", value = 0, {
   for (i in 1:nrow(pkg)) {
     incProgress(1 / (nrow(pkg) + 1), detail = pkg$package_name[i])
