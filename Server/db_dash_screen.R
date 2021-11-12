@@ -183,12 +183,12 @@ output$admins_view <- renderUI({
                    br(), br(),
                    
                    h3("Copy database to backup"),
-                   actionButton("copy_database_btn",
-                                "Backup database",
-                                class = "btn-secondary")
-                   # downloadButton("copy_database_btn",
-                   #                "Download",
-                   #                class = "btn-secondary")
+                   # actionButton("copy_database_btn",
+                   #              "Backup database",
+                   #              class = "btn-secondary")
+                   downloadButton("copy_database_btn",
+                                  "Download",
+                                  class = "btn-secondary")
             ),
             column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
                    offset = 1,
@@ -321,27 +321,36 @@ observeEvent(input$confirm_update_weights, {
   
 }, ignoreInit = TRUE)
 
-observeEvent(input$copy_database_btn, {
-  con <- dbConnect(RSQLite::SQLite(), db_name)
-  cbk <- dbConnect(RSQLite::SQLite(), bk_name)
-  RSQLite::sqliteCopyDatabase(con, cbk)
-  dbDisconnect(con)
-  dbDisconnect(cbk)
-  showModal(tags$div(
-    id = "confirmation_id",
-    modalDialog(
-      title = h2("database copied.", class = "mb-0 mt-0 txt-color"),
-      h3(paste(db_name, "has been copied to", bk_name)))))
-         
-}, ignoreInit =  TRUE)
+# observeEvent(input$copy_database_btn, {
+#   con <- dbConnect(RSQLite::SQLite(), db_name)
+#   cbk <- dbConnect(RSQLite::SQLite(), bk_name)
+#   RSQLite::sqliteCopyDatabase(con, cbk)
+#   dbDisconnect(con)
+#   dbDisconnect(cbk)
+#   showModal(tags$div(
+#     id = "confirmation_id",
+#     modalDialog(
+#       title = h2("database copied.", class = "mb-0 mt-0 txt-color"),
+#       h3(paste(db_name, "has been copied to", bk_name)))))
+#          
+# }, ignoreInit =  TRUE)
 
-# output$copy_database_btn <- downloadHandler(
-#   
-#     filename = function() {
-#       paste("package-table-", Sys.Date(), ".csv", sep="")
-#     },
-#     content = function(file) {
-#       packagedb <- db_fun("select * from package")
-#       write.csv(packagedb, file)
-#     }
-# )
+output$copy_database_btn <- downloadHandler(
+  
+  filename = function() {
+    paste("dbbackup-", Sys.Date(), ".sqlite", sep="")
+  },
+  content = function(file) {
+    con <- dbConnect(RSQLite::SQLite(), db_name)
+    cbk <- dbConnect(RSQLite::SQLite(), file)
+    RSQLite::sqliteCopyDatabase(con, cbk)
+    dbDisconnect(con)
+    dbDisconnect(cbk)
+    
+    showModal(tags$div(
+      id = "confirmation_id",
+      modalDialog(
+        title = h2("database copied.", class = "mb-0 mt-0 txt-color"),
+        h3(paste(db_name, "has been copied to", file)))))
+  }
+)
