@@ -280,7 +280,7 @@ observeEvent(input$confirm_update_weights, {
   # add a comment on every tab saying how the risk and weights
   # changed, and that the comments, final decision may no longer be 
   # applicable. 
-  overall_comments <- paste(Sys.Date(), "Since the package weights and risk have changed",
+  weight_risk_comment <- paste(Sys.Date(), "Since the package weights and risk have changed",
         "the overall comments and final decision may no longer be applicable")
 
   cmts_db <- db_fun("select distinct comm_id as package_name from Comments")
@@ -288,19 +288,21 @@ observeEvent(input$confirm_update_weights, {
   # clear out any prior overall comments
   db_ins("delete from Comments where comment_type = 'o'")
   
-  # insert new overall comments
   for (i in 1:nrow(cmts_db)) {
-  db_ins(
-    paste0(
-      "INSERT INTO Comments values('", cmts_db$package_name[i], "',",
-      "'", values$name, "'," ,
-      "'", values$role, "',",
-      "'", overall_comments, "',",
-      "'o',",
-      "'", TimeStamp(), "'" ,
-      ")"
-    )
-  )
+  # insert comment for both mm and cum tabs
+    for (typ in c("mm","cum")) {
+      db_ins(
+        paste0(
+          "INSERT INTO Comments values('", cmts_db$package_name[i], "',",
+          "'", values$name, "'," ,
+          "'", values$role, "',",
+          "'", weight_risk_comment, "',",
+          "'", typ, "',",
+          "'", TimeStamp(), "'" ,
+          ")"
+          )
+       )
+    }
   }
 
   #	Write to the log file
