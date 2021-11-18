@@ -163,13 +163,22 @@ output$admins_view <- renderUI({
       box(width = 12, collapsible = TRUE, status = "primary",
           title = h3("View/Change Weights", style = "margin-top: 5px"),
           solidHeader = TRUE,
-          br(), br(), br(),
+          br(),
+          fluidRow(
+            column(width = 5, offset = 5, align = "center",
+                   h3("Change weights:"),
+            )),
+          fluidRow(
+            column(width = 2, offset = 5, align = "left",
+                   selectInput("metric_name", "Select metric", metrics_weight()$name, selected = metrics_weight()$name[1]) ),
+            column(width = 2, align = "left",
+                   numericInput("metric_weight", "Choose new weight", min = 0, value = metrics_weight()$weight[1]) ),
+            column(width = 1,
+                   br(),
+                   actionButton("update_weight", "Update weight", class = "btn-secondary") ) ),
+          br(), br(), 
           fluidRow(
             column(width = 3, offset = 1, align = "center",
-                   h3("Update weights"),
-                   selectInput("metric_name", "Select metric", metrics_weight()$name, selected = metrics_weight()$name[1]),
-                   numericInput("metric_weight", "Choose new weight", min = 0, value = metrics_weight()$weight[1]),
-                   actionButton("update_weight", "Update weight", class = "btn-secondary"),
                    
                    br(), br(), br(), 
                    tags$hr(class = "hr_sep"),
