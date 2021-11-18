@@ -182,8 +182,8 @@ output$admins_view <- renderUI({
                    tags$hr(class = "hr_sep"),
                    br(), br(),
                    
-                   h3("Copy database to backup"),
-                   downloadButton("copy_database_btn",
+                   h3("Backup database"),
+                   downloadButton("backup_database_btn",
                                   "Download",
                                   class = "btn-secondary")
             ),
@@ -318,10 +318,10 @@ observeEvent(input$confirm_update_weights, {
   
 }, ignoreInit = TRUE)
 
-output$copy_database_btn <- downloadHandler(
+output$backup_database_btn <- downloadHandler(
   
   filename = function() {
-    paste("dbbackup-", Sys.Date(), ".sqlite", sep="")
+    paste0("datase_backup-", Sys.Date(), ".sqlite")
   },
   content = function(file) {
     con <- dbConnect(RSQLite::SQLite(), db_name)
@@ -333,7 +333,8 @@ output$copy_database_btn <- downloadHandler(
     showModal(tags$div(
       id = "confirmation_id",
       modalDialog(
-        title = h2("database copied.", class = "mb-0 mt-0 txt-color"),
-        h3(paste(db_name, "has been copied to", file)))))
+        size = "l",
+        title = h2("Database downloaded", class = "mb-0 mt-0 txt-color"),
+        h3("The database as been downloaded as datase_backup-[date].sqlite"))))
   }
 )
