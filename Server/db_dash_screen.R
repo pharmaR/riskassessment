@@ -184,17 +184,18 @@ output$admins_view <- renderUI({
                    tags$hr(class = "hr_sep"),
                    br(), br(),
                    
-                   h3("Re-calculate risk for each package"),
-                   actionButton("update_pkgwt", "Re-calculate", class = "btn-secondary"),
+                   h3("Download database"),
+                   downloadButton("download_database_btn",
+                                  "Download",
+                                  class = "btn-secondary"),
                    
                    br(), br(), br(), 
                    tags$hr(class = "hr_sep"),
                    br(), br(),
                    
-                   h3("Backup database"),
-                   downloadButton("backup_database_btn",
-                                  "Download",
-                                  class = "btn-secondary")
+                   h3("Re-calculate risk for each package"),
+                   actionButton("update_pkgwt", "Re-calculate", class = "btn-secondary")
+                   
             ),
             column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
                    offset = 1,
@@ -259,7 +260,7 @@ observeEvent(input$update_pkgwt, {
         )
       ),
       h3(strong("Note:"), "Updating the risk metrics cannot be reverted.", class = "mt-25 mb-0"),
-      h3("Be sure you click on 'Copy database to backup' before continuing."),
+      h3("Be sure you click on 'Download database' before continuing."),
       footer = tagList(
         actionButton("confirm_update_weights", "Submit",
                      class = "submit_confirmed_decision_class btn-secondary"),
@@ -327,7 +328,7 @@ observeEvent(input$confirm_update_weights, {
   
 }, ignoreInit = TRUE)
 
-output$backup_database_btn <- downloadHandler(
+output$download_database_btn <- downloadHandler(
   
   filename = function() {
     paste0("datase_backup-", Sys.Date(), ".sqlite")
