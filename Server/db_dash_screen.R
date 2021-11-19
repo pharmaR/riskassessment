@@ -199,7 +199,7 @@ output$admins_view <- renderUI({
             ),
             column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
                    offset = 1,
-                   h3("Select metric"),
+                   h3("Current Risk Score Weights by Metric"),
                    dataTableOutput("weights_table"))
           ),
           br(), br(), br(),
