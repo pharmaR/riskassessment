@@ -278,8 +278,7 @@ observeEvent(input$confirm_update_weights, {
   
   for (i in 1:nrow(pkg)) {
     # Reset any decisions made prior to this.
-    db_ins(paste0("UPDATE package SET decision = '' where name = '",pkg$package_name[1],"'"))
-    values$pkg$package_name[i]$decision <- ''  # allow a new decision to be made
+    db_ins(paste0("UPDATE package SET decision = '' where name = '",pkg$package_name[i],"'"))
   }
 
   values$db_pkg_overview <- update_db_dash()
@@ -326,9 +325,11 @@ observeEvent(input$confirm_update_weights, {
     db_ins(paste0("delete from package_metrics where package_id = ", 
                   "(select id from package where name = ","'", pkg$package_name[i], "')") )
     metric_mm_tm_Info_upload_to_DB(pkg$package_name[i])
-   }
+  }
   })
+
   showNotification(id = "show_notification_id", "Updates completed", type = "message")
+  
   
 }, ignoreInit = TRUE)
 
