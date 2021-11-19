@@ -319,7 +319,7 @@ observeEvent(input$confirm_update_weights, {
   # update for each package
   pkg <- db_fun("select distinct name as package_name from package")
   
-  withProgress(message = "Updating package weights and scores \n", value = 0, {
+  withProgress(message = "Applying weights and updating risk scores \n", value = 0, {
   for (i in 1:nrow(pkg)) {
     incProgress(1 / (nrow(pkg) + 1), detail = pkg$package_name[i])
     db_ins(paste0("delete from package_metrics where package_id = ", 
