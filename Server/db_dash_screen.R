@@ -250,6 +250,7 @@ observeEvent(input$update_pkgwt, {
   showModal(tags$div(
     id = "confirmation_id",
     modalDialog(
+      size = "l",
       title = h2("Confirm Decision", class = "mb-0 mt-0 txt-color"),
       h3("Once you push the submit button:",
         tags$ul(
