@@ -291,7 +291,8 @@ observeEvent(input$confirm_update_weights, {
         "the comments and final decision may no longer be applicable")
   
   # update for each package
-  cmts_db <- db_fun("select distinct comm_id as package_name from Comments")
+  cmts_db <- unique(bind_rows(db_fun("select distinct comm_id as package_name from Comments"),
+                             db_fun("select distinct name as package_name from package where decision != ''")))
   
   # clear out any prior overall comments
   db_ins("delete from Comments where comment_type = 'o'")
