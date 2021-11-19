@@ -93,17 +93,22 @@ db_fun <- function(query){
 }
 
 # You need to use dbExecute() to perform delete, update or insert queries.
-db_ins <- function(statement){
+db_ins <- function(command){
   con <- dbConnect(RSQLite::SQLite(), db_name)
   tryCatch({
-    rs <- dbSendStatement(con, statement)
+    rs <- dbSendStatement(con, command)
   }, error = function(err) {
-    message(paste("db_ins statement returned",err))
+    message <- paste0("db_ins command:\n",command,"\nresulted in\n",err)
+    message(message, .loggit = FALSE)
+    loggit("ERROR", message)
     dbDisconnect(con)
   })
   nr <- dbGetRowsAffected(rs)
   dbClearResult(rs)
-  if (nr == 0) message("zero rows were affected by db_ins statement.")
+  if (nr == 0) {
+    message <- paste0("zero rows were affected by the db_ins command:\n",command)
+    message(message, .loggit = FALSE)
+  }
   dbDisconnect(con)
 }
 
