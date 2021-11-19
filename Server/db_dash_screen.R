@@ -165,7 +165,7 @@ output$admins_view <- renderUI({
           solidHeader = TRUE,
           br(),
           fluidRow(
-            column(width = 5, offset = 5, align = "center",
+            column(width = 5, offset = 5, align = "left",
                    h3("Change weights:"),
             )),
           fluidRow(
@@ -253,10 +253,9 @@ observeEvent(input$update_pkgwt, {
       title = h2("Confirm Decision", class = "mb-0 mt-0 txt-color"),
       h3("Once you push the submit button:",
         tags$ul(
-          tags$li("The package weights will be updated."),
-          tags$li("The risk metric scores will be updated."),
-          tags$li("Final decisions on packages will be reversed."),
-          tags$li("Overall Comments will be added for each package that had a comment.")
+          tags$li("The package weights will be applied and risk metric scores re-calculated."),
+          tags$li("Final decisions on packages will be dropped."),
+          tags$li("Comments will be added for each package that had a comment.")
         )
       ),
       h3(strong("Note:"), "Updating the risk metrics cannot be reverted.", class = "mt-25 mb-0"),
