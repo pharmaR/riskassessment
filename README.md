@@ -7,7 +7,7 @@ Risk Assessment is an interactive web application providing a front end for the 
 
 - [R Validation Hub](https://www.pharmar.org), *Author* & *Maintainer*
 - [Marly Gotti](https://www.marlygotti.com), Biogen, *Maintainer*
-- Aaron Clark, Cytel
+- Aaron Clark, Biogen
 - Maya Gans, Cytel
 - Robert Krajcik, Cytel
 - Aravind Reddy Kallem
