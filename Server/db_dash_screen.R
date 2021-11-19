@@ -256,7 +256,7 @@ observeEvent(input$update_pkgwt, {
         tags$ul(
           tags$li("The package weights will be applied and risk metric scores re-calculated."),
           tags$li("Final decisions on packages will be dropped."),
-          tags$li("Comments will be added for each package that had a comment.")
+          tags$li("The risk re-calculation will be logged as a comment for each package that had a comment or final decision.")
         )
       ),
       h3(strong("Note:"), "Updating the risk metrics cannot be reverted.", class = "mt-25 mb-0"),
