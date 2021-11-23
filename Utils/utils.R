@@ -19,6 +19,9 @@ credentials <- data.frame(
   password = "qwerty",
   # password will automatically be hashed
   admin = TRUE,
+  expire = as.character(Sys.Date()),
+  must_change = TRUE,
+  have_changed = FALSE,
   stringsAsFactors = FALSE
 )
 
@@ -78,9 +81,9 @@ db_fun <- function(query, db_name = "database.sqlite"){
   return(dat)
 }
 
-db_rde <- function(query, db_name = "credentials.sqlite") {
+db_rde <- function(query, name = "credentials", db_name = "credentials.sqlite") {
   con <- dbConnect(RSQLite::SQLite(), db_name)
-  dat <- read_db_decrypt(con, name = "credentials", 
+  dat <- read_db_decrypt(con, name, 
          passphrase = key_get("R-shinymanager-key", "obiwankenobi"))
   dbDisconnect(con)
   return(dat)
