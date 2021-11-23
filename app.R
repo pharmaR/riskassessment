@@ -179,15 +179,15 @@ server <- function(session, input, output) {
     values$current_screen<-"db_dash_screen"
   })
 
-  # observe({
-  #     if(values$current_screen == "db_dash_screen") {
-  #     source(file.path("UI", "db_dash_screen.R"), local = TRUE)
-  #     shinyjs::show("assessment_criteria_bttn")
-  #   } else{
-  #     source(file.path("UI", "dashboard_screen.R"), local = TRUE)
-  #     shinyjs::show("assessment_criteria_bttn")
-  #   }
-  # })
+  observe({
+      if(values$current_screen == "db_dash_screen") {
+      source(file.path("UI", "db_dash_screen.R"), local = TRUE)
+      shinyjs::show("assessment_criteria_bttn")
+    } else{
+      source(file.path("UI", "dashboard_screen.R"), local = TRUE)
+      shinyjs::show("assessment_criteria_bttn")
+    }
+  })
   
   # 2. Observe to select the package, score, decision and load the data into
   # a reactive variable.
