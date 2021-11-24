@@ -62,7 +62,14 @@ create_db <- function(){
   })
   
   dbDisconnect(con)
+}
 
+# Stores the database name.
+cr_name <- "credentials.sqlite"
+
+# Create credentials database
+create_cred <- function(){
+  
   # Init the credentials database
   shinymanager::create_db(
     credentials_data = credentials,
@@ -70,6 +77,23 @@ create_db <- function(){
     passphrase = key_get("R-shinymanager-key", "obiwankenobi")
     # passphrase = "passphrase_without_keyring"
   )
+
+# set pwd_mngt$must_change to TRUE
+con <- dbConnect(RSQLite::SQLite(), "credentials.sqlite")
+pwd <- read_db_decrypt(con, name = "pwd_mngt",
+                       passphrase = key_get("R-shinymanager-key", "obiwankenobi"))
+print(paste("contents of pwd:",paste(pwd,collapse = ",")))
+
+pwd <- pwd %>%
+  mutate(must_change = ifelse(have_changed == "TRUE", must_change, as.character(TRUE)))
+
+write_db_encrypt(
+  con,
+  value = pwd,
+  name = "pwd_mngt",
+  passphrase = key_get("R-shinymanager-key", "obiwankenobi")
+)
+dbDisconnect(con)
 }
 
 db_fun <- function(query, db_name = "database.sqlite"){
