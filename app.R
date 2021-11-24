@@ -123,14 +123,51 @@ server <- function(session, input, output) {
       # we may have to alert admins (a modal?) 
       # that update these credentials the first time the app is loaded.
       if (res_auth$user == "admin") {
-        showModal(tags$div(
-          id = "credentials_id",
-          modalDialog(size = "l",
-            title = h2("Warning: Credentials", class = "txt-danger"),
-            h3(HTML("Please open 'administration mode' to create a username with admin rights.",
-                     "<br/>'admin' is a one-time use only account. It is not secure!"))
+        # showModal(tags$div(
+        #   id = "credentials_id",
+        #   modalDialog(size = "l",
+        #     title = h2("Warning: Credentials", class = "txt-danger"),
+        #     h3(HTML("Please open 'administration mode' to create a username with admin rights.",
+        #              "<br/>'admin' is a one-time use only account. It is not secure!"))
+        #   )
+        # ))
+        
+        # if the expire date is today, force admin to change the password
+        if (res_auth$expire == as.character(Sys.Date())) {
+          con <- dbConnect(RSQLite::SQLite(), "credentials.sqlite")
+          pwd <- read_db_decrypt(con, name = "pwd_mngt",
+                                 passphrase = key_get("R-shinymanager-key", "obiwankenobi"))
+          print(paste("contents of pwd:",paste(pwd,collapse = ",")))
+          
+          pwd <- pwd %>%
+            mutate(must_change = ifelse(have_changed == "TRUE", must_change, as.character(TRUE)))
+          
+          write_db_encrypt(
+            con,
+            value = pwd,
+            name = "pwd_mngt",
+            passphrase = key_get("R-shinymanager-key", "obiwankenobi")
           )
-        ))
+          dbDisconnect(con)
+          
+          # set credentials$expire to blank if pwd_mngt$have_changed == "TRUE"
+          con <- dbConnect(RSQLite::SQLite(), "credentials.sqlite")
+          dat <- read_db_decrypt(con, name = "credentials",
+                                passphrase = key_get("R-shinymanager-key", "obiwankenobi"))
+          print(paste("contents of dat:",paste(dat,collapse = ",")))
+
+          dat <- dat %>%
+             mutate(expire = ifelse(pwd$have_changed == "TRUE", "", expire))
+          
+          write_db_encrypt(
+           con,
+           value = dat,
+           name = "credentials",
+           passphrase = key_get("R-shinymanager-key", "obiwankenobi")
+          )
+          dbDisconnect(con)
+          
+        }
       }
     }
     name <- res_auth$user
