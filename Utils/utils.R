@@ -82,7 +82,6 @@ create_cred <- function(){
 con <- dbConnect(RSQLite::SQLite(), "credentials.sqlite")
 pwd <- read_db_decrypt(con, name = "pwd_mngt",
                        passphrase = key_get("R-shinymanager-key", "obiwankenobi"))
-print(paste("contents of pwd:",paste(pwd,collapse = ",")))
 
 pwd <- pwd %>%
   mutate(must_change = ifelse(have_changed == "TRUE", must_change, as.character(TRUE)))
