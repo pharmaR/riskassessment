@@ -20,8 +20,6 @@ credentials <- data.frame(
   # password will automatically be hashed
   admin = TRUE,
   expire = as.character(Sys.Date()),
-  must_change = TRUE,
-  have_changed = FALSE,
   stringsAsFactors = FALSE
 )
 
