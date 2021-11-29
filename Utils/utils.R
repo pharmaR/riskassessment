@@ -40,30 +40,78 @@ create_db <- function(){
   
   # Apply each query.
   sapply(queries, function(x){
-    res <- dbSendStatement(
-      con,
-      paste(scan(x, sep = "\n", what = "character"), collapse = ""))
     
-    dbClearResult(res)
+    tryCatch({
+      rs <- dbSendStatement(
+        con,
+        paste(scan(x, sep = "\n", what = "character"), collapse = ""))
+    }, error = function(err) {
+      message <- paste("dbSendStatement",err)
+      message(message, .loggit = FALSE)
+      loggit("ERROR", message)
+      dbDisconnect(con)
+    })
+    
+    dbClearResult(rs)
   })
   
   dbDisconnect(con)
 }
 
 db_fun <- function(query){
+  errFlag <- FALSE
   con <- dbConnect(RSQLite::SQLite(), db_name)
-  dat <- dbGetQuery(con,query)  # this does SendQuery, Fetch and ClearResult all in one
+  tryCatch(
+    expr = {
+      rs <- dbSendQuery(con, query)
+    },
+    warning = function(warn) {
+      message <- paste0("db_fun warning:\n", query, "\nresulted in\n", warn)
+      message(message, .loggit = FALSE)
+      loggit("WARN", message)
+      errFlag <<- TRUE
+    },
+    error = function(err) {
+      message <- paste0("db_fun error:\n", query, "\nresulted in\n",err)
+      message(message, .loggit = FALSE)
+      loggit("ERROR", message)
+      dbDisconnect(con)
+      errFlag <<- TRUE
+    },
+    finally = {
+      if (errFlag) return(NULL) 
+    })
+  
+  dat <- dbFetch(rs)
+  dbClearResult(rs)
+  if (nrow(dat) == 0 
+     & (str_detect(query, "name = 'Select'") == FALSE) && str_detect(query, "name = ''") == FALSE) {
+    message(paste0("No rows were returned from db_fun query\n",query))
+  }
   dbDisconnect(con)
   return(dat)
 }
 
 # You need to use dbExecute() to perform delete, update or insert queries.
-db_ins <- function(query){
-  # con <- dbConnect(RSQLite::SQLite(), "./risk_assessment_app.db")
+db_ins <- function(command){
   con <- dbConnect(RSQLite::SQLite(), db_name)
-  dbExecute(con, query)
+  tryCatch({
+    rs <- dbSendStatement(con, command)
+  }, error = function(err) {
+    message <- paste0("db_ins command:\n",command,"\nresulted in\n",err)
+    message(message, .loggit = FALSE)
+    loggit("ERROR", message)
+    dbDisconnect(con)
+  })
+  nr <- dbGetRowsAffected(rs)
+  dbClearResult(rs)
+  if (nr == 0) {
+    message <- paste0("zero rows were affected by the db_ins command:\n",command)
+    message(message, .loggit = FALSE)
+  }
   dbDisconnect(con)
 }
+
 
 TimeStamp <- function(){
   Timestamp_intial<-str_replace(Sys.time()," ", "; ")
