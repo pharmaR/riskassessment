@@ -76,22 +76,23 @@ create_credendials_db <- function(){
     sqlite_path = file.path("credentials.sqlite"), 
     passphrase = key_get("R-shinymanager-key", "obiwankenobi")
   )
-
-# set pwd_mngt$must_change to TRUE
-con <- dbConnect(RSQLite::SQLite(), "credentials.sqlite")
-pwd <- read_db_decrypt(con, name = "pwd_mngt",
-                       passphrase = key_get("R-shinymanager-key", "obiwankenobi"))
-
-pwd <- pwd %>%
-  mutate(must_change = ifelse(have_changed == "TRUE", must_change, as.character(TRUE)))
-
-write_db_encrypt(
-  con,
-  value = pwd,
-  name = "pwd_mngt",
-  passphrase = key_get("R-shinymanager-key", "obiwankenobi")
-)
-dbDisconnect(con)
+  
+  # set pwd_mngt$must_change to TRUE
+  con <- dbConnect(RSQLite::SQLite(), "credentials.sqlite")
+  pwd <- read_db_decrypt(
+    con, name = "pwd_mngt",
+    passphrase = key_get("R-shinymanager-key", "obiwankenobi")) %>%
+    mutate(must_change = ifelse(
+      have_changed == "TRUE", must_change, as.character(TRUE)))
+  
+  write_db_encrypt(
+    con,
+    value = pwd,
+    name = "pwd_mngt",
+    passphrase = key_get("R-shinymanager-key", "obiwankenobi")
+  )
+  
+  dbDisconnect(con)
 }
 
 db_fun <- function(query, db_name = "database.sqlite"){
