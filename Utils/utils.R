@@ -28,10 +28,10 @@ key_set_with_value("R-shinymanager-key", "obiwankenobi", password = "secret")
 
 
 # Stores the database name.
-db_name <- "database.sqlite"
+database_name <- "database.sqlite"
 
 # Create a local database.
-create_db <- function(){
+create_db <- function(db_name = database_name){
   
   # Create an empty database.
   con <- dbConnect(RSQLite::SQLite(), db_name)
@@ -54,31 +54,39 @@ create_db <- function(){
   
   # Apply each query.
   sapply(queries, function(x){
-    res <- dbSendStatement(
-      con,
-      paste(scan(x, sep = "\n", what = "character"), collapse = ""))
     
-    dbClearResult(res)
+    tryCatch({
+      rs <- dbSendStatement(
+        con,
+        paste(scan(x, sep = "\n", what = "character"), collapse = ""))
+    }, error = function(err) {
+      message <- paste("dbSendStatement",err)
+      message(message, .loggit = FALSE)
+      loggit("ERROR", message)
+      dbDisconnect(con)
+    })
+    
+    dbClearResult(rs)
   })
   
   dbDisconnect(con)
 }
 
 # Stores the database name.
-credentials_db_name <- "credentials.sqlite"
+credentials_name <- "credentials.sqlite"
 
 # Create credentials database
-create_credendials_db <- function(){
+create_credendials_db <- function(db_name = credentials_name){
   
   # Init the credentials database
   shinymanager::create_db(
     credentials_data = credentials,
-    sqlite_path = file.path("credentials.sqlite"), 
+    sqlite_path = file.path(db_name), 
     passphrase = key_get("R-shinymanager-key", "obiwankenobi")
   )
   
   # set pwd_mngt$must_change to TRUE
-  con <- dbConnect(RSQLite::SQLite(), "credentials.sqlite")
+  con <- dbConnect(RSQLite::SQLite(), db_name)
   pwd <- read_db_decrypt(
     con, name = "pwd_mngt",
     passphrase = key_get("R-shinymanager-key", "obiwankenobi")) %>%
@@ -95,9 +103,36 @@ create_credendials_db <- function(){
   dbDisconnect(con)
 }
 
-db_fun <- function(query, db_name = "database.sqlite"){
+db_fun <- function(query, db_name = database_name){
+  errFlag <- FALSE
   con <- dbConnect(RSQLite::SQLite(), db_name)
-  dat <- dbGetQuery(con,query)  # this does SendQuery, Fetch and ClearResult all in one
+  tryCatch(
+    expr = {
+      rs <- dbSendQuery(con, query)
+    },
+    warning = function(warn) {
+      message <- paste0("db_fun warning:\n", query, "\nresulted in\n", warn)
+      message(message, .loggit = FALSE)
+      loggit("WARN", message)
+      errFlag <<- TRUE
+    },
+    error = function(err) {
+      message <- paste0("db_fun error:\n", query, "\nresulted in\n",err)
+      message(message, .loggit = FALSE)
+      loggit("ERROR", message)
+      dbDisconnect(con)
+      errFlag <<- TRUE
+    },
+    finally = {
+      if (errFlag) return(NULL) 
+    })
+  
+  dat <- dbFetch(rs)
+  dbClearResult(rs)
+  if (nrow(dat) == 0 
+     & (str_detect(query, "name = 'Select'") == FALSE) && str_detect(query, "name = ''") == FALSE) {
+    message(paste0("No rows were returned from db_fun query\n",query))
+  }
   dbDisconnect(con)
   return(dat)
 }
@@ -111,11 +146,25 @@ db_rde <- function(query, name = "credentials", db_name = "credentials.sqlite") 
 }
 
 # You need to use dbExecute() to perform delete, update or insert queries.
-db_ins <- function(query, db_name = "database.sqlite"){
+db_ins <- function(command, db_name = database_name){
   con <- dbConnect(RSQLite::SQLite(), db_name)
-  dbExecute(con, query)
+  tryCatch({
+    rs <- dbSendStatement(con, command)
+  }, error = function(err) {
+    message <- paste0("db_ins command:\n",command,"\nresulted in\n",err)
+    message(message, .loggit = FALSE)
+    loggit("ERROR", message)
+    dbDisconnect(con)
+  })
+  nr <- dbGetRowsAffected(rs)
+  dbClearResult(rs)
+  if (nr == 0) {
+    message <- paste0("zero rows were affected by the db_ins command:\n",command)
+    message(message, .loggit = FALSE)
+  }
   dbDisconnect(con)
 }
+
 
 TimeStamp <- function(){
   Timestamp_intial <- str_replace(Sys.time(), " ", "; ")
