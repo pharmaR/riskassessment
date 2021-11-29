@@ -118,7 +118,7 @@ db_ins <- function(query, db_name = "database.sqlite"){
 }
 
 TimeStamp <- function(){
-  Timestamp_intial<-str_replace(Sys.time()," ", "; ")
+  Timestamp_intial <- str_replace(Sys.time(), " ", "; ")
   Timestamp <- paste(Timestamp_intial, Sys.timezone())
   return(Timestamp)
 }
