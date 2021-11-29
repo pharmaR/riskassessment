@@ -111,42 +111,12 @@ server <- function(session, input, output) {
   values$upload_complete <- "upload_incomplete"
   values$select_pack <- "Select"
   
-  observe({
-    req(!is_empty(res_auth$user))
+  observeEvent(res_auth$user,{
+    print(res_auth$user)
     # log any admin sign-ons
-    # if (res_auth$admin == TRUE) {
-    #   loggit("INFO", paste("User", res_auth$user, "signed on as admin"))
-    #   
-    #   if (res_auth$user == "admin") {
-    #     
-    #     # update admin password on the first sign on
-    #     # if the expire date is today, see if pwd_mngt$have_changed has been set
-    #     if (res_auth$expire == as.character(Sys.Date())) {
-    #       con <- dbConnect(RSQLite::SQLite(), "credentials.sqlite")
-    #       pwd <- read_db_decrypt(con, name = "pwd_mngt",
-    #                              passphrase = key_get("R-shinymanager-key", "obiwankenobi"))
-    # 
-    #       dbDisconnect(con)
-    # 
-    #       # set credentials$expire to one year out if pwd_mngt$have_changed == "TRUE"
-    #       con <- dbConnect(RSQLite::SQLite(), "credentials.sqlite")
-    #       dat <- read_db_decrypt(con, name = "credentials",
-    #                             passphrase = key_get("R-shinymanager-key", "obiwankenobi"))
-    # 
-    #       dat <- dat %>%
-    #          mutate(expire = ifelse(pwd$have_changed == "TRUE", as.character(Sys.Date()+365), expire))
-    #       
-    #       write_db_encrypt(
-    #        con,
-    #        value = dat,
-    #        name = "credentials",
-    #        passphrase = key_get("R-shinymanager-key", "obiwankenobi")
-    #       )
-    #       dbDisconnect(con)
-    #       
-    #     }
-    #   }
-    # }
+    if (res_auth$admin == TRUE) {
+       loggit("INFO", paste("User", res_auth$user, "signed on as admin"))
+    }
     name <- res_auth$user
     values$name <- trimws(name)
     role <- ifelse(res_auth$admin == TRUE, "admin", "user")
