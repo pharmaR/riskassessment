@@ -75,7 +75,6 @@ create_credendials_db <- function(){
     credentials_data = credentials,
     sqlite_path = file.path("credentials.sqlite"), 
     passphrase = key_get("R-shinymanager-key", "obiwankenobi")
-    # passphrase = "passphrase_without_keyring"
   )
 
 # set pwd_mngt$must_change to TRUE
