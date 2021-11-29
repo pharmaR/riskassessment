@@ -117,10 +117,9 @@ server <- function(session, input, output) {
     if (res_auth$admin == TRUE) {
       loggit("INFO", paste("User", res_auth$user, "signed on as admin"))
       
-      # we may have to alert admins (a modal?) 
-      # that update these credentials the first time the app is loaded.
       if (res_auth$user == "admin") {
         
+        # update admin password on the first sign on
         # if the expire date is today, see if pwd_mngt$have_changed has been set
         if (res_auth$expire == as.character(Sys.Date())) {
           con <- dbConnect(RSQLite::SQLite(), "credentials.sqlite")
