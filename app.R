@@ -19,7 +19,7 @@ source(file.path("Utils", "cum_utils.R"))
 # Create db if it doesn't exist.
 if(!file.exists(db_name)) create_db()
 
-if(!file.exists(cr_name)) create_cred()
+if(!file.exists(credentials_db_name)) create_credendials_db()
 
 # Start logging info.
 set_logfile("loggit.json")

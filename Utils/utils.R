@@ -65,10 +65,10 @@ create_db <- function(){
 }
 
 # Stores the database name.
-cr_name <- "credentials.sqlite"
+credentials_db_name <- "credentials.sqlite"
 
 # Create credentials database
-create_cred <- function(){
+create_credendials_db <- function(){
   
   # Init the credentials database
   shinymanager::create_db(
