@@ -99,6 +99,22 @@ create_credendials_db <- function(db_name = credentials_name){
     name = "pwd_mngt",
     passphrase = key_get("R-shinymanager-key", "obiwankenobi")
   )
+  dbDisconnect(con)
+  
+  # update expire date here to current date + 365 days
+  con <- dbConnect(RSQLite::SQLite(), db_name)
+  dat <- read_db_decrypt(con, name = "credentials",
+                         passphrase = key_get("R-shinymanager-key", "obiwankenobi"))
+  
+  dat <- dat %>%
+    mutate(expire = as.character(Sys.Date()+365))
+  
+  write_db_encrypt(
+    con,
+    value = dat,
+    name = "credentials",
+    passphrase = key_get("R-shinymanager-key", "obiwankenobi")
+  )
   
   dbDisconnect(con)
 }
