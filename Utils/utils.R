@@ -147,7 +147,7 @@ db_fun <- function(query, db_name = database_name){
   dbClearResult(rs)
   if (nrow(dat) == 0 
      & (str_detect(query, "name = 'Select'") == FALSE) && str_detect(query, "name = ''") == FALSE) {
-    message(paste0("No rows were returned from db_fun query\n",query))
+    message(paste0("No rows were returned from query\n",query))
   }
   dbDisconnect(con)
   return(dat)
@@ -175,7 +175,7 @@ db_ins <- function(command, db_name = database_name){
   nr <- dbGetRowsAffected(rs)
   dbClearResult(rs)
   if (nr == 0) {
-    message <- paste0("zero rows were affected by the db_ins command:\n",command)
+    message <- paste0("zero rows were affected by the command:\n",command)
     message(message, .loggit = FALSE)
   }
   dbDisconnect(con)
