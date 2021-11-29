@@ -111,13 +111,13 @@ db_fun <- function(query, db_name = database_name){
       rs <- dbSendQuery(con, query)
     },
     warning = function(warn) {
-      message <- paste0("db_fun warning:\n", query, "\nresulted in\n", warn)
+      message <- paste0("warning:\n", query, "\nresulted in\n", warn)
       message(message, .loggit = FALSE)
       loggit("WARN", message)
       errFlag <<- TRUE
     },
     error = function(err) {
-      message <- paste0("db_fun error:\n", query, "\nresulted in\n",err)
+      message <- paste0("error:\n", query, "\nresulted in\n",err)
       message(message, .loggit = FALSE)
       loggit("ERROR", message)
       dbDisconnect(con)
@@ -151,7 +151,7 @@ db_ins <- function(command, db_name = database_name){
   tryCatch({
     rs <- dbSendStatement(con, command)
   }, error = function(err) {
-    message <- paste0("db_ins command:\n",command,"\nresulted in\n",err)
+    message <- paste0("command:\n",command,"\nresulted in\n",err)
     message(message, .loggit = FALSE)
     loggit("ERROR", message)
     dbDisconnect(con)
