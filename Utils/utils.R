@@ -66,19 +66,19 @@ db_fun <- function(query){
       rs <- dbSendQuery(con, query)
     },
     warning = function(warn) {
-      message <- paste0("db_fun warning:\n",query,"\nresulted in\n",warn)
+      message <- paste0("db_fun warning:\n", query, "\nresulted in\n", warn)
       message(message, .loggit = FALSE)
       loggit("WARN", message)
       errFlag <<- TRUE
     },
     error = function(err) {
-      message <- paste0("db_fun error:\n",query,"\nresulted in\n",err)
+      message <- paste0("db_fun error:\n", query, "\nresulted in\n",err)
       message(message, .loggit = FALSE)
       loggit("ERROR", message)
       dbDisconnect(con)
       errFlag <<- TRUE
     },
-    finally ={
+    finally = {
       if (errFlag) return(NULL) 
     })
   
