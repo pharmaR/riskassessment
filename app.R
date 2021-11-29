@@ -188,11 +188,11 @@ server <- function(session, input, output) {
   # 1. Observe to Load Source files of UI module of selected screen (Package
   # Dashboard, DB Dashboard, or Login Screen).
   observeEvent(input$db_dash_bttn,{
-    values$current_screen<-"db_dash_screen"
+    values$current_screen <- "db_dash_screen"
   })
-
+  
   observe({
-      if(values$current_screen == "db_dash_screen") {
+    if(values$current_screen == "db_dash_screen") {
       source(file.path("UI", "db_dash_screen.R"), local = TRUE)
       shinyjs::show("assessment_criteria_bttn")
     } else{
