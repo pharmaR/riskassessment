@@ -106,7 +106,7 @@ server <- function(session, input, output) {
   
   # Load reactive values into values.
   values <- reactiveValues()
-  values$current_screen <- "dashboard_screen" # "login_screen"
+  values$current_screen <- "dashboard_screen" 
   values$uploaded_file_status <- "no_status"
   values$upload_complete <- "upload_incomplete"
   values$select_pack <- "Select"
@@ -179,10 +179,7 @@ server <- function(session, input, output) {
   # Load Source files of UI and Server modules of Testing Metrics Tab.
   # source(file.path("UI", "testing_metrics.R"), local = TRUE)
   # source(file.path("Server", "testing_metrics.R"), local = TRUE)
-  
-  source(file.path("UI", "db_dash_screen.R"), local = TRUE)
-  source(file.path("UI", "dashboard_screen.R"), local = TRUE)
-  
+
   # Start of the observes
   # 1. Observe to Load Source files of UI module of selected screen (Package
   # Dashboard, DB Dashboard, or Login Screen).
@@ -190,10 +187,10 @@ server <- function(session, input, output) {
     values$current_screen <- "db_dash_screen"
   })
   
-  observe({
+  observeEvent(values$current_screen, {
     if(values$current_screen == "db_dash_screen") {
       source(file.path("UI", "db_dash_screen.R"), local = TRUE)
-      shinyjs::show("assessment_criteria_bttn")
+      shinyjs::hide("assessment_criteria_bttn")
     } else{
       source(file.path("UI", "dashboard_screen.R"), local = TRUE)
       shinyjs::show("assessment_criteria_bttn")
