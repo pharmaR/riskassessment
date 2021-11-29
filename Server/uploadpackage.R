@@ -44,8 +44,7 @@ observeEvent(input$help,
           union(upload_pkg_steps()) %>%
           union(sidebar_steps),
         "nextLabel" = "Next",
-        "prevLabel" = "Previous",
-        "skipLabel" = "Close"
+        "prevLabel" = "Previous"
      )
    )
 )
