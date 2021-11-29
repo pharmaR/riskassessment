@@ -85,7 +85,7 @@ ui <- shinymanager::secure_app(
     tags$div(
       tags$h2("R Package Risk Assessment App", style = "align:center"),
       tags$img(
-        src = "https://www.pharmar.org/img/pharmaRlogo_small.png", 
+        src = "logo_small.png", 
         width = 100, style = "align:center"
       )),
   enable_admin = TRUE)
