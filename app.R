@@ -156,9 +156,6 @@ server <- function(session, input, output) {
     values$role <- trimws(role)
   })
   
-  # Load Source files of UI and Server modules of Login Screen.
-  # source(file.path("Server", "login_screen.R"), local = TRUE)
-  
   # Load Server Source module file of Package Review History.
   source(file.path("Server", "db_dash_screen.R"), local = TRUE)
   source(file.path("Server", "assessment_criteria.R"), local = TRUE)
