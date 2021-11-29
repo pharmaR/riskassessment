@@ -16,7 +16,7 @@ source(file.path("Utils", "utils.R"))
 source(file.path("Utils", "cum_utils.R"))
 
 # Create db if it doesn't exist.
-if(!file.exists(db_name)) create_db()
+if(!file.exists(database_name)) create_db()
 
 if(!file.exists(credentials_db_name)) create_credendials_db()
 
