@@ -9,7 +9,6 @@
 # Load required packages.
 source("global.R")
 
-# db_fun("SELECT * FROM sqlite_master where type='table'")
 # Load source files.
 source(file.path("Modules", "dbupload.R"))
 source(file.path("Modules", "file_upload_error_handling.R"))
