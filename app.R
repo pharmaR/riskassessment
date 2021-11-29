@@ -112,7 +112,6 @@ server <- function(session, input, output) {
   values$select_pack <- "Select"
   
   observeEvent(res_auth$user,{
-    print(res_auth$user)
     # log any admin sign-ons
     if (res_auth$admin == TRUE) {
        loggit("INFO", paste("User", res_auth$user, "signed on as admin"))
