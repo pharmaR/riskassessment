@@ -98,7 +98,6 @@ server <- function(session, input, output) {
     check_credentials = check_credentials(
       file.path("credentials.sqlite"),
       passphrase = key_get("R-shinymanager-key", "obiwankenobi")
-      # passphrase = "passphrase_wihtout_keyring"
     )
   )
 
