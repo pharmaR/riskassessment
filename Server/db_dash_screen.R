@@ -139,12 +139,11 @@ observeEvent(input$back2dash, {
 # initialize temporary df that keeps track of the current and new weights exactly once
 values$curr_new_wts <- get_metric_weights()
 
-
 observeEvent(input$update_weight, {
-  # print(paste("nrow(metrics_weight):", nrow(values$curr_new_wts)))
   values$curr_new_wts <-
     values$curr_new_wts %>%
-    mutate(new_weight = ifelse(name == isolate(input$metric_name), isolate(input$metric_weight), new_weight))
+    mutate(new_weight = ifelse(name == isolate(input$metric_name),
+                               isolate(input$metric_weight), new_weight))
 })
 
 output$weights_table <- DT::renderDataTable({
@@ -202,7 +201,7 @@ output$admins_view <- renderUI({
                    br(), br(),
                    
                    h3("Re-calculate risk for each package"),
-                   actionButton("update_pkgwt", "Re-calculate", class = "btn-secondary")
+                   actionButton("update_pkg_risk", "Re-calculate", class = "btn-secondary")
                    
             ),
             column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
@@ -222,6 +221,22 @@ output$admins_view <- renderUI({
     )
   )
 })
+
+# make sure "Re-calculate" button is disbaled if no weights have changed. Need to make
+# sure renderUI exists, so we put a req() on metric_name input and also a 1 second delay
+# on the disable/ enable functions to give renderUI enough time to re-render
+observe({
+  req(input$metric_name)
+  n_wts_chngd <- values$curr_new_wts %>%
+    filter(weight != new_weight) %>%
+    nrow()
+  if(n_wts_chngd > 0){
+    shinyjs::delay(1000, shinyjs::enable("update_pkg_risk"))
+  } else {
+    shinyjs::delay(1000, shinyjs::disable("update_pkg_risk"))
+  }
+})
+
 
 # Update metric weight dropdown so that it matches the metric name.
 observeEvent(input$metric_name, {
@@ -253,7 +268,7 @@ observeEvent(input$weights_table_rows_selected, {
 # })
 
 # Save new weight into db.
-observeEvent(input$update_pkgwt, { 
+observeEvent(input$update_pkg_risk, { 
 
   showModal(tags$div(
     id = "confirmation_id",
@@ -270,7 +285,7 @@ observeEvent(input$update_pkgwt, {
       h3(strong("Note:"), "Updating the risk metrics cannot be reverted.", class = "mt-25 mb-0"),
       h3("Be sure you click on 'Download database' before continuing."),
       footer = tagList(
-        actionButton("confirm_update_weights", "Submit",
+        actionButton("confirm_update_risk", "Submit",
                      class = "submit_confirmed_decision_class btn-secondary"),
         actionButton("edit", "Cancel", class = "edit_class btn-unsuccess")
       )
@@ -280,7 +295,7 @@ observeEvent(input$update_pkgwt, {
 }, ignoreInit = TRUE)
 
 ########### need to update weights in table first since I deferred that above!
-observeEvent(input$confirm_update_weights, {
+observeEvent(input$confirm_update_risk, {
   removeModal()
 
   # Update the weights in the `metric` table to reflect recent changes
@@ -295,9 +310,7 @@ observeEvent(input$confirm_update_weights, {
   message(paste(wt_chgd_metric, ": ", wt_chgd_wt))
   purrr::walk2(wt_chgd_metric, wt_chgd_wt, update_metric_weight)
   values$curr_new_wts <- get_metric_weights() # reset the current and new wts from the database
-  # if that doesn't work, just use...
-  # values$curr_new_wts$weights <- values$curr_new_wts$new_weights
-  
+
   # Reset any decisions made prior to this.
   pkg <- db_fun("select distinct name as package_name from package where decision != ''")
   for (i in 1:nrow(pkg)) {
