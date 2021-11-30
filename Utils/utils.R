@@ -126,8 +126,26 @@ update_db_dash <- function(){
 get_metric_weights <- function(){
   db_fun(
     "SELECT name, weight, weight as new_weight
-    FROM metric"
+     FROM metric"
   )
+}
+
+# Get a package's current risk score
+get_pkg_score <- function(pkg_name){
+  db_fun(paste0(
+    "SELECT score
+     FROM package
+     WHERE name = '", pkg_name, "'"
+  ))
+}
+
+# Used to add a comment on every tab saying how the risk and weights changed, and that
+# the overall comment & final decision may no longer be applicable.
+weight_risk_comment <- function(pkg_name) {
+  paste(
+     "Due to a metric re-weighting, the previous risk score of", get_pkg_score(pkg_name),
+     "may no longer be applicable. The final decision & comment have been dropped",
+     "so that the package could be re-evaluated.")
 }
 
 # Update metric's weight.

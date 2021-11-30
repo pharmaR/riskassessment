@@ -70,10 +70,9 @@ observe({
   }
 })
 
-values$cwd <- getwd()
-
 
 # Download handler to create a report for each package selected.
+values$cwd <- getwd()
 output$dwnld_sel_db_pkgs_btn <- downloadHandler(
   filename = function() {
     paste(
@@ -213,8 +212,7 @@ output$admins_view <- renderUI({
           fluidRow(
             column(width = 12,
                    h5(em("Note: Changing the weights of the metrics will not update the
-               risk of the packages on the database. Assessments of 
-               future packages will use these new weights.
+               risk of the packages on the database until 'Re-calculate' button is selected.
                ")))
           )
       )
@@ -222,20 +220,26 @@ output$admins_view <- renderUI({
   )
 })
 
+
 # make sure "Re-calculate" button is disbaled if no weights have changed. Need to make
-# sure renderUI exists, so we put a req() on metric_name input and also a 1 second delay
+# sure renderUI exists, so we put a req() on metric_name input and also a .5 second delay
 # on the disable/ enable functions to give renderUI enough time to re-render
-observe({
-  req(input$metric_name)
-  n_wts_chngd <- values$curr_new_wts %>%
+n_wts_chngd <- reactive({
+  req(input$metric_weight)
+  
+  values$curr_new_wts %>%
     filter(weight != new_weight) %>%
     nrow()
-  if(n_wts_chngd > 0){
-    shinyjs::delay(1000, shinyjs::enable("update_pkg_risk"))
+})
+
+observe({
+  if(n_wts_chngd() > 0){
+    shinyjs::delay(500, shinyjs::enable("update_pkg_risk"))
   } else {
-    shinyjs::delay(1000, shinyjs::disable("update_pkg_risk"))
+    shinyjs::delay(500, shinyjs::disable("update_pkg_risk"))
   }
 })
+
 
 
 # Update metric weight dropdown so that it matches the metric name.
@@ -248,6 +252,7 @@ observeEvent(input$metric_name, {
                        pull())
 })
 
+
 # Update metric name dropdown based on the selected row on the table.
 # Note that another of the observeEvents will update the metric weight after
 # the selected metric name is updated.
@@ -258,43 +263,45 @@ observeEvent(input$weights_table_rows_selected, {
 
 
 
-# Save new weight into db.
-# observeEvent(input$update_weight, {
-  # validate(
-  #   need(is.numeric(input$metric_weight), "Please select a valid numeric weight.")
-  # )
-  # 
-  # update_metric_weight(input$metric_name, input$metric_weight)
-# })
+
 
 # Save new weight into db.
 observeEvent(input$update_pkg_risk, { 
-
-  showModal(tags$div(
-    id = "confirmation_id",
-    modalDialog(
+  
+  # if you the user goes input$back2dash, then when they return to the 
+  if(n_wts_chngd() == 0){
+    showModal(modalDialog(
       size = "l",
-      title = h2("Confirm Decision", class = "mb-0 mt-0 txt-color"),
-      h3("Once you push the submit button:",
-        tags$ul(
-          tags$li("The package weights will be applied and risk metric scores re-calculated."),
-          tags$li("Final decisions on packages will be dropped."),
-          tags$li("The risk re-calculation will be logged as a comment for each package that had a comment or final decision.")
+      title = h2("No Weights changed", class = "mb-0 mt-0 txt-color"),
+      h3("Risk scores already calculated with current weights. To change, please select & alter a weight for at least one metric on the right.")
+    ))
+  } else {
+    showModal(tags$div(
+      id = "confirmation_id",
+      modalDialog(
+        size = "l",
+        title = h2("Confirm Decision", class = "mb-0 mt-0 txt-color"),
+        h3("Once you push the submit button:",
+           tags$ul(
+             tags$li("The package weights will be applied and risk metric scores re-calculated."),
+             tags$li("Final decisions on packages will be dropped."),
+             tags$li("The risk re-calculation will be logged as a comment for each package that had a comment or final decision.")
+           )
+        ),
+        h3(strong("Note:"), "Updating the risk metrics cannot be reverted.", class = "mt-25 mb-0"),
+        h3("Be sure you click on 'Download database' before continuing."),
+        footer = tagList(
+          actionButton("confirm_update_risk", "Submit",
+                       class = "submit_confirmed_decision_class btn-secondary"),
+          actionButton("edit", "Cancel", class = "edit_class btn-unsuccess")
         )
-      ),
-      h3(strong("Note:"), "Updating the risk metrics cannot be reverted.", class = "mt-25 mb-0"),
-      h3("Be sure you click on 'Download database' before continuing."),
-      footer = tagList(
-        actionButton("confirm_update_risk", "Submit",
-                     class = "submit_confirmed_decision_class btn-secondary"),
-        actionButton("edit", "Cancel", class = "edit_class btn-unsuccess")
       )
-      )
-  ))
+    ))
+  }
   
 }, ignoreInit = TRUE)
 
-########### need to update weights in table first since I deferred that above!
+# Upon confirming the risk re-calculation
 observeEvent(input$confirm_update_risk, {
   removeModal()
 
@@ -311,37 +318,23 @@ observeEvent(input$confirm_update_risk, {
   purrr::walk2(wt_chgd_metric, wt_chgd_wt, update_metric_weight)
   values$curr_new_wts <- get_metric_weights() # reset the current and new wts from the database
 
-  # Reset any decisions made prior to this.
-  pkg <- db_fun("select distinct name as package_name from package where decision != ''")
-  for (i in 1:nrow(pkg)) {
-    db_ins(paste0("UPDATE package SET decision = '' where name = '",pkg$package_name[i],"'"))
-  }
-
-  values$db_pkg_overview <- update_db_dash()
-
-
-  # add a comment on every tab saying how the risk and weights
-  # changed, and that the comments, final decision may no longer be 
-  # applicable. 
-  weight_risk_comment <- paste(Sys.Date(), "Since the package weights and risk have changed",
-        "the comments and final decision may no longer be applicable")
   
   # update for each package
-  cmts_db <- unique(bind_rows(db_fun("select distinct comm_id as package_name from Comments"),
+  cmt_or_dec_pkgs <- unique(bind_rows(db_fun("select distinct comm_id as package_name from Comments"),
                              db_fun("select distinct name as package_name from package where decision != ''")))
   
   # clear out any prior overall comments
   db_ins("delete from Comments where comment_type = 'o'")
   
-  for (i in 1:nrow(cmts_db)) {
+  for (i in 1:nrow(cmt_or_dec_pkgs)) {
   # insert comment for both mm and cum tabs
     for (typ in c("mm","cum")) {
       db_ins(
         paste0(
-          "INSERT INTO Comments values('", cmts_db$package_name[i], "',",
+          "INSERT INTO Comments values('", cmt_or_dec_pkgs$package_name[i], "',",
           "'", values$name, "'," ,
           "'", values$role, "',",
-          "'", weight_risk_comment, "',",
+          "'", weight_risk_comment(cmt_or_dec_pkgs$package_name[i]), "',",
           "'", typ, "',",
           "'", TimeStamp(), "'" ,
           ")"
@@ -349,7 +342,18 @@ observeEvent(input$confirm_update_risk, {
        )
     }
   }
-
+  
+  # Reset any decisions made prior to this.
+  pkg <- db_fun("select distinct name as package_name from package where decision != ''")
+  for (i in 1:nrow(pkg)) {
+    db_ins(paste0("UPDATE package SET decision = '' where name = '",pkg$package_name[i],"'"))
+  }
+  
+  # want to update db_dash_screen after creating automated comments and
+  # resetting final decisions. This allows us to capture old risk score in
+  # database and the timestamp of the last automated comment that was just added
+  values$db_pkg_overview <- update_db_dash()
+  
   #	Write to the log file
   loggit("INFO", paste("package weights and risk metric scores will be updated for all packages"))
 
@@ -370,6 +374,9 @@ observeEvent(input$confirm_update_risk, {
   
 }, ignoreInit = TRUE)
 
+
+
+# Download the database
 output$download_database_btn <- downloadHandler(
   
   filename = function() {
