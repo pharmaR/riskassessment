@@ -134,17 +134,25 @@ observeEvent(input$back2dash, {
   updateSelectizeInput(session, "select_ver" , selected=input$select_ver)
 })
 
-metrics_weight <- reactive({
-  input$update_weight
-  get_metric_weights()
+
+# Manage admin adjusting weights and recaluclating risk scores
+# initialize temporary df that keeps track of the current and new weights exactly once
+values$curr_new_wts <- get_metric_weights()
+
+
+observeEvent(input$update_weight, {
+  # print(paste("nrow(metrics_weight):", nrow(values$curr_new_wts)))
+  values$curr_new_wts <-
+    values$curr_new_wts %>%
+    mutate(new_weight = ifelse(name == isolate(input$metric_name), isolate(input$metric_weight), new_weight))
 })
 
 output$weights_table <- DT::renderDataTable({
   
   as.datatable(
-    formattable(metrics_weight()),
+    formattable(values$curr_new_wts),
     selection = list(mode = 'single'),
-    colnames = c("Name", "Weight"),
+    colnames = c("Name", "Current Weight", "New Weight"),
     rownames = FALSE,
     options = list(
       searching = FALSE,
@@ -170,9 +178,9 @@ output$admins_view <- renderUI({
             )),
           fluidRow(
             column(width = 2, offset = 5, align = "left",
-                   selectInput("metric_name", "Select metric", metrics_weight()$name, selected = metrics_weight()$name[1]) ),
+                   selectInput("metric_name", "Select metric", values$curr_new_wts$name, selected = values$curr_new_wts$name[1]) ),
             column(width = 2, align = "left",
-                   numericInput("metric_weight", "Choose new weight", min = 0, value = metrics_weight()$weight[1]) ),
+                   numericInput("metric_weight", "Choose new weight", min = 0, value = values$curr_new_wts$weight[1]) ),
             column(width = 1,
                    br(),
                    actionButton("update_weight", "Update weight", class = "btn-secondary") ) ),
@@ -219,9 +227,9 @@ output$admins_view <- renderUI({
 observeEvent(input$metric_name, {
   # Display the weight of the selected metric.
   updateNumericInput(session, "metric_weight",
-                     value = metrics_weight() %>%
+                     value = values$curr_new_wts %>%
                        filter(name == input$metric_name) %>%
-                       select(weight) %>%
+                       select(weight) %>% # current weight
                        pull())
 })
 
@@ -230,22 +238,22 @@ observeEvent(input$metric_name, {
 # the selected metric name is updated.
 observeEvent(input$weights_table_rows_selected, {
   updateSelectInput(session, "metric_name",
-                     selected = metrics_weight()$name[input$weights_table_rows_selected])
+                     selected = values$curr_new_wts$name[input$weights_table_rows_selected])
 })
 
 
 
 # Save new weight into db.
-observeEvent(input$update_weight, {
-  validate(
-    need(is.numeric(input$metric_weight), "Please select a valid numeric weight.")
-  )
-  
-  update_metric_weight(input$metric_name, input$metric_weight)
-})
+# observeEvent(input$update_weight, {
+  # validate(
+  #   need(is.numeric(input$metric_weight), "Please select a valid numeric weight.")
+  # )
+  # 
+  # update_metric_weight(input$metric_name, input$metric_weight)
+# })
 
 # Save new weight into db.
-observeEvent(input$update_pkgwt, {
+observeEvent(input$update_pkgwt, { 
 
   showModal(tags$div(
     id = "confirmation_id",
@@ -271,17 +279,33 @@ observeEvent(input$update_pkgwt, {
   
 }, ignoreInit = TRUE)
 
+########### need to update weights in table first since I deferred that above!
 observeEvent(input$confirm_update_weights, {
   removeModal()
 
-  pkg <- db_fun("select distinct name as package_name from package where decision != ''")
+  # Update the weights in the `metric` table to reflect recent changes
+  # First, which weights are different than the originals?
+  wt_chgd_df <- 
+    values$curr_new_wts %>%
+    filter(weight != new_weight)
   
+  wt_chgd_metric <- wt_chgd_df %>% select(name) %>% pull()
+  wt_chgd_wt <- wt_chgd_df %>% select(new_weight) %>% pull()
+  message("Metrics & Weights changed...")
+  message(paste(wt_chgd_metric, ": ", wt_chgd_wt))
+  purrr::walk2(wt_chgd_metric, wt_chgd_wt, update_metric_weight)
+  values$curr_new_wts <- get_metric_weights() # reset the current and new wts from the database
+  # if that doesn't work, just use...
+  # values$curr_new_wts$weights <- values$curr_new_wts$new_weights
+  
+  # Reset any decisions made prior to this.
+  pkg <- db_fun("select distinct name as package_name from package where decision != ''")
   for (i in 1:nrow(pkg)) {
-    # Reset any decisions made prior to this.
     db_ins(paste0("UPDATE package SET decision = '' where name = '",pkg$package_name[i],"'"))
   }
 
   values$db_pkg_overview <- update_db_dash()
+
 
   # add a comment on every tab saying how the risk and weights
   # changed, and that the comments, final decision may no longer be 

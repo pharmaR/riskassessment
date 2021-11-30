@@ -100,7 +100,7 @@ GetUserName <- function() {
 }
 
 # function to re-run everytime a package is uploaded to db, or
-# when a comment is submitted
+# when a comment is submitted, or when risk scores re-calculated
 update_db_dash <- function(){
   db_fun(
     "SELECT 
@@ -125,7 +125,7 @@ update_db_dash <- function(){
 # Get each metric's weight.
 get_metric_weights <- function(){
   db_fun(
-    "SELECT name, weight
+    "SELECT name, weight, weight as new_weight
     FROM metric"
   )
 }
