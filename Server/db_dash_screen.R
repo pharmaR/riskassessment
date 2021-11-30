@@ -64,8 +64,7 @@ output$db_pkgs <- DT::renderDataTable({
 observe({
   if(!is.null(input$db_pkgs_rows_selected)) {
     shinyjs::enable("dwnld_sel_db_pkgs_btn")
-  }
-  else {
+  } else {
     shinyjs::disable("dwnld_sel_db_pkgs_btn")
   }
 })
