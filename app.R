@@ -145,10 +145,6 @@ server <- function(session, input, output) {
   source(file.path("UI", "communityusage_metrics.R"), local = TRUE)
   source(file.path("Server", "communityusage_metrics.R"), local = TRUE)
   
-  # Load Source files of UI and Server modules of Testing Metrics Tab.
-  # source(file.path("UI", "testing_metrics.R"), local = TRUE)
-  # source(file.path("Server", "testing_metrics.R"), local = TRUE)
-
   # Start of the observes
   # 1. Observe to Load Source files of UI module of selected screen (Package
   # Dashboard, DB Dashboard, or Login Screen).
