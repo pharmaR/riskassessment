@@ -44,8 +44,7 @@ observeEvent(input$help,
           union(upload_pkg_steps()) %>%
           union(sidebar_steps),
         "nextLabel" = "Next",
-        "prevLabel" = "Previous",
-        "skipLabel" = "Close"
+        "prevLabel" = "Previous"
      )
    )
 )
@@ -114,9 +113,11 @@ observeEvent(input$uploaded_file, {
   })
   
   pkgs_db2 <- db_fun("SELECT name FROM package")
+  
   values$Undis <-
-    filter(values$New,!(values$New$package %in% pkgs_db2$name))
-  values$packsDB <- db_fun("SELECT name FROM package")
+    filter(values$New, !(values$New$package %in% pkgs_db2$name))
+  values$packsDB <- pkgs_db2
+  
   updateSelectizeInput(
     session,
     "select_pack",
