@@ -24,8 +24,8 @@ credentials <- data.frame(
 )
 
 # Use keyring package to set database key.
-key_set_with_value("R-shinymanager-key", "obiwankenobi", password = "secret")
-
+keyset_username <- "LukeSkywalker"
+key_set_with_value("R-shinymanager-key", keyset_username, password = "secret")
 
 # Stores the database name.
 database_name <- "database.sqlite"
@@ -76,20 +76,20 @@ create_db <- function(db_name = database_name){
 credentials_name <- "credentials.sqlite"
 
 # Create credentials database
-create_credentials_db <- function(db_name = credentials_name){
+create_credentials_db <- function(db_name = credentials_name, username = keyset_username){
   
   # Init the credentials database
   shinymanager::create_db(
     credentials_data = credentials,
     sqlite_path = file.path(db_name), 
-    passphrase = key_get("R-shinymanager-key", "obiwankenobi")
+    passphrase = key_get("R-shinymanager-key", username)
   )
   
   # set pwd_mngt$must_change to TRUE
   con <- dbConnect(RSQLite::SQLite(), db_name)
   pwd <- read_db_decrypt(
     con, name = "pwd_mngt",
-    passphrase = key_get("R-shinymanager-key", "obiwankenobi")) %>%
+    passphrase = key_get("R-shinymanager-key", username)) %>%
     mutate(must_change = ifelse(
       have_changed == "TRUE", must_change, as.character(TRUE)))
   
@@ -97,14 +97,14 @@ create_credentials_db <- function(db_name = credentials_name){
     con,
     value = pwd,
     name = "pwd_mngt",
-    passphrase = key_get("R-shinymanager-key", "obiwankenobi")
+    passphrase = key_get("R-shinymanager-key", username)
   )
   dbDisconnect(con)
   
   # update expire date here to current date + 365 days
   con <- dbConnect(RSQLite::SQLite(), db_name)
   dat <- read_db_decrypt(con, name = "credentials",
-                         passphrase = key_get("R-shinymanager-key", "obiwankenobi"))
+                         passphrase = key_get("R-shinymanager-key", username))
   
   dat <- dat %>%
     mutate(expire = as.character(Sys.Date()+365))
@@ -113,7 +113,7 @@ create_credentials_db <- function(db_name = credentials_name){
     con,
     value = dat,
     name = "credentials",
-    passphrase = key_get("R-shinymanager-key", "obiwankenobi")
+    passphrase = key_get("R-shinymanager-key", username)
   )
   
   dbDisconnect(con)
