@@ -283,12 +283,12 @@ observeEvent(input$update_pkg_risk, {
         h3("Once you push the submit button:",
            tags$ul(
              tags$li("The package weights will be applied and risk metric scores re-calculated."),
-             tags$li("Final decisions on packages will be dropped."),
-             tags$li("The risk re-calculation will be logged as a comment for each package that had a comment or final decision.")
+             tags$li("The risk re-calculation will be logged as a comment for each package."),
+             tags$li("Previous final decisions & overall comments will be dropped for re-evaluation.")
            )
         ),
         h3(strong("Note:"), "Updating the risk metrics cannot be reverted.", class = "mt-25 mb-0"),
-        h3("Be sure you click on 'Download database' before continuing."),
+        h3("Its strongly recommended to 'Download database' before re-calculating risk for backup purposes"),
         footer = tagList(
           actionButton("confirm_update_risk", "Submit",
                        class = "submit_confirmed_decision_class btn-secondary"),
@@ -319,21 +319,27 @@ observeEvent(input$confirm_update_risk, {
 
   
   # update for each package
-  cmt_or_dec_pkgs <- unique(bind_rows(db_fun("select distinct comm_id as package_name from Comments"),
-                             db_fun("select distinct name as package_name from package where decision != ''")))
+  all_pkgs <- db_fun("select distinct name as pkg_name from package")
+  cmt_or_dec_pkgs <- unique(bind_rows(
+    db_fun("select distinct comm_id as pkg_name from Comments where comment_type = 'o'"),
+    db_fun("select distinct name as pkg_name from package where decision != ''")
+    ))
+  
+  cmt_or_dec_dropped_cmt <- " Since they may no longer be applicable, the final decision & comment have been dropped to allow for re-evaluation."
   
   # clear out any prior overall comments
   db_ins("delete from Comments where comment_type = 'o'")
   
-  for (i in 1:nrow(cmt_or_dec_pkgs)) {
+  for (i in 1:nrow(all_pkgs)) {
   # insert comment for both mm and cum tabs
     for (typ in c("mm","cum")) {
       db_ins(
         paste0(
-          "INSERT INTO Comments values('", cmt_or_dec_pkgs$package_name[i], "',",
+          "INSERT INTO Comments values('", all_pkgs$pkg_name[i], "',",
           "'", values$name, "'," ,
           "'", values$role, "',",
-          "'", weight_risk_comment(cmt_or_dec_pkgs$package_name[i]), "',",
+          "'", paste0(weight_risk_comment(all_pkgs$pkg_name[i]), 
+                 ifelse(all_pkgs$pkg_name[i] %in% cmt_or_dec_pkgs$pkg_name, cmt_or_dec_dropped_cmt, "")), "',",
           "'", typ, "',",
           "'", TimeStamp(), "'" ,
           ")"
@@ -343,9 +349,9 @@ observeEvent(input$confirm_update_risk, {
   }
   
   # Reset any decisions made prior to this.
-  pkg <- db_fun("select distinct name as package_name from package where decision != ''")
+  pkg <- db_fun("select distinct name as pkg_name from package where decision != ''")
   for (i in 1:nrow(pkg)) {
-    db_ins(paste0("UPDATE package SET decision = '' where name = '",pkg$package_name[i],"'"))
+    db_ins(paste0("UPDATE package SET decision = '' where name = '",pkg$pkg_name[i],"'"))
   }
   
   # want to update db_dash_screen after creating automated comments and
@@ -357,14 +363,14 @@ observeEvent(input$confirm_update_risk, {
   loggit("INFO", paste("package weights and risk metric scores will be updated for all packages"))
 
   # update for each package
-  pkg <- db_fun("select distinct name as package_name from package")
+  pkg <- db_fun("select distinct name as pkg_name from package")
   
   withProgress(message = "Applying weights and updating risk scores \n", value = 0, {
   for (i in 1:nrow(pkg)) {
-    incProgress(1 / (nrow(pkg) + 1), detail = pkg$package_name[i])
+    incProgress(1 / (nrow(pkg) + 1), detail = pkg$pkg_name[i])
     db_ins(paste0("delete from package_metrics where package_id = ", 
-                  "(select id from package where name = ","'", pkg$package_name[i], "')") )
-    metric_mm_tm_Info_upload_to_DB(pkg$package_name[i])
+                  "(select id from package where name = ","'", pkg$pkg_name[i], "')") )
+    metric_mm_tm_Info_upload_to_DB(pkg$pkg_name[i])
   }
   })
 

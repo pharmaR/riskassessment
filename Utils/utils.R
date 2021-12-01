@@ -190,10 +190,7 @@ get_pkg_score <- function(pkg_name){
 # Used to add a comment on every tab saying how the risk and weights changed, and that
 # the overall comment & final decision may no longer be applicable.
 weight_risk_comment <- function(pkg_name) {
-  paste(
-     "Due to a metric re-weighting, the previous risk score of", get_pkg_score(pkg_name),
-     "may no longer be applicable. The final decision & comment have been dropped",
-     "so that the package could be re-evaluated.")
+  paste0("Metric re-weighting has occurred. The previous risk score was ", get_pkg_score(pkg_name), ".")
 }
 
 # Update metric's weight.
