@@ -100,3 +100,5 @@ sidebar_steps <-
 # library(riskmetric) # devtools::install_github("pharmaR/riskmetric")
 # library(formattable)
 # library(rintrojs)
+
+options(keyring_user = "NeildeGrasseTyson")
