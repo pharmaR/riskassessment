@@ -28,6 +28,7 @@ packages = c("shiny"
              ,"rintrojs"
              ,"shinymanager"
              ,"keyring"
+             ,"rstudioapi"
 )
 
 # Install and load required packages.
