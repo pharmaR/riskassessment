@@ -1,4 +1,2 @@
 Metric,Measure,Reason for Inclusion
-Time since first release,Count (months),"The longer a package has been in existence, the more exposure it has had to community testing"
-Time since version release,Count (months),"When measuring package maturity, it is also important to consider the version maturity.  The more recent a version, the less exposure it has had to community testing"
 Number of downloads in past 12 months (all versions),Count,The more times a package has been downloaded the more extensive the user testing and the greater chance there is of someone finding a bug and logging it. 
