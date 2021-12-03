@@ -154,7 +154,7 @@ output$weights_table <- DT::renderDataTable({
     options = list(
       searching = FALSE,
       lengthChange = FALSE,
-      pageLength = 10,
+      pageLength = -1,
       columnDefs = list(list(className = 'dt-center', targets = 1:2))
     )
   )
