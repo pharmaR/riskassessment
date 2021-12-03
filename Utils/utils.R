@@ -13,13 +13,24 @@ high_risk_color <- "#B22222"  # firebrick
 colfunc <- colorRampPalette(c(low_risk_color, med_risk_color, high_risk_color))
 
 
+# Init DB using credentials data.
+credentials <- data.frame(
+  user = "admin",
+  password = "qwerty",
+  # password will automatically be hashed
+  admin = TRUE,
+  expire = as.character(Sys.Date()),
+  stringsAsFactors = FALSE
+)
+
 # Stores the database name.
-db_name <- "database.sqlite"
+database_name <- "database.sqlite"
 # Store default backup name.
 bk_name <- "dbbackup.sqlite"
 
+
 # Create a local database.
-create_db <- function(){
+create_db <- function(db_name = database_name){
   
   # Create an empty database.
   con <- dbConnect(RSQLite::SQLite(), db_name)
@@ -60,7 +71,57 @@ create_db <- function(){
   dbDisconnect(con)
 }
 
-db_fun <- function(query){
+# Stores the database name.
+credentials_name <- "credentials.sqlite"
+
+# Create credentials database
+create_credentials_db <- function(db_name = credentials_name, username = getOption("keyring_user")){
+  
+  key_set_with_value("R-shinymanager-key", username, 
+                     password = rstudioapi::askForPassword("Enter keyring password"))
+  
+  # Init the credentials database
+  shinymanager::create_db(
+    credentials_data = credentials,
+    sqlite_path = file.path(db_name), 
+    passphrase = key_get("R-shinymanager-key", username)
+  )
+  
+  # set pwd_mngt$must_change to TRUE
+  con <- dbConnect(RSQLite::SQLite(), db_name)
+  pwd <- read_db_decrypt(
+    con, name = "pwd_mngt",
+    passphrase = key_get("R-shinymanager-key", username)) %>%
+    mutate(must_change = ifelse(
+      have_changed == "TRUE", must_change, as.character(TRUE)))
+  
+  write_db_encrypt(
+    con,
+    value = pwd,
+    name = "pwd_mngt",
+    passphrase = key_get("R-shinymanager-key", username)
+  )
+  dbDisconnect(con)
+  
+  # update expire date here to current date + 365 days
+  con <- dbConnect(RSQLite::SQLite(), db_name)
+  dat <- read_db_decrypt(con, name = "credentials",
+                         passphrase = key_get("R-shinymanager-key", username))
+  
+  dat <- dat %>%
+    mutate(expire = as.character(Sys.Date()+365))
+  
+  write_db_encrypt(
+    con,
+    value = dat,
+    name = "credentials",
+    passphrase = key_get("R-shinymanager-key", username)
+  )
+  
+  dbDisconnect(con)
+}
+
+db_fun <- function(query, db_name = database_name){
   errFlag <- FALSE
   con <- dbConnect(RSQLite::SQLite(), db_name)
   tryCatch(
@@ -68,13 +129,13 @@ db_fun <- function(query){
       rs <- dbSendQuery(con, query)
     },
     warning = function(warn) {
-      message <- paste0("db_fun warning:\n", query, "\nresulted in\n", warn)
+      message <- paste0("warning:\n", query, "\nresulted in\n", warn)
       message(message, .loggit = FALSE)
       loggit("WARN", message)
       errFlag <<- TRUE
     },
     error = function(err) {
-      message <- paste0("db_fun error:\n", query, "\nresulted in\n",err)
+      message <- paste0("error:\n", query, "\nresulted in\n",err)
       message(message, .loggit = FALSE)
       loggit("ERROR", message)
       dbDisconnect(con)
@@ -88,19 +149,20 @@ db_fun <- function(query){
   dbClearResult(rs)
   if (nrow(dat) == 0 
      & (str_detect(query, "name = 'Select'") == FALSE) && str_detect(query, "name = ''") == FALSE) {
-    message(paste0("No rows were returned from db_fun query\n",query))
+    message(paste0("No rows were returned from query\n",query))
   }
   dbDisconnect(con)
   return(dat)
 }
 
+
 # You need to use dbExecute() to perform delete, update or insert queries.
-db_ins <- function(command){
+db_ins <- function(command, db_name = database_name){
   con <- dbConnect(RSQLite::SQLite(), db_name)
   tryCatch({
     rs <- dbSendStatement(con, command)
   }, error = function(err) {
-    message <- paste0("db_ins command:\n",command,"\nresulted in\n",err)
+    message <- paste0("command:\n",command,"\nresulted in\n",err)
     message(message, .loggit = FALSE)
     loggit("ERROR", message)
     dbDisconnect(con)
@@ -108,7 +170,7 @@ db_ins <- function(command){
   nr <- dbGetRowsAffected(rs)
   dbClearResult(rs)
   if (nr == 0) {
-    message <- paste0("zero rows were affected by the db_ins command:\n",command)
+    message <- paste0("zero rows were affected by the command:\n",command)
     message(message, .loggit = FALSE)
   }
   dbDisconnect(con)
@@ -116,7 +178,7 @@ db_ins <- function(command){
 
 
 TimeStamp <- function(){
-  Timestamp_intial<-str_replace(Sys.time()," ", "; ")
+  Timestamp_intial <- str_replace(Sys.time(), " ", "; ")
   Timestamp <- paste(Timestamp_intial, Sys.timezone())
   return(Timestamp)
 }

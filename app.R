@@ -16,7 +16,9 @@ source(file.path("Utils", "utils.R"))
 source(file.path("Utils", "cum_utils.R"))
 
 # Create db if it doesn't exist.
-if(!file.exists(db_name)) create_db()
+if(!file.exists(database_name)) create_db()
+
+if(!file.exists(credentials_name)) create_credentials_db()
 
 # Start logging info.
 set_logfile("loggit.json")
@@ -75,18 +77,50 @@ ui <- dashboardPage(
   )
 )
 
+ui <- shinymanager::secure_app(
+  ui, 
+  # customize top and bottom of login screen
+  tags_top = 
+    tags$div(
+      tags$h2("R Package Risk Assessment App", style = "align:center"),
+      tags$img(
+        src = "logo_no_text.png",
+        width = 100, style = "align:center"
+      )),
+  enable_admin = TRUE)
+
 # Create Server Code.
 server <- function(session, input, output) {
   
+  # check_credentials directly on sqlite db
+  res_auth <- secure_server(
+    check_credentials = check_credentials(
+      file.path("credentials.sqlite"),
+      passphrase = key_get("R-shinymanager-key", getOption("keyring_user"))
+    )
+  )
+
+  output$auth_output <- renderPrint({
+    reactiveValuesToList(res_auth)
+  })
+  
   # Load reactive values into values.
   values <- reactiveValues()
-  values$current_screen <- "login_screen"
+  values$current_screen <- "dashboard_screen" 
   values$uploaded_file_status <- "no_status"
   values$upload_complete <- "upload_incomplete"
   values$select_pack <- "Select"
   
-  # Load Source files of UI and Server modules of Login Screen.
-  source(file.path("Server", "login_screen.R"), local = TRUE)
+  observeEvent(res_auth$user,{
+    # log any admin sign-ons
+    if (res_auth$admin == TRUE) {
+       loggit("INFO", paste("User", res_auth$user, "signed on as admin"))
+    }
+    name <- res_auth$user
+    values$name <- trimws(name)
+    role <- ifelse(res_auth$admin == TRUE, "admin", "user")
+    values$role <- trimws(role)
+  })
   
   # Load Server Source module file of Package Review History.
   source(file.path("Server", "db_dash_screen.R"), local = TRUE)
@@ -111,24 +145,17 @@ server <- function(session, input, output) {
   source(file.path("UI", "communityusage_metrics.R"), local = TRUE)
   source(file.path("Server", "communityusage_metrics.R"), local = TRUE)
   
-  # Load Source files of UI and Server modules of Testing Metrics Tab.
-  # source(file.path("UI", "testing_metrics.R"), local = TRUE)
-  # source(file.path("Server", "testing_metrics.R"), local = TRUE)
-  
   # Start of the observes
   # 1. Observe to Load Source files of UI module of selected screen (Package
   # Dashboard, DB Dashboard, or Login Screen).
   observeEvent(input$db_dash_bttn,{
-    values$current_screen<-"db_dash_screen"
+    values$current_screen <- "db_dash_screen"
   })
-
-  observe({
-    if (values$current_screen == "login_screen") {
-      source(file.path("UI", "login_screen.R"), local = TRUE)
-      shinyjs::hide("assessment_criteria_bttn")
-    } else if(values$current_screen == "db_dash_screen") {
+  
+  observeEvent(values$current_screen, {
+    if(values$current_screen == "db_dash_screen") {
       source(file.path("UI", "db_dash_screen.R"), local = TRUE)
-      shinyjs::show("assessment_criteria_bttn")
+      shinyjs::hide("assessment_criteria_bttn")
     } else{
       source(file.path("UI", "dashboard_screen.R"), local = TRUE)
       shinyjs::show("assessment_criteria_bttn")
@@ -138,6 +165,8 @@ server <- function(session, input, output) {
   # 2. Observe to select the package, score, decision and load the data into
   # a reactive variable.
   observe({
+    values$mm_tab_redirect <- "redirect"
+    
     values$selected_pkg <-
       db_fun(
         paste0(
