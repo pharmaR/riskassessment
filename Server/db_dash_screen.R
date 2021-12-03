@@ -157,8 +157,37 @@ output$weights_table <- DT::renderDataTable({
       pageLength = -1,
       columnDefs = list(list(className = 'dt-center', targets = 1:2))
     )
-  )
+  ) 
 })
+
+# mycolors <- c('green','pink','red','yellow','orange')
+# output$foo1 = DT::renderDataTable({
+#   c1 = "This is comment 1"
+#   c2 = "This is comment 2"
+#   c3 = "This is comment 3"
+#   c4 = "This is comment 4"
+#   c5 = "This is comment 5"
+#   comments1 = list(c1,c2,c3,c4,c5)
+#   m1 = matrix(
+#     as.character(1:5), nrow = 5, ncol = 1, byrow = FALSE,
+#     dimnames = list(comments1, LETTERS[1])
+#   )
+#   m2 <- as.data.frame(m1) %>% dplyr::mutate(row_num = 1:n())
+#   
+#   datatable( m2, escape = FALSE, 
+#              selection = 'none', 
+#              extensions = c("Select", "Buttons"), 
+#              # callback = JS(callback1),  ###   needs double-click to select the radiobutton
+#              options = list(dom = 't', paging = FALSE, ordering = FALSE,
+#                             columnDefs = list(list(visible=FALSE, targets=2))
+#              )
+#   )   %>% formatStyle(2, 
+#                       target='row',
+#                       backgroundColor = styleEqual(c(1:5),mycolors))
+  
+# }, server = FALSE,
+#callback = JS(callback1)  ###  does not recognize input[["AValue"]]
+# )
 
 # Section displayed only for authorized users.
 output$admins_view <- renderUI({
@@ -172,7 +201,7 @@ output$admins_view <- renderUI({
           br(),
           fluidRow(
             column(width = 5, offset = 5, align = "left",
-                   h3("Change weights:"),
+                   h3("Set new weights:"),
             )),
           fluidRow(
             column(width = 2, offset = 5, align = "left",
@@ -199,7 +228,7 @@ output$admins_view <- renderUI({
                    tags$hr(class = "hr_sep"),
                    br(), br(),
                    
-                   h3("Re-calculate risk for each package"),
+                   h3("Apply new weights and re-calculate risk for each package"),
                    actionButton("update_pkg_risk", "Re-calculate", class = "btn-secondary")
                    
             ),
@@ -283,13 +312,13 @@ observeEvent(input$update_pkg_risk, {
         title = h2("Confirm Decision", class = "mb-0 mt-0 txt-color"),
         h3("Once you push the submit button:",
            tags$ul(
-             tags$li("The package weights will be applied and risk metric scores re-calculated."),
+             tags$li("The new package weights will be applied and risk metric scores re-calculated."),
              tags$li("The risk re-calculation will be logged as a comment for each package."),
-             tags$li("Previous final decisions & overall comments will be dropped for re-evaluation.")
+             tags$li("Previously finalized decisions & overall comments will be dropped for re-evaluation.")
            )
         ),
         h3(strong("Note:"), "Updating the risk metrics cannot be reverted.", class = "mt-25 mb-0"),
-        h3("Its strongly recommended to 'Download database' before re-calculating risk for backup purposes"),
+        h3("Its strongly recommended to 'Download database' for backup purposes before re-calculating risk."),
         footer = tagList(
           actionButton("confirm_update_risk", "Submit",
                        class = "submit_confirmed_decision_class btn-secondary"),
