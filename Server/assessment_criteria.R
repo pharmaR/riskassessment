@@ -31,7 +31,8 @@ output$riskcalc_desc <- renderUI({
 output$riskcalc_weights_table <- DT::renderDataTable({
   d <- get_metric_weights() %>%
     formattable() %>%
-    mutate(standardized_weight = weight / sum(weight, na.rm = TRUE))
+    mutate(standardized_weight = weight / sum(weight, na.rm = TRUE)) %>%
+    select(-new_weight)
 
   as.datatable(d,
     selection = list(mode = 'single'),
