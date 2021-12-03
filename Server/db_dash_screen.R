@@ -160,34 +160,6 @@ output$weights_table <- DT::renderDataTable({
   ) 
 })
 
-# mycolors <- c('green','pink','red','yellow','orange')
-# output$foo1 = DT::renderDataTable({
-#   c1 = "This is comment 1"
-#   c2 = "This is comment 2"
-#   c3 = "This is comment 3"
-#   c4 = "This is comment 4"
-#   c5 = "This is comment 5"
-#   comments1 = list(c1,c2,c3,c4,c5)
-#   m1 = matrix(
-#     as.character(1:5), nrow = 5, ncol = 1, byrow = FALSE,
-#     dimnames = list(comments1, LETTERS[1])
-#   )
-#   m2 <- as.data.frame(m1) %>% dplyr::mutate(row_num = 1:n())
-#   
-#   datatable( m2, escape = FALSE, 
-#              selection = 'none', 
-#              extensions = c("Select", "Buttons"), 
-#              # callback = JS(callback1),  ###   needs double-click to select the radiobutton
-#              options = list(dom = 't', paging = FALSE, ordering = FALSE,
-#                             columnDefs = list(list(visible=FALSE, targets=2))
-#              )
-#   )   %>% formatStyle(2, 
-#                       target='row',
-#                       backgroundColor = styleEqual(c(1:5),mycolors))
-  
-# }, server = FALSE,
-#callback = JS(callback1)  ###  does not recognize input[["AValue"]]
-# )
 
 # Section displayed only for authorized users.
 output$admins_view <- renderUI({
