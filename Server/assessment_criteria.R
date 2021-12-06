@@ -31,7 +31,7 @@ output$riskcalc_desc <- renderUI({
 output$riskcalc_weights_table <- DT::renderDataTable({
   d <- get_metric_weights() %>%
     formattable() %>%
-    mutate(standardized_weight = weight / sum(weight, na.rm = TRUE)) %>%
+    mutate(standardized_weight = round(weight / sum(weight, na.rm = TRUE), 4)) %>%
     select(-new_weight)
 
   as.datatable(d,
@@ -44,7 +44,8 @@ output$riskcalc_weights_table <- DT::renderDataTable({
       pageLength = 15,
       columnDefs = list(list(className = 'dt-center', targets = 1:2))
     )
-  )
+  ) %>%
+  DT::formatStyle(names(d),lineHeight='80%')
 })
 
 maintenance_metrics_text <- "<h4>Best practices in software development and

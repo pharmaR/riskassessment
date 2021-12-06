@@ -163,7 +163,7 @@ output$weights_table <- DT::renderDataTable({
     )
   ) %>%
   DT::formatStyle(names(values$curr_new_wts),lineHeight='80%') %>%
-  formatStyle(columns =  "name", target = 'row',
+  DT::formatStyle(columns =  "name", target = 'row',
               backgroundColor = styleEqual(all_names, my_colors))
   
 })
