@@ -146,8 +146,12 @@ observeEvent(input$update_weight, {
 
 output$weights_table <- DT::renderDataTable({
   
-  as.datatable(
-    formattable(values$curr_new_wts),
+  all_names <- unique(values$curr_new_wts$name)
+  chgd_wt_names <- values$curr_new_wts %>% filter(weight != new_weight) %>% pull(name)
+  my_colors <- ifelse(all_names %in% chgd_wt_names,'#FFEB9C','#FFFFFF')
+  
+  DT::datatable(
+    values$curr_new_wts,
     selection = list(mode = 'single'),
     colnames = c("Name", "Current Weight", "New Weight"),
     rownames = FALSE,
@@ -157,7 +161,11 @@ output$weights_table <- DT::renderDataTable({
       pageLength = -1,
       columnDefs = list(list(className = 'dt-center', targets = 1:2))
     )
-  ) 
+  ) %>%
+  DT::formatStyle(names(values$curr_new_wts),lineHeight='80%') %>%
+  formatStyle(columns =  "name", target = 'row',
+              backgroundColor = styleEqual(all_names, my_colors))
+  
 })
 
 
