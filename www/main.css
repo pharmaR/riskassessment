@@ -214,6 +214,13 @@ hr {
   margin-top: -3px !important;
 }
 
+.hr_sep {
+  border: none;
+  height: 1px;
+  color: rgba(77, 141, 201, 0.5);
+  background-color: rgba(77, 141, 201, 0.5);
+}
+
 .bg-color {
   background: rgb(77, 141, 201) !important;
 }

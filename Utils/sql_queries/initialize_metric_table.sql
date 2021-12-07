@@ -9,5 +9,5 @@ INSERT INTO metric (name, description, class, weight) values
 ('export_help', '', 'maintenance', 1),
 ('bugs_status', '', 'maintenance', 1),
 ('license', '', 'maintenance', 1),
-('covr_coverage', '', 'test', 1),
+('covr_coverage', '', 'test', 0),
 ('downloads_1yr', '', 'community', 1);

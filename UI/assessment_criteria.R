@@ -41,16 +41,16 @@ showModal(tags$div(id = "assessment_criteria_id", modalDialog(
       htmlOutput("community_usage_desc"),  # html output for community usage metrics content.
       br(),
       dataTableOutput("community_usage_table")  # data table for community usage metrics.
+    ),
+    tabPanel(
+      id = "tab3",
+      value = "tab_3",
+      tags$b("Testing Metrics", class = "txt-color"),
+      h3("Description"),
+      htmlOutput("testing_desc"),  # html output for testing metrics content.
+      br(),
+      dataTableOutput("testing_table")  # data table for testing metrics.
     )
-    # tabPanel( 
-    #   id = "tab3",
-    #   value = "tab_3",
-    #   tags$b("Testing Metrics", class = "txt-color"),
-    #   h3("Description"),
-    #   htmlOutput("testing_desc"),  # html output for testing metrics content.
-    #   br(),
-    #   dataTableOutput("testing_table")  # data table for testing metrics.
-    # )
   ),
   footer = NULL, easyClose = TRUE
 )))  

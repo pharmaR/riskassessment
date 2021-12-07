@@ -25,6 +25,9 @@ credentials <- data.frame(
 
 # Stores the database name.
 database_name <- "database.sqlite"
+# Store default backup name.
+bk_name <- "dbbackup.sqlite"
+
 
 # Create a local database.
 create_db <- function(db_name = database_name){
@@ -207,7 +210,7 @@ GetUserName <- function() {
 }
 
 # function to re-run everytime a package is uploaded to db, or
-# when a comment is submitted
+# when a comment is submitted, or when risk scores re-calculated
 update_db_dash <- function(){
   db_fun(
     "SELECT 
@@ -232,9 +235,24 @@ update_db_dash <- function(){
 # Get each metric's weight.
 get_metric_weights <- function(){
   db_fun(
-    "SELECT name, weight
-    FROM metric"
+    "SELECT name, weight, weight as new_weight
+     FROM metric"
   )
+}
+
+# Get a package's current risk score
+get_pkg_score <- function(pkg_name){
+  db_fun(paste0(
+    "SELECT score
+     FROM package
+     WHERE name = '", pkg_name, "'"
+  ))
+}
+
+# Used to add a comment on every tab saying how the risk and weights changed, and that
+# the overall comment & final decision may no longer be applicable.
+weight_risk_comment <- function(pkg_name) {
+  paste0("Metric re-weighting has occurred. The previous risk score was ", get_pkg_score(pkg_name), ".")
 }
 
 # Update metric's weight.
