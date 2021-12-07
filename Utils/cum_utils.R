@@ -40,7 +40,7 @@ num_dwnlds_plot <- function(data = values$riskmetrics_cum,
                  name = "# Downloads", type = 'scatter', 
                  mode = 'lines+markers', line = list(color = "blue"),
                  hoverinfo = "text",
-                 text = ~paste0('# Dwnlds: ', formatC(no_of_downloads, format="f", big.mark=",", digits=0),
+                 text = ~paste0('No. of Downloads: ', formatC(no_of_downloads, format="f", big.mark=",", digits=0),
                                 '<br>', month)) %>%
     layout(title = ~paste(ifelse(!(data$no_of_downloads_last_year[1] %in% c(0, NA_integer_)),
                                  "Number of Downloads by Month:", "Zero Downloads for"),
