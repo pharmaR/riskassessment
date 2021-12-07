@@ -135,7 +135,8 @@ observeEvent(input$back2dash, {
 
 # Manage admin adjusting weights and recaluclating risk scores
 # initialize temporary df that keeps track of the current and new weights exactly once
-values$curr_new_wts <- get_metric_weights()
+values$curr_new_wts <- get_metric_weights() %>%
+  mutate(weight = ifelse(name == "covr_coverage", 0, weight))
 
 observeEvent(input$update_weight, {
   values$curr_new_wts <-
@@ -149,6 +150,8 @@ output$weights_table <- DT::renderDataTable({
   all_names <- unique(values$curr_new_wts$name)
   chgd_wt_names <- values$curr_new_wts %>% filter(weight != new_weight) %>% pull(name)
   my_colors <- ifelse(all_names %in% chgd_wt_names,'#FFEB9C','#FFFFFF')
+  
+  
   
   DT::datatable(
     values$curr_new_wts,
@@ -218,6 +221,14 @@ output$admins_view <- renderUI({
                    dataTableOutput("weights_table"))
           ),
           br(), br(), br(),
+          conditionalPanel("input.metric_name === 'covr_coverage'", 
+             fluidRow(
+               column(width = 12, tags$div(style = "color: red",
+                  h5(em("Note: the 'covr_coverage' metric is currently disabled (weight = 0) until the 'riskmetric' package returns a non-NA value for this metric. 
+               "))))
+             ),
+             br()
+          ), 
           fluidRow(
             column(width = 12,
                    h5(em("Note: Changing the weights of the metrics will not update the
@@ -253,12 +264,19 @@ observe({
 
 # Update metric weight dropdown so that it matches the metric name.
 observeEvent(input$metric_name, {
-  # Display the weight of the selected metric.
-  updateNumericInput(session, "metric_weight",
-                     value = values$curr_new_wts %>%
-                       filter(name == input$metric_name) %>%
-                       select(weight) %>% # current weight
-                       pull())
+  
+  if(input$metric_name == "covr_coverage"){
+    # set to zero, don't allow change until riskmetric fixes this assessment
+    updateNumericInput(session, "metric_weight",
+                       value = 0, min = 0, max = 0)
+  } else {
+    updateNumericInput(session, "metric_weight",
+                       value = values$curr_new_wts %>%
+                         filter(name == input$metric_name) %>%
+                         select(weight) %>% # current weight
+                         pull())
+  }
+  
 })
 
 
