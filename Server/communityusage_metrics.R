@@ -13,7 +13,7 @@ cum_steps <- reactive(
     # Note that we access chooseCSVtext with '.' instead of '#', because we track its class and not its id.
     element = c("#cum_infoboxes", "#cum_plot", "#cum_add_comment", "#cum_prev_comments"),
     intro = c(
-      "Several ways of measuring cummunity usage assessed here. Please review!",
+      "Several ways of measuring community usage assessed here. Please review!",
       "Digest downloads per month by selecting a pre-defined time periods or toggling the date slider at bottom of plot for custom date range",
       "Have something to share within your organization? Add a comment.",
       "Keep track of the on-going conversation for this package's community usage"
@@ -38,7 +38,7 @@ observeEvent(input$help_cum,
 )
 
 
-# Start of the observe's'
+# Start of the observe.
 
 # 1. Observe to load the columns from DB into reactive values.
 observe({
@@ -101,7 +101,7 @@ observe({
   }
 })  # End of the observe.
 
-# End of the observe's'
+# End of the observes.
 
 # Start of the render Output's'
 
