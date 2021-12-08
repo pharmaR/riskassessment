@@ -44,7 +44,7 @@ package.check <- lapply(
 
 # Install riskmetric from github and load it
 if(!require(riskmetric)){
-  devtools::install_github("pharmaR/riskmetric")
+  devtools::install_github("pharmaR/riskmetric", ref = "release-v0.1.1")
   library(riskmetric)
 }
 
