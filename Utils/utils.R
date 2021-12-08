@@ -78,7 +78,7 @@ credentials_name <- "credentials.sqlite"
 create_credentials_db <- function(db_name = credentials_name, username = getOption("keyring_user")){
   
   key_set_with_value("R-shinymanager-key", username, 
-                     password = rstudioapi::askForPassword("Enter keyring password"))
+                     password = rstudioapi::askForPassword("Please create a keyring password"))
   
   # Init the credentials database
   shinymanager::create_db(
