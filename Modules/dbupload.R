@@ -159,9 +159,9 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   package_id <- db_fun(paste0("SELECT id FROM package WHERE name = ", "'", package_name, "';"))
   
   # Leave method if package not found.
-  # TODO: save this to the json file.
   if(nrow(package_id) == 0){
     print("PACKAGE NOT FOUND.")
+    loggit("WARN", paste("Package", package_name, "not found."))
     return()
   }
   
