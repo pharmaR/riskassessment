@@ -40,7 +40,7 @@ https://dev.mysql.com/downloads/mysql/5.5.html?os=3&version=5
 https://dev.mysql.com/doc/refman/8.0/en/
 
 - Next, start the MySQL command line client and create a database<br>
-  ![](MySQL_CLC.png)
+  ![](images/MySQL_CLC.png)
 
 - Now it's time to create a database. Note the name is case-sensitive.<br>
   type: `CREATE DATABASE mysqldatabase;`<br>
@@ -48,7 +48,7 @@ https://dev.mysql.com/doc/refman/8.0/en/
   and then type: `USE mysqldatabase;`<br>
   to select it.<br>
   
-  ![](CommandLine.png)<br>
+  ![](images/CommandLine.png)<br>
 
 - Databases are created in "C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Data"
 
