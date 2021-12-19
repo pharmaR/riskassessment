@@ -2,12 +2,22 @@
 title: "Convert from SQLite to MariaDB"
 author: "Robert Krajcik"
 date: "September 3, 2020"
-output: html_document
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 2
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+<br><br><br>
 
 ## Why convert from SQLite?
 
