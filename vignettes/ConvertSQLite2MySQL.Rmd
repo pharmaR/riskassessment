@@ -2,12 +2,22 @@
 title: "Converting from SQLite to MySQL"
 author: "Robert Krajcik"
 date: "September 2, 2020"
-output: html_document
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 2
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+<br><br><br>
 
 ## Why change?
 
@@ -16,7 +26,7 @@ Perhaps you want to use a remote storage location multiple users can access the 
 Take a look at this blog by Dean Attali:
 [Persistent Data Storage](https://shiny.rstudio.com/articles/persistent-data-storage.html)
 
-## Set up MySQL.
+## Set up MySQL
 
 - Download the MySQL software from MYSQL Community Downloads:
 https://dev.mysql.com/downloads/mysql/5.5.html?os=3&version=5
@@ -44,7 +54,7 @@ https://dev.mysql.com/doc/refman/8.0/en/
 
 - To remove a database, type: `DROP DATABASE mysqldatabase;`
 
-## Shiny Modifications.
+## Shiny Modifications
 
 - In R, type: `install.packages("RMySQL")`
 
