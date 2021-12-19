@@ -1,0 +1,26 @@
+---
+title: "Risk Assessment App"
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Documentation
+
+- Setting up the app: ??
+
+- Managing users and passwords: [instructions](./Managing_Userids_and_Passwords).
+
+- Converting the current `sqlite` database into a
+  - MariaDB database: [instructions](./ConvertSQLite2MariaDB.html), or
+  - MySQL database: [instructions](./ConvertSQLite2MySQL.html).
+  
+
+  
+
+
