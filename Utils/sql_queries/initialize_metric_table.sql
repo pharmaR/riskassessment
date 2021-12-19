@@ -10,4 +10,6 @@ INSERT INTO metric (name, description, class, weight) values
 ('bugs_status', '', 'maintenance', 1),
 ('license', '', 'maintenance', 1),
 ('covr_coverage', '', 'test', 0),
+('r_cmd_check', '', 'test', 0),
+('remote_checks', '', 'test', 0),
 ('downloads_1yr', '', 'community', 1);
