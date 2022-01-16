@@ -121,7 +121,7 @@ library(shinyjs)
 knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 ```
 
-<hr>
+<hr id="main-hr">
 
 ## Summary
 
@@ -137,9 +137,10 @@ if(nrow(comment_o) != 0) {
     create_comment_box()
 }
 ```
+
 <br>
 
-## General Info
+## General Information
 
 **Package:** `r pkg_GenInfo$name`
 
@@ -156,8 +157,6 @@ if(nrow(comment_o) != 0) {
 **License:** `r pkg_GenInfo$license`
 
 **Published:** `r pkg_GenInfo$published`
-
-<br>
 
 ## Maintenance Metrics
 
@@ -199,7 +198,6 @@ if(nrow(comment_mm) != 0) {
 }
 ```
 
-<br>
 
 ## Community Usage Metrics
 ```{r echo=FALSE}
@@ -279,7 +277,7 @@ if(nrow(comment_cum)) {
   padding-top: 10px;
 }
 
-hr {
+#main-hr {
   height: 2px;
   border: none;
   color: #3c8dbc;
