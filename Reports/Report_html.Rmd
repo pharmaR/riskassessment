@@ -131,7 +131,7 @@ knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
   color: #3c8dbc;
   background-color: #3c8dbc">
 
-<div class="blue para-header">Summary</div>
+## Summary
 
 **Score:** `r pkg_GenInfo$score`
 ```{r echo=FALSE}
@@ -161,8 +161,9 @@ if(nrow(comment_o) != 0) {
       "</h4></div>"
     ))
 ```
-</div>
-<div class="blue para-header">General Info</div>
+<br>
+
+## General Info
 
 **Package:** `r pkg_GenInfo$name`
 
@@ -180,7 +181,9 @@ if(nrow(comment_o) != 0) {
 
 **Published:** `r pkg_GenInfo$published`
 
-<div class="blue para-header mb-4">Maintenance Metrics</div>
+<br>
+
+## Maintenance Metrics
 
 ```{r echo=FALSE, results="asis"}
 div(
@@ -210,8 +213,8 @@ div(
 
 ```
 
-<div class="row col-md-12 comments">Comments for Maintenance Metrics(`r nrow(comment_mm)`):</div>
-<div class="col-md-12 comments-box">
+**Comments for Maintenance Metrics (`r nrow(comment_mm)`):** 
+`r if(nrow(comment_mm) == 0) "No comments"`
 
 ```{r echo=FALSE}
 comment_mm <- data.frame(comment_mm %>% map(rev))
@@ -230,9 +233,9 @@ comment_mm <- data.frame(comment_mm %>% map(rev))
 
 ```
 
-</div>
-<div class="row col-md-12 blue mb-4 para-header">Community Usage Metrics</div>
+<br>
 
+## Community Usage Metrics
 ```{r echo=FALSE}
   
   infoBox(
@@ -267,23 +270,7 @@ comment_mm <- data.frame(comment_mm %>% map(rev))
     width = 3,
     fill = TRUE
   )
-  
-
-
 ```
-
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
 
 <div style="margin-top: 100px"></div>
 ```{r echo=FALSE}
@@ -309,8 +296,6 @@ if (riskmetrics_cum$no_of_downloads_last_year[1] == 0) {
 }
 ```
 
-<div class="row col-md-12 comments">Comments for Community Usage Metrics(`r nrow(comment_cum)`):</div>
-<div class="col-md-12 comments-box">
 
 ```{r echo=FALSE}
 comment_cum <- data.frame(comment_cum %>% map(rev))
@@ -363,51 +348,7 @@ comment_cum <- data.frame(comment_cum %>% map(rev))
 #   )
 # ```
 
-# ```{r echo=FALSE}
-# 
-# if(covr_coverage == "pkg_metric_error"){
-#   tags$script(HTML(
-#   "
-#   setTimeout(function() {
-#     var elementCircle = document.getElementsByClassName('ramcharts_base')[0].getElementsByTagName('circle')[0];
-#     elementCircle.nextSibling.remove();
-#     elementCircle.remove();
-#     var element = document.getElementsByClassName('ramcharts_base')[0].getElementsByTagName('svg')[0];
-#     var textElement = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-#     textElement.setAttributeNS(null, 'x', element.width.baseVal.value/2);
-#     textElement.setAttributeNS(null, 'y', element.height.baseVal.value/2 +20);
-#     textElement.setAttributeNS(null,'font-size','20');
-#     textElement.setAttributeNS(null,'fill','red');
-#     textElement.setAttributeNS(null,'text-anchor','middle');
-#     textElement.setAttributeNS(null,'class','gauge-error-text');
-#     var txt = document.createTextNode('Metric is not applicable');
-#     textElement.appendChild(txt);
-#     element.appendChild(textElement);
-#     
-#     var textElement2 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-#     textElement2.setAttributeNS(null, 'x', element.width.baseVal.value/2);
-#     textElement2.setAttributeNS(null, 'y', element.height.baseVal.value/2 +50);
-#     textElement2.setAttributeNS(null,'font-size','20');
-#     textElement2.setAttributeNS(null,'fill','red');
-#     textElement2.setAttributeNS(null,'text-anchor','middle');
-#     textElement2.setAttributeNS(null,'class','gauge-error-text');
-#     var txt2 = document.createTextNode('for this source of package');
-#     textElement2.appendChild(txt2);
-#     element.appendChild(textElement2);
-#     var allEle = element.querySelectorAll('text')
-#     for(let i=0; i<allEle.length; i++){
-#       if(allEle[i].textContent == 100 && allEle[i+1].textContent == 0){
-#           allEle[i+1].textContent = 'NA';
-#       }
-#     }
-#   }, 1000)
-#   "
-#   ))
-# }
-# ```
--->
-<!-- <br> -->
-<!-- <div class="row col-md-12 comments">Comments for Testing Metrics(`r nrow(comment_tm)`):</div> -->
+**Comments for Community Usage Metrics (`r nrow(comment_cum)`):** `r if(nrow(comment_cum) == 0) "No comments"`
 
 <style>
 .user-name-color {
