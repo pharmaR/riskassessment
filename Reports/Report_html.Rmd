@@ -384,6 +384,88 @@ hr {
 }
 </style>
 
+<!--
+# </div>
+# <div class="blue para-header">Testing Metrics</div>
+# 
+# <br>
+# 
+# ```{r echo=FALSE} 
+# 
+#   bands = data.frame(
+#     start = c(0, 40, 80),
+#     end = c(40, 80, 100),
+#     color = ifelse(covr_coverage != "pkg_metric_error",
+#                    c("#ea3838", "#ffac29", "#00CC00"),
+#                    c("#808080", "#808080", "#808080")),
+#     stringsAsFactors = FALSE
+#   )
+#   bands2 = data.frame(
+#     start = c(0, 40, 80),
+#     end = c(40, 80, 100),
+#     color = ifelse(covr_coverage != "pkg_metric_error",
+#                    c("#ea3838", "#ffac29", "#00CC00"),
+#                    c("#808080", "#808080", "#808080")),
+#     stringsAsFactors = FALSE
+#   )
+#   amAngularGauge(
+#     x = as.numeric(ifelse(covr_coverage == "NA", 0, covr_coverage)),
+#     start = 0,
+#     end = 100,
+#     bands = bands,
+#     secondAxe = TRUE,
+#     start2 = 0,
+#     end2 = 100,
+#     bands2 = bands2
+#   )
+# ```
+
+# ```{r echo=FALSE}
+# 
+# if(covr_coverage == "pkg_metric_error"){
+#   tags$script(HTML(
+#   "
+#   setTimeout(function() {
+#     var elementCircle = document.getElementsByClassName('ramcharts_base')[0].getElementsByTagName('circle')[0];
+#     elementCircle.nextSibling.remove();
+#     elementCircle.remove();
+#     var element = document.getElementsByClassName('ramcharts_base')[0].getElementsByTagName('svg')[0];
+#     var textElement = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+#     textElement.setAttributeNS(null, 'x', element.width.baseVal.value/2);
+#     textElement.setAttributeNS(null, 'y', element.height.baseVal.value/2 +20);
+#     textElement.setAttributeNS(null,'font-size','20');
+#     textElement.setAttributeNS(null,'fill','red');
+#     textElement.setAttributeNS(null,'text-anchor','middle');
+#     textElement.setAttributeNS(null,'class','gauge-error-text');
+#     var txt = document.createTextNode('Metric is not applicable');
+#     textElement.appendChild(txt);
+#     element.appendChild(textElement);
+#     
+#     var textElement2 = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+#     textElement2.setAttributeNS(null, 'x', element.width.baseVal.value/2);
+#     textElement2.setAttributeNS(null, 'y', element.height.baseVal.value/2 +50);
+#     textElement2.setAttributeNS(null,'font-size','20');
+#     textElement2.setAttributeNS(null,'fill','red');
+#     textElement2.setAttributeNS(null,'text-anchor','middle');
+#     textElement2.setAttributeNS(null,'class','gauge-error-text');
+#     var txt2 = document.createTextNode('for this source of package');
+#     textElement2.appendChild(txt2);
+#     element.appendChild(textElement2);
+#     var allEle = element.querySelectorAll('text')
+#     for(let i=0; i<allEle.length; i++){
+#       if(allEle[i].textContent == 100 && allEle[i+1].textContent == 0){
+#           allEle[i+1].textContent = 'NA';
+#       }
+#     }
+#   }, 1000)
+#   "
+#   ))
+# }
+# ```
+-->
+<!-- <br> -->
+<!-- <div class="row col-md-12 comments">Comments for Testing Metrics(`r nrow(comment_tm)`):</div> -->
+
 <!-- <div class="col-md-12 comments-box"> -->
 
 <!-- ```{r echo=FALSE} -->
@@ -403,4 +485,3 @@ hr {
 
 <!-- ``` -->
 <!-- </div> -->
-
