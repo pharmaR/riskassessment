@@ -85,13 +85,32 @@ comment_cum <- db_fun(glue(
 "SELECT user_name, user_role, comment, added_on
 FROM Comments WHERE comm_id = '{params$package}' AND comment_type = 'cum'"))
 
-# # Gather unit tests comments.
-# comment_tm <- db_fun(glue(
-#   "SELECT user_name, user_role, comment, added_on
-#   FROM Comments
-#   WHERE comm_id = '{params$package}' AND comment_type = 'tm'"))
+# Gather unit tests comments.
+comment_tm <- db_fun(glue(
+  "SELECT user_name, user_role, comment, added_on
+  FROM Comments
+  WHERE comm_id = '{params$package}' AND comment_type = 'tm'"))
 
-
+# Displays comments.
+create_comment_box <- function(comment_info){
+  HTML(glue(
+  "<div class='col-md-12 comments-box'>
+    <div class='col-sm-12 comment-border-bottom single-comment-div'>
+      <i class='fa fa-user-tie fa-2x d-inline'>
+        <h3 class='ml-3 d-inline'>
+          <b class='user-name-color'>
+            {comment_info$user_name}({comment_info$user_role})
+          </b>
+          <sub>{comment_info$added_on}</sub>
+        </h3>
+      </i>
+      <h4 class='ml-3 lh-4'>
+        {comment_info$comment}
+      </h4>
+    </div>
+  </div>"
+  ))
+}
 ```
 
 
@@ -118,22 +137,9 @@ knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 **Overall Comments (`r nrow(comment_o)`):** `r if(nrow(comment_o) == 0) "No comments"`
 ```{r echo=FALSE}
 if(nrow(comment_o) != 0) {
-  comment_o <- data.frame(comment_o %>% map(rev))
-  HTML(paste(
-    "<div class='col-md-12 comments-box'>
-  <div class='col-sm-12 comment-border-bottom'>
-  <i class='fa fa-user-tie fa-2x d-inline'></i>
-  <h3 class='ml-3 d-inline'><b class='user-name-color'>",
-  comment_o$user_name,
-  "(",
-  comment_o$user_role,
-  ")",
-  "</b><sub>",
-  comment_o$added_on,
-  "</sub></h3><h4 class='ml-3 lh-4'>",
-  comment_o$comment,
-  "</h4></div></div>"
-  ))
+  comment_o |>
+    map(rev) |>
+    create_comment_box()
 }
 ```
 <br>
@@ -192,23 +198,9 @@ div(
 
 ```{r echo=FALSE}
 if(nrow(comment_mm) != 0) {
-  comment_mm <- data.frame(comment_mm %>% map(rev))
-  div()
-  HTML(paste(
-    "<div class='col-md-12 comments-box'>
-      <div class='col-sm-12 comment-border-bottom single-comment-div'>
-      <i class='fa fa-user-tie fa-2x d-inline'></i>
-      <h3 class='ml-3 d-inline'><b class='user-name-color'>",
-    comment_mm$user_name,
-    "(",
-    comment_mm$user_role,
-    ")",
-    "</b><sub>",
-    comment_mm$added_on,
-    "</sub></h3><h4 class='ml-3 lh-4'>",
-    comment_mm$comment,
-    "</h4></div></div>"
-  ))
+  comment_mm |> 
+    map(rev) |>
+    create_comment_box()
 }
 ```
 
@@ -216,7 +208,6 @@ if(nrow(comment_mm) != 0) {
 
 ## Community Usage Metrics
 ```{r echo=FALSE}
-
 infoBox(
   title = "Package Maturity",
   time_since_first_release_info,
@@ -281,20 +272,9 @@ if (riskmetrics_cum$no_of_downloads_last_year[1] == 0) {
 
 ```{r echo=FALSE}
 if(nrow(comment_cum)) {
-  comment_cum <- data.frame(comment_cum %>% map(rev))
-  HTML(paste(
-    "<div class='col-md-12 comments-box'>
-      <div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-2x d-inline'></i><h3 class='ml-3 d-inline'><b class='user-name-color'>",
-    comment_cum$user_name,
-    "(",
-    comment_cum$user_role,
-    ")",
-    "</b><sub>",
-    comment_cum$added_on,
-    "</sub></h3><h4 class='ml-3 lh-4'>",
-    comment_cum$comment,
-    "</h4></div></div>"
-  ))
+  comment_cum |> 
+    map(rev) |>
+    create_comment_box()
 }
 ```
 
