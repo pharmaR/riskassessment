@@ -16,8 +16,10 @@ output:
 runtime: shiny
 params:
   package: NA
-  version: NA
+  riskmetric_version: NA
   cwd: NA
+  username: NA
+  user_role: NA
 ---
 
 
