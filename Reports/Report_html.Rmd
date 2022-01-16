@@ -33,15 +33,6 @@ pkg_GenInfo <- db_fun(paste0(
   "'"
 ))
 
-comment_o <-
-  db_fun(
-    paste0(
-      "SELECT * FROM Comments WHERE comm_id = '",
-      params$package,
-      "' AND comment_type = 'o'"
-    )
-  )
-
 package_id <- db_fun(paste0(
   "SELECT id FROM package WHERE name = ",
   "'", params$package, "';"))
@@ -52,24 +43,17 @@ if(nrow(package_id) == 0)
                          generating an html report."))
 
 # Collect all the metric names and values associated to package_id.
-riskmetrics_mm <- db_fun(paste0(
-  "SELECT metric.name, package_metrics.value
-        FROM metric
-        INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
-        WHERE package_metrics.package_id = ", "'", package_id, "'", " AND ",
-  "metric.class = 'maintenance' ;"))
+riskmetrics_mm <- db_fun(glue(
+"SELECT metric.name, package_metrics.value
+FROM metric
+INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
+WHERE package_metrics.package_id = '{package_id}' AND metric.class = 'maintenance'"))
 
 for(i in 1:nrow(riskmetrics_mm))
   values[[riskmetrics_mm$name[i]]] <- riskmetrics_mm$value[i]
 
-riskmetrics_cum <-
-  db_fun(
-    paste0(
-      "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-      params$package,
-      "'"
-    )
-  )
+riskmetrics_cum <- db_fun(glue(
+  "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='{params$package}'"))
 
 time_since_first_release_info <- riskmetrics_cum$time_since_first_release[1] 
 time_since_version_release_info <- riskmetrics_cum$time_since_version_release[1]
@@ -85,32 +69,29 @@ no_of_downloads_last_year_info <- riskmetrics_cum$no_of_downloads_last_year[1]
 #          ";"))
 # covr_coverage <- covr_coverage$value
 
-comment_mm <-
-  db_fun(
-    paste0(
-      "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
-      params$package,
-      "' AND comment_type = 'mm'"
-    )
-  )  
+# Gather overall comments.
+comment_o <- db_fun(glue(
+  "SELECT * FROM Comments
+  WHERE comm_id = '{params$package}' AND comment_type = 'o'"))
 
-comment_cum <-
-  db_fun(
-    paste0(
-      "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
-      params$package,
-      "' AND comment_type = 'cum'"
-    )
-  )
+# Gather maintenance metrics comments.
+comment_mm <- db_fun(glue(
+  "SELECT user_name, user_role, comment, added_on
+  FROM Comments
+  WHERE comm_id = '{params$package}' AND comment_type = 'mm'"))  
 
-comment_tm <-
-  db_fun(
-    paste0(
-      "SELECT user_name, user_role, comment, added_on FROM Comments WHERE comm_id = '",
-      params$package,
-      "' AND comment_type = 'tm'"
-    )
-  )
+# Gather community usage metrics comments.
+comment_cum <- db_fun(glue(
+"SELECT user_name, user_role, comment, added_on
+FROM Comments WHERE comm_id = '{params$package}' AND comment_type = 'cum'"))
+
+# # Gather unit tests comments.
+# comment_tm <- db_fun(glue(
+#   "SELECT user_name, user_role, comment, added_on
+#   FROM Comments
+#   WHERE comm_id = '{params$package}' AND comment_type = 'tm'"))
+
+
 ```
 
 
