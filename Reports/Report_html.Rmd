@@ -54,15 +54,15 @@ if(nrow(package_id) == 0){
 }
 
 # Collect all the metric names and values associated to package_id.
-values$riskmetrics_mm <- db_fun(paste0(
+riskmetrics_mm <- db_fun(paste0(
   "SELECT metric.name, package_metrics.value
         FROM metric
         INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
         WHERE package_metrics.package_id = ", "'", package_id, "'", " AND ",
   "metric.class = 'maintenance' ;"))
 
-for(i in 1:nrow(values$riskmetrics_mm))
-  values[[values$riskmetrics_mm$name[i]]] <- values$riskmetrics_mm$value[i]
+for(i in 1:nrow(riskmetrics_mm))
+  values[[riskmetrics_mm$name[i]]] <- riskmetrics_mm$value[i]
 
 riskmetrics_cum <-
   db_fun(
@@ -116,10 +116,8 @@ comment_tm <-
 ```
 
 
-<div class="heading_report"> Report of the "`r pkg_GenInfo$name`" Package:</div>
-
-<div class="report">This **`r pkg_GenInfo$name`** package report was generated using  **`r params$version`** riskmetric version. Metrics were reviewed via the R Package Risk Assessment Application.</div>
-
+_This report was generated using riskmetric version **`r params$riskmetric_version`**.
+Metrics were reviewed via the R Packages Risk Assessment Application._
 
 
 ```{r setup, include=FALSE}
