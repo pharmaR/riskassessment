@@ -85,7 +85,7 @@ comment_cum <- db_fun(glue(
 "SELECT user_name, user_role, comment, added_on
 FROM Comments WHERE comm_id = '{params$package}' AND comment_type = 'cum'"))
 
-# Gather unit tests comments.
+# Gather test metric comments.
 comment_tm <- db_fun(glue(
   "SELECT user_name, user_role, comment, added_on
   FROM Comments
