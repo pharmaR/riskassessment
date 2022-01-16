@@ -1,8 +1,8 @@
 ---
-title:   "<span style='color: steelblue;'>R Package Risk Assessment </span>"
-subtitle: "R Validation Hub"
-author: "<br><span style='font-weight:bold'>Author (Role): </span> `r input$name` (`r input$role `)"
-date: "<span style='font-weight:bold'>Report Date: </span>`r format(Sys.time(), '%B %d, %Y')`"
+title:    "R Package Risk Assessment"
+subtitle: "Report of the `r params$package` R package"
+author:   "Author (Role): `r params$username` (`r params$user_role `)"
+date:     "Report Date: `r format(Sys.time(), '%B %d, %Y')`"
 always_allow_html: true
 output: html_document
 runtime: shiny
