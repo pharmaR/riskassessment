@@ -125,11 +125,8 @@ library(shinyjs)
 
 knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 ```
-<hr style="
-  height: 2px;
-  border: none;
-  color: #3c8dbc;
-  background-color: #3c8dbc">
+
+<hr>
 
 ## Summary
 
@@ -319,7 +316,16 @@ if(nrow(comment_cum)) {
   ))
 }
 ```
+
 <style>
+
+hr {
+  height: 2px;
+  border: none;
+  color: #3c8dbc;
+  background-color: #3c8dbc
+}
+
 .user-name-color {
 color: #7f7f7f;
 }
