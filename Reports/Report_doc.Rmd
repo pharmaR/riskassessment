@@ -89,52 +89,46 @@ FROM Comments WHERE comm_id = '{params$package}' AND comment_type = 'tm'"))
 
 ```
 
-## Report of the "`r pkg_GenInfo$name`" package:
+## Report for "`r pkg_GenInfo$name`" package
 
-This **`r pkg_GenInfo$name`** package report was generated using  **`r params$version`** riskmetric version .  Metrics were reviewed via the R Package Risk Assessment Application.</div>
+This report was generated using riskmetric version **`r params$riskmetric_version`**. Metrics were reviewed via the R Packages Risk Assessment Application.</div>
 
 ```{r setup, include=FALSE}
 library(knitr)
 library(shiny)
 
-knitr::opts_chunk$set(echo = F,fig.width=5.5, fig.height=3.4)
-
-#Plot parameters
-#define base_size of text
-bsize_text <- 11
-
-#define background color of plots
-p_color <- 'white'
-
+knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 ```
 
-
 <hr style="
-  height: 2px;
-  border: none;
-  color: #3c8dbc;
-  background-color: #3c8dbc">
+height: 2px;
+border: none;
+color: #3c8dbc;
+background-color: #3c8dbc">
 
 **Summary**
 
 Score: `r pkg_GenInfo$score`
 ```{r echo=FALSE}
- if (!identical(pkg_GenInfo$decision, character(0)) && pkg_GenInfo$decision != "") {
-    HTML(paste("<br>", "<h5>Overall risk: ", "<b>", pkg_GenInfo$decision, "</b></h5>"))
-  } else{
-    HTML(paste("<br>", "<h5><b>Overall risk: Pending</b></h5>"))
-  }
+if (!identical(pkg_GenInfo$decision, character(0)) && pkg_GenInfo$decision != "") {
+  HTML(glue("<br><h5>Overall risk: <b>{pkg_GenInfo$decision}</b></h5>"))
+} else{
+  HTML(glue("<br><h5><b>Overall risk: Pending</b></h5>"))
+}
 ```
 
 
 **Overall Comments(`r nrow(comment_o)`):**
 
 ```{r echo=FALSE}
-  comment_o <- data.frame(comment_o %>% map(rev))
-table_o<-data.frame("User ID"=comment_o$user_name,"Role"= comment_o$user_role, "Time"= comment_o$added_on,"Comments"=comment_o$comment)
-  
-knitr::kable(table_o, format='pandoc')
-  
+comment_o <- data.frame(comment_o %>% map(rev))
+table_o <- data.frame(
+  "User ID"  = comment_o$user_name,
+  "Role"     = comment_o$user_role,
+  "Time"     = comment_o$added_on,
+  "Comments" =comment_o$comment)
+
+knitr::kable(table_o, format = 'pandoc')
 ```
 \newpage
 
@@ -259,18 +253,22 @@ Detail <- c(
            "Package does not have a maintainer")
 )
 
-table_infobox<-data.frame(Metric, Result, Detail)
-knitr::kable(table_infobox, format='pandoc')
+table_infobox <- data.frame(Metric, Result, Detail)
+knitr::kable(table_infobox, format = 'pandoc')
 ```
 
 ### Comments for Maintenance Metrics(`r nrow(comment_mm)`):
 
 ```{r echo=FALSE}
 comment_mm <- data.frame(comment_mm %>% map(rev))
-    
-table_mm<-data.frame("User ID"=comment_mm$user_name,"Role"= comment_mm$user_role, "Time"= comment_mm$added_on,"Comments"=comment_mm$comment)
-  knitr::kable(table_mm, format='pandoc')
 
+table_mm <- data.frame(
+  "User ID" = comment_mm$user_name,
+  "Role" = comment_mm$user_role,
+  "Time" = comment_mm$added_on,
+  "Comments" = comment_mm$comment)
+
+knitr::kable(table_mm, format='pandoc')
 ```
 
 \newpage
@@ -279,43 +277,47 @@ table_mm<-data.frame("User ID"=comment_mm$user_name,"Role"= comment_mm$user_role
 
 ```{r echo=FALSE}
 
-Metric<-c("Package Maturity", "Version Maturity", "Download Count")
+Metric <- c("Package Maturity", "Version Maturity", "Download Count")
 
-Result<-c(
-     if(time_since_first_release_info == -1){"NA"}
-      else{time_since_first_release_info},
-     if(time_since_version_release_info == -1){"NA"}
-      else{time_since_version_release_info},
-     if(no_of_downloads_last_year_info == -1){"NA"}
-      else{formatC(no_of_downloads_last_year_info, format="f", big.mark=",", digits=0)}
+Result <- c(
+  if(time_since_first_release_info == -1){"NA"}
+  else{time_since_first_release_info},
+  if(time_since_version_release_info == -1){"NA"}
+  else{time_since_version_release_info},
+  if(no_of_downloads_last_year_info == -1){"NA"}
+  else{formatC(no_of_downloads_last_year_info, format="f", big.mark=",", digits=0)}
 )
 
-Detail<-c(
-     if(time_since_first_release_info == -1){"Metric is not applicable for this source of package"}
-       else{"Months since first release."},
-     if(time_since_version_release_info == -1){"Metric is not applicable for this source of package"}
-       else{"Months since version release."},
-     if(no_of_downloads_last_year_info == -1){"Metric is not applicable for this source of package"}
-       else{"Downloads in Last Year."}
+Detail <- c(
+  if(time_since_first_release_info == -1){"Metric is not applicable for this source of package"}
+  else{"Months since first release."},
+  if(time_since_version_release_info == -1){"Metric is not applicable for this source of package"}
+  else{"Months since version release."},
+  if(no_of_downloads_last_year_info == -1){"Metric is not applicable for this source of package"}
+  else{"Downloads in Last Year."}
 )
 
-table_infobox_cum<-data.frame(Metric,Result,Detail)
+table_infobox_cum<-data.frame(Metric, Result, Detail)
 
 knitr::kable(table_infobox_cum, format='pandoc')
 
-num_dwnlds_plot(data = riskmetrics_cum,
-                    input_select_pack = params$package)
-
+num_dwnlds_plot(
+  data = riskmetrics_cum,
+  input_select_pack = params$package)
 ```
 
 ### Comments for Community Usage Metrics(`r nrow(comment_cum)`):
 
 ```{r echo=FALSE}
 comment_cum <- data.frame(comment_cum %>% map(rev))
-  
-table_cum<-data.frame("User ID"=comment_cum$user_name,"Role"= comment_cum$user_role, "Time"= comment_cum$added_on,"Comments"=comment_cum$comment)
-  knitr::kable(table_cum, format='pandoc')
-  
+
+table_cum <- data.frame(
+  "User ID" = comment_cum$user_name,
+  "Role" = comment_cum$user_role,
+  "Time" = comment_cum$added_on,
+  "Comments" = comment_cum$comment)
+
+knitr::kable(table_cum, format ='pandoc')
 ```
 <!--
 
