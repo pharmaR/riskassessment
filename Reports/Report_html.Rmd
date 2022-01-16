@@ -351,6 +351,24 @@ comment_cum <- data.frame(comment_cum %>% map(rev))
 
 **Comments for Community Usage Metrics (`r nrow(comment_cum)`):** `r if(nrow(comment_cum) == 0) "No comments"`
 
+```{r echo=FALSE}
+if(nrow(comment_cum)) {
+  comment_cum <- data.frame(comment_cum %>% map(rev))
+  HTML(paste(
+    "<div class='col-md-12 comments-box'>
+      <div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-2x d-inline'></i><h3 class='ml-3 d-inline'><b class='user-name-color'>",
+    comment_cum$user_name,
+    "(",
+    comment_cum$user_role,
+    ")",
+    "</b><sub>",
+    comment_cum$added_on,
+    "</sub></h3><h4 class='ml-3 lh-4'>",
+    comment_cum$comment,
+    "</h4></div></div>"
+  ))
+}
+```
 <style>
 .user-name-color {
 color: #7f7f7f;
