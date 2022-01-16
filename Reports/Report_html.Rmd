@@ -46,12 +46,10 @@ package_id <- db_fun(paste0(
   "SELECT id FROM package WHERE name = ",
   "'", params$package, "';"))
 
-# Leave method if package not found.
-# TODO: save this to the json file.
-if(nrow(package_id) == 0){
-  print("PACKAGE NOT FOUND.")
-  return()
-}
+# If package is not found, then log this error.
+if(nrow(package_id) == 0)
+  loggit("ERROR", paste0("Package with id ", package_id, "was not found while
+                         generating an html report."))
 
 # Collect all the metric names and values associated to package_id.
 riskmetrics_mm <- db_fun(paste0(
