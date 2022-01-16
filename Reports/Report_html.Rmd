@@ -182,7 +182,7 @@ if(nrow(comment_o) != 0) {
 
 ## Maintenance Metrics
 
-```{r echo=FALSE, results="asis"}
+```{r echo=FALSE, results="asis", warning=FALSE, message=FALSE}
 div(
 class = "row mb-3",
   has_vignettes_infobox(values),
@@ -191,7 +191,7 @@ class = "row mb-3",
 )
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, results="asis", warning=FALSE, message=FALSE}
 div(
 class = "row mb-3",
   news_current_infobox(values),
@@ -200,7 +200,7 @@ class = "row mb-3",
 )
 ```    
 
-```{r echo= FALSE}
+```{r echo=FALSE, results="asis", warning=FALSE, message=FALSE}
 div(
   class = "row mb-3",
   export_help_infobox(values),
