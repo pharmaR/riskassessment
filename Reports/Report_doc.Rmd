@@ -1,5 +1,5 @@
 ---
-title: '<span style=''color: steelblue;''>R Package Risk Assessment </span>'
+title: '<span style=''color: steelblue;''>R Packages Risk Assessment </span>'
 author: '**Author (Role): `r params$username` (`r params$user_role `)**'
 date: "**Report Date: `r format(Sys.time(), '%B %d, %Y')`**"
 output:
