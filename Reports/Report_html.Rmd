@@ -95,18 +95,13 @@ comment_tm <- db_fun(glue(
 create_comment_box <- function(comment_info){
   HTML(glue(
   "<div class='col-md-12 comments-box'>
-    <div class='col-sm-12 comment-border-bottom single-comment-div'>
+    <div class='col-sm-12 comment-border-bottom'>
       <i class='fa fa-user-tie fa-2x d-inline'>
-        <h3 class='ml-3 d-inline'>
-          <b class='user-name-color'>
-            {comment_info$user_name}({comment_info$user_role})
-          </b>
-          <sub>{comment_info$added_on}</sub>
-        </h3>
+        {comment_info$user_name} ({comment_info$user_role})
+        {comment_info$added_on}
       </i>
-      <h4 class='ml-3 lh-4'>
-        {comment_info$comment}
-      </h4>
+      <br>
+      <p class='comment'> {comment_info$comment} </p>
     </div>
   </div>"
   ))
@@ -280,6 +275,10 @@ if(nrow(comment_cum)) {
 
 <style>
 
+.comment {
+  padding-top: 10px;
+}
+
 hr {
   height: 2px;
   border: none;
@@ -288,42 +287,39 @@ hr {
 }
 
 .user-name-color {
-color: #7f7f7f;
+  color: #7f7f7f;
 }
+
 .ml-3 {
-    margin-left: 1rem!important;
-    font-size: 17px;
+  margin-left: 1rem!important;
+  font-size: 17px;
 }
+
 .comment-border-bottom {
-  padding:0px;
-  border-bottom: 1px solid rgba(0,0,0,.125);
-  margin-bottom: 2rem;
+  padding: 0px;
 }
 
 .fa-user-tie {
-  color: rgba(77,141,201,.70);
   top: 35%;
   left: 0px;
+  font-size: 15px;
 }
 
 .blue {
-    color: steelblue;
-    font-size: 30px;
+  color: steelblue;
+  font-size: 30px;
 }
-.comments{
-  color:steelblue;
-  font-size:22px;
-  margin-top: 2rem;
-}
-.report{
-font-size:14px
-color: steelblue;
-}
-.heading_report {
-    font-size: 23px;
-    font-weight: bold;
 
+.report{
+  font-size:14px
+  color: steelblue;
 }
+
+.heading_report {
+  font-size: 23px;
+  font-weight: bold;
+}
+
 .d-inline {
   display: inline;
 }
@@ -355,19 +351,24 @@ color: steelblue;
 .comments-box {
   max-height: 300px;
   overflow-y: auto;
-  padding: 10px;
+  padding: 15px;
   border: 1px solid rgb(0, 0, 0.125);
   margin-bottom: 2rem;
 }
+
 .amcharts-chart-div > a {
   display: none !important;
 }
+
 .info-box-number {
   font-weight: bold;
 }
+
 .title.toc-ignore {
   text-align: center;
+  color: steelblue;
 }
+
 .para-header{
   text-align: left;
   text-decoration: none;
@@ -381,7 +382,6 @@ color: steelblue;
 .icon-color-grey::before {
   color: grey;
 }
-
 </style>
 
 <!-- <div class="col-md-12 comments-box"> -->
