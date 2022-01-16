@@ -120,27 +120,30 @@ output$download_report_btn <- downloadHandler(
            switch(input$report_format, "docx" = "docx", "html" = "html"))
   },
   content = function(file) {
-    shiny::withProgress(message = paste0("Downloading ", input$dataset, " Report"),
-                        value = 0,
-                        {
-                          shiny::incProgress(1 / 10)
-                          shiny::incProgress(5 / 10)
-                          if (input$report_format == "html") {
-                            Report <- file.path(tempdir(), "Report_html.Rmd")
-                            file.copy("Reports/Report_html.Rmd", Report, overwrite = TRUE)
-                          } else {
-                            Report <- file.path(tempdir(), "Report_doc.Rmd")
-                            file.copy("Reports/Report_doc.Rmd", Report, overwrite = TRUE)
-                          }
-                          
-                          rmarkdown::render(
-                            Report,
-                            output_file = file,
-                            params = list(package = values$selected_pkg$name,
-                                          version = values$selected_pkg$version,
-                                          cwd = values$cwd)
-                          )
-                        })
+    shiny::withProgress(
+      message = paste0("Downloading ", input$dataset, " Report"),
+      value = 0,
+      {
+        shiny::incProgress(1 / 10)
+        shiny::incProgress(5 / 10)
+        if (input$report_format == "html") {
+          Report <- file.path(tempdir(), "Report_html.Rmd")
+          file.copy("Reports/Report_html.Rmd", Report, overwrite = TRUE)
+        } else {
+          Report <- file.path(tempdir(), "Report_doc.Rmd")
+          file.copy("Reports/Report_doc.Rmd", Report, overwrite = TRUE)
+        }
+        
+        rmarkdown::render(
+          Report,
+          output_file = file,
+          params = list(package = values$selected_pkg$name,
+                        riskmetric_version = packageVersion("riskmetric"),
+                        cwd = values$cwd,
+                        username = values$name,
+                        user_role = values$role)
+        )
+      })
   }
 )
 
