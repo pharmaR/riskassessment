@@ -27,7 +27,7 @@ params:
 
 setwd(params$cwd)
 
-pkg_GenInfo = db_fun(paste0(
+pkg_GenInfo <- db_fun(paste0(
   "SELECT * FROM package WHERE name ='",
   params$package,
   "'"
@@ -42,9 +42,9 @@ comment_o <-
     )
   )
 
-package_id <- db_fun(paste0("SELECT id
-                                  FROM package
-                                  WHERE name = ", "'", params$package, "';"))
+package_id <- db_fun(paste0(
+  "SELECT id FROM package WHERE name = ",
+  "'", params$package, "';"))
 
 # Leave method if package not found.
 # TODO: save this to the json file.
@@ -73,32 +73,19 @@ riskmetrics_cum <-
     )
   )
 
-pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
-
-if (!(params$package %in% pkgs_in_db$cum_id)) {
-  metric_cum_Info_upload_to_DB(params$package)
-  riskmetrics_cum <- db_fun( paste0("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='", params$package, "'") )
-} else{
-  riskmetrics_cum <- db_fun( paste0("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='", params$package, "'") )
-}
-
 time_since_first_release_info <- riskmetrics_cum$time_since_first_release[1] 
 time_since_version_release_info <- riskmetrics_cum$time_since_version_release[1]
-no_of_downloads_last_year_info <-
-  riskmetrics_cum$no_of_downloads_last_year[1]
+no_of_downloads_last_year_info <- riskmetrics_cum$no_of_downloads_last_year[1]
 
-
-metric_id <- db_fun(paste0("SELECT id FROM metric WHERE name = 'covr_coverage';"))
-covr_coverage <- db_fun(
-  paste0("SELECT value FROM package_metrics WHERE ",
-         "package_id = ", package_id,
-         " AND ",
-         "metric_id = ", metric_id,
-         ";"
-  )
-)
-covr_coverage <- covr_coverage$value
-
+# Get info on the covr_coverage metric.
+# metric_id <- db_fun(paste0("SELECT id FROM metric WHERE name = 'covr_coverage';"))
+# covr_coverage <- db_fun(
+#   paste0("SELECT value FROM package_metrics WHERE ",
+#          "package_id = ", package_id,
+#          " AND ",
+#          "metric_id = ", metric_id,
+#          ";"))
+# covr_coverage <- covr_coverage$value
 
 comment_mm <-
   db_fun(
@@ -126,7 +113,6 @@ comment_tm <-
       "' AND comment_type = 'tm'"
     )
   )
-
 ```
 
 
@@ -141,18 +127,8 @@ library(knitr)
 library(shiny)
 library(shinyjs)
 
-knitr::opts_chunk$set(echo = F,fig.width=5.5, fig.height=3.4)
-
-#Plot parameters
-#define base_size of text
-bsize_text <- 11
-
-#define background color of plots
-p_color <- 'white'
-
+knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 ```
-
-
 <hr style="
   height: 2px;
   border: none;
@@ -170,11 +146,11 @@ p_color <- 'white'
   }
 ```
 
-**Overall Comments(`r nrow(comment_o)`):**
-<div class="col-md-12 comments-box">
+**Overall risk:** `r ifelse(nchar(pkg_GenInfo$decision) != 0, pkg_GenInfo$decision, "Pending")`
 
+**Overall Comments (`r nrow(comment_o)`):** `r if(nrow(comment_o) == 0) "No comments"`
 ```{r echo=FALSE}
-
+if(nrow(comment_o) != 0) {
   comment_o <- data.frame(comment_o %>% map(rev))
    HTML(paste(
       "<div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-2x d-inline'></i><h3 class='ml-3 d-inline'><b class='user-name-color'>",
