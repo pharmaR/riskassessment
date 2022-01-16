@@ -23,7 +23,7 @@ params:
 ---
 
 
-```{r  echo=FALSE,warning=FALSE }
+```{r echo=FALSE, include=FALSE, message=FALSE, warning=FALSE}
 
 setwd(params$cwd)
 
