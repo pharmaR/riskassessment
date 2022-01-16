@@ -1,6 +1,6 @@
 ---
 title:    "R Package Risk Assessment"
-subtitle: "Report of the `r params$package` R package"
+subtitle: "Report for `r params$package`"
 author:   "Author (Role): `r params$username` (`r params$user_role `)"
 date:     "Report Date: `r format(Sys.time(), '%B %d, %Y')`"
 always_allow_html: true
