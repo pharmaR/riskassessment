@@ -4,7 +4,15 @@ subtitle: "Report of the `r params$package` R package"
 author:   "Author (Role): `r params$username` (`r params$user_role `)"
 date:     "Report Date: `r format(Sys.time(), '%B %d, %Y')`"
 always_allow_html: true
-output: html_document
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 3
 runtime: shiny
 params:
   package: NA
