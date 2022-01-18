@@ -26,11 +26,9 @@ Imports:
     DT,
     forcats,
     formattable,
-    ggplot2,
     haven,
     keyring,
     loggit,
-    lubridate,
     plotly,
     purrr,
     rAmCharts,
@@ -46,6 +44,4 @@ Imports:
     shinymanager,
     shinyWidgets,
     stringr,
-    tibble,
-    tidyr,
     tools
