@@ -18,7 +18,6 @@ output$screen <- renderUI({
                    width = 12,
                    uiOutput("sel_pack"), # UI for select package.
                    uiOutput("sel_ver"), # UI for version of the selected package.
-                   # uiOutput("status"), # Display the status of the package.
                    fixedRow(
                      column(6, wellPanel(
                        id = "diyValBoxStatus",
@@ -31,7 +30,6 @@ output$screen <- renderUI({
                        style = "height: 150px; border-radius: 25px; border-style: dotted; background-color: #1E90FF !important; color: #FFFFFF !important;",
                        uiOutput("score"), # Display the score of the package.
                        h3("Risk Score")
-                       # shinydashboard::valueBoxOutput("score", width = 12),
                      ))
                    ),
                    
@@ -116,5 +114,3 @@ output$screen <- renderUI({
            ))
   )
 })
-
-# End of the dashboard_screen Source file for UI Module.
