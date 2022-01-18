@@ -1,13 +1,4 @@
-#####################################################################################################################
-# dashboard_screen.R - The dashboard page of the app
-# Author: K Aravind Reddy
-# Date: July 13th, 2020
-# License: MIT License
-#####################################################################################################################
-# Start of the dashboard_screen Source file for UI Module.
-
 # Render Output UI for Dashboard Screen.
-
 output$screen <- renderUI({
  fluidRow(
   class = "main-container ml-2 mr-2 p-1",
