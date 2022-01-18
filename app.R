@@ -1,11 +1,3 @@
-###############################################################################
-# Project: R Validation Hub - R Package Risk Assessment App
-# Author: K Aravind Reddy
-# Date: July 13th, 2020
-# License: MIT License
-# You can run the application by executing 'runApp()' command.
-###############################################################################
-
 # Load required packages.
 source("global.R")
 
