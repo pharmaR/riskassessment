@@ -1,129 +1,116 @@
 ---
-title:   "<span style='color: steelblue;'>R Package Risk Assessment </span>"
-subtitle: "R Validation Hub"
-author: "<br><span style='font-weight:bold'>Author (Role): </span> `r input$name` (`r input$role `)"
-date: "<span style='font-weight:bold'>Report Date: </span>`r format(Sys.time(), '%B %d, %Y')`"
+title:    "R Package Risk Assessment"
+subtitle: "Report for `r params$package`"
+author:   "Author (Role): `r params$username` (`r params$user_role `)"
+date:     "Report Date: `r format(Sys.time(), '%B %d, %Y')`"
 always_allow_html: true
-output: html_document
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 3
 runtime: shiny
 params:
   package: NA
-  version: NA
+  riskmetric_version: NA
   cwd: NA
+  username: NA
+  user_role: NA
 ---
 
 
-```{r  echo=FALSE,warning=FALSE }
+```{r echo=FALSE, include=FALSE, message=FALSE, warning=FALSE}
 
 setwd(params$cwd)
 
-pkg_GenInfo = db_fun(paste0(
+pkg_GenInfo <- db_fun(paste0(
   "SELECT * FROM package WHERE name ='",
   params$package,
   "'"
 ))
 
-comment_o <-
-  db_fun(
-    paste0(
-      "SELECT * FROM Comments WHERE comm_id = '",
-      params$package,
-      "' AND comment_type = 'o'"
-    )
-  )
+package_id <- db_fun(paste0(
+  "SELECT id FROM package WHERE name = ",
+  "'", params$package, "';"))
 
-package_id <- db_fun(paste0("SELECT id
-                                  FROM package
-                                  WHERE name = ", "'", params$package, "';"))
-
-# Leave method if package not found.
-# TODO: save this to the json file.
-if(nrow(package_id) == 0){
-  print("PACKAGE NOT FOUND.")
-  return()
-}
+# If package is not found, then log this error.
+if(nrow(package_id) == 0)
+  loggit("ERROR", paste0("Package with id ", package_id, "was not found while
+                         generating an html report."))
 
 # Collect all the metric names and values associated to package_id.
-values$riskmetrics_mm <- db_fun(paste0(
-  "SELECT metric.name, package_metrics.value
-        FROM metric
-        INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
-        WHERE package_metrics.package_id = ", "'", package_id, "'", " AND ",
-  "metric.class = 'maintenance' ;"))
+riskmetrics_mm <- db_fun(glue(
+"SELECT metric.name, package_metrics.value
+FROM metric
+INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
+WHERE package_metrics.package_id = '{package_id}' AND metric.class = 'maintenance'"))
 
-for(i in 1:nrow(values$riskmetrics_mm))
-  values[[values$riskmetrics_mm$name[i]]] <- values$riskmetrics_mm$value[i]
+for(i in 1:nrow(riskmetrics_mm))
+  values[[riskmetrics_mm$name[i]]] <- riskmetrics_mm$value[i]
 
-riskmetrics_cum <-
-  db_fun(
-    paste0(
-      "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-      params$package,
-      "'"
-    )
-  )
-
-pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
-
-if (!(params$package %in% pkgs_in_db$cum_id)) {
-  metric_cum_Info_upload_to_DB(params$package)
-  riskmetrics_cum <- db_fun( paste0("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='", params$package, "'") )
-} else{
-  riskmetrics_cum <- db_fun( paste0("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='", params$package, "'") )
-}
+riskmetrics_cum <- db_fun(glue(
+  "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='{params$package}'"))
 
 time_since_first_release_info <- riskmetrics_cum$time_since_first_release[1] 
 time_since_version_release_info <- riskmetrics_cum$time_since_version_release[1]
-no_of_downloads_last_year_info <-
-  riskmetrics_cum$no_of_downloads_last_year[1]
+no_of_downloads_last_year_info <- riskmetrics_cum$no_of_downloads_last_year[1]
 
+# Get info on the covr_coverage metric.
+# metric_id <- db_fun(paste0("SELECT id FROM metric WHERE name = 'covr_coverage';"))
+# covr_coverage <- db_fun(
+#   paste0("SELECT value FROM package_metrics WHERE ",
+#          "package_id = ", package_id,
+#          " AND ",
+#          "metric_id = ", metric_id,
+#          ";"))
+# covr_coverage <- covr_coverage$value
 
-metric_id <- db_fun(paste0("SELECT id FROM metric WHERE name = 'covr_coverage';"))
-covr_coverage <- db_fun(
-  paste0("SELECT value FROM package_metrics WHERE ",
-         "package_id = ", package_id,
-         " AND ",
-         "metric_id = ", metric_id,
-         ";"
-  )
-)
-covr_coverage <- covr_coverage$value
+# Gather overall comments.
+comment_o <- db_fun(glue(
+  "SELECT * FROM Comments
+  WHERE comm_id = '{params$package}' AND comment_type = 'o'"))
 
+# Gather maintenance metrics comments.
+comment_mm <- db_fun(glue(
+  "SELECT user_name, user_role, comment, added_on
+  FROM Comments
+  WHERE comm_id = '{params$package}' AND comment_type = 'mm'"))  
 
-comment_mm <-
-  db_fun(
-    paste0(
-      "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
-      params$package,
-      "' AND comment_type = 'mm'"
-    )
-  )  
+# Gather community usage metrics comments.
+comment_cum <- db_fun(glue(
+"SELECT user_name, user_role, comment, added_on
+FROM Comments WHERE comm_id = '{params$package}' AND comment_type = 'cum'"))
 
-comment_cum <-
-  db_fun(
-    paste0(
-      "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
-      params$package,
-      "' AND comment_type = 'cum'"
-    )
-  )
+# Gather test metric comments.
+comment_tm <- db_fun(glue(
+  "SELECT user_name, user_role, comment, added_on
+  FROM Comments
+  WHERE comm_id = '{params$package}' AND comment_type = 'tm'"))
 
-comment_tm <-
-  db_fun(
-    paste0(
-      "SELECT user_name, user_role, comment, added_on FROM Comments WHERE comm_id = '",
-      params$package,
-      "' AND comment_type = 'tm'"
-    )
-  )
-
+# Displays comments.
+create_comment_box <- function(comment_info){
+  HTML(glue(
+  "<div class='col-md-12 comments-box'>
+    <div class='col-sm-12 comment-border-bottom'>
+      <i class='fa fa-user-tie fa-2x d-inline'>
+        {comment_info$user_name} ({comment_info$user_role})
+        {comment_info$added_on}
+      </i>
+      <br>
+      <p class='comment'> {comment_info$comment} </p>
+    </div>
+  </div>"
+  ))
+}
 ```
 
 
-<div class="heading_report"> Report of the "`r pkg_GenInfo$name`" Package:</div>
-
-<div class="report">This **`r pkg_GenInfo$name`** package report was generated using  **`r params$version`** riskmetric version. Metrics were reviewed via the R Package Risk Assessment Application.</div>
-
+_This report was generated using riskmetric version **`r params$riskmetric_version`**.
+Metrics were reviewed via the R Packages Risk Assessment Application._
 
 
 ```{r setup, include=FALSE}
@@ -131,56 +118,29 @@ library(knitr)
 library(shiny)
 library(shinyjs)
 
-knitr::opts_chunk$set(echo = F,fig.width=5.5, fig.height=3.4)
-
-#Plot parameters
-#define base_size of text
-bsize_text <- 11
-
-#define background color of plots
-p_color <- 'white'
-
+knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 ```
 
+<hr id="main-hr">
 
-<hr style="
-  height: 2px;
-  border: none;
-  color: #3c8dbc;
-  background-color: #3c8dbc">
-
-<div class="blue para-header">Summary</div>
+## Summary
 
 **Score:** `r pkg_GenInfo$score`
+
+**Overall risk:** `r ifelse(nchar(pkg_GenInfo$decision) != 0, pkg_GenInfo$decision, "Pending")`
+
+**Overall Comments (`r nrow(comment_o)`):** `r if(nrow(comment_o) == 0) "No comments"`
 ```{r echo=FALSE}
- if (!identical(pkg_GenInfo$decision, character(0)) && pkg_GenInfo$decision != "") {
-    HTML(paste("<br>", "<h5>Overall risk: ", "<b>", pkg_GenInfo$decision, "</b></h5>"))
-  } else{
-    HTML(paste("<br>", "<h5><b>Overall risk: Pending</b></h5>"))
-  }
+if(nrow(comment_o) != 0) {
+  comment_o |>
+    map(rev) |>
+    create_comment_box()
+}
 ```
 
-**Overall Comments(`r nrow(comment_o)`):**
-<div class="col-md-12 comments-box">
+<br>
 
-```{r echo=FALSE}
-
-  comment_o <- data.frame(comment_o %>% map(rev))
-   HTML(paste(
-      "<div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-2x d-inline'></i><h3 class='ml-3 d-inline'><b class='user-name-color'>",
-      comment_o$user_name,
-      "(",
-      comment_o$user_role,
-      ")",
-      "</b><sub>",
-      comment_o$added_on,
-      "</sub></h3><h4 class='ml-3 lh-4'>",
-      comment_o$comment,
-      "</h4></div>"
-    ))
-```
-</div>
-<div class="blue para-header">General Info</div>
+## General Information
 
 **Package:** `r pkg_GenInfo$name`
 
@@ -198,115 +158,87 @@ p_color <- 'white'
 
 **Published:** `r pkg_GenInfo$published`
 
-<div class="blue para-header mb-4">Maintenance Metrics</div>
+## Maintenance Metrics
 
-```{r echo=FALSE, results="asis"}
+```{r echo=FALSE, results="asis", warning=FALSE, message=FALSE}
 div(
-class = "row mb-3",
+  class = "row mb-3",
   has_vignettes_infobox(values),
   has_website_infobox(values),
   has_news_infobox(values)
 )
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, results="asis", warning=FALSE, message=FALSE}
 div(
-class = "row mb-3",
+  class = "row mb-3",
   news_current_infobox(values),
   has_bug_reports_url_infobox(values),
   bugs_status_infobox(values)
 )
 ```    
 
-```{r echo= FALSE}
+```{r echo=FALSE, results="asis", warning=FALSE, message=FALSE}
 div(
   class = "row mb-3",
   export_help_infobox(values),
   has_source_control_infobox(values),
   has_maintainer_infobox(values)
 )
-
 ```
 
-<div class="row col-md-12 comments">Comments for Maintenance Metrics(`r nrow(comment_mm)`):</div>
-<div class="col-md-12 comments-box">
+**Comments for Maintenance Metrics (`r nrow(comment_mm)`):** 
+`r if(nrow(comment_mm) == 0) "No comments"`
 
 ```{r echo=FALSE}
-comment_mm <- data.frame(comment_mm %>% map(rev))
-    HTML(paste(
-      "<div class='col-sm-12 comment-border-bottom single-comment-div'><i class='fa fa-user-tie fa-2x d-inline'></i><h3 class='ml-3 d-inline'><b class='user-name-color'>",
-      comment_mm$user_name,
-      "(",
-      comment_mm$user_role,
-      ")",
-      "</b><sub>",
-      comment_mm$added_on,
-      "</sub></h3><h4 class='ml-3 lh-4'>",
-      comment_mm$comment,
-      "</h4></div>"
- ))
-
+if(nrow(comment_mm) != 0) {
+  comment_mm |> 
+    map(rev) |>
+    create_comment_box()
+}
 ```
 
-</div>
-<div class="row col-md-12 blue mb-4 para-header">Community Usage Metrics</div>
 
+## Community Usage Metrics
 ```{r echo=FALSE}
-  
-  infoBox(
-    title = "Package Maturity",
-    time_since_first_release_info,
-    subtitle = ifelse(time_since_first_release_info != "NA",
-                      "Months since first release.",
-                      "Metric is not applicable for this source of package."),
-    icon = shiny::icon("calendar"),
-    width = 3,
-    fill = TRUE
-  )
+infoBox(
+  title = "Package Maturity",
+  time_since_first_release_info,
+  subtitle = ifelse(time_since_first_release_info != "NA",
+                    "Months since first release.",
+                    "Metric is not applicable for this source of package."),
+  icon = shiny::icon("calendar"),
+  width = 3,
+  fill = TRUE
+)
 
-  infoBox(
-    title = "Version Maturity",
-    time_since_version_release_info,
-    subtitle = ifelse(time_since_version_release_info != "NA", 
-                      "Months since version release.",
-                      "Metric is not applicable for this source of package."),
-    icon = shiny::icon("calendar"),
-    width = 3,
-    fill = TRUE
-  )
-  
-  infoBox(
-    title = "Download Count",
-    formatC(no_of_downloads_last_year_info, format="f", big.mark=",", digits=0),
-    subtitle = ifelse(no_of_downloads_last_year_info != "NA", 
-                      "Downloads in Last Year",
-                      "Metric is not applicable for this source of package."),
-    icon = shiny::icon("signal"),
-    width = 3,
-    fill = TRUE
-  )
-  
+infoBox(
+  title = "Version Maturity",
+  time_since_version_release_info,
+  subtitle = ifelse(time_since_version_release_info != "NA", 
+                    "Months since version release.",
+                    "Metric is not applicable for this source of package."),
+  icon = shiny::icon("calendar"),
+  width = 3,
+  fill = TRUE
+)
 
-
+infoBox(
+  title = "Download Count",
+  formatC(no_of_downloads_last_year_info, format="f", big.mark=",", digits=0),
+  subtitle = ifelse(no_of_downloads_last_year_info != "NA", 
+                    "Downloads in Last Year",
+                    "Metric is not applicable for this source of package."),
+  icon = shiny::icon("signal"),
+  width = 3,
+  fill = TRUE
+)
 ```
-
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
 
 <div style="margin-top: 100px"></div>
 ```{r echo=FALSE}
 p <- num_dwnlds_plot(data = riskmetrics_cum,
-                    input_select_pack = params$package)
+                     input_select_pack = params$package)
 tagList(p)
 ```
 
@@ -327,24 +259,129 @@ if (riskmetrics_cum$no_of_downloads_last_year[1] == 0) {
 }
 ```
 
-<div class="row col-md-12 comments">Comments for Community Usage Metrics(`r nrow(comment_cum)`):</div>
-<div class="col-md-12 comments-box">
+
+
+**Comments for Community Usage Metrics (`r nrow(comment_cum)`):** `r if(nrow(comment_cum) == 0) "No comments"`
 
 ```{r echo=FALSE}
-comment_cum <- data.frame(comment_cum %>% map(rev))
-   HTML(paste(
-      "<div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-2x d-inline'></i><h3 class='ml-3 d-inline'><b class='user-name-color'>",
-      comment_cum$user_name,
-      "(",
-      comment_cum$user_role,
-      ")",
-      "</b><sub>",
-      comment_cum$added_on,
-      "</sub></h3><h4 class='ml-3 lh-4'>",
-      comment_cum$comment,
-      "</h4></div>"
-    ))
+if(nrow(comment_cum)) {
+  comment_cum |> 
+    map(rev) |>
+    create_comment_box()
+}
 ```
+
+<style>
+
+.comment {
+  padding-top: 10px;
+}
+
+#main-hr {
+  height: 2px;
+  border: none;
+  color: #3c8dbc;
+  background-color: #3c8dbc
+}
+
+.user-name-color {
+  color: #7f7f7f;
+}
+
+.ml-3 {
+  margin-left: 1rem!important;
+  font-size: 17px;
+}
+
+.comment-border-bottom {
+  padding: 0px;
+}
+
+.fa-user-tie {
+  top: 35%;
+  left: 0px;
+  font-size: 15px;
+}
+
+.blue {
+  color: steelblue;
+  font-size: 30px;
+}
+
+.report{
+  font-size:14px
+  color: steelblue;
+}
+
+.heading_report {
+  font-size: 23px;
+  font-weight: bold;
+}
+
+.d-inline {
+  display: inline;
+}
+
+.info-box-content, .info-box-icon {
+  display: inline;
+}
+
+.glyphicon-thumbs-up {
+  padding: 3px;
+}
+
+.glyphicon-thumbs-down {
+  padding: 3px;
+}
+
+.fa-bar-chart, .fa-calendar {
+  padding: 3px;
+}
+
+.mb-3 {
+  margin-bottom: 1rem;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem;
+}
+
+.comments-box {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 15px;
+  border: 1px solid rgb(0, 0, 0.125);
+  margin-bottom: 2rem;
+}
+
+.amcharts-chart-div > a {
+  display: none !important;
+}
+
+.info-box-number {
+  font-weight: bold;
+}
+
+.title.toc-ignore {
+  text-align: center;
+  color: steelblue;
+}
+
+.para-header{
+  text-align: left;
+  text-decoration: none;
+  text-underline-position: under;
+}
+
+.highcharts-container {
+  margin-top: 3rem;
+}
+
+.icon-color-grey::before {
+  color: grey;
+}
+</style>
+
 <!--
 # </div>
 # <div class="blue para-header">Testing Metrics</div>
@@ -427,104 +464,6 @@ comment_cum <- data.frame(comment_cum %>% map(rev))
 <!-- <br> -->
 <!-- <div class="row col-md-12 comments">Comments for Testing Metrics(`r nrow(comment_tm)`):</div> -->
 
-<style>
-.user-name-color {
-color: #7f7f7f;
-}
-.ml-3 {
-    margin-left: 1rem!important;
-    font-size: 17px;
-}
-.comment-border-bottom {
-  padding:0px;
-  border-bottom: 1px solid rgba(0,0,0,.125);
-  margin-bottom: 2rem;
-}
-
-.fa-user-tie {
-  color: rgba(77,141,201,.70);
-  top: 35%;
-  left: 0px;
-}
-
-.blue {
-    color: steelblue;
-    font-size: 30px;
-}
-.comments{
-  color:steelblue;
-  font-size:22px;
-  margin-top: 2rem;
-}
-.report{
-font-size:14px
-color: steelblue;
-}
-.heading_report {
-    font-size: 23px;
-    font-weight: bold;
-
-}
-.d-inline {
-  display: inline;
-}
-
-.info-box-content, .info-box-icon {
-  display: inline;
-}
-
-.glyphicon-thumbs-up {
-  padding: 3px;
-}
-
-.glyphicon-thumbs-down {
-  padding: 3px;
-}
-
-.fa-bar-chart, .fa-calendar {
-  padding: 3px;
-}
-
-.mb-3 {
-  margin-bottom: 1rem;
-}
-
-.mb-4 {
-  margin-bottom: 1.5rem;
-}
-
-.comments-box {
-  max-height: 300px;
-  overflow-y: auto;
-  padding: 10px;
-  border: 1px solid rgb(0, 0, 0.125);
-  margin-bottom: 2rem;
-}
-.amcharts-chart-div > a {
-  display: none !important;
-}
-.info-box-number {
-  font-weight: bold;
-}
-.title.toc-ignore {
-  text-align: center;
-}
-.para-header{
-  text-align: left;
-  text-decoration: none;
-  text-underline-position: under;
-}
-
-.highcharts-container {
-  margin-top: 3rem;
-}
-
-.icon-color-grey::before {
-  color: grey;
-}
-
-</style>
-
 <!-- <div class="col-md-12 comments-box"> -->
 
 <!-- ```{r echo=FALSE} -->
@@ -544,4 +483,3 @@ color: steelblue;
 
 <!-- ``` -->
 <!-- </div> -->
-

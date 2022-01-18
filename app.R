@@ -68,7 +68,7 @@ ui <- dashboardPage(
     tags$head(tags$script(src = "helperScript.js")),
     
     # Include main.css to add the styles and enhancements to the app.
-    includeCSS("www/main.css"),
+    includeCSS("www/css/main.css"),
     
     useShinyjs(),
     

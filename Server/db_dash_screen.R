@@ -110,8 +110,10 @@ output$dwnld_sel_db_pkgs_btn <- downloadHandler(
             input = Report,
             output_file = path,
             params = list(package = this_pkg,
-                          version = this_ver,
-                          cwd = values$cwd)
+                          riskmetric_version = packageVersion("riskmetric"),
+                          cwd = values$cwd,
+                          username = values$name,
+                          user_role = values$role)
           )
           fs <- c(fs, path)  # Save all the reports/
           shiny::incProgress(1) # Increment progress bar.

@@ -1,169 +1,134 @@
 ---
-title: '<span style=''color: steelblue;''>R Package Risk Assessment </span>'
-author: '**Author (Role): `r input$name` (`r input$role `)**'
+title: '<span style=''color: steelblue;''>R Packages Risk Assessment </span>'
+author: '**Author (Role): `r params$username` (`r params$user_role `)**'
 date: "**Report Date: `r format(Sys.time(), '%B %d, %Y')`**"
 output:
   word_document
 params:
-  cwd: NA
   package: NA
-  version: NA
-subtitle: R Validation Hub
+  riskmetric_version: NA
+  cwd: NA
+  username: NA
+  user_role: NA
 always_allow_html: yes
 ---
 
 
-```{r  echo=FALSE,warning=FALSE }
+```{r echo=FALSE, warning=FALSE, message=FALSE, include=FALSE}
 
 setwd(params$cwd)
 
-pkg_GenInfo = db_fun(paste0(
-  "SELECT * FROM package WHERE name ='",
-  params$package,
-  "'"
-))
+pkg_GenInfo = db_fun(glue("SELECT * FROM package WHERE name ='{params$package}'"))
 
-comment_o <-
-  db_fun(
-    paste0(
-      "SELECT * FROM Comments WHERE comm_id = '",
-      params$package,
-      "' AND comment_type = 'o'"
-    )
-  )
+package_id <- db_fun(glue(
+  "SELECT id
+FROM package
+WHERE name = '{params$package}';"))
 
-package_id <- db_fun(paste0("SELECT id
-                                  FROM package
-                                  WHERE name = ", "'", params$package, "';"))
-
-# Leave method if package not found.
-# TODO: save this to the json file.
-if(nrow(package_id) == 0){
-  print("PACKAGE NOT FOUND.")
-  return()
-}
+if(nrow(package_id) == 0)
+  loggit("ERROR", paste0("Package with id ", package_id, "was not found while
+                         generating a docx report."))
 
 # Collect all the metric names and values associated to package_id.
-values$riskmetrics_mm <- db_fun(paste0(
+values$riskmetrics_mm <- db_fun(glue(
   "SELECT metric.name, package_metrics.value
-        FROM metric
-        INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
-        WHERE package_metrics.package_id = ", "'", package_id, "'", " AND ",
-  "metric.class = 'maintenance' ;"))
+FROM metric
+INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
+WHERE package_metrics.package_id = '{package_id}' AND metric.class = 'maintenance' ;"))
 
 for(i in 1:nrow(values$riskmetrics_mm))
   values[[values$riskmetrics_mm$name[i]]] <- values$riskmetrics_mm$value[i]
 
-riskmetrics_cum <-
-  db_fun(
-    paste0(
-      "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-      params$package,
-      "'"
-    )
-  )
+riskmetrics_cum <- db_fun(glue(
+  "SELECT *
+FROM CommunityUsageMetrics
+WHERE cum_id = '{params$package}'"))
 
-pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
+pkgs_in_db <- db_fun(glue("SELECT cum_id FROM CommunityUsageMetrics"))
 
-if (!(params$package %in% pkgs_in_db$cum_id)) {
-  metric_cum_Info_upload_to_DB(params$package)
-  riskmetrics_cum <- db_fun( paste0("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='", params$package, "'") )
-} else{
-  riskmetrics_cum <- db_fun( paste0("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='", params$package, "'") )
-}
+riskmetrics_cum <- db_fun(glue(
+  "SELECT *
+FROM CommunityUsageMetrics
+WHERE cum_id ='{params$package}'"))
 
 time_since_first_release_info <- riskmetrics_cum$time_since_first_release[1] 
 time_since_version_release_info <-riskmetrics_cum$time_since_version_release[1]
-no_of_downloads_last_year_info <-
-  riskmetrics_cum$no_of_downloads_last_year[1]
+no_of_downloads_last_year_info <- riskmetrics_cum$no_of_downloads_last_year[1]
 
-package_id <- db_fun(paste0("SELECT id FROM package WHERE name = ", "'", input$select_pack, "'", ";"))
-metric_id <- db_fun(paste0("SELECT id FROM metric WHERE name = 'covr_coverage';"))
-covr_coverage <- db_fun(
-  paste0("SELECT value FROM package_metrics WHERE ",
-         "package_id = ", package_id,
-         " AND ",
-         "metric_id = ", metric_id,
-         ";"
-  )
-)
-covr_coverage <- covr_coverage$value
+metric_id <- db_fun(glue("SELECT id FROM metric WHERE name = 'covr_coverage';"))
 
-comment_mm <-
-  db_fun(
-    paste0(
-      "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
-      params$package,
-      "' AND comment_type = 'mm'"
-    )
-  )  
+# covr_coverage <- db_fun(glue(
+# "SELECT value
+# FROM package_metrics
+# WHERE package_id = '{package_id}'
+# AND metric_id = '{metric_id}'"))
+# 
+# covr_coverage <- covr_coverage$value
 
-comment_cum <-
-  db_fun(
-    paste0(
-      "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
-      params$package,
-      "' AND comment_type = 'cum'"
-    )
-  )
+# Gather overall comments.
+comment_o <- db_fun(glue(
+  "SELECT *
+FROM Comments
+WHERE comm_id = '{params$package}' AND comment_type = 'o'"))
 
-comment_tm <-
-  db_fun(
-    paste0(
-      "SELECT user_name, user_role, comment, added_on FROM Comments WHERE comm_id = '",
-      params$package,
-      "' AND comment_type = 'tm'"
-    )
-  )
+# Gather maintenance metrics comments.
+comment_mm <- db_fun(glue(
+  "SELECT user_name, user_role, comment, added_on
+FROM Comments WHERE comm_id = '{params$package}'
+AND comment_type = 'mm'"))
+
+# Gather community usage metrics comments.
+comment_cum <- db_fun(glue(
+  "SELECT user_name, user_role, comment, added_on
+FROM Comments WHERE comm_id = '{params$package}' AND comment_type = 'cum'"))
+
+# Gather test metric comments.
+comment_tm <- db_fun(glue(
+  "SELECT user_name, user_role, comment, added_on
+FROM Comments WHERE comm_id = '{params$package}' AND comment_type = 'tm'"))
 
 ```
 
-## Report of the "`r pkg_GenInfo$name`" package:
+## Report for "`r pkg_GenInfo$name`" package
 
-This **`r pkg_GenInfo$name`** package report was generated using  **`r params$version`** riskmetric version .  Metrics were reviewed via the R Package Risk Assessment Application.</div>
+This report was generated using riskmetric version **`r params$riskmetric_version`**. Metrics were reviewed via the R Packages Risk Assessment Application.</div>
 
 ```{r setup, include=FALSE}
 library(knitr)
 library(shiny)
 
-knitr::opts_chunk$set(echo = F,fig.width=5.5, fig.height=3.4)
-
-#Plot parameters
-#define base_size of text
-bsize_text <- 11
-
-#define background color of plots
-p_color <- 'white'
-
+knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 ```
 
-
 <hr style="
-  height: 2px;
-  border: none;
-  color: #3c8dbc;
-  background-color: #3c8dbc">
+height: 2px;
+border: none;
+color: #3c8dbc;
+background-color: #3c8dbc">
 
 **Summary**
 
 Score: `r pkg_GenInfo$score`
 ```{r echo=FALSE}
- if (!identical(pkg_GenInfo$decision, character(0)) && pkg_GenInfo$decision != "") {
-    HTML(paste("<br>", "<h5>Overall risk: ", "<b>", pkg_GenInfo$decision, "</b></h5>"))
-  } else{
-    HTML(paste("<br>", "<h5><b>Overall risk: Pending</b></h5>"))
-  }
+if (!identical(pkg_GenInfo$decision, character(0)) && pkg_GenInfo$decision != "") {
+  HTML(glue("<br><h5>Overall risk: <b>{pkg_GenInfo$decision}</b></h5>"))
+} else{
+  HTML(glue("<br><h5><b>Overall risk: Pending</b></h5>"))
+}
 ```
 
 
 **Overall Comments(`r nrow(comment_o)`):**
 
 ```{r echo=FALSE}
-  comment_o <- data.frame(comment_o %>% map(rev))
-table_o<-data.frame("User ID"=comment_o$user_name,"Role"= comment_o$user_role, "Time"= comment_o$added_on,"Comments"=comment_o$comment)
-  
-knitr::kable(table_o, format='pandoc')
-  
+comment_o <- data.frame(comment_o %>% map(rev))
+table_o <- data.frame(
+  "User ID"  = comment_o$user_name,
+  "Role"     = comment_o$user_role,
+  "Time"     = comment_o$added_on,
+  "Comments" =comment_o$comment)
+
+knitr::kable(table_o, format = 'pandoc')
 ```
 \newpage
 
@@ -288,18 +253,22 @@ Detail <- c(
            "Package does not have a maintainer")
 )
 
-table_infobox<-data.frame(Metric, Result, Detail)
-knitr::kable(table_infobox, format='pandoc')
+table_infobox <- data.frame(Metric, Result, Detail)
+knitr::kable(table_infobox, format = 'pandoc')
 ```
 
 ### Comments for Maintenance Metrics(`r nrow(comment_mm)`):
 
 ```{r echo=FALSE}
 comment_mm <- data.frame(comment_mm %>% map(rev))
-    
-table_mm<-data.frame("User ID"=comment_mm$user_name,"Role"= comment_mm$user_role, "Time"= comment_mm$added_on,"Comments"=comment_mm$comment)
-  knitr::kable(table_mm, format='pandoc')
 
+table_mm <- data.frame(
+  "User ID" = comment_mm$user_name,
+  "Role" = comment_mm$user_role,
+  "Time" = comment_mm$added_on,
+  "Comments" = comment_mm$comment)
+
+knitr::kable(table_mm, format='pandoc')
 ```
 
 \newpage
@@ -308,43 +277,47 @@ table_mm<-data.frame("User ID"=comment_mm$user_name,"Role"= comment_mm$user_role
 
 ```{r echo=FALSE}
 
-Metric<-c("Package Maturity", "Version Maturity", "Download Count")
+Metric <- c("Package Maturity", "Version Maturity", "Download Count")
 
-Result<-c(
-     if(time_since_first_release_info == -1){"NA"}
-      else{time_since_first_release_info},
-     if(time_since_version_release_info == -1){"NA"}
-      else{time_since_version_release_info},
-     if(no_of_downloads_last_year_info == -1){"NA"}
-      else{formatC(no_of_downloads_last_year_info, format="f", big.mark=",", digits=0)}
+Result <- c(
+  if(time_since_first_release_info == -1){"NA"}
+  else{time_since_first_release_info},
+  if(time_since_version_release_info == -1){"NA"}
+  else{time_since_version_release_info},
+  if(no_of_downloads_last_year_info == -1){"NA"}
+  else{formatC(no_of_downloads_last_year_info, format="f", big.mark=",", digits=0)}
 )
 
-Detail<-c(
-     if(time_since_first_release_info == -1){"Metric is not applicable for this source of package"}
-       else{"Months since first release."},
-     if(time_since_version_release_info == -1){"Metric is not applicable for this source of package"}
-       else{"Months since version release."},
-     if(no_of_downloads_last_year_info == -1){"Metric is not applicable for this source of package"}
-       else{"Downloads in Last Year."}
+Detail <- c(
+  if(time_since_first_release_info == -1){"Metric is not applicable for this source of package"}
+  else{"Months since first release."},
+  if(time_since_version_release_info == -1){"Metric is not applicable for this source of package"}
+  else{"Months since version release."},
+  if(no_of_downloads_last_year_info == -1){"Metric is not applicable for this source of package"}
+  else{"Downloads in Last Year."}
 )
 
-table_infobox_cum<-data.frame(Metric,Result,Detail)
+table_infobox_cum<-data.frame(Metric, Result, Detail)
 
 knitr::kable(table_infobox_cum, format='pandoc')
 
-num_dwnlds_plot(data = riskmetrics_cum,
-                    input_select_pack = params$package)
-
+num_dwnlds_plot(
+  data = riskmetrics_cum,
+  input_select_pack = params$package)
 ```
 
 ### Comments for Community Usage Metrics(`r nrow(comment_cum)`):
 
 ```{r echo=FALSE}
 comment_cum <- data.frame(comment_cum %>% map(rev))
-  
-table_cum<-data.frame("User ID"=comment_cum$user_name,"Role"= comment_cum$user_role, "Time"= comment_cum$added_on,"Comments"=comment_cum$comment)
-  knitr::kable(table_cum, format='pandoc')
-  
+
+table_cum <- data.frame(
+  "User ID" = comment_cum$user_name,
+  "Role" = comment_cum$user_role,
+  "Time" = comment_cum$added_on,
+  "Comments" = comment_cum$comment)
+
+knitr::kable(table_cum, format ='pandoc')
 ```
 <!--
 

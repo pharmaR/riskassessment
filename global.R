@@ -29,6 +29,7 @@ packages = c("shiny"
              ,"shinymanager"
              ,"keyring"
              ,"rstudioapi"
+             ,"glue"
 )
 
 # Install and load required packages.
