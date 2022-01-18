@@ -114,3 +114,5 @@ use_package_v(raa_pkgs)
 usethis::use_package("tidyverse")
 tidypkgs <- tidyverse::tidyverse_packages(include_self = F)
 use_package_v(tidypkgs)
+
+usethis::use_package("glue")
