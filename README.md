@@ -26,11 +26,16 @@ For further information about the app, please refer to the documentation.
 <!---------------------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
 
-### Deployment
-To run the application, open the `app.R` file with RStudio and click 'Run App'.
+### Our Approch to Validation
 
+Validation can serve as an umbrella for various terms, and admittedly,
+companies will diverge on what is the correct approach to validation. The 
+validation approach we followed during the development of the app is
+based on the philosophy of the white paper set forth by the
+R Validation Hub: [White Paper](https://www.pharmar.org/white-paper/).
 
-### Key features
+<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------->
 
 - An interactive UI platform that allows users to upload a list of packages to assess
 
