@@ -102,16 +102,18 @@ output$dwnld_sel_db_pkgs_btn <- downloadHandler(
         for (i in 1:n_pkgs) {
           # Grab package name and version, then create filename and path.
           this_pkg <- these_pkgs$name[i]
-          this_ver <- these_pkgs$version[i]
-          file_named <- paste0(this_pkg,"_",this_ver,"_Risk_Assessment.",input$report_formats)
+          # this_ver <- these_pkgs$version[i]
+          file_named <- paste0(this_pkg,"_Risk_Assessment.",input$report_formats)
           path <- file.path(my_dir, file_named)
           # Render the report, passing parameters to the rmd file.
           rmarkdown::render(
             input = Report,
             output_file = path,
             params = list(package = this_pkg,
-                          version = this_ver,
-                          cwd = values$cwd)
+                          riskmetric_version = packageVersion("riskmetric"),
+                          cwd = values$cwd,
+                          username = values$name,
+                          user_role = values$role)
           )
           fs <- c(fs, path)  # Save all the reports/
           shiny::incProgress(1) # Increment progress bar.
