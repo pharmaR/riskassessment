@@ -43,7 +43,7 @@ who provided insightful ideas on how to set up this framework.
 
 Specially, we would like to thank the following contributors/authors.
 
-- [R Validation Hub](https://www.pharmar.org), *Author* and *Maintainer*
+- [R Validation Hub](https://www.pharmar.org)
 - [Marly Gotti](https://www.marlygotti.com), Biogen, *Maintainer*
 - [Aaron Clark](https://www.linkedin.com/in/dataaaronclark/), Biogen, *Maintainer*
 - Robert Krajcik, Cytel, *Maintainer*
