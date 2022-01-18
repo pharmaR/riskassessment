@@ -46,7 +46,7 @@ Specially, we would like to thank the following contributors/authors.
 
 - [R Validation Hub](https://www.pharmar.org), *Author* and *Maintainer*
 - [Marly Gotti](https://www.marlygotti.com), Biogen, *Maintainer*
-- Aaron Clark, Biogen, *Maintainer*
+- [Aaron Clark](https://www.linkedin.com/in/dataaaronclark/), Biogen, *Maintainer*
 - Robert Krajcik, Cytel, *Maintainer*
 - Maya Gans, Cytel
 - Aravind Reddy Kallem
