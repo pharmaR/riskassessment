@@ -6,16 +6,15 @@ metrics meant to evaluate development best practices, code documentation,
 community engagement, and development sustainability. The app and `riskmetric`
 aim to provide some context for validation within regulated industries.
 
+Furthermore, the app extends the functionalities of `riskmetric` by allowing
+the reviewer to
 
-**Contributors/Authors**
-
-- [R Validation Hub](https://www.pharmar.org), *Author* & *Maintainer*
-- [Marly Gotti](https://www.marlygotti.com), Biogen, *Maintainer*
-- Aaron Clark, Biogen
-- Maya Gans, Cytel
-- Robert Krajcik, Cytel
-- Aravind Reddy Kallem
-- Fission Labs India Pvt Ltd
+- analyze `riskmetric` output without the need to code in R,
+- comment on the value of individual metrics,
+- provide an overall assessment on the package (i.e., low, medium, or high risk)
+based on the output of the evaluating metrics cohort,
+- download a report with the package risk, metrics, and reviewer comments, and
+- store assessments on the database for future viewing.
 
 
 ### Installation
