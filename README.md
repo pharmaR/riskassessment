@@ -16,10 +16,15 @@ based on the output of the evaluating metrics cohort,
 - download a report with the package risk, metrics, and reviewer comments, and
 - store assessments on the database for future viewing.
 
+The app also provides user authentication. There are two roles on the app:
+regular user and admin. The latter can add/delete users,
+modify the packages in the database,
+download an entire copy of the database, and modify the metric weights.
 
-### Installation
-The application is portable without code modifications. It can be pulled from GitHub and run in any local environment.
+For further information about the app, please refer to the documentation.
 
+<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------->
 
 ### Deployment
 To run the application, open the `app.R` file with RStudio and click 'Run App'.
