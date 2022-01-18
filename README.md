@@ -59,8 +59,5 @@ of R within a biopharmaceutical regulatory setting.
 <!---------------------------------------------------------------------------->
 
 ### License
-The MIT License (MIT)<br>
-Copyright © 2020 Fission Labs and R Validation Hub contributors
- 
-Note: Permission and Copyright notices to be added as per client requirements.
 
+Please see the [License](LICENSE.md) file that lives alongside this repo.
