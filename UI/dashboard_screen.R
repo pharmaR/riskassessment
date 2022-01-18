@@ -32,8 +32,7 @@ output$screen <- renderUI({
                          h3("Risk Score")
                        ))
                      ),
-                     
-                     
+
                      textAreaInput(
                        "overall_comment",
                        h3("Leave Your Overall Comment:"),
@@ -41,7 +40,8 @@ output$screen <- renderUI({
                        rows = 5,
                        placeholder = paste("Current Comment:")
                      ),
-                     # Action Button to Submit Overall Comment for selected Package.
+                     
+                     # Submit Overall Comment for selected Package.
                      actionButton("submit_overall_comment",
                                   class = "submit_overall_comment_class btn-secondary",
                                   "Submit Comment"),
