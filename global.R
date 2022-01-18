@@ -43,11 +43,9 @@ package.check <- lapply(
   }
 )
 
-# Install riskmetric from github and load it
-if(!require(riskmetric)){
-  devtools::install_github("pharmaR/riskmetric")
-  library(riskmetric)
-}
+# Install a specific version of riskmetric from GitHub and load it.
+devtools::install_github("pharmaR/riskmetric", ref = "release-v0.1.1")
+library(riskmetric)
 
 # Load the functions to create infoboxes.
 source("Utils/infoboxes.R")
