@@ -2,12 +2,22 @@
 title: "Convert from SQLite to MariaDB"
 author: "Robert Krajcik"
 date: "September 3, 2020"
-output: html_document
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 2
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+<br><br><br>
 
 ## Why convert from SQLite?
 
@@ -33,10 +43,10 @@ If you already have MySQL running, you will need to choose another port number.
 https://mariadb.com/kb/en/documentation/
 
 - Go into settings -> Services and check that MariaDB is running<br>
- ![](Services.png)
+ ![](images/Services.png)
  
 - Next, start the MariaDB command line client and create a database<br>
- ![](MariaDB_CLI.png)
+ ![](images/MariaDB_CLI.png)
 
 - Now it's time to create a database. Note the name is case-sensitive.<br>
   type: `CREATE DATABASE mymariadatabase;` <br>
@@ -153,7 +163,7 @@ TimeStamp<-function(){
 }
 ```
 I was able to confirm by going back to the MariaDB Command Line Interface:
- ![](SelectFromComments.png)
+ ![](images/SelectFromComments.png)
  
 Finally, update function `genInfo_upload_to_DB()` in `Modules\dbupload.R` as follows:
 
