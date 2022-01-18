@@ -27,7 +27,7 @@ options(
 
 # Create User Interface (UI).
 ui <- dashboardPage(
-  title = "R Package Risk Assessment App",
+  title = "R Packages Risk Assessment App",
   dashboardHeader(
     title = list(
       tags$a(
