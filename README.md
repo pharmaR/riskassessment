@@ -18,7 +18,6 @@ based on the output of the evaluating metrics cohort,
 
 The app also provides user authentication. There are two roles on the app:
 regular user and admin. The latter can add/delete users,
-modify the packages in the database,
 download an entire copy of the database, and modify the metric weights.
 
 For further information about the app, please refer to the documentation.
