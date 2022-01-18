@@ -37,16 +37,26 @@ R Validation Hub: [White Paper](https://www.pharmar.org/white-paper/).
 <!---------------------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
 
-- An interactive UI platform that allows users to upload a list of packages to assess
+### Contributors/Authors
 
-- Sidebar panel to select a package and version number from the list of uploaded packages
+Thank you to all the contributors! Not only those who coded, but also those
+who provided insightful ideas on how to set up this framework.
 
-- Set of panels that displays the details and metrics of the selected package
+Specially, we would like to thank the following contributors/authors.
 
-- Comment functionality that allows users to comment on individual metrics as well as provide an overall comment on the selected package
+- [R Validation Hub](https://www.pharmar.org), *Author* and *Maintainer*
+- [Marly Gotti](https://www.marlygotti.com), Biogen, *Maintainer*
+- Aaron Clark, Biogen, *Maintainer*
+- Robert Krajcik, Cytel, *Maintainer*
+- Maya Gans, Cytel
+- Aravind Reddy Kallem
+- Fission Labs India Pvt Ltd
 
-- Download report functionality to obtain either an html or a word document with the metrics displayed in the application
+_Note:_ This app was made possible thanks to the [R Validation Hub](https://www.pharmar.org/about/), a collaboration to support the adoption
+of R within a biopharmaceutical regulatory setting.
 
+<!---------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------->
 
 ### License
 The MIT License (MIT)<br>
