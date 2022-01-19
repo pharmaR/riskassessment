@@ -128,10 +128,10 @@ output$download_report_btn <- downloadHandler(
         shiny::incProgress(5 / 10)
         if (input$report_format == "html") {
           Report <- file.path(tempdir(), "Report_html.Rmd")
-          file.copy("Reports/Report_html.Rmd", Report, overwrite = TRUE)
+          file.copy("inst/app/www/Reports/Report_html.Rmd", Report, overwrite = TRUE)
         } else {
           Report <- file.path(tempdir(), "Report_doc.Rmd")
-          file.copy("Reports/Report_doc.Rmd", Report, overwrite = TRUE)
+          file.copy("inst/app/www/Reports/Report_doc.Rmd", Report, overwrite = TRUE)
         }
         
         rmarkdown::render(

@@ -93,10 +93,10 @@ output$dwnld_sel_db_pkgs_btn <- downloadHandler(
         my_dir <- tempdir()
         if (input$report_formats == "html") {
           Report <- file.path(my_dir, "Report_html.Rmd")
-          file.copy("Reports/Report_html.Rmd", Report, overwrite = TRUE)
+          file.copy("inst/app/www/Reports/Report_html.Rmd", Report, overwrite = TRUE)
         } else {
           Report <- file.path(my_dir, "Report_doc.Rmd")
-          file.copy("Reports/Report_doc.Rmd", Report, overwrite = TRUE)
+          file.copy("inst/app/www/Reports/Report_doc.Rmd", Report, overwrite = TRUE)
         }
         fs <- c()
         for (i in 1:n_pkgs) {
