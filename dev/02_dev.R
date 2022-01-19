@@ -22,8 +22,15 @@ file.edit("dev/001_start.R")
 
 ## Add modules ----
 ## Create a module infrastructure in R/
-# golem::add_module( name = "name_of_module1" ) # Name of the module
-# golem::add_module( name = "name_of_module2" ) # Name of the module
+golem::add_module( name = "dashboard_screen" ) 
+golem::add_module( name = "uploadpackage" )
+golem::add_module( name = "sidebar" )
+golem::add_module( name = "assessment_criteria" ) 
+golem::add_module( name = "db_dash_screen" ) 
+golem::add_module( name = "reportpreview" ) 
+golem::add_module( name = "communityusage_metrics" ) 
+golem::add_module( name = "maintenance_metrics" ) 
+golem::add_module( name = "testing_metrics" ) 
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*

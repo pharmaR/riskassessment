@@ -44,8 +44,9 @@ app_server <- function( input, output, session ) {
   source(file.path("Server", "sidebar.R"), local = TRUE)
   
   # Load Source files of UI and Server modules of Upload Package Tab.
-  source(file.path("UI", "uploadpackage.R"), local = TRUE)
-  source(file.path("Server", "uploadpackage.R"), local = TRUE)
+  mod_uploadpackage_server() # no id
+  # source(file.path("UI", "uploadpackage.R"), local = TRUE)
+  # source(file.path("Server", "uploadpackage.R"), local = TRUE)
   
   # Load Source files of UI and Server modules of Report Preview Tab
   source(file.path("UI", "reportpreview.R"), local = TRUE)
@@ -71,7 +72,8 @@ app_server <- function( input, output, session ) {
       source(file.path("UI", "db_dash_screen.R"), local = TRUE)
       shinyjs::hide("assessment_criteria_bttn")
     } else{
-      source(file.path("UI", "dashboard_screen.R"), local = TRUE)
+      # source(file.path("UI", "dashboard_screen.R"), local = TRUE)
+      mod_dashboard_screen_server()
       shinyjs::show("assessment_criteria_bttn")
     }
   })
