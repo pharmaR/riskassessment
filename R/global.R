@@ -11,27 +11,15 @@
 # #'
 # #' @keywords internal
 # #'
-# #' @import rlang
-# #' @importFrom purrr map_chr walk2 map map_dbl
-# #' @importFrom dplyr left_join bind_cols filter select rename rename_with
-# #'   everything arrange
-# #' @importFrom glue glue
-# #' @importFrom shinymanager secure_app
-# #' @importFrom tidyselect all_of
-# #' @importFrom utils capture.output str tail packageVersion
-# #' @importFrom stringr str_detect
+# #' @import shiny
 # "_PACKAGE"
 
 
-# Create any database files if it doesn't exist.
-if(!file.exists(database_name)) create_db()
-if(!file.exists(credentials_name)) create_credentials_db()
-
 # Start logging info.
-set_logfile("loggit.json")
+loggit::set_logfile("loggit.json")
 
 # initialize a shiny tag as hidden
-hidden(p(id = "assessment_criteria_bttn"))
+shinyjs::hidden(p(id = "assessment_criteria_bttn"))
 
 # 
 # # Packages needed for the app.

@@ -18,7 +18,7 @@
 #' maintenance_metrics Server Functions
 #'
 #' @noRd 
-mod_maintenance_metrics_server <- function(input, output, session = getDefaultReactiveDomain()
+mod_maintenance_metrics_server <- function(input, output, session
                                   ){ # id removed & added: input, output, session!
   # moduleServer( id, function(input, output, session){
   #   ns <- session$ns

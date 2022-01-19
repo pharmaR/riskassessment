@@ -45,10 +45,10 @@ app_ui <- function(request) {
           # rintrojs::introjsUI(), # don't need here. belongs below
           
           # Include js scripts.
-          # tags$head(tags$script(src = "helperScript.js")), 
+          # tags$head(tags$script(src = "inst/app/www/script.js")),
           
           # Include main.css to add the styles and enhancements to the app.
-          # includeCSS("www/css/main.css"), # do I need this 
+          # includeCSS("inst/app/www/main.css"), # do I need this
           
           # shinyjs::useShinyjs(), # don't need here. belongs below
           

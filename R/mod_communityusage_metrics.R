@@ -20,7 +20,7 @@
 #'
 #' @noRd 
 mod_communityusage_metrics_server <- 
-  function(input, output, session = getDefaultReactiveDomain()
+  function(input, output, session
   ){ # id removed & added: input, output, session!
     
   # moduleServer( id, function(input, output, session){

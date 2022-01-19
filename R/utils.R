@@ -121,6 +121,10 @@ create_credentials_db <- function(db_name = credentials_name, username = getOpti
   dbDisconnect(con)
 }
 
+# Create any database files if it doesn't exist.
+if(!file.exists(database_name)) create_db()
+if(!file.exists(credentials_name)) create_credentials_db()
+
 db_fun <- function(query, db_name = database_name){
   errFlag <- FALSE
   con <- dbConnect(RSQLite::SQLite(), db_name)

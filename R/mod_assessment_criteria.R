@@ -1,15 +1,31 @@
 
-#' assessment_criteria UI Function
-#'
-#' @description A shiny Module.
-#'
-#' @param id,input,output,session Internal parameters for {shiny}.
+# #' assessment_criteria UI Function
+# #'
+# #' @description A shiny Module.
+# #'
+# #' @param id,input,output,session Internal parameters for {shiny}.
+# #'
+# #' @noRd 
+# #'
+# #' @import shiny
+# mod_assessment_criteria_ui <- function(){ # no id
+  # ns <- NS(id)
+    
+# }
+    
+
+
+#' assessment_criteria Server Functions
 #'
 #' @noRd 
-#'
-#' @import shiny
-mod_assessment_criteria_ui <- function(){ # no id
-  # ns <- NS(id)
+mod_assessment_criteria_server <-
+  function(input, output, session
+    ){ # id removed & added: input, output, session!
+    
+  # moduleServer( id, function(input, output, session){
+  #   ns <- session$ns
+  # })
+    
     showModal(tags$div(id = "assessment_criteria_id", modalDialog(
       
       actionButton("assessment_criteria_close", "X"),  # Action button to close the window.
@@ -56,20 +72,6 @@ mod_assessment_criteria_ui <- function(){ # no id
       ),
       footer = NULL, easyClose = TRUE
     )))  
-}
-    
-
-
-#' assessment_criteria Server Functions
-#'
-#' @noRd 
-mod_assessment_criteria_server <-
-  function(input, output, session = getDefaultReactiveDomain()
-    ){ # id removed & added: input, output, session!
-    
-  # moduleServer( id, function(input, output, session){
-  #   ns <- session$ns
-  # })
     
     riskcalc_text <- "<h4>Per the <b>riskmetric</b> package, there 
 are a series of metrics underlying the risk calculation for any 
@@ -149,7 +151,10 @@ Infrastructure</a>.</h4>"
     
     # Display the Community Usage Metrics text content.
     output$community_usage_desc <- renderText({
-      desc_community_usage <- read_file(file.path("Data", "community.txt"))
+      desc_community_usage <- #read_file(file.path("Data", "community.txt"))
+        "The user community plays an important role in open source software development.  The more exposure a package has had to the user community, the more ad-hoc testing it has been exposed to.  Over time the better packages tend to rise to the top of the pack, leading to more downloads and increased exposure.
+
+The aim of the community usage metrics is to assess the level of exposure to the wider community and thus the level of risk that a package presents.  The following table highlights some community usage metrics."
       paste("<h4>", desc_community_usage, "</h4>")
     })
     
@@ -172,7 +177,8 @@ Infrastructure</a>.</h4>"
     
     # Display the Testing Metrics text content.
     output$testing_desc <- renderText({
-      desc_testing <- read_file(file.path("Data", "testing.txt"))
+      desc_testing <- #read_file(file.path("Data", "testing.txt"))
+        "Testing is a vital component in a well-established Software Development Life Cycle (SDLC).  The more tests the more confident we can be in the stability of the package over time.  The following table highlights an important testing metric. Note: the 'covr_coverage' metric is currently disabled (weight = 0) until the 'riskmetric' package returns a non-NA value for this metric."
       paste("<h4>", desc_testing, "</h4>")
     })
     

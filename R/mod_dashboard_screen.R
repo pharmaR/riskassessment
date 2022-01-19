@@ -18,7 +18,7 @@
 #' dashboard_screen Server Functions
 #'
 #' @noRd 
-mod_dashboard_screen_server <- function(input, output, session = getDefaultReactiveDomain()
+mod_dashboard_screen_server <- function(input, output, session
                             ){ # id removed & added: input, output, session!
   # moduleServer( id, function(input, output, session){
   #   ns <- session$ns

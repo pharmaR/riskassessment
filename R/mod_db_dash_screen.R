@@ -19,9 +19,11 @@
 
 #' db_dash_screen Server Functions
 #'
+#' @import shiny
+#' @importFrom lubridate as_datetime
 #' @noRd 
 mod_db_dash_screen_server <- 
-  function(input, output, session = getDefaultReactiveDomain()
+  function(input, output, session
     ){ # id removed & added: input, output, session!
   
   # moduleServer( id, function(input, output, session){
@@ -81,7 +83,7 @@ mod_db_dash_screen_server <-
     output$db_pkgs <- DT::renderDataTable({
       
       values$db_pkg_overview <- update_db_dash() %>%
-        mutate(last_comment = as.character(as_datetime(last_comment))) %>%
+        mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>%
         mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
         mutate(decision = ifelse(decision != "", paste(decision, "Risk"), "-")) %>%
         mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%

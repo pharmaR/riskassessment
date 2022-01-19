@@ -84,7 +84,10 @@ output$maintenance_table <- DT::renderDataTable(
 
 # Display the Community Usage Metrics text content.
 output$community_usage_desc <- renderText({
-  desc_community_usage <- read_file(file.path("Data", "community.txt"))
+  desc_community_usage <- #read_file(file.path("Data", "community.txt"))
+    "The user community plays an important role in open source software development.  The more exposure a package has had to the user community, the more ad-hoc testing it has been exposed to.  Over time the better packages tend to rise to the top of the pack, leading to more downloads and increased exposure.
+
+The aim of the community usage metrics is to assess the level of exposure to the wider community and thus the level of risk that a package presents.  The following table highlights some community usage metrics."
   paste("<h4>", desc_community_usage, "</h4>")
 })
 
@@ -107,7 +110,8 @@ output$community_usage_table <- DT::renderDataTable(
 
 # Display the Testing Metrics text content.
 output$testing_desc <- renderText({
-  desc_testing <- read_file(file.path("Data", "testing.txt"))
+  desc_testing <- #read_file(file.path("Data", "testing.txt"))
+    "Testing is a vital component in a well-established Software Development Life Cycle (SDLC).  The more tests the more confident we can be in the stability of the package over time.  The following table highlights an important testing metric. Note: the 'covr_coverage' metric is currently disabled (weight = 0) until the 'riskmetric' package returns a non-NA value for this metric."
   paste("<h4>", desc_testing, "</h4>")
 })
 

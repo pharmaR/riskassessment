@@ -20,7 +20,7 @@
 #'
 #' @noRd 
 mod_uploadpackage_server <- 
-  function(input, output, session = getDefaultReactiveDomain()
+  function(input, output, session
     ){ # id removed & added: input, output, session!
   # moduleServer( function(input, output, session){ # id, 
   #   ns <- session$ns
