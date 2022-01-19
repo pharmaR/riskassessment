@@ -54,7 +54,7 @@ ui <- dashboardPage(
 
   dashboardBody(
     
-    introjsUI(),
+    rintrojs::introjsUI(),
     
     # Include js scripts.
     tags$head(tags$script(src = "helperScript.js")),
@@ -62,7 +62,7 @@ ui <- dashboardPage(
     # Include main.css to add the styles and enhancements to the app.
     includeCSS("www/css/main.css"),
     
-    useShinyjs(),
+    shinyjs::useShinyjs(),
     
     # UI screen to load the required screen
     uiOutput("screen")

@@ -133,4 +133,6 @@ usethis::use_package("RSQLite")
 usethis::use_package("rstudioapi")
 usethis::use_package("rmarkdown")
 
+usethis::use_package("rintrojs")
+
 
