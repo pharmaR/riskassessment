@@ -1,8 +1,10 @@
 #' The application User-Interface
-#' 
-#' @param request Internal parameter for `{shiny}`. 
-#'     DO NOT REMOVE.
+#'
+#' @param request Internal parameter for `{shiny}`. DO NOT REMOVE.
 #' @import shiny
+#' @importFrom shinydashboard dashboardPage dashboardHeader dashboardSidebar
+#'   dashboardBody
+#' @importFrom shinymanager secure_app
 #' @noRd
 app_ui <- function(request) {
   tagList(
@@ -74,6 +76,8 @@ app_ui <- function(request) {
 #' 
 #' @import shiny
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
+#' @importFrom rintrojs introjsUI
+#' @importFrom shinyjs useShinyjs
 #' @noRd
 golem_add_external_resources <- function(){
   

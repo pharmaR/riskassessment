@@ -3,6 +3,10 @@
 #' @param input,output,session Internal parameters for {shiny}. 
 #'     DO NOT REMOVE.
 #' @import shiny
+#' @importFrom shinyjs show hide
+#' @importFrom shinymanager secure_server
+#' @importFrom keyring key_get
+#' 
 #' @noRd
 app_server <- function( input, output, session ) {
   
@@ -10,7 +14,7 @@ app_server <- function( input, output, session ) {
   res_auth <- secure_server(
     check_credentials = check_credentials(
       file.path("credentials.sqlite"),
-      passphrase = key_get("R-shinymanager-key", getOption("keyring_user"))
+      passphrase = keyring::key_get("R-shinymanager-key", getOption("keyring_user"))
     )
   )
   
@@ -37,28 +41,38 @@ app_server <- function( input, output, session ) {
   })
   
   # Load Server Source module file of Package Review History.
-  source(file.path("Server", "db_dash_screen.R"), local = TRUE)
-  source(file.path("Server", "assessment_criteria.R"), local = TRUE)
+  # source(file.path("Server", "db_dash_screen.R"), local = TRUE)
+  mod_db_dash_screen_server()
   
+  # source(file.path("Server", "assessment_criteria.R"), local = TRUE)
+  mod_assessment_criteria_server()
+    
   # Load Server Source module file of Sidebar.
-  source(file.path("Server", "sidebar.R"), local = TRUE)
+  # source(file.path("Server", "sidebar.R"), local = TRUE)
+  mod_sidebar_server() # no id
   
   # Load Source files of UI and Server modules of Upload Package Tab.
-  mod_uploadpackage_server() # no id
   # source(file.path("UI", "uploadpackage.R"), local = TRUE)
   # source(file.path("Server", "uploadpackage.R"), local = TRUE)
+  mod_uploadpackage_server() # no id
   
   # Load Source files of UI and Server modules of Report Preview Tab
-  source(file.path("UI", "reportpreview.R"), local = TRUE)
-  source(file.path("Server", "reportpreview.R"), local = TRUE)
+  # source(file.path("UI", "reportpreview.R"), local = TRUE)
+  # source(file.path("Server", "reportpreview.R"), local = TRUE)
+  mod_reportpreview_server()
   
   # Load Source files of UI and Server modules of Maintenance Metrics Tab.
-  source(file.path("UI", "maintenance_metrics.R"), local = TRUE)
-  source(file.path("Server", "maintenance_metrics.R"), local = TRUE)
+  # source(file.path("UI", "maintenance_metrics.R"), local = TRUE)
+  # source(file.path("Server", "maintenance_metrics.R"), local = TRUE)
+  mod_maintenance_metrics_server() # no id
   
   # Load Source files of UI and Server modules of Community Usage Tab.
-  source(file.path("UI", "communityusage_metrics.R"), local = TRUE)
-  source(file.path("Server", "communityusage_metrics.R"), local = TRUE)
+  # source(file.path("UI", "communityusage_metrics.R"), local = TRUE)
+  # source(file.path("Server", "communityusage_metrics.R"), local = TRUE)
+  mod_communityusage_metrics_server()
+  
+  # Load Server modules of testing metrics Tab.
+  # mod_testing_metrics_server()
   
   # Start of the observes
   # 1. Observe to Load Source files of UI module of selected screen (Package
@@ -69,7 +83,8 @@ app_server <- function( input, output, session ) {
   
   observeEvent(values$current_screen, {
     if(values$current_screen == "db_dash_screen") {
-      source(file.path("UI", "db_dash_screen.R"), local = TRUE)
+      # source(file.path("UI", "db_dash_screen.R"), local = TRUE)
+      mod_db_dash_screen_server()
       shinyjs::hide("assessment_criteria_bttn")
     } else{
       # source(file.path("UI", "dashboard_screen.R"), local = TRUE)
@@ -96,7 +111,8 @@ app_server <- function( input, output, session ) {
   # Observe Event to load the source file of UI module when we click on the
   # Assessment Criteria action Link.
   observeEvent(input$assessment_criteria_bttn, {
-    source(file.path("UI", "assessment_criteria.R"), local = TRUE)
+    # source(file.path("UI", "assessment_criteria.R"), local = TRUE)
+    mod_assessment_criteria_ui()
   })
   
 }

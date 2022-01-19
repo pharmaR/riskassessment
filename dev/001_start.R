@@ -134,5 +134,6 @@ usethis::use_package("rstudioapi")
 usethis::use_package("rmarkdown")
 
 usethis::use_package("rintrojs")
+usethis::use_package("keyring")
 
 

@@ -9,7 +9,6 @@
 # Start of the Testing_Metrics Source file for UI Module.
 
 # Render Output UI for Testing Metrics.
-
 output$testing_metrics <- renderUI({
   Sys.sleep(0.1)
   if (!is.null(values$packsDB$name) &&
