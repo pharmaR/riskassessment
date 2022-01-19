@@ -22,59 +22,69 @@
 #' @importFrom stringr str_detect
 "_PACKAGE"
 
-# Packages needed for the app.
-packages = c("shiny"
-             ,"shinyhelper"
-             ,"shinyjs"
-             ,"shinydashboard"
-             ,"shinyWidgets"
-             ,"data.table"
-             ,"DT"
-             ,"readr"
-             ,"lubridate"
-             ,"RSQLite"
-             ,"DBI"
-             ,"rvest"
-             ,"xml2"
-             ,"httr"
-             ,"desc"
-             ,"dplyr"
-             ,"tools"
-             ,"stringr"
-             ,"tidyverse"
-             ,"loggit"
-             ,"shinycssloaders"
-             ,"rAmCharts"
-             ,"devtools"
-             ,"plotly"
-             ,"cranlogs"
-             ,"formattable"
-             ,"rintrojs"
-             ,"shinymanager"
-             ,"keyring"
-             ,"rstudioapi"
-             ,"glue"
-)
 
-# Install and load required packages.
-package.check <- lapply(
-  packages,
-  FUN = function(x) {
-    if (!require(x, character.only = TRUE)) {
-      install.packages(x, dependencies = TRUE)
-      library(x, character.only = TRUE)
-    }
-  }
-)
+# Create any database files if it doesn't exist.
+if(!file.exists(database_name)) create_db()
+if(!file.exists(credentials_name)) create_credentials_db()
 
-# Install a specific version of riskmetric from GitHub and load it.
-if(!require(riskmetric)){
-  devtools::install_github("pharmaR/riskmetric", ref = "release-v0.1.1")
-  library(riskmetric)
-}
+# Start logging info.
+set_logfile("loggit.json")
 
-# Load the functions to create infoboxes.
-source("Utils/infoboxes.R")
+# initialize a shiny tag as hidden
+hidden(p(id = "assessment_criteria_bttn"))
+
+# 
+# # Packages needed for the app.
+# packages = c("shiny"
+#              ,"shinyhelper"
+#              ,"shinyjs"
+#              ,"shinydashboard"
+#              ,"shinyWidgets"
+#              ,"data.table"
+#              ,"DT"
+#              ,"readr"
+#              ,"lubridate"
+#              ,"RSQLite"
+#              ,"DBI"
+#              ,"rvest"
+#              ,"xml2"
+#              ,"httr"
+#              ,"desc"
+#              ,"dplyr"
+#              ,"tools"
+#              ,"stringr"
+#              ,"tidyverse"
+#              ,"loggit"
+#              ,"shinycssloaders"
+#              ,"rAmCharts"
+#              ,"devtools"
+#              ,"plotly"
+#              ,"cranlogs"
+#              ,"formattable"
+#              ,"rintrojs"
+#              ,"shinymanager"
+#              ,"keyring"
+#              ,"rstudioapi"
+#              ,"glue"
+# )
+# 
+# # Install and load required packages.
+# package.check <- lapply(
+#   packages,
+#   FUN = function(x) {
+#     if (!require(x, character.only = TRUE)) {
+#       install.packages(x, dependencies = TRUE)
+#       library(x, character.only = TRUE)
+#     }
+#   }
+# )
+# 
+# # Install a specific version of riskmetric from GitHub and load it.
+# if(!require(riskmetric)){
+#   devtools::install_github("pharmaR/riskmetric", ref = "release-v0.1.1")
+#   library(riskmetric)
+# }
+
 
 # does this belong in utils or global.r? It is static, and non-functional
 sidebar_steps <-
@@ -94,6 +104,7 @@ sidebar_steps <-
     position = c(rep("left", 2), rep("bottom", 6))
   )
 
+## old... before packagizing
 # Note: If deploying the app to shinyapps.io, then the code to directly install
 # missing packages will need to be removed as the app will fail to deploy.
 # Instead comment the code that install packages and attach them directly by
@@ -127,4 +138,4 @@ sidebar_steps <-
 # library(formattable)
 # library(rintrojs)
 
-options(keyring_user = "NeildeGrasseTyson")
+
