@@ -1,20 +1,18 @@
 ---
-title: "Converting from SQLite to MySQL"
-author: "Robert Krajcik"
-date: "September 2, 2020"
-output:
-  html_document:
-    theme: cerulean
-    highlight: pygments
-    toc: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: false
-    toc_depth: 2
+title: "Convert SQLite to MySQL"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Convert SQLite to MySQL}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE
+)
 ```
 
 <br><br><br>
@@ -40,7 +38,7 @@ https://dev.mysql.com/downloads/mysql/5.5.html?os=3&version=5
 https://dev.mysql.com/doc/refman/8.0/en/
 
 - Next, start the MySQL command line client and create a database<br>
-  ![](images/MySQL_CLC.png)
+  ![](figures/MySQL_CLC.png)
 
 - Now it's time to create a database. Note the name is case-sensitive.<br>
   type: `CREATE DATABASE mysqldatabase;`<br>
@@ -48,7 +46,7 @@ https://dev.mysql.com/doc/refman/8.0/en/
   and then type: `USE mysqldatabase;`<br>
   to select it.<br>
   
-  ![](images/CommandLine.png)<br>
+  ![](figures/CommandLine.png)<br>
 
 - Databases are created in "C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Data"
 

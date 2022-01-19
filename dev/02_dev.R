@@ -45,13 +45,16 @@ usethis::use_data_raw( name = "testing", open = TRUE )
 
 ## Tests ----
 ## Add one line by test you want to create
-usethis::use_test( "app" )
+# usethis::use_test( "app" )
 
 # Documentation
 
 ## Vignette ----
-usethis::use_vignette("riskassessment")
-devtools::build_vignettes()
+# usethis::use_vignette("riskassessment")
+usethis::use_vignette("managing_user_ids_and_passwords")
+usethis::use_vignette("Convert_SQLite_to_MySQL")
+usethis::use_vignette("managing_user_ids_and_passwords")
+# devtools::build_vignettes()
 
 ## Code Coverage----
 ## Set the code coverage service ("codecov" or "coveralls")

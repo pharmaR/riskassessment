@@ -1,20 +1,18 @@
 ---
-title: "Convert from SQLite to MariaDB"
-author: "Robert Krajcik"
-date: "September 3, 2020"
-output:
-  html_document:
-    theme: cerulean
-    highlight: pygments
-    toc: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: false
-    toc_depth: 2
+title: "Convert_SQLite_to_MariaDB"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Convert_SQLite_to_MariaDB}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  echo = TRUE
+)
 ```
 
 <br><br><br>
@@ -43,10 +41,10 @@ If you already have MySQL running, you will need to choose another port number.
 https://mariadb.com/kb/en/documentation/
 
 - Go into settings -> Services and check that MariaDB is running<br>
- ![](images/Services.png)
+ <!-- ![](figues/Services.png) -->
  
 - Next, start the MariaDB command line client and create a database<br>
- ![](images/MariaDB_CLI.png)
+ <!-- ![](figues/MariaDB_CLI.png) -->
 
 - Now it's time to create a database. Note the name is case-sensitive.<br>
   type: `CREATE DATABASE mymariadatabase;` <br>
@@ -163,7 +161,7 @@ TimeStamp<-function(){
 }
 ```
 I was able to confirm by going back to the MariaDB Command Line Interface:
- ![](images/SelectFromComments.png)
+ <!-- ![](figues/SelectFromComments.png) -->
  
 Finally, update function `genInfo_upload_to_DB()` in `Modules\dbupload.R` as follows:
 
