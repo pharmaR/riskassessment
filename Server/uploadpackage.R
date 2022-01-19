@@ -51,7 +51,7 @@ observeEvent(input$help,
 
 # Sample csv file content.
 data <- reactive({
-  data.table(read_csv(file.path("Data", "upload_format.csv")))
+  data.table(upload_format) # internal data
 })
 
 # Load the columns from DB into reactive values.
@@ -143,7 +143,8 @@ output$upload_format_download <- downloadHandler(
     paste("Upload_file_structure", ".csv", sep = "")
   },
   content = function(file) {
-    write.csv(read_csv(file.path("Data", "upload_format.csv")), file, row.names = F)
+    # upload_format is internal data
+    write.csv(upload_format, file, row.names = F)
   }
 )
 

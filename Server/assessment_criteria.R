@@ -69,7 +69,7 @@ output$maintenance_desc <- renderUI({
 # Render table for Maintenance Metrics.
 output$maintenance_table <- DT::renderDataTable(
   datatable(
-    suppressMessages(read_csv(file.path("Data", "maintenance.csv"))),
+    maintenance, # internal data
     escape = FALSE,
     class = "cell-border",
     selection = 'none',
@@ -92,7 +92,7 @@ output$community_usage_desc <- renderText({
 # Render table for Community Usage Metrics.
 output$community_usage_table <- DT::renderDataTable(
   datatable(
-    suppressMessages(read_csv(file.path("Data", "community.csv"))),
+    community, # internal data
     escape = FALSE,
     class = "cell-border",
     selection = 'none',
@@ -115,7 +115,7 @@ output$testing_desc <- renderText({
 # Render table for Testing Metrics.
 output$testing_table <- DT::renderDataTable(
   datatable(
-    read_csv(file.path("Data", "testing.csv")),
+    testing, # internal data
     escape = FALSE,
     class = "cell-border",
     selection = 'none',

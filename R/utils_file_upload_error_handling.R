@@ -31,7 +31,7 @@ file_upload_error_handling <- function(UploadFile) {
                stringsAsFactors = FALSE)
     names(pkgs) <- tolower(names(pkgs))
     
-    upload_format_csv <- read.csv("./Data/upload_format.csv")
+    upload_format_csv <- upload_format # internal data
     
     if (dim(pkgs)[1] == 0) {
       showModal(modalDialog(
