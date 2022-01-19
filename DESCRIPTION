@@ -39,7 +39,9 @@ Imports:
     rintrojs,
     riskmetric (>= 0.1.1),
     rlang,
+    rmarkdown,
     RSQLite,
+    rstudioapi,
     shiny (>= 1.6.0),
     shinycssloaders,
     shinydashboard,
@@ -49,7 +51,7 @@ Imports:
     shinyWidgets,
     stringr,
     tools
-Remotes:  
+Remotes: 
     pharmaR/riskmetric,
     rstudio/shiny,
     ThinkR-open/golem,

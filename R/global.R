@@ -1,3 +1,27 @@
+
+
+#' The `riskassessment` package
+#'
+#' The Risk Assessment App is an interactive web application serving as a front
+#' end application for the `riskmetric` R package. `riskmetric` is a framework
+#' to quantify risk by assessing a number of metrics meant to evaluate
+#' development best practices, code documentation, community engagement, and
+#' development sustainability. The app and `riskmetric` aim to provide some
+#' context for validation within regulated industries.
+#'
+#' @keywords internal
+#'
+#' @import rlang
+#' @importFrom purrr map_chr walk2 map map_dbl
+#' @importFrom dplyr left_join bind_cols filter select rename rename_with
+#'   everything arrange
+#' @importFrom glue glue
+#' @importFrom shinymanager secure_app
+#' @importFrom tidyselect all_of
+#' @importFrom utils capture.output str tail packageVersion
+#' @importFrom stringr str_detect
+"_PACKAGE"
+
 # Packages needed for the app.
 packages = c("shiny"
              ,"shinyhelper"

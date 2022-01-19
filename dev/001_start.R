@@ -126,3 +126,11 @@ usethis::use_dev_package("shiny")
 usethis::use_dev_package("golem")
 usethis::use_dev_package("config")
 
+
+usethis::use_package("shinymanager")
+usethis::use_package("shinyjs")
+usethis::use_package("RSQLite")
+usethis::use_package("rstudioapi")
+usethis::use_package("rmarkdown")
+
+
