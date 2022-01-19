@@ -15,23 +15,26 @@
 
 ## Dependencies ----
 ## Add one line by package you want to add as dependency
-usethis::use_package( "thinkr" )
+# usethis::use_package( "thinkr" )
+
+# did this in 001_start.R!
+file.edit("dev/001_start.R")
 
 ## Add modules ----
 ## Create a module infrastructure in R/
-golem::add_module( name = "name_of_module1" ) # Name of the module
-golem::add_module( name = "name_of_module2" ) # Name of the module
+# golem::add_module( name = "name_of_module1" ) # Name of the module
+# golem::add_module( name = "name_of_module2" ) # Name of the module
 
 ## Add helper functions ----
 ## Creates fct_* and utils_*
-golem::add_fct( "helpers" ) 
-golem::add_utils( "helpers" )
+# golem::add_fct( "helpers" ) 
+# golem::add_utils( "helpers" )
 
 ## External resources
 ## Creates .js and .css files at inst/app/www
 golem::add_js_file( "script" )
-golem::add_js_handler( "handlers" )
-golem::add_css_file( "custom" )
+# golem::add_js_handler( "handlers" )
+golem::add_css_file( "main" )
 
 ## Add internal datasets ----
 ## If you have data in your package

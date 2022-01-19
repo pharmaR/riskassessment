@@ -40,15 +40,15 @@ app_ui <- function(request) {
         
         dashboardBody(
           
-          rintrojs::introjsUI(),
+          # rintrojs::introjsUI(), # don't need here. belongs below
           
           # Include js scripts.
-          tags$head(tags$script(src = "helperScript.js")),
+          # tags$head(tags$script(src = "helperScript.js")), 
           
           # Include main.css to add the styles and enhancements to the app.
-          includeCSS("www/css/main.css"),
+          # includeCSS("www/css/main.css"), # do I need this 
           
-          shinyjs::useShinyjs(),
+          # shinyjs::useShinyjs(), # don't need here. belongs below
           
           # UI screen to load the required screen
           uiOutput("screen")
@@ -86,9 +86,11 @@ golem_add_external_resources <- function(){
     bundle_resources(
       path = app_sys('app/www'),
       app_title = 'riskassessment'
-    )
+    ),
     # Add here other external resources
     # for example, you can add shinyalert::useShinyalert() 
+    rintrojs::introjsUI(),
+    shinyjs::useShinyjs()
   )
 }
 

@@ -1,5 +1,9 @@
 ## Risk Assessment Shiny Application
 
+<!-- badges: start -->
+  [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+  <!-- badges: end -->
+  
 The Risk Assessment App is an interactive web application serving as a front end
 application for the [`riskmetric`](https://github.com/pharmaR/riskmetric) R package. `riskmetric` is a framework to quantify risk by assessing a number of
 metrics meant to evaluate development best practices, code documentation,
