@@ -6,12 +6,6 @@
 # You can run the application by executing 'runApp()' command.
 ###############################################################################
 
-# Load required packages.
-source("global.R")
-
-# Load source files.
-source(file.path("Modules", "dbupload.R"))
-source(file.path("Modules", "file_upload_error_handling.R"))
 
 # Create db if it doesn't exist.
 if(!file.exists(database_name)) create_db()
