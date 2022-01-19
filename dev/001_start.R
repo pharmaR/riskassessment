@@ -116,3 +116,4 @@ tidypkgs <- tidyverse::tidyverse_packages(include_self = F)
 use_package_v(tidypkgs)
 
 usethis::use_package("glue")
+usethis::use_dev_package("riskmetric")
