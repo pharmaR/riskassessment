@@ -17,6 +17,8 @@
 # }
     
 #' testing_metrics Server Functions
+#' 
+#' @import shiny
 #'
 #' @noRd 
 mod_testing_metrics_server <- 

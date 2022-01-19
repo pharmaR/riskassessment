@@ -17,6 +17,8 @@
 # }
     
 #' uploadpackage Server Functions
+#' 
+#' @import shiny
 #'
 #' @noRd 
 mod_uploadpackage_server <- 

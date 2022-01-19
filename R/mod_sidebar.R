@@ -18,6 +18,8 @@
     
 
 #' sidebar Server Functions
+#' 
+#' @import shiny
 #'
 #' @noRd 
 mod_sidebar_server <- function(input, output, session
