@@ -118,5 +118,11 @@ use_package_v(tidypkgs)
 usethis::use_package("glue")
 usethis::use_dev_package("riskmetric")
 
+########### Used to packagize the app ############
 # Used this to create new golemized project so I could steal files and mimic app structure
 # golem::create_golem("riskassessment")
+
+usethis::use_dev_package("shiny")
+usethis::use_dev_package("golem")
+usethis::use_dev_package("config")
+
