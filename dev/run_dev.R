@@ -1,5 +1,10 @@
 # Set options here
 options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
+options(
+  spinner.color = "#0275D8",
+  spinner.color.background = "#ffffff",
+  spinner.size = 1
+)
 
 # Detach all loaded packages and clean your environment
 golem::detach_all_attached()

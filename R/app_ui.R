@@ -8,14 +8,61 @@ app_ui <- function(request) {
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
+    
     # Your application UI logic 
-    fluidPage(
-      h1("riskassessment")
-      
-      
-      
-      
-      
+    shinymanager::secure_app(
+      dashboardPage(
+        title = "R Package Risk Assessment App",
+        dashboardHeader(
+          title = list(
+            tags$a(
+              title = "PharmaR Home Page",
+              href = "https://www.pharmar.org/",
+              target = "_blank",
+              tags$img(src = "logo.png", class = "logo_1"),
+              tags$img(src = "logo_no_text.png", class = "logo_2")
+            )
+          ),
+          titleWidth = 320,
+          tags$li(
+            class = "dropdown",
+            actionLink(
+              inputId = "assessment_criteria_bttn",
+              class = "assessment_criteria_bttn_class",
+              HTML('<div class="tooltip-help">
+            <i class="fas fa-info-circle fa-2x asmnt-help-icon"></i>
+            <span class="tooltiptext-help">Assessment Criteria Details</span>
+            </div>'))
+          )
+        ),
+        
+        dashboardSidebar(disable = TRUE),
+        
+        dashboardBody(
+          
+          rintrojs::introjsUI(),
+          
+          # Include js scripts.
+          tags$head(tags$script(src = "helperScript.js")),
+          
+          # Include main.css to add the styles and enhancements to the app.
+          includeCSS("www/css/main.css"),
+          
+          shinyjs::useShinyjs(),
+          
+          # UI screen to load the required screen
+          uiOutput("screen")
+        )
+      ), 
+      # customize top and bottom of login screen
+      tags_top = 
+        tags$div(
+          tags$h2("Risk Assessment Application", style = "align:center"),
+          tags$img(
+            src = "logo_no_text.png",
+            width = 100, style = "align:center"
+          )),
+      enable_admin = TRUE
     )
   )
 }
