@@ -50,53 +50,58 @@ usethis::use_data_raw( name = "testing", open = TRUE )
 # Documentation
 
 ## Vignette ----
-# usethis::use_vignette("riskassessment")
+# usethis::use_vignette("riskassessment") # run this to create 'Get Started' vignette
 usethis::use_vignette("managing_user_ids_and_passwords")
 usethis::use_vignette("Convert_SQLite_to_MySQL")
-usethis::use_vignette("managing_user_ids_and_passwords")
+usethis::use_vignette("Convert_SQLite_to_MariaDB")
 # devtools::build_vignettes()
 
-## Code Coverage----
-## Set the code coverage service ("codecov" or "coveralls")
-usethis::use_coverage()
-
-# Create a summary readme for the testthat subdirectory
-covrpage::covrpage()
+# ## Code Coverage----
+# ## Set the code coverage service ("codecov" or "coveralls")
+# usethis::use_coverage()
+# 
+# # Create a summary readme for the testthat subdirectory
+# covrpage::covrpage()
 
 ## CI ----
 ## Use this part of the script if you need to set up a CI
 ## service for your application
 ## 
 ## (You'll need GitHub there)
-usethis::use_github()
+# usethis::use_github()
 
+# We will want to use some of these!
 # GitHub Actions
-usethis::use_github_action() 
+# usethis::use_github_action() 
+
 # Chose one of the three
 # See https://usethis.r-lib.org/reference/use_github_action.html
-usethis::use_github_action_check_release() 
-usethis::use_github_action_check_standard() 
-usethis::use_github_action_check_full() 
-# Add action for PR
-usethis::use_github_action_pr_commands()
+# usethis::use_github_action_check_release() 
+# usethis::use_github_action_check_standard() 
+# usethis::use_github_action_check_full() 
 
+# Add action for PR
+# usethis::use_github_action_pr_commands()
+
+
+# don't use any of these CI tools (not better than GitHub Actions)
 # Travis CI
-usethis::use_travis() 
-usethis::use_travis_badge() 
+# usethis::use_travis() 
+# usethis::use_travis_badge() 
 
 # AppVeyor 
-usethis::use_appveyor() 
-usethis::use_appveyor_badge()
+# usethis::use_appveyor() 
+# usethis::use_appveyor_badge()
 
 # Circle CI
-usethis::use_circleci()
-usethis::use_circleci_badge()
+# usethis::use_circleci()
+# usethis::use_circleci_badge()
 
 # Jenkins
-usethis::use_jenkins()
+# usethis::use_jenkins()
 
 # GitLab CI
-usethis::use_gitlab_ci()
+# usethis::use_gitlab_ci()
 
 # You're now set! ----
 # go to dev/03_deploy.R
