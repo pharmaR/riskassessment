@@ -43,7 +43,7 @@ output$sel_pack <- renderUI({
   values$packsDB <- db_fun("SELECT name FROM package")
   selectizeInput(
     "select_pack",
-    h3("Select Package:"),
+    h3("Select Package"),
     choices = c("Select", values$packsDB$name),
     selected = "Select"
   )
@@ -69,7 +69,7 @@ output$sel_ver <- renderUI({
   }
   
   selectizeInput("select_ver",
-              h3("Select Version:"),
+              h3("Select Version"),
               choices =  Choices,
               selected = Choices)
 })
@@ -161,7 +161,7 @@ observeEvent(input$select_pack, {
           AND comment_type = 'o'"
         )
       ) 
-    updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", values$comment_occ$comment))
+    updateTextAreaInput(session, "overall_comment", placeholder = values$comment_occ$comment)
   }
 })
 
@@ -275,7 +275,7 @@ observeEvent(input$submit_overall_comment, {
       )
       values$o_comment_submitted <- "yes"
       updateTextAreaInput(session, "overall_comment", value = "")
-      updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", values$overall_comments))
+      updateTextAreaInput(session, "overall_comment", placeholder = values$overall_comments)
     }
     
     # After comment added to Comments table, update db dash
@@ -302,7 +302,7 @@ observeEvent(input$submit_overall_comment_yes, {
   )
   values$o_comment_submitted <- "yes"
   updateTextAreaInput(session, "overall_comment", value = "")
-  updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", values$overall_comments))
+  updateTextAreaInput(session, "overall_comment", placeholder = values$overall_comments)
   removeModal()
 })
 
