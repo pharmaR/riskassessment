@@ -42,19 +42,19 @@ app_server <- function( input, output, session ) {
   
   # Load Server Source module file of Package Review History.
   # source(file.path("Server", "db_dash_screen.R"), local = TRUE)
-  # mod_db_dash_screen_server()
+  # mod_db_dash_screen_server() # not needed. keep commented out
   
   # source(file.path("Server", "assessment_criteria.R"), local = TRUE)
   # only needed below, on button click
     
   # Load Server Source module file of Sidebar.
   # source(file.path("Server", "sidebar.R"), local = TRUE)
-  # mod_sidebar_server() # no id
+  # mod_sidebar_server(input = input, output = output, values = values) # no id
   
   # Load Source files of UI and Server modules of Upload Package Tab.
   # source(file.path("UI", "uploadpackage.R"), local = TRUE)
   # source(file.path("Server", "uploadpackage.R"), local = TRUE)
-  # mod_uploadpackage_server() # no id
+  mod_uploadpackage_server(input = input, output = output, values = values) # no id
   
   # Load Source files of UI and Server modules of Report Preview Tab
   # source(file.path("UI", "reportpreview.R"), local = TRUE)
@@ -88,7 +88,7 @@ app_server <- function( input, output, session ) {
       shinyjs::hide("assessment_criteria_bttn")
     } else{
       # source(file.path("UI", "dashboard_screen.R"), local = TRUE)
-      mod_dashboard_screen_server(output = output)
+      mod_dashboard_screen_server(input = input, output = output)
       shinyjs::show("assessment_criteria_bttn")
     }
   })
@@ -113,7 +113,7 @@ app_server <- function( input, output, session ) {
   observeEvent(input$assessment_criteria_bttn, {
     # source(file.path("UI", "assessment_criteria.R"), local = TRUE)
     # mod_assessment_criteria_modal()
-    mod_assessment_criteria_server()
+    mod_assessment_criteria_server(input = input, output = output)
   })
   
 }

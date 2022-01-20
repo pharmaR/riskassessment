@@ -22,8 +22,10 @@
 #' @import shiny
 #'
 #' @noRd 
-mod_sidebar_server <- function(input, output, session
-                          ){ # id removed & added: input, output, session!
+mod_sidebar_server <-
+  function(input, output, session = getDefaultReactiveDomain(),
+           values
+      ){ # id removed & added: input, output, session!
   # moduleServer( id, function(input, output, session){
   #   ns <- session$ns
   # })
@@ -341,6 +343,7 @@ mod_sidebar_server <- function(input, output, session
     removeModal()
   })
   
+  return(values)
 }
     
 ## To be copied in the UI

@@ -24,7 +24,8 @@
 #' @import dplyr
 #' @noRd 
 mod_db_dash_screen_server <- 
-  function(input, output, session, values
+  function(input, output, session = getDefaultReactiveDomain(),
+           values
     ){ # id removed & added: input, output, session!
   
   # moduleServer( id, function(input, output, session){
@@ -507,7 +508,7 @@ mod_db_dash_screen_server <-
       }
     )
     
-    return(list(input, output, values))
+    return(values)
 }
     
 ## To be copied in the UI

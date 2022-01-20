@@ -22,7 +22,8 @@
 #'
 #' @noRd 
 mod_uploadpackage_server <- 
-  function(input, output, session
+  function(input, output, session = getDefaultReactiveDomain(),
+           values
     ){ # id removed & added: input, output, session!
   # moduleServer( function(input, output, session){ # id, 
   #   ns <- session$ns
@@ -251,7 +252,7 @@ mod_uploadpackage_server <-
   
   output$total_new_undis_dup_table <- DT::renderDataTable({
     if (values$upload_complete == "upload_complete") {
-      datatable(
+      DT::datatable(
         values$Total_New_Undis_Dup,
         escape = FALSE,
         class = "cell-border",
@@ -274,7 +275,7 @@ mod_uploadpackage_server <-
     dataTableOutput("sampletable")
     showModal(modalDialog(
       output$sampletable <- DT::renderDataTable(
-        datatable(
+        DT::datatable(
           data(),
           escape = FALSE,
           class = "cell-border",
@@ -294,6 +295,7 @@ mod_uploadpackage_server <-
     ))
   })  # End of the observe event for sample button.
   
+  return(values)
 }
     
 ## To be copied in the UI

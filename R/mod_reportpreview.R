@@ -22,7 +22,8 @@
 #'
 #' @noRd 
 mod_reportpreview_server <- 
-  function(input, output, session
+  function(input, output, session = getDefaultReactiveDomain(),
+           values
   ){ # id removed & added: input, output, session!
     
   # moduleServer( id, function(input, output, session){
@@ -259,6 +260,8 @@ mod_reportpreview_server <-
     
     # source(file.path("Server", "mm_report.R"), local = TRUE)$value
     # source(file.path("Server", "cum_report.R"), local = TRUE)$value
+    
+    return(values)
 }
     
 ## To be copied in the UI

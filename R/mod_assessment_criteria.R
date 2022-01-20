@@ -20,7 +20,7 @@
 #' @import shiny
 #' @noRd 
 mod_assessment_criteria_server <-
-  function(input, output, session
+  function(input, output, session = getDefaultReactiveDomain()
     ){ # id removed & added: input, output, session!
     
   # moduleServer( id, function(input, output, session){
@@ -41,7 +41,7 @@ mod_assessment_criteria_server <-
           uiOutput("riskcalc_desc"),  # Maintenance metrics description.
           br(),
           div(style = "display: block;margin-left: auto; margin-right: auto; width:50%;",
-              dataTableOutput("riskcalc_weights_table"))  # data table for maintenance metrics.
+              DT::dataTableOutput("riskcalc_weights_table"))  # data table for maintenance metrics.
         ),
         tabPanel(
           id = "tab1",
@@ -50,7 +50,7 @@ mod_assessment_criteria_server <-
           h3("Description"),
           uiOutput("maintenance_desc"),  # Maintenance metrics description.
           br(),
-          dataTableOutput("maintenance_table")  # data table for maintenance metrics. 
+          DT::dataTableOutput("maintenance_table")  # data table for maintenance metrics. 
         ),
         tabPanel(
           id = "tab2",
@@ -59,7 +59,7 @@ mod_assessment_criteria_server <-
           h3("Description"),
           htmlOutput("community_usage_desc"),  # html output for community usage metrics content.
           br(),
-          dataTableOutput("community_usage_table")  # data table for community usage metrics.
+          DT::dataTableOutput("community_usage_table")  # data table for community usage metrics.
         ),
         tabPanel(
           id = "tab3",
@@ -68,7 +68,7 @@ mod_assessment_criteria_server <-
           h3("Description"),
           htmlOutput("testing_desc"),  # html output for testing metrics content.
           br(),
-          dataTableOutput("testing_table")  # data table for testing metrics.
+          DT::dataTableOutput("testing_table")  # data table for testing metrics.
         )
       ),
       footer = NULL, easyClose = TRUE
@@ -136,7 +136,7 @@ Infrastructure</a>.</h4>"
     
     # Render table for Maintenance Metrics.
     output$maintenance_table <- DT::renderDataTable(
-      datatable(
+      DT::datatable(
         maintenance, # internal data
         escape = FALSE,
         class = "cell-border",
@@ -162,7 +162,7 @@ The aim of the community usage metrics is to assess the level of exposure to the
     
     # Render table for Community Usage Metrics.
     output$community_usage_table <- DT::renderDataTable(
-      datatable(
+      DT::datatable(
         community, # internal data
         escape = FALSE,
         class = "cell-border",
@@ -186,7 +186,7 @@ The aim of the community usage metrics is to assess the level of exposure to the
     
     # Render table for Testing Metrics.
     output$testing_table <- DT::renderDataTable(
-      datatable(
+      DT::datatable(
         testing, # internal data
         escape = FALSE,
         class = "cell-border",
@@ -204,8 +204,6 @@ The aim of the community usage metrics is to assess the level of exposure to the
     observeEvent(input$assessment_criteria_close, {
       removeModal()
     })
-    
-    
 }
     
 ## To be copied in the UI

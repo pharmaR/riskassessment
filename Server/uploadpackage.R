@@ -181,7 +181,7 @@ output$upload_summary_select <- renderUI({
 
 output$total_new_undis_dup_table <- DT::renderDataTable({
   if (values$upload_complete == "upload_complete") {
-    datatable(
+    DT::datatable(
       values$Total_New_Undis_Dup,
       escape = FALSE,
       class = "cell-border",
@@ -204,7 +204,7 @@ observeEvent(input$upload_format, {
   dataTableOutput("sampletable")
   showModal(modalDialog(
     output$sampletable <- DT::renderDataTable(
-      datatable(
+      DT::datatable(
         data(),
         escape = FALSE,
         class = "cell-border",

@@ -22,7 +22,8 @@
 #'
 #' @noRd 
 mod_testing_metrics_server <- 
-  function(input, output, session
+  function(input, output, session = getDefaultReactiveDomain(),
+           values
     ){ # id removed & added: input, output, session!
     
   # moduleServer( id, function(input, output, session){
@@ -240,6 +241,7 @@ mod_testing_metrics_server <-
       }
     })  # End of the observe event.
     
+ return(values)   
 }
     
 ## To be copied in the UI

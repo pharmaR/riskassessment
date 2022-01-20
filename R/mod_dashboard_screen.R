@@ -20,7 +20,7 @@
 #' @import shiny
 #'
 #' @noRd 
-mod_dashboard_screen_server <- function(input, output, session
+mod_dashboard_screen_server <- function(input, output, session = getDefaultReactiveDomain()
                             ){ # id removed & added: input, output, session!
   # moduleServer( id, function(input, output, session){
   #   ns <- session$ns
@@ -141,6 +141,7 @@ mod_dashboard_screen_server <- function(input, output, session
                ))
     )
   })
+  
 }
     
 ## To be copied in the UI

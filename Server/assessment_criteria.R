@@ -68,7 +68,7 @@ output$maintenance_desc <- renderUI({
 
 # Render table for Maintenance Metrics.
 output$maintenance_table <- DT::renderDataTable(
-  datatable(
+  DT::datatable(
     maintenance, # internal data
     escape = FALSE,
     class = "cell-border",
@@ -94,7 +94,7 @@ The aim of the community usage metrics is to assess the level of exposure to the
 
 # Render table for Community Usage Metrics.
 output$community_usage_table <- DT::renderDataTable(
-  datatable(
+  DT::datatable(
     community, # internal data
     escape = FALSE,
     class = "cell-border",
@@ -118,7 +118,7 @@ output$testing_desc <- renderText({
 
 # Render table for Testing Metrics.
 output$testing_table <- DT::renderDataTable(
-  datatable(
+  DT::datatable(
     testing, # internal data
     escape = FALSE,
     class = "cell-border",
