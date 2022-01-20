@@ -75,7 +75,6 @@ output$screen <- renderUI({
                       <span class="tooltiptext-help fa-database-tooltiptext-help">Database</span>
                       </div>'))
                ),
-               br(),
                
                tabsetPanel(
                  id = "tabs",
