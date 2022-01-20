@@ -25,6 +25,18 @@ options(
   spinner.size = 1
 )
 
+theme <- bs_theme(
+  version = 5,
+  bg = "white", 
+  fg = "#023967",
+  bootswatch = "lux",
+  primary = "#2E86C1",
+  secondary = "#1D7BCC",
+  success = "orange",
+  info = "yellow",
+  warning = "pink"
+)
+
 # Create User Interface (UI).
 ui <- dashboardPage(
   title = "R Packages Risk Assessment App",
@@ -51,7 +63,7 @@ ui <- dashboardPage(
     )
   ),
   
-  dashboardSidebar(disable = TRUE),
+  theme = theme,
   
   dashboardBody(
     
