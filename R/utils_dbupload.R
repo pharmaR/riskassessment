@@ -105,7 +105,7 @@ get_packages_info_from_web <- function(package_name) {
         for (i in .libPaths()) {
           if(file.exists(file.path(i, package_name)) == TRUE) {
             i <- file.path(i, package_name)
-            d <- description$new(i)
+            d <- desc::description$new(i)
             title <- d$get("Title")
             ver <- d$get("Version")
             desc <- d$get("Description")
@@ -117,7 +117,7 @@ get_packages_info_from_web <- function(package_name) {
             genInfo_upload_to_DB(package_name, ver, title, desc, auth, main, lis, pub)
           }}
       } else{
-        loggit("ERROR", paste("Error in extracting general info of the package", package_name, "info", e), app = "fileupload-webscraping")
+        loggit::loggit("ERROR", paste("Error in extracting general info of the package", package_name, "info", e), app = "fileupload-webscraping")
       }
     }
   )
@@ -133,7 +133,7 @@ genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis
                      "'", main, "',", "'", auth, "',", "'", lis, "',", "'", pub, "', '')"))
     },
     error = function(e) {
-      loggit("ERROR", paste("Error in uploading the general info of the package", package_name, "info", e), app = "fileupload-DB")
+      loggit::loggit("ERROR", paste("Error in uploading the general info of the package", package_name, "info", e), app = "fileupload-DB")
     }
   )
 }
@@ -143,9 +143,9 @@ genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis
 metric_mm_tm_Info_upload_to_DB <- function(package_name){
   
   riskmetric_assess <-
-    pkg_ref(package_name) %>%
+    riskmetric::pkg_ref(package_name) %>%
     as_tibble() %>%
-    pkg_assess()
+    riskmetric::pkg_assess()
   
   # Get the metrics weights to be used during pkg_score.
   metric_weights_df <- db_fun("SELECT id, name, weight FROM metric")
@@ -154,14 +154,14 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   
   riskmetric_score <-
     riskmetric_assess %>%
-    pkg_score(weights = metric_weights)
+    riskmetric::pkg_score(weights = metric_weights)
   
   package_id <- db_fun(paste0("SELECT id FROM package WHERE name = ", "'", package_name, "';"))
   
   # Leave method if package not found.
   if(nrow(package_id) == 0){
     print("PACKAGE NOT FOUND.")
-    loggit("WARN", paste("Package", package_name, "not found."))
+    loggit::loggit("WARN", paste("Package", package_name, "not found."))
     return()
   }
   
@@ -285,7 +285,7 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
       time_since_version_release <- floor(as.numeric(time_since_version_release / 30))
       
       pkg_vers_date <- data.frame(Version = c(pkg_vers), Date = c(paste(months(pkg_date), year(pkg_date))))
-      pkg_vers_date <- pkg_vers_date %>% map_df(rev)
+      pkg_vers_date <- pkg_vers_date %>% purrr::map_df(rev)
       pkg_vers_date$Date <- as.character(pkg_vers_date$Date)
       pkg_vers_date$Version <- as.character(pkg_vers_date$Version)
       pkg_vers_date <- filter(pkg_vers_date, pkg_vers_date$Date %in% pkg_vers_date_final$Month)
@@ -304,7 +304,7 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
       }
     },
     error = function(e) {
-      loggit("ERROR", paste("Error in extracting cum metric info of the package:", package_name, "info", e),
+      loggit::loggit("ERROR", paste("Error in extracting cum metric info of the package:", package_name, "info", e),
              app = "fileupload-webscraping", echo = FALSE)
     }
   )# End of try catch

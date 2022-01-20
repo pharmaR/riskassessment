@@ -23,7 +23,7 @@ mm_steps <- reactive(
 
 # Start introjs when help button is pressed.
 observeEvent(input$help_mm,
-   introjs(session,
+   rintrojs::introjs(session,
      options = list(
        steps = 
          mm_steps() %>%
@@ -130,7 +130,7 @@ output$mm_commented <- renderText({
           "' AND comment_type = 'mm'"
         )
       )
-    values$comment_mm2 <- data.frame(values$comment_mm1 %>% map(rev))
+    values$comment_mm2 <- data.frame(values$comment_mm1 %>% purrr::map(rev))
     req(values$comment_mm2$comment)
     values$mm_comment_submitted <- "no"
     paste(

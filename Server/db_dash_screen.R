@@ -390,7 +390,7 @@ observeEvent(input$confirm_update_risk, {
   values$db_pkg_overview <- update_db_dash()
   
   #	Write to the log file
-  loggit("INFO", paste("package weights and risk metric scores will be updated for all packages"))
+  loggit::loggit("INFO", paste("package weights and risk metric scores will be updated for all packages"))
 
   # update for each package
   pkg <- db_fun("select distinct name as pkg_name from package")

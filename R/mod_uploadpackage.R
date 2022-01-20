@@ -36,7 +36,7 @@ mod_uploadpackage_server <-
       class = "u_p_main_row",
       tags$div(class = "row col-sm-12 u_p_heading_row",
                tags$h2("Upload list of R Packages"),
-               actionBttn("help", "Need help?", color = "primary",
+               shinyWidgets::actionBttn("help", "Need help?", color = "primary",
                           icon = icon("far fa-star"),
                           block = FALSE, style = "simple", size = "sm")
       ),
@@ -108,7 +108,7 @@ mod_uploadpackage_server <-
   
   # Start introjs when help button is pressed.
   observeEvent(input$help,
-               introjs(session,
+               rintrojs::introjs(session,
                        options = list(
                          steps = 
                            upload_pkg_initial_steps() %>%
@@ -122,7 +122,7 @@ mod_uploadpackage_server <-
   
   # Sample csv file content.
   data <- reactive({
-    data.table(upload_format) # internal data
+    data.table::data.table(upload_format) # internal data
   })
   
   # Load the columns from DB into reactive values.
@@ -201,7 +201,7 @@ mod_uploadpackage_server <-
     
     # Show the download reports buttons after all the packages have been loaded
     # and the information extracted.
-    loggit("INFO", paste("Summary of the uploaded file:",input$uploaded_file$name, 
+    loggit::loggit("INFO", paste("Summary of the uploaded file:",input$uploaded_file$name, 
                          "Total Packages:", nrow(values$Total),
                          "New Packages:", nrow(values$New),
                          "Undiscovered Packages:", nrow(values$Undis),

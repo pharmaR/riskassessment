@@ -39,7 +39,7 @@ mod_communityusage_metrics_server <-
           shiny::tagList(
             br(),
             div(class = "row col-sm-12 u_p_heading_row",
-                actionBttn("help_cum", "Need help?", color = "primary",
+                shinyWidgets::actionBttn("help_cum", "Need help?", color = "primary",
                            icon = icon("far fa-star"),
                            block = FALSE, style = "simple", size = "sm")),
             br(), br(),
@@ -147,7 +147,7 @@ mod_communityusage_metrics_server <-
     
     # Start introjs when help button is pressed.
     observeEvent(input$help_cum,
-                 introjs(session,
+                 rintrojs::introjs(session,
                          options = list(
                            steps = 
                              cum_steps() %>%
@@ -302,7 +302,7 @@ mod_communityusage_metrics_server <-
               "' AND comment_type = 'cum'"
             )
           )
-        values$comment_cum2 <- data.frame(values$comment_cum1 %>% map(rev))
+        values$comment_cum2 <- data.frame(values$comment_cum1 %>% purrr::map(rev))
         req(values$comment_cum2$comment)
         values$cum_comment_submitted <- "no"
         paste(

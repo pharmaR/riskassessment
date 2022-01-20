@@ -19,7 +19,7 @@ output$community_usage_metrics <- renderUI({
       shiny::tagList(
         br(),
         div(class = "row col-sm-12 u_p_heading_row",
-            actionBttn("help_cum", "Need help?", color = "primary",
+            shinyWidgets::actionBttn("help_cum", "Need help?", color = "primary",
                        icon = icon("far fa-star"),
                        block = FALSE, style = "simple", size = "sm")),
         br(), br(),

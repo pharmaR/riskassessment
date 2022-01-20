@@ -10,7 +10,7 @@
 # 1. File upload error handling function for upload csv
 
 file_upload_error_handling <- function(UploadFile) {
-  if (file_ext(UploadFile)[1] != "csv") {
+  if (tools::file_ext(UploadFile)[1] != "csv") {
     showModal(modalDialog(h3("Please Upload only CSV File")))
     return("error")
   } else{

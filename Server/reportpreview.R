@@ -23,7 +23,7 @@ rp_steps <- reactive(
 
 # Start introjs when help button is pressed.
 observeEvent(input$help_rp,
-             introjs(session,
+             rintrojs::introjs(session,
                      options = list(
                        steps = 
                          rp_steps() %>%

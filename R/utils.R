@@ -56,13 +56,13 @@ create_db <- function(db_name = database_name){
   sapply(queries, function(x){
     
     tryCatch({
-      rs <- dbSendStatement(
+      rs <- DBI::dbSendStatement(
         con,
         paste(scan(x, sep = "\n", what = "character"), collapse = ""))
     }, error = function(err) {
-      message <- paste("dbSendStatement",err)
+      message <- paste("DBI::dbSendStatement",err)
       message(message, .loggit = FALSE)
-      loggit("ERROR", message)
+      loggit::loggit("ERROR", message)
       DBI::dbDisconnect(con)
     })
     
@@ -136,13 +136,13 @@ db_fun <- function(query, db_name = database_name){
     warning = function(warn) {
       message <- paste0("warning:\n", query, "\nresulted in\n", warn)
       message(message, .loggit = FALSE)
-      loggit("WARN", message)
+      loggit::loggit("WARN", message)
       errFlag <<- TRUE
     },
     error = function(err) {
       message <- paste0("error:\n", query, "\nresulted in\n",err)
       message(message, .loggit = FALSE)
-      loggit("ERROR", message)
+      loggit::loggit("ERROR", message)
       DBI::dbDisconnect(con)
       errFlag <<- TRUE
     },
@@ -165,14 +165,14 @@ db_fun <- function(query, db_name = database_name){
 db_ins <- function(command, db_name = database_name){
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   tryCatch({
-    rs <- dbSendStatement(con, command)
+    rs <- DBI::dbSendStatement(con, command)
   }, error = function(err) {
     message <- paste0("command:\n",command,"\nresulted in\n",err)
     message(message, .loggit = FALSE)
-    loggit("ERROR", message)
+    loggit::loggit("ERROR", message)
     DBI::dbDisconnect(con)
   })
-  nr <- dbGetRowsAffected(rs)
+  nr <- DBI::dbGetRowsAffected(rs)
   DBI::dbClearResult(rs)
   if (nr == 0) {
     message <- paste0("zero rows were affected by the command:\n",command)

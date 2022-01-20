@@ -35,7 +35,7 @@ mod_maintenance_metrics_server <-
         shiny::tagList(
           br(),
           div(class = "row col-sm-12 u_p_heading_row",
-              actionBttn("help_mm", "Need help?", color = "primary",
+              shinyWidgets::actionBttn("help_mm", "Need help?", color = "primary",
                          icon = icon("far fa-star"),
                          block = FALSE, style = "simple", size = "sm")),
           br(), br(),
@@ -145,7 +145,7 @@ mod_maintenance_metrics_server <-
   
   # Start introjs when help button is pressed.
   observeEvent(input$help_mm,
-               introjs(session,
+               rintrojs::introjs(session,
                        options = list(
                          steps = 
                            mm_steps() %>%
@@ -252,7 +252,7 @@ mod_maintenance_metrics_server <-
             "' AND comment_type = 'mm'"
           )
         )
-      values$comment_mm2 <- data.frame(values$comment_mm1 %>% map(rev))
+      values$comment_mm2 <- data.frame(values$comment_mm1 %>% purrr::map(rev))
       req(values$comment_mm2$comment)
       values$mm_comment_submitted <- "no"
       paste(

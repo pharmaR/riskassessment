@@ -56,8 +56,8 @@ app_ui <- function(request) {
           uiOutput("screen")
         )
       )#, 
-      # customize top and bottom of login screen
-    #   tags_top = 
+    # customize top and bottom of login screen
+    #   tags_top =
     #     tags$div(
     #       tags$h2("Risk Assessment Application", style = "align:center"),
     #       tags$img(

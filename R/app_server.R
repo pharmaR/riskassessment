@@ -32,7 +32,7 @@ app_server <- function( input, output, session ) {
   observeEvent(res_auth$user,{
     # log any admin sign-ons
     if (res_auth$admin == TRUE) {
-      loggit("INFO", paste("User", res_auth$user, "signed on as admin"))
+      loggit::loggit("INFO", paste("User", res_auth$user, "signed on as admin"))
     }
     name <- res_auth$user
     values$name <- trimws(name)

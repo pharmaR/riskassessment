@@ -25,7 +25,7 @@ cum_steps <- reactive(
 
 # Start introjs when help button is pressed.
 observeEvent(input$help_cum,
-             introjs(session,
+             rintrojs::introjs(session,
                      options = list(
                        steps = 
                          cum_steps() %>%
@@ -180,7 +180,7 @@ output$cum_commented <- renderText({
           "' AND comment_type = 'cum'"
         )
       )
-    values$comment_cum2 <- data.frame(values$comment_cum1 %>% map(rev))
+    values$comment_cum2 <- data.frame(values$comment_cum1 %>% purrr::map(rev))
     req(values$comment_cum2$comment)
     values$cum_comment_submitted <- "no"
     paste(

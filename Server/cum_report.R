@@ -135,7 +135,7 @@ output$cum_commented1 <- renderText({
           "' AND comment_type = 'cum'"
         )
       )
-    values$comment_cum2 <- data.frame(values$comment_cum1 %>% map(rev))
+    values$comment_cum2 <- data.frame(values$comment_cum1 %>% purrr::map(rev))
     req(values$comment_cum2$comment)
     values$cum_comment_submitted <- "no"
     paste(

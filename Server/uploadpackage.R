@@ -37,7 +37,7 @@ upload_pkg_steps <- reactive(
 
 # Start introjs when help button is pressed.
 observeEvent(input$help,
-   introjs(session,
+   rintrojs::introjs(session,
      options = list(
        steps = 
           upload_pkg_initial_steps() %>%
@@ -51,7 +51,7 @@ observeEvent(input$help,
 
 # Sample csv file content.
 data <- reactive({
-  data.table(upload_format) # internal data
+  data.table::data.table(upload_format) # internal data
 })
 
 # Load the columns from DB into reactive values.
@@ -130,7 +130,7 @@ observeEvent(input$uploaded_file, {
   
   # Show the download reports buttons after all the packages have been loaded
   # and the information extracted.
-  loggit("INFO", paste("Summary of the uploaded file:",input$uploaded_file$name, 
+  loggit::loggit("INFO", paste("Summary of the uploaded file:",input$uploaded_file$name, 
                        "Total Packages:", nrow(values$Total),
                        "New Packages:", nrow(values$New),
                        "Undiscovered Packages:", nrow(values$Undis),

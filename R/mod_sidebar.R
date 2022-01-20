@@ -228,7 +228,7 @@ mod_sidebar_server <-
     )
     values$selected_pkg$decision <- input$decision
     removeModal()
-    loggit("INFO", paste("decision for the package", values$selected_pkg$name,
+    loggit::loggit("INFO", paste("decision for the package", values$selected_pkg$name,
                          "is", input$decision, 
                          "by", values$name, "(", values$role, ")"))
     
