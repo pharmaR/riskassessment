@@ -30,6 +30,7 @@ packages = c("shiny"
              ,"keyring"
              ,"rstudioapi"
              ,"glue"
+             ,"bslib"
 )
 
 # Install and load required packages.
