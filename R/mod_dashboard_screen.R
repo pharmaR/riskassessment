@@ -76,7 +76,7 @@ mod_dashboard_screen_server <- function(input, output, session
                          class = "col-sm-12 decision_div",
                          HTML("<i class='fas fa-info-circle fa-2x float-right txt-color cursor-help' title='Once submitted the decision cannot be reverted and comments in group and package level will be frozen'></i>"),
                          # Slider input to select the decision for selected package.
-                         sliderTextInput(
+                         shinyWidgets::sliderTextInput(
                            "decision",
                            h3("Overall Risk"),
                            selected = NULL,
@@ -117,25 +117,25 @@ mod_dashboard_screen_server <- function(input, output, session
                      id = "reportPreview_tab_id",
                      value = "reportPreview_tab_value",
                      tags$b("Report Preview"),
-                     withSpinner(uiOutput("report_preview"), type = 2)  # UI for Report Preview tab Panel
+                     shinycssloaders::withSpinner(uiOutput("report_preview"), type = 2)  # UI for Report Preview tab Panel
                    ),
                    tabPanel(
                      id = "mm_tab_id",
                      value = "mm_tab_value",
                      tags$b("Maintenance Metrics"),
-                     withSpinner(uiOutput("maintenance_metrics"), type = 2) # UI for Maintenance Metrics tab panel.
+                     shinycssloaders::withSpinner(uiOutput("maintenance_metrics"), type = 2) # UI for Maintenance Metrics tab panel.
                    ),
                    tabPanel(
                      id = "cum_tab_id",
                      value = "cum_tab_value",
                      tags$b("Community Usage Metrics"),
-                     withSpinner(uiOutput("community_usage_metrics"), type = 2)  # UI for Community Usage Metrics tab panel.
+                     shinycssloaders::withSpinner(uiOutput("community_usage_metrics"), type = 2)  # UI for Community Usage Metrics tab panel.
                    )
                    # tabPanel(
                    #   id = "tm_tab_id",
                    #   value = "tm_tab_value",
                    #   tags$b("Testing Metrics"),
-                   #   withSpinner(uiOutput("testing_metrics"), type = 2)  # UI for Testing Metrics tab panel.
+                   #   shinycssloaders::withSpinner(uiOutput("testing_metrics"), type = 2)  # UI for Testing Metrics tab panel.
                    # )
                  )
                ))

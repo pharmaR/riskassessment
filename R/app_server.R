@@ -84,11 +84,11 @@ app_server <- function( input, output, session ) {
   observeEvent(values$current_screen, {
     if(values$current_screen == "db_dash_screen") {
       # source(file.path("UI", "db_dash_screen.R"), local = TRUE)
-      mod_db_dash_screen_server()
+      mod_db_dash_screen_server(input = input, output = output, values = values)
       shinyjs::hide("assessment_criteria_bttn")
     } else{
       # source(file.path("UI", "dashboard_screen.R"), local = TRUE)
-      mod_dashboard_screen_server()
+      mod_dashboard_screen_server(output = output)
       shinyjs::show("assessment_criteria_bttn")
     }
   })

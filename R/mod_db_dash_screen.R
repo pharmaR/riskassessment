@@ -21,9 +21,10 @@
 #'
 #' @import shiny
 #' @importFrom lubridate as_datetime
+#' @import dplyr
 #' @noRd 
 mod_db_dash_screen_server <- 
-  function(input, output, session
+  function(input, output, session, values
     ){ # id removed & added: input, output, session!
   
   # moduleServer( id, function(input, output, session){
@@ -149,8 +150,8 @@ mod_db_dash_screen_server <-
       filename = function() {
         paste(
           "RiskAsses_PkgDB_Dwnld",
-          str_replace_all(
-            str_replace(Sys.time(), " ", "_"), ":", "-"), ".zip", sep = "_")
+          stringr::str_replace_all(
+            stringr::str_replace(Sys.time(), " ", "_"), ":", "-"), ".zip", sep = "_")
       },
       content = function(file) {
         these_pkgs <- values$db_pkg_overview %>% slice(input$db_pkgs_rows_selected)
@@ -491,11 +492,11 @@ mod_db_dash_screen_server <-
         paste0("datase_backup-", Sys.Date(), ".sqlite")
       },
       content = function(file) {
-        con <- dbConnect(RSQLite::SQLite(), database_name)
-        cbk <- dbConnect(RSQLite::SQLite(), file)
+        con <- DBI::dbConnect(RSQLite::SQLite(), database_name)
+        cbk <- DBI::dbConnect(RSQLite::SQLite(), file)
         RSQLite::sqliteCopyDatabase(con, cbk)
-        dbDisconnect(con)
-        dbDisconnect(cbk)
+        DBI::dbDisconnect(con)
+        DBI::dbDisconnect(cbk)
         
         showModal(tags$div(
           id = "confirmation_id",
@@ -506,6 +507,7 @@ mod_db_dash_screen_server <-
       }
     )
     
+    return(list(input, output, values))
 }
     
 ## To be copied in the UI

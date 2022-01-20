@@ -33,7 +33,7 @@ bk_name <- "dbbackup.sqlite"
 create_db <- function(db_name = database_name){
   
   # Create an empty database.
-  con <- dbConnect(RSQLite::SQLite(), db_name)
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   # Set the path to the queries.
   path <- #file.path("Utils", "sql_queries")
@@ -63,13 +63,13 @@ create_db <- function(db_name = database_name){
       message <- paste("dbSendStatement",err)
       message(message, .loggit = FALSE)
       loggit("ERROR", message)
-      dbDisconnect(con)
+      DBI::dbDisconnect(con)
     })
     
-    dbClearResult(rs)
+    DBI::dbClearResult(rs)
   })
   
-  dbDisconnect(con)
+  DBI::dbDisconnect(con)
 }
 
 # Stores the database name.
@@ -89,7 +89,7 @@ create_credentials_db <- function(db_name = credentials_name, username = getOpti
   )
   
   # set pwd_mngt$must_change to TRUE
-  con <- dbConnect(RSQLite::SQLite(), db_name)
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   pwd <- read_db_decrypt(
     con, name = "pwd_mngt",
     passphrase = key_get("R-shinymanager-key", username)) %>%
@@ -102,10 +102,10 @@ create_credentials_db <- function(db_name = credentials_name, username = getOpti
     name = "pwd_mngt",
     passphrase = key_get("R-shinymanager-key", username)
   )
-  dbDisconnect(con)
+  DBI::dbDisconnect(con)
   
   # update expire date here to current date + 365 days
-  con <- dbConnect(RSQLite::SQLite(), db_name)
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   dat <- read_db_decrypt(con, name = "credentials",
                          passphrase = key_get("R-shinymanager-key", username))
   
@@ -119,7 +119,7 @@ create_credentials_db <- function(db_name = credentials_name, username = getOpti
     passphrase = key_get("R-shinymanager-key", username)
   )
   
-  dbDisconnect(con)
+  DBI::dbDisconnect(con)
 }
 
 # Create any database files if it doesn't exist.
@@ -128,10 +128,10 @@ if(!file.exists(credentials_name)) create_credentials_db()
 
 db_fun <- function(query, db_name = database_name){
   errFlag <- FALSE
-  con <- dbConnect(RSQLite::SQLite(), db_name)
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   tryCatch(
     expr = {
-      rs <- dbSendQuery(con, query)
+      rs <- DBI::dbSendQuery(con, query)
     },
     warning = function(warn) {
       message <- paste0("warning:\n", query, "\nresulted in\n", warn)
@@ -143,47 +143,47 @@ db_fun <- function(query, db_name = database_name){
       message <- paste0("error:\n", query, "\nresulted in\n",err)
       message(message, .loggit = FALSE)
       loggit("ERROR", message)
-      dbDisconnect(con)
+      DBI::dbDisconnect(con)
       errFlag <<- TRUE
     },
     finally = {
       if (errFlag) return(NULL) 
     })
   
-  dat <- dbFetch(rs)
-  dbClearResult(rs)
+  dat <- DBI::dbFetch(rs)
+  DBI::dbClearResult(rs)
   if (nrow(dat) == 0 
-     & (str_detect(query, "name = 'Select'") == FALSE) && str_detect(query, "name = ''") == FALSE) {
+     & (stringr::str_detect(query, "name = 'Select'") == FALSE) && stringr::str_detect(query, "name = ''") == FALSE) {
     message(paste0("No rows were returned from query\n",query))
   }
-  dbDisconnect(con)
+  DBI::dbDisconnect(con)
   return(dat)
 }
 
 
 # You need to use dbExecute() to perform delete, update or insert queries.
 db_ins <- function(command, db_name = database_name){
-  con <- dbConnect(RSQLite::SQLite(), db_name)
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   tryCatch({
     rs <- dbSendStatement(con, command)
   }, error = function(err) {
     message <- paste0("command:\n",command,"\nresulted in\n",err)
     message(message, .loggit = FALSE)
     loggit("ERROR", message)
-    dbDisconnect(con)
+    DBI::dbDisconnect(con)
   })
   nr <- dbGetRowsAffected(rs)
-  dbClearResult(rs)
+  DBI::dbClearResult(rs)
   if (nr == 0) {
     message <- paste0("zero rows were affected by the command:\n",command)
     message(message, .loggit = FALSE)
   }
-  dbDisconnect(con)
+  DBI::dbDisconnect(con)
 }
 
 
 TimeStamp <- function(){
-  Timestamp_intial <- str_replace(Sys.time(), " ", "; ")
+  Timestamp_intial <- stringr::str_replace(Sys.time(), " ", "; ")
   Timestamp <- paste(Timestamp_intial, Sys.timezone())
   return(Timestamp)
 }

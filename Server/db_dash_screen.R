@@ -418,11 +418,11 @@ output$download_database_btn <- downloadHandler(
     paste0("datase_backup-", Sys.Date(), ".sqlite")
   },
   content = function(file) {
-    con <- dbConnect(RSQLite::SQLite(), database_name)
-    cbk <- dbConnect(RSQLite::SQLite(), file)
+    con <- DBI::dbConnect(RSQLite::SQLite(), database_name)
+    cbk <- DBI::dbConnect(RSQLite::SQLite(), file)
     RSQLite::sqliteCopyDatabase(con, cbk)
-    dbDisconnect(con)
-    dbDisconnect(cbk)
+    DBI::dbDisconnect(con)
+    DBI::dbDisconnect(cbk)
     
     showModal(tags$div(
       id = "confirmation_id",

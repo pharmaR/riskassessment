@@ -33,7 +33,7 @@ mod_sidebar_server <- function(input, output, session
     # Suppose package has been selected with a previously made decision.
     req(input$select_pack != "Select")
     # Update the risk slider using the info saved.
-    updateSliderTextInput(
+    updateshinyWidgets::sliderTextInput(
       session,
       "decision",
       choices = c("Low", "Medium", "High"),

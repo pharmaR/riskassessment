@@ -96,9 +96,9 @@ in the `create_db()` function inside `utils.R`
 create_db <- function(){
   
   # Create an empty database.
-  # con <- dbConnect(RMySQL::MySQL(), db_name)
+  # con <- DBI::dbConnect(RMySQL::MySQL(), db_name)
   
-  con <-  dbConnect(RMariaDB::MariaDB(), user = db_user,
+  con <-  DBI::dbConnect(RMariaDB::MariaDB(), user = db_user,
                     password = db_password,
                     dbname = db_name, host = db_host, port = db_port)
   
@@ -130,20 +130,20 @@ create_db <- function(){
         con,
         paste(scan(x, sep = "\n", what = "character"), collapse = ""))
       
-      dbClearResult(res)
+      DBI::dbClearResult(res)
     })
   } # New line -- if (is_empty(alltables))
   
-  dbDisconnect(con)
+  DBI::dbDisconnect(con)
 }
 
 ```
 
 Now change the code for the `db_fun()` and `db_ins()` functions like this:
 ```{r, eval = FALSE}
- # con <- dbConnect(RSQLite::SQLite(), db_name)
+ # con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
  
-  con <-  dbConnect(RMariaDB::MariaDB(), user = db_user, password = db_password,
+  con <-  DBI::dbConnect(RMariaDB::MariaDB(), user = db_user, password = db_password,
                     dbname = db_name, host = db_host, port = db_port)
 ```
 
