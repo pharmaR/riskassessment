@@ -11,7 +11,7 @@
 app_server <- function( input, output, session ) {
   
   # check_credentials directly on sqlite db
-  res_auth <- secure_server(
+  res_auth <- shinymanager::secure_server(
     check_credentials = check_credentials(
       file.path("credentials.sqlite"),
       passphrase = keyring::key_get("R-shinymanager-key", getOption("keyring_user"))

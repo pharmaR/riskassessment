@@ -201,7 +201,7 @@ if(nrow(comment_mm) != 0) {
 
 ## Community Usage Metrics
 ```{r echo=FALSE}
-infoBox(
+shinydashboard::infoBox(
   title = "Package Maturity",
   time_since_first_release_info,
   subtitle = ifelse(time_since_first_release_info != "NA",
@@ -212,7 +212,7 @@ infoBox(
   fill = TRUE
 )
 
-infoBox(
+shinydashboard::infoBox(
   title = "Version Maturity",
   time_since_version_release_info,
   subtitle = ifelse(time_since_version_release_info != "NA", 
@@ -223,7 +223,7 @@ infoBox(
   fill = TRUE
 )
 
-infoBox(
+shinydashboard::infoBox(
   title = "Download Count",
   formatC(no_of_downloads_last_year_info, format="f", big.mark=",", digits=0),
   subtitle = ifelse(no_of_downloads_last_year_info != "NA", 

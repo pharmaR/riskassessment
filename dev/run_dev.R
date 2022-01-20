@@ -3,7 +3,7 @@ options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mo
 options(spinner.color = "#0275D8", spinner.color.background = "#ffffff",
         spinner.size = 1)
 options(keyring_user = "NeildeGrasseTyson")
-options(shiny.fullstacktrace = T)
+options(shiny.fullstacktrace = F)
 
 # Detach all loaded packages and clean your environment
 golem::detach_all_attached()

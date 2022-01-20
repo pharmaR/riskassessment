@@ -46,7 +46,7 @@ mod_db_dash_screen_server <-
             hr(class = "bg-color"),
             tags$section(
               br(), br(),
-              box(width = 12, collapsible = TRUE, status = "primary",
+              shinydashboard::box(width = 12, collapsible = TRUE, status = "primary",
                   title = h3("Uploaded Packages", style = "margin-top: 5px"),
                   solidHeader = TRUE,
                   DT::dataTableOutput("db_pkgs"),
@@ -90,23 +90,23 @@ mod_db_dash_screen_server <-
         mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
         select(name, version, score, was_decision_made, decision, last_comment)
       
-      as.datatable(
-        formattable(
+      formattable::as.datatable(
+        formattable::formattable(
           values$db_pkg_overview,
           list(
-            score = formatter(
+            score = formattable::formatter(
               "span",
-              style = x ~ style(display = "block",
+              style = x ~ formattable::style(display = "block",
                                 "border-radius" = "4px",
                                 "padding-right" = "4px",
                                 "font-weight" = "bold",
                                 "color" = "white",
                                 "order" = x,
-                                "background-color" = csscolor(
+                                "background-color" = formattable::csscolor(
                                   colfunc(100)[round(as.numeric(x)*100)]))),
-            decision = formatter(
+            decision = formattable::formatter(
               "span",
-              style = x ~ style(display = "block",
+              style = x ~ formattable::style(display = "block",
                                 "border-radius" = "4px",
                                 "padding-right" = "4px",
                                 "font-weight" = "bold",
@@ -115,9 +115,9 @@ mod_db_dash_screen_server <-
                                   ifelse(x == "High Risk", high_risk_color,
                                          ifelse(x == "Medium Risk", med_risk_color,
                                                 ifelse(x == "Low Risk", low_risk_color, "transparent"))))),
-            was_decision_made = formatter("span",
-                                          style = x ~ style(color = ifelse(x, "#0668A3", "gray")),
-                                          x ~ icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))
+            was_decision_made = formattable::formatter("span",
+                                          style = x ~ formattable::style(color = ifelse(x, "#0668A3", "gray")),
+                                          x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))
           )),
         selection = list(mode = 'multiple'),
         colnames = c("Package", "Version", "Score", "Decision Made?", "Decision", "Last Comment"),
@@ -131,7 +131,7 @@ mod_db_dash_screen_server <-
           columnDefs = list(list(className = 'dt-center'))
         )
       ) %>%
-        formatStyle(names(values$db_pkg_overview), textAlign = 'center')
+        DT::formatStyle(names(values$db_pkg_overview), textAlign = 'center')
     })
     
     # Enable the download button when a package is selected.
@@ -254,7 +254,7 @@ mod_db_dash_screen_server <-
       tagList(
         tags$section(
           br(), br(),
-          box(width = 12, collapsible = TRUE, status = "primary",
+          shinydashboard::box(width = 12, collapsible = TRUE, status = "primary",
               title = h3("View/Change Weights", style = "margin-top: 5px"),
               solidHeader = TRUE,
               br(),

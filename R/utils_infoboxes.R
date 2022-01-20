@@ -11,7 +11,7 @@ has_vignettes_infobox <- function(values) {
   # Total number of vignettes.
   value <- as.numeric(values$has_vignettes)
   
-  infoBox(
+  shinydashboard::infoBox(
     width = width,
     fill = fill,
     title = "Presence of vignettes?",
@@ -46,7 +46,7 @@ has_website_infobox <- function(values) {
   # URL(s) of the package website(s).
   value <- values$has_website
   
-  infoBox(
+  shinydashboard::infoBox(
     width = width,
     fill = fill,
     title = "Associated website URL?",
@@ -82,7 +82,7 @@ has_news_infobox <- function(values){
   # "1": if it has news, "0": otherwise.
   value <- values$has_news
   
-  infoBox(
+  shinydashboard::infoBox(
     width = width,
     fill = fill,
     title = "NEWS?",
@@ -118,7 +118,7 @@ news_current_infobox <- function(values){
   # "TRUE": if news file is current, "FALSE": otherwise.
   value <- values$news_current
   
-  infoBox(
+  shinydashboard::infoBox(
     width = width,
     fill = fill,
     title = "News is current?",
@@ -155,7 +155,7 @@ has_bug_reports_url_infobox <- function(values){
   # URL(s) of the the bug reports.
   value <- values$has_bug_reports_url
   
-  infoBox(
+  shinydashboard::infoBox(
     width = width,
     fill = fill,
     title = "Bugs publicly documented?",
@@ -190,7 +190,7 @@ bugs_status_infobox <- function(values){
   # Percentage of last 30 bugs closed.
   value <- values$bugs_status
   
-  infoBox(
+  shinydashboard::infoBox(
     width = width,
     fill = fill,
     title = "Bug closure",
@@ -218,7 +218,7 @@ export_help_infobox <- function(values){
   # Percentage of exported objects.
   value <- values$export_help
   
-  infoBox(
+  shinydashboard::infoBox(
     width = width,
     fill = fill,
     title = "Documentation",
@@ -246,7 +246,7 @@ has_source_control_infobox <- function(values){
   # URL of public source code.
   value <- values$has_source_control
   
-  infoBox(
+  shinydashboard::infoBox(
     width = width,
     fill = fill,
     title = "Source code public?",
@@ -281,7 +281,7 @@ has_maintainer_infobox <- function(values){
   # Maintainer name(s).e
   value <- values$has_maintainer
   
-  infoBox(
+  shinydashboard::infoBox(
     width = width,
     fill = fill,
     title = "Has a maintainer?",

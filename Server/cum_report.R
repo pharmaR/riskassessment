@@ -69,7 +69,7 @@ observe({
 
 output$time_since_first_release1 <- renderInfoBox({
   req(values$time_since_first_release_info)
-  infoBox(
+  shinydashboard::infoBox(
     title = "Package Maturity",
     values$time_since_first_release_info,
     subtitle = ifelse(values$time_since_first_release_info != "NA",
@@ -85,7 +85,7 @@ output$time_since_first_release1 <- renderInfoBox({
 
 output$time_since_version_release1 <- renderInfoBox({
   req(values$time_since_version_release_info)
-  infoBox(
+  shinydashboard::infoBox(
     title = "Version Maturity",
     values$time_since_version_release_info,
     subtitle = ifelse(values$time_since_version_release_info != "NA", 
@@ -102,7 +102,7 @@ output$time_since_version_release1 <- renderInfoBox({
 
 output$dwnlds_last_yr1 <- renderInfoBox({
   req(values$no_of_downloads_last_year_info)
-  infoBox(
+  shinydashboard::infoBox(
     title = "Download Count",
     formatC(values$no_of_downloads_last_year_info, format="f", big.mark=",", digits=0),
     subtitle = ifelse(values$no_of_downloads_last_year_info != "NA",

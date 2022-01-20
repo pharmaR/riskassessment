@@ -31,11 +31,11 @@ output$riskcalc_desc <- renderUI({
 output$riskcalc_weights_table <- DT::renderDataTable({
   d <- get_metric_weights() %>%
     mutate(weight = ifelse(name == "covr_coverage", 0, weight)) %>%
-    formattable() %>%
+    formattable::formattable() %>%
     mutate(standardized_weight = round(weight / sum(weight, na.rm = TRUE), 4)) %>%
     select(-new_weight)
 
-  as.datatable(d,
+  formattable::as.datatable(d,
     selection = list(mode = 'single'),
     colnames = c("Metric Name", "Admin Weight", "Standardized Weight"),
     rownames = FALSE,
