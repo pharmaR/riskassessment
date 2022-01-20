@@ -13,7 +13,7 @@ app_ui <- function(request) {
     golem_add_external_resources(),
     
     # Your application UI logic 
-    shinymanager::secure_app(
+    # shinymanager::secure_app(
       shinydashboard::dashboardPage(
         title = "R Package Risk Assessment App",
         shinydashboard::dashboardHeader(
@@ -56,17 +56,17 @@ app_ui <- function(request) {
           # UI screen to load the required screen
           uiOutput("screen")
         )
-      ), 
+      )#, 
       # customize top and bottom of login screen
-      tags_top = 
-        tags$div(
-          tags$h2("Risk Assessment Application", style = "align:center"),
-          tags$img(
-            src = "logo_no_text.png",
-            width = 100, style = "align:center"
-          )),
-      enable_admin = TRUE
-    )
+    #   tags_top = 
+    #     tags$div(
+    #       tags$h2("Risk Assessment Application", style = "align:center"),
+    #       tags$img(
+    #         src = "logo_no_text.png",
+    #         width = 100, style = "align:center"
+    #       )),
+    #   enable_admin = TRUE
+    # )
   )
 }
 
