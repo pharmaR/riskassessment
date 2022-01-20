@@ -151,6 +151,16 @@ ui <- shinymanager::secure_app(
 # Create Server Code.
 server <- function(session, input, output) {
   
+  assessmentInfoServer("assessmentInfo")
+  
+  observeEvent(input$assessment_info, {
+    showModal(
+      modalDialog(
+        footer = NULL, easyClose = TRUE,
+        assessmentInfoUI("assessmentInfo")
+    ))
+  })
+  
   # check_credentials directly on sqlite db
   res_auth <- secure_server(
     check_credentials = check_credentials(
@@ -183,8 +193,7 @@ server <- function(session, input, output) {
   
   # Load Server Source module file of Package Review History.
   source(file.path("Server", "db_dash_screen.R"), local = TRUE)
-  source(file.path("Server", "assessment_criteria.R"), local = TRUE)
-  
+
   # Load Server Source module file of Sidebar.
   source(file.path("Server", "sidebar.R"), local = TRUE)
   
