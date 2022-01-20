@@ -10,7 +10,7 @@
 output$db_pkgs <- DT::renderDataTable({
   
   values$db_pkg_overview <- update_db_dash() %>%
-    mutate(last_comment = as.character(as_datetime(last_comment))) %>%
+    mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>%
     mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
     mutate(decision = ifelse(decision != "", paste(decision, "Risk"), "-")) %>%
     mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
@@ -76,8 +76,8 @@ output$dwnld_sel_db_pkgs_btn <- downloadHandler(
   filename = function() {
     paste(
       "RiskAsses_PkgDB_Dwnld",
-      str_replace_all(
-        str_replace(Sys.time(), " ", "_"), ":", "-"), ".zip", sep = "_")
+      stringr::str_replace_all(
+        stringr::str_replace(Sys.time(), " ", "_"), ":", "-"), ".zip", sep = "_")
   },
   content = function(file) {
     these_pkgs <- values$db_pkg_overview %>% slice(input$db_pkgs_rows_selected)
@@ -418,11 +418,11 @@ output$download_database_btn <- downloadHandler(
     paste0("datase_backup-", Sys.Date(), ".sqlite")
   },
   content = function(file) {
-    con <- dbConnect(RSQLite::SQLite(), database_name)
-    cbk <- dbConnect(RSQLite::SQLite(), file)
+    con <- DBI::dbConnect(RSQLite::SQLite(), database_name)
+    cbk <- DBI::dbConnect(RSQLite::SQLite(), file)
     RSQLite::sqliteCopyDatabase(con, cbk)
-    dbDisconnect(con)
-    dbDisconnect(cbk)
+    DBI::dbDisconnect(con)
+    DBI::dbDisconnect(cbk)
     
     showModal(tags$div(
       id = "confirmation_id",

@@ -11,7 +11,7 @@ observeEvent(c(input$select_pack, values$selected_pkg), {
   # Suppose package has been selected with a previously made decision.
   req(input$select_pack != "Select")
   # Update the risk slider using the info saved.
-  updateSliderTextInput(
+  shinyWidgets::updatesliderTextInput(
     session,
     "decision",
     choices = c("Low", "Medium", "High"),
@@ -111,7 +111,7 @@ observe({
 
 
 # Required for shinyhelper to work.
-observe_helpers()
+shinyhelper::observe_helpers()
 
 # Display the risk score of the selected package.
 output$score <- renderUI({

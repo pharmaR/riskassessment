@@ -19,7 +19,7 @@
 # #' @importFrom shinymanager secure_app
 # #' @importFrom tidyselect all_of
 # #' @importFrom utils capture.output str tail packageVersion
-# #' @importFrom stringr str_detect
+# #' @importFrom stringr stringr::str_detect
 # "_PACKAGE"
 
 

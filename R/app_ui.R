@@ -4,7 +4,7 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @importFrom shinydashboard dashboardPage dashboardHeader dashboardSidebar
-#'   dashboardBody
+#'   dashboardBody box
 #' @importFrom shinymanager secure_app
 #' @noRd
 app_ui <- function(request) {

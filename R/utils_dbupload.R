@@ -18,16 +18,16 @@ get_packages_info_from_web <- function(package_name) {
       
       title_html <- html_nodes(webpage, 'h2')
       title <- html_text(title_html)
-      title <- str_replace_all(title, "\n  ", "")
-      title <- str_replace_all(title, "'", "")
-      title <- str_replace_all(title, '"', "")
+      title <- stringr::str_replace_all(title, "\n  ", "")
+      title <- stringr::str_replace_all(title, "'", "")
+      title <- stringr::str_replace_all(title, '"', "")
       
       desc_html <- html_nodes(webpage, 'p')
       desc <- html_text(desc_html)
       desc <- desc[1]
-      desc <- str_replace_all(desc, "\n  ", "")
-      desc <- str_replace_all(desc, "'", "")
-      desc <- str_replace_all(desc, '"', "")
+      desc <- stringr::str_replace_all(desc, "\n  ", "")
+      desc <- stringr::str_replace_all(desc, "'", "")
+      desc <- stringr::str_replace_all(desc, '"', "")
       
       ver_html <- html_nodes(webpage, 'td')
       ver <- html_text(ver_html)
@@ -38,9 +38,9 @@ get_packages_info_from_web <- function(package_name) {
           }
         }
       }
-      ver <- str_replace_all(ver, "\n  ", "")
-      ver <- str_replace_all(ver, "'", "")
-      ver <- str_replace_all(ver, '"', "")
+      ver <- stringr::str_replace_all(ver, "\n  ", "")
+      ver <- stringr::str_replace_all(ver, "'", "")
+      ver <- stringr::str_replace_all(ver, '"', "")
       
       
       main_html <- html_nodes(webpage, 'td')
@@ -52,9 +52,9 @@ get_packages_info_from_web <- function(package_name) {
           }
         }
       }
-      main <- str_replace_all(main, "\n  ", "")
-      main <- str_replace_all(main, "'", "")
-      main <- str_replace_all(main, '"', "")
+      main <- stringr::str_replace_all(main, "\n  ", "")
+      main <- stringr::str_replace_all(main, "'", "")
+      main <- stringr::str_replace_all(main, '"', "")
       
       
       auth_html <- html_nodes(webpage, 'td')
@@ -66,9 +66,9 @@ get_packages_info_from_web <- function(package_name) {
           }
         }
       }
-      auth <- str_replace_all(auth, "\n  ", "")
-      auth <- str_replace_all(auth, "'", "")
-      auth <- str_replace_all(auth, '"', "")
+      auth <- stringr::str_replace_all(auth, "\n  ", "")
+      auth <- stringr::str_replace_all(auth, "'", "")
+      auth <- stringr::str_replace_all(auth, '"', "")
       
       pub_html <- html_nodes(webpage, 'td')
       pub <- html_text(pub_html)
@@ -79,9 +79,9 @@ get_packages_info_from_web <- function(package_name) {
           }
         }
       }
-      pub <- str_replace_all(pub, "\n  ", "")
-      pub <- str_replace_all(pub, "'", "")
-      pub <- str_replace_all(pub, '"', "")
+      pub <- stringr::str_replace_all(pub, "\n  ", "")
+      pub <- stringr::str_replace_all(pub, "'", "")
+      pub <- stringr::str_replace_all(pub, '"', "")
       
       
       lis_html <- html_nodes(webpage, 'td')
@@ -93,9 +93,9 @@ get_packages_info_from_web <- function(package_name) {
           }
         }
       }
-      lis <- str_replace_all(lis, "\n  ", "")
-      lis <- str_replace_all(lis, "'", "")
-      lis <- str_replace_all(lis, '"', "")
+      lis <- stringr::str_replace_all(lis, "\n  ", "")
+      lis <- stringr::str_replace_all(lis, "'", "")
+      lis <- stringr::str_replace_all(lis, '"', "")
       
       genInfo_upload_to_DB(package_name, ver, title, desc, auth, main, lis, pub)
       
@@ -234,7 +234,7 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
       pkg_html <- read_html(paste0("https://github.com/cran/", package_name, "/tags"))
       pkg_nodes_v <- html_nodes(pkg_html, 'h4')
       pkg_text_v <- html_text(pkg_nodes_v)
-      pkg_text_v <- str_split(pkg_text_v,"\n")
+      pkg_text_v <- stringr::str_split(pkg_text_v,"\n")
       pkg_vers <- c()
       for (i in 1:length(pkg_text_v)) { 
         pkg_vers[i]<-(trimws(pkg_text_v[[i]][3]))
@@ -247,7 +247,7 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
         pkg_html1 <- read_html(paste0("https://github.com/cran/",package_name,"/tags?after=",pkg_vers1))
         pkg_nodes_v1 <- html_nodes(pkg_html1, 'h4')
         pkg_text_v1 <- html_text(pkg_nodes_v1)
-        pkg_text_v1 <- str_split(pkg_text_v1,"\n")
+        pkg_text_v1 <- stringr::str_split(pkg_text_v1,"\n")
         pkg_vers1 <- c()
         for (i in 1:length(pkg_text_v1)) { 
           pkg_vers1[i]<-(trimws(pkg_text_v1[[i]][3]))
@@ -258,7 +258,7 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
             pkg_vers1 <- pkg_vers[length(pkg_vers)]
             pkg_nodes_d1 <- html_nodes(pkg_html, 'relative-time')
             pkg_text_d1 <- html_text(pkg_nodes_d1)
-            pkg_date1 <- str_remove_all(pkg_text_d1[length(pkg_text_d1)], ",")
+            pkg_date1 <- stringr::str_remove_all(pkg_text_d1[length(pkg_text_d1)], ",")
             pkg_date1 <- as.Date(pkg_date1, format = "%h %d %Y")
             time_since_first_release <- Sys.Date() - pkg_date1
             time_since_first_release <- floor(as.numeric(time_since_first_release / 30))
@@ -269,7 +269,7 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
         } else{
           pkg_nodes_d1 <- html_nodes(pkg_html1, 'relative-time')
           pkg_text_d1 <- html_text(pkg_nodes_d1)
-          pkg_date1 <- str_remove_all(pkg_text_d1[length(pkg_text_d1)], ",")
+          pkg_date1 <- stringr::str_remove_all(pkg_text_d1[length(pkg_text_d1)], ",")
           pkg_date1 <- as.Date(pkg_date1, format = "%h %d %Y")
           time_since_first_release <- Sys.Date() - pkg_date1
           time_since_first_release <- floor(as.numeric(time_since_first_release / 30))
@@ -279,7 +279,7 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
       
       pkg_nodes_d <- html_nodes(pkg_html, 'relative-time')
       pkg_text_d <- html_text(pkg_nodes_d)
-      pkg_date <- str_remove_all(pkg_text_d, ",")
+      pkg_date <- stringr::str_remove_all(pkg_text_d, ",")
       pkg_date <- as.Date(pkg_date, format = "%h %d %Y")
       time_since_version_release <- Sys.Date() - pkg_date[1]
       time_since_version_release <- floor(as.numeric(time_since_version_release / 30))

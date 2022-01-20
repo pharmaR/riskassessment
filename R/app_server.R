@@ -3,6 +3,7 @@
 #' @param input,output,session Internal parameters for {shiny}. 
 #'     DO NOT REMOVE.
 #' @import shiny
+#' @import dplyr
 #' @importFrom shinyjs show hide
 #' @importFrom shinymanager secure_server
 #' @importFrom keyring key_get
@@ -41,26 +42,26 @@ app_server <- function( input, output, session ) {
   
   # Load Server Source module file of Package Review History.
   source(file.path("Server", "db_dash_screen.R"), local = TRUE)
-  source(file.path("Server", "assessment_criteria.R"), local = TRUE)
+  # source(file.path("Server", "assessment_criteria.R"), local = TRUE)
   
   # Load Server Source module file of Sidebar.
-  source(file.path("Server", "sidebar.R"), local = TRUE)
+  # source(file.path("Server", "sidebar.R"), local = TRUE)
   
   # Load Source files of UI and Server modules of Upload Package Tab.
-  source(file.path("UI", "uploadpackage.R"), local = TRUE)
-  source(file.path("Server", "uploadpackage.R"), local = TRUE)
+  # source(file.path("UI", "uploadpackage.R"), local = TRUE)
+  # source(file.path("Server", "uploadpackage.R"), local = TRUE)
   
   # Load Source files of UI and Server modules of Report Preview Tab
-  source(file.path("UI", "reportpreview.R"), local = TRUE)
-  source(file.path("Server", "reportpreview.R"), local = TRUE)
+  # source(file.path("UI", "reportpreview.R"), local = TRUE)
+  # source(file.path("Server", "reportpreview.R"), local = TRUE)
   
   # Load Source files of UI and Server modules of Maintenance Metrics Tab.
-  source(file.path("UI", "maintenance_metrics.R"), local = TRUE)
-  source(file.path("Server", "maintenance_metrics.R"), local = TRUE)
+  # source(file.path("UI", "maintenance_metrics.R"), local = TRUE)
+  # source(file.path("Server", "maintenance_metrics.R"), local = TRUE)
   
   # Load Source files of UI and Server modules of Community Usage Tab.
-  source(file.path("UI", "communityusage_metrics.R"), local = TRUE)
-  source(file.path("Server", "communityusage_metrics.R"), local = TRUE)
+  # source(file.path("UI", "communityusage_metrics.R"), local = TRUE)
+  # source(file.path("Server", "communityusage_metrics.R"), local = TRUE)
   
   # Start of the observes
   # 1. Observe to Load Source files of UI module of selected screen (Package
