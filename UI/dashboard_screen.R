@@ -1,4 +1,3 @@
-# Render Output UI for Dashboard Screen.
 output$screen <- renderUI({
   fluidRow(
     class = "main-container ml-2 mr-2 p-1",
@@ -32,7 +31,7 @@ output$screen <- renderUI({
                          h3("Risk Score")
                        ))
                      ),
-
+                     
                      textAreaInput(
                        "overall_comment",
                        h3("Leave Your Overall Comment:"),
