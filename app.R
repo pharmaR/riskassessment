@@ -143,10 +143,10 @@ ui <- shinymanager::secure_app(
   ui, 
   # customize top and bottom of login screen
   tags_top = tags$div(
+    tags$link(rel = "stylesheet", type = "text/css", href = "css/login_screen.css"),
     id = "login_screen",
-    #tags$img(src = "logo_no_text.png", style = "align:center"),
     tags$h2("Risk Assessment Application", style = "align:center")),
-  enable_admin = TRUE, theme = "css/login_screen.css")
+  enable_admin = TRUE, theme = theme)
 
 # Create Server Code.
 server <- function(session, input, output) {
