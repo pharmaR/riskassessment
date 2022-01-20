@@ -33,9 +33,9 @@ ui <- dashboardPage(
       tags$a(
         title = "PharmaR Home Page",
         href = "https://www.pharmar.org/",
-        target = "_blank",
-        tags$img(src = "logo.png", class = "logo_1"),
-        tags$img(src = "logo_no_text.png", class = "logo_2")
+        target = "_blank"
+        #tags$img(src = "logo.png", class = "logo_1"),
+        #tags$img(src = "logo_no_text.png", class = "logo_2")
       )
     ),
     titleWidth = 320,
