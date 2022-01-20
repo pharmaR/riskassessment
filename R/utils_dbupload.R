@@ -7,7 +7,7 @@
 
 
 # Get the package general information from CRAN/local.
-# get_packages_info_from_web(package_name = "haven")
+# get_packages_info_from_web(package_name = "stringr")
 # rm(genInfo_upload_to_DB, get_packages_info_from_web, metric_cum_Info_upload_to_DB, metric_mm_tm_Info_upload_to_DB)
 get_packages_info_from_web <- function(package_name) {
   tryCatch(
@@ -142,6 +142,7 @@ genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis
 
 
 # Get the maintenance and testing metrics info and upload into DB.
+# metric_mm_tm_Info_upload_to_DB(package_name = "stringr")
 metric_mm_tm_Info_upload_to_DB <- function(package_name){
   
   riskmetric_assess <-
@@ -312,7 +313,7 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
   )# End of try catch
 
   for (i in 1:nrow(pkg_vers_date_final)) {
-    db_ins(paste0("INSERT INTO CommunityUsageMetrics values(",
+    db_ins(command = paste0("INSERT INTO CommunityUsageMetrics values(",
                   "'", package_name,"',", "'", downloads_1yr, "',",
                   "'", pkg_vers_date_final$Month[i], "',", "'", pkg_vers_date_final$Downloads[i], "',", 
                   "'", pkg_vers_date_final$verRelease[i], "',", "'", pkg_vers_date_final$Position[i], "',",

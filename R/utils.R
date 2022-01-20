@@ -48,6 +48,7 @@ create_db <- function(db_name = database_name){
     "create_CommunityUsageMetrics_table.sql",
     "create_Comments_table.sql"
   )
+  # db_fun("select * from CommunityUsageMetrics")
   
   # Append path to the queries.
   queries <- file.path(path, queries)

@@ -29,13 +29,13 @@ observeEvent(input$tabs, {
       
       if (!is.null(input$tm_comment)) {
         if(values$covr_coverage == "pkg_metric_error")
-          runjs( "setTimeout(function(){ addTextToGaugeSVG('test_coverage');}, 500);" )
+          shinyjs::runjs( "setTimeout(function(){ addTextToGaugeSVG('test_coverage');}, 500);" )
         
         req(values$selected_pkg$decision)
         
         if (values$selected_pkg$decision != "") {
-          runjs("setTimeout(function(){ var ele = document.getElementById('tm_comment'); ele.disabled = true; }, 500);")
-          runjs("setTimeout(function(){ var ele = document.getElementById('submit_tm_comment'); ele.disabled = true; }, 500);")
+          shinyjs::runjs("setTimeout(function(){ var ele = document.getElementById('tm_comment'); ele.disabled = true; }, 500);")
+          shinyjs::runjs("setTimeout(function(){ var ele = document.getElementById('submit_tm_comment'); ele.disabled = true; }, 500);")
         }
       }
     }

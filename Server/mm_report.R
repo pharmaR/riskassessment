@@ -30,7 +30,7 @@ observe({
         WHERE package_metrics.package_id = ", "'", package_id, "'", " AND ",
         "metric.class = 'maintenance' ;"))
       
-      runjs("setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 500);")
+      shinyjs::runjs("setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 500);")
       
       for(i in 1:nrow(values$riskmetrics_mm))
         values[[values$riskmetrics_mm$name[i]]] <- values$riskmetrics_mm$value[i]
@@ -39,47 +39,47 @@ observe({
 })
 
 # Render infobox for has_vignettes metric.
-output$has_vignettes1 <- renderInfoBox({
+output$has_vignettes1 <- shinydashboard::renderInfoBox({
   has_vignettes_infobox(values)
 })
 
 # Render infobox for has_website metric.
-output$has_website1 <- renderInfoBox({
+output$has_website1 <- shinydashboard::renderInfoBox({
   has_website_infobox(values)
 })
 
 # Render infobox for has_news metric.
-output$has_news1 <- renderInfoBox({
+output$has_news1 <- shinydashboard::renderInfoBox({
   has_news_infobox(values)
 })
 
 # Render infobox for news_current metric.
-output$news_current1 <- renderInfoBox({
+output$news_current1 <- shinydashboard::renderInfoBox({
   news_current_infobox(values)
 })
 
 # Render infobox for has_bug_reports_url metric.
-output$has_bug_reports_url1 <- renderInfoBox({
+output$has_bug_reports_url1 <- shinydashboard::renderInfoBox({
   has_bug_reports_url_infobox(values)
 })
 
 # Render infobox for bugs_status metric.
-output$bugs_status1 <- renderInfoBox({
+output$bugs_status1 <- shinydashboard::renderInfoBox({
   bugs_status_infobox(values)
 })
 
 # Render infobox for export_help metric.
-output$export_help1 <- renderInfoBox({
+output$export_help1 <- shinydashboard::renderInfoBox({
   export_help_infobox(values)
 })
 
 # Render infobox for has_source_control metric.
-output$has_source_control1 <- renderInfoBox({
+output$has_source_control1 <- shinydashboard::renderInfoBox({
   has_source_control_infobox(values)
 })
 
 # Render infobox for has_maintainer metric.
-output$has_maintainer1 <- renderInfoBox({
+output$has_maintainer1 <- shinydashboard::renderInfoBox({
   has_maintainer_infobox(values)
 })
 

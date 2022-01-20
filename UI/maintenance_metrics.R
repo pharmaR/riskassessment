@@ -28,21 +28,21 @@ output$maintenance_metrics <- renderUI({
           div(id = "mm_infoboxes", 
               fluidRow(
               class = "mm-row-1",
-              infoBoxOutput("has_vignettes"),  # Info box for 'has_vignettes' metric.
-              infoBoxOutput("has_website"),  # Info box for 'has_website' metric.
-              infoBoxOutput("has_news"),  # Info box for 'has_news' metric.
+              shinydashboard::infoBoxOutput("has_vignettes"),  # Info box for 'has_vignettes' metric.
+              shinydashboard::infoBoxOutput("has_website"),  # Info box for 'has_website' metric.
+              shinydashboard::infoBoxOutput("has_news"),  # Info box for 'has_news' metric.
             ),
             fluidRow(
               class = "mm-row-2",
-              infoBoxOutput("news_current"),  # Info box for 'news_current' metric.
-              infoBoxOutput("has_bug_reports_url"),  # Info box for 'has_bug_reports_url' metric.
-              infoBoxOutput("bugs_status"),  # Info box for 'bugs_status' metric.
+              shinydashboard::infoBoxOutput("news_current"),  # Info box for 'news_current' metric.
+              shinydashboard::infoBoxOutput("has_bug_reports_url"),  # Info box for 'has_bug_reports_url' metric.
+              shinydashboard::infoBoxOutput("bugs_status"),  # Info box for 'bugs_status' metric.
             ),
             fluidRow(
               class = "mm-row-3",
-              infoBoxOutput("export_help"),  # Info box for 'export_help' metric.
-              infoBoxOutput("has_source_control"),  # Info box for 'has_source_control' metric.
-              infoBoxOutput("has_maintainer"),  # Info box for 'has_maintainer' metric.
+              shinydashboard::infoBoxOutput("export_help"),  # Info box for 'export_help' metric.
+              shinydashboard::infoBoxOutput("has_source_control"),  # Info box for 'has_source_control' metric.
+              shinydashboard::infoBoxOutput("has_maintainer"),  # Info box for 'has_maintainer' metric.
             )
           ),
           fluidRow(

@@ -49,7 +49,7 @@ app_server <- function( input, output, session ) {
     
   # Load Server Source module file of Sidebar.
   # source(file.path("Server", "sidebar.R"), local = TRUE)
-  # mod_sidebar_server(input = input, output = output, values = values) # no id
+  mod_sidebar_server(input = input, output = output, values = values) # no id
   
   # Load Source files of UI and Server modules of Upload Package Tab.
   # source(file.path("UI", "uploadpackage.R"), local = TRUE)
@@ -64,7 +64,7 @@ app_server <- function( input, output, session ) {
   # Load Source files of UI and Server modules of Maintenance Metrics Tab.
   # source(file.path("UI", "maintenance_metrics.R"), local = TRUE)
   # source(file.path("Server", "maintenance_metrics.R"), local = TRUE)
-  # mod_maintenance_metrics_server() # no id
+  mod_maintenance_metrics_server(input = input, output = output, values = values) # no id
   
   # Load Source files of UI and Server modules of Community Usage Tab.
   # source(file.path("UI", "communityusage_metrics.R"), local = TRUE)

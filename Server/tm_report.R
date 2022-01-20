@@ -25,7 +25,7 @@ observeEvent(input$tabs, {
       
       req(values$covr_coverage)
       if(values$covr_coverage == "pkg_metric_error")
-        runjs("setTimeout(function(){ addTextToGaugeSVG('test_coverage1');}, 5000);")
+        shinyjs::runjs("setTimeout(function(){ addTextToGaugeSVG('test_coverage1');}, 5000);")
     }
   }
 })  # End of the observe.

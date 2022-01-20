@@ -95,14 +95,14 @@ create_db <- function(){
   alltables = dbListTables(con)
   
   # create tables if there aren't any yet
-  if (is_empty(alltables)) {
+  if (rlang::is_empty(alltables)) {
     
   # Set the path to the queries.
   ...  # code omitted
     
     DBI::dbClearResult(res)
   })
-  } # if (is_empty(alltables))
+  } # if (rlang::is_empty(alltables))
   
   DBI::dbDisconnect(con)
 }

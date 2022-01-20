@@ -51,12 +51,12 @@ observe({
       values$no_of_downloads_last_year_info <-
         values$riskmetrics_cum$no_of_downloads_last_year[1]
       
-      runjs( "setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 100);" )
+      shinyjs::runjs( "setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 100);" )
       
       req(values$riskmetrics_cum)
-      if(values$time_since_version_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_version_release1');}, 3000);" ) }
-      if(values$time_since_first_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_first_release1');}, 3000);" ) }
-      if (values$riskmetrics_cum$no_of_downloads_last_year[1] == 0) { runjs("setTimeout(function(){ updateText('no_of_downloads1');}, 3000);") }
+      if(values$time_since_version_release_info == "NA"){ shinyjs::runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_version_release1');}, 3000);" ) }
+      if(values$time_since_first_release_info == "NA"){ shinyjs::runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_first_release1');}, 3000);" ) }
+      if (values$riskmetrics_cum$no_of_downloads_last_year[1] == 0) { shinyjs::runjs("setTimeout(function(){ updateText('no_of_downloads1');}, 3000);") }
     } 
   }
 })  # End of the observe.
@@ -67,7 +67,7 @@ observe({
 
 # 1. Render Output info box to show the content for time since first release.
 
-output$time_since_first_release1 <- renderInfoBox({
+output$time_since_first_release1 <- shinydashboard::renderInfoBox({
   req(values$time_since_first_release_info)
   shinydashboard::infoBox(
     title = "Package Maturity",
@@ -83,7 +83,7 @@ output$time_since_first_release1 <- renderInfoBox({
 
 # 2. Render Output info box to show the content for time since version release.
 
-output$time_since_version_release1 <- renderInfoBox({
+output$time_since_version_release1 <- shinydashboard::renderInfoBox({
   req(values$time_since_version_release_info)
   shinydashboard::infoBox(
     title = "Version Maturity",
@@ -100,7 +100,7 @@ output$time_since_version_release1 <- renderInfoBox({
 
 # 2.5 Render Output info box to show the number of downloads last year
 
-output$dwnlds_last_yr1 <- renderInfoBox({
+output$dwnlds_last_yr1 <- shinydashboard::renderInfoBox({
   req(values$no_of_downloads_last_year_info)
   shinydashboard::infoBox(
     title = "Download Count",

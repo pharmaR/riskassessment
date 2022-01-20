@@ -105,7 +105,7 @@ create_db <- function(){
   alltables = dbListTables(con)  # new line
   
   # create tables if there aren't any yet
-  if (is_empty(alltables)) {     # new line
+  if (rlang::is_empty(alltables)) {     # new line
   
     message(glue::glue("No tables defined for {db_name}, Creating them now.")) # new line
     
@@ -132,7 +132,7 @@ create_db <- function(){
       
       DBI::dbClearResult(res)
     })
-  } # New line -- if (is_empty(alltables))
+  } # New line -- if (rlang::is_empty(alltables))
   
   DBI::dbDisconnect(con)
 }

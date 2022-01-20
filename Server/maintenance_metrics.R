@@ -60,61 +60,61 @@ observe({
         WHERE package_metrics.package_id = ", "'", package_id, "'", " AND ",
         "metric.class = 'maintenance' ;"))
 
-      runjs("setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 500);")
+      shinyjs::runjs("setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 500);")
       
       for(i in 1:nrow(values$riskmetrics_mm))
         values[[values$riskmetrics_mm$name[i]]] <- values$riskmetrics_mm$value[i]
       
       if (values$selected_pkg$decision != "") {
-        runjs("setTimeout(function(){disableUI('mm_comment')}, 500);")
-        runjs("setTimeout(function(){disableUI('submit_mm_comment')}, 500);")
+        shinyjs::runjs("setTimeout(function(){disableUI('mm_comment')}, 500);")
+        shinyjs::runjs("setTimeout(function(){disableUI('submit_mm_comment')}, 500);")
       }
     }
   }
 })
 
 # Render infobox for has_vignettes metric.
-output$has_vignettes <- renderInfoBox({
+output$has_vignettes <- shinydashboard::renderInfoBox({
   has_vignettes_infobox(values)
 })
 
 # Render infobox for has_website metric.
-output$has_website <- renderInfoBox({
+output$has_website <- shinydashboard::renderInfoBox({
   has_website_infobox(values)
 })
 
 # Render infobox for has_news metric.
-output$has_news <- renderInfoBox({
+output$has_news <- shinydashboard::renderInfoBox({
   has_news_infobox(values)
 })
 
 # Render infobox for news_current metric.
-output$news_current <- renderInfoBox({
+output$news_current <- shinydashboard::renderInfoBox({
   news_current_infobox(values)
 })
 
 # Render infobox for has_bug_reports_url metric.
-output$has_bug_reports_url <- renderInfoBox({
+output$has_bug_reports_url <- shinydashboard::renderInfoBox({
   has_bug_reports_url_infobox(values)
 })
 
 # Render infobox for bugs_status metric.
-output$bugs_status <- renderInfoBox({
+output$bugs_status <- shinydashboard::renderInfoBox({
   bugs_status_infobox(values)
 })
 
 # Render infobox for export_help metric.
-output$export_help <- renderInfoBox({
+output$export_help <- shinydashboard::renderInfoBox({
   export_help_infobox(values)
 })
 
 # Render infobox for has_source_control metric.
-output$has_source_control <- renderInfoBox({
+output$has_source_control <- shinydashboard::renderInfoBox({
   has_source_control_infobox(values)
 })
 
 # Render infobox for has_maintainer metric.
-output$has_maintainer <- renderInfoBox({
+output$has_maintainer <- shinydashboard::renderInfoBox({
   has_maintainer_infobox(values)
 })
 

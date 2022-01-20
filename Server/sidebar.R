@@ -11,7 +11,7 @@ observeEvent(c(input$select_pack, values$selected_pkg), {
   # Suppose package has been selected with a previously made decision.
   req(input$select_pack != "Select")
   # Update the risk slider using the info saved.
-  updateshinyWidgets::sliderTextInput(
+  shinyWidgets::updateSliderTextInput(
     session,
     "decision",
     choices = c("Low", "Medium", "High"),
@@ -22,17 +22,17 @@ observeEvent(c(input$select_pack, values$selected_pkg), {
 # Disable/enable the comments depending package selected and no decision made yet.
 observeEvent(list(input$select_pack, values$selected_pkg$decision), {
   req(input$select_pack)
-  if (input$select_pack != "Select" && (is_empty(values$selected_pkg$decision) || values$selected_pkg$decision == "")) {
-    enable("decision")
-    enable("submit_decision")
-    enable("overall_comment")
-    enable("submit_overall_comment")
+  if (input$select_pack != "Select" && (rlang::is_empty(values$selected_pkg$decision) || values$selected_pkg$decision == "")) {
+    shinyjs:enable("decision")
+    shinyjs:enable("submit_decision")
+    shinyjs:enable("overall_comment")
+    shinyjs:enable("submit_overall_comment")
 
   } else{
-    disable("decision")
-    disable("submit_decision")
-    disable("overall_comment")
-    disable("submit_overall_comment")
+    shinyjs::disable("decision")
+    shinyjs::disable("submit_decision")
+    shinyjs::disable("overall_comment")
+    shinyjs::disable("submit_overall_comment")
 
   }
 }, ignoreInit = TRUE)
@@ -101,17 +101,17 @@ observe({
   req(input$select_pack)
   valBoxColor <- case_when(
     input$select_pack == "Select" ~ "white",
-    !is_empty(values$selected_pkg$decision) && values$selected_pkg$decision == "" ~ "black",
+    !rlang::is_empty(values$selected_pkg$decision) && values$selected_pkg$decision == "" ~ "black",
     TRUE ~ "darkblue"
   )
-  runjs(sprintf("
+  shinyjs::runjs(sprintf("
                 document.getElementById('%s').style.color = '%s';
                 ", "diyValBoxStatus", valBoxColor))
 })
 
 
 # Required for shinyhelper to work.
-observe_helpers()
+shinyhelper::observe_helpers()
 
 # Display the risk score of the selected package.
 output$score <- renderUI({
@@ -129,7 +129,7 @@ observe({
   req(input$select_pack)
   score_output_num <- ifelse(input$select_pack != "Select", values$selected_pkg$score, NA_integer_)
   valBoxColor <- ifelse(is.na(score_output_num), "#1E90FF", colfunc(100)[round(as.numeric(score_output_num)*100)])
-  runjs(sprintf("
+  shinyjs::runjs(sprintf("
             document.getElementById('%s').style.backgroundColor = '%s';
         ", "diyValBoxScore", valBoxColor))
 })

@@ -49,9 +49,9 @@ mod_communityusage_metrics_server <-
               fluidRow(
                 id = "cum_infoboxes",
                 class = "c_u_m_row_1",
-                infoBoxOutput("time_since_first_release", width = 4),  # Info box to show the time since First release.
-                infoBoxOutput("time_since_version_release", width = 4),  # Info box to show the time since version release.
-                infoBoxOutput("dwnlds_last_yr", width = 4)  # Info box to show the total # of Downloads in the last year.
+                shinydashboard::infoBoxOutput("time_since_first_release", width = 4),  # Info box to show the time since First release.
+                shinydashboard::infoBoxOutput("time_since_version_release", width = 4),  # Info box to show the time since version release.
+                shinydashboard::infoBoxOutput("dwnlds_last_yr", width = 4)  # Info box to show the total # of Downloads in the last year.
               ),
               fluidRow(
                 id = "cum_plot",
@@ -207,16 +207,16 @@ mod_communityusage_metrics_server <-
           values$no_of_downloads_last_year_info <-
             values$riskmetrics_cum$no_of_downloads_last_year[1]
           
-          runjs( "setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 100);" )
+          shinyjs::runjs( "setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 100);" )
           
           if (!is.null(input$cum_comment)) {
-            if(values$time_since_version_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_version_release');}, 500);" ) }
-            if(values$time_since_first_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_first_release');}, 500);" ) }
-            if (values$riskmetrics_cum$no_of_downloads_last_year[1] == 0) { runjs("setTimeout(function(){ updateText('no_of_downloads');}, 500);") }
+            if(values$time_since_version_release_info == "NA"){ shinyjs::runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_version_release');}, 500);" ) }
+            if(values$time_since_first_release_info == "NA"){ shinyjs::runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_first_release');}, 500);" ) }
+            if (values$riskmetrics_cum$no_of_downloads_last_year[1] == 0) { shinyjs::runjs("setTimeout(function(){ updateText('no_of_downloads');}, 500);") }
             req(values$selected_pkg$decision)
             if (values$selected_pkg$decision != "") {
-              runjs("setTimeout(function(){ var ele = document.getElementById('cum_comment'); ele.disabled = true; }, 500);" )
-              runjs("setTimeout(function(){ var ele = document.getElementById('submit_cum_comment'); ele.disabled = true; }, 500);")
+              shinyjs::runjs("setTimeout(function(){ var ele = document.getElementById('cum_comment'); ele.disabled = true; }, 500);" )
+              shinyjs::runjs("setTimeout(function(){ var ele = document.getElementById('submit_cum_comment'); ele.disabled = true; }, 500);")
             }
           }
         }
@@ -229,7 +229,7 @@ mod_communityusage_metrics_server <-
     
     # 1. Render Output info box to show the content for time since first release.
     
-    output$time_since_first_release <- renderInfoBox({
+    output$time_since_first_release <- shinydashboard::renderInfoBox({
       req(values$time_since_first_release_info)
       shinydashboard::infoBox(
         title = "Package Maturity",
@@ -245,7 +245,7 @@ mod_communityusage_metrics_server <-
     
     # 2. Render Output info box to show the content for time since version release.
     
-    output$time_since_version_release <- renderInfoBox({
+    output$time_since_version_release <- shinydashboard::renderInfoBox({
       req(values$time_since_version_release_info)
       shinydashboard::infoBox(
         title = "Version Maturity",
@@ -264,7 +264,7 @@ mod_communityusage_metrics_server <-
     
     # 2.5 Render Output info box to show the number of downloads last year
     
-    output$dwnlds_last_yr <- renderInfoBox({
+    output$dwnlds_last_yr <- shinydashboard::renderInfoBox({
       req(values$no_of_downloads_last_year_info)
       shinydashboard::infoBox(
         title = "Download Count",
