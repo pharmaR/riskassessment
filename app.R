@@ -38,48 +38,104 @@ theme <- bs_theme(
 )
 
 # Create User Interface (UI).
-ui <- dashboardPage(
-  title = "R Packages Risk Assessment App",
-  dashboardHeader(
-    title = list(
-      tags$a(
-        title = "PharmaR Home Page",
-        href = "https://www.pharmar.org/",
-        target = "_blank"
-        #tags$img(src = "logo.png", class = "logo_1"),
-        #tags$img(src = "logo_no_text.png", class = "logo_2")
-      )
-    ),
-    titleWidth = 320,
-    tags$li(
-      class = "dropdown",
-      actionLink(
-        inputId = "assessment_criteria_bttn",
-        class = "assessment_criteria_bttn_class",
-        HTML('<div class="tooltip-help">
-        <i class="fas fa-info-circle fa-2x asmnt-help-icon"></i>
-        <span class="tooltiptext-help">Assessment Criteria Details</span>
-        </div>'))
-    )
-  ),
+ui <- fluidPage(
+  introjsUI(),
+  useShinyjs(),
   
   theme = theme,
   
-  dashboardBody(
+  includeCSS(path = "www/css/main.css"),
+  includeScript(path = "www/js/popper.js"),
+  includeScript(path = "www/js/tooltip.js"),
+  
+  titlePanel(
+    windowTitle = "Risk Assessment",
     
-    introjsUI(),
+    title = 
+      div(id = "page-title", "R Packages Risk Assessment App")
+  ),
+  
+  sidebarLayout(
     
-    # Include js scripts.
-    tags$head(
-      tags$script(src = "helperScript.js"),
-      # Include main.css to add the styles and enhancements to the app.
-      tags$link(rel = "stylesheet", type = "text/css", href = "css/main.css")
-    ),
+    sidebarPanel = sidebarPanel(
+      width = 4,
+      h5("Package Control Panel"),
+      uiOutput("sel_pack"), # UI for select package.
+      uiOutput("sel_ver"), # UI for version of the selected package.
+      fixedRow(
+        column(6, wellPanel(
+          uiOutput("status"), # Display the score of the package.
+          h3("Status")
+        )),
+        column(6, wellPanel(
+          uiOutput("score"), # Display the score of the package.
+          h3("Risk Score")
+        ))),
+      
+      textAreaInput(
+        inputId = "overall_comment",
+        h3("Leave Your Overall Comment:"),
+        rows = 5,
+        placeholder = paste("Current Comment:")
+      ),
+      
+      # Submit Overall Comment for selected Package.
+      actionButton("submit_overall_comment", "Submit Comment"),
+      
+      div(
+        HTML("<i class='fas fa-info-circle fa-2x float-right txt-color cursor-help' title='Once submitted the decision cannot be reverted and comments in group and package level will be frozen'></i>"),
+        # Slider input to select the decision for selected package.
+        sliderTextInput(
+          inputId = "decision",
+          h3("Overall Risk:"),
+          selected = NULL,
+          grid = TRUE,
+          c("Low", "Medium", "High")
+        ),
+        
+        # Action button to submit decision for selected package.
+        actionButton("submit_decision", "Submit Decision")
+      )),
     
-    useShinyjs(),
-    
-    # UI screen to load the required screen
-    uiOutput("screen")
+    mainPanel = mainPanel(
+      width = 8,
+      tags$li(
+        class = "dropdown",
+        style = "float: right; padding-right: 75px; padding-top: 25px;",
+        actionLink("db_dash_bttn",
+                   HTML('<div class="tooltip-help">
+                      <i class="fas fa-database fa-2x database-icon"></i>
+                      <span class="tooltiptext-help fa-database-tooltiptext-help">Database</span>
+                      </div>'))
+      ),
+      tabsetPanel(
+        id = "tabs",
+        tabPanel(
+          id = "upload_tab_id",
+          value = "upload_tab_value",
+          title = "Upload Package",
+          uiOutput("upload_package")  # UI for upload package tab panel.
+        ),
+        tabPanel(
+          id = "reportPreview_tab_id",
+          value = "reportPreview_tab_value",
+          title = "Report Preview",
+          withSpinner(uiOutput("report_preview"), type = 2)  # UI for Report Preview tab Panel
+        ),
+        tabPanel(
+          id = "mm_tab_id",
+          value = "mm_tab_value",
+          title = "Maintenance Metrics",
+          withSpinner(uiOutput("maintenance_metrics"), type = 2) # UI for Maintenance Metrics tab panel.
+        ),
+        tabPanel(
+          id = "cum_tab_id",
+          value = "cum_tab_value",
+          title = "Community Usage Metrics",
+          withSpinner(uiOutput("community_usage_metrics"), type = 2)  # UI for Community Usage Metrics tab panel.
+        )
+      )
+    )
   )
 )
 
