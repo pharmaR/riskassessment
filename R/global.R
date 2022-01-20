@@ -23,15 +23,11 @@
 # "_PACKAGE"
 
 
-# Create any database files if it doesn't exist.
-if(!file.exists(database_name)) create_db()
-if(!file.exists(credentials_name)) create_credentials_db()
-
 # Start logging info.
-set_logfile("loggit.json")
+loggit::set_logfile("loggit.json")
 
 # initialize a shiny tag as hidden
-hidden(p(id = "assessment_criteria_bttn"))
+shinyjs::hidden(p(id = "assessment_criteria_bttn"))
 
 # 
 # # Packages needed for the app.

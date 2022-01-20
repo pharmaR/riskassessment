@@ -3,6 +3,9 @@
 #' @param request Internal parameter for `{shiny}`. 
 #'     DO NOT REMOVE.
 #' @import shiny
+#' @importFrom shinydashboard dashboardPage dashboardHeader dashboardSidebar
+#'   dashboardBody
+#' @importFrom shinymanager secure_app
 #' @noRd
 app_ui <- function(request) {
   tagList(
@@ -11,9 +14,9 @@ app_ui <- function(request) {
     
     # Your application UI logic 
     shinymanager::secure_app(
-      dashboardPage(
+      shinydashboard::dashboardPage(
         title = "R Package Risk Assessment App",
-        dashboardHeader(
+        shinydashboard::dashboardHeader(
           title = list(
             tags$a(
               title = "PharmaR Home Page",
@@ -36,17 +39,17 @@ app_ui <- function(request) {
           )
         ),
         
-        dashboardSidebar(disable = TRUE),
+        shinydashboard::dashboardSidebar(disable = TRUE),
         
-        dashboardBody(
+        shinydashboard::dashboardBody(
           
           # rintrojs::introjsUI(), # don't need here. belongs below
           
           # Include js scripts.
-          # tags$head(tags$script(src = "helperScript.js")), 
+          # tags$head(tags$script(src = "inst/app/www/script.js")), 
           
           # Include main.css to add the styles and enhancements to the app.
-          # includeCSS("www/css/main.css"), # do I need this 
+          # includeCSS("inst/app/www/main.css"), # do I need this 
           
           # shinyjs::useShinyjs(), # don't need here. belongs below
           
@@ -74,6 +77,8 @@ app_ui <- function(request) {
 #' 
 #' @import shiny
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
+#' @importFrom rintrojs introjsUI
+#' @importFrom shinyjs useShinyjs
 #' @noRd
 golem_add_external_resources <- function(){
   

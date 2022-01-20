@@ -36,7 +36,8 @@ create_db <- function(db_name = database_name){
   con <- dbConnect(RSQLite::SQLite(), db_name)
   
   # Set the path to the queries.
-  path <- file.path("Utils", "sql_queries")
+  path <- #file.path("Utils", "sql_queries")
+    app_sys("app/www/sql_queries")
   
   # Queries needed to run the first time the db is created.
   queries <- c(
@@ -120,6 +121,11 @@ create_credentials_db <- function(db_name = credentials_name, username = getOpti
   
   dbDisconnect(con)
 }
+
+# Create any database files if it doesn't exist.
+if(!file.exists(database_name)) create_db()
+if(!file.exists(credentials_name)) create_credentials_db()
+
 
 db_fun <- function(query, db_name = database_name){
   errFlag <- FALSE

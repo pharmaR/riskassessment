@@ -32,6 +32,7 @@ Imports:
     haven,
     keyring,
     loggit,
+    lubridate,
     plotly,
     processx,
     purrr,
