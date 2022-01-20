@@ -7,30 +7,32 @@
 
 
 # Get the package general information from CRAN/local.
+# get_packages_info_from_web(package_name = "haven")
+# rm(genInfo_upload_to_DB, get_packages_info_from_web, metric_cum_Info_upload_to_DB, metric_mm_tm_Info_upload_to_DB)
 get_packages_info_from_web <- function(package_name) {
   tryCatch(
     expr = {
       webpage <-
-        read_html(paste0(
+        rvest::read_html(paste0(
           "https://cran.r-project.org/web/packages/",
           package_name
         ))
       
-      title_html <- html_nodes(webpage, 'h2')
-      title <- html_text(title_html)
+      title_html <- rvest::html_nodes(webpage, 'h2')
+      title <- rvest::html_text(title_html)
       title <- stringr::str_replace_all(title, "\n  ", "")
       title <- stringr::str_replace_all(title, "'", "")
       title <- stringr::str_replace_all(title, '"', "")
       
-      desc_html <- html_nodes(webpage, 'p')
-      desc <- html_text(desc_html)
+      desc_html <- rvest::html_nodes(webpage, 'p')
+      desc <- rvest::html_text(desc_html)
       desc <- desc[1]
       desc <- stringr::str_replace_all(desc, "\n  ", "")
       desc <- stringr::str_replace_all(desc, "'", "")
       desc <- stringr::str_replace_all(desc, '"', "")
       
-      ver_html <- html_nodes(webpage, 'td')
-      ver <- html_text(ver_html)
+      ver_html <- rvest::html_nodes(webpage, 'td')
+      ver <- rvest::html_text(ver_html)
       for(i in 1:length(ver)){
         if(!is.na(ver[i])){
           if(ver[i] == "Version:"){
@@ -43,8 +45,8 @@ get_packages_info_from_web <- function(package_name) {
       ver <- stringr::str_replace_all(ver, '"', "")
       
       
-      main_html <- html_nodes(webpage, 'td')
-      main<-html_text(main_html)
+      main_html <- rvest::html_nodes(webpage, 'td')
+      main<-rvest::html_text(main_html)
       for(i in 1:length(main)){
         if(!is.na(main[i])){
           if(main[i] == "Maintainer:"){
@@ -57,8 +59,8 @@ get_packages_info_from_web <- function(package_name) {
       main <- stringr::str_replace_all(main, '"', "")
       
       
-      auth_html <- html_nodes(webpage, 'td')
-      auth<-html_text(auth_html)
+      auth_html <- rvest::html_nodes(webpage, 'td')
+      auth<-rvest::html_text(auth_html)
       for(i in 1:length(auth)){
         if(!is.na(auth[i])){
           if(auth[i] == "Author:"){
@@ -70,8 +72,8 @@ get_packages_info_from_web <- function(package_name) {
       auth <- stringr::str_replace_all(auth, "'", "")
       auth <- stringr::str_replace_all(auth, '"', "")
       
-      pub_html <- html_nodes(webpage, 'td')
-      pub <- html_text(pub_html)
+      pub_html <- rvest::html_nodes(webpage, 'td')
+      pub <- rvest::html_text(pub_html)
       for(i in 1:length(pub)){
         if(!is.na(pub[i])){
           if(pub[i] == "Published:"){
@@ -84,8 +86,8 @@ get_packages_info_from_web <- function(package_name) {
       pub <- stringr::str_replace_all(pub, '"', "")
       
       
-      lis_html <- html_nodes(webpage, 'td')
-      lis<-html_text(lis_html)
+      lis_html <- rvest::html_nodes(webpage, 'td')
+      lis<-rvest::html_text(lis_html)
       for(i in 1:length(lis)){
         if(!is.na(lis[i])){
           if(lis[i] == "License:"){
@@ -127,7 +129,7 @@ get_packages_info_from_web <- function(package_name) {
 genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis, pub) {
   tryCatch(
     expr = {
-      db_ins(paste0("INSERT or REPLACE INTO package
+      db_ins(command = paste0("INSERT or REPLACE INTO package
                     (name, version, title, description, maintainer, author, license, published_on, decision)
                     values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
                      "'", main, "',", "'", auth, "',", "'", lis, "',", "'", pub, "', '')"))
@@ -144,7 +146,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
   
   riskmetric_assess <-
     riskmetric::pkg_ref(package_name) %>%
-    as_tibble() %>%
+    dplyr::as_tibble() %>%
     riskmetric::pkg_assess()
   
   # Get the metrics weights to be used during pkg_score.
@@ -231,9 +233,9 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
       pkg_vers_date_final$Month <- as.character(pkg_vers_date_final$Month)
       pkg_vers_date_final$Position <- 12
       
-      pkg_html <- read_html(paste0("https://github.com/cran/", package_name, "/tags"))
-      pkg_nodes_v <- html_nodes(pkg_html, 'h4')
-      pkg_text_v <- html_text(pkg_nodes_v)
+      pkg_html <- rvest::read_html(paste0("https://github.com/cran/", package_name, "/tags"))
+      pkg_nodes_v <- rvest::html_nodes(pkg_html, 'h4')
+      pkg_text_v <- rvest::html_text(pkg_nodes_v)
       pkg_text_v <- stringr::str_split(pkg_text_v,"\n")
       pkg_vers <- c()
       for (i in 1:length(pkg_text_v)) { 
@@ -244,9 +246,9 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
       pkg_vers1 <- pkg_vers[length(pkg_vers)]
       loop<-"not_started"
       while (pkg_vers1 != "") {
-        pkg_html1 <- read_html(paste0("https://github.com/cran/",package_name,"/tags?after=",pkg_vers1))
-        pkg_nodes_v1 <- html_nodes(pkg_html1, 'h4')
-        pkg_text_v1 <- html_text(pkg_nodes_v1)
+        pkg_html1 <- rvest::read_html(paste0("https://github.com/cran/",package_name,"/tags?after=",pkg_vers1))
+        pkg_nodes_v1 <- rvest::html_nodes(pkg_html1, 'h4')
+        pkg_text_v1 <- rvest::html_text(pkg_nodes_v1)
         pkg_text_v1 <- stringr::str_split(pkg_text_v1,"\n")
         pkg_vers1 <- c()
         for (i in 1:length(pkg_text_v1)) { 
@@ -256,8 +258,8 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
         if (is.na(pkg_vers1)) {
           if(loop != "looped"){
             pkg_vers1 <- pkg_vers[length(pkg_vers)]
-            pkg_nodes_d1 <- html_nodes(pkg_html, 'relative-time')
-            pkg_text_d1 <- html_text(pkg_nodes_d1)
+            pkg_nodes_d1 <- rvest::html_nodes(pkg_html, 'relative-time')
+            pkg_text_d1 <- rvest::html_text(pkg_nodes_d1)
             pkg_date1 <- str_remove_all(pkg_text_d1[length(pkg_text_d1)], ",")
             pkg_date1 <- as.Date(pkg_date1, format = "%h %d %Y")
             time_since_first_release <- Sys.Date() - pkg_date1
@@ -267,8 +269,8 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
             break 
           }
         } else{
-          pkg_nodes_d1 <- html_nodes(pkg_html1, 'relative-time')
-          pkg_text_d1 <- html_text(pkg_nodes_d1)
+          pkg_nodes_d1 <- rvest::html_nodes(pkg_html1, 'relative-time')
+          pkg_text_d1 <- rvest::html_text(pkg_nodes_d1)
           pkg_date1 <- str_remove_all(pkg_text_d1[length(pkg_text_d1)], ",")
           pkg_date1 <- as.Date(pkg_date1, format = "%h %d %Y")
           time_since_first_release <- Sys.Date() - pkg_date1
@@ -277,8 +279,8 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
         }
       }
       
-      pkg_nodes_d <- html_nodes(pkg_html, 'relative-time')
-      pkg_text_d <- html_text(pkg_nodes_d)
+      pkg_nodes_d <- rvest::html_nodes(pkg_html, 'relative-time')
+      pkg_text_d <- rvest::html_text(pkg_nodes_d)
       pkg_date <- str_remove_all(pkg_text_d, ",")
       pkg_date <- as.Date(pkg_date, format = "%h %d %Y")
       time_since_version_release <- Sys.Date() - pkg_date[1]

@@ -44,6 +44,7 @@ Imports:
     rmarkdown,
     RSQLite,
     rstudioapi,
+    rvest,
     shiny (>= 1.6.0),
     shinycssloaders,
     shinydashboard,

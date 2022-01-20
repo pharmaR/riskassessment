@@ -37,7 +37,7 @@ create_db <- function(db_name = database_name){
   
   # Set the path to the queries.
   path <- #file.path("Utils", "sql_queries")
-    app_sys("app/www/sql_queries")
+    "inst/app/www/sql_queries"
   
   # Queries needed to run the first time the db is created.
   queries <- c(
@@ -85,38 +85,38 @@ create_credentials_db <- function(db_name = credentials_name, username = getOpti
   shinymanager::create_db(
     credentials_data = credentials,
     sqlite_path = file.path(db_name), 
-    passphrase = key_get("R-shinymanager-key", username)
+    passphrase = keyring::key_get("R-shinymanager-key", username)
   )
   
   # set pwd_mngt$must_change to TRUE
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
-  pwd <- read_db_decrypt(
+  pwd <- shinymanager::read_db_decrypt(
     con, name = "pwd_mngt",
-    passphrase = key_get("R-shinymanager-key", username)) %>%
+    passphrase = keyring::key_get("R-shinymanager-key", username)) %>%
     mutate(must_change = ifelse(
       have_changed == "TRUE", must_change, as.character(TRUE)))
   
-  write_db_encrypt(
+  shinymanager::write_db_encrypt(
     con,
     value = pwd,
     name = "pwd_mngt",
-    passphrase = key_get("R-shinymanager-key", username)
+    passphrase = keyring::key_get("R-shinymanager-key", username)
   )
   DBI::dbDisconnect(con)
   
   # update expire date here to current date + 365 days
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
-  dat <- read_db_decrypt(con, name = "credentials",
-                         passphrase = key_get("R-shinymanager-key", username))
+  dat <- shinymanager::read_db_decrypt(con, name = "credentials",
+                         passphrase = keyring::key_get("R-shinymanager-key", username))
   
   dat <- dat %>%
     mutate(expire = as.character(Sys.Date()+365))
   
-  write_db_encrypt(
+  shinymanager::write_db_encrypt(
     con,
     value = dat,
     name = "credentials",
-    passphrase = key_get("R-shinymanager-key", username)
+    passphrase = keyring::key_get("R-shinymanager-key", username)
   )
   
   DBI::dbDisconnect(con)
@@ -164,14 +164,15 @@ db_fun <- function(query, db_name = database_name){
 # You need to use dbExecute() to perform delete, update or insert queries.
 db_ins <- function(command, db_name = database_name){
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
-  tryCatch({
-    rs <- DBI::dbSendStatement(con, command)
-  }, error = function(err) {
-    message <- paste0("command:\n",command,"\nresulted in\n",err)
-    message(message, .loggit = FALSE)
-    loggit::loggit("ERROR", message)
-    DBI::dbDisconnect(con)
-  })
+  tryCatch(
+    expr = {
+      rs <- DBI::dbSendStatement(con, command)
+    }, error = function(err) {
+      message <- paste0("command:\n",command,"\nresulted in\n",err)
+      message(message, .loggit = FALSE)
+      loggit::loggit("ERROR", message)
+      DBI::dbDisconnect(con)
+    })
   nr <- DBI::dbGetRowsAffected(rs)
   DBI::dbClearResult(rs)
   if (nr == 0) {
