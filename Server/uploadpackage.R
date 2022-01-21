@@ -1,12 +1,6 @@
-#####################################################################################################################
-# uploadpackage.R - upload pacakge Source file for server Module.
-# Author: K Aravind Reddy
-# Date: July 13th, 2020
-# License: MIT License
-#####################################################################################################################
-
-# Implement the intro logic. Sidebar steps are listed in global.r
-# this dataset is also static... perhaps it should be sourced from global.r?
+# --------------------------------------------------------------------------
+# -----------------------  INTRO JS
+# --------------------------------------------------------------------------
 upload_pkg_initial_steps <- reactive(
   data.frame(
     # Note that we access chooseCSVtext with '.' instead of '#', because we track its class and not its id.
@@ -32,8 +26,11 @@ upload_pkg_steps <- reactive(
   } else {
     data.frame(element = character(0) , intro = character(0), position = character(0))
   }
-
 )
+
+# --------------------------------------------------------------------------
+# ----------------------- 
+# --------------------------------------------------------------------------
 
 # Start introjs when help button is pressed.
 observeEvent(input$help,
