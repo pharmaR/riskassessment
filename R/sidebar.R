@@ -258,17 +258,17 @@ sidebarServer <- function(id) {
     # Update database info after decision is submitted.
     observeEvent(input$submit_confirmed_decision, {
       db_ins(glue(
-          "UPDATE package
+        "UPDATE package
           SET decision = '{input$decision}'
           WHERE name = '{selected_pkg()$name}'"
-        )
+      )
       )
       
       removeModal()
       
       loggit("INFO",
              glue("decision for the package {input$decisione} is {input$decision}
-                  by {selected_pkg$name} ({values$role})"))
+                  by {selected_pkg()$name} ({input$user$rule})"))
     })
     
     # 4. Observe Event to edit the decision if user need to change.
