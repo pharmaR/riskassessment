@@ -116,6 +116,13 @@ ui <- fluidPage(
       title = "Assessment Criteria",
       icon = icon("info-circle"),
       assessmentInfoUI("assessmentInfo")
+    ),
+    
+    footer = wellPanel(
+      id = "footer",
+      "Checkout the app's code!",
+      tags$a(href = "https://github.com/pharmaR/risk_assessment",
+             icon("github-alt"), target = "_blank")
     )
   )
 )
