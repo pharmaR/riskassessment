@@ -144,15 +144,18 @@ output$upload_format_download <- downloadHandler(
 
 output$upload_summary_text <- renderText({
   if (values$upload_complete == "upload_complete") {
-    paste(
-      "<br><br><hr>",
-      "<h3><b>Summary of uploaded package(s) </b></h3>",
-      "<h4>Total Packages: ", nrow(values$Total), "</h4>",
-      "<h4>New Packages:",  nrow(values$New), "</h4>",
-      "<h4>Undiscovered Packages:", nrow(values$Undis), "</h4>",
-      "<h4>Duplicate Packages:", nrow(values$Dup), "</h4>",
-      "<h4><b>Note: The assessment will be performed on the latest version of each package, irrespective of the uploaded version."
-    )
+    as.character(tagList(
+      br(), br(),
+      hr(),
+      h5("Summary of uploaded package(s)"),
+      br(),
+      p(tags$b("Total Packages: "), nrow(values$Total)),
+      p(tags$b("New Packages: "), nrow(values$New)),
+      p(tags$b("Undiscovered Packages: "), nrow(values$Undis)),
+      p(tags$b("Duplicate Packages: "), nrow(values$Dup)),
+      p("Note: The assessment will be performed on the latest version of each
+        package, irrespective of the uploaded version.")
+    ))
   }
 })
 
