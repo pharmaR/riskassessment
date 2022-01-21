@@ -26,14 +26,8 @@ observeEvent(input$help_rp,
 
 # Display general information of the selected package.
 output$gen_info <- renderText({
-  pkg_GenInfo <-
-    db_fun(
-      paste0(
-        "SELECT * FROM package WHERE name ='",
-        input$select_pack,
-        "'"
-      )
-    )
+  pkg_GenInfo <- 
+    db_fun(glue("SELECT * FROM package WHERE name ='{selected_pkg$name()}'"))
   
   paste(
     "<h2><b>Package:</b> ",
