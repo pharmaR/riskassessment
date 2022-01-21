@@ -68,14 +68,14 @@ output$decision_display <- renderText({
 
 # Display the overall comment of the selected package. 
 output$overall_comments <- renderText({
-  req(values$selected_pkg$name)
+  req(selected_pkg$name())
   if (values$o_comment_submitted == "yes" ||
       values$o_comment_submitted == "no") {
     values$comment_o1 <-
       db_fun(
         paste0(
           "SELECT * FROM Comments WHERE comm_id = '",
-          values$selected_pkg$name,
+          selected_pkg$name(),
           "' AND comment_type = 'o'"
         )
       )
@@ -101,7 +101,7 @@ output$overall_comments <- renderText({
 values$cwd <- getwd()
 output$download_report_btn <- downloadHandler(
   filename = function() {
-    paste0(input$select_pack, "_", input$select_ver, "_Risk_Assessment.",
+    paste0(selected_pkg$name(), "_", selected_pkg$version(), "_Risk_Assessment.",
            switch(input$report_format, "docx" = "docx", "html" = "html"))
   },
   content = function(file) {
@@ -122,7 +122,7 @@ output$download_report_btn <- downloadHandler(
         rmarkdown::render(
           Report,
           output_file = file,
-          params = list(package = values$selected_pkg$name,
+          params = list(package = selected_pkg$name(),
                         riskmetric_version = packageVersion("riskmetric"),
                         cwd = values$cwd,
                         username = values$name,
