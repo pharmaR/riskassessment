@@ -1,35 +1,41 @@
 assessmentInfoUI <- function(id) {
-  # Show modal pop window for assessment criteria action link.
-  tabsetPanel(
-    tabPanel(
-      title = "Risk Calculation",
-      h3("Description"),
-      uiOutput(NS(id, "riskcalc_desc")),  # Maintenance metrics description.
-      br(),
-      dataTableOutput(NS(id, "riskcalc_weights_table"))
-    ),
-    tabPanel(
-      title = "Maintenance Metrics",
-      h3("Description"),
-      uiOutput(NS(id, "maintenance_desc")),  # Maintenance metrics description.
-      br(),
-      dataTableOutput(NS(id, "maintenance_table"))  # data table for maintenance metrics. 
-    ),
-    tabPanel(
-      title = "Community Usage Metrics",
-      h3("Description"),
-      htmlOutput(NS(id, "community_usage_desc")),  # html output for community usage metrics content.
-      br(),
-      dataTableOutput(NS(id, "community_usage_table"))  # data table for community usage metrics.
-    ),
-    tabPanel(
-      title = "Testing Metrics",
-      h3("Description"),
-      htmlOutput(NS(id, "testing_desc")),  # html output for testing metrics content.
-      br(),
-      dataTableOutput(NS(id, "testing_table"))  # data table for testing metrics.
-    )
-  )
+  fluidPage(
+    fluidRow(
+      column(
+        width = 8, offset = 2,
+        br(),
+        h4("Assessment Criteria Overview"),
+        br(),
+        tabsetPanel(
+          tabPanel(
+            title = "Risk Calculation",
+            h6("About Risk Calculation"),
+            uiOutput(NS(id, "riskcalc_desc")),  # Maintenance metrics description.
+            br(),
+            dataTableOutput(NS(id, "riskcalc_weights_table"))
+          ),
+          tabPanel(
+            title = "Maintenance Metrics",
+            h6("About Maintenance Metrics"),
+            uiOutput(NS(id, "maintenance_desc")),  # Maintenance metrics description.
+            br(),
+            dataTableOutput(NS(id, "maintenance_table"))  # data table for maintenance metrics. 
+          ),
+          tabPanel(
+            title = "Community Usage Metrics",
+            h6("About Community Usage Metrics"),
+            htmlOutput(NS(id, "community_usage_desc")),  # html output for community usage metrics content.
+            br(),
+            dataTableOutput(NS(id, "community_usage_table"))  # data table for community usage metrics.
+          ),
+          tabPanel(
+            title = "Testing Metrics",
+            h6("About Testing Metrics"),
+            htmlOutput(NS(id, "testing_desc")),  # html output for testing metrics content.
+            br(),
+            dataTableOutput(NS(id, "testing_table"))  # data table for testing metrics.
+          )
+        ))))
 }
 
 assessmentInfoServer <- function(id) {
