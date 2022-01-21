@@ -52,11 +52,10 @@ observe({
       if (selected_pkg$name() %in% pkgs_in_db$cum_id &&
           !identical(pkgs_in_db$cum_id, character(0))) {
         values$riskmetrics_cum <-
-          db_fun(
-            paste0(
-              "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-              input$select_pack,
-              "'"
+          db_fun(glue(
+              "SELECT *
+              FROM CommunityUsageMetrics
+              WHERE cum_id ='{selected_pkg$name()}'"
             )
           )
       } else{
