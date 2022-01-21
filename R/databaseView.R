@@ -19,11 +19,7 @@ databaseViewUI <- function(id) {
                   downloadButton(NS(id, "dwnld_sel_db_pkgs_btn"), "Download Report(s)")),
                 column(
                   width = 6,
-                  tags$div(
-                    style = "float: left; width: 150px",
-                    # Select report format.
-                    selectInput(NS(id, "report_formats"), "Select Format", c("html", "docx"))
-                  )
+                  selectInput(NS(id, "report_formats"), "Select Format", c("html", "docx"))
                 )
               ))),
         br(), br(),
