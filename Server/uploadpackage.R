@@ -197,10 +197,11 @@ output$total_new_undis_dup_table <- DT::renderDataTable({
 # View sample dataset
 observeEvent(input$upload_format, {
   dataTableOutput("sampletable")
+  
   showModal(modalDialog(
     output$sampletable <- DT::renderDataTable(
       datatable(
-        data(),
+        read_csv(file.path("Data", "upload_format.csv")),
         escape = FALSE,
         class = "cell-border",
         editable = FALSE,
