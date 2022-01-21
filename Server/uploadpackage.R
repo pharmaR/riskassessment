@@ -34,22 +34,17 @@ upload_pkg_steps <- reactive(
 
 # Start introjs when help button is pressed.
 observeEvent(input$help,
-   introjs(session,
-     options = list(
-       steps = 
-          upload_pkg_initial_steps() %>%
-          union(upload_pkg_steps()) %>%
-          union(sidebar_steps),
-        "nextLabel" = "Next",
-        "prevLabel" = "Previous"
-     )
-   )
+             introjs(session,
+                     options = list(
+                       steps = 
+                         upload_pkg_initial_steps() %>%
+                         union(upload_pkg_steps()) %>%
+                         union(sidebar_steps),
+                       "nextLabel" = "Next",
+                       "prevLabel" = "Previous"
+                     )
+             )
 )
-
-# Sample csv file content.
-data <- reactive({
-  data.table(read_csv(file.path("Data", "upload_format.csv")))
-})
 
 # Load the columns from DB into reactive values.
 observeEvent(list(input$total_new_undis_dup,input$uploaded_file), {
@@ -93,6 +88,7 @@ observeEvent(input$uploaded_file, {
   names(pkgs_file) <- tolower(names(pkgs_file))
   pkgs_file$package <- trimws(pkgs_file$package)
   pkgs_file$version <- trimws(pkgs_file$version)
+  
   values$Total <- pkgs_file
   pkgs_db1 <- db_fun("SELECT name FROM package")
   values$Dup <- filter(values$Total, values$Total$package %in% pkgs_db1$name)
@@ -158,7 +154,7 @@ output$upload_summary_text <- renderText({
       "<h4><b>Note: The assessment will be performed on the latest version of each package, irrespective of the uploaded version."
     )
   }
-})  # End of the render Output.
+})
 
 # 3. Render Output to show the select input to select the choices to display the table.
 
@@ -216,8 +212,6 @@ observeEvent(input$upload_format, {
         )
       )
     ),
-    downloadButton("upload_format_download", "Download", class = "btn-secondary")
+    downloadButton("upload_format_download", "Download")
   ))
-})  # End of the observe event for sample button.
-
-# End of the upload package Source file for server Module.
+})
