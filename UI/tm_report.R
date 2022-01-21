@@ -16,5 +16,3 @@ fluidRow(
       htmlOutput("tm_commented1", inline = TRUE)  # showing comments on application.
     ))
 )
-
-# End of the UI
