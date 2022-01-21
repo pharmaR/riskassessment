@@ -1,35 +1,39 @@
 sidebarUI <- function(id) {
   tagList(
-    h5("Package Control Panel"),
+    tags$b(h4("Package Control Panel", style = "text-align: center;")),
+    
+    hr(),
     
     selectizeInput(
       inputId = NS(id, "select_pkg"),
-      label = h3("Select Package"),
+      label = h5("Select Package"),
       choices = "-",
       selected = "-"
     ),
     
     selectizeInput(
       inputId = NS(id, "select_ver"),
-      label = h3("Select Version"),
+      label = h5("Select Version"),
       choices = "-",
       selected = "-"
     ),
     
+    br(), br(),
+    
     fluidRow(
       column(6, wellPanel(
-        h3("Status"),
+        h5("Status"),
         htmlOutput(NS(id, "status"))
       )),
       column(6, wellPanel(
-        h3("Risk"),
+        h5("Risk"),
         htmlOutput(NS(id, "score"))
       ))
     ),
     
     textAreaInput(
       inputId = NS(id, "overall_comment"),
-      h3("Leave Your Overall Comment:"),
+      h5("Select Overall Comment"),
       rows = 5,
       placeholder = paste("Current Comment:")
     ),
