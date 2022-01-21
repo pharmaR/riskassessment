@@ -4,13 +4,12 @@ databaseViewUI <- function(id) {
       column(
         width = 8, offset = 2, align = "center",
         br(),
-        h2("Database Overview", class = "card-title text-center txt-color font-weight-bold"),
-        hr(class = "bg-color"),
+        h4("Database Overview"),
+        hr(),
         tags$section(
           br(), br(),
           box(width = 12, collapsible = TRUE, status = "primary",
-              title = h3("Uploaded Packages", style = "margin-top: 5px"),
-              solidHeader = TRUE,
+              title = h5("Uploaded Packages", style = "margin-top: 5px"),
               DT::dataTableOutput(NS(id, "db_pkgs")),
               br(),
               fluidRow(
@@ -179,7 +178,6 @@ databaseViewServer <- function(id) {
       all_names <- unique(values$curr_new_wts$name)
       chgd_wt_names <- values$curr_new_wts %>% filter(weight != new_weight) %>% pull(name)
       my_colors <- ifelse(all_names %in% chgd_wt_names,'#FFEB9C','#FFFFFF')
-      
       
       
       DT::datatable(
