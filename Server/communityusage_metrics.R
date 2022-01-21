@@ -42,14 +42,14 @@ observeEvent(input$help_cum,
 
 # 1. Observe to load the columns from DB into reactive values.
 observe({
-  req(input$select_pack)
+  req(selected_pkg$name())
   if (input$tabs == "cum_tab_value") {
-    if (input$select_pack != "Select") {
+    if (selected_pkg$name() != "-") {
     
       # Load the columns into values$riskmetrics.
       pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
       
-      if (input$select_pack %in% pkgs_in_db$cum_id &&
+      if (selected_pkg$name() %in% pkgs_in_db$cum_id &&
           !identical(pkgs_in_db$cum_id, character(0))) {
         values$riskmetrics_cum <-
           db_fun(
@@ -60,14 +60,13 @@ observe({
             )
           )
       } else{
-        if (input$select_pack != "Select") {
-          metric_cum_Info_upload_to_DB(input$select_pack)
+        if (selected_pkg$name() != "-") {
+          metric_cum_Info_upload_to_DB(selected_pkg$name())
           values$riskmetrics_cum <-
             db_fun(
-              paste0(
-                "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-                input$select_pack,
-                "'"
+              glue("SELECT *
+                   FROM CommunityUsageMetrics
+                   WHERE cum_id ='{selected_pkg$name()}'"
               )
             )
         }
@@ -162,7 +161,7 @@ output$dwnlds_last_yr <- renderInfoBox({
 output$no_of_downloads <- 
   plotly::renderPlotly({
     num_dwnlds_plot(data = values$riskmetrics_cum,
-                    input_select_pack = input$select_pack)
+                    input_select_pack = selected_pkg$name())
 })
 
 
@@ -174,10 +173,10 @@ output$cum_commented <- renderText({
       values$cum_comment_submitted == "no") {
     values$comment_cum1 <-
       db_fun(
-        paste0(
-          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
-          input$select_pack,
-          "' AND comment_type = 'cum'"
+        glue(
+          "SELECT user_name, user_role, comment, added_on
+          FROM Comments
+          WHERE comm_id = '{selected_pkg$name()}' AND comment_type = 'cum'"
         )
       )
     values$comment_cum2 <- data.frame(values$comment_cum1 %>% map(rev))
@@ -211,7 +210,7 @@ observeEvent(input$submit_cum_comment, {
     db_ins(
       paste0(
         "INSERT INTO Comments values('",
-        input$select_pack,
+        selected_pkg$name(),
         "',",
         "'",
         values$name,
