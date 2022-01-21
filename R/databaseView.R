@@ -101,9 +101,10 @@ databaseViewServer <- function(id) {
     output$dwnld_sel_db_pkgs_btn <- downloadHandler(
       filename = function() {
         paste(
-          "RiskAsses_PkgDB_Dwnld",
+          "RiskAssessment-Report-",
           str_replace_all(
-            str_replace(Sys.time(), " ", "_"), ":", "-"), ".zip", sep = "_")
+            str_replace(Sys.time(), " ", "_"), ":", "-"),
+          ".zip", sep = "-")
       },
       content = function(file) {
         these_pkgs <- values$db_pkg_overview %>% slice(input$db_pkgs_rows_selected)
