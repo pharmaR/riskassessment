@@ -15,13 +15,8 @@ databaseViewUI <- function(id) {
               fluidRow(
                 column(
                   width = 6,
-                  tags$div(
-                    style = "float: right",
-                    # Download button to export report(s).
-                    downloadButton(NS(id, "dwnld_sel_db_pkgs_btn"),
-                                   "Download Report(s)",
-                                   class = "download_report_btn_class btn-secondary")
-                  )),
+                  style = "margin: auto;",
+                  downloadButton(NS(id, "dwnld_sel_db_pkgs_btn"), "Download Report(s)")),
                 column(
                   width = 6,
                   tags$div(
