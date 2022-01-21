@@ -250,7 +250,7 @@ sidebarServer <- function(id) {
       } else{
         showModal(modalDialog(
           title = h3("WARNING!", class = 'txt-danger'),
-          h4("Please select a Decision!")
+          h5("Please select a Decision!")
         ))
       }
     })
