@@ -45,7 +45,7 @@ create_db <- function(db_name = database_name){
     "initialize_metric_table.sql",
     "create_package_metrics_table.sql",
     "create_CommunityUsageMetrics_table.sql",
-    "create_Comments_table.sql"
+    "create_comments_table.sql"
   )
   
   # Append path to the queries.
@@ -223,7 +223,7 @@ update_db_dash <- function(){
       LEFT JOIN (
         SELECT comm_id
              , max(added_on) as last_comment
-        FROM Comments
+        FROM comments
         GROUP BY comm_id
       ) as c
       on c.comm_id = pi.name
