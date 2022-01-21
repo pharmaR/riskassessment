@@ -61,43 +61,8 @@ ui <- fluidPage(
       sidebarLayout(
         sidebarPanel = sidebarPanel(
           width = 4,
-          h5("Package Control Panel"),
-          uiOutput("sel_pack"), # UI for select package.
-          uiOutput("sel_ver"), # UI for version of the selected package.
-          fixedRow(
-            column(6, wellPanel(
-              uiOutput("status"), # Display the score of the package.
-              h3("Status")
-            )),
-            column(6, wellPanel(
-              uiOutput("score"), # Display the score of the package.
-              h3("Risk Score")
-            ))),
-          
-          textAreaInput(
-            inputId = "overall_comment",
-            h3("Leave Your Overall Comment:"),
-            rows = 5,
-            placeholder = paste("Current Comment:")
-          ),
-          
-          # Submit Overall Comment for selected Package.
-          actionButton("submit_overall_comment", "Submit Comment"),
-          
-          div(
-            HTML("<i class='fas fa-info-circle fa-2x float-right txt-color cursor-help' title='Once submitted the decision cannot be reverted and comments in group and package level will be frozen'></i>"),
-            # Slider input to select the decision for selected package.
-            sliderTextInput(
-              inputId = "decision",
-              h3("Overall Risk:"),
-              selected = NULL,
-              grid = TRUE,
-              c("Low", "Medium", "High")
-            ),
-            
-            # Action button to submit decision for selected package.
-            actionButton("submit_decision", "Submit Decision")
-          )),
+          sidebarUI("sidebar")
+        ),
         
         mainPanel = mainPanel(
           width = 8,
@@ -167,6 +132,9 @@ ui <- shinymanager::secure_app(
 # Create Server Code.
 server <- function(session, input, output) {
   
+  # Sidebar module.
+  sidebarServer("sidebar")
+  
   # Assessment criteria information tab.
   assessmentInfoServer("assessmentInfo")
   
@@ -201,9 +169,6 @@ server <- function(session, input, output) {
     role <- ifelse(res_auth$admin == TRUE, "admin", "user")
     values$role <- trimws(role)
   })
-
-  # Load Server Source module file of Sidebar.
-  source(file.path("Server", "sidebar.R"), local = TRUE)
   
   # Load Source files of UI and Server modules of Upload Package Tab.
   source(file.path("UI", "uploadpackage.R"), local = TRUE)
@@ -220,21 +185,6 @@ server <- function(session, input, output) {
   # Load Source files of UI and Server modules of Community Usage Tab.
   source(file.path("UI", "communityusage_metrics.R"), local = TRUE)
   source(file.path("Server", "communityusage_metrics.R"), local = TRUE)
-  
-  # 2. Observe to select the package, score, decision and load the data into
-  # a reactive variable.
-  observe({
-    values$mm_tab_redirect <- "redirect"
-    
-    values$selected_pkg <-
-      db_fun(
-        paste0(
-          "SELECT name, score, decision FROM package WHERE name = '",
-          input$select_pack,
-          "'"
-        )
-      )
-  })
   
   # Observe Event to load the source file of UI module when we click on the
   # Assessment Criteria action Link.
