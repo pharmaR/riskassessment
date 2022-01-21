@@ -153,8 +153,7 @@ mod_communityusage_metrics_server <-
                              cum_steps() %>%
                              union(sidebar_steps),
                            "nextLabel" = "Next",
-                           "prevLabel" = "Previous",
-                           "skipLabel" = "Close"
+                           "prevLabel" = "Previous"
                          )
                  )
     )

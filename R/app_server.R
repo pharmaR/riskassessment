@@ -69,7 +69,7 @@ app_server <- function( input, output, session ) {
   # Load Source files of UI and Server modules of Community Usage Tab.
   # source(file.path("UI", "communityusage_metrics.R"), local = TRUE)
   # source(file.path("Server", "communityusage_metrics.R"), local = TRUE)
-  # mod_communityusage_metrics_server()
+  mod_communityusage_metrics_server(input = input, output = output, values = values)
   
   # Load Server modules of testing metrics Tab.
   # mod_testing_metrics_server()

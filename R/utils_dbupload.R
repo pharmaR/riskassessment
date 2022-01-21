@@ -210,6 +210,8 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
 
 
 # Get community usage metrics info and upload into DB.
+# metric_cum_Info_upload_to_DB(package_name = "dplyr")
+# chk <- db_fun("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='dplyr'")
 metric_cum_Info_upload_to_DB <- function(package_name) {
   pkg_vers_date_final <<- data.frame(matrix(ncol = 4, nrow = 0))
   time_since_first_release <<- NA
@@ -218,50 +220,56 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
   
   tryCatch(
     expr = {
-      downloads_yrs_br_i <- cranlogs::cran_downloads(package_name, from=Sys.Date()-730, to=Sys.Date())
-      downloads_yrs_br_i <- filter(downloads_yrs_br_i, months(downloads_yrs_br_i$date) != months(Sys.Date()))
-      downloads_yrs_br_i$date <- paste( months(downloads_yrs_br_i$date), year(downloads_yrs_br_i$date) )
+      days_back <- 365 * 2
+      downloads_yrs_br_i <- cranlogs::cran_downloads(package_name, from=Sys.Date()-days_back, to=Sys.Date())
+      # comment out the below... now that we are going back further in time, we want all months in data
+      downloads_yrs_br_i <- dplyr::filter(downloads_yrs_br_i, months(downloads_yrs_br_i$date) != months(Sys.Date()))
+      downloads_yrs_br_i$date <- paste( months(downloads_yrs_br_i$date), lubridate::year(downloads_yrs_br_i$date) )
       count<-c()
       for (i in 1:length(unique(downloads_yrs_br_i$date))) {
-        count_df <- filter(downloads_yrs_br_i, downloads_yrs_br_i$date == unique(downloads_yrs_br_i$date)[i])
+        count_df <- dplyr::filter(downloads_yrs_br_i, downloads_yrs_br_i$date == unique(downloads_yrs_br_i$date)[i])
         count[i] <- sum(count_df$count)
       }
       downloads_yrs_br <-data.frame(Month = unique(downloads_yrs_br_i$date), Downloads = count)
       downloads_1yr <- sum(downloads_yrs_br$Downloads[(nrow(downloads_yrs_br)-11):nrow(downloads_yrs_br)])
       
       colnames(pkg_vers_date_final) <<- c("Month", "Downloads", "verRelease", "Position")
-      pkg_vers_date_final <- downloads_yrs_br
+      # added
+      class(pkg_vers_date_final$Month) <- "character"
+      pkg_vers_date_final <- pkg_vers_date_final %>% dplyr::bind_rows(downloads_yrs_br)
       pkg_vers_date_final$Month <- as.character(pkg_vers_date_final$Month)
-      pkg_vers_date_final$Position <- 12
+      pkg_vers_date_final$Position <- ceiling(days_back/30) # Not used anywhere. Supposed to be number of months you want to go back in time
       
       pkg_html <- rvest::read_html(paste0("https://github.com/cran/", package_name, "/tags"))
       pkg_nodes_v <- rvest::html_nodes(pkg_html, 'h4')
       pkg_text_v <- rvest::html_text(pkg_nodes_v)
       pkg_text_v <- stringr::str_split(pkg_text_v,"\n")
+      # Grabbing the most recent ten releases:
       pkg_vers <- c()
       for (i in 1:length(pkg_text_v)) { 
         pkg_vers[i]<-(trimws(pkg_text_v[[i]][3]))
       }
-      pkg_vers <- pkg_vers[c(3:length(pkg_vers))]
+      # pkg_vers <- pkg_vers[c(3:length(pkg_vers))] # get's rid of the latest 2 releases? Why?
       
-      pkg_vers1 <- pkg_vers[length(pkg_vers)]
+      pkg_vers1 <- pkg_vers[length(pkg_vers)] # first release from webscrape
       loop<-"not_started"
       while (pkg_vers1 != "") {
         pkg_html1 <- rvest::read_html(paste0("https://github.com/cran/",package_name,"/tags?after=",pkg_vers1))
         pkg_nodes_v1 <- rvest::html_nodes(pkg_html1, 'h4')
         pkg_text_v1 <- rvest::html_text(pkg_nodes_v1)
         pkg_text_v1 <- stringr::str_split(pkg_text_v1,"\n")
+        # goes even further into the past, grabbing another ten old releases:
         pkg_vers1 <- c()
         for (i in 1:length(pkg_text_v1)) { 
           pkg_vers1[i]<-(trimws(pkg_text_v1[[i]][3]))
         }
-        pkg_vers1 <- pkg_vers1[length(pkg_vers1)]
+        pkg_vers1 <- pkg_vers1[length(pkg_vers1)] # take the oldest (0.7.4)
         if (is.na(pkg_vers1)) {
           if(loop != "looped"){
             pkg_vers1 <- pkg_vers[length(pkg_vers)]
             pkg_nodes_d1 <- rvest::html_nodes(pkg_html, 'relative-time')
             pkg_text_d1 <- rvest::html_text(pkg_nodes_d1)
-            pkg_date1 <- str_remove_all(pkg_text_d1[length(pkg_text_d1)], ",")
+            pkg_date1 <- stringr::str_remove_all(pkg_text_d1[length(pkg_text_d1)], ",")
             pkg_date1 <- as.Date(pkg_date1, format = "%h %d %Y")
             time_since_first_release <- Sys.Date() - pkg_date1
             time_since_first_release <- floor(as.numeric(time_since_first_release / 30))
@@ -272,9 +280,9 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
         } else{
           pkg_nodes_d1 <- rvest::html_nodes(pkg_html1, 'relative-time')
           pkg_text_d1 <- rvest::html_text(pkg_nodes_d1)
-          pkg_date1 <- str_remove_all(pkg_text_d1[length(pkg_text_d1)], ",")
+          pkg_date1 <- stringr::str_remove_all(pkg_text_d1[length(pkg_text_d1)], ",")
           pkg_date1 <- as.Date(pkg_date1, format = "%h %d %Y")
-          time_since_first_release <- Sys.Date() - pkg_date1
+          time_since_first_release <- Sys.Date() - pkg_date1 # this is not really the first release... it's just an old one
           time_since_first_release <- floor(as.numeric(time_since_first_release / 30))
           loop<-"looped"
         }
@@ -282,17 +290,19 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
       
       pkg_nodes_d <- rvest::html_nodes(pkg_html, 'relative-time')
       pkg_text_d <- rvest::html_text(pkg_nodes_d)
-      pkg_date <- str_remove_all(pkg_text_d, ",")
+      pkg_date <- stringr::str_remove_all(pkg_text_d, ",")
       pkg_date <- as.Date(pkg_date, format = "%h %d %Y")
-      time_since_version_release <- Sys.Date() - pkg_date[1]
+      time_since_version_release <- Sys.Date() - pkg_date[1] # one day off
       time_since_version_release <- floor(as.numeric(time_since_version_release / 30))
       
-      pkg_vers_date <- data.frame(Version = c(pkg_vers), Date = c(paste(months(pkg_date), year(pkg_date))))
+      pkg_vers_date <- data.frame(Version = c(pkg_vers), Date = c(paste(months(pkg_date), lubridate::year(pkg_date))))
       pkg_vers_date <- pkg_vers_date %>% purrr::map_df(rev)
       pkg_vers_date$Date <- as.character(pkg_vers_date$Date)
       pkg_vers_date$Version <- as.character(pkg_vers_date$Version)
-      pkg_vers_date <- filter(pkg_vers_date, pkg_vers_date$Date %in% pkg_vers_date_final$Month)
+      pkg_vers_date <- dplyr::filter(pkg_vers_date,
+                                     pkg_vers_date$Date %in% pkg_vers_date_final$Month)
       
+      # i <- 1; j <- 1;
       for (i in 1:length(pkg_vers_date_final$Month)) {
         for (j in 1:length(pkg_vers_date$Date)) {
           if (pkg_vers_date_final$Month[i] == pkg_vers_date$Date[j]) {
@@ -301,7 +311,7 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
             break
           } else{
             pkg_vers_date_final$verRelease[i] <- NA
-            pkg_vers_date_final$Position[i] <- 12
+            pkg_vers_date_final$Position[i] <- ceiling(days_back/30)
           }
         }
       }

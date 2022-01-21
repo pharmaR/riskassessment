@@ -140,8 +140,7 @@ mod_reportpreview_server <-
                              rp_steps() %>%
                              union(sidebar_steps),
                            "nextLabel" = "Next",
-                           "prevLabel" = "Previous",
-                           "skipLabel" = "Close")))
+                           "prevLabel" = "Previous")))
     
     
     # Display general information of the selected package.

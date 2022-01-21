@@ -169,8 +169,8 @@ mod_uploadpackage_server <-
     pkgs_file$version <- trimws(pkgs_file$version)
     values$Total <- pkgs_file
     pkgs_db1 <- db_fun("SELECT name FROM package")
-    values$Dup <- filter(values$Total, values$Total$package %in% pkgs_db1$name)
-    values$New <- filter(values$Total, !(values$Total$package %in% pkgs_db1$name))
+    values$Dup <- dplyr::filter(values$Total, values$Total$package %in% pkgs_db1$name)
+    values$New <- dplyr::filter(values$Total, !(values$Total$package %in% pkgs_db1$name))
     withProgress(message = "Uploading Packages to DB:", value = 0, {
       if (nrow(values$New) != 0) {
         for (i in 1:nrow(values$New)) {
@@ -186,7 +186,7 @@ mod_uploadpackage_server <-
     pkgs_db2 <- db_fun("SELECT name FROM package")
     
     values$Undis <-
-      filter(values$New, !(values$New$package %in% pkgs_db2$name))
+      dplyr::filter(values$New, !(values$New$package %in% pkgs_db2$name))
     values$packsDB <- pkgs_db2
     
     updateSelectizeInput(

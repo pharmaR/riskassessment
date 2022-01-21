@@ -225,7 +225,7 @@ mod_db_dash_screen_server <-
     output$weights_table <- DT::renderDataTable({
       
       all_names <- unique(values$curr_new_wts$name)
-      chgd_wt_names <- values$curr_new_wts %>% filter(weight != new_weight) %>% pull(name)
+      chgd_wt_names <- values$curr_new_wts %>% dplyr::filter(weight != new_weight) %>% pull(name)
       my_colors <- ifelse(all_names %in% chgd_wt_names,'#FFEB9C','#FFFFFF')
       
       
@@ -325,7 +325,7 @@ mod_db_dash_screen_server <-
       req(input$metric_weight)
       
       values$curr_new_wts %>%
-        filter(weight != new_weight) %>%
+        dplyr::filter(weight != new_weight) %>%
         nrow()
     })
     
@@ -349,7 +349,7 @@ mod_db_dash_screen_server <-
       } else {
         updateNumericInput(session, "metric_weight",
                            value = values$curr_new_wts %>%
-                             filter(name == input$metric_name) %>%
+                             dplyr::filter(name == input$metric_name) %>%
                              select(weight) %>% # current weight
                              pull())
       }
@@ -413,7 +413,7 @@ mod_db_dash_screen_server <-
       # First, which weights are different than the originals?
       wt_chgd_df <- 
         values$curr_new_wts %>%
-        filter(weight != new_weight)
+        dplyr::filter(weight != new_weight)
       
       wt_chgd_metric <- wt_chgd_df %>% select(name) %>% pull()
       wt_chgd_wt <- wt_chgd_df %>% select(new_weight) %>% pull()

@@ -48,7 +48,16 @@ create_db <- function(db_name = database_name){
     "create_CommunityUsageMetrics_table.sql",
     "create_Comments_table.sql"
   )
+  # chk <- db_fun("SELECT * FROM CommunityUsageMetrics WHERE cum_id ='dplyr'")
   # db_fun("select * from CommunityUsageMetrics")
+  # db_fun("SELECT 
+  #             name
+  #         FROM 
+  #             sqlite_schema
+  #         WHERE 
+  #             type ='table' AND 
+  #             name NOT LIKE 'sqlite_%';"
+  #        )
   
   # Append path to the queries.
   queries <- file.path(path, queries)

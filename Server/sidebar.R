@@ -239,7 +239,7 @@ observeEvent(input$submit_overall_comment, {
     if (values$name %in% comments_submitted$user_name &&
         values$role %in% comments_submitted$user_role) {
       comment_submitted <-
-        filter(
+        dplyr::filter(
           comments_submitted,
           comments_submitted$user_name == values$name &
             comments_submitted$user_role == values$role

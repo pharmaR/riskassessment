@@ -36,13 +36,13 @@ num_dwnlds_plot <- function(data = values$riskmetrics_cum,
   mnths2_lst_rel <- mondf(lst_rel_mth, curr_mth) + 2 #ifelse(lst_rel_mth == curr_mth, 2, 1)
   
   
-  fig <- plot_ly(plot_dat, x = ~month_date, y = ~no_of_downloads,
+  fig <- plotly::plot_ly(plot_dat, x = ~month_date, y = ~no_of_downloads,
                  name = "# Downloads", type = 'scatter', 
                  mode = 'lines+markers', line = list(color = "blue"),
                  hoverinfo = "text",
                  text = ~paste0('No. of Downloads: ', formatC(no_of_downloads, format="f", big.mark=",", digits=0),
                                 '<br>', month)) %>%
-    layout(title = ~paste(ifelse(!(data$no_of_downloads_last_year[1] %in% c(0, NA_integer_)),
+    plotly::layout(title = ~paste(ifelse(!(data$no_of_downloads_last_year[1] %in% c(0, NA_integer_)),
                                  "Number of Downloads by Month:", "Zero Downloads for"),
                           input_select_pack),
            showlegend = FALSE,
@@ -56,12 +56,12 @@ num_dwnlds_plot <- function(data = values$riskmetrics_cum,
                                              # , 'toImage', 'resetScale2d', 'zoomIn2d', 'zoomOut2d','zoom2d', 'pan2d'
                    ))
   # any versions?
-  ver_dat <- plot_dat %>% filter(!(ver_release %in% c("","NA")))
+  ver_dat <- plot_dat %>% dplyr::filter(!(ver_release %in% c("","NA")))
   any_ver_rel <- nrow(ver_dat) > 0
   # any_ver_rel <- any(!(plot_dat$ver_release %in% c("","NA")))
   if(any_ver_rel){
     fig <- fig %>% 
-      add_segments(
+      plotly::add_segments(
         x = ~if_else(!(ver_release %in% c("","NA")), month_date, NA_Date_),
         xend = ~if_else(!(ver_release %in% c("","NA")), month_date, NA_Date_),
         y = ~.98*min(no_of_downloads),
@@ -71,7 +71,7 @@ num_dwnlds_plot <- function(data = values$riskmetrics_cum,
         text = ~paste0('Version ', ver_release, '<br>', month),
         line = list(color = "#FF0000")
       ) %>% 
-      add_annotations(
+      plotly::add_annotations(
         yref = 'paper', 
         xref = "x", 
         y = .93, 
@@ -82,7 +82,7 @@ num_dwnlds_plot <- function(data = values$riskmetrics_cum,
         font = list(size = 14, color = '#000000'),
         text = ver_dat$ver_release
       )
-    fig <- fig %>% layout(
+    fig <- fig %>% plotly::layout(
       xaxis = list(
         rangeselector = list(
           buttons = list(
@@ -109,7 +109,7 @@ num_dwnlds_plot <- function(data = values$riskmetrics_cum,
         rangeslider = list(type = "date"))
     )
   } else { # no 'Last Release' option
-    fig <- fig %>% layout(
+    fig <- fig %>% plotly::layout(
       xaxis = list(
         rangeselector = list(
           buttons = list(

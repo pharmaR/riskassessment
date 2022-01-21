@@ -151,8 +151,7 @@ mod_maintenance_metrics_server <-
                            mm_steps() %>%
                            union(sidebar_steps),
                          "nextLabel" = "Next",
-                         "prevLabel" = "Previous",
-                         "skipLabel" = "Close"
+                         "prevLabel" = "Previous"
                        )
                )
   )
