@@ -376,23 +376,23 @@ databaseViewServer <- function(id) {
       
       
       # update for each package
-      all_pkgs <- db_fun("select distinct name as pkg_name from package")
+      all_pkgs <- db_fun("SELECT DISTINCT name AS pkg_name FROM package")
       cmt_or_dec_pkgs <- unique(bind_rows(
-        db_fun("select distinct comm_id as pkg_name from Comments where comment_type = 'o'"),
-        db_fun("select distinct name as pkg_name from package where decision != ''")
+        db_fun("SELECT DISTINCT comm_id AS pkg_name FROM comments where comment_type = 'o'"),
+        db_fun("SELECT DISTINCT name AS pkg_name FROM package where decision != ''")
       ))
       
       cmt_or_dec_dropped_cmt <- " Since they may no longer be applicable, the final decision & comment have been dropped to allow for re-evaluation."
       
       # clear out any prior overall comments
-      db_ins("delete from Comments where comment_type = 'o'")
+      db_ins("DELETE FROM comments WHERE comment_type = 'o'")
       
       for (i in 1:nrow(all_pkgs)) {
         # insert comment for both mm and cum tabs
         for (typ in c("mm","cum")) {
           db_ins(
             paste0(
-              "INSERT INTO Comments values('", all_pkgs$pkg_name[i], "',",
+              "INSERT INTO comments values('", all_pkgs$pkg_name[i], "',",
               "'", values$name, "'," ,
               "'", values$role, "',",
               "'", paste0(weight_risk_comment(all_pkgs$pkg_name[i]), 
