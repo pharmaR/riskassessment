@@ -1,10 +1,3 @@
-#####################################################################################################################
-# login_screen.R - Maintenance_Metrics Source file for Server Module.
-# 
-# Author: Aravind
-# Date: June 13th, 2020
-#####################################################################################################################
-
 # Implement the intro logic. Sidebar steps are listed in global.r
 # this dataset is also static... perhaps it should be sourced from global.r?
 mm_steps <- reactive(
