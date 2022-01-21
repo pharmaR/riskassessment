@@ -30,13 +30,15 @@ observeEvent(input$help_mm,
 
 # Save each metric information into variables.
 observe({
-  req(input$select_pack)
+  req(selected_pkg$name())
   if(input$tabs == "mm_tab_value"){
-    if(input$select_pack != "Select"){
+    if(selected_pkg$name() != "-"){
       
-      package_id <- db_fun(paste0("SELECT id
-                                  FROM package
-                                  WHERE name = ", "'", input$select_pack, "';"))
+      package_id <- 
+        db_fun(glue(
+        "SELECT id
+        FROM package
+        WHERE name = '{selected_pkg$name()}';"))
       
       # Leave method if package not found.
       # TODO: save this to the json file.
@@ -58,10 +60,10 @@ observe({
       for(i in 1:nrow(values$riskmetrics_mm))
         values[[values$riskmetrics_mm$name[i]]] <- values$riskmetrics_mm$value[i]
       
-      if (values$selected_pkg$decision != "") {
-        runjs("setTimeout(function(){disableUI('mm_comment')}, 500);")
-        runjs("setTimeout(function(){disableUI('submit_mm_comment')}, 500);")
-      }
+      # if (values$selected_pkg$decision != "") {
+      #   runjs("setTimeout(function(){disableUI('mm_comment')}, 500);")
+      #   runjs("setTimeout(function(){disableUI('submit_mm_comment')}, 500);")
+      # }
     }
   }
 })
@@ -117,10 +119,10 @@ output$mm_commented <- renderText({
       values$mm_comment_submitted == "no") {
     values$comment_mm1 <-
       db_fun(
-        paste0(
-          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
-          input$select_pack,
-          "' AND comment_type = 'mm'"
+        glue(
+          "SELECT user_name, user_role, comment, added_on
+          FROM Comments
+          -WHERE comm_id = '{selected_pkg$name()}' AND comment_type = 'mm'"
         )
       )
     values$comment_mm2 <- data.frame(values$comment_mm1 %>% map(rev))
@@ -149,25 +151,9 @@ values$mm_comment_submitted <- "no"
 
 observeEvent(input$submit_mm_comment, {
   if (trimws(input$mm_comment) != "") {
-    db_ins(
-      paste0(
-        "INSERT INTO Comments values('",
-        input$select_pack,
-        "',",
-        "'",
-        values$name,
-        "'," ,
-        "'",
-        values$role,
-        "',",
-        "'",
-        input$mm_comment,
-        "',",
-        "'mm'," ,
-        "'",
-        TimeStamp(),
-        "'"  ,
-        ")"
+    db_ins(glue(
+      "INSERT INTO Comments values('{selected_pkg$name()}', '{values$name}', 
+      '{values$role}', '{input$mm_comment}', 'mm', '{TimeStamp()}')"
       )
     )
     values$mm_comment_submitted <- "yes"
