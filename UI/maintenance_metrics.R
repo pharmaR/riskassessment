@@ -1,15 +1,4 @@
-#####################################################################################################################
-# maintenance_metrics.R - Maintenance Metrics to show the info box's to show the information and multiple comments 
-#                         for users and display the comments by users.
-# Author: K Aravind Reddy
-# Date: July 13th, 2020
-# License: MIT License
-#####################################################################################################################
-
-# Start of the Maintenance_Metrics Source file for UI Module.
-
 # Render Output UI for Maintenance Metrics.
-
 output$maintenance_metrics <- renderUI({
   Sys.sleep(0.1)
   if (!is.null(values$packsDB$name) &&
