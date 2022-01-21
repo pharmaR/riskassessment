@@ -1,12 +1,3 @@
-#####################################################################################################################
-# reportpreview.R - Report Preview to display the information of the selected package. 
-# Author: K Aravind Reddy
-# Date: July 13th, 2020
-# License: MIT License
-#####################################################################################################################
-
-# Start of the report Preview Source file for UI Module.
-
 # Render Output UI for Report Preview.
 
 output$report_preview<-renderUI({
