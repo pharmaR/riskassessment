@@ -1,11 +1,3 @@
-#####################################################################################################################
-# reportpreview.R - Report Preview Source file for Server Module.
-# Author: K Aravind Reddy
-# Date: July 13th, 2020
-# License: MIT License
-#####################################################################################################################
-
-
 # Implement the intro logic. Sidebar steps are listed in global.r
 # this dataset is also static... perhaps it should be sourced from global.r?
 rp_steps <- reactive(
@@ -19,7 +11,6 @@ rp_steps <- reactive(
     position = c("left", "top")
   )
 )
-
 
 # Start introjs when help button is pressed.
 observeEvent(input$help_rp,
