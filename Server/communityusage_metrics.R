@@ -134,19 +134,20 @@ output$no_of_downloads <-
   plotly::renderPlotly({
     num_dwnlds_plot(data = values$riskmetrics_cum,
                     input_select_pack = selected_pkg$name())
-})
+  })
 
 
-comment_added <- addCommentServer(id = "add_comment_for_cum",
-                                  metric_abrv = 'cum',
-                                  user_name = reactive(user$name),
-                                  user_role = reactive(user$role),
-                                  pkg_name = selected_pkg$name)
+
+cum_comment_added <- addCommentServer(id = "add_comment_for_cum",
+                                      metric_abrv = 'cum',
+                                      user_name = reactive(user$name),
+                                      user_role = reactive(user$role),
+                                      pkg_name = selected_pkg$name)
 
 # View comments.
 viewCommentsServer(id = "view_cum_comments",
-                   comment_added = comment_added,
-                   pkg_name = reactive(selected_pkg$name()),
+                   comment_added = cum_comment_added,
+                   pkg_name = selected_pkg$name,
                    comment_type = 'cum')
 
 

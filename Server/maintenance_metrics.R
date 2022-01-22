@@ -76,14 +76,14 @@ output$has_maintainer <- renderInfoBox({
   has_maintainer_infobox(values)
 })
 
-comment_added <- addCommentServer(id = "add_comment_for_mm",
-                                  metric_abrv = 'mm',
-                                  user_name = reactive(user$name),
-                                  user_role = reactive(user$role),
-                                  pkg_name = selected_pkg$name)
+mm_comment_added <- addCommentServer(id = "add_comment_for_mm",
+                                     metric_abrv = 'mm',
+                                     user_name = reactive(user$name),
+                                     user_role = reactive(user$role),
+                                     pkg_name = selected_pkg$name)
 
 viewCommentsServer(id = "view_mm_comments",
-                   comment_added = comment_added,
+                   comment_added = mm_comment_added,
                    pkg_name = selected_pkg$name,
                    comment_type = 'mm')
 
