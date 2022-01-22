@@ -13,13 +13,11 @@ viewCommentsUI <- function(id) {
   )
 }
 
-viewCommentsServer <- function(id, pkg_name, comment_type,
-                               comment_added = reactive(NULL)) {
+viewCommentsServer <- function(id, pkg_name, comment_type, comment_added) {
   moduleServer(id, function(input, output, session) {
     # Show the comments on the package.
     output$view_comments <- renderText({
-      if(!is.null(comment_added))
-        comment_added()
+      comment_added()
       showComments(pkg_name = pkg_name(), comment_type = comment_type)
     })
   })
