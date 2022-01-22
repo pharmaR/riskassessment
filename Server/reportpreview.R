@@ -1,17 +1,3 @@
-# Implement the intro logic. Sidebar steps are listed in global.r
-# this dataset is also static... perhaps it should be sourced from global.r?
-rp_steps <- reactive(
-  data.frame(
-    # Note that we access chooseCSVtext with '.' instead of '#', because we track its class and not its id.
-    element = c( "#dwnld_rp", "#rep_prev"),
-    intro = c(
-      "Select file output type for report seen below and download for later use",
-      "The current assessment of this package including your comments and overall decision have been collected from the other tabs to prepare the following report for convenience."
-    ),
-    position = c("left", "top")
-  )
-)
-
 # Start introjs when help button is pressed.
 observeEvent(input$help_rp,
              introjs(session,
