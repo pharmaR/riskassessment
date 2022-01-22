@@ -1,13 +1,3 @@
-#####################################################################################################################
-# cum_report.R - Community Usage Metrics to show the info box's to show the information and leave multiple comments 
-#                for users and display the comments by users at Report Preview Section.
-# Author: K Aravind Reddy
-# Date: July 13th, 2020
-# License: MIT License
-#####################################################################################################################
-
-# UI for the info box's 
-
 fluidRow(
   div(style = "height:25px;"),
   class = "c_u_m_row_main text-center m-0",
