@@ -85,13 +85,10 @@ viewCommentsServer(id = "mm_comments",
 observeEvent(input$submit_comment, {
   if (trimws(input$add_comment) != "") {
     db_ins(glue(
-      "INSERT INTO comment values('{selected_pkg$name()}', '{values$name}', 
-      '{values$role}', '{input$add_comment}', 'mm', '{TimeStamp()}')"
+      "INSERT INTO comments values('{selected_pkg$name()}', '{user$name}', 
+      '{user$role}', '{input$add_comment}', 'mm', '{TimeStamp()}')")
     )
-    )
-    values$mm_comment_submitted <- "yes"
+    
     updateTextAreaInput(session, "add_comment", value = "")
-    # After comment added to Comments table, update db dash
-    values$db_pkg_overview <- update_db_dash()
   }
 })

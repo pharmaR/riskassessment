@@ -158,15 +158,20 @@ server <- function(session, input, output) {
   values$upload_complete <- "upload_incomplete"
   values$select_pack <- "Select"
   
-  observeEvent(res_auth$user,{
-    # log any admin sign-ons
-    if (res_auth$admin == TRUE) {
-      loggit("INFO", paste("User", res_auth$user, "signed on as admin"))
-    }
-    name <- res_auth$user
-    values$name <- trimws(name)
-    role <- ifelse(res_auth$admin == TRUE, "admin", "user")
-    values$role <- trimws(role)
+  # Collect user info.
+  user <- reactiveValues()
+  
+  # Save user name and role.  
+  observeEvent(res_auth$user, {
+    if (res_auth$admin == TRUE)
+      loggit("INFO", glue("User {res_auth$user} signed on as admin"))
+    
+    # Redundant
+    values$name <- trimws(res_auth$user)
+    values$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
+    
+    user$name <- trimws(res_auth$user)
+    user$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
   })
   
   # Load Source files of UI and Server modules of Upload Package Tab.
