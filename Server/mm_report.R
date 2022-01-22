@@ -21,15 +21,12 @@ observe({
         "SELECT metric.name, package_metrics.value
         FROM metric
         INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
-        WHERE package_metrics.package_id = ", "'", package_id, "'", " AND ",
-        "metric.class = 'maintenance' ;"))
-      
-      runjs("setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 500);")
+        WHERE package_metrics.package_id = '{package_id}' AND
+        metric.class = 'maintenance';"))
       
       for(i in 1:nrow(values$riskmetrics_mm))
         values[[values$riskmetrics_mm$name[i]]] <- values$riskmetrics_mm$value[i]
     }
-  }
 })
 
 # Render infobox for has_vignettes metric.
