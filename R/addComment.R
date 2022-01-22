@@ -33,7 +33,16 @@ addCommentServer <- function(id, metric_abrv, user_name, user_role, pkg_name) {
     observeEvent(input$submit_comment, {
       req(input$add_comment)
       
-      if (trimws(input$add_comment) != "") {
+      comment <- trimws(input$add_comment)
+      
+      if (comment != "") {
+        
+        #' TODO: comments can't contain "'". Check for other invalid
+        #' characters.
+        if(str_count(string = comment, pattern = "'") != 0)
+          validate("Invalid character: comments cannot contain single
+                   quotes (')")
+
         db_ins(glue(
         "INSERT INTO comments values('{pkg_name()}', '{user_name()}', 
         '{user_role()}', '{input$add_comment}', '{metric_abrv}',
