@@ -32,26 +32,8 @@ output$community_usage_metrics <- renderUI({
           column(width = 1, )
         ),
         
-        fluidRow(
-          id = "cum_add_comment",
-          class = "c_u_m_row_comments_box",
-          column(
-            
-            width = 8,
-            class = "mb-4 label-float-left",
-            # Text box to leave community usage metrics comments.
-            textAreaInput(
-              "cum_comment",
-              h3(tags$b("Leave Your Comment for Community Usage Metrics:")),
-              width = "100%",
-              rows = 4,
-              placeholder = paste("Commenting as", values$name, "(", values$role, ")")
-            ) %>%
-              shiny::tagAppendAttributes(style = 'width: 100%;'),
-            actionButton("submit_cum_comment", "Submit")
-          )
-        ),
-        viewCommentsUI("cum_comments")
+        addCommentUI(id = "add_comment_for_cum"),
+        viewCommentsUI(id = "view_cum_comments")
       )
     )
   } 

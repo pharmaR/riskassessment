@@ -33,22 +33,8 @@ output$maintenance_metrics <- renderUI({
               infoBoxOutput("has_maintainer"),  # Info box for 'has_maintainer' metric.
             )
         ),
-        fluidRow(
-          column(
-            width = 8,
-            textAreaInput(
-              "add_comment",
-              h5("Add Comment for Maintenance Metrics"),
-              width = "100%",
-              rows = 4,
-              placeholder = glue(
-                "Commenting as user: {user$name}, role: {user$role}"
-                )
-            ),
-            actionButton("submit_comment", "Submit")
-          )
-        ),
-        viewCommentsUI("mm_comments")
+        addCommentUI("add_comment_for_mm"),
+        viewCommentsUI("view_mm_comments")
       )
     )
   }

@@ -139,9 +139,15 @@ output$no_of_downloads <-
 })
 
 
+comment_added <- addCommentServer(id = "add_comment_for_cum",
+                                  metric_abrv = 'cum',
+                                  user_name = reactive(user$name),
+                                  user_role = reactive(user$role),
+                                  pkg_name = selected_pkg$name)
 
 # View comments.
-viewCommentsServer(id = "cum_comments",
+viewCommentsServer(id = "view_cum_comments",
+                   comment_added = comment_added,
                    pkg_name = reactive(selected_pkg$name()),
                    comment_type = 'cum')
 

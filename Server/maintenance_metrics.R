@@ -76,19 +76,16 @@ output$has_maintainer <- renderInfoBox({
   has_maintainer_infobox(values)
 })
 
-viewCommentsServer(id = "mm_comments",
-                  pkg_name = reactive(selected_pkg$name()),
-                  comment_type = 'mm')
+comment_added <- addCommentServer(id = "add_comment_for_mm",
+                                  metric_abrv = 'mm',
+                                  user_name = reactive(user$name),
+                                  user_role = reactive(user$role),
+                                  pkg_name = selected_pkg$name)
+
+viewCommentsServer(id = "view_mm_comments",
+                   comment_added = comment_added,
+                   pkg_name = selected_pkg$name,
+                   comment_type = 'mm')
 
 
-# Observe event for submit button.
-observeEvent(input$submit_comment, {
-  if (trimws(input$add_comment) != "") {
-    db_ins(glue(
-      "INSERT INTO comments values('{selected_pkg$name()}', '{user$name}', 
-      '{user$role}', '{input$add_comment}', 'mm', '{TimeStamp()}')")
-    )
-    
-    updateTextAreaInput(session, "add_comment", value = "")
-  }
-})
+
