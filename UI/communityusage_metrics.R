@@ -1,16 +1,4 @@
-#####################################################################################################################
-# communityusage_metrics.R - Display the community usage metrics information using info box's' and highchart graph 
-#                            to display the number of Downloads along with text area input comment box for multiple 
-#                            comments and display the comments of users on application.   
-# Author: K Aravind Reddy
-# Date: July 13th, 2020
-# License: MIT License
-#####################################################################################################################
-
-# Start of the Community Usage Metrics Source file for UI Module.
-
 # Render Output UI for Community Usage Metrics.
-
 output$community_usage_metrics <- renderUI({
   Sys.sleep(0.1)
   if (!is.null(values$packsDB$name) &&
