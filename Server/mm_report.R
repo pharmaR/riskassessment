@@ -1,11 +1,4 @@
-#####################################################################################################################
-# mm_report.R - Maintenance_Metrics Source file for Server Module for Report Preview section.
-# Author: K Aravind Reddy
-# Date: July 13th, 2020
-# License: MIT License
-#####################################################################################################################
-
-# 1. Observe to get the info box information from the risk metric package.
+# Observe to get the info box information from the risk metric package.
 observe({
   req(input$select_pack)
   if(input$tabs == "reportPreview_tab_value"){
@@ -112,8 +105,4 @@ output$mm_commented1 <- renderText({
       "</h4></div>"
     )
   }
-})  # End of the render Output.
-
-# End of the Render Output's'.
-
-# End of the Maintenance_Metrics Source file for Server Module.
+})
