@@ -70,7 +70,7 @@ sidebarServer <- function(id) {
       req(input$select_ver)
       
       db_fun(glue(
-        "SELECT name, score, decision, version
+        "SELECT name, score, decision, version, id
         FROM package
         WHERE name = '{input$select_pkg}'"))
     })
@@ -260,8 +260,7 @@ sidebarServer <- function(id) {
       db_ins(glue(
         "UPDATE package
           SET decision = '{input$decision}'
-          WHERE name = '{selected_pkg()$name}'"
-      )
+          WHERE name = '{selected_pkg()$name}'")
       )
       
       removeModal()
@@ -276,8 +275,12 @@ sidebarServer <- function(id) {
       removeModal()
     })
     
-    # Module output values.
+    # Output package id, name, and version.
     list(
+      id = reactive(db_fun(glue(
+        "SELECT id
+        FROM package
+        WHERE name = '{selected_pkg()$name}';"))$id),
       name = reactive(input$select_pkg),
       version = reactive(input$select_ver)
     )
