@@ -3,7 +3,7 @@ output$upload_package <- renderUI({
   fluidPage(
     br(), br(),
     
-    addHelpButton("help"),
+    introJSUI("upload_pkg_introJS"),
     
     fluidRow(
       column(

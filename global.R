@@ -90,21 +90,6 @@ source("Utils/infoboxes.R")
 
 options(keyring_user = "NeildeGrasseTyson")
 
-# Creates introjs help button.
-addHelpButton <- function(id){
-  fluidRow(
-    style = "float: right",
-    column(
-      width = 3,
-      actionBttn(id, "",
-                 color = "success",
-                 icon = icon("question-circle"),
-                 block = FALSE,
-                 style = "simple",
-                 size = "md")
-    ))
-}
-
 # Displays message when no package is selected.
 showSelectPackageMessage <- function(message = "Please select a package"){
   h6(message,

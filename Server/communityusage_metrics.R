@@ -1,17 +1,5 @@
-# Start introjs when help button is pressed.
-observeEvent(input$help_cum,
-             introjs(session,
-                     options = list(
-                       steps = 
-                         cum_steps() %>%
-                         union(sidebar_steps),
-                       "nextLabel" = "Next",
-                       "prevLabel" = "Previous",
-                       "skipLabel" = "Close"
-                     )
-             )
-)
-
+# IntroJS.
+introJSServer(id = "cum_introJS", text = cum_steps)
 
 # Load the columns from DB into reactive values.
 observe({

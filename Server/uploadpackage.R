@@ -1,50 +1,8 @@
-# --------------------------------------------------------------------------
-# -----------------------  INTRO JS
-# --------------------------------------------------------------------------
-upload_pkg_initial_steps <- reactive(
-  data.frame(
-    # Note that we access chooseCSVtext with '.' instead of '#', because we track its class and not its id.
-    element = c("#help", ".chooseCSVtext", ".sample_dataset_link"),
-    intro = c(
-      "Click here anytime you need help.",
-      "Upload a CSV file with the package(s) you would like to assess.",
-      "You can use this sample dataset to explore the app."
-    ),
-    position = c("right", rep("top", 2))
-  )
-)
-upload_pkg_steps <- reactive(
-  if(values$upload_complete == "upload_complete"){
-    data.frame(
-      element = c("#upload_summary_text", "#upload_summary"),
-      intro = c(
-        "Text description of packages uploaded. Counts by type: 'Total', 'New', 'Undiscovered', 'Duplicate'.",
-        "Confirm uploaded packages list, filter by type"
-      ),
-      position = c("bottom", "top")
-    )
-  } else {
-    data.frame(element = character(0) , intro = character(0), position = character(0))
-  }
-)
 
-# --------------------------------------------------------------------------
-# ----------------------- 
-# --------------------------------------------------------------------------
+# IntroJS.
+introJSServer(id = "upload_pkg_introJS",
+              text = upload_pkg)
 
-# Start introjs when help button is pressed.
-observeEvent(input$help,
-             introjs(session,
-                     options = list(
-                       steps = 
-                         upload_pkg_initial_steps() %>%
-                         union(upload_pkg_steps()) %>%
-                         union(sidebar_steps),
-                       "nextLabel" = "Next",
-                       "prevLabel" = "Previous"
-                     )
-             )
-)
 
 # Load the columns from DB into reactive values.
 observeEvent(list(input$total_new_undis_dup,input$uploaded_file), {

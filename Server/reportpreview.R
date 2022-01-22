@@ -1,14 +1,6 @@
-# Start introjs when help button is pressed.
-observeEvent(input$help_rp,
-             introjs(session,
-                     options = list(
-                       steps = 
-                         rp_steps() %>%
-                         union(sidebar_steps),
-                       "nextLabel" = "Next",
-                       "prevLabel" = "Previous",
-                       "skipLabel" = "Close")))
-
+# IntroJS.
+introJSServer(id = "report_introJS",
+              text = rp_steps)
 
 # View comments.
 viewCommentsServer(id = "view_cum_comments_for_report",
@@ -80,7 +72,7 @@ output$overall_comments <- renderText({
     values$comment_o2 <- values$comment_o1 %>% arrange(desc(values$comment_o1$added_on))
     req(values$comment_o2$comment)
     values$o_comment_submitted <- "no"
-     paste(
+    paste(
       "<div class='col-sm-12 comment-border-bottom single-comment-div'><i class='fa fa-user-tie fa-4x'></i><h3 class='ml-3'><b class='user-name-color'>",
       values$comment_o2$user_name,
       "(",

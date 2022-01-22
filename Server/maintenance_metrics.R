@@ -1,16 +1,6 @@
-# Start introjs when help button is pressed.
-observeEvent(input$help_mm,
-             introjs(session,
-                     options = list(
-                       steps = 
-                         mm_steps %>%
-                         union(sidebar_steps),
-                       "nextLabel" = "Next",
-                       "prevLabel" = "Previous",
-                       "skipLabel" = "Close"
-                     )
-             )
-)
+# IntroJS.
+introJSServer(id = "mm_introJS", text = mm_steps)
+
 
 # Save each metric information into variables.
 observe({

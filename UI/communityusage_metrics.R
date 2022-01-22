@@ -8,8 +8,7 @@ output$community_usage_metrics <- renderUI({
   else {
     shiny::tagList(
       br(),
-      div(class = "row col-sm-12 u_p_heading_row",
-          addHelpButton("help_cum")),
+      introJSUI("cum_introJS"),
       br(), br(),
       fluidRow(
         div(style = "height:25px;"),

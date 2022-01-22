@@ -10,7 +10,7 @@ output$report_preview <- renderUI({
     
     shiny::tagList(
       br(),
-      addHelpButton("help_rp"),
+      introJSUI("report_introJS"),
       br(), br(),
       fluidRow(
         fluidRow(
