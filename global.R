@@ -105,3 +105,28 @@ sidebar_steps <-
 # library(rintrojs)
 
 options(keyring_user = "NeildeGrasseTyson")
+
+# Creates introjs help button.
+addHelpButton <- function(id){
+  fluidRow(
+    style = "float: right",
+    column(
+      width = 3,
+      actionBttn(id, "",
+                 color = "success",
+                 icon = icon("question-circle"),
+                 block = FALSE,
+                 style = "simple",
+                 size = "md")
+    ))
+}
+
+# Displays message when no package is selected.
+showSelectPackageMessage <- function(message = "Please select a package"){
+  h6(message,
+     style = 
+     "text-align: center;
+     color: gray;
+     padding-top: 50px;")
+}
+
