@@ -48,19 +48,10 @@ output$community_usage_metrics <- renderUI({
               placeholder = paste("Commenting as", values$name, "(", values$role, ")")
             ) %>%
               shiny::tagAppendAttributes(style = 'width: 100%;'),
-            # Action button to submit the comments.
-            actionButton("submit_cum_comment", class = "submit_cum_comment_class btn-secondary", "Submit")
+            actionButton("submit_cum_comment", "Submit")
           )
         ),
-        fluidRow(
-          id = "cum_prev_comments",
-          class = "c_u_m_row_comments",
-          column(
-            width = 12,
-            align = "left",
-            h3(tags$b(paste0('Comments(',nrow(values$comment_cum2),'):'))),
-            htmlOutput("cum_commented")  # html output to show the comments on applicaiton.
-          ))
+        viewCommentsUI("cum_comments")
       )
     )
   } 

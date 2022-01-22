@@ -140,44 +140,11 @@ output$no_of_downloads <-
 
 
 
-# 4. Render output to show the comments.
+# View comments.
+viewCommentsServer(id = "cum_comments",
+                   pkg_name = reactive(selected_pkg$name()),
+                   comment_type = 'cum')
 
-output$cum_commented <- renderText({
-  if (values$cum_comment_submitted == "yes" ||
-      values$cum_comment_submitted == "no") {
-    values$comment_cum1 <-
-      db_fun(
-        glue(
-          "SELECT user_name, user_role, comment, added_on
-          FROM Comments
-          WHERE comm_id = '{selected_pkg$name()}' AND comment_type = 'cum'"
-        )
-      )
-    values$comment_cum2 <- data.frame(values$comment_cum1 %>% map(rev))
-    req(values$comment_cum2$comment)
-    values$cum_comment_submitted <- "no"
-    paste(
-      "<div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-4x'></i><h3 class='ml-3'><b class='user-name-color'>",
-      values$comment_cum2$user_name,
-      "(",
-      values$comment_cum2$user_role,
-      ")",
-      "</b><sub>",
-      values$comment_cum2$added_on,
-      "</sub></h3><h4 class='ml-3 lh-4'>",
-      values$comment_cum2$comment,
-      "</h4></div>"
-    )
-  }
-})  # End of the render output for comments.
-
-# End of the Render Output's'.
-
-values$cum_comment_submitted <- "no"
-
-# Start of the Observe Events.
-
-# Observe event for cum comment submit button. 
 
 observeEvent(input$submit_cum_comment, {
   if (trimws(input$cum_comment) != "") {
