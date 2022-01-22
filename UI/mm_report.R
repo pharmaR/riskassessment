@@ -20,5 +20,5 @@ fluidRow(
     infoBoxOutput("has_source_control1"),  # Info box for 'has_source_control' metric.
     infoBoxOutput("has_maintainer1"),  # Info box for 'has_maintainer' metric.
   ),
-  viewCommentsUI("mm_report_comments")
+  viewCommentsUI("view_mm_comments_for_report")
 )

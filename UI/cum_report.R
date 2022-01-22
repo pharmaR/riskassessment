@@ -17,7 +17,7 @@ fluidRow(
            ),
     column(width = 1, )
   ),
-  viewCommentsUI("cum_report_comments")
+  viewCommentsUI("view_cum_comments_for_report")
 )
 
 # End of the UI

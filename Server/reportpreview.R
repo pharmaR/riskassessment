@@ -11,12 +11,12 @@ observeEvent(input$help_rp,
 
 
 # View comments.
-viewCommentsServer(id = "cum_report_comments",
+viewCommentsServer(id = "view_cum_comments_for_report",
                    pkg_name = reactive(selected_pkg$name()),
                    comment_type = 'cum')
 
 # View comments.
-viewCommentsServer(id = "mm_report_comments",
+viewCommentsServer(id = "view_mm_comments_for_report",
                    pkg_name = reactive(selected_pkg$name()),
                    comment_type = 'mm')
 
