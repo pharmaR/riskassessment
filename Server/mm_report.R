@@ -1,12 +1,13 @@
 # Observe to get the info box information from the risk metric package.
 observe({
-  req(input$select_pack)
-  if(input$tabs == "reportPreview_tab_value"){
-    if(input$select_pack != "Select"){
+  req(selected_pkg$name())
+  
+  if(selected_pkg$name() != "-"){
       
-      package_id <- db_fun(paste0("SELECT id
-                                  FROM package
-                                  WHERE name = ", "'", input$select_pack, "';"))
+      package_id <- db_fun(glue(
+        "SELECT id
+        FROM package
+        WHERE name = '{selected_pkg$name()}';"))
       
       # Leave method if package not found.
       # TODO: save this to the json file.
@@ -16,7 +17,7 @@ observe({
       }
       
       # Collect all the metric names and values associated to package_id.
-      values$riskmetrics_mm <- db_fun(paste0(
+      values$riskmetrics_mm <- db_fun(glue(
         "SELECT metric.name, package_metrics.value
         FROM metric
         INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
@@ -83,10 +84,10 @@ output$mm_commented1 <- renderText({
       values$mm_comment_submitted == "no") {
     values$comment_mm1 <-
       db_fun(
-        paste0(
-          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
-          input$select_pack,
-          "' AND comment_type = 'mm'"
+        glue(
+          "SELECT user_name, user_role, comment, added_on
+          FROM Comments
+          WHERE comm_id = '{selected_pkg$name()}' AND comment_type = 'mm';"
         )
       )
     values$comment_mm2 <- data.frame(values$comment_mm1 %>% map(rev))
