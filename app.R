@@ -55,7 +55,7 @@ ui <- fluidPage(
       
       titlePanel(
         windowTitle = "Risk Assessment",
-        title = div(id = "page-title", "R Packages Risk Assessment App")
+        title = div(id = "page-title", "R Package Risk Assessment App")
       ),
       
       sidebarLayout(
