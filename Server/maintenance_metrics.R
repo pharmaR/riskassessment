@@ -76,10 +76,10 @@ output$has_maintainer <- renderInfoBox({
   has_maintainer_infobox(values)
 })
 
-# Show the comments on the package.
-output$view_comments <- renderText({
-  showComments(pkg_name = selected_pkg$name(), comment_type = 'mm')
-})
+viewCommentsServer(id = "mm_comments",
+                  pkg_name = reactive(selected_pkg$name()),
+                  comment_type = 'mm')
+
 
 # Observe event for submit button.
 observeEvent(input$submit_comment, {
