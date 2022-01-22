@@ -13,14 +13,12 @@ observeEvent(input$help_cum,
 )
 
 
-# Start of the observe.
-
-# 1. Observe to load the columns from DB into reactive values.
+# Load the columns from DB into reactive values.
 observe({
   req(selected_pkg$name())
   if (input$tabs == "cum_tab_value") {
     if (selected_pkg$name() != "-") {
-    
+      
       # Load the columns into values$riskmetrics.
       pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
       
@@ -28,10 +26,10 @@ observe({
           !identical(pkgs_in_db$cum_id, character(0))) {
         values$riskmetrics_cum <-
           db_fun(glue(
-              "SELECT *
+            "SELECT *
               FROM CommunityUsageMetrics
               WHERE cum_id ='{selected_pkg$name()}'"
-            )
+          )
           )
       } else{
         if (selected_pkg$name() != "-") {
@@ -127,7 +125,7 @@ output$dwnlds_last_yr <- renderInfoBox({
     width = 3,
     fill = TRUE
   )
-
+  
 })  # End 
 
 
