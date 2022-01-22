@@ -72,13 +72,11 @@ ui <- fluidPage(
             id = "tabs",
             tabPanel(
               id = "upload_tab_id",
-              value = "upload_tab_value",
               title = "Upload Package",
               uiOutput("upload_package")  # UI for upload package tab panel.
             ),
             tabPanel(
               id = "reportPreview_tab_id",
-              value = "reportPreview_tab_value",
               title = "Report Preview",
               withSpinner(uiOutput("report_preview"), type = 2)  # UI for Report Preview tab Panel
             ),
