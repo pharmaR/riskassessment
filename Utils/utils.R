@@ -162,7 +162,7 @@ db_ins <- function(command, db_name = database_name){
   tryCatch({
     rs <- dbSendStatement(con, command)
   }, error = function(err) {
-    message <- paste0("command:\n",command,"\nresulted in\n",err)
+    message <- glue("command: {command} resulted in {err}")
     message(message, .loggit = FALSE)
     loggit("ERROR", message)
     dbDisconnect(con)
@@ -170,7 +170,7 @@ db_ins <- function(command, db_name = database_name){
   nr <- dbGetRowsAffected(rs)
   dbClearResult(rs)
   if (nr == 0) {
-    message <- paste0("zero rows were affected by the command:\n",command)
+    message <- glue("zero rows were affected by the command: {command}")
     message(message, .loggit = FALSE)
   }
   dbDisconnect(con)
