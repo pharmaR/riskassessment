@@ -1,28 +1,3 @@
-#####################################################################################################################
-# communityusage_metrics.R - Community Usage Metrics Source file for Server Module.  
-# Author: K Aravind Reddy
-# Date: July 13th, 2020
-# License: MIT License
-#####################################################################################################################
-
-
-# Implement the intro logic. Sidebar steps are listed in global.r
-# this dataset is also static... perhaps it should be sourced from global.r?
-cum_steps <- reactive(
-  data.frame(
-    # Note that we access chooseCSVtext with '.' instead of '#', because we track its class and not its id.
-    element = c("#cum_infoboxes", "#cum_plot", "#cum_add_comment", "#cum_prev_comments"),
-    intro = c(
-      "Several ways of measuring community usage assessed here. Please review!",
-      "Digest downloads per month by selecting a pre-defined time periods or toggling the date slider at bottom of plot for custom date range",
-      "Have something to share within your organization? Add a comment.",
-      "Keep track of the on-going conversation for this package's community usage"
-    ),
-    position = c("bottom", rep("top", 3))
-  )
-)
-
-
 # Start introjs when help button is pressed.
 observeEvent(input$help_cum,
              introjs(session,
