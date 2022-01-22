@@ -1,16 +1,19 @@
 # Render Output UI for Community Usage Metrics.
 output$community_usage_metrics <- renderUI({
-  Sys.sleep(0.1)
-  if (!is.null(values$packsDB$name) &&
-      !identical(values$packsDB$name, character(0))) {
-    if (input$select_pack != "Select") {
-      shiny::tagList(
-        br(),
-        div(class = "row col-sm-12 u_p_heading_row",
-            actionBttn("help_cum", "Need help?", color = "primary",
-                       icon = icon("far fa-star"),
-                       block = FALSE, style = "simple", size = "sm")),
-        br(), br(),
+  req(selected_pkg$name())
+  
+  if(selected_pkg$name() == "-")
+    showSelectPackageMessage()
+  
+  else {
+    shiny::tagList(
+      br(),
+      div(class = "row col-sm-12 u_p_heading_row",
+          addHelpButton("help_cum")),
+      br(), br(),
+      fluidRow(
+        div(style = "height:25px;"),
+        class = "c_u_m_row_main",
         fluidRow(
           div(style = "height:25px;"),
           class = "c_u_m_row_main",
