@@ -24,6 +24,16 @@ observeEvent(input$help_rp,
                        "skipLabel" = "Close")))
 
 
+# View comments.
+viewCommentsServer(id = "cum_report_comments",
+                   pkg_name = reactive(selected_pkg$name()),
+                   comment_type = 'cum')
+
+# View comments.
+viewCommentsServer(id = "mm_report_comments",
+                   pkg_name = reactive(selected_pkg$name()),
+                   comment_type = 'mm')
+
 # Display general information of the selected package.
 output$gen_info <- renderText({
   pkg_GenInfo <- 

@@ -17,14 +17,7 @@ fluidRow(
            ),
     column(width = 1, )
   ),
-  fluidRow(
-    class = "c_u_m_row_comments",
-    column(
-      width = 12,
-      align = "left",
-      h3(tags$b(paste0('Comments(',nrow(values$comment_cum2),'):'))),
-      htmlOutput("cum_commented1")  # html output to show the comments on applicaiton.
-    ))
+  viewCommentsUI("cum_report_comments")
 )
 
 # End of the UI

@@ -9,6 +9,7 @@
 
 observe({
   req(input$select_pack)
+  
   if (input$tabs == "reportPreview_tab_value") {
     if(input$select_pack != "Select"){
     
