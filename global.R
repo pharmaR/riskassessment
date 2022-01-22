@@ -126,19 +126,17 @@ showComments <- function(pkg_name, comment_type){
     map(rev)
   
   ifelse(
-    length(comments) == 0, 
+    length(comments$user_name) == 0, 
     "No comments",
-    paste(
-      "<div class='col-sm-12 comment-border-bottom single-comment-div'><i class='fa fa-user-tie fa-4x'></i><h3 class='ml-3'><b class='user-name-color'>",
-      comments$user_name,
-      "(",
-      comments$user_role,
-      ")",
-      "</b><sub>",
-      comments$added_on,
-      "</sub></h3><h4 class='ml-3 lh-4'>",
+    paste0(
+      "<div class='well'>",
+      icon("user-tie"), " ", "user: ", comments$user_name, ", ", 
+      icon("user-shield"), " ", "role: ", comments$user_role, ", ",
+      icon("calendar-alt"), " ", "date: ", comments$added_on,
+      br(), br(), 
       comments$comment,
-      "</h4></div>"
+      "</div>",
+      collapse = ""
     )
   )
 }
