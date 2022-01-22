@@ -41,20 +41,14 @@ output$maintenance_metrics <- renderUI({
               h5("Add Comment for Maintenance Metrics"),
               width = "100%",
               rows = 4,
-              placeholder = paste("Commenting as", values$name, "(", values$role, ")")
+              placeholder = glue(
+                "Commenting as user: {user$name}, role: {user$role}"
+                )
             ),
             actionButton("submit_comment", "Submit")
           )
         ),
-        fluidRow(
-          style = "margin-top: 50px",
-          column(
-            width = 12,
-            align = "left",
-            h5('Current Comments', style = "padding-bottom:10px;"),
-            wellPanel(htmlOutput("view_comments"))
-          )
-        )
+        viewCommentsUI("mm_comments")
       )
     )
   }
