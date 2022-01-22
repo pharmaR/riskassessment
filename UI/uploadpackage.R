@@ -1,14 +1,10 @@
 # Upload package.
 output$upload_package <- renderUI({
-  fluidRow(
-    style = "padding-left: 30px; padding-right: 30px; padding-bottom: 50px",
-    class = "u_p_main_row",
-    tags$div(class = "row col-sm-12 u_p_heading_row",
-             tags$h2("Upload list of R Packages"),
-             actionBttn("help", "Need help?", color = "primary",
-                        icon = icon("far fa-star"),
-                        block = FALSE, style = "simple", size = "sm")
-    ),
+  fluidPage(
+    br(), br(),
+    
+    addHelpButton("help"),
+    
     fluidRow(
       style = "text-align: left;",
       column(
