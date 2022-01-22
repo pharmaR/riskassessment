@@ -66,15 +66,6 @@ ui <- fluidPage(
         
         mainPanel = mainPanel(
           width = 8,
-          tags$li(
-            class = "dropdown",
-            style = "float: right; padding-right: 75px; padding-top: 25px;",
-            actionLink("db_dash_bttn",
-                       HTML('<div class="tooltip-help">
-                      <i class="fas fa-database fa-2x database-icon"></i>
-                      <span class="tooltiptext-help fa-database-tooltiptext-help">Database</span>
-                      </div>'))
-          ),
           tabsetPanel(
             id = "tabs",
             tabPanel(
