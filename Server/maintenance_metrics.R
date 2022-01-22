@@ -77,20 +77,20 @@ output$has_maintainer <- renderInfoBox({
 })
 
 # Show the comments on the package.
-output$mm_commented <- renderText({
+output$view_comments <- renderText({
   showComments(pkg_name = selected_pkg$name(), comment_type = 'mm')
 })
 
 # Observe event for submit button.
-observeEvent(input$submit_mm_comment, {
-  if (trimws(input$mm_comment) != "") {
+observeEvent(input$submit_comment, {
+  if (trimws(input$add_comment) != "") {
     db_ins(glue(
       "INSERT INTO comment values('{selected_pkg$name()}', '{values$name}', 
-      '{values$role}', '{input$mm_comment}', 'mm', '{TimeStamp()}')"
+      '{values$role}', '{input$add_comment}', 'mm', '{TimeStamp()}')"
     )
     )
     values$mm_comment_submitted <- "yes"
-    updateTextAreaInput(session, "mm_comment", value = "")
+    updateTextAreaInput(session, "add_comment", value = "")
     # After comment added to Comments table, update db dash
     values$db_pkg_overview <- update_db_dash()
   }

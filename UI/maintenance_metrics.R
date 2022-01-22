@@ -34,32 +34,25 @@ output$maintenance_metrics <- renderUI({
             )
         ),
         fluidRow(
-          id = "mm_add_comment",
-          class = "mm-row-comments-box",
           column(
             width = 8,
-            class = "mb-4 label-float-left",
-            # Text input box to leave the Maintenance Metrics Comments.
             textAreaInput(
-              "mm_comment",
-              h3(tags$b("Leave Your Comment for Maintenance Metrics:")),
+              "add_comment",
+              h5("Add Comment for Maintenance Metrics"),
               width = "100%",
               rows = 4,
               placeholder = paste("Commenting as", values$name, "(", values$role, ")")
-            ) %>%
-              shiny::tagAppendAttributes(style = 'width: 100%;'),
-            # Action button to submit the comment.
-            actionButton("submit_mm_comment", class = "submit_mm_comment_class btn-secondary", "Submit")
+            ),
+            actionButton("submit_comment", "Submit")
           )
         ),
         fluidRow(
-          id = "mm_prev_comments",
-          class = "mm-row-comments",
+          style = "margin-top: 50px",
           column(
             width = 12,
             align = "left",
-            h3(tags$b(paste0('Comments(',nrow(values$comment_mm2),'):'))),
-            htmlOutput("mm_commented")  # html output to show the comments on application.
+            h5('Current Comments', style = "padding-bottom:10px;"),
+            wellPanel(htmlOutput("view_comments"))
           )
         )
       )
