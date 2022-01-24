@@ -47,10 +47,9 @@ output$screen <- renderUI({
                    
                    textAreaInput(
                      "overall_comment",
-                     h3("Leave Your Overall Comment:"),
+                     h3("Overall Comment"),
                      width = "100%",
-                     rows = 5,
-                     placeholder = paste("Current Comment:")
+                     rows = 5
                    ),
                    # Action Button to Submit Overall Comment for selected Package.
                    actionButton("submit_overall_comment",
@@ -62,7 +61,7 @@ output$screen <- renderUI({
                      # Slider input to select the decision for selected package.
                      sliderTextInput(
                        "decision",
-                       h3("Overall Risk:"),
+                       h3("Overall Risk"),
                        selected = NULL,
                        grid = TRUE,
                        c("Low", "Medium", "High")
