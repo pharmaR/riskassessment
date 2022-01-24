@@ -25,7 +25,7 @@ For further information about the app, please refer to the documentation.
 <!---------------------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
 
-### Our Approch to Validation
+### Our Approach to Validation
 
 Validation can serve as an umbrella for various terms, and admittedly,
 companies will diverge on what is the correct approach to validation. The 
