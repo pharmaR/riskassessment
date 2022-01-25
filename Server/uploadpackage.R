@@ -87,9 +87,9 @@ observeEvent(input$uploaded_file, {
 }, ignoreInit = TRUE)  # End of the Observe.
 
 # 1. Render Output to download the sample format dataset.
-output$upload_format_download <- downloadHandler(
+output$download_sample <- downloadHandler(
   filename = function() {
-    paste("Upload_file_structure", ".csv", sep = "")
+    paste("template", ".csv", sep = "")
   },
   content = function(file) {
     write.csv(read_csv(file.path("Data", "upload_format.csv")), file, row.names = F)
