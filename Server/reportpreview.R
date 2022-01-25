@@ -14,6 +14,8 @@ viewCommentsServer(id = "view_mm_comments_for_report",
                    pkg_name = reactive(selected_pkg$name()),
                    comment_type = 'mm')
 
+metricGridServer("report_mm_metricGrid", metrics = metrics)
+
 # Display general information of the selected package.
 output$gen_info <- renderText({
   pkg_GenInfo <- 
@@ -122,6 +124,5 @@ output$download_report_btn <- downloadHandler(
   }
 )
 
-source(file.path("Server", "mm_report.R"), local = TRUE)$value
 source(file.path("Server", "cum_report.R"), local = TRUE)$value
 # source(file.path("Server", "tm_report.R"), local = TRUE)$value

@@ -36,7 +36,11 @@ output$report_preview <- renderUI({
                 htmlOutput("overall_comments")  # Display the overall comment for selected Package. 
               )
             ),
-            source(file.path("UI", "mm_report.R"), local = TRUE)$value,
+            fluidRow(
+              h3("Maintenance Metrics"),
+              metricGridUI("report_mm_metricGrid"),
+              viewCommentsUI("view_mm_comments_for_report")
+            ),
             source(file.path("UI", "cum_report.R"), local = TRUE)$value,
             # source(file.path("UI", "tm_report.R"), local = TRUE)$value
           )
