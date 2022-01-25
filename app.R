@@ -141,14 +141,13 @@ server <- function(session, input, output) {
   # Database view.
   databaseViewServer("databaseView")
   
-  # Gather metrics information.
-  metrics <- reactive({
+  # Gather maintenance metrics information.
+  maint_metrics <- reactive({
     req(selected_pkg$name())
+    req(selected_pkg$name() != "-")
     
-    if(selected_pkg$name() != "-"){
-      
-      # Collect all the metric names and values associated to package_id.
-      db_fun(glue(
+    # Collect all the metric names and values associated to package_id.
+    db_fun(glue(
       "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
       metric.is_url, package_metrics.value
       FROM metric

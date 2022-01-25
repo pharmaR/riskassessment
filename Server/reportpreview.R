@@ -14,7 +14,7 @@ viewCommentsServer(id = "view_mm_comments_for_report",
                    pkg_name = reactive(selected_pkg$name()),
                    comment_type = 'mm')
 
-metricGridServer("report_mm_metricGrid", metrics = metrics)
+metricGridServer("report_mm_metricGrid", metrics = maint_metrics)
 
 # Display general information of the selected package.
 output$gen_info <- renderText({

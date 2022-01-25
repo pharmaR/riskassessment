@@ -14,4 +14,4 @@ viewCommentsServer(id = "view_mm_comments",
                    pkg_name = selected_pkg$name,
                    comment_type = 'mm')
 
-metricGridServer("mm_metricGrid", metrics = metrics)
+metricGridServer("mm_metricGrid", metrics = maint_metrics)
