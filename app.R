@@ -141,6 +141,23 @@ server <- function(session, input, output) {
   # Database view.
   databaseViewServer("databaseView")
   
+  # Gather metrics information.
+  metrics <- reactive({
+    req(selected_pkg$name())
+    
+    if(selected_pkg$name() != "-"){
+      
+      # Collect all the metric names and values associated to package_id.
+      db_fun(glue(
+      "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
+      metric.is_url, package_metrics.value
+      FROM metric
+      INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
+      WHERE package_metrics.package_id = '{selected_pkg$id()}' AND 
+      metric.class = 'maintenance' ;"))
+    }
+  })
+  
   # check_credentials directly on sqlite db
   res_auth <- secure_server(
     check_credentials = check_credentials(
@@ -157,8 +174,7 @@ server <- function(session, input, output) {
   values <- reactiveValues()
   values$uploaded_file_status <- "no_status"
   values$upload_complete <- "upload_incomplete"
-  values$select_pack <- "Select"
-  
+
   # Collect user info.
   user <- reactiveValues()
   
