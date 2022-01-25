@@ -78,11 +78,6 @@ ui <- fluidPage(
               uiOutput("upload_package")  # UI for upload package tab panel.
             ),
             tabPanel(
-              id = "reportPreview_tab_id",
-              title = "Report Preview",
-              withSpinner(uiOutput("report_preview"), type = 2)  # UI for Report Preview tab Panel
-            ),
-            tabPanel(
               id = "mm_tab_id",
               value = "mm_tab_value",
               title = "Maintenance Metrics",
@@ -93,6 +88,11 @@ ui <- fluidPage(
               value = "cum_tab_value",
               title = "Community Usage Metrics",
               withSpinner(uiOutput("community_usage_metrics"), type = 2)  # UI for Community Usage Metrics tab panel.
+            ),
+            tabPanel(
+              id = "reportPreview_tab_id",
+              title = "Report Preview",
+              withSpinner(uiOutput("report_preview"), type = 2)  # UI for Report Preview tab Panel
             )
           )
         )
