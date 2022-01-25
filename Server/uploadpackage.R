@@ -155,23 +155,33 @@ observeEvent(input$upload_format, {
   dataTableOutput("sampletable")
   
   showModal(modalDialog(
-    output$sampletable <- DT::renderDataTable(
-      datatable(
-        read_csv(file.path("Data", "upload_format.csv")),
-        escape = FALSE,
-        class = "cell-border",
-        editable = FALSE,
-        filter = "none",
-        selection = 'none',
-        extensions = 'Buttons',
-        options = list(
-          sScrollX = "100%",
-          aLengthMenu = list(c(5, 10, 20, 100, -1), list('5', '10', '20', '100', 'All')),
-          iDisplayLength = 5,
-          dom = 't'
-        )
-      )
+    size = "l",
+    easyClose = TRUE,
+    footer = "",
+    h5("Sample Dataset", style = 'text-align: center !important'),
+    hr(),
+    br(),
+    fluidRow(
+      column(
+        width = 12,
+        output$sampletable <- DT::renderDataTable(
+          datatable(
+            read_csv(file.path("Data", "upload_format.csv")),
+            escape = FALSE,
+            #class = "cell-border",
+            editable = FALSE,
+            filter = "none",
+            selection = 'none',
+            extensions = 'Buttons',
+            options = list(
+              sScrollX = "100%",
+              aLengthMenu = list(c(5, 10, 20, 100, -1), list('5', '10', '20', '100', 'All')),
+              iDisplayLength = 5,
+              dom = 't'
+            )
+          )))
     ),
-    downloadButton("upload_format_download", "Download")
+    br(),
+    fluidRow(column(align = 'center', width = 12, downloadButton("download_sample", "Download")))
   ))
 })
