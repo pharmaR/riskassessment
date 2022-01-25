@@ -8,14 +8,14 @@ observe({
     if (selected_pkg$name() != "-") {
       
       # Load the columns into values$riskmetrics.
-      pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
+      pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM community_usage_metrics"))
       
       if (selected_pkg$name() %in% pkgs_in_db$cum_id &&
           !identical(pkgs_in_db$cum_id, character(0))) {
         values$riskmetrics_cum <-
           db_fun(glue(
             "SELECT *
-              FROM CommunityUsageMetrics
+              FROM community_usage_metrics
               WHERE cum_id ='{selected_pkg$name()}'"
           )
           )
@@ -25,7 +25,7 @@ observe({
           values$riskmetrics_cum <-
             db_fun(
               glue("SELECT *
-                   FROM CommunityUsageMetrics
+                   FROM community_usage_metrics
                    WHERE cum_id ='{selected_pkg$name()}'"
               )
             )

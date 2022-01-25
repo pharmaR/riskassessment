@@ -14,14 +14,14 @@ observe({
     if(input$select_pack != "Select"){
     
       # Load the columns into values$riskmetrics.
-      pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
+      pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM community_usage_metrics"))
       
       if (input$select_pack %in% pkgs_in_db$cum_id &&
           !identical(pkgs_in_db$cum_id, character(0))) {
         values$riskmetrics_cum <-
           db_fun(
             paste0(
-              "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
+              "SELECT * FROM community_usage_metrics WHERE cum_id ='",
               input$select_pack,
               "'"
             )
@@ -32,7 +32,7 @@ observe({
           values$riskmetrics_cum <-
             db_fun(
               paste0(
-                "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
+                "SELECT * FROM community_usage_metrics WHERE cum_id ='",
                 input$select_pack,
                 "'"
               )

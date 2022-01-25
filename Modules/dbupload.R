@@ -310,7 +310,7 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
   )# End of try catch
 
   for (i in 1:nrow(pkg_vers_date_final)) {
-    db_ins(paste0("INSERT INTO CommunityUsageMetrics values(",
+    db_ins(paste0("INSERT INTO community_usage_metrics values(",
                   "'", package_name,"',", "'", downloads_1yr, "',",
                   "'", pkg_vers_date_final$Month[i], "',", "'", pkg_vers_date_final$Downloads[i], "',", 
                   "'", pkg_vers_date_final$verRelease[i], "',", "'", pkg_vers_date_final$Position[i], "',",

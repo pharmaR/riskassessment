@@ -44,7 +44,7 @@ create_db <- function(db_name = database_name){
     "create_metric_table.sql",
     "initialize_metric_table.sql",
     "create_package_metrics_table.sql",
-    "create_CommunityUsageMetrics_table.sql",
+    "create_community_usage_metrics_table.sql",
     "create_comments_table.sql"
   )
   
