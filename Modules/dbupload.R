@@ -208,21 +208,16 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
 
 # Get community usage metrics info and upload into DB.
 metric_cum_Info_upload_to_DB <- function(package_name) {
-  pkg_vers_date_final<<-data.frame(matrix(ncol = 4, nrow = 0))
-  time_since_first_release<<-NA
-  time_since_version_release<<-NA
-  total_downloads<<-NA
-  
+
   tryCatch(
     expr = {
       
       vrsns_lst <- versions::available.versions(package_name) 
       vrsns_df  <- as.data.frame(vrsns_lst[[1]]) %>% 
         mutate(startdt = ymd(floor_date(as.Date(date), unit="month"))) %>% 
-        #filter(available == TRUE) %>% 
+        # filter(available == TRUE) %>% 
         select(-available)
-      vrsns_vec <- as.vector(vrsns_df[,"version"])
-      
+
       to_date <- Sys.Date()
       # back3yrs <- to_date - 3*365
       nr <- nrow(vrsns_df)
