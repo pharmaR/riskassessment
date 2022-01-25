@@ -20,6 +20,8 @@ metricBoxServer <- function(id, title, desc, value,
     output$metricBox_ui <- renderUI({
       req(title, desc, value)
       
+      is_true <- !(value %in% c(0, "pkg_metric_error", "NA", "", 'FALSE'))
+      
       if(value %in% c("pkg_metric_error", "NA"))
         value <- "Not found"
       else if(is_perc)
@@ -29,7 +31,6 @@ metricBoxServer <- function(id, title, desc, value,
       else if(value %in% c('TRUE', 'FALSE'))
         value <- ifelse(value == 'TRUE', 'Yes', 'No')
       
-      is_true <- !(value %in% c(0, "Not found", "No", ""))
       
       icon_name <- succ_icon
       icon_class <- "text-success"
