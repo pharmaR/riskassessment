@@ -30,7 +30,6 @@ metricGridServer <- function(id, metrics) {
                         value = metric['value'],
                         is_perc = metric['is_perc'] == 1,
                         is_url = metric['is_url'] == 1))
-      #}
     })
   })
 }
