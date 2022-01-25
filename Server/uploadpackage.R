@@ -1,7 +1,8 @@
-
 # IntroJS.
 introJSServer(id = "upload_pkg_introJS", text = upload_pkg)
 
+#' Save all the uploaded packages, marking them as 'new', 'not found', or
+#' 'duplicate'.
 uploaded_pkgs <- reactive({
   req(input$uploaded_file)
   
