@@ -53,13 +53,16 @@ sidebarUI <- function(id) {
   )
 }
 
-sidebarServer <- function(id) {
+sidebarServer <- function(id, uploaded_pkgs) {
   moduleServer(id, function(input, output, session) {
     
     # Required for shinyhelper to work.
     observe_helpers()
     
+    # Create list of packages.
     output$select_pkg_ui <- renderUI({
+      uploaded_pkgs()
+      
       selectizeInput(
         inputId = NS(id, "select_pkg"),
         label = h5("Select Package"),

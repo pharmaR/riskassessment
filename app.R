@@ -133,7 +133,7 @@ ui <- shinymanager::secure_app(
 server <- function(session, input, output) {
   
   # Sidebar module.
-  selected_pkg <- sidebarServer("sidebar")
+  selected_pkg <- sidebarServer("sidebar", uploaded_pkgs)
   
   # Assessment criteria information tab.
   assessmentInfoServer("assessmentInfo")
