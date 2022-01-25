@@ -1,7 +1,10 @@
 CREATE TABLE IF NOT EXISTS metric(
    id           INTEGER PRIMARY KEY AUTOINCREMENT,
-   name         CHAR, 
+   name         CHAR,
+   long_name    CHAR,    /* Represents the title of the metrixBox. */
+   is_url       INTEGER, /* Indicates whether the metric value is a url. 0: indicates FALSE, 1: indicates TRUE */
+   is_perc      INTEGER, /* Indicates whether the metric value is a percentage. 0: indicates FALSE, 1: indicates TRUE */
    description  CHAR,
-   class        CHAR, /*class = maintenance or test*/
+   class        CHAR,    /* class = maintenance or test */
    weight       REAL
 );

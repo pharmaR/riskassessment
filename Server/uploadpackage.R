@@ -1,8 +1,6 @@
 
 # IntroJS.
-introJSServer(id = "upload_pkg_introJS",
-              text = upload_pkg)
-
+introJSServer(id = "upload_pkg_introJS", text = upload_pkg)
 
 # Load the columns from DB into reactive values.
 observeEvent(list(input$total_new_undis_dup,input$uploaded_file), {
