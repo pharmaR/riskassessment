@@ -1,12 +1,3 @@
-#####################################################################################################################
-# com_report.R - Community Usage Metrics Source file for Server Module for Report Preview section.  
-# Author: K Aravind Reddy
-# Date: July 13th, 2020
-# License: MIT License
-#####################################################################################################################
-
-# 1. Observe to load the columns to risk metric table.
-
 observe({
   req(input$select_pack)
   
