@@ -215,14 +215,11 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
       vrsns_lst <- versions::available.versions(package_name) 
       vrsns_df  <- as.data.frame(vrsns_lst[[1]]) %>% 
         mutate(startdt = ymd(floor_date(as.Date(date), unit="month"))) %>% 
-        # filter(available == TRUE) %>% 
         select(-available)
 
       to_date <- Sys.Date()
-      # back3yrs <- to_date - 3*365
-      nr <- nrow(vrsns_df)
-      # go back as far as possible with available versions
-      fr_date <- as.Date(vrsns_df[nr, "date"])
+      # go back two years
+      fr_date <- to_date - 2*365
       
       downlds <- cranlogs::cran_downloads(package_name, from=fr_date, to=to_date)
       # drop current month, as was done previously ?
