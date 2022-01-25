@@ -8,9 +8,10 @@ output$maintenance_metrics <- renderUI({
       showSelectPackageMessage()
     
     else {
-      shiny::tagList(
+      fluidPage(
         br(),
         introJSUI("mm_introJS"),
+        h4("Maintenance Metrics", style = "text-align: center;"),
         br(), br(), br(),
         metricGridUI("mm_metricGrid"),
         br(), br(),
