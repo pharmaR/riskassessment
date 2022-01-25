@@ -4,12 +4,7 @@ sidebarUI <- function(id) {
     
     hr(),
     
-    selectizeInput(
-      inputId = NS(id, "select_pkg"),
-      label = h5("Select Package"),
-      choices = "-",
-      selected = "-"
-    ),
+    uiOutput(NS(id, 'select_pkg_ui')),
     
     selectizeInput(
       inputId = NS(id, "select_ver"),
@@ -64,6 +59,15 @@ sidebarServer <- function(id) {
     # Required for shinyhelper to work.
     observe_helpers()
     
+    output$select_pkg_ui <- renderUI({
+      selectizeInput(
+        inputId = NS(id, "select_pkg"),
+        label = h5("Select Package"),
+        choices = c("-", db_fun('SELECT name FROM package')),
+        selected = "-"
+      )
+    })
+    
     # Get information about selected package.
     selected_pkg <- reactive({
       req(input$select_pkg)
@@ -74,15 +78,6 @@ sidebarServer <- function(id) {
         FROM package
         WHERE name = '{input$select_pkg}'"))
     })
-    
-    # Update package list after loading the app.
-    observeEvent(input$select_pkg, {
-      updateSelectizeInput(
-        inputId = "select_pkg",
-        choices = c("-", db_fun("SELECT name as package FROM package")),
-        selected = "-"
-      )
-    }, once = TRUE)
     
     # Update package version.
     observeEvent(input$select_pkg, {
