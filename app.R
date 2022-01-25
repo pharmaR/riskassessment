@@ -2,7 +2,7 @@
 source("global.R")
 
 # Load source files.
-source(file.path("R", "introJS.R")) # introJS text.
+source(file.path("R", "introJSText.R")) # introJS text.
 source(file.path("R", "viewComments.R"))
 source(file.path("Modules", "dbupload.R"))
 source(file.path("Modules", "file_upload_error_handling.R"))
