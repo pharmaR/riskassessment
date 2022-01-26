@@ -53,7 +53,7 @@ get_packages_info_from_web <- function(package_name) {
         html_text() |>
         str_replace_all(pattern = pattern, replacement = "")
       
-      genInfo_upload_to_DB(package_name, version, title, description, authors,
+      upload_package_to_db(package_name, version, title, description, authors,
                            maintainers, license, published)
       
     },
@@ -71,26 +71,30 @@ get_packages_info_from_web <- function(package_name) {
             lis <- d$get("License")
             pub <- d$get("Packaged")
             
-            genInfo_upload_to_DB(package_name, ver, title, desc, auth, main, lis, pub)
+            upload_package_to_db(package_name, ver, title, desc, auth, main, lis, pub)
           }}
       } else{
-        loggit("ERROR", paste("Error in extracting general info of the package", package_name, "info", e), app = "fileupload-webscraping")
+        loggit("ERROR", paste("Error in extracting general info of the package",
+                              package_name, "info", e), app = "fileupload-webscraping")
       }
     }
   )
 }
 
 # Upload the general info into DB.
-genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis, pub) {
+upload_package_to_db <- function(name, version, title, description,
+                                 authors, maintainers, license, published_on) {
   tryCatch(
     expr = {
-      db_ins(paste0("INSERT or REPLACE INTO package
-                    (name, version, title, description, maintainer, author, license, published_on, decision)
-                    values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
-                     "'", main, "',", "'", auth, "',", "'", lis, "',", "'", pub, "', '')"))
+      db_ins(glue("INSERT or REPLACE INTO package
+                    (name, version, title, description, maintainer, author,
+                    license, published_on, decision)
+                    VALUES('{name}', '{version}', '{title}', '{description}',
+                  '{maintainer}', '{author}', '{license}', '{published_on}', '')"))
     },
     error = function(e) {
-      loggit("ERROR", paste("Error in uploading the general info of the package", package_name, "info", e), app = "fileupload-DB")
+      loggit("ERROR", paste("Error in uploading the general info of the package", name, "info", e),
+             app = "fileupload-DB")
     }
   )
 }
@@ -156,7 +160,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
       )
     )
   }
-
+  
   db_ins(paste0("UPDATE package
                 SET score = '", format(round(riskmetric_score$pkg_score[1], 2)), "'",
                 " WHERE name = '" , package_name, "'"))
@@ -265,7 +269,7 @@ metric_cum_Info_upload_to_DB <- function(package_name) {
              app = "fileupload-webscraping", echo = FALSE)
     }
   )# End of try catch
-
+  
   for (i in 1:nrow(pkg_vers_date_final)) {
     db_ins(paste0("INSERT INTO community_usage_metrics values(",
                   "'", package_name,"',", "'", downloads_1yr, "',",
