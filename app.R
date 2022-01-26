@@ -205,13 +205,6 @@ server <- function(session, input, output) {
   # Load Source files of UI and Server modules of Community Usage Tab.
   source(file.path("UI", "communityusage_metrics.R"), local = TRUE)
   source(file.path("Server", "communityusage_metrics.R"), local = TRUE)
-  
-  # Observe Event to load the source file of UI module when we click on the
-  # Assessment Criteria action Link.
-  observeEvent(input$assessment_criteria_bttn, {
-    source(file.path("UI", "assessment_criteria.R"), local = TRUE)
-  })
-  
 }
 
 shinyApp(ui = ui, server = server)
