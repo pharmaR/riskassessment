@@ -19,7 +19,7 @@ get_packages_info_from_web <- function(package_name) {
         str_replace_all(pattern = pattern, replacement = "")
       
       # Read package description and clean it.
-      desc <- webpage %>% 
+      description <- webpage %>% 
         html_nodes("div.container h2 + p") %>% 
         html_text() |>
         str_replace_all(pattern = pattern, replacement = "")
