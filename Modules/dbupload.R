@@ -1,11 +1,3 @@
-#####################################################################################################################
-# dbupload.R - Uploading the general and metric info of the package into DB
-# Author: K Aravind Reddy
-# Date: July 13th, 2020
-# License: MIT License
-#####################################################################################################################
-
-
 # Get the package general information from CRAN/local.
 get_packages_info_from_web <- function(package_name) {
   tryCatch(
