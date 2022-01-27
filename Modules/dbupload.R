@@ -109,7 +109,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
     pkg_assess()
   
   # Get the metrics weights to be used during pkg_score.
-  metric_weights_df <- db_fun(paste0("SELECT id, name, weight FROM metric"))
+  metric_weights_df <- db_fun("SELECT id, name, weight FROM metric")
   metric_weights <- metric_weights_df$weight
   names(metric_weights) <- metric_weights_df$name
   
