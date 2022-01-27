@@ -86,11 +86,13 @@ upload_package_to_db <- function(name, version, title, description,
                                  authors, maintainers, license, published_on) {
   tryCatch(
     expr = {
-      db_ins(glue("INSERT or REPLACE INTO package
-                    (name, version, title, description, maintainer, author,
-                    license, published_on, decision)
-                    VALUES('{name}', '{version}', '{title}', '{description}',
-                  '{maintainers}', '{authors}', '{license}', '{published_on}', '')"))
+      db_ins(glue(
+        "INSERT or REPLACE INTO package
+        (name, version, title, description, maintainer, author,
+        license, published_on, decision, date_added)
+        VALUES('{name}', '{version}', '{title}', '{description}',
+        '{maintainers}', '{authors}', '{license}', '{published_on}',
+        '{Sys.Date()}', '')"))
     },
     error = function(e) {
       loggit("ERROR", paste("Error in uploading the general info of the package", name, "info", e),
