@@ -3,8 +3,7 @@ CREATE TABLE IF NOT EXISTS community_usage_metrics (
   month 					           CHAR,
   no_of_downloads 			     INT,
   ver_release 				       CHAR,
-  position					         INT,
-  time_since_first_release   INT,
-  time_since_version_release INT,
+  time_since_first_release   INT, /* Number of months since the first package release.*/
+  time_since_version_release INT, /* Number of months since last version release.*/
   FOREIGN KEY(cum_id) REFERENCES package(name)
 );
