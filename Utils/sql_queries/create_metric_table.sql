@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS metric(
+CREATE TABLE IF NOT EXISTS metric (
    id           INTEGER PRIMARY KEY AUTOINCREMENT,
    name         CHAR,
    long_name    CHAR,    /* Represents the title of the metrixBox. */

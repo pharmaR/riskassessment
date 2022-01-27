@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS community_usage_metrics (
   cum_id 					           CHAR NOT NULL, 
-  month 					           CHAR,
+  month_year					       CHAR, /* Format: Jun 2022 */
   no_of_downloads 			     INT,
   ver_release 				       CHAR,
   time_since_first_release   INT, /* Number of months since the first package release.*/
