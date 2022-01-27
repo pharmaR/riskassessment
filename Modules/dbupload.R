@@ -90,7 +90,7 @@ upload_package_to_db <- function(name, version, title, description,
                     (name, version, title, description, maintainer, author,
                     license, published_on, decision)
                     VALUES('{name}', '{version}', '{title}', '{description}',
-                  '{maintainer}', '{author}', '{license}', '{published_on}', '')"))
+                  '{maintainers}', '{authors}', '{license}', '{published_on}', '')"))
     },
     error = function(e) {
       loggit("ERROR", paste("Error in uploading the general info of the package", name, "info", e),
