@@ -16,13 +16,13 @@ get_packages_info_from_web <- function(package_name) {
       title <- webpage %>% 
         html_nodes("div.container h2") %>% 
         html_text() |>
-        str_replace_all(pattern = pattern, replacement = "")
+        str_remove_all(pattern = pattern)
       
       # Read package description and clean it.
       description <- webpage %>% 
         html_nodes("div.container h2 + p") %>% 
         html_text() |>
-        str_replace_all(pattern = pattern, replacement = "")
+        str_remove_all(pattern = pattern)
       
       # Part of the package's information is under the td tag. Saving it 
       # since we will use it multiple times.
@@ -31,27 +31,27 @@ get_packages_info_from_web <- function(package_name) {
       # Read version and clean it.
       version <- td[2] %>%
         html_text() |>
-        str_replace_all(pattern = pattern, replacement = "")
+        str_remove_all(pattern = pattern)
       
       # Read maintainers and clean it.
       maintainers <- td[14] %>%
         html_text() |>
-        str_replace_all(pattern = pattern, replacement = "")
+        str_remove_all(pattern = pattern)
       
       # Read authors and clean it.
       authors <- td[12] %>%
         html_text() |>
-        str_replace_all(pattern = pattern, replacement = "")
+        str_remove_all(pattern = pattern)
       
       # Read published date and clean it.
       published <- td[10] %>%
         html_text() |>
-        str_replace_all(pattern = pattern, replacement = "")
+        str_remove_all(pattern = pattern)
       
       # Read published date and clean it.
       license <- td[18] %>%
         html_text() |>
-        str_replace_all(pattern = pattern, replacement = "")
+        str_remove_all(pattern = pattern)
       
       upload_package_to_db(package_name, version, title, description, authors,
                            maintainers, license, published)
