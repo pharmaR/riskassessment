@@ -1,6 +1,5 @@
 CREATE TABLE IF NOT EXISTS community_usage_metrics (
   cum_id 					           CHAR NOT NULL, 
-  no_of_downloads_last_year  INT,
   month 					           CHAR,
   no_of_downloads 			     INT,
   ver_release 				       CHAR,
