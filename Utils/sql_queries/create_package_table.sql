@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS package(
+CREATE TABLE IF NOT EXISTS package (
    id             INTEGER PRIMARY KEY AUTOINCREMENT,
    name           CHAR, 
    version        CHAR,
@@ -10,5 +10,6 @@ CREATE TABLE IF NOT EXISTS package(
    published_on   CHAR,
    score          REAL,
    weighted_score REAL,
-   decision       CHAR
+   decision       CHAR,
+   date_added     DATE
 );
