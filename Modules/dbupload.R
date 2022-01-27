@@ -10,7 +10,7 @@ get_packages_info_from_web <- function(package_name) {
       
       #' Regex that finds entry: '\n ', "'", and '"' (the `|` mean 'or' and the 
       #' `\`` is to scape the double quotes).
-      pattern <- "\n  | ' | \""
+      pattern <- '\n |\'|\"|\\"'
       
       # Read package title and clean it.
       title <- webpage %>% 
