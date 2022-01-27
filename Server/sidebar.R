@@ -37,6 +37,18 @@ observeEvent(list(input$select_pack, values$selected_pkg$decision), {
   }
 }, ignoreInit = TRUE)
 
+# Show undo final decision link if user is admin the a final decision has been made.
+observeEvent(list(input$select_pack, values$selected_pkg$decision), {
+  req(input$select_pack, res_auth$admin == TRUE)
+  if (input$select_pack == "Select" || is_empty(values$selected_pkg$decision) || values$selected_pkg$decision == "") {
+    shinyjs::hide("undo_final_decision")
+    shinyjs::show("submit_decision")
+  } else {
+    shinyjs::show("undo_final_decision")
+    shinyjs::hide("submit_decision")
+  }
+}, ignoreInit = TRUE)
+
 
 # Output a dropdown ui with available packages.
 output$sel_pack <- renderUI({
@@ -174,10 +186,36 @@ observeEvent(input$submit_decision, {
         title = h2("Submit Decision", class = "mb-0 mt-0 txt-color"),
         h2("Please confirm your decision", class = "mt-0"),
         h3("Decision:", strong(input$decision)),
-        h5(strong("Note:"), "Once submitted the decision cannot be reverted and
+        h5(strong("Note:"), "Once submitted the decision can only be reverted by an administrator and
            comments in group and package level will be frozen.", class = "mt-25 mb-0"),
         footer = tagList(
           actionButton("submit_confirmed_decision", "Submit",
+                       class = "submit_confirmed_decision_class btn-secondary"),
+          actionButton("edit", "Cancel", class = "edit_class btn-unsuccess")
+        )
+      )
+    ))
+  } else{
+    showModal(modalDialog(
+      title = h3("WARNING!", class = 'txt-danger'),
+      h4("Please select a Decision!")
+    ))
+  }
+})
+
+# Show a confirmation modal when undoing a decision.
+observeEvent(input$undo_final_decision, {
+  if (!is.null(input$decision)) {
+    showModal(tags$div(
+      id = "undo_confirmation_id",
+      modalDialog(
+        title = h2("Undo Final Decision", class = "mb-0 mt-0 txt-color"),
+        h2("Please confirm to undo final decision", class = "mt-0"),
+        h3("Decision:", strong(input$decision)),
+        h5(strong("Note:"), "Undoing the final decision will re-enable comments in group and package level 
+        for all users.", class = "mt-25 mb-0"),
+        footer = tagList(
+          actionButton("undo_confirmed_decision", "Submit",
                        class = "submit_confirmed_decision_class btn-secondary"),
           actionButton("edit", "Cancel", class = "edit_class btn-unsuccess")
         )
@@ -206,6 +244,26 @@ observeEvent(input$submit_confirmed_decision, {
   removeModal()
   loggit("INFO", paste("decision for the package", values$selected_pkg$name,
                        "is", input$decision, 
+                       "by", values$name, "(", values$role, ")"))
+  
+  # After decision submitted, update db dash.
+  values$db_pkg_overview <- update_db_dash()
+  
+})
+
+# Update database info after decision is undone.
+observeEvent(input$undo_confirmed_decision, {
+  db_ins(
+    paste0(
+      "UPDATE package SET decision = '' WHERE name = '",
+      values$selected_pkg$name,
+      "'"
+    )
+  )
+  values$selected_pkg$decision <- ""
+  removeModal()
+  loggit("INFO", paste("final decision for the package", values$selected_pkg$name,
+                       "is undone", 
                        "by", values$name, "(", values$role, ")"))
   
   # After decision submitted, update db dash.

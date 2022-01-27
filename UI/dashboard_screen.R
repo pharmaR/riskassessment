@@ -57,7 +57,7 @@ output$screen <- renderUI({
                                 "Submit Comment"),
                    tags$div(
                      class = "col-sm-12 decision_div",
-                     HTML("<i class='fas fa-info-circle fa-2x float-right txt-color cursor-help' title='Once submitted the decision cannot be reverted and comments in group and package level will be frozen'></i>"),
+                     HTML("<i class='fas fa-info-circle fa-2x float-right txt-color cursor-help' title='Once submitted the decision can only be reverted by an administrator and comments in group and package level will be frozen'></i>"),
                      # Slider input to select the decision for selected package.
                      sliderTextInput(
                        "decision",
@@ -67,6 +67,7 @@ output$screen <- renderUI({
                        c("Low", "Medium", "High")
                      ),
                      # Action button to submit decision for selected package.
+                     shinyjs::hidden(actionButton("undo_final_decision", class ="submit_decision_class btn-secondary", "Undo Decision")),
                      actionButton("submit_decision", class = "submit_decision_class btn-secondary", "Submit Decision")
                    )
                ))
