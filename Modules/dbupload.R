@@ -117,7 +117,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
     riskmetric_assess %>%
     pkg_score(weights = metric_weights)
   
-  package_id <- db_fun(paste0("SELECT id FROM package WHERE name = ", "'", package_name, "';"))
+  package_id <- db_fun(glue("SELECT id FROM package WHERE name = '{package_name}'"))
   
   # Leave method if package not found.
   # TODO: save this to the json file.
