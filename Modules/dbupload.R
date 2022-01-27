@@ -149,21 +149,16 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
              round(riskmetric_score[[metric$name]]*100, 2),
              riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])]))
     
-    db_ins(
-      paste0("INSERT INTO package_metrics
-               (package_id, metric_id, weight, value) values(",
-             package_id, ",",
-             metric$id, ",",
-             metric$weight , "," ,
-             "'", metric_value, "'",
-             ")"
-      )
+    db_ins(glue(
+      "INSERT INTO package_metrics (package_id, metric_id, weight, value) 
+      VALUES ({package_id}, {metric$id}, {metric$weight}, '{metric_value}')")
     )
   }
   
-  db_ins(paste0("UPDATE package
-                SET score = '", format(round(riskmetric_score$pkg_score[1], 2)), "'",
-                " WHERE name = '" , package_name, "'"))
+  db_ins(glue(
+    "UPDATE package
+    SET score = '{format(round(riskmetric_score$pkg_score[1], 2))}'
+    WHERE name = '{package_name}'"))
 }
 
 
