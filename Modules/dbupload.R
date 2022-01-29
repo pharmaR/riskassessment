@@ -155,111 +155,55 @@ insert_community_metrics_to_db <- function(pkg_name) {
   
   tryCatch(
     expr = {
-      downloads_yrs_br_i <- cranlogs::cran_downloads(package_name, from=Sys.Date()-730, to=Sys.Date())
-      downloads_yrs_br_i <- filter(downloads_yrs_br_i, months(downloads_yrs_br_i$date) != months(Sys.Date()))
-      downloads_yrs_br_i$date <- paste( months(downloads_yrs_br_i$date), year(downloads_yrs_br_i$date) )
-      count<-c()
-      for (i in 1:length(unique(downloads_yrs_br_i$date))) {
-        count_df <- filter(downloads_yrs_br_i, downloads_yrs_br_i$date == unique(downloads_yrs_br_i$date)[i])
-        count[i] <- sum(count_df$count)
-      }
-      downloads_yrs_br <-data.frame(Month = unique(downloads_yrs_br_i$date), Downloads = count)
-      downloads_1yr <- sum(downloads_yrs_br$Downloads[(nrow(downloads_yrs_br)-11):nrow(downloads_yrs_br)])
       
-      colnames(pkg_vers_date_final) <<- c("Month", "Downloads", "verRelease", "Position")
-      pkg_vers_date_final <- downloads_yrs_br
-      pkg_vers_date_final$Month <- as.character(pkg_vers_date_final$Month)
-      pkg_vers_date_final$Position <- 12
+      # Get the package versions and dates.
+      pkg_page <- read_html(
+        glue('https://cran.r-project.org/src/contrib/Archive/{pkg_name}'))
+      versions_with_dates <- pkg_page %>%
+        html_node('table') %>%
+        html_table() |>
+        select(-c("", "Description", 'Size')) |>
+        filter(`Last modified` != "") %>%
+        mutate(date = as.Date(`Last modified`), .keep = 'unused') %>%
+        mutate(version = str_remove_all(
+          string = Name, pattern = glue('{pkg_name}_|.tar.gz')),
+          .keep = 'unused') |>
+        mutate(month = month(date)) %>%
+        mutate(year = year(date))
+
+      # First release date.
+      first_release_date <- versions_with_dates %>%
+        pull(date) %>%
+        min()
       
-      pkg_html <- read_html(paste0("https://github.com/cran/", package_name, "/tags"))
-      pkg_nodes_v <- html_nodes(pkg_html, 'h4')
-      pkg_text_v <- html_text(pkg_nodes_v)
-      pkg_text_v <- str_split(pkg_text_v,"\n")
-      pkg_vers <- c()
-      for (i in 1:length(pkg_text_v)) { 
-        pkg_vers[i]<-(trimws(pkg_text_v[[i]][3]))
-      }
-      pkg_vers <- pkg_vers[c(3:length(pkg_vers))]
+      # Get the number of downloads by month, year.
+      pkgs_cum_metrics <- cranlogs::cran_downloads(pkg_name,
+                                                   from = first_release_date,
+                                                   to = Sys.Date()) |>
+        filter(month(date) != month(Sys.Date())) |>
+        mutate(month = month(date)) |>
+        mutate(year = year(date)) |>
+        group_by(month, year) |>
+        summarise(downloads = sum(count)) |>
+        ungroup() |>
+        left_join(versions_with_dates, by = c('month', 'year')) |>
+        select(-date)
       
-      pkg_vers1 <- pkg_vers[length(pkg_vers)]
-      loop<-"not_started"
-      while (pkg_vers1 != "") {
-        pkg_html1 <- read_html(paste0("https://github.com/cran/",package_name,"/tags?after=",pkg_vers1))
-        pkg_nodes_v1 <- html_nodes(pkg_html1, 'h4')
-        pkg_text_v1 <- html_text(pkg_nodes_v1)
-        pkg_text_v1 <- str_split(pkg_text_v1,"\n")
-        pkg_vers1 <- c()
-        for (i in 1:length(pkg_text_v1)) { 
-          pkg_vers1[i]<-(trimws(pkg_text_v1[[i]][3]))
-        }
-        pkg_vers1 <- pkg_vers1[length(pkg_vers1)]
-        if (is.na(pkg_vers1)) {
-          if(loop != "looped"){
-            pkg_vers1 <- pkg_vers[length(pkg_vers)]
-            pkg_nodes_d1 <- html_nodes(pkg_html, 'relative-time')
-            pkg_text_d1 <- html_text(pkg_nodes_d1)
-            pkg_date1 <- str_remove_all(pkg_text_d1[length(pkg_text_d1)], ",")
-            pkg_date1 <- as.Date(pkg_date1, format = "%h %d %Y")
-            time_since_first_release <- Sys.Date() - pkg_date1
-            time_since_first_release <- floor(as.numeric(time_since_first_release / 30))
-            break
-          }else{
-            break 
-          }
-        } else{
-          pkg_nodes_d1 <- html_nodes(pkg_html1, 'relative-time')
-          pkg_text_d1 <- html_text(pkg_nodes_d1)
-          pkg_date1 <- str_remove_all(pkg_text_d1[length(pkg_text_d1)], ",")
-          pkg_date1 <- as.Date(pkg_date1, format = "%h %d %Y")
-          time_since_first_release <- Sys.Date() - pkg_date1
-          time_since_first_release <- floor(as.numeric(time_since_first_release / 30))
-          loop<-"looped"
-        }
-      }
-      
-      pkg_nodes_d <- html_nodes(pkg_html, 'relative-time')
-      pkg_text_d <- html_text(pkg_nodes_d)
-      pkg_date <- str_remove_all(pkg_text_d, ",")
-      pkg_date <- as.Date(pkg_date, format = "%h %d %Y")
-      time_since_version_release <- Sys.Date() - pkg_date[1]
-      time_since_version_release <- floor(as.numeric(time_since_version_release / 30))
-      
-      pkg_vers_date <- data.frame(Version = c(pkg_vers), Date = c(paste(months(pkg_date), year(pkg_date))))
-      pkg_vers_date <- pkg_vers_date %>% map_df(rev)
-      pkg_vers_date$Date <- as.character(pkg_vers_date$Date)
-      pkg_vers_date$Version <- as.character(pkg_vers_date$Version)
-      pkg_vers_date <- filter(pkg_vers_date, pkg_vers_date$Date %in% pkg_vers_date_final$Month)
-      
-      for (i in 1:length(pkg_vers_date_final$Month)) {
-        for (j in 1:length(pkg_vers_date$Date)) {
-          if (pkg_vers_date_final$Month[i] == pkg_vers_date$Date[j]) {
-            pkg_vers_date_final$verRelease[i] <- pkg_vers_date$Version[j]
-            pkg_vers_date_final$Position[i] <- i - 1
-            break
-          } else{
-            pkg_vers_date_final$verRelease[i] <- NA
-            pkg_vers_date_final$Position[i] <- 12
-          }
-        }
-      }
     },
     error = function(e) {
-      loggit("ERROR", paste("Error in extracting cum metric info of the package:", package_name, "info", e),
+      loggit("ERROR", paste("Error extracting cum metric info of the package:",
+                            pkg_name, "info", e),
              app = "fileupload-webscraping", echo = FALSE)
     }
-  )# End of try catch
+  )
   
-  for (i in 1:nrow(pkg_vers_date_final)) {
-    db_ins(paste0("INSERT INTO community_usage_metrics values(",
-                  "'", package_name,"',", "'", downloads_1yr, "',",
-                  "'", pkg_vers_date_final$Month[i], "',", "'", pkg_vers_date_final$Downloads[i], "',", 
-                  "'", pkg_vers_date_final$verRelease[i], "',", "'", pkg_vers_date_final$Position[i], "',",
-                  "'", time_since_first_release, "',", "'", time_since_version_release, "'" , ")"))
-    if(nrow(pkg_vers_date_final) == 0){
-      break
+  if(nrow(pkgs_cum_metrics) != 0)
+    for (i in 1:nrow(pkgs_cum_metrics)) {
+      db_ins(glue(
+        "INSERT INTO community_usage_metrics 
+        (cum_id, month, year, downloads, version)
+        VALUES ('{pkg_name}', {pkgs_cum_metrics$month[i]},
+        {pkgs_cum_metrics$year[i]}, {pkgs_cum_metrics$downloads[i]},
+        '{pkgs_cum_metrics$version[i]}')"))
     }
   }
-  
-}
-
-# End of the functions
