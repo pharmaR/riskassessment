@@ -1,60 +1,44 @@
-# Get the package general information from CRAN/local.
-get_packages_info_from_web <- function(package_name) {
+# Get the package general information from CRAN/local and upload it to db.
+# TODO: get and upload should be distinct functions.
+insert_pkg_info_to_db <- function(pkg_name) {
   tryCatch(
     expr = {
-      webpage <-
-        read_html(paste0(
-          "https://cran.r-project.org/web/packages/",
-          package_name
-        ))
+      webpage <- read_html(glue(
+          'https://cran.r-project.org/web/packages/{pkg_name}'))
       
       #' Regex that finds entry: '\n ', "'", and '"' (the `|` mean 'or' and the 
       #' `\`` is to scape the double quotes).
       pattern <- '\n |\'|\"|\\"'
       
+      # Save div with class container to get the title and description.
+      div_container <- webpage %>% html_nodes("div.container")
+      
       # Read package title and clean it.
-      title <- webpage %>% 
-        html_nodes("div.container h2") %>% 
+      title <- div_container %>% 
+        html_nodes("h2") %>% 
         html_text() |>
         str_remove_all(pattern = pattern)
       
       # Read package description and clean it.
-      description <- webpage %>% 
-        html_nodes("div.container h2 + p") %>% 
+      description <- div_container %>% 
+        html_nodes("h2 + p") %>% 
         html_text() |>
         str_remove_all(pattern = pattern)
       
-      # Part of the package's information is under the td tag. Saving it 
-      # since we will use it multiple times.
-      td <- html_nodes(webpage, 'td')
+      # Get the table displaying version, authors, etc.
+      #' TODO: this variable is redundant for now. Split the entire function into
+      #' two: get the data in one function and upload in another.
+      table_info <- (webpage %>% html_table())[[1]] |>
+        mutate(X1 = str_remove_all(string = X1, pattern = ':')) |>
+        mutate(X2 = str_remove_all(string = X2, pattern = pattern)) |>
+        pivot_wider(names_from = X1, values_from = X2) |>
+        select(Version, Maintainer, Author, License, Published) %>%
+        mutate(Title = title, Description = description)
       
-      # Read version and clean it.
-      version <- td[2] %>%
-        html_text() |>
-        str_remove_all(pattern = pattern)
-      
-      # Read maintainers and clean it.
-      maintainers <- td[14] %>%
-        html_text() |>
-        str_remove_all(pattern = pattern)
-      
-      # Read authors and clean it.
-      authors <- td[12] %>%
-        html_text() |>
-        str_remove_all(pattern = pattern)
-      
-      # Read published date and clean it.
-      published <- td[10] %>%
-        html_text() |>
-        str_remove_all(pattern = pattern)
-      
-      # Read published date and clean it.
-      license <- td[18] %>%
-        html_text() |>
-        str_remove_all(pattern = pattern)
-      
-      upload_package_to_db(package_name, version, title, description, authors,
-                           maintainers, license, published)
+      upload_package_to_db(pkg_name, table_info$Version, table_info$Title,
+                           table_info$Description, table_info$Author,
+                           table_info$Maintainer, table_info$License,
+                           table_info$Published)
       
     },
     error = function(e) {
