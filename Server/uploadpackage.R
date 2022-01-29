@@ -37,9 +37,12 @@ uploaded_pkgs <- reactive({
   
   if(nrow(new_pkgs) != 0){
     for (pkg in new_pkgs$package) {
-      get_packages_info_from_web(pkg)
-      metric_mm_tm_Info_upload_to_DB(pkg)
-      metric_cum_Info_upload_to_DB(pkg)
+      # Get and upload pkg general info to db.
+      insert_pkg_info_to_db(pkg)
+      # Get and upload maintenance metrics to db.
+      insert_maintenance_metrics_to_db(pkg)
+      # Get and upload community metrics to db.
+      insert_community_metrics_to_db(pkg)
       waitress$inc(1)
     }
   }

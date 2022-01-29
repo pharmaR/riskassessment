@@ -87,7 +87,7 @@ upload_package_to_db <- function(name, version, title, description,
 
 
 # Get the maintenance and testing metrics info and upload into DB.
-metric_mm_tm_Info_upload_to_DB <- function(package_name){
+insert_maintenance_metrics_to_db <- function(package_name){
   
   riskmetric_assess <-
     pkg_ref(package_name) %>%
@@ -149,11 +149,9 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
 
 
 # Get community usage metrics info and upload into DB.
-metric_cum_Info_upload_to_DB <- function(package_name) {
-  pkg_vers_date_final <<- data.frame(matrix(ncol = 4, nrow = 0))
-  time_since_first_release <<- NA
-  time_since_version_release <<- NA
-  downloads_1yr <<- NA
+insert_community_metrics_to_db <- function(pkg_name) {
+  
+  pkgs_cum_metrics <- tibble()
   
   tryCatch(
     expr = {
