@@ -22,7 +22,7 @@ num_dwnlds_plot <- function(data = values$riskmetrics_cum,
   
   # how many months since the last release? + 1
   curr_mth <- plot_dat$month_date[nrow(plot_dat)]
-  rel_mths <- plot_dat$month_date[!(plot_dat$ver_release %in% c("",'NA'))]
+  rel_mths <- plot_dat$month_date[!(plot_dat$version %in% c("",'NA'))]
   lst_rel_mth <- rel_mths[length(rel_mths)]
   mnths2_lst_rel <- mondf(lst_rel_mth, curr_mth) + 2 #ifelse(lst_rel_mth == curr_mth, 2, 1)
   
@@ -47,19 +47,19 @@ num_dwnlds_plot <- function(data = values$riskmetrics_cum,
                                              # , 'toImage', 'resetScale2d', 'zoomIn2d', 'zoomOut2d','zoom2d', 'pan2d'
                    ))
   # any versions?
-  ver_dat <- plot_dat %>% filter(!(ver_release %in% c("","NA")))
+  ver_dat <- plot_dat %>% filter(!(version %in% c("","NA")))
   any_ver_rel <- nrow(ver_dat) > 0
-  # any_ver_rel <- any(!(plot_dat$ver_release %in% c("","NA")))
+  # any_ver_rel <- any(!(plot_dat$version %in% c("","NA")))
   if(any_ver_rel){
     fig <- fig %>% 
       add_segments(
-        x = ~if_else(!(ver_release %in% c("","NA")), month_date, NA_Date_),
-        xend = ~if_else(!(ver_release %in% c("","NA")), month_date, NA_Date_),
+        x = ~if_else(!(version %in% c("","NA")), month_date, NA_Date_),
+        xend = ~if_else(!(version %in% c("","NA")), month_date, NA_Date_),
         y = ~.98*min(no_of_downloads),
         yend = ~1.02*max(no_of_downloads),
         name = "Version Release",
         hoverinfo = "text",
-        text = ~paste0('Version ', ver_release, '<br>', month),
+        text = ~paste0('Version ', version, '<br>', month),
         line = list(color = "#FF0000")
       ) %>% 
       add_annotations(
@@ -71,7 +71,7 @@ num_dwnlds_plot <- function(data = values$riskmetrics_cum,
         showarrow = F,
         textangle = 90,
         font = list(size = 14, color = '#000000'),
-        text = ver_dat$ver_release
+        text = ver_dat$version
       )
     fig <- fig %>% layout(
       xaxis = list(
