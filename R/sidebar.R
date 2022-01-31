@@ -61,8 +61,6 @@ sidebarServer <- function(id, uploaded_pkgs) {
     
     # Create list of packages.
     output$select_pkg_ui <- renderUI({
-      uploaded_pkgs()
-      
       selectizeInput(
         inputId = NS(id, "select_pkg"),
         label = h5("Select Package"),
@@ -70,6 +68,19 @@ sidebarServer <- function(id, uploaded_pkgs) {
         selected = "-"
       )
     })
+    
+    # Create list of packages.
+    observeEvent(uploaded_pkgs(), {
+      req(input$select_pkg)
+      
+      updateSelectizeInput(
+        inputId = "select_pkg",
+        #label = h5("Select Package"),
+        choices = c("-", db_fun('SELECT name FROM package')$name),
+        selected = "-"
+      )
+      
+    }, ignoreNULL = TRUE)
     
     # Get information about selected package.
     selected_pkg <- reactive({
