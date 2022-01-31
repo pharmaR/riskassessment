@@ -64,7 +64,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
       selectizeInput(
         inputId = NS(id, "select_pkg"),
         label = h5("Select Package"),
-        choices = c("-", db_fun('SELECT name FROM package')),
+        choices = c("-", db_fun('SELECT name FROM package')$name),
         selected = "-"
       )
     })
