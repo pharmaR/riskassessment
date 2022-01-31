@@ -12,7 +12,8 @@ metricBoxUI <- function(id) {
 #' `unsucc_icon`: icon used if not is_true.
 metricBoxServer <- function(id, title, desc, value,
                             is_perc = FALSE, is_url = FALSE,
-                            succ_icon = "check",  unsucc_icon = "times") {
+                            succ_icon = "check",  unsucc_icon = "times",
+                            icon_class = "text-success") {
   moduleServer(id, function(input, output, session) {
     
     
@@ -31,10 +32,8 @@ metricBoxServer <- function(id, title, desc, value,
       else if(value %in% c('TRUE', 'FALSE'))
         value <- ifelse(value == 'TRUE', 'Yes', 'No')
       
-      
       icon_name <- succ_icon
-      icon_class <- "text-success"
-      
+
       if(!is_true){
         icon_name <- unsucc_icon
         icon_class <- "text-warning"
