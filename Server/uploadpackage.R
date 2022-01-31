@@ -19,7 +19,7 @@ uploaded_pkgs <- reactive({
     validate("Please upload a CSV with a valid format.")
   
   waitress <- waiter::Waitress$new(
-    max = nrow(uploaded_pkgs) + 1,
+    max = 3*nrow(uploaded_pkgs) + 3,
     theme = 'overlay-percent')
   on.exit(waitress$close())
   
@@ -29,8 +29,12 @@ uploaded_pkgs <- reactive({
   uploaded_pkgs$package <- trimws(uploaded_pkgs$package)
   uploaded_pkgs$version <- trimws(uploaded_pkgs$version)
   
+  waitress$inc(1)
+  
   # Current packages on the db.
   curr_pkgs <- db_fun("SELECT name FROM package")
+  
+  waitress$inc(1)
   
   # Save the uploaded packages that were not in the db.
   new_pkgs <- uploaded_pkgs |> filter(!(package %in% curr_pkgs$name))
@@ -39,8 +43,10 @@ uploaded_pkgs <- reactive({
     for (pkg in new_pkgs$package) {
       # Get and upload pkg general info to db.
       insert_pkg_info_to_db(pkg)
+      waitress$inc(1)
       # Get and upload maintenance metrics to db.
       insert_maintenance_metrics_to_db(pkg)
+      waitress$inc(1)
       # Get and upload community metrics to db.
       insert_community_metrics_to_db(pkg)
       waitress$inc(1)
