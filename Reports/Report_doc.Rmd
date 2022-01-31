@@ -42,14 +42,14 @@ for(i in 1:nrow(values$riskmetrics_mm))
 riskmetrics_cum <- db_fun(glue(
   "SELECT *
 FROM community_usage_metrics
-WHERE cum_id = '{params$package}'"))
+WHERE id = '{params$package}'"))
 
-pkgs_in_db <- db_fun(glue("SELECT cum_id FROM community_usage_metrics"))
+pkgs_in_db <- db_fun(glue("SELECT id FROM community_usage_metrics"))
 
 riskmetrics_cum <- db_fun(glue(
   "SELECT *
 FROM community_usage_metrics
-WHERE cum_id ='{params$package}'"))
+WHERE id ='{params$package}'"))
 
 time_since_first_release_info <- riskmetrics_cum$time_since_first_release[1] 
 time_since_version_release_info <-riskmetrics_cum$time_since_version_release[1]

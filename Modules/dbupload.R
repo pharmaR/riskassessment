@@ -201,7 +201,7 @@ insert_community_metrics_to_db <- function(pkg_name) {
     for (i in 1:nrow(pkgs_cum_metrics)) {
       db_ins(glue(
         "INSERT INTO community_usage_metrics 
-        (cum_id, month, year, downloads, version)
+        (id, month, year, downloads, version)
         VALUES ('{pkg_name}', {pkgs_cum_metrics$month[i]},
         {pkgs_cum_metrics$year[i]}, {pkgs_cum_metrics$downloads[i]},
         '{pkgs_cum_metrics$version[i]}')"))

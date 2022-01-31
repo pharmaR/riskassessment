@@ -53,7 +53,7 @@ for(i in 1:nrow(riskmetrics_mm))
   values[[riskmetrics_mm$name[i]]] <- riskmetrics_mm$value[i]
 
 riskmetrics_cum <- db_fun(glue(
-  "SELECT * FROM community_usage_metrics WHERE cum_id ='{params$package}'"))
+  "SELECT * FROM community_usage_metrics WHERE id ='{params$package}'"))
 
 time_since_first_release_info <- riskmetrics_cum$time_since_first_release[1] 
 time_since_version_release_info <- riskmetrics_cum$time_since_version_release[1]
