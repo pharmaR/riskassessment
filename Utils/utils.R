@@ -221,12 +221,12 @@ update_db_dash <- function(){
       , c.last_comment
       FROM package as pi
       LEFT JOIN (
-        SELECT comm_id
+        SELECT id
              , max(added_on) as last_comment
         FROM comments
-        GROUP BY comm_id
+        GROUP BY id
       ) as c
-      on c.comm_id = pi.name
+      on c.id = pi.name
       ORDER BY 1 DESC
     "
   )

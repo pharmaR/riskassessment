@@ -66,7 +66,7 @@ output$overall_comments <- renderText({
     values$comment_o1 <-
       db_fun(
         paste0(
-          "SELECT * FROM Comments WHERE comm_id = '",
+          "SELECT * FROM Comments WHERE id = '",
           selected_pkg$name(),
           "' AND comment_type = 'o'"
         )

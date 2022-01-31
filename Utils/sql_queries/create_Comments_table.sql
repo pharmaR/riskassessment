@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS comments (
-   comm_id 		 CHAR NOT NULL, 
+   id 		     CHAR NOT NULL, 
    user_name 	 CHAR,
    user_role 	 CHAR,
    comment 		 CHAR,

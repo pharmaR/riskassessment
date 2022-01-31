@@ -69,23 +69,23 @@ metric_id <- db_fun(glue("SELECT id FROM metric WHERE name = 'covr_coverage';"))
 comment_o <- db_fun(glue(
   "SELECT *
 FROM comments
-WHERE comm_id = '{params$package}' AND comment_type = 'o'"))
+WHERE id = '{params$package}' AND comment_type = 'o'"))
 
 # Gather maintenance metrics comments.
 comment_mm <- db_fun(glue(
   "SELECT user_name, user_role, comment, added_on
-FROM comments WHERE comm_id = '{params$package}'
+FROM comments WHERE id = '{params$package}'
 AND comment_type = 'mm'"))
 
 # Gather community usage metrics comments.
 comment_cum <- db_fun(glue(
   "SELECT user_name, user_role, comment, added_on
-FROM comments WHERE comm_id = '{params$package}' AND comment_type = 'cum'"))
+FROM comments WHERE id = '{params$package}' AND comment_type = 'cum'"))
 
 # Gather test metric comments.
 comment_tm <- db_fun(glue(
   "SELECT user_name, user_role, comment, added_on
-FROM comments WHERE comm_id = '{params$package}' AND comment_type = 'tm'"))
+FROM comments WHERE id = '{params$package}' AND comment_type = 'tm'"))
 
 ```
 

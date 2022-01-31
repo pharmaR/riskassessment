@@ -105,7 +105,7 @@ showComments <- function(pkg_name, comment_type){
     glue(
       "SELECT user_name, user_role, comment, added_on
       FROM comments
-      WHERE comm_id = '{pkg_name}' AND comment_type = '{comment_type}'"
+      WHERE id = '{pkg_name}' AND comment_type = '{comment_type}'"
     )
   ) |>
     map(rev)

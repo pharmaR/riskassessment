@@ -368,7 +368,7 @@ databaseViewServer <- function(id) {
       # update for each package
       all_pkgs <- db_fun("SELECT DISTINCT name AS pkg_name FROM package")
       cmt_or_dec_pkgs <- unique(bind_rows(
-        db_fun("SELECT DISTINCT comm_id AS pkg_name FROM comments where comment_type = 'o'"),
+        db_fun("SELECT DISTINCT id AS pkg_name FROM comments where comment_type = 'o'"),
         db_fun("SELECT DISTINCT name AS pkg_name FROM package where decision != ''")
       ))
       

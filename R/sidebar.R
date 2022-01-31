@@ -149,7 +149,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
       
       comments <- db_fun(glue(
         "SELECT comment FROM comments
-          WHERE comm_id = '{input$select_pkg}'
+          WHERE id = '{input$select_pkg}'
           AND comment_type = 'o'"))
       
       updateTextAreaInput(session, "overall_comment", placeholder = comments$comment)
@@ -167,7 +167,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
         db_fun(glue(
           "SELECT *
             FROM comments
-            WHERE comment_type = 'o' AND comm_id = '{selected_pkg()$name}'"))
+            WHERE comment_type = 'o' AND id = '{selected_pkg()$name}'"))
       
       if (nrow(previous_comments) != 0) {
         showModal(modalDialog(
@@ -202,7 +202,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
       db_ins(glue(
         "UPDATE comments
           SET comment = '{input$overall_comment}' added_on = '{TimeStamp()}'
-          WHERE comm_id = '{selected_pkg()$name}' AND
+          WHERE id = '{selected_pkg()$name}' AND
           user_name = '{input$user$name}' AND
           user_role = '{input$user$rule}' AND
           comment_type = 'o'"

@@ -72,24 +72,24 @@ no_of_downloads_last_year_info <- riskmetrics_cum$no_of_downloads_last_year[1]
 # Gather overall comments.
 comment_o <- db_fun(glue(
   "SELECT * FROM comments
-  WHERE comm_id = '{params$package}' AND comment_type = 'o'"))
+  WHERE id = '{params$package}' AND comment_type = 'o'"))
 
 # Gather maintenance metrics comments.
 comment_mm <- db_fun(glue(
   "SELECT user_name, user_role, comment, added_on
   FROM comments
-  WHERE comm_id = '{params$package}' AND comment_type = 'mm'"))  
+  WHERE id = '{params$package}' AND comment_type = 'mm'"))  
 
 # Gather community usage metrics comments.
 comment_cum <- db_fun(glue(
 "SELECT user_name, user_role, comment, added_on
-FROM comments WHERE comm_id = '{params$package}' AND comment_type = 'cum'"))
+FROM comments WHERE id = '{params$package}' AND comment_type = 'cum'"))
 
 # Gather test metric comments.
 comment_tm <- db_fun(glue(
   "SELECT user_name, user_role, comment, added_on
   FROM comments
-  WHERE comm_id = '{params$package}' AND comment_type = 'tm'"))
+  WHERE id = '{params$package}' AND comment_type = 'tm'"))
 
 # Displays comments.
 create_comment_box <- function(comment_info){

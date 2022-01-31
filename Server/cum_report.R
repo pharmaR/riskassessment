@@ -122,7 +122,7 @@ output$cum_commented1 <- renderText({
     values$comment_cum1 <-
       db_fun(
         paste0(
-          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
+          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE id = '",
           input$select_pack,
           "' AND comment_type = 'cum'"
         )
