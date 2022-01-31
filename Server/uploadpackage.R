@@ -19,7 +19,7 @@ uploaded_pkgs <- reactive({
     validate("Please upload a CSV with a valid format.")
   
   waitress <- waiter::Waitress$new(
-    max = 3*nrow(uploaded_pkgs) + 3,
+    max = 3*nrow(uploaded_pkgs) + 4,
     theme = 'overlay-percent')
   on.exit(waitress$close())
   
@@ -29,7 +29,7 @@ uploaded_pkgs <- reactive({
   uploaded_pkgs$package <- trimws(uploaded_pkgs$package)
   uploaded_pkgs$version <- trimws(uploaded_pkgs$version)
   
-  waitress$inc(1)
+  waitress$inc(2)
   
   # Current packages on the db.
   curr_pkgs <- db_fun("SELECT name FROM package")
