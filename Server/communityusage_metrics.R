@@ -62,7 +62,7 @@ observeEvent(community_usage_metrics(), {
   metricBoxServer(id = 'downloads_last_year',
                   title = 'Package Downloads',
                   desc = 'Number of downloads since last year',
-                  value = sum(downloads_last_year$downloads),
+                  value = format(sum(downloads_last_year$downloads), big.mark = ","),
                   succ_icon = 'box-open',
                   icon_class = "text-info")
 })
