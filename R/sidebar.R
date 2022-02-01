@@ -88,7 +88,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
       req(input$select_ver)
       
       db_fun(glue(
-        "SELECT name, score, decision, version, id
+        "SELECT *
         FROM package
         WHERE name = '{input$select_pkg}'"))
     })
