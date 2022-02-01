@@ -81,9 +81,87 @@ viewCommentsServer(id = "view_cum_comments",
                    comment_type = 'cum')
 
 
-# 3. Render Output to show the plot for number of downloads on the application.
-# output$no_of_downloads <- 
-#   plotly::renderPlotly({
-#     num_dwnlds_plot(data = values$riskmetrics_cum,
-#                     input_select_pack = selected_pkg$name())
-#   })
+output$downloads_plot <- plotly::renderPlotly({
+  community_data <- community_usage_metrics() %>%
+    mutate(day_month_year = glue('1-{month}-{year}')) %>%
+    mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
+    mutate(month_year = glue('{months(day_month_year)} {year}')) %>%
+    mutate(month = month.name[month]) %>%
+    arrange(day_month_year)
+  
+  downloads_data <- community_data |>
+    distinct(month, year, .keep_all = TRUE)
+  
+  # Last day that appears on the community metrics.
+  latest_date <- downloads_data %>%
+    slice_max(day_month_year) %>%
+    pull(day_month_year)
+  
+  # Last day associated with a version release.
+  last_version_date <- downloads_data %>%
+    filter(!(version %in% c('', 'NA'))) %>%
+    slice_max(day_month_year) %>%
+    pull(day_month_year)
+  
+  # Get the difference in months.
+  month_diff <- interval(last_version_date, latest_date) %/% months(1)
+  
+  plot_ly(downloads_data,
+          x = ~day_month_year,
+          y = ~downloads,
+          name = "# Downloads", type = 'scatter', 
+          mode = 'lines+markers', line = list(color = "blue"),
+          hoverinfo = "text",
+          text = ~glue('No. of Downloads: {format(downloads, big.mark = ",")} <br> {month} {year}')) %>%
+    layout(title = glue('Number of Downloads by Month: {selected_pkg$name()}'),
+           showlegend = FALSE,
+           yaxis = list(title = "Downloads"),
+           xaxis = list(title = "Month")
+    ) %>% 
+    add_segments(
+      x = ~if_else(version %in% c("", "NA"), NA_Date_, day_month_year),
+      xend = ~if_else(version %in% c("","NA"), NA_Date_, day_month_year),
+      y = ~.98 * min(downloads),
+      yend = ~1.02 * max(downloads),
+      name = "Version Release",
+      hoverinfo = "text",
+      text = ~glue('Version {version}'),
+      line = list(color = "#FF0000")
+    ) %>% 
+    #   add_annotations(
+    #     yref = 'paper', 
+    #     xref = "x", 
+    #     y = .93, 
+    #     x = ver_dat$day_month_year,
+    #     xanchor = 'left',
+    #     showarrow = F,
+    #     textangle = 90,
+    #     font = list(size = 14, color = '#000000'),
+    #     text = ver_dat$version
+    #   ) %>% 
+  layout(
+    xaxis = list(
+      rangeselector = list(
+        buttons = list(
+          list(
+            count = 6,
+            label = "6 mo",
+            step = "month",
+            stepmode = "backward"),
+          list(
+            count = 1,
+            label = "1 yr",
+            step = "year",
+            stepmode = "backward"),
+          list(
+            count = 2,
+            label = "2 yr",
+            step = "year",
+            stepmode = "year"),
+          list(count = month_diff,
+               label = "Last Release",
+               step = "month",
+               stepmode = "backward"))),
+      rangeslider = list(type = "date"))
+  )
+})
