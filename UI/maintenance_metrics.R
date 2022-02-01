@@ -8,11 +8,11 @@ output$maintenance_metrics <- renderUI({
       showSelectPackageMessage()
     
     else {
-      fluidPage(
+      tagList(
         br(),
         introJSUI("mm_introJS"),
         h4("Maintenance Metrics", style = "text-align: center;"),
-        br(), br(), br(),
+        br(), br(),
         metricGridUI("mm_metricGrid"),
         br(), br(),
         fluidRow(
