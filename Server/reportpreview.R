@@ -14,79 +14,37 @@ viewCommentsServer(id = "view_mm_comments_for_report",
                    pkg_name = reactive(selected_pkg$name()),
                    comment_type = 'mm')
 
+# View comments.
+viewCommentsServer(id = "view_overall_comments_for_report",
+                   comment_added = overall_comment_added,
+                   pkg_name = reactive(selected_pkg$name()),
+                   comment_type = 'o')
+
 metricGridServer("report_mm_metricGrid", metrics = maint_metrics)
 
 # Display general information of the selected package.
-output$gen_info <- renderText({
-  pkg_GenInfo <- 
-    db_fun(glue("SELECT * FROM package WHERE name ='{selected_pkg$name()}'"))
+output$pkg_overview <- renderUI({
+  req(selected_pkg$name())
   
-  paste(
-    "<h2><b>Package:</b> ",
-    pkg_GenInfo$name,
-    "</h2>",
-    "<h4><b>Version: </b>",
-    pkg_GenInfo$version,
-    "</h4>",
-    "<h4><b>Title: </b>",
-    pkg_GenInfo$title,
-    "</h4>",
-    "<h4><b>Description:</b>",
-    pkg_GenInfo$description,
-    "</h4>",
-    "<h4><b>Author:</b>",
-    pkg_GenInfo$author,
-    "</h4>",
-    "<h4><b>Maintainer: </b>",
-    pkg_GenInfo$maintainer,
-    "<h4><b>License: </b>",
-    pkg_GenInfo$license,
-    "</h4>",
-    "<h4><b>Published:</b>",
-    pkg_GenInfo$published,
-    "</h4>"
+  tagList(
+    h5('Package:'), selected_pkg$name(),
+    h5('Version:'), selected_pkg$version(),
+    h5('Title:'), selected_pkg$title(),
+    h5('Description:'), selected_pkg$description(),
+    h5('Author:'), selected_pkg$author(),
+    h5('Maintainer:'), selected_pkg$maintainer(),
+    h5('License:'), selected_pkg$license(),
+    h5('Published:'), selected_pkg$published()
   )
 })
 
-
-# Display the decision status of the selected pacakge.
-output$decision_display <- renderText({
-  if (!identical(values$selected_pkg$decision, character(0)) && values$selected_pkg$decision != "") {
-    paste("<br>", "<h3>Overall risk: ", "<b>", values$selected_pkg$decision, "</b></h3>") 
-  } else{
-    paste("<br>", "<h3>Overall risk: Pending</h3>")
-  }
-})    # End of the render Text Output.
-
-# Display the overall comment of the selected package. 
-output$overall_comments <- renderText({
-  req(selected_pkg$name())
-  if (values$o_comment_submitted == "yes" ||
-      values$o_comment_submitted == "no") {
-    values$comment_o1 <-
-      db_fun(
-        paste0(
-          "SELECT * FROM Comments WHERE id = '",
-          selected_pkg$name(),
-          "' AND comment_type = 'o'"
-        )
-      )
-    values$comment_o2 <- values$comment_o1 %>% arrange(desc(values$comment_o1$added_on))
-    req(values$comment_o2$comment)
-    values$o_comment_submitted <- "no"
-    paste(
-      "<div class='col-sm-12 comment-border-bottom single-comment-div'><i class='fa fa-user-tie fa-4x'></i><h3 class='ml-3'><b class='user-name-color'>",
-      values$comment_o2$user_name,
-      "(",
-      values$comment_o2$user_role,
-      ")",
-      "</b><sub>",
-      values$comment_o2$added_on,
-      "</sub></h3><h4 class='ml-3 lh-4'>",
-      values$comment_o2$comment,
-      "</h4></div>"
-    )
-  }
+# Display the decision status of the selected package.
+output$decision_display <- renderUI({
+  tagList(
+    h5('Overall risk:'),
+    ifelse(selected_pkg$decision() == '', 
+           'Pending',
+           selected_pkg$decision()))
 })
 
 # Create report.
