@@ -22,13 +22,6 @@ set_logfile("loggit.json")
 
 hidden(p(id = "assessment_criteria_bttn"))
 
-# Set spinner options for the tabs.
-options(
-  spinner.color = "#0275D8",
-  spinner.color.background = "#ffffff",
-  spinner.size = 1
-)
-
 theme <- bs_theme(
   version = 5,
   bg = "white", 
@@ -49,8 +42,8 @@ ui <- fluidPage(
   theme = theme,
   
   includeCSS(path = "www/css/main.css"),
-  includeScript(path = "www/js/popper.js"),
-  includeScript(path = "www/js/tooltip.js"),
+  # includeScript(path = "www/js/popper.js"),
+  # includeScript(path = "www/js/tooltip.js"),
   
   tabsetPanel(
     tabPanel(
