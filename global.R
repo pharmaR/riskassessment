@@ -90,8 +90,9 @@ source("Utils/infoboxes.R")
 
 options(keyring_user = "NeildeGrasseTyson")
 
-# Displays message when no package is selected.
-showSelectPackageMessage <- function(message = "Please select a package"){
+#' Displays a helper message. By default, it informs the user that he should
+#' select a package.
+showHelperMessage <- function(message = "Please select a package"){
   h6(message,
      style = 
        "text-align: center;
