@@ -94,9 +94,9 @@ options(keyring_user = "NeildeGrasseTyson")
 showSelectPackageMessage <- function(message = "Please select a package"){
   h6(message,
      style = 
-     "text-align: center;
-     color: gray;
-     padding-top: 50px;")
+       "text-align: center;
+        color: gray;
+        padding-top: 50px;")
 }
 
 # Displays formatted comments.
@@ -125,4 +125,5 @@ showComments <- function(pkg_name, comment_type){
     )
   )
 }
+
 
