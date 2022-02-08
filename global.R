@@ -19,7 +19,6 @@ packages = c("shiny"
              ,"stringr"
              ,"tidyverse"
              ,"loggit"
-             ,"shinycssloaders"
              ,"rAmCharts"
              ,"devtools"
              ,"plotly"
@@ -31,6 +30,7 @@ packages = c("shiny"
              ,"rstudioapi"
              ,"glue"
              ,"bslib"
+             ,'waiter'
 )
 
 # Install and load required packages.
