@@ -442,7 +442,7 @@ databaseViewServer <- function(id) {
     output$download_database_btn <- downloadHandler(
       
       filename = function() {
-        paste0("datase_backup-", Sys.Date(), ".sqlite")
+        glue("datase_backup-{Sys.Date()}.sqlite")
       },
       content = function(file) {
         con <- dbConnect(RSQLite::SQLite(), database_name)
