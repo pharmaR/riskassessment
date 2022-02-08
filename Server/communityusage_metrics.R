@@ -4,10 +4,11 @@ introJSServer(id = "cum_introJS", text = cum_steps)
 #' Creates three metricBoxes: the time since first release, the time since
 #' latest release, and the number of downloads since last year.
 observeEvent(community_usage_metrics(), {
-  
+
   # Get the first package release.
   first_version <- community_usage_metrics() |>
-    filter(year == min(year) & month == min(month)) |>
+    filter(year == min(year)) |>
+    filter(month == min(month)) |>
     slice_head(n = 1)
   
   # Get difference between today and first release in years.
@@ -32,7 +33,8 @@ observeEvent(community_usage_metrics(), {
   
   # Get the last package release.
   last_version <- community_usage_metrics() |>
-    filter(year == max(year) & month == max(month)) |>
+    filter(year == max(year)) |>
+    filter(month == max(month)) |>
     slice_head(n = 1)
   
   # Get difference between today and latest release.
@@ -82,6 +84,7 @@ viewCommentsServer(id = "view_cum_comments",
 
 
 output$downloads_plot <- plotly::renderPlotly({
+
   community_data <- community_usage_metrics() %>%
     mutate(day_month_year = glue('1-{month}-{year}')) %>%
     mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
