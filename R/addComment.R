@@ -46,7 +46,7 @@ addCommentServer <- function(id, metric_abrv, user_name, user_role, pkg_name) {
         dbUpdate(glue(
         "INSERT INTO comments values('{pkg_name()}', '{user_name()}', 
         '{user_role()}', '{input$add_comment}', '{metric_abrv}',
-        '{TimeStamp()}')")
+        '{getTimeStamp()}')")
         )
         
         updateTextAreaInput(session, "add_comment", value = "")

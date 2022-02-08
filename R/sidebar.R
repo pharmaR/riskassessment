@@ -202,7 +202,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
     observeEvent(input$submit_overall_comment_yes, {
       dbUpdate(glue(
         "UPDATE comments
-          SET comment = '{input$overall_comment}' added_on = '{TimeStamp()}'
+          SET comment = '{input$overall_comment}' added_on = '{getTimeStamp()}'
           WHERE id = '{selected_pkg()$name}' AND
           user_name = '{input$user$name}' AND
           user_role = '{input$user$rule}' AND

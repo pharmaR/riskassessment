@@ -397,7 +397,7 @@ databaseViewServer <- function(id) {
               "'", paste0(weight_risk_comment(all_pkgs$pkg_name[i]), 
                           ifelse(all_pkgs$pkg_name[i] %in% cmt_or_dec_pkgs$pkg_name, cmt_or_dec_dropped_cmt, "")), "',",
               "'", typ, "',",
-              "'", TimeStamp(), "'" ,
+              "'", getTimeStamp(), "'" ,
               ")"
             )
           )
