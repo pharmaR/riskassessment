@@ -8,7 +8,7 @@ source(file.path("R", "metricBox.R"))
 source(file.path("R", "metricGrid.R"))
 source(file.path("Modules", "dbupload.R"))
 source(file.path("Modules", "file_upload_error_handling.R"))
-source(file.path("Utils", "utils.R"))
+source(file.path("R", "utils.R"))
 
 # Create db if it doesn't exist.
 if(!file.exists(database_name)) create_db()
