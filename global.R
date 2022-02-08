@@ -50,10 +50,6 @@ if(!require(riskmetric)){
   library(riskmetric)
 }
 
-# Load the functions to create infoboxes.
-source("Utils/infoboxes.R")
-
-
 
 # Note: If deploying the app to shinyapps.io, then the code to directly install
 # missing packages will need to be removed as the app will fail to deploy.
