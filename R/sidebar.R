@@ -189,9 +189,10 @@ sidebarServer <- function(id, uploaded_pkgs) {
           )
         ))
       } else{
-        print(glue("values('{selected_pkg()$name}', '{input$user$name}', '{input$user$rule}', '{current_comment}', 'o', '{TimeStamp()}')"))
-        db_ins(glue("INSERT INTO comments
-                    values('{selected_pkg()$name}', '{input$user$name}', '{input$user$rule}', '{current_comment}', 'o', '{TimeStamp()}')"))
+        print(glue("values('{selected_pkg()$name}', '{input$user$name}', '{input$user$rule}', '{current_comment}', 'o', '{getTimeStamp()}')"))
+        dbUpdate(glue(
+          "INSERT INTO comments
+          VALUES ('{selected_pkg()$name}', '{input$user$name}', '{input$user$rule}', '{current_comment}', 'o', '{getTimeStamp()}')"))
         
         updateTextAreaInput(session, "current_comment", placeholder = paste("current comment:", current_comment))
       }
@@ -199,7 +200,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
     
     # Update overall comment by user's request.
     observeEvent(input$submit_overall_comment_yes, {
-      db_ins(glue(
+      dbUpdate(glue(
         "UPDATE comments
           SET comment = '{input$overall_comment}' added_on = '{TimeStamp()}'
           WHERE id = '{selected_pkg()$name}' AND
@@ -266,7 +267,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
     
     # Update database info after decision is submitted.
     observeEvent(input$submit_confirmed_decision, {
-      db_ins(glue(
+      dbUpdate(glue(
         "UPDATE package
           SET decision = '{input$decision}'
           WHERE name = '{selected_pkg()$name}'")

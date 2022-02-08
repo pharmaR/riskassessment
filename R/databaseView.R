@@ -384,12 +384,12 @@ databaseViewServer <- function(id) {
       cmt_or_dec_dropped_cmt <- " Since they may no longer be applicable, the final decision & comment have been dropped to allow for re-evaluation."
       
       # clear out any prior overall comments
-      db_ins("DELETE FROM comments WHERE comment_type = 'o'")
+      dbUpdate("DELETE FROM comments WHERE comment_type = 'o'")
       
       for (i in 1:nrow(all_pkgs)) {
         # insert comment for both mm and cum tabs
         for (typ in c("mm","cum")) {
-          db_ins(
+          dbUpdate(
             paste0(
               "INSERT INTO comments values('", all_pkgs$pkg_name[i], "',",
               "'", values$name, "'," ,
@@ -407,7 +407,7 @@ databaseViewServer <- function(id) {
       # Reset any decisions made prior to this.
       pkg <- db_fun("select distinct name as pkg_name from package where decision != ''")
       for (i in 1:nrow(pkg)) {
-        db_ins(paste0("UPDATE package SET decision = '' where name = '",pkg$pkg_name[i],"'"))
+        dbUpdate(glue("UPDATE package SET decision = '' where name = '{pkg$pkg_name[i]}'"))
       }
       
       # want to update db_dash_screen after creating automated comments and
@@ -424,8 +424,9 @@ databaseViewServer <- function(id) {
       withProgress(message = "Applying weights and updating risk scores \n", value = 0, {
         for (i in 1:nrow(pkg)) {
           incProgress(1 / (nrow(pkg) + 1), detail = pkg$pkg_name[i])
-          db_ins(paste0("delete from package_metrics where package_id = ", 
-                        "(select id from package where name = ","'", pkg$pkg_name[i], "')") )
+          dbUpdate(glue(
+            "DELETE FROM package_metrics WHERE package_id = 
+            (SELECT id FROM package WHERE name = '{pkg$pkg_name[i]}')") )
           metric_mm_tm_Info_upload_to_DB(pkg$pkg_name[i])
         }
       })
