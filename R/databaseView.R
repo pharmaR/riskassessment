@@ -1,3 +1,10 @@
+# Risk color palettes.
+# https://www.rapidtables.com/web/color/html-color-codes.html
+low_risk_color  <- "#228B22"  # forest green
+med_risk_color  <- "#d1b000"  # dark gold
+high_risk_color <- "#B22222"  # firebrick
+setColorPalette <- colorRampPalette(c(low_risk_color, med_risk_color, high_risk_color))
+
 databaseViewUI <- function(id) {
   fluidPage(
     fluidRow(
@@ -63,7 +70,7 @@ databaseViewServer <- function(id) {
                                 "color" = "white",
                                 "order" = x,
                                 "background-color" = csscolor(
-                                  colfunc(100)[round(as.numeric(x)*100)]))),
+                                  setColorPalette(100)[round(as.numeric(x)*100)]))),
             decision = formatter(
               "span",
               style = x ~ style(display = "block",
