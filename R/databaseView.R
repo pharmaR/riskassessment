@@ -8,7 +8,7 @@ databaseViewUI <- function(id) {
         hr(),
         tags$section(
           br(), br(),
-          box(width = 12, collapsible = TRUE, status = "primary",
+          box(width = 12,
               title = h5("Uploaded Packages", style = "margin-top: 5px"),
               DT::dataTableOutput(NS(id, "db_pkgs")),
               br(),
@@ -107,6 +107,7 @@ databaseViewServer <- function(id) {
     
     # Download handler to create a report for each package selected.
     values$cwd <- getwd()
+    
     output$dwnld_sel_db_pkgs_btn <- downloadHandler(
       filename = function() {
         paste(
