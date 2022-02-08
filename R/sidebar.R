@@ -43,7 +43,7 @@ sidebarUI <- function(id) {
     
     textAreaInput(
       inputId = NS(id, "overall_comment"),
-      h5("Select Overall Comment"),
+      h5("Write Overall Comment"),
       rows = 5,
       placeholder = ""
     ),
