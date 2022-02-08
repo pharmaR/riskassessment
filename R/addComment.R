@@ -43,7 +43,7 @@ addCommentServer <- function(id, metric_abrv, user_name, user_role, pkg_name) {
           validate("Invalid character: comments cannot contain single
                    quotes (')")
 
-        db_ins(glue(
+        dbUpdate(glue(
         "INSERT INTO comments values('{pkg_name()}', '{user_name()}', 
         '{user_role()}', '{input$add_comment}', '{metric_abrv}',
         '{TimeStamp()}')")
