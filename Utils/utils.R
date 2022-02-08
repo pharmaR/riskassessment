@@ -209,29 +209,6 @@ GetUserName <- function() {
   return(x)
 }
 
-# function to re-run everytime a package is uploaded to db, or
-# when a comment is submitted, or when risk scores re-calculated
-update_db_dash <- function(){
-  db_fun(
-    "SELECT 
-       pi.name
-      , pi.version
-      , pi.score
-      , pi.decision
-      , c.last_comment
-      FROM package as pi
-      LEFT JOIN (
-        SELECT id
-             , max(added_on) as last_comment
-        FROM comments
-        GROUP BY id
-      ) as c
-      on c.id = pi.name
-      ORDER BY 1 DESC
-    "
-  )
-}
-
 # Get each metric's weight.
 get_metric_weights <- function(){
   db_fun(

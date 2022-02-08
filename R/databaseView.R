@@ -34,7 +34,16 @@ databaseViewServer <- function(id) {
     # Create table for the db dashboard.
     output$db_pkgs <- DT::renderDataTable({
       
-      values$db_pkg_overview <- update_db_dash() %>%
+      db_pkg_overview <- db_fun(
+        'SELECT pi.name, pi.version, pi.score, pi.decision, c.last_comment
+        FROM package as pi
+        LEFT JOIN (
+            SELECT id, max(added_on) as last_comment FROM comments GROUP BY id)
+        AS c ON c.id = pi.name
+        ORDER BY 1 DESC'
+      )
+      
+      db_pkg_overview <- db_pkg_overview %>%
         mutate(last_comment = as.character(as_datetime(last_comment))) %>%
         mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
         mutate(decision = ifelse(decision != "", paste(decision, "Risk"), "-")) %>%
@@ -43,7 +52,7 @@ databaseViewServer <- function(id) {
       
       as.datatable(
         formattable(
-          values$db_pkg_overview,
+          db_pkg_overview,
           list(
             score = formatter(
               "span",
@@ -82,7 +91,7 @@ databaseViewServer <- function(id) {
           columnDefs = list(list(className = 'dt-center'))
         )
       ) %>%
-        formatStyle(names(values$db_pkg_overview), textAlign = 'center')
+        formatStyle(names(db_pkg_overview), textAlign = 'center')
     })
     
     # Enable the download button when a package is selected.
