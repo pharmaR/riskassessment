@@ -143,7 +143,7 @@ server <- function(session, input, output) {
     if (res_auth$admin == TRUE)
       loggit("INFO", glue("User {res_auth$user} signed on as admin"))
     
-    # Redundant
+    # TODO: Redundant.
     values$name <- trimws(res_auth$user)
     values$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
     
@@ -177,7 +177,6 @@ server <- function(session, input, output) {
   
   # Gather community usage metrics information.
   community_usage_metrics <- reactive({
-  
     req(selected_pkg$name())
     req(selected_pkg$name() != "-")
     
