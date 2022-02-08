@@ -285,13 +285,19 @@ sidebarServer <- function(id, uploaded_pkgs) {
     })
     
     # Output package id, name, and version.
+    # TODO: return the entire selected_pkg instead of doing this below.
     list(
-      id = reactive(db_fun(glue(
-        "SELECT id
-        FROM package
-        WHERE name = '{selected_pkg()$name}';"))$id),
-      name = reactive(input$select_pkg),
-      version = reactive(input$select_ver)
+      id = reactive(selected_pkg()$id),
+      name = reactive(selected_pkg()$name),
+      version = reactive(selected_pkg()$version),
+      title = reactive(selected_pkg()$title),
+      decision = reactive(selected_pkg()$decision),
+      description = reactive(selected_pkg()$description),
+      author = reactive(selected_pkg()$author),
+      maintainer = reactive(selected_pkg()$maintainer),
+      license = reactive(selected_pkg()$license),
+      published = reactive(selected_pkg()$published),
+      overall_comment_added = reactive(input$submit_overall_comment)
     )
   })
 }
