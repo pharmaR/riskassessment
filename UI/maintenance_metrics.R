@@ -1,13 +1,13 @@
 # Render Output UI for Maintenance Metrics.
 output$maintenance_metrics <- renderUI({
-  req(selected_pkg$name())
+
+  # Lets the user know that a package needs to be selected.
+  if(identical(selected_pkg$name(), character(0)))
+    showHelperMessage()
   
-  fluidPage(
-    
-    if(selected_pkg$name() == "-")
-      showSelectPackageMessage()
-    
-    else {
+  else {
+    fluidPage(
+      
       tagList(
         br(),
         introJSUI("mm_introJS"),
@@ -20,6 +20,6 @@ output$maintenance_metrics <- renderUI({
           viewCommentsUI("view_mm_comments")
         )
       )
-    }
-  )
+    )
+  }
 })

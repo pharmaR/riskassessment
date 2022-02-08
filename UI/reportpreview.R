@@ -1,13 +1,14 @@
 # Render Output UI for Report Preview.
 output$report_preview <- renderUI({
-  req(selected_pkg$name())
   
-  fluidPage(
+  # Lets the user know that a package needs to be selected.
+  if(identical(selected_pkg$name(), character(0)))
+    showHelperMessage()
+  
+  else {
     
-    if(selected_pkg$name() == "-")
-      showSelectPackageMessage()
-    
-    else {
+    fluidPage(
+      
       tagList(
         br(),
         introJSUI("report_introJS"),
@@ -41,6 +42,6 @@ output$report_preview <- renderUI({
           viewCommentsUI("view_cum_comments_for_report")
         )
       )
-    }
-  )
+    )
+  }
 })

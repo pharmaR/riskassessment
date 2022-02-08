@@ -1,13 +1,13 @@
 # Render Output UI for Community Usage Metrics.
 output$community_usage_metrics <- renderUI({
-  req(selected_pkg$name())
   
-  fluidPage(
-    
-    if(selected_pkg$name() == "-")
-      showSelectPackageMessage()
-    
-    else {
+  # Lets the user know that a package needs to be selected.
+  if(identical(selected_pkg$name(), character(0)))
+    showHelperMessage()
+  
+  else {
+    fluidPage(
+      
       tagList(
         br(),
         introJSUI("cum_introJS"),
@@ -28,6 +28,6 @@ output$community_usage_metrics <- renderUI({
           addCommentUI(id = "add_comment_for_cum"),
           viewCommentsUI(id = "view_cum_comments"))
       )
-    }
-  )
+    )
+  }
 })
