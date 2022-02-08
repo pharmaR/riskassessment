@@ -32,7 +32,7 @@ uploaded_pkgs <- reactive({
   waitress$inc(2)
   
   # Current packages on the db.
-  curr_pkgs <- db_fun("SELECT name FROM package")
+  curr_pkgs <- dbSelect("SELECT name FROM package")
   
   waitress$inc(1)
   
@@ -53,7 +53,7 @@ uploaded_pkgs <- reactive({
     }
   }
   
-  all_pkgs <- db_fun("SELECT name FROM package")
+  all_pkgs <- dbSelect("SELECT name FROM package")
   
   # Data frame indicating which packages where duplicate, new, and not found.
   uploaded_pkgs <- uploaded_pkgs |>

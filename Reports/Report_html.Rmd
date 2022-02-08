@@ -27,13 +27,13 @@ params:
 
 setwd(params$cwd)
 
-pkg_GenInfo <- db_fun(paste0(
+pkg_GenInfo <- dbSelect(paste0(
   "SELECT * FROM package WHERE name ='",
   params$package,
   "'"
 ))
 
-package_id <- db_fun(paste0(
+package_id <- dbSelect(paste0(
   "SELECT id FROM package WHERE name = ",
   "'", params$package, "';"))
 
@@ -43,7 +43,7 @@ if(nrow(package_id) == 0)
                          generating an html report."))
 
 # Collect all the metric names and values associated to package_id.
-riskmetrics_mm <- db_fun(glue(
+riskmetrics_mm <- dbSelect(glue(
 "SELECT metric.name, package_metrics.value
 FROM metric
 INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
@@ -52,7 +52,7 @@ WHERE package_metrics.package_id = '{package_id}' AND metric.class = 'maintenanc
 for(i in 1:nrow(riskmetrics_mm))
   values[[riskmetrics_mm$name[i]]] <- riskmetrics_mm$value[i]
 
-riskmetrics_cum <- db_fun(glue(
+riskmetrics_cum <- dbSelect(glue(
   "SELECT * FROM community_usage_metrics WHERE id ='{params$package}'"))
 
 time_since_first_release_info <- riskmetrics_cum$time_since_first_release[1] 
@@ -60,8 +60,8 @@ time_since_version_release_info <- riskmetrics_cum$time_since_version_release[1]
 no_of_downloads_last_year_info <- riskmetrics_cum$no_of_downloads_last_year[1]
 
 # Get info on the covr_coverage metric.
-# metric_id <- db_fun(paste0("SELECT id FROM metric WHERE name = 'covr_coverage';"))
-# covr_coverage <- db_fun(
+# metric_id <- dbSelect(paste0("SELECT id FROM metric WHERE name = 'covr_coverage';"))
+# covr_coverage <- dbSelect(
 #   paste0("SELECT value FROM package_metrics WHERE ",
 #          "package_id = ", package_id,
 #          " AND ",
@@ -70,23 +70,23 @@ no_of_downloads_last_year_info <- riskmetrics_cum$no_of_downloads_last_year[1]
 # covr_coverage <- covr_coverage$value
 
 # Gather overall comments.
-comment_o <- db_fun(glue(
+comment_o <- dbSelect(glue(
   "SELECT * FROM comments
   WHERE id = '{params$package}' AND comment_type = 'o'"))
 
 # Gather maintenance metrics comments.
-comment_mm <- db_fun(glue(
+comment_mm <- dbSelect(glue(
   "SELECT user_name, user_role, comment, added_on
   FROM comments
   WHERE id = '{params$package}' AND comment_type = 'mm'"))  
 
 # Gather community usage metrics comments.
-comment_cum <- db_fun(glue(
+comment_cum <- dbSelect(glue(
 "SELECT user_name, user_role, comment, added_on
 FROM comments WHERE id = '{params$package}' AND comment_type = 'cum'"))
 
 # Gather test metric comments.
-comment_tm <- db_fun(glue(
+comment_tm <- dbSelect(glue(
   "SELECT user_name, user_role, comment, added_on
   FROM comments
   WHERE id = '{params$package}' AND comment_type = 'tm'"))

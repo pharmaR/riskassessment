@@ -95,7 +95,7 @@ insert_maintenance_metrics_to_db <- function(package_name){
     pkg_assess()
   
   # Get the metrics weights to be used during pkg_score.
-  metric_weights_df <- db_fun("SELECT id, name, weight FROM metric")
+  metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric")
   metric_weights <- metric_weights_df$weight
   names(metric_weights) <- metric_weights_df$name
   
@@ -103,7 +103,7 @@ insert_maintenance_metrics_to_db <- function(package_name){
     riskmetric_assess %>%
     pkg_score(weights = metric_weights)
   
-  package_id <- db_fun(glue("SELECT id FROM package WHERE name = '{package_name}'"))
+  package_id <- dbSelect(glue("SELECT id FROM package WHERE name = '{package_name}'"))
   
   # Leave method if package not found.
   # TODO: save this to the json file.

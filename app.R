@@ -166,7 +166,7 @@ server <- function(session, input, output) {
     req(selected_pkg$name() != "-")
     
     # Collect all the metric names and values associated to package_id.
-    db_fun(glue(
+    dbSelect(glue(
       "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
       metric.is_url, package_metrics.value
       FROM metric
@@ -181,7 +181,7 @@ server <- function(session, input, output) {
     req(selected_pkg$name())
     req(selected_pkg$name() != "-")
     
-    db_fun(glue(
+    dbSelect(glue(
       "SELECT * 
       FROM community_usage_metrics
       WHERE id = '{selected_pkg$name()}'")

@@ -64,7 +64,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
       selectizeInput(
         inputId = NS(id, "select_pkg"),
         label = h5("Select Package"),
-        choices = c("-", db_fun('SELECT name FROM package')$name),
+        choices = c("-", dbSelect('SELECT name FROM package')$name),
         selected = "-"
       )
     })
@@ -76,7 +76,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
       updateSelectizeInput(
         inputId = "select_pkg",
         #label = h5("Select Package"),
-        choices = c("-", db_fun('SELECT name FROM package')$name),
+        choices = c("-", dbSelect('SELECT name FROM package')$name),
         selected = "-"
       )
       
@@ -87,7 +87,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
       req(input$select_pkg)
       req(input$select_ver)
       
-      db_fun(glue(
+      dbSelect(glue(
         "SELECT *
         FROM package
         WHERE name = '{input$select_pkg}'"))
@@ -147,7 +147,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
       if(input$select_ver == "-")
         validate("Please select a version")
       
-      comments <- db_fun(glue(
+      comments <- dbSelect(glue(
         "SELECT comment FROM comments
           WHERE id = '{input$select_pkg}'
           AND comment_type = 'o'"))
@@ -164,7 +164,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
         validate("Please enter a comment.")
       
       previous_comments <- 
-        db_fun(glue(
+        dbSelect(glue(
           "SELECT *
             FROM comments
             WHERE comment_type = 'o' AND id = '{selected_pkg()$name}'"))

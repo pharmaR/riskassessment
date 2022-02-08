@@ -121,7 +121,7 @@ create_credentials_db <- function(db_name = credentials_name, username = getOpti
   dbDisconnect(con)
 }
 
-db_fun <- function(query, db_name = database_name){
+dbSelect <- function(query, db_name = database_name){
   errFlag <- FALSE
   con <- dbConnect(RSQLite::SQLite(), db_name)
   tryCatch(
@@ -183,7 +183,7 @@ getTimeStamp <- function(){
 
 # Get each metric's weight.
 get_metric_weights <- function(){
-  db_fun(
+  dbSelect(
     "SELECT name, weight, weight AS new_weight
      FROM metric"
   )
@@ -193,7 +193,7 @@ get_metric_weights <- function(){
 # the overall comment & final decision may no longer be applicable.
 weight_risk_comment <- function(pkg_name) {
   
-  pkg_score <- db_fun(glue(
+  pkg_score <- dbSelect(glue(
     "SELECT score
      FROM package
      WHERE name = '{pkg_name}'"
