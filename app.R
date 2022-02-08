@@ -123,6 +123,34 @@ ui <- shinymanager::secure_app(
 # Create Server Code.
 server <- function(session, input, output) {
   
+  # Load reactive values into values.
+  # TODO: remove it! Need to check where it is used and replace it. 
+  values <- reactiveValues()
+  
+  # Collect user info.
+  user <- reactiveValues()
+  
+  # check_credentials directly on sqlite db
+  res_auth <- secure_server(
+    check_credentials = check_credentials(
+      file.path("credentials.sqlite"),
+      passphrase = key_get("R-shinymanager-key", getOption("keyring_user"))
+    )
+  )
+  
+  # Save user name and role.  
+  observeEvent(res_auth$user, {
+    if (res_auth$admin == TRUE)
+      loggit("INFO", glue("User {res_auth$user} signed on as admin"))
+    
+    # Redundant
+    values$name <- trimws(res_auth$user)
+    values$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
+    
+    user$name <- trimws(res_auth$user)
+    user$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
+  })
+  
   # Sidebar module.
   selected_pkg <- sidebarServer("sidebar", uploaded_pkgs)
   
@@ -145,40 +173,23 @@ server <- function(session, input, output) {
       INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
       WHERE package_metrics.package_id = '{selected_pkg$id()}' AND 
       metric.class = 'maintenance' ;"))
-    }
   })
   
-  # check_credentials directly on sqlite db
-  res_auth <- secure_server(
-    check_credentials = check_credentials(
-      file.path("credentials.sqlite"),
-      passphrase = key_get("R-shinymanager-key", getOption("keyring_user"))
+  # Gather community usage metrics information.
+  community_usage_metrics <- reactive({
+  
+    req(selected_pkg$name())
+    req(selected_pkg$name() != "-")
+    
+    db_fun(glue(
+      "SELECT * 
+      FROM community_usage_metrics
+      WHERE id = '{selected_pkg$name()}'")
     )
-  )
+  })
   
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)
-  })
-  
-  # Load reactive values into values.
-  values <- reactiveValues()
-  values$uploaded_file_status <- "no_status"
-  values$upload_complete <- "upload_incomplete"
-
-  # Collect user info.
-  user <- reactiveValues()
-  
-  # Save user name and role.  
-  observeEvent(res_auth$user, {
-    if (res_auth$admin == TRUE)
-      loggit("INFO", glue("User {res_auth$user} signed on as admin"))
-    
-    # Redundant
-    values$name <- trimws(res_auth$user)
-    values$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
-    
-    user$name <- trimws(res_auth$user)
-    user$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
   })
   
   # Load Source files of UI and Server modules of Upload Package Tab.
