@@ -70,7 +70,7 @@ upload_package_to_db <- function(name, version, title, description,
                                  authors, maintainers, license, published_on) {
   tryCatch(
     expr = {
-      db_ins(glue(
+      dbUpdate(glue(
         "INSERT or REPLACE INTO package
         (name, version, title, description, maintainer, author,
         license, published_on, decision, date_added)
@@ -135,13 +135,13 @@ insert_maintenance_metrics_to_db <- function(package_name){
              round(riskmetric_score[[metric$name]]*100, 2),
              riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])]))
     
-    db_ins(glue(
+    dbUpdate(glue(
       "INSERT INTO package_metrics (package_id, metric_id, weight, value) 
       VALUES ({package_id}, {metric$id}, {metric$weight}, '{metric_value}')")
     )
   }
   
-  db_ins(glue(
+  dbUpdate(glue(
     "UPDATE package
     SET score = '{format(round(riskmetric_score$pkg_score[1], 2))}'
     WHERE name = '{package_name}'"))
@@ -199,7 +199,7 @@ insert_community_metrics_to_db <- function(pkg_name) {
   
   if(nrow(pkgs_cum_metrics) != 0)
     for (i in 1:nrow(pkgs_cum_metrics)) {
-      db_ins(glue(
+      dbUpdate(glue(
         "INSERT INTO community_usage_metrics 
         (id, month, year, downloads, version)
         VALUES ('{pkg_name}', {pkgs_cum_metrics$month[i]},
