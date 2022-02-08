@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS package_metrics(
+CREATE TABLE IF NOT EXISTS package_metrics (
    id           INTEGER PRIMARY KEY AUTOINCREMENT,
    package_id   INT, 
    metric_id    INT,
