@@ -22,15 +22,15 @@ set_logfile("loggit.json")
 hidden(p(id = "assessment_criteria_bttn"))
 
 theme <- bs_theme(
-  version = 5,
-  bg = "white", 
-  fg = "#023967",
   bootswatch = "lux",
-  primary = "#2E86C1",
-  secondary = "#1D7BCC",
-  success = "orange",
-  info = "yellow",
-  warning = "pink"
+  version = 5,
+  # bg = "white", 
+  # fg = "#023967",
+  primary = "#24305E",
+  secondary = "#F76C6C",
+  # success = "orange",
+  # info = "yellow",
+  # warning = "pink"
 )
 
 # Create User Interface (UI).
