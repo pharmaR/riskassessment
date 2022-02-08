@@ -405,7 +405,7 @@ databaseViewServer <- function(id) {
       }
       
       # Reset any decisions made prior to this.
-      pkg <- db_fun("select distinct name as pkg_name from package where decision != ''")
+      pkg <- db_fun("SELECT DISTINCT name AS pkg_name FROM package WHERE decision != ''")
       for (i in 1:nrow(pkg)) {
         dbUpdate(glue("UPDATE package SET decision = '' where name = '{pkg$pkg_name[i]}'"))
       }
@@ -419,7 +419,7 @@ databaseViewServer <- function(id) {
       loggit("INFO", paste("package weights and risk metric scores will be updated for all packages"))
       
       # update for each package
-      pkg <- db_fun("select distinct name as pkg_name from package")
+      pkg <- db_fun("SELECT DISTINCT name AS pkg_name FROM package")
       
       withProgress(message = "Applying weights and updating risk scores \n", value = 0, {
         for (i in 1:nrow(pkg)) {
