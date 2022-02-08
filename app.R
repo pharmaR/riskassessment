@@ -72,18 +72,18 @@ ui <- fluidPage(
               id = "mm_tab_id",
               value = "mm_tab_value",
               title = "Maintenance Metrics",
-              withSpinner(uiOutput("maintenance_metrics"), type = 2) # UI for Maintenance Metrics tab panel.
+              uiOutput("maintenance_metrics") # UI for Maintenance Metrics tab panel.
             ),
             tabPanel(
               id = "cum_tab_id",
               value = "cum_tab_value",
               title = "Community Usage Metrics",
-              withSpinner(uiOutput("community_usage_metrics"), type = 2)  # UI for Community Usage Metrics tab panel.
+              uiOutput("community_usage_metrics")  # UI for Community Usage Metrics tab panel.
             ),
             tabPanel(
               id = "reportPreview_tab_id",
               title = "Report Preview",
-              withSpinner(uiOutput("report_preview"), type = 2)  # UI for Report Preview tab Panel
+              uiOutput("report_preview")  # UI for Report Preview tab Panel
             )
           )
         )
