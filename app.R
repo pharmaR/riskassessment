@@ -42,8 +42,6 @@ ui <- fluidPage(
   theme = theme,
   
   includeCSS(path = "www/css/main.css"),
-  # includeScript(path = "www/js/popper.js"),
-  # includeScript(path = "www/js/tooltip.js"),
   
   tabsetPanel(
     tabPanel(
