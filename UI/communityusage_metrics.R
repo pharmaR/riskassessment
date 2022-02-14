@@ -1,6 +1,6 @@
 # Render Output UI for Community Usage Metrics.
 output$community_usage_metrics <- renderUI({
-  
+
   # Lets the user know that a package needs to be selected.
   if(identical(selected_pkg$name(), character(0)))
     showHelperMessage()

@@ -27,18 +27,23 @@ output$report_preview <- renderUI({
         
         fluidRow(
           column(width = 12,
-                 h5(glue('Overall Comments ({nrow(values$comment_o2)}):')),
                  viewCommentsUI("view_overall_comments_for_report"))
         ),
+        
+        br(), br(),
+        hr(),
         fluidRow(
-          h5("Maintenance Metrics"),
-          metricGridUI("report_mm_metricGrid"),
-          viewCommentsUI("view_mm_comments_for_report")
+          column(width = 12,
+                 h5("Maintenance Metrics"),
+                 metricGridUI("report_mm_metricGrid"),
+                 viewCommentsUI("view_mm_comments_for_report"))
         ),
         
+        br(), br(),
+        hr(),
         fluidRow(
           h5("Community Usage Metrics"),
-          metricGridUI("report_mm_metricGrid"),
+          #metricGridUI("report_mm_metricGrid"),
           viewCommentsUI("view_cum_comments_for_report")
         )
       )
