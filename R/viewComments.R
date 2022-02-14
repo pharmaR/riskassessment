@@ -7,18 +7,24 @@ viewCommentsUI <- function(id) {
     column(
       width = 12,
       align = "left",
-      h5('Current Comments', style = "padding-bottom:10px;"),
-      wellPanel(htmlOutput(NS(id, "view_comments")))
+      uiOutput(NS(id, 'view_comments'))
     )
   )
 }
 
-viewCommentsServer <- function(id, pkg_name, comment_type, comment_added) {
+viewCommentsServer <- function(id, pkg_name, comment_type, comment_added,
+                               label = 'Current Comments') {
   moduleServer(id, function(input, output, session) {
     # Show the comments on the package.
-    output$view_comments <- renderText({
+    output$view_comments <- renderUI({
       comment_added()
-      showComments(pkg_name = pkg_name(), comment_type = comment_type)
+      
+      tagList(
+        h5(label, style = "padding-bottom:10px;"),
+        wellPanel(
+          HTML(showComments(pkg_name = pkg_name(), comment_type = comment_type))
+        )
+      )
     })
   })
 }

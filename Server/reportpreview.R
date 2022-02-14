@@ -1,24 +1,26 @@
 # IntroJS.
-introJSServer(id = "report_introJS",
-              text = rp_steps)
+introJSServer(id = "report_introJS", text = rp_steps)
 
 # View comments.
 viewCommentsServer(id = "view_cum_comments_for_report",
                    comment_added = cum_comment_added,
-                   pkg_name = reactive(selected_pkg$name()),
-                   comment_type = 'cum')
+                   pkg_name = selected_pkg$name,
+                   comment_type = 'cum',
+                   label = 'Community Usage Metrics Comments')
 
 # View comments.
 viewCommentsServer(id = "view_mm_comments_for_report",
                    comment_added = mm_comment_added,
-                   pkg_name = reactive(selected_pkg$name()),
-                   comment_type = 'mm')
+                   pkg_name = selected_pkg$name,
+                   comment_type = 'mm',
+                   label = 'Maintainance Metrics Comments')
 
 # View comments.
 viewCommentsServer(id = "view_overall_comments_for_report",
-                   comment_added = overall_comment_added,
-                   pkg_name = reactive(selected_pkg$name()),
-                   comment_type = 'o')
+                   comment_added = selected_pkg$overall_comment_added,
+                   pkg_name = selected_pkg$name,
+                   comment_type = 'o',
+                   label = 'Overall Comments')
 
 metricGridServer("report_mm_metricGrid", metrics = maint_metrics)
 
