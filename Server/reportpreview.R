@@ -50,7 +50,6 @@ output$decision_display <- renderUI({
 })
 
 # Create report.
-values$cwd <- getwd()
 output$download_report_btn <- downloadHandler(
   filename = function() {
     paste0(selected_pkg$name(), "_", selected_pkg$version(), "_Risk_Assessment.",
@@ -76,7 +75,7 @@ output$download_report_btn <- downloadHandler(
           output_file = file,
           params = list(package = selected_pkg$name(),
                         riskmetric_version = packageVersion("riskmetric"),
-                        cwd = values$cwd,
+                        cwd = getwd(),
                         username = values$name,
                         user_role = values$role)
         )
