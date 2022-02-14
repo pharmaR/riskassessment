@@ -212,7 +212,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
       updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", overall_comment))
     })
     
-    # Update the sidebar if a decision was previously made.
+    # Update decision when package is selected.
     observeEvent(input$select_pkg, {
       # Suppose package has been selected with a previously made decision.
       req(input$select_pkg != "-")
@@ -223,8 +223,11 @@ sidebarServer <- function(id, uploaded_pkgs) {
         choices = c("Low", "Medium", "High"),
         selected = selected_pkg()$decision
       )
-      
-      if (input$select_pkg != "Select" && (is_empty(selected_pkg()$decision) || selected_pkg()$decision == "")) {
+    })
+    
+    # Enable/disable sidebar decision and comment.
+    observeEvent(input$select_pkg, {
+      if (input$select_pkg != "-" && (is_empty(selected_pkg()$decision) || selected_pkg()$decision == "")) {
         enable("decision")
         enable("submit_decision")
         enable("overall_comment")
@@ -237,7 +240,6 @@ sidebarServer <- function(id, uploaded_pkgs) {
         disable("submit_overall_comment")
       }
     }, ignoreInit = TRUE)
-    
     
     # Show a confirmation modal when submitting a decision.
     observeEvent(input$submit_decision, {
