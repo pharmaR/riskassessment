@@ -139,9 +139,8 @@ observeEvent(input$upload_format, {
           datatable(
             read_csv(file.path("Data", "upload_format.csv")),
             escape = FALSE,
-            #class = "cell-border",
             editable = FALSE,
-            filter = "none",
+            filter = 'none',
             selection = 'none',
             extensions = 'Buttons',
             options = list(
