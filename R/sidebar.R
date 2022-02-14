@@ -245,28 +245,33 @@ sidebarServer <- function(id, uploaded_pkgs) {
     
     # Show a confirmation modal when submitting a decision.
     observeEvent(input$submit_decision, {
-      if (!is.null(input$decision)) {
-        showModal(tags$div(
-          id = "confirmation_id",
-          modalDialog(
-            title = h2("Submit Decision", class = "mb-0 mt-0 txt-color"),
-            h2("Please confirm your decision", class = "mt-0"),
-            h3("Decision:", strong(input$decision)),
-            h5(strong("Note:"), "Once submitted the decision cannot be reverted and
-           comments in group and package level will be frozen.", class = "mt-25 mb-0"),
-            footer = tagList(
-              actionButton("submit_confirmed_decision", "Submit",
-                           class = "submit_confirmed_decision_class btn-secondary"),
-              actionButton("edit", "Cancel", class = "edit_class btn-unsuccess")
-            )
+      req(input$decision)
+      
+      showModal(modalDialog(
+        size = "l",
+        easyClose = TRUE,
+        h5("Submit Decision", style = 'text-align: center !important'),
+        hr(),
+        br(),
+        fluidRow(
+          column(
+            width = 12,
+            'Please confirm your choosen risk: ', span(class = 'text-info', input$decision),
+            br(),
+            br(),
+            em('Note: Once submitted, this final risk cannot be reverted.')
           )
-        ))
-      } else{
-        showModal(modalDialog(
-          title = h3("WARNING!", class = 'txt-danger'),
-          h5("Please select a Decision!")
-        ))
-      }
+        ),
+        br(),
+        footer = tagList(
+          actionButton(NS(id, 'submit_confirmed_decision'), 'Submit'),
+          actionButton(NS(id, 'cancel'), 'Cancel')
+        )))
+    })
+    
+    # Close modal if user cancels decision submission.
+    observeEvent(input$cancel, {
+      removeModal()
     })
     
     # Update database info after decision is submitted.
@@ -284,10 +289,6 @@ sidebarServer <- function(id, uploaded_pkgs) {
                   by {selected_pkg()$name} ({input$user$rule})"))
     })
     
-    # 4. Observe Event to edit the decision if user need to change.
-    observeEvent(input$edit, {
-      removeModal()
-    })
     
     # Output package id, name, and version.
     # TODO: return the entire selected_pkg instead of doing this below.
