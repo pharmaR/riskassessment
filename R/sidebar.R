@@ -28,28 +28,30 @@ sidebarUI <- function(id) {
     
     br(), br(),
     
-    sliderTextInput(
-      inputId = NS(id, "decision"),
-      h5("Select Overall Risk"), 
-      selected = NULL,
-      grid = TRUE,
-      c("Low", "Medium", "High")
-    ),
-    
-    # Action button to submit decision for selected package.
-    actionButton(NS(id, "submit_decision"), "Submit Decision", width = "100%"),
-    
-    br(), br(),
-    
-    textAreaInput(
-      inputId = NS(id, "overall_comment"),
-      h5("Write Overall Comment"),
-      rows = 5,
-      placeholder = ""
-    ),
-    
-    # Submit Overall Comment for selected Package.
-    actionButton(NS(id, "submit_overall_comment"), "Submit Comment", width = "100%")
+    disabled(
+      sliderTextInput(
+        inputId = NS(id, "decision"),
+        h5("Select Overall Risk"), 
+        selected = NULL,
+        grid = TRUE,
+        c("Low", "Medium", "High")
+      ),
+      
+      # Action button to submit decision for selected package.
+      
+      actionButton(NS(id, "submit_decision"), "Submit Decision", width = "100%"),
+      
+      br(), br(),
+      
+      textAreaInput(
+        inputId = NS(id, "overall_comment"),
+        h5("Write Overall Comment"),
+        rows = 5,
+        placeholder = ""
+      ),
+      
+      # Submit Overall Comment for selected Package.
+      actionButton(NS(id, "submit_overall_comment"), "Submit Comment", width = "100%"))
   )
 }
 
