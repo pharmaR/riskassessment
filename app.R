@@ -6,8 +6,7 @@ source(file.path("R", "introJSText.R")) # introJS text.
 source(file.path("R", "viewComments.R"))
 source(file.path("R", "metricBox.R"))
 source(file.path("R", "metricGrid.R"))
-source(file.path("Modules", "dbupload.R"))
-source(file.path("Modules", "file_upload_error_handling.R"))
+source(file.path("R", "dbupload.R"))
 source(file.path("R", "utils.R"))
 
 # Create db if it doesn't exist.
