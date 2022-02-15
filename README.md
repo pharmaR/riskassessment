@@ -38,7 +38,7 @@ R Validation Hub: [White Paper](https://www.pharmar.org/white-paper/).
 
 ### Documentation
 
-We are currently working on improving the app and the documentation. Watch out for PR [#162](https://github.com/pharmaR/risk_assessment/pull/162)!
+We are currently working on improving the app and the documentation. Watch out for the [dev](https://github.com/pharmaR/risk_assessment/tree/dev) branch!
 
 In the meantime, please refer to the documentation <a href="https://pharmar.github.io/risk_assessment/Managing_Userids_and_Passwords" target="_blank">here</a>.
 
