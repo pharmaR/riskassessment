@@ -6,9 +6,9 @@ introJSServer(id = "cum_introJS", text = cum_steps)
 observeEvent(community_usage_metrics(), {
 
   # Get the first package release.
-  first_version <- community_usage_metrics() |>
-    filter(year == min(year)) |>
-    filter(month == min(month)) |>
+  first_version <- community_usage_metrics() %>%
+    filter(year == min(year)) %>%
+    filter(month == min(month)) %>%
     slice_head(n = 1)
   
   # Get difference between today and first release in years.
@@ -32,9 +32,9 @@ observeEvent(community_usage_metrics(), {
                   icon_class = "text-info")
   
   # Get the last package release.
-  last_version <- community_usage_metrics() |>
-    filter(year == max(year)) |>
-    filter(month == max(month)) |>
+  last_version <- community_usage_metrics() %>%
+    filter(year == max(year)) %>%
+    filter(month == max(month)) %>%
     slice_head(n = 1)
   
   # Get difference between today and latest release.
@@ -57,8 +57,8 @@ observeEvent(community_usage_metrics(), {
                   succ_icon = 'meteor',
                   icon_class = "text-info")
   
-  downloads_last_year <- community_usage_metrics() |>
-    filter(year == year(Sys.Date()) - 1) |>
+  downloads_last_year <- community_usage_metrics() %>%
+    filter(year == year(Sys.Date()) - 1) %>%
     distinct(year, month, downloads)
   
   metricBoxServer(id = 'downloads_last_year',
@@ -92,7 +92,7 @@ output$downloads_plot <- plotly::renderPlotly({
     mutate(month = month.name[month]) %>%
     arrange(day_month_year)
   
-  downloads_data <- community_data |>
+  downloads_data <- community_data %>%
     distinct(month, year, .keep_all = TRUE)
   
   # Last day that appears on the community metrics.

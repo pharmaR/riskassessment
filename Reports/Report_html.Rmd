@@ -132,8 +132,8 @@ knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 **Overall Comments (`r nrow(comment_o)`):** `r if(nrow(comment_o) == 0) "No comments"`
 ```{r echo=FALSE}
 if(nrow(comment_o) != 0) {
-  comment_o |>
-    map(rev) |>
+  comment_o %>%
+    map(rev) %>%
     create_comment_box()
 }
 ```
@@ -192,8 +192,8 @@ div(
 
 ```{r echo=FALSE}
 if(nrow(comment_mm) != 0) {
-  comment_mm |> 
-    map(rev) |>
+  comment_mm %>% 
+    map(rev) %>%
     create_comment_box()
 }
 ```
@@ -265,8 +265,8 @@ if (riskmetrics_cum$no_of_downloads_last_year[1] == 0) {
 
 ```{r echo=FALSE}
 if(nrow(comment_cum)) {
-  comment_cum |> 
-    map(rev) |>
+  comment_cum %>% 
+    map(rev) %>%
     create_comment_box()
 }
 ```

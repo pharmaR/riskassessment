@@ -16,22 +16,22 @@ insert_pkg_info_to_db <- function(pkg_name) {
       # Read package title and clean it.
       title <- div_container %>% 
         html_nodes("h2") %>% 
-        html_text() |>
+        html_text() %>%
         str_remove_all(pattern = pattern)
       
       # Read package description and clean it.
       description <- div_container %>% 
         html_nodes("h2 + p") %>% 
-        html_text() |>
+        html_text() %>%
         str_remove_all(pattern = pattern)
       
       # Get the table displaying version, authors, etc.
       #' TODO: this variable is redundant for now. Split the entire function into
       #' two: get the data in one function and upload in another.
-      table_info <- (webpage %>% html_table())[[1]] |>
-        mutate(X1 = str_remove_all(string = X1, pattern = ':')) |>
-        mutate(X2 = str_remove_all(string = X2, pattern = pattern)) |>
-        pivot_wider(names_from = X1, values_from = X2) |>
+      table_info <- (webpage %>% html_table())[[1]] %>%
+        mutate(X1 = str_remove_all(string = X1, pattern = ':')) %>%
+        mutate(X2 = str_remove_all(string = X2, pattern = pattern)) %>%
+        pivot_wider(names_from = X1, values_from = X2) %>%
         select(Version, Maintainer, Author, License, Published) %>%
         mutate(Title = title, Description = description)
       
@@ -161,13 +161,13 @@ insert_community_metrics_to_db <- function(pkg_name) {
         glue('https://cran.r-project.org/src/contrib/Archive/{pkg_name}'))
       versions_with_dates <- pkg_page %>%
         html_node('table') %>%
-        html_table() |>
-        select(-c("", "Description", 'Size')) |>
+        html_table() %>%
+        select(-c("", "Description", 'Size')) %>%
         filter(`Last modified` != "") %>%
         mutate(date = as.Date(`Last modified`), .keep = 'unused') %>%
         mutate(version = str_remove_all(
           string = Name, pattern = glue('{pkg_name}_|.tar.gz')),
-          .keep = 'unused') |>
+          .keep = 'unused') %>%
         mutate(month = month(date)) %>%
         mutate(year = year(date))
 
@@ -179,14 +179,14 @@ insert_community_metrics_to_db <- function(pkg_name) {
       # Get the number of downloads by month, year.
       pkgs_cum_metrics <- cranlogs::cran_downloads(pkg_name,
                                                    from = first_release_date,
-                                                   to = Sys.Date()) |>
-        filter(month(date) != month(Sys.Date())) |>
-        mutate(month = month(date)) |>
-        mutate(year = year(date)) |>
-        group_by(month, year) |>
-        summarise(downloads = sum(count)) |>
-        ungroup() |>
-        left_join(versions_with_dates, by = c('month', 'year')) |>
+                                                   to = Sys.Date()) %>%
+        filter(month(date) != month(Sys.Date())) %>%
+        mutate(month = month(date)) %>%
+        mutate(year = year(date)) %>%
+        group_by(month, year) %>%
+        summarise(downloads = sum(count)) %>%
+        ungroup() %>%
+        left_join(versions_with_dates, by = c('month', 'year')) %>%
         select(-date)
       
     },
