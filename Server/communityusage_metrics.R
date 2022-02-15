@@ -1,240 +1,170 @@
-#####################################################################################################################
-# communityusage_metrics.R - Community Usage Metrics Source file for Server Module.  
-# Author: K Aravind Reddy
-# Date: July 13th, 2020
-# License: MIT License
-#####################################################################################################################
+# IntroJS.
+introJSServer(id = "cum_introJS", text = cum_steps)
 
+#' Creates three metricBoxes: the time since first release, the time since
+#' latest release, and the number of downloads since last year.
+observeEvent(community_usage_metrics(), {
 
-# Implement the intro logic. Sidebar steps are listed in global.r
-# this dataset is also static... perhaps it should be sourced from global.r?
-cum_steps <- reactive(
-  data.frame(
-    # Note that we access chooseCSVtext with '.' instead of '#', because we track its class and not its id.
-    element = c("#cum_infoboxes", "#cum_plot", "#cum_add_comment", "#cum_prev_comments"),
-    intro = c(
-      "Several ways of measuring community usage assessed here. Please review!",
-      "Digest downloads per month by selecting a pre-defined time periods or toggling the date slider at bottom of plot for custom date range",
-      "Have something to share within your organization? Add a comment.",
-      "Keep track of the on-going conversation for this package's community usage"
-    ),
-    position = c("bottom", rep("top", 3))
-  )
-)
-
-
-# Start introjs when help button is pressed.
-observeEvent(input$help_cum,
-             introjs(session,
-                     options = list(
-                       steps = 
-                         cum_steps() %>%
-                         union(sidebar_steps),
-                       "nextLabel" = "Next",
-                       "prevLabel" = "Previous",
-                       "skipLabel" = "Close"
-                     )
-             )
-)
-
-
-# Start of the observe.
-
-# 1. Observe to load the columns from DB into reactive values.
-observe({
-  req(input$select_pack)
-  if (input$tabs == "cum_tab_value") {
-    if (input$select_pack != "Select") {
-    
-      # Load the columns into values$riskmetrics.
-      pkgs_in_db <- db_fun(paste0("SELECT cum_id FROM CommunityUsageMetrics"))
-      
-      if (input$select_pack %in% pkgs_in_db$cum_id &&
-          !identical(pkgs_in_db$cum_id, character(0))) {
-        values$riskmetrics_cum <-
-          db_fun(
-            paste0(
-              "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-              input$select_pack,
-              "'"
-            )
-          )
-      } else{
-        if (input$select_pack != "Select") {
-          metric_cum_Info_upload_to_DB(input$select_pack)
-          values$riskmetrics_cum <-
-            db_fun(
-              paste0(
-                "SELECT * FROM CommunityUsageMetrics WHERE cum_id ='",
-                input$select_pack,
-                "'"
-              )
-            )
-        }
-      }
-      
-      # Load the data table column into reactive variable for time since first release.
-      values$time_since_first_release_info <-
-        values$riskmetrics_cum$time_since_first_release[1]
-      
-      # Load the data table column into reactive variable for time since version release.
-      values$time_since_version_release_info <-
-        values$riskmetrics_cum$time_since_version_release[1]
-      
-      # Load the data table column into reactive variable for num dwnlds in year
-      values$no_of_downloads_last_year_info <-
-        values$riskmetrics_cum$no_of_downloads_last_year[1]
-      
-      runjs( "setTimeout(function(){ capturingSizeOfInfoBoxes(); }, 100);" )
-      
-      if (!is.null(input$cum_comment)) {
-        if(values$time_since_version_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_version_release');}, 500);" ) }
-        if(values$time_since_first_release_info == "NA"){ runjs( "setTimeout(function(){ updateInfoBoxesColorWhenNA('time_since_first_release');}, 500);" ) }
-        if (values$riskmetrics_cum$no_of_downloads_last_year[1] == 0) { runjs("setTimeout(function(){ updateText('no_of_downloads');}, 500);") }
-        req(values$selected_pkg$decision)
-        if (values$selected_pkg$decision != "") {
-          runjs("setTimeout(function(){ var ele = document.getElementById('cum_comment'); ele.disabled = true; }, 500);" )
-          runjs("setTimeout(function(){ var ele = document.getElementById('submit_cum_comment'); ele.disabled = true; }, 500);")
-        }
-      }
-    }
-  }
-})  # End of the observe.
-
-# End of the observes.
-
-# Start of the render Output's'
-
-# 1. Render Output info box to show the content for time since first release.
-
-output$time_since_first_release <- renderInfoBox({
-  req(values$time_since_first_release_info)
-  infoBox(
-    title = "Package Maturity",
-    values$time_since_first_release_info,
-    subtitle = ifelse(values$time_since_first_release_info != "NA",
-                      "Months since first release.",
-                      "Metric is not applicable for this source of package."),
-    icon = shiny::icon("calendar"),
-    width = 3,
-    fill = TRUE
-  )
-})  # End of the time since first release render Output.
-
-# 2. Render Output info box to show the content for time since version release.
-
-output$time_since_version_release <- renderInfoBox({
-  req(values$time_since_version_release_info)
-  infoBox(
-    title = "Version Maturity",
-    values$time_since_version_release_info,
-    subtitle = ifelse(values$time_since_version_release_info != "NA", 
-                      "Months since version release.",
-                      "Metric is not applicable for this source of package."),
-    icon = shiny::icon("calendar"),
-    width = 3,
-    fill = TRUE
-  )
+  # Get the first package release.
+  first_version <- community_usage_metrics() |>
+    filter(year == min(year)) |>
+    filter(month == min(month)) |>
+    slice_head(n = 1)
   
-})  # End of the time since version release render Output.
-
-
-
-# 2.5 Render Output info box to show the number of downloads last year
-
-output$dwnlds_last_yr <- renderInfoBox({
-  req(values$no_of_downloads_last_year_info)
-  infoBox(
-    title = "Download Count",
-    formatC(values$no_of_downloads_last_year_info, format="f", big.mark=",", digits=0),
-    subtitle = ifelse(values$no_of_downloads_last_year_info != "NA",
-                      "Downloads in Last Year",
-                      "Metric is not applicable for this source of package."),
-    icon = shiny::icon("signal"),
-    width = 3,
-    fill = TRUE
-  )
-
-})  # End 
-
-
-# 3. Render Output to show the plot for number of downloads on the application.
-output$no_of_downloads <- 
-  plotly::renderPlotly({
-    num_dwnlds_plot(data = values$riskmetrics_cum,
-                    input_select_pack = input$select_pack)
+  # Get difference between today and first release in years.
+  time_diff_first_version <- year(Sys.Date()) - first_version$year
+  first_version_label <- 'Years'
+  if(time_diff_first_version == 0){
+    # Get difference in months.
+    time_diff_first_version <- month(Sys.Date()) - first_version$month
+    first_version_label <- 'Months'
+  }
+  if(time_diff_first_version == 1)
+    first_version_label <- str_remove(
+      string = first_version_label, pattern = 's$')
+  
+  metricBoxServer(id = 'time_since_first_version',
+                  title = 'First Version Release',
+                  desc = 'Time passed since first version release',
+                  value = glue('{time_diff_first_version}
+                               {first_version_label} Ago'),
+                  succ_icon = 'black-tie',
+                  icon_class = "text-info")
+  
+  # Get the last package release.
+  last_version <- community_usage_metrics() |>
+    filter(year == max(year)) |>
+    filter(month == max(month)) |>
+    slice_head(n = 1)
+  
+  # Get difference between today and latest release.
+  time_diff_latest_version <- year(Sys.Date()) - last_version$year
+  latest_version_label <- 'Years'
+  if(time_diff_latest_version == 0) {
+    # Get difference in months.
+    time_diff_latest_version <- month(Sys.Date()) - last_version$month
+    latest_version_label <- 'Months'
+  }
+  if(time_diff_latest_version == 1)
+    latest_version_label <- str_remove(
+      string = latest_version_label, pattern = 's$')
+  
+  metricBoxServer(id = 'time_since_latest_version',
+                  title = 'Lastest Version Release',
+                  desc = 'Time passed since latest version release',
+                  value = glue('{time_diff_latest_version}
+                               {latest_version_label} Ago'),
+                  succ_icon = 'meteor',
+                  icon_class = "text-info")
+  
+  downloads_last_year <- community_usage_metrics() |>
+    filter(year == year(Sys.Date()) - 1) |>
+    distinct(year, month, downloads)
+  
+  metricBoxServer(id = 'downloads_last_year',
+                  title = 'Package Downloads',
+                  desc = 'Number of downloads since last year',
+                  value = format(sum(downloads_last_year$downloads), big.mark = ","),
+                  succ_icon = 'box-open',
+                  icon_class = "text-info")
 })
 
+# Call module to create comments and save the output.
+cum_comment_added <- addCommentServer(id = "add_comment_for_cum",
+                                      metric_abrv = 'cum',
+                                      user_name = reactive(user$name),
+                                      user_role = reactive(user$role),
+                                      pkg_name = selected_pkg$name)
+
+# View comments.
+viewCommentsServer(id = "view_cum_comments",
+                   comment_added = cum_comment_added,
+                   pkg_name = selected_pkg$name,
+                   comment_type = 'cum')
 
 
-# 4. Render output to show the comments.
+output$downloads_plot <- plotly::renderPlotly({
 
-output$cum_commented <- renderText({
-  if (values$cum_comment_submitted == "yes" ||
-      values$cum_comment_submitted == "no") {
-    values$comment_cum1 <-
-      db_fun(
-        paste0(
-          "SELECT user_name, user_role, comment, added_on  FROM Comments WHERE comm_id = '",
-          input$select_pack,
-          "' AND comment_type = 'cum'"
-        )
-      )
-    values$comment_cum2 <- data.frame(values$comment_cum1 %>% map(rev))
-    req(values$comment_cum2$comment)
-    values$cum_comment_submitted <- "no"
-    paste(
-      "<div class='col-sm-12 comment-border-bottom'><i class='fa fa-user-tie fa-4x'></i><h3 class='ml-3'><b class='user-name-color'>",
-      values$comment_cum2$user_name,
-      "(",
-      values$comment_cum2$user_role,
-      ")",
-      "</b><sub>",
-      values$comment_cum2$added_on,
-      "</sub></h3><h4 class='ml-3 lh-4'>",
-      values$comment_cum2$comment,
-      "</h4></div>"
-    )
-  }
-})  # End of the render output for comments.
-
-# End of the Render Output's'.
-
-values$cum_comment_submitted <- "no"
-
-# Start of the Observe Events.
-
-# Observe event for cum comment submit button. 
-
-observeEvent(input$submit_cum_comment, {
-  if (trimws(input$cum_comment) != "") {
-    db_ins(
-      paste0(
-        "INSERT INTO Comments values('",
-        input$select_pack,
-        "',",
-        "'",
-        values$name,
-        "'," ,
-        "'",
-        values$role,
-        "',",
-        "'",
-        input$cum_comment,
-        "',",
-        "'cum',",
-        "'",
-        TimeStamp(),
-        "'"  ,
-        ")" 
-      )
-    )
-    values$cum_comment_submitted <- "yes"
-    updateTextAreaInput(session, "cum_comment", value = "")
-    # After comment added to Comments table, update db dash
-    values$db_pkg_overview <- update_db_dash()
-  }
-})  # End of the submit button observe event.
-
-
-# End of the Community Usage Metrics server source file.
+  community_data <- community_usage_metrics() %>%
+    mutate(day_month_year = glue('1-{month}-{year}')) %>%
+    mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
+    mutate(month_year = glue('{months(day_month_year)} {year}')) %>%
+    mutate(month = month.name[month]) %>%
+    arrange(day_month_year)
+  
+  downloads_data <- community_data |>
+    distinct(month, year, .keep_all = TRUE)
+  
+  # Last day that appears on the community metrics.
+  latest_date <- downloads_data %>%
+    slice_max(day_month_year) %>%
+    pull(day_month_year)
+  
+  # Last day associated with a version release.
+  last_version_date <- downloads_data %>%
+    filter(!(version %in% c('', 'NA'))) %>%
+    slice_max(day_month_year) %>%
+    pull(day_month_year)
+  
+  # Get the difference in months.
+  month_diff <- interval(last_version_date, latest_date) %/% months(1)
+  
+  plot_ly(downloads_data,
+          x = ~day_month_year,
+          y = ~downloads,
+          name = "# Downloads", type = 'scatter', 
+          mode = 'lines+markers', line = list(color = "blue"),
+          hoverinfo = "text",
+          text = ~glue('No. of Downloads: {format(downloads, big.mark = ",")} <br> {month} {year}')) %>%
+    layout(title = glue('Number of Downloads by Month: {selected_pkg$name()}'),
+           showlegend = FALSE,
+           yaxis = list(title = "Downloads"),
+           xaxis = list(title = "Month")
+    ) %>% 
+    add_segments(
+      x = ~if_else(version %in% c("", "NA"), NA_Date_, day_month_year),
+      xend = ~if_else(version %in% c("","NA"), NA_Date_, day_month_year),
+      y = ~.98 * min(downloads),
+      yend = ~1.02 * max(downloads),
+      name = "Version Release",
+      hoverinfo = "text",
+      text = ~glue('Version {version}'),
+      line = list(color = "#FF0000")
+    ) %>% 
+    #   add_annotations(
+    #     yref = 'paper', 
+    #     xref = "x", 
+    #     y = .93, 
+    #     x = ver_dat$day_month_year,
+    #     xanchor = 'left',
+    #     showarrow = F,
+    #     textangle = 90,
+    #     font = list(size = 14, color = '#000000'),
+    #     text = ver_dat$version
+    #   ) %>% 
+  layout(
+    xaxis = list(
+      rangeselector = list(
+        buttons = list(
+          list(
+            count = 6,
+            label = "6 mo",
+            step = "month",
+            stepmode = "backward"),
+          list(
+            count = 1,
+            label = "1 yr",
+            step = "year",
+            stepmode = "backward"),
+          list(
+            count = 2,
+            label = "2 yr",
+            step = "year",
+            stepmode = "year"),
+          list(count = month_diff,
+               label = "Last Release",
+               step = "month",
+               stepmode = "backward"))),
+      rangeslider = list(type = "date"))
+  )
+})

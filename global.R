@@ -19,7 +19,6 @@ packages = c("shiny"
              ,"stringr"
              ,"tidyverse"
              ,"loggit"
-             ,"shinycssloaders"
              ,"rAmCharts"
              ,"devtools"
              ,"plotly"
@@ -30,6 +29,8 @@ packages = c("shiny"
              ,"keyring"
              ,"rstudioapi"
              ,"glue"
+             ,"bslib"
+             ,'waiter'
 )
 
 # Install and load required packages.
@@ -49,26 +50,6 @@ if(!require(riskmetric)){
   library(riskmetric)
 }
 
-# Load the functions to create infoboxes.
-source("Utils/infoboxes.R")
-
-# does this belong in utils or global.r? It is static, and non-functional
-sidebar_steps <-
-  data.frame(
-    element = c("#assessment_criteria_bttn", "#db_dash_bttn", "#sel_pack", "#sel_ver",
-                "#status", "#score", "#overall_comment", "#decision"),
-    intro = c(
-      "Click here to understand the package assessment process & criteria",
-      "See an overview of the R packages that already exist in the database",
-      "Click this dropdown to select assess a specific package",
-      "The latest package version will autopopulate here.",
-      "The status can be either 'Under Review' or 'Reviewed'.",
-      "The score can take any value between 0 (no risk) and 1 (highest risk).",
-      "After reviewing your package, you can leave an overall comment.",
-      "Provide your input on the overall risk of the selected package."
-    ),
-    position = c(rep("left", 2), rep("bottom", 6))
-  )
 
 # Note: If deploying the app to shinyapps.io, then the code to directly install
 # missing packages will need to be removed as the app will fail to deploy.
@@ -104,3 +85,42 @@ sidebar_steps <-
 # library(rintrojs)
 
 options(keyring_user = "NeildeGrasseTyson")
+
+#' Displays a helper message. By default, it informs the user that he should
+#' select a package.
+showHelperMessage <- function(message = "Please select a package"){
+  h6(message,
+     style = 
+       "text-align: center;
+        color: gray;
+        padding-top: 50px;")
+}
+
+# Displays formatted comments.
+showComments <- function(pkg_name, comment_type){
+  comments <- dbSelect(
+    glue(
+      "SELECT user_name, user_role, comment, added_on
+      FROM comments
+      WHERE id = '{pkg_name}' AND comment_type = '{comment_type}'"
+    )
+  ) |>
+    map(rev)
+  
+  ifelse(
+    length(comments$user_name) == 0, 
+    "No comments",
+    paste0(
+      "<div class='well'>",
+      icon("user-tie"), " ", "user: ", comments$user_name, ", ", 
+      icon("user-shield"), " ", "role: ", comments$user_role, ", ",
+      icon("calendar-alt"), " ", "date: ", comments$added_on,
+      br(), br(), 
+      comments$comment,
+      "</div>",
+      collapse = ""
+    )
+  )
+}
+
+

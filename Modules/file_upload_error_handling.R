@@ -1,14 +1,4 @@
-#####################################################################################################################
-# file_upload_error_handling.r - Handles errors while uploading the CSV file
-# Author: K Aravind Reddy
-# Date: July 13th, 2020
-# License: MIT License
-#####################################################################################################################
-
-# Start of the functions
-
-# 1. File upload error handling function for upload csv
-
+# File upload error handling function for upload csv
 file_upload_error_handling <- function(UploadFile) {
   if (file_ext(UploadFile)[1] != "csv") {
     showModal(modalDialog(h3("Please Upload only CSV File")))

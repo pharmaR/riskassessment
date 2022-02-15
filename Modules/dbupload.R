@@ -1,103 +1,44 @@
-#####################################################################################################################
-# dbupload.R - Uploading the general and metric info of the package into DB
-# Author: K Aravind Reddy
-# Date: July 13th, 2020
-# License: MIT License
-#####################################################################################################################
-
-
-# Get the package general information from CRAN/local.
-get_packages_info_from_web <- function(package_name) {
+# Get the package general information from CRAN/local and upload it to db.
+# TODO: get and upload should be distinct functions.
+insert_pkg_info_to_db <- function(pkg_name) {
   tryCatch(
     expr = {
-      webpage <-
-        read_html(paste0(
-          "https://cran.r-project.org/web/packages/",
-          package_name
-        ))
+      webpage <- read_html(glue(
+          'https://cran.r-project.org/web/packages/{pkg_name}'))
       
-      title_html <- html_nodes(webpage, 'h2')
-      title <- html_text(title_html)
-      title <- str_replace_all(title, "\n  ", "")
-      title <- str_replace_all(title, "'", "")
-      title <- str_replace_all(title, '"', "")
+      #' Regex that finds entry: '\n ', "'", and '"' (the `|` mean 'or' and the 
+      #' `\`` is to scape the double quotes).
+      pattern <- '\n |\'|\"|\\"'
       
-      desc_html <- html_nodes(webpage, 'p')
-      desc <- html_text(desc_html)
-      desc <- desc[1]
-      desc <- str_replace_all(desc, "\n  ", "")
-      desc <- str_replace_all(desc, "'", "")
-      desc <- str_replace_all(desc, '"', "")
+      # Save div with class container to get the title and description.
+      div_container <- webpage %>% html_nodes("div.container")
       
-      ver_html <- html_nodes(webpage, 'td')
-      ver <- html_text(ver_html)
-      for(i in 1:length(ver)){
-        if(!is.na(ver[i])){
-          if(ver[i] == "Version:"){
-            ver<-ver[i+1]
-          }
-        }
-      }
-      ver <- str_replace_all(ver, "\n  ", "")
-      ver <- str_replace_all(ver, "'", "")
-      ver <- str_replace_all(ver, '"', "")
+      # Read package title and clean it.
+      title <- div_container %>% 
+        html_nodes("h2") %>% 
+        html_text() |>
+        str_remove_all(pattern = pattern)
       
+      # Read package description and clean it.
+      description <- div_container %>% 
+        html_nodes("h2 + p") %>% 
+        html_text() |>
+        str_remove_all(pattern = pattern)
       
-      main_html <- html_nodes(webpage, 'td')
-      main<-html_text(main_html)
-      for(i in 1:length(main)){
-        if(!is.na(main[i])){
-          if(main[i] == "Maintainer:"){
-            main<-main[i+1]
-          }
-        }
-      }
-      main <- str_replace_all(main, "\n  ", "")
-      main <- str_replace_all(main, "'", "")
-      main <- str_replace_all(main, '"', "")
+      # Get the table displaying version, authors, etc.
+      #' TODO: this variable is redundant for now. Split the entire function into
+      #' two: get the data in one function and upload in another.
+      table_info <- (webpage %>% html_table())[[1]] |>
+        mutate(X1 = str_remove_all(string = X1, pattern = ':')) |>
+        mutate(X2 = str_remove_all(string = X2, pattern = pattern)) |>
+        pivot_wider(names_from = X1, values_from = X2) |>
+        select(Version, Maintainer, Author, License, Published) %>%
+        mutate(Title = title, Description = description)
       
-      
-      auth_html <- html_nodes(webpage, 'td')
-      auth<-html_text(auth_html)
-      for(i in 1:length(auth)){
-        if(!is.na(auth[i])){
-          if(auth[i] == "Author:"){
-            auth<-auth[i+1]
-          }
-        }
-      }
-      auth <- str_replace_all(auth, "\n  ", "")
-      auth <- str_replace_all(auth, "'", "")
-      auth <- str_replace_all(auth, '"', "")
-      
-      pub_html <- html_nodes(webpage, 'td')
-      pub <- html_text(pub_html)
-      for(i in 1:length(pub)){
-        if(!is.na(pub[i])){
-          if(pub[i] == "Published:"){
-            pub<-pub[i+1]
-          }
-        }
-      }
-      pub <- str_replace_all(pub, "\n  ", "")
-      pub <- str_replace_all(pub, "'", "")
-      pub <- str_replace_all(pub, '"', "")
-      
-      
-      lis_html <- html_nodes(webpage, 'td')
-      lis<-html_text(lis_html)
-      for(i in 1:length(lis)){
-        if(!is.na(lis[i])){
-          if(lis[i] == "License:"){
-            lis<-lis[i+1]
-          }
-        }
-      }
-      lis <- str_replace_all(lis, "\n  ", "")
-      lis <- str_replace_all(lis, "'", "")
-      lis <- str_replace_all(lis, '"', "")
-      
-      genInfo_upload_to_DB(package_name, ver, title, desc, auth, main, lis, pub)
+      upload_package_to_db(pkg_name, table_info$Version, table_info$Title,
+                           table_info$Description, table_info$Author,
+                           table_info$Maintainer, table_info$License,
+                           table_info$Published)
       
     },
     error = function(e) {
@@ -114,33 +55,39 @@ get_packages_info_from_web <- function(package_name) {
             lis <- d$get("License")
             pub <- d$get("Packaged")
             
-            genInfo_upload_to_DB(package_name, ver, title, desc, auth, main, lis, pub)
+            upload_package_to_db(package_name, ver, title, desc, auth, main, lis, pub)
           }}
       } else{
-        loggit("ERROR", paste("Error in extracting general info of the package", package_name, "info", e), app = "fileupload-webscraping")
+        loggit("ERROR", paste("Error in extracting general info of the package",
+                              package_name, "info", e), app = "fileupload-webscraping")
       }
     }
   )
 }
 
 # Upload the general info into DB.
-genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis, pub) {
+upload_package_to_db <- function(name, version, title, description,
+                                 authors, maintainers, license, published_on) {
   tryCatch(
     expr = {
-      db_ins(paste0("INSERT or REPLACE INTO package
-                    (name, version, title, description, maintainer, author, license, published_on, decision)
-                    values(", "'", package_name, "',", "'", ver, "',", "'", title ,"'," , "'", desc, "',",
-                     "'", main, "',", "'", auth, "',", "'", lis, "',", "'", pub, "', '')"))
+      dbUpdate(glue(
+        "INSERT or REPLACE INTO package
+        (name, version, title, description, maintainer, author,
+        license, published_on, decision, date_added)
+        VALUES('{name}', '{version}', '{title}', '{description}',
+        '{maintainers}', '{authors}', '{license}', '{published_on}',
+        '', '{Sys.Date()}')"))
     },
     error = function(e) {
-      loggit("ERROR", paste("Error in uploading the general info of the package", package_name, "info", e), app = "fileupload-DB")
+      loggit("ERROR", paste("Error in uploading the general info of the package", name, "info", e),
+             app = "fileupload-DB")
     }
   )
 }
 
 
 # Get the maintenance and testing metrics info and upload into DB.
-metric_mm_tm_Info_upload_to_DB <- function(package_name){
+insert_maintenance_metrics_to_db <- function(package_name){
   
   riskmetric_assess <-
     pkg_ref(package_name) %>%
@@ -148,7 +95,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
     pkg_assess()
   
   # Get the metrics weights to be used during pkg_score.
-  metric_weights_df <- db_fun("SELECT id, name, weight FROM metric")
+  metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric")
   metric_weights <- metric_weights_df$weight
   names(metric_weights) <- metric_weights_df$name
   
@@ -156,7 +103,7 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
     riskmetric_assess %>%
     pkg_score(weights = metric_weights)
   
-  package_id <- db_fun(paste0("SELECT id FROM package WHERE name = ", "'", package_name, "';"))
+  package_id <- dbSelect(glue("SELECT id FROM package WHERE name = '{package_name}'"))
   
   # Leave method if package not found.
   if(nrow(package_id) == 0){
@@ -188,138 +135,75 @@ metric_mm_tm_Info_upload_to_DB <- function(package_name){
              round(riskmetric_score[[metric$name]]*100, 2),
              riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])]))
     
-    db_ins(
-      paste0("INSERT INTO package_metrics
-               (package_id, metric_id, weight, value) values(",
-             package_id, ",",
-             metric$id, ",",
-             metric$weight , "," ,
-             "'", metric_value, "'",
-             ")"
-      )
+    dbUpdate(glue(
+      "INSERT INTO package_metrics (package_id, metric_id, weight, value) 
+      VALUES ({package_id}, {metric$id}, {metric$weight}, '{metric_value}')")
     )
   }
-
-  db_ins(paste0("UPDATE package
-                SET score = '", format(round(riskmetric_score$pkg_score[1], 2)), "'",
-                " WHERE name = '" , package_name, "'"))
+  
+  dbUpdate(glue(
+    "UPDATE package
+    SET score = '{format(round(riskmetric_score$pkg_score[1], 2))}'
+    WHERE name = '{package_name}'"))
 }
 
 
 # Get community usage metrics info and upload into DB.
-metric_cum_Info_upload_to_DB <- function(package_name) {
-  pkg_vers_date_final <<- data.frame(matrix(ncol = 4, nrow = 0))
-  time_since_first_release <<- NA
-  time_since_version_release <<- NA
-  downloads_1yr <<- NA
+insert_community_metrics_to_db <- function(pkg_name) {
+  
+  pkgs_cum_metrics <- tibble()
   
   tryCatch(
     expr = {
-      downloads_yrs_br_i <- cranlogs::cran_downloads(package_name, from=Sys.Date()-730, to=Sys.Date())
-      downloads_yrs_br_i <- filter(downloads_yrs_br_i, months(downloads_yrs_br_i$date) != months(Sys.Date()))
-      downloads_yrs_br_i$date <- paste( months(downloads_yrs_br_i$date), year(downloads_yrs_br_i$date) )
-      count<-c()
-      for (i in 1:length(unique(downloads_yrs_br_i$date))) {
-        count_df <- filter(downloads_yrs_br_i, downloads_yrs_br_i$date == unique(downloads_yrs_br_i$date)[i])
-        count[i] <- sum(count_df$count)
-      }
-      downloads_yrs_br <-data.frame(Month = unique(downloads_yrs_br_i$date), Downloads = count)
-      downloads_1yr <- sum(downloads_yrs_br$Downloads[(nrow(downloads_yrs_br)-11):nrow(downloads_yrs_br)])
       
-      colnames(pkg_vers_date_final) <<- c("Month", "Downloads", "verRelease", "Position")
-      pkg_vers_date_final <- downloads_yrs_br
-      pkg_vers_date_final$Month <- as.character(pkg_vers_date_final$Month)
-      pkg_vers_date_final$Position <- 12
+      # Get the package versions and dates.
+      pkg_page <- read_html(
+        glue('https://cran.r-project.org/src/contrib/Archive/{pkg_name}'))
+      versions_with_dates <- pkg_page %>%
+        html_node('table') %>%
+        html_table() |>
+        select(-c("", "Description", 'Size')) |>
+        filter(`Last modified` != "") %>%
+        mutate(date = as.Date(`Last modified`), .keep = 'unused') %>%
+        mutate(version = str_remove_all(
+          string = Name, pattern = glue('{pkg_name}_|.tar.gz')),
+          .keep = 'unused') |>
+        mutate(month = month(date)) %>%
+        mutate(year = year(date))
+
+      # First release date.
+      first_release_date <- versions_with_dates %>%
+        pull(date) %>%
+        min()
       
-      pkg_html <- read_html(paste0("https://github.com/cran/", package_name, "/tags"))
-      pkg_nodes_v <- html_nodes(pkg_html, 'h4')
-      pkg_text_v <- html_text(pkg_nodes_v)
-      pkg_text_v <- str_split(pkg_text_v,"\n")
-      pkg_vers <- c()
-      for (i in 1:length(pkg_text_v)) { 
-        pkg_vers[i]<-(trimws(pkg_text_v[[i]][3]))
-      }
-      pkg_vers <- pkg_vers[c(3:length(pkg_vers))]
+      # Get the number of downloads by month, year.
+      pkgs_cum_metrics <- cranlogs::cran_downloads(pkg_name,
+                                                   from = first_release_date,
+                                                   to = Sys.Date()) |>
+        filter(month(date) != month(Sys.Date())) |>
+        mutate(month = month(date)) |>
+        mutate(year = year(date)) |>
+        group_by(month, year) |>
+        summarise(downloads = sum(count)) |>
+        ungroup() |>
+        left_join(versions_with_dates, by = c('month', 'year')) |>
+        select(-date)
       
-      pkg_vers1 <- pkg_vers[length(pkg_vers)]
-      loop<-"not_started"
-      while (pkg_vers1 != "") {
-        pkg_html1 <- read_html(paste0("https://github.com/cran/",package_name,"/tags?after=",pkg_vers1))
-        pkg_nodes_v1 <- html_nodes(pkg_html1, 'h4')
-        pkg_text_v1 <- html_text(pkg_nodes_v1)
-        pkg_text_v1 <- str_split(pkg_text_v1,"\n")
-        pkg_vers1 <- c()
-        for (i in 1:length(pkg_text_v1)) { 
-          pkg_vers1[i]<-(trimws(pkg_text_v1[[i]][3]))
-        }
-        pkg_vers1 <- pkg_vers1[length(pkg_vers1)]
-        if (is.na(pkg_vers1)) {
-          if(loop != "looped"){
-            pkg_vers1 <- pkg_vers[length(pkg_vers)]
-            pkg_nodes_d1 <- html_nodes(pkg_html, 'relative-time')
-            pkg_text_d1 <- html_text(pkg_nodes_d1)
-            pkg_date1 <- str_remove_all(pkg_text_d1[length(pkg_text_d1)], ",")
-            pkg_date1 <- as.Date(pkg_date1, format = "%h %d %Y")
-            time_since_first_release <- Sys.Date() - pkg_date1
-            time_since_first_release <- floor(as.numeric(time_since_first_release / 30))
-            break
-          }else{
-            break 
-          }
-        } else{
-          pkg_nodes_d1 <- html_nodes(pkg_html1, 'relative-time')
-          pkg_text_d1 <- html_text(pkg_nodes_d1)
-          pkg_date1 <- str_remove_all(pkg_text_d1[length(pkg_text_d1)], ",")
-          pkg_date1 <- as.Date(pkg_date1, format = "%h %d %Y")
-          time_since_first_release <- Sys.Date() - pkg_date1
-          time_since_first_release <- floor(as.numeric(time_since_first_release / 30))
-          loop<-"looped"
-        }
-      }
-      
-      pkg_nodes_d <- html_nodes(pkg_html, 'relative-time')
-      pkg_text_d <- html_text(pkg_nodes_d)
-      pkg_date <- str_remove_all(pkg_text_d, ",")
-      pkg_date <- as.Date(pkg_date, format = "%h %d %Y")
-      time_since_version_release <- Sys.Date() - pkg_date[1]
-      time_since_version_release <- floor(as.numeric(time_since_version_release / 30))
-      
-      pkg_vers_date <- data.frame(Version = c(pkg_vers), Date = c(paste(months(pkg_date), year(pkg_date))))
-      pkg_vers_date <- pkg_vers_date %>% map_df(rev)
-      pkg_vers_date$Date <- as.character(pkg_vers_date$Date)
-      pkg_vers_date$Version <- as.character(pkg_vers_date$Version)
-      pkg_vers_date <- filter(pkg_vers_date, pkg_vers_date$Date %in% pkg_vers_date_final$Month)
-      
-      for (i in 1:length(pkg_vers_date_final$Month)) {
-        for (j in 1:length(pkg_vers_date$Date)) {
-          if (pkg_vers_date_final$Month[i] == pkg_vers_date$Date[j]) {
-            pkg_vers_date_final$verRelease[i] <- pkg_vers_date$Version[j]
-            pkg_vers_date_final$Position[i] <- i - 1
-            break
-          } else{
-            pkg_vers_date_final$verRelease[i] <- NA
-            pkg_vers_date_final$Position[i] <- 12
-          }
-        }
-      }
     },
     error = function(e) {
-      loggit("ERROR", paste("Error in extracting cum metric info of the package:", package_name, "info", e),
+      loggit("ERROR", paste("Error extracting cum metric info of the package:",
+                            pkg_name, "info", e),
              app = "fileupload-webscraping", echo = FALSE)
     }
-  )# End of try catch
-
-  for (i in 1:nrow(pkg_vers_date_final)) {
-    db_ins(paste0("INSERT INTO CommunityUsageMetrics values(",
-                  "'", package_name,"',", "'", downloads_1yr, "',",
-                  "'", pkg_vers_date_final$Month[i], "',", "'", pkg_vers_date_final$Downloads[i], "',", 
-                  "'", pkg_vers_date_final$verRelease[i], "',", "'", pkg_vers_date_final$Position[i], "',",
-                  "'", time_since_first_release, "',", "'", time_since_version_release, "'" , ")"))
-    if(nrow(pkg_vers_date_final) == 0){
-      break
+  )
+  
+  if(nrow(pkgs_cum_metrics) != 0)
+    for (i in 1:nrow(pkgs_cum_metrics)) {
+      dbUpdate(glue(
+        "INSERT INTO community_usage_metrics 
+        (id, month, year, downloads, version)
+        VALUES ('{pkg_name}', {pkgs_cum_metrics$month[i]},
+        {pkgs_cum_metrics$year[i]}, {pkgs_cum_metrics$downloads[i]},
+        '{pkgs_cum_metrics$version[i]}')"))
     }
   }
-  
-}
-
-# End of the functions
