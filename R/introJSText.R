@@ -2,6 +2,17 @@
 # ------------ INTROJS TEXT
 # -----------------------------------------------------------------------------
 
+# Upload package steps.
+upload_pkg <- data.frame(
+  element = c("#help", ".form-group > #uploaded_file-label", "#upload_format"),
+  intro = c(
+    "Click here anytime you need help.",
+    "Upload a CSV file with the package(s) you would like to assess.",
+    "You can use this sample dataset to explore the app."
+  ),
+  position = c("right", rep("top", 2))
+)
+
 # Sidebar metrics.
 sidebar_steps <-
   data.frame(
