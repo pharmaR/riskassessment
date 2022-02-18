@@ -83,8 +83,15 @@ ui <- fluidPage(
               id = "reportPreview_tab_id",
               title = "Report Preview",
               uiOutput("report_preview")  # UI for Report Preview tab Panel
+            ),
+            tabPanel(
+              id = "admin_mode_id",
+              title = "Administrator mode",
+              # only using a div seems to work here
+              div(id = "admin_mode",
+              shinymanager:::admin_ui(id="admin")  )
             )
-          )
+          ) 
         )
       )
     ), 
@@ -148,6 +155,9 @@ server <- function(session, input, output) {
     
     user$name <- trimws(res_auth$user)
     user$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
+    
+    if (user$role == "user") shinyjs::hide("admin_mode") 
+    
   })
   
   # Sidebar module.
