@@ -37,7 +37,7 @@ uploaded_pkgs <- reactive({
   waitress$inc(1)
   
   # Save the uploaded packages that were not in the db.
-  new_pkgs <- uploaded_pkgs |> filter(!(package %in% curr_pkgs$name))
+  new_pkgs <- uploaded_pkgs %>% filter(!(package %in% curr_pkgs$name))
   
   if(nrow(new_pkgs) != 0){
     for (pkg in new_pkgs$package) {
@@ -56,7 +56,7 @@ uploaded_pkgs <- reactive({
   all_pkgs <- dbSelect("SELECT name FROM package")
   
   # Data frame indicating which packages where duplicate, new, and not found.
-  uploaded_pkgs <- uploaded_pkgs |>
+  uploaded_pkgs <- uploaded_pkgs %>%
     mutate(status = case_when(
       !(package %in% all_pkgs$name) ~ 'not found',
       package %in% curr_pkgs$name ~ 'duplicate',

@@ -104,7 +104,7 @@ showComments <- function(pkg_name, comment_type){
       FROM comments
       WHERE id = '{pkg_name}' AND comment_type = '{comment_type}'"
     )
-  ) |>
+  ) %>%
     map(rev)
   
   ifelse(
