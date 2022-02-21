@@ -293,6 +293,11 @@ sidebarServer <- function(id, uploaded_pkgs, user) {
           WHERE name = '{selected_pkg()$name}'")
       )
       
+      disable("decision")
+      disable("submit_decision")
+      disable("overall_comment")
+      disable("submit_overall_comment")
+      
       removeModal()
       
       loggit("INFO",
