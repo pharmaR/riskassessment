@@ -4,32 +4,46 @@ metricGridUI <- function(id) {
   fluidPage(
     fluidRow(style = cards_style, class = "card-group",
              column(width = 4,
-                    metricBoxUI(NS(id, "has_vignettes")),
-                    metricBoxUI(NS(id, "news_current")),
-                    metricBoxUI(NS(id, "has_source_control"))),
+                    uiOutput(NS(id, "col1"))),
              column(width = 4,
-                    metricBoxUI(NS(id, "has_maintainer")),
-                    metricBoxUI(NS(id, "has_bug_reports_url")),
-                    metricBoxUI(NS(id, "export_help"))),
+                    uiOutput(NS(id, "col2"))),
              column(width = 4,
-                    metricBoxUI(NS(id, "has_news")),
-                    metricBoxUI(NS(id, "has_website")),
-                    metricBoxUI(NS(id, "bugs_status")))
-    ))
+                    uiOutput(NS(id, "col3")))
+  ))
 }
 
 metricGridServer <- function(id, metrics) {
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
+    
+    metric_lst <- reactive({
+      metrics()[['name']] %>%
+        split(ceiling((3*seq_along(.)-1)/length(.)))
+    })
+    
+    output$col1 <- renderUI({
+      lapply(metric_lst()[[1]], function(x) metricBoxUI(ns(x)))
+    })
+
+    output$col2 <- renderUI({
+      lapply(metric_lst()[[2]], function(x) metricBoxUI(ns(x)))
+    })
+
+    output$col3 <- renderUI({
+      lapply(metric_lst()[[3]], function(x) metricBoxUI(ns(x)))
+    })
     
     # Create 
     observeEvent(metrics(), {
-      apply(metrics(), 1, function(metric)
-        metricBoxServer(id = metric['name'],
-                        title = metric['long_name'],
-                        desc = metric['description'],
-                        value = metric['value'],
-                        is_perc = metric['is_perc'] == 1,
-                        is_url = metric['is_url'] == 1))
+      if (all(c('name', 'long_name', 'description', 'value', 'is_perc', 'is_url') %in% names(metrics()))) {
+        apply(metrics(), 1, function(metric)
+          metricBoxServer(id = metric['name'],
+                          title = metric['long_name'],
+                          desc = metric['description'],
+                          value = metric['value'],
+                          is_perc = metric['is_perc'] == 1,
+                          is_url = metric['is_url'] == 1))
+      }
     })
   })
 }
