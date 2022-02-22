@@ -9,8 +9,8 @@ uploaded_pkgs <- reactive({
   if(is.null(input$uploaded_file$datapath))
     validate('Please upload a nonempty CSV file.')
   
-  uploaded_pkgs <- read_csv(input$uploaded_file$datapath)
-  template <- read_csv(file.path('Data', 'upload_format.csv'))
+  uploaded_pkgs <- read_csv(input$uploaded_file$datapath, show_col_types = FALSE)
+  template <- read_csv(file.path('Data', 'upload_format.csv'), show_col_types = FALSE)
   
   if(nrow(uploaded_pkgs) == 0)
     validate('Please upload a nonempty CSV file.')
@@ -27,7 +27,12 @@ uploaded_pkgs <- reactive({
   
   names(uploaded_pkgs) <- tolower(names(uploaded_pkgs))
   uploaded_pkgs$package <- trimws(uploaded_pkgs$package)
-  uploaded_pkgs$version <- trimws(uploaded_pkgs$version)
+  
+  for (i in seq_along(uploaded_pkgs$package)) {
+    ref <- riskmetric::pkg_ref(uploaded_pkgs$package[i])
+    uploaded_pkgs$version[i] <- as.vector(ref$version)  
+    #uploaded_pkgs$source[i]  <- as.vector(ref$source)
+  }
   
   waitress$inc(2)
   
@@ -90,7 +95,7 @@ output$upload_summary_text <- renderText({
   as.character(tagList(
     br(), br(),
     hr(),
-    h5("Summary of uploaded package (s)"),
+    h5("Summary of uploaded package(s)"),
     br(),
     p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
     p(tags$b("New Packages: "), sum(uploaded_pkgs()$status == 'new')),
