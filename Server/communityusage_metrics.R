@@ -118,8 +118,6 @@ output$downloads_plot <- plotly::renderPlotly({
   month_last <- interval(last_version_date, latest_date) %/% months(1)
   month_frst <- interval(frst_version_date, latest_date) %/% months(1)
   
-  browser()
-  
   plot_ly(downloads_data,
           x = ~day_month_year,
           y = ~downloads,
