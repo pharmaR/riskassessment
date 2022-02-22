@@ -1,10 +1,11 @@
 # IntroJS.
 introJSServer(id = "cum_introJS", text = cum_steps)
 
-#' Creates three metricBoxes: the time since first release, the time since
-#' latest release, and the number of downloads since last year.
-observeEvent(community_usage_metrics(), {
 
+#' Creates reactive table with the time since first release, the time since
+#' latest release, and the number of downloads since last year.
+com_usage_metrics <- reactive({
+  
   # Get the first package release.
   first_version <- community_usage_metrics() %>%
     filter(year == min(year)) %>%
@@ -22,14 +23,6 @@ observeEvent(community_usage_metrics(), {
   if(time_diff_first_version == 1)
     first_version_label <- str_remove(
       string = first_version_label, pattern = 's$')
-  
-  metricBoxServer(id = 'time_since_first_version',
-                  title = 'First Version Release',
-                  desc = 'Time passed since first version release',
-                  value = glue('{time_diff_first_version}
-                               {first_version_label} Ago'),
-                  succ_icon = 'black-tie',
-                  icon_class = "text-info")
   
   # Get the last package release.
   last_version <- community_usage_metrics() %>%
@@ -49,25 +42,24 @@ observeEvent(community_usage_metrics(), {
     latest_version_label <- str_remove(
       string = latest_version_label, pattern = 's$')
   
-  metricBoxServer(id = 'time_since_latest_version',
-                  title = 'Lastest Version Release',
-                  desc = 'Time passed since latest version release',
-                  value = glue('{time_diff_latest_version}
-                               {latest_version_label} Ago'),
-                  succ_icon = 'meteor',
-                  icon_class = "text-info")
-  
   downloads_last_year <- community_usage_metrics() %>%
     filter(year == year(Sys.Date()) - 1) %>%
     distinct(year, month, downloads)
   
-  metricBoxServer(id = 'downloads_last_year',
-                  title = 'Package Downloads',
-                  desc = 'Number of downloads since last year',
-                  value = format(sum(downloads_last_year$downloads), big.mark = ","),
-                  succ_icon = 'box-open',
-                  icon_class = "text-info")
+  tibble(id = c('time_since_first_version', 'time_since_latest_version', 'downloads_last_year'),
+         title = c('First Version Release', 'Lastest Version Release', 'Package Downloads'),
+         desc = c('Time passed since first version release', 'Time passed since latest version release', 'Number of downloads since last year'),
+         value = c(glue('{time_diff_first_version}{first_version_label} Ago'), glue('{time_diff_latest_version}{latest_version_label} Ago'), format(sum(downloads_last_year$downloads), big.mark = ",")),
+         succ_icon = c('black-tie', 'meteor', 'box-open'),
+         icon_class = c("text-info", "text-info", "text-info"))
 })
+
+#' Creates three metricBoxes: the time since first release, the time since
+#' latest release, and the number of downloads since last year.
+observeEvent(com_usage_metrics(), {
+  pmap(com_usage_metrics(), metricBoxServer)
+})
+
 
 # Call module to create comments and save the output.
 cum_comment_added <- addCommentServer(id = "add_comment_for_cum",
