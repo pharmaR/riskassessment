@@ -17,7 +17,7 @@ metricGridServer <- function(id, metrics) {
     ns <- session$ns
     
     metric_lst <- reactive({
-      metrics()[['name']] %>%
+      metrics()[[1]] %>%
         split(ceiling((3*seq_along(.)-1)/length(.)))
     })
     
@@ -43,6 +43,8 @@ metricGridServer <- function(id, metrics) {
                           value = metric['value'],
                           is_perc = metric['is_perc'] == 1,
                           is_url = metric['is_url'] == 1))
+      } else if (all(c('id', 'title', 'desc', 'value', 'succ_icon', 'icon_class') == names(metrics()))) {
+        pmap(metrics(), metricBoxServer)
       }
     })
   })
