@@ -28,7 +28,7 @@ uploaded_pkgs <- reactive({
   names(uploaded_pkgs) <- tolower(names(uploaded_pkgs))
   uploaded_pkgs$package <- trimws(uploaded_pkgs$package)
   
-  j <- rep(FALSE, nrow(uploaded_pkgs))
+  j <- rep(TRUE, nrow(uploaded_pkgs))
   
   for (i in seq_along(uploaded_pkgs$package)) {
     ref <- riskmetric::pkg_ref(uploaded_pkgs$package[i])
@@ -37,12 +37,12 @@ uploaded_pkgs <- reactive({
     if (ref$source == "pkg_missing") {
       rlang::inform(glue("NOTE: package ", {uploaded_pkgs$package[i]}, 
                          " was flagged by riskmetric as: '",{ref$source},"' and will be removed. Did you misspell it?"))
-      j[i] <- TRUE
+      j[i] <- FALSE
     }
   }
   
   # drop the non-existent pacakges
-  uploaded_pkgs <- uploaded_pkgs[-which(j),]
+  uploaded_pkgs <- uploaded_pkgs[which(j),]
   
   waitress$inc(2)
   
