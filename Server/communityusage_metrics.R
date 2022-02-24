@@ -128,7 +128,11 @@ output$downloads_plot <- plotly::renderPlotly({
     layout(title = glue('Number of Downloads by Month: {selected_pkg$name()}'),
            showlegend = FALSE,
            yaxis = list(title = "Downloads"),
-           xaxis = list(title = "", type = 'date', tickformat = "%b %Y")
+           xaxis = list(title = "", type = 'date', tickformat = "%b %Y",
+                        # range is min-15 days, max+15 days
+                        # Dates need to be transformed to milliseconds since epoch
+                        range = c( (as.numeric(min(downloads_data$day_month_year))-15) *86400000,
+                                   (as.numeric(max(downloads_data$day_month_year))+15) *86400000   ) )
     ) %>% 
     add_segments(
       x = ~if_else(version %in% c("", "NA"), NA_Date_, day_month_year),
@@ -140,51 +144,51 @@ output$downloads_plot <- plotly::renderPlotly({
       text = ~glue('Version {version}'),
       line = list(color = "#FF0000")
     ) %>% 
-      add_annotations(
-        yref = 'paper',
-        xref = "x",
-        y = .50,
-        x = downloads_data$day_month_year,
-        xanchor = 'left',
-        showarrow = F,
-        textangle = 270,
-        font = list(size = 14, color = '#FF0000'),
-        text = ~ifelse(downloads_data$version %in% c("", "NA"), "", downloads_data$version)
-      ) %>%
-  layout(
-    xaxis = list(
-      # range is min-7 days, max+7 days
-      # Dates need to be transformed to milliseconds since epoch
-      range = c( (as.numeric(min(downloads_data$day_month_year))-7) *86400000,
-                 (as.numeric(max(downloads_data$day_month_year))+7) *86400000   ),
-      rangeselector = list(
-        buttons = list(
-          list(
-            count = 6+1,
-            label = "6 mo",
-            step = "month",
-            stepmode = "backward"),
-          list(
-            count = 12+1,
-            label = "1 yr",
-            step = "month",
-            stepmode = "backward"),
-          list(
-            count = 24+1,
-            label = "2 yr",
-            step = "month",
-            stepmode = "backward"),
-          list(count = month_last+1,
-               label = "Last Release",
-               step = "month",
-               stepmode = "backward"),
-         list(count = month_frst+1,
-              label = "First Release",
+    add_annotations(
+      yref = 'paper',
+      xref = "x",
+      y = .50,
+      x = downloads_data$day_month_year,
+      xanchor = 'left',
+      showarrow = F,
+      textangle = 270,
+      font = list(size = 14, color = '#FF0000'),
+      text = ~ifelse(downloads_data$version %in% c("", "NA"), "", downloads_data$version)
+    ) %>%
+    layout(
+      xaxis = list(
+        # range is min-15 days, max+15 days
+        # Dates need to be transformed to milliseconds since epoch
+        range = c( (as.numeric(min(downloads_data$day_month_year))-15) *86400000,
+                   (as.numeric(max(downloads_data$day_month_year))+15) *86400000   ),
+        rangeselector = list(
+          buttons = list(
+            list(
+              count = 6+1,
+              label = "6 mo",
               step = "month",
-              stepmode = "todate")
-         )),
-      rangeslider = list(type = "date", visible = FALSE), 
-      start = as.numeric(min(downloads_data$day_month_year)),
-      end = as.numeric(max(downloads_data$day_month_year)))
-  )
-})
+              stepmode = "backward"),
+            list(
+              count = 12+1,
+              label = "1 yr",
+              step = "month",
+              stepmode = "backward"),
+            list(
+              count = 24+1,
+              label = "2 yr",
+              step = "month",
+              stepmode = "backward"),
+            list(count = month_last+1,
+                 label = "Last Release",
+                 step = "month",
+                 stepmode = "backward"),
+            list(count = month_frst+1,
+                 label = "First Release",
+                 step = "month",
+                 stepmode = "todate")
+          )),
+        rangeslider = list(type = "date", visible = TRUE), 
+        start = as.numeric(min(downloads_data$day_month_year))-15,
+        end =   as.numeric(max(downloads_data$day_month_year))+15)
+    )
+  })
