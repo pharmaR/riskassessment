@@ -42,10 +42,10 @@ insert_pkg_info_to_db <- function(pkg_name) {
       
     },
     error = function(e) {
-      if (package_name %in% rownames(installed.packages()) == TRUE) {
+      if (pkg_name %in% rownames(installed.packages()) == TRUE) {
         for (i in .libPaths()) {
-          if(file.exists(file.path(i, package_name)) == TRUE) {
-            i <- file.path(i, package_name)
+          if(file.exists(file.path(i, pkg_name)) == TRUE) {
+            i <- file.path(i, pkg_name)
             d <- description$new(i)
             title <- d$get("Title")
             ver <- d$get("Version")
@@ -55,11 +55,11 @@ insert_pkg_info_to_db <- function(pkg_name) {
             lis <- d$get("License")
             pub <- d$get("Packaged")
             
-            upload_package_to_db(package_name, ver, title, desc, auth, main, lis, pub)
+            upload_package_to_db(pkg_name, ver, title, desc, auth, main, lis, pub)
           }}
       } else{
         loggit("ERROR", paste("Error in extracting general info of the package",
-                              package_name, "info", e), app = "fileupload-webscraping")
+                              pkg_name, "info", e), app = "fileupload-webscraping")
       }
     }
   )
@@ -87,10 +87,10 @@ upload_package_to_db <- function(name, version, title, description,
 
 
 # Get the maintenance and testing metrics info and upload into DB.
-insert_maintenance_metrics_to_db <- function(package_name){
+insert_maintenance_metrics_to_db <- function(pkg_name){
   
   riskmetric_assess <-
-    pkg_ref(package_name) %>%
+    pkg_ref(pkg_name) %>%
     as_tibble() %>%
     pkg_assess()
   
@@ -103,12 +103,12 @@ insert_maintenance_metrics_to_db <- function(package_name){
     riskmetric_assess %>%
     pkg_score(weights = metric_weights)
   
-  package_id <- dbSelect(glue("SELECT id FROM package WHERE name = '{package_name}'"))
+  package_id <- dbSelect(glue("SELECT id FROM package WHERE name = '{pkg_name}'"))
   
   # Leave method if package not found.
   if(nrow(package_id) == 0){
     print("PACKAGE NOT FOUND.")
-    loggit("WARN", paste("Package", package_name, "not found."))
+    loggit("WARN", paste("Package", pkg_name, "not found."))
     return()
   }
   
@@ -144,7 +144,7 @@ insert_maintenance_metrics_to_db <- function(package_name){
   dbUpdate(glue(
     "UPDATE package
     SET score = '{format(round(riskmetric_score$pkg_score[1], 2))}'
-    WHERE name = '{package_name}'"))
+    WHERE name = '{pkg_name}'"))
 }
 
 
