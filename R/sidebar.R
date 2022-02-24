@@ -248,8 +248,9 @@ sidebarServer <- function(id, uploaded_pkgs) {
     })
     
     # Enable/disable sidebar decision and comment.
-    observeEvent(input$select_pkg, {
-      if (input$select_pkg != "-" && (is_empty(selected_pkg()$decision) || selected_pkg()$decision == "")) {
+    observeEvent(input$select_ver, {
+      if (input$select_pkg != "-" && input$select_pkg != "-" &&
+          (is_empty(selected_pkg()$decision) || selected_pkg()$decision == "")) {
         enable("decision")
         enable("submit_decision")
         enable("overall_comment")
