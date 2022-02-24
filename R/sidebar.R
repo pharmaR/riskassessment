@@ -140,22 +140,26 @@ sidebarServer <- function(id, uploaded_pkgs) {
       h5(selected_pkg()$score)
     })
     
-    # Display comments for selected package.
-    observeEvent(input$select_pkg, {
+    # Display/update overall comments for selected package/version.
+    observeEvent(input$select_ver, {
       req(input$select_pkg)
       req(input$select_ver)
-      
-      if(input$select_pkg == "-")
-        validate("Please select a package")
-      if(input$select_ver == "-")
-        validate("Please select a version")
-      
-      comments <- dbSelect(glue(
-        "SELECT comment FROM comments
+
+      # If no package/version is selected, then clear comments.
+      if(input$select_pkg == "-" || input$select_ver == "-"){
+        updateTextAreaInput(session, "overall_comment",
+                            placeholder = 'Please select a package and a version.')
+      }
+      else {
+        # Display package comments if a package and version are selected.
+        comments <- dbSelect(glue(
+          "SELECT comment FROM comments
           WHERE id = '{input$select_pkg}'
-          AND comment_type = 'o'"))
-      
-      updateTextAreaInput(session, "overall_comment", placeholder = comments$comment)
+          AND comment_type = 'o'"))$comment
+        
+        updateTextAreaInput(session, "overall_comment",
+                            placeholder = glue('Current Overall Comment: {comments}'))
+      }
     })
     
     # Update db if comment is submitted.
