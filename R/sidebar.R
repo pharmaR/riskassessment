@@ -88,6 +88,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
     selected_pkg <- reactive({
       req(input$select_pkg)
       req(input$select_ver)
+      req(input$select_pkg != "-")
       
       dbSelect(glue(
         "SELECT *
