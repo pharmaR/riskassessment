@@ -220,9 +220,24 @@ sidebarServer <- function(id, uploaded_pkgs) {
     })
     
     # Update decision when package is selected.
-    observeEvent(input$select_pkg, {
-      # Suppose package has been selected with a previously made decision.
-      req(input$select_pkg != "-")
+    observeEvent(input$select_ver, {
+      req(input$select_pkg)
+      req(input$select_ver)
+      
+      # Reset decision if no package/version is selected.
+      if(input$select_pkg == "-" || input$select_ver == "-") {
+        updateSliderTextInput(
+          session,
+          "decision",
+          choices = c("Low", "Medium", "High"),
+          selected = 'Low'
+        )
+        
+        validate('Please select a package and a version.')
+      }
+      
+      req(selected_pkg())
+      
       # Update the risk slider using the info saved.
       updateSliderTextInput(
         session,
