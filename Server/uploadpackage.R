@@ -28,6 +28,16 @@ uploaded_pkgs <- reactive({
   names(uploaded_pkgs) <- tolower(names(uploaded_pkgs))
   uploaded_pkgs$package <- trimws(uploaded_pkgs$package)
   
+  # https://stackoverflow.com/questions/33589591/check-if-package-name-belongs-to-a-cran-archived-package
+  get_archived <- function(cran = getOption("repos")){
+    if (is.null(cran)) cran <- "http://cran.rstudio.com/"
+    con <- gzcon(url(sprintf("%s/%s", cran, "src/contrib/Meta/archive.rds"), open = "rb"))
+    on.exit(close(con))
+    x <- readRDS(con)
+    names(x)
+  }
+  CRAN_arch <- get_archived()
+  
   j <- rep(TRUE, nrow(uploaded_pkgs))
   
   for (i in seq_along(uploaded_pkgs$package)) {
@@ -35,14 +45,22 @@ uploaded_pkgs <- reactive({
     uploaded_pkgs$version[i] <- as.vector(ref$version)  
     uploaded_pkgs$source[i]  <- as.vector(ref$source)
     if (ref$source == "pkg_missing") {
-      rlang::inform(glue("NOTE: package ", {uploaded_pkgs$package[i]}, 
+      rlang::inform(glue("NOTE: package ", {ref$name}, 
                          " was flagged by riskmetric as: '",{ref$source},"' and will be removed. Did you misspell it?"))
       j[i] <- FALSE
+    } else {
+    if (!ref$name %in% CRAN_arch) {
+      rlang::inform(glue("NOTE: package ", {ref$name},
+                         " is not in the CRAN archive and will be removed."))
+      j[i] <- FALSE
+     }
     }
   }
   
-  # drop the non-existent pacakges
+  # drop the non-existent packages
   uploaded_pkgs <- uploaded_pkgs[which(j),]
+  # drop large string
+  rm(CRAN_arch)
   
   waitress$inc(2)
   
