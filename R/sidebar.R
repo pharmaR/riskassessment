@@ -79,7 +79,7 @@ sidebarServer <- function(id, upload_complete) {
         inputId = "select_pkg",
         #label = h5("Select Package"),
         choices = c("-", dbSelect('SELECT name FROM package')$name),
-        selected = "-"
+        selected = input$select_pkg
       )
       
     }, ignoreNULL = TRUE)
