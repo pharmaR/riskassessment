@@ -8,6 +8,7 @@ source(file.path("R", "metricBox.R"))
 source(file.path("R", "metricGrid.R"))
 source(file.path("R", "dbupload.R"))
 source(file.path("R", "utils.R"))
+source(file.path("R", "asynch_upload.R"))
 
 # Create db if it doesn't exist.
 if(!file.exists(database_name)) create_db()
@@ -151,7 +152,7 @@ server <- function(session, input, output) {
   })
   
   # Sidebar module.
-  selected_pkg <- sidebarServer("sidebar", uploaded_pkgs)
+  selected_pkg <- sidebarServer("sidebar", upload_complete)
   
   # Assessment criteria information tab.
   assessmentInfoServer("assessmentInfo")

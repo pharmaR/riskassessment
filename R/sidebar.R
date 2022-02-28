@@ -55,7 +55,7 @@ sidebarUI <- function(id) {
   )
 }
 
-sidebarServer <- function(id, uploaded_pkgs) {
+sidebarServer <- function(id, upload_complete) {
   moduleServer(id, function(input, output, session) {
     
     # Required for shinyhelper to work.
@@ -72,7 +72,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
     })
     
     # Create list of packages.
-    observeEvent(uploaded_pkgs(), {
+    observeEvent(req(upload_complete()), {
       req(input$select_pkg)
       
       updateSelectizeInput(
