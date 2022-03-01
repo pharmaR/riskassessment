@@ -28,16 +28,15 @@ uploaded_pkgs <- reactive({
   names(uploaded_pkgs) <- tolower(names(uploaded_pkgs))
   uploaded_pkgs$package <- trimws(uploaded_pkgs$package)
   
-  # https://stackoverflow.com/questions/33589591/check-if-package-name-belongs-to-a-cran-archived-package
-  get_archived <- function(cran = getOption("repos")){
-    if (is.null(cran)) cran <- "http://cran.rstudio.com/"
-    con <- gzcon(url(sprintf("%s/%s", cran, "src/contrib/Meta/archive.rds"), open = "rb"))
-    on.exit(close(con))
-    x <- readRDS(con)
-    names(x)
-  }
-  CRAN_arch <- get_archived()
-  
+  website <- "https://cran.rstudio.com/web/packages/available_packages_by_name.html"
+  namelst <- rvest::read_html(website)
+  pkgnames <- namelst %>% 
+    html_nodes("a") %>%
+    html_text() 
+  # Drop A-Z
+  CRAN_arch <- pkgnames[27:length(pkgnames)]
+  rm(namelst, pkgnames)
+
   j <- rep(TRUE, nrow(uploaded_pkgs))
   
   for (i in seq_along(uploaded_pkgs$package)) {
