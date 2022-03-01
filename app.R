@@ -153,7 +153,7 @@ server <- function(session, input, output) {
   })
   
   # Sidebar module.
-  selected_pkg <- sidebarServer("sidebar", uploaded_pkgs)
+  selected_pkg <- sidebarServer("sidebar", uploaded_pkgs, user)
   
   # Assessment criteria information tab.
   assessmentInfoServer("assessmentInfo")
