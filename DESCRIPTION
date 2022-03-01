@@ -43,7 +43,7 @@ Imports:
     RSQLite,
     rstudioapi,
     rvest,
-    shiny,
+    shiny (>= 1.6.0),
     shinycssloaders,
     shinydashboard,
     shinyhelper,

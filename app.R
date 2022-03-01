@@ -101,7 +101,8 @@ ui <- fluidPage(
       assessmentInfoUI("assessmentInfo")
     ),
     
-    footer = wellPanel(
+    # footer = 
+      wellPanel(
       id = "footer",
       "Checkout the app's code!",
       tags$a(href = "https://github.com/pharmaR/risk_assessment",
