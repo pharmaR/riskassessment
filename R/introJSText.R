@@ -5,32 +5,29 @@
 # Sidebar metrics.
 sidebar_steps <-
   data.frame(
-    element = c("#assessment_criteria_bttn", "#db_dash_bttn", "#sel_pack", "#sel_ver",
-                "#status", "#score", "#overall_comment", "#decision"),
+    element = c("#sel_pack", "#sel_ver","#status", "#score",
+                "#overall_comment", "#decision"),
     intro = c(
-      "Click here to understand the package assessment process & criteria",
-      "See an overview of the R packages that already exist in the database",
-      "Click this dropdown to select assess a specific package",
+      "Expand this dropdown list to select assess a specific package that was previously uploaded",
       "The latest package version will autopopulate here.",
       "The status can be either 'Under Review' or 'Reviewed'.",
       "The score can take any value between 0 (no risk) and 1 (highest risk).",
       "After reviewing your package, you can leave an overall comment.",
       "Provide your input on the overall risk of the selected package."
     ),
-    position = c(rep("left", 2), rep("bottom", 6))
+    position = c(rep("bottom", 6))
   )
 
 # Maintenance metrics.
 mm_steps <- 
   data.frame(
     # Note that we access chooseCSVtext with '.' instead of '#', because we track its class and not its id.
-    element = c("#mm_infoboxes", "#mm_add_comment", "#mm_prev_comments"),
+    element = c(".card-group", "#comments_for_mm"),
     intro = c(
-      "Several ways of measuring package maintenance best practices are assessed here. Please review!",
-      "Have something to share within your organization? Add a comment.",
-      "Keep track of the on-going conversation for this package's maintainence metrics"
+      "Several ways to measuring package maintenance are assessed here. Please review each!",
+      "Have something to share within your organization? Add a comment and keep track of the on-going conversation for this package's maintainence metrics"
     ),
-    position = c(rep("top", 3))
+    position = c(rep("left", 2))
   )
 
 

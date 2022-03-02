@@ -18,8 +18,6 @@ if(!file.exists(credentials_name)) create_credentials_db()
 # Start logging info.
 set_logfile("loggit.json")
 
-hidden(p(id = "assessment_criteria_bttn"))
-
 theme <- bs_theme(
   bootswatch = "lux",
   version = 5,
@@ -43,6 +41,7 @@ ui <- fluidPage(
   includeCSS(path = "www/css/main.css"),
   
   tabsetPanel(
+    id = "apptabs",
     tabPanel(
       title = "Risk Assessment",
       icon = icon("clipboard-list"),
@@ -96,6 +95,8 @@ ui <- fluidPage(
     ),
     
     tabPanel(
+      id = "test1",
+      value = "assessment_criteria_tab",
       title = "Assessment Criteria",
       icon = icon("info-circle"),
       assessmentInfoUI("assessmentInfo")
