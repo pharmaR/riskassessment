@@ -78,6 +78,20 @@ output$download_sample <- downloadHandler(
   }
 )
 
+output$upload_summary <- renderUI({
+  if (upload_complete()) {
+    tagList(
+      # Display the summary information of the uploaded csv.
+      fluidRow(column(width = 12, htmlOutput("upload_summary_text"))),
+      
+      # Summary of packages uploaded.
+      fluidRow(column(width = 12, dataTableOutput("upload_pkgs_table")))
+    )
+  } else if (!upload_check()) {
+    fluidRow(img(src="loading.gif", align="center", height="600px", width="600px"))
+  }
+})
+
 # Uploaded packages summary.
 output$upload_summary_text <- renderText({
   req(upload_complete())

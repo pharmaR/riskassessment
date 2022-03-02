@@ -18,10 +18,6 @@ output$upload_package <- renderUI({
       )
     ),
     
-    # Display the summary information of the uploaded csv.
-    fluidRow(column(width = 12, htmlOutput("upload_summary_text"))),
-    
-    # Summary of packages uploaded.
-    fluidRow(column(width = 12, dataTableOutput("upload_pkgs_table")))
+    uiOutput("upload_summary")
   )
 })
