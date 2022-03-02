@@ -1,6 +1,9 @@
 # Load required packages.
 source("global.R")
 
+# suppress dplyr summarize msg "summarise()` has grouped output by..."
+options(dplyr.summarise.inform = FALSE)
+
 # Load source files.
 source(file.path("R", "introJSText.R")) # introJS text.
 source(file.path("R", "viewComments.R"))
