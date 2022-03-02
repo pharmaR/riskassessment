@@ -13,15 +13,24 @@ upload_pkg <- data.frame(
   position = c("right", rep("top", 2))
 )
 
+# Top tabs.
+tabs <- data.frame(
+  element = c("a[href='#tab-1585-2']"),
+  intro = c(
+    "See an overview of the R packages that already exist in the database"
+  ),
+  position = c(rep("left", 2), rep("bottom", 6))
+)
+
 # Sidebar metrics.
-sidebar_steps <-
-  data.frame(
-    element = c("#assessment_criteria_bttn", "#db_dash_bttn", "#sel_pack", "#sel_ver",
+sidebar_steps <- data.frame(
+    element = c("#assessment_criteria_bttn", "#db_dash_bttn",
+                "#sidebar-select_pkg_ui", "#sidebar-select_pkg_ui + .form-group",
                 "#status", "#score", "#overall_comment", "#decision"),
     intro = c(
       "Click here to understand the package assessment process & criteria",
       "See an overview of the R packages that already exist in the database",
-      "Click this dropdown to select assess a specific package",
+      "Click this dropdown to select a specific package",
       "The latest package version will autopopulate here.",
       "The status can be either 'Under Review' or 'Reviewed'.",
       "The score can take any value between 0 (no risk) and 1 (highest risk).",
@@ -69,15 +78,4 @@ cum_steps <- data.frame(
   ),
   position = c("bottom", rep("top", 3))
   
-)
-
-upload_pkg <- data.frame(
-  # Note that we access chooseCSVtext with '.' instead of '#', because we track its class and not its id.
-  element = c("#help", ".chooseCSVtext", ".sample_dataset_link"),
-  intro = c(
-    "Click here anytime you need help.",
-    "Upload a CSV file with the package(s) you would like to assess.",
-    "You can use this sample dataset to explore the app."
-  ),
-  position = c("right", rep("top", 2))
 )
