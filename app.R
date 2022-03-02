@@ -99,16 +99,18 @@ ui <- fluidPage(
       title = "Assessment Criteria",
       icon = icon("info-circle"),
       assessmentInfoUI("assessmentInfo")
-    ),
-    
-    footer = wellPanel(
-      id = "footer",
-      "Checkout the app's code!",
-      tags$a(href = "https://github.com/pharmaR/risk_assessment",
-             icon("github-alt"), target = "_blank")
     )
+  ),
+  
+  footer =
+    wellPanel(
+    id = "footer",
+    "Checkout the app's code!",
+    tags$a(href = "https://github.com/pharmaR/risk_assessment",
+           icon("github-alt"), target = "_blank")
   )
 )
+
 
 ui <- shinymanager::secure_app(
   ui, 
@@ -151,7 +153,7 @@ server <- function(session, input, output) {
   })
   
   # Sidebar module.
-  selected_pkg <- sidebarServer("sidebar", uploaded_pkgs)
+  selected_pkg <- sidebarServer("sidebar", uploaded_pkgs, user)
   
   # Assessment criteria information tab.
   assessmentInfoServer("assessmentInfo")
