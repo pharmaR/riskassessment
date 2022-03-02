@@ -1,16 +1,9 @@
 ---
 title: "Using SQLite Command Line"
-author: "Robert Krajcik"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
     theme: cerulean
     highlight: pygments
-    toc: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: false
-    toc_depth: 3
 ---
 
 ```{r setup, include=FALSE}
@@ -29,12 +22,12 @@ For more information, see [What is SQLite](https://www.sqlitetutorial.net/what-i
 
 ### Download SQLite tools
 
-- Open the download page [SQLite Download Page](https://www.sqlite.org/download.html)
+Open the download page [SQLite Download Page](https://www.sqlite.org/download.html)
 
-- To work with SQLite on Windows, you download the command-line shell program as shown in the screenshot below.
+To work with SQLite on Windows, you download the command-line shell program as shown in the screenshot below.
   ![](images/SQLite_Precompiled_Binaries_Win.png)
   
-- If you are using a Mac, then you need to download this one:
+If you are using a Mac, then you need to download this one:
   ![](images/SQLite_Precompiled_Binaries_Mac.png)
 The downloaded file is in the ZIP format and its size is quite small.
 
@@ -42,14 +35,14 @@ The downloaded file is in the ZIP format and its size is quite small.
 
 Installing SQLite is simple and straightforward.
 
-- Create a new folder e.g., C:\sqlite (No IT support is needed). 
+Create a new folder e.g., C:\sqlite (No IT support is needed). 
 
-- Extract the content of the .zip file that you downloaded in the previous section to the C:\sqlite folder. You should see three programs in the C:\sqlite folder as shown below:
+Extract the content of the .zip file that you downloaded in the previous section to the C:\sqlite folder. You should see three programs in the C:\sqlite folder as shown below:
 
  ![](images/SQLite_files.png)
 #### Open the command line window.  
 
-- On Windows, type "cmd" in the search bar.
+On Windows, type "cmd" in the search bar.
 
  ![](images/Command_Prompt.png)
 
@@ -60,7 +53,7 @@ C:\cd c:\sqlite
 C:\sqlite>
 ```
 
-- Next, type `sqlite3` and press enter, you should see the following output:
+Next, type `sqlite3` and press enter, you should see the following output:
 
 ```{R, eval=FALSE}
 C:\sqlite>sqlite3
@@ -76,7 +69,7 @@ Use ".open FILENAME" to reopen on a persistent database.
 sqlite>
 ```  
 
-- You can type the `.help` command from the sqlite> prompt to see all available commands.
+You can type the `.help` command from the sqlite> prompt to see all available commands.
 
 ```{r, eval=FALSE}
 sqlite> .help
@@ -100,13 +93,13 @@ sqlite> .help
 additional output not displayed
 ```
 
-- To navigate to the `risk_assessment` database (database.sqlite), use the `.open FILENAME` command like this: 
+To navigate to the `risk_assessment` database (database.sqlite), use the `.open FILENAME` command like this: 
 
 `.open C:/Users/rkrajcik/ONEDRI~1/DOCUME~1/R/RiskAssessment/risk_assessment-master/database.sqlite`
 
-- Note forward slashes and use of Windows short path (dir /x)
+Note forward slashes and use of Windows short path (dir /x)
 
-- To show the tables, type `.tables`
+To show the tables, type `.tables`
 
 ```{r, eval=FALSE}
 sqlite> .tables
@@ -115,7 +108,7 @@ community_usage_metrics  package
 sqlite>
 ```
 
-- To show the structure of a table, type `.schema TABLE`
+To show the structure of a table, type `.schema TABLE`
 
 ```{r, eval=FALSE}
 sqlite> .schema package_metrics
@@ -123,19 +116,19 @@ CREATE TABLE package_metrics (   id           INTEGER PRIMARY KEY AUTOINCREMENT,
 sqlite>
 ```
 
-- To exit, type `'.quit` or `.exit`
+To exit, type `'.quit` or `.exit`
 
 ### Command Line Shell
 
-- You can also *temporarily* add `C:\sqlite` to the Windows path.
+You can also *temporarily* add `C:\sqlite` to the Windows path.
 
 `set PATH=%PATH%;C:\sqlite`
 
-- Verify by typing
+Verify by typing
 
 `echo %PATH%`
 
-- If you are in the risk_assessment directory, you can just enter the following on the command line:
+If you are in the risk_assessment directory, you can just enter the following on the command line:
 
 ```{r,eval=FALSE}
 ~\risk_assessment-master>sqlite3 database.sqlite
@@ -146,7 +139,7 @@ sqlite> select * from metric limit 1;
 sqlite>.exit
 ```
 
-- You can also use the `system2` command to execute SQLite commands on the RStudio command line.
+You can also use the `system2` command to execute SQLite commands on the RStudio command line.
 
 ```{r, eval=FALSE}
 > system2("C:/sqlite/sqlite3", args =c("database.sqlite", ".tables", ".quit"))
@@ -154,7 +147,7 @@ comments                 metric                   package_metrics
 community_usage_metrics  package     
 ```
 
-- And you can build queries or commands for SQLite and execute them.
+And you can build queries or commands for SQLite and execute them.
 
 ```{r, eval=FALSE}
 > table_name <- "package"
@@ -165,16 +158,16 @@ community_usage_metrics  package
 [1] "1|glue|1.6.2|glue: Interpreted String Literals|An implementation of interpreted string literals, inspired by   Pythons Literal String Interpolation   <https://www.python.org/dev/peps/pep-0498/> and Docstrings   <https://www.python.org/dev/peps/pep-0257/> and Julias Triple-Quoted   String Literals   <https://docs.julialang.org/en/v1.3/manual/strings/#Triple-Quoted-String-Literals-1>.|Jennifer Bryan  <jenny at rstudio.com>|Jim Hester  [aut], Jennifer Bryan    [aut, cre], RStudio [cph, fnd]|MIT + file LICENSE|2022-02-24|0.11|||2022-02-24"
 ```
 
-- For more info, see [Command Line Shell for SQLite](https://sqlite.org/cli.html)
+For more info, see [Command Line Shell for SQLite](https://sqlite.org/cli.html)
 
 ### SQLiteStudio
 
-- The SQLiteStudio tool is a free GUI tool for managing SQLite databases. It is free, portable, intuitive, and cross-platform. SQLite tool also provides some of the most important features to work with SQLite databases such as importing, exporting data in various formats including CSV, XML, and JSON.
+The SQLiteStudio tool is a free GUI tool for managing SQLite databases. It is free, portable, intuitive, and cross-platform. SQLite tool also provides some of the most important features to work with SQLite databases such as importing, exporting data in various formats including CSV, XML, and JSON.
 
-- Visit [SQLite Studio](https://sqlitestudio.pl/)
+Visit [SQLite Studio](https://sqlitestudio.pl/)
 
-- You can download the SQLiteStudio installer or its portable version by visiting the download page.  Then, you can extract (or install) the download file to a folder e.g., C:\sqlite\gui\ and launch it.
+You can download the SQLiteStudio installer or its portable version by visiting the download page.  Then, you can extract (or install) the download file to a folder e.g., C:\sqlite\gui\ and launch it.
 
-- The following picture illustrates how to launch the SQLiteStudio:
+The following picture illustrates how to launch the SQLiteStudio:
 
  ![](images/SQLiteStudio.png)
