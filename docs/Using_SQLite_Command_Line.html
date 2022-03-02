@@ -251,9 +251,14 @@ pre code {
 </div>
 
 
-<p><br><br><br></p>
+<style type="text/css">
+  body{
+  font-size: 14pt;
+  font-type: arial;
+}
+</style>
 <div id="what-is-sqlite" class="section level3">
-<h3>What is SQLite</h3>
+<h3>What is SQLite?</h3>
 <p>SQLite is a software library that provides a relational database management system. The lite in SQLite means lightweight in terms of setup, database administration, and required resources.</p>
 <p>SQLite has the following noticeable features: self-contained, serverless, zero-configuration, transactional.</p>
 <p>For more information, see <a href="https://www.sqlitetutorial.net/what-is-sqlite/">What is SQLite</a></p>
@@ -269,11 +274,15 @@ pre code {
 <p>Installing SQLite is simple and straightforward.</p>
 <p>Create a new folder e.g., C:(No IT support is needed).</p>
 <p>Extract the content of the .zip file that you downloaded in the previous section to the C:folder. You should see three programs in the C:folder as shown below:</p>
-<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARgAAABECAIAAADV173jAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAASlSURBVHhe7dxNjtMwGMbxYcWOA82BegaQkFixQGLRLRfpARDiCoBmzyHYDK+/P+LY/XhdQub/U9VxnNdOFn6UTpXm4RnAzQgSoIAgAQoIEqCAIAEKCBKgoA7Sx0+fL3r5YcDLdk2Qvn77Ht/9sLOcDg+Pxye/EYTOp+Nj3Ct9wm3lbWCrGkH6fTbNICUmOofTsg1sVy9If0amBSn2NIcAmzMI0sPbH/Elm18yZZDMJzPHX0BCx+PxGMKQpWJ1r7x7dpdXh6k4WvahMB5hcTrAVOMgvfnw6/X7ny5IlRQkWcHFijV5cB12SedROWeva1TtKOs8HWxLemQ+994sAOYaB0lS9Ord6IqUBcJvpo24rEOjvzc1qnZgj5XE7MSrT7MAmGkcJJeiwRXJcgvYrNvpQVqEQwqLIJEe3NWV/yPZHDW+bAgZMevarWWzqhtR6e91jbW2GR57LemR+dy726wKgLkuC1IlBcksXSdcCkJP+8uG3t6sbK1t8+cdjrLhdpju1ArCGQHzDILUt7witeRhAPapEaSLXn5YD0HC/tVBmoAgYf/uECRg/wgSoIAgAQoIEqCAIAEKCBKggCABCggSoKAOUnXjwvDlhwEv2zVBuvXhJ+ne0r505yn3nWLjGkHyt6ye4cogJf27h04nlx8TKKKETesFyd/jvW5ykCIpI0jYtEGQqt8j+Z/1WWWQFh/DQsf6L47kPXBj1j7KNXNUFJsNn8h4kLXZgAnGQZrz8JOqUbbDE0t8FhpBWBZLj9S592YBMNE4SPoPP2k08guIlYdHqrK5jWaxKQvjOrMBE4yDpP/wk0bDDV5d71JX7GsWS1ERpNXZAHVX/o9kc9T4siEkyCxqt5DNkj4nSHZI3DDCl3YrA8ti0yMHdO9usyoAJrosSJUUJLNunXAdCD39x5v4qixznvRkm9mkIR1FMc8/wT82CFLf8orUkq1+YKcaQbro5Yf1ECTsXx2kCQgS9u8OQQL2jyABCggSoIAgAQoIEqCAIAEKCBKggCABCuogVTcuDF9+GPCyXROk///hJ9xsAWWNIPlbVs9wZZCS/oKe9/ATggRlvSD5e7zXTQ5SJGUECZs2CFL1eyT/sz6rDNLiY1jomPXwEytN4QvszHJAK2alXfZUXuls3ymegnD76rMydYeD9KWhRlFmNvzR3aHqAuzNOEibfPhJJZ8w1JtmNTIvsw35G0qypohbcYhphjGxK2qWyQydebAr4yBt8eEnkdnlLCbM26tl0ggLPY7LeltnlU0bNU/eHnR9HuzKOEhbfPiJk4bE42UTxna3zHXFHUZ+sDQ2yg8RNMpsYRGkRQF25Mr/kWyOGl82hBVpFpFbOGYJ+ZUXl+Cy4drlCm08/KQUu80xmhPadr/MnLH8y5OPyle8bKYZrWxsajfLZB737jarAuzKZUGqpCCZdeKEVRh6VB9+UgkVKQlp5qzdL7PnUJ+1VY42TFnzEFUZD2N5cQZB6ltekVqKVbtBcn4sbNyoEaSLXn5Yj1aQZJ6c0uKXC8WmY47/Qx2kCTZ7RXIftogRFNwhSMD+ESRAAUECFBAkQAFBAhQQJEABQQJu9vz8FyV5RNbZ/hkbAAAAAElFTkSuQmCC" /> #### Open the command line window.</p>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARgAAABECAIAAADV173jAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAASlSURBVHhe7dxNjtMwGMbxYcWOA82BegaQkFixQGLRLRfpARDiCoBmzyHYDK+/P+LY/XhdQub/U9VxnNdOFn6UTpXm4RnAzQgSoIAgAQoIEqCAIAEKCBKgoA7Sx0+fL3r5YcDLdk2Qvn77Ht/9sLOcDg+Pxye/EYTOp+Nj3Ct9wm3lbWCrGkH6fTbNICUmOofTsg1sVy9If0amBSn2NIcAmzMI0sPbH/Elm18yZZDMJzPHX0BCx+PxGMKQpWJ1r7x7dpdXh6k4WvahMB5hcTrAVOMgvfnw6/X7ny5IlRQkWcHFijV5cB12SedROWeva1TtKOs8HWxLemQ+994sAOYaB0lS9Ord6IqUBcJvpo24rEOjvzc1qnZgj5XE7MSrT7MAmGkcJJeiwRXJcgvYrNvpQVqEQwqLIJEe3NWV/yPZHDW+bAgZMevarWWzqhtR6e91jbW2GR57LemR+dy726wKgLkuC1IlBcksXSdcCkJP+8uG3t6sbK1t8+cdjrLhdpju1ArCGQHzDILUt7witeRhAPapEaSLXn5YD0HC/tVBmoAgYf/uECRg/wgSoIAgAQoIEqCAIAEKCBKggCABCggSoKAOUnXjwvDlhwEv2zVBuvXhJ+ne0r505yn3nWLjGkHyt6ye4cogJf27h04nlx8TKKKETesFyd/jvW5ykCIpI0jYtEGQqt8j+Z/1WWWQFh/DQsf6L47kPXBj1j7KNXNUFJsNn8h4kLXZgAnGQZrz8JOqUbbDE0t8FhpBWBZLj9S592YBMNE4SPoPP2k08guIlYdHqrK5jWaxKQvjOrMBE4yDpP/wk0bDDV5d71JX7GsWS1ERpNXZAHVX/o9kc9T4siEkyCxqt5DNkj4nSHZI3DDCl3YrA8ti0yMHdO9usyoAJrosSJUUJLNunXAdCD39x5v4qixznvRkm9mkIR1FMc8/wT82CFLf8orUkq1+YKcaQbro5Yf1ECTsXx2kCQgS9u8OQQL2jyABCggSoIAgAQoIEqCAIAEKCBKggCABCuogVTcuDF9+GPCyXROk///hJ9xsAWWNIPlbVs9wZZCS/oKe9/ATggRlvSD5e7zXTQ5SJGUECZs2CFL1eyT/sz6rDNLiY1jomPXwEytN4QvszHJAK2alXfZUXuls3ymegnD76rMydYeD9KWhRlFmNvzR3aHqAuzNOEibfPhJJZ8w1JtmNTIvsw35G0qypohbcYhphjGxK2qWyQydebAr4yBt8eEnkdnlLCbM26tl0ggLPY7LeltnlU0bNU/eHnR9HuzKOEhbfPiJk4bE42UTxna3zHXFHUZ+sDQ2yg8RNMpsYRGkRQF25Mr/kWyOGl82hBVpFpFbOGYJ+ZUXl+Cy4drlCm08/KQUu80xmhPadr/MnLH8y5OPyle8bKYZrWxsajfLZB737jarAuzKZUGqpCCZdeKEVRh6VB9+UgkVKQlp5qzdL7PnUJ+1VY42TFnzEFUZD2N5cQZB6ltekVqKVbtBcn4sbNyoEaSLXn5Yj1aQZJ6c0uKXC8WmY47/Qx2kCTZ7RXIftogRFNwhSMD+ESRAAUECFBAkQAFBAhQQJEABQQJu9vz8FyV5RNbZ/hkbAAAAAElFTkSuQmCC" /></p>
+</div>
+<div id="open-the-command-line-window." class="section level3">
+<h3>Open the command line window.</h3>
 <p>On Windows, type “cmd” in the search bar.</p>
 <p><img src="data:image/png;base64,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" /></p>
-<div id="navigate-to-the-cfolder." class="section level4">
-<h4>navigate to the C:folder.</h4>
+</div>
+<div id="navigate-to-the-cfolder." class="section level3">
+<h3>navigate to the C:folder.</h3>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>C<span class="sc">:</span>\cd c<span class="sc">:</span>\sqlite</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>C<span class="sc">:</span>\sqlite<span class="sc">&gt;</span></span></code></pre></div>
 <p>Next, type <code>sqlite3</code> and press enter, you should see the following output:</p>
@@ -308,9 +317,8 @@ pre code {
 <span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>.excel                   Display the output of <span class="cf">next</span> command <span class="cf">in</span> spreadsheet</span>
 <span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>...</span>
 <span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>additional output not displayed</span></code></pre></div>
-<p>To navigate to the <code>risk_assessment</code> database (database.sqlite), use the <code>.open FILENAME</code> command like this:</p>
-<p><code>.open C:/Users/rkrajcik/ONEDRI~1/DOCUME~1/R/RiskAssessment/risk_assessment-master/database.sqlite</code></p>
-<p>Note forward slashes and use of Windows short path (dir /x)</p>
+<p>Navigate to the <code>risk_assessment</code> database and use the <code>.open FILENAME</code> to open it. For example:</p>
+<p><code>.open database.sqlite;</code></p>
 <p>To show the tables, type <code>.tables</code></p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>sqlite<span class="sc">&gt;</span> .tables</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>comments                 metric                   package_metrics</span>
@@ -322,7 +330,6 @@ pre code {
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>sqlite<span class="sc">&gt;</span></span></code></pre></div>
 <p>To exit, type <code>&#39;.quit</code> or <code>.exit</code></p>
 </div>
-</div>
 <div id="command-line-shell" class="section level3">
 <h3>Command Line Shell</h3>
 <p>You can also <em>temporarily</em> add <code>C:\sqlite</code> to the Windows path.</p>
@@ -330,12 +337,10 @@ pre code {
 <p>Verify by typing</p>
 <p><code>echo %PATH%</code></p>
 <p>If you are in the risk_assessment directory, you can just enter the following on the command line:</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="sc">~</span>\risk_assessment<span class="sc">-</span>master<span class="sc">&gt;</span>sqlite3 database.sqlite</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>SQLite version <span class="dv">3</span>.<span class="fl">33.0</span> <span class="dv">2020-08-14</span> <span class="dv">13</span><span class="sc">:</span><span class="dv">23</span><span class="sc">:</span><span class="dv">32</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>Enter <span class="st">&quot;.help&quot;</span> <span class="cf">for</span> usage hints.</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>sqlite<span class="sc">&gt;</span> select <span class="sc">*</span> from metric limit <span class="dv">1</span>;</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">|</span>has_vignettes<span class="sc">|</span>Vignettes<span class="sc">|</span><span class="dv">0</span><span class="sc">|</span><span class="dv">0</span><span class="sc">|</span>Number of vignettes<span class="sc">|</span>maintenance<span class="sc">|</span><span class="fl">1.0</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>sqlite<span class="sc">&gt;</span>.exit</span></code></pre></div>
+<p><code>sqlite3 database.sqlite</code> and then you will see</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>SQLite version <span class="dv">3</span>.<span class="fl">33.0</span> <span class="dv">2020-08-14</span> <span class="dv">13</span><span class="sc">:</span><span class="dv">23</span><span class="sc">:</span><span class="dv">32</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>Enter <span class="st">&quot;.help&quot;</span> <span class="cf">for</span> usage hints.</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>sqlite<span class="sc">&gt;</span> </span></code></pre></div>
 <p>You can also use the <code>system2</code> command to execute SQLite commands on the RStudio command line.</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> <span class="fu">system2</span>(<span class="st">&quot;C:/sqlite/sqlite3&quot;</span>, <span class="at">args =</span><span class="fu">c</span>(<span class="st">&quot;database.sqlite&quot;</span>, <span class="st">&quot;.tables&quot;</span>, <span class="st">&quot;.quit&quot;</span>))</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>comments                 metric                   package_metrics        </span>

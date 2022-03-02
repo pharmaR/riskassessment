@@ -6,13 +6,20 @@ output:
     highlight: pygments
 ---
 
+<style type="text/css">
+  body{
+  font-size: 14pt;
+  font-type: arial;
+}
+</style>
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-<br><br><br>
 
-### What is SQLite
+### What is SQLite?
 
 SQLite is a software library that provides a relational database management system. The lite in SQLite means lightweight in terms of setup, database administration, and required resources.
 
@@ -40,13 +47,14 @@ Create a new folder e.g., C:\sqlite (No IT support is needed).
 Extract the content of the .zip file that you downloaded in the previous section to the C:\sqlite folder. You should see three programs in the C:\sqlite folder as shown below:
 
  ![](images/SQLite_files.png)
-#### Open the command line window.  
+
+### Open the command line window.  
 
 On Windows, type "cmd" in the search bar.
 
  ![](images/Command_Prompt.png)
 
-#### navigate to the C:\sqlite folder.
+### navigate to the C:\sqlite folder.
 
 ```{R, eval=FALSE}
 C:\cd c:\sqlite
@@ -93,11 +101,10 @@ sqlite> .help
 additional output not displayed
 ```
 
-To navigate to the `risk_assessment` database (database.sqlite), use the `.open FILENAME` command like this: 
+Navigate to the `risk_assessment` database and use the `.open FILENAME` to open it.
+For example:
 
-`.open C:/Users/rkrajcik/ONEDRI~1/DOCUME~1/R/RiskAssessment/risk_assessment-master/database.sqlite`
-
-Note forward slashes and use of Windows short path (dir /x)
+`.open database.sqlite;`
 
 To show the tables, type `.tables`
 
@@ -130,13 +137,13 @@ Verify by typing
 
 If you are in the risk_assessment directory, you can just enter the following on the command line:
 
+`sqlite3 database.sqlite`
+and then you will see
+
 ```{r,eval=FALSE}
-~\risk_assessment-master>sqlite3 database.sqlite
 SQLite version 3.33.0 2020-08-14 13:23:32
 Enter ".help" for usage hints.
-sqlite> select * from metric limit 1;
-1|has_vignettes|Vignettes|0|0|Number of vignettes|maintenance|1.0
-sqlite>.exit
+sqlite> 
 ```
 
 You can also use the `system2` command to execute SQLite commands on the RStudio command line.
