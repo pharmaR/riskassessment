@@ -55,7 +55,7 @@ sidebarUI <- function(id) {
   )
 }
 
-sidebarServer <- function(id, uploaded_pkgs) {
+sidebarServer <- function(id, uploaded_pkgs, user) {
   moduleServer(id, function(input, output, session) {
     
     # Required for shinyhelper to work.
@@ -88,6 +88,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
     selected_pkg <- reactive({
       req(input$select_pkg)
       req(input$select_ver)
+      req(input$select_pkg != "-")
       
       dbSelect(glue(
         "SELECT *
@@ -98,7 +99,9 @@ sidebarServer <- function(id, uploaded_pkgs) {
     # Update package version.
     observeEvent(input$select_pkg, {
       req(input$select_pkg)
-      req(input$select_ver)
+      
+      if(input$select_pkg == "-")
+        validate("Please select a package")
       
       version <- ifelse(input$select_pkg == "-", "-", selected_pkg()$version)
       
@@ -108,7 +111,7 @@ sidebarServer <- function(id, uploaded_pkgs) {
         choices = version,
         selected = version
       )
-    })
+    }, ignoreInit = TRUE)
     
     # Display the review status of the selected package.
     output$status <- renderUI({
@@ -139,22 +142,26 @@ sidebarServer <- function(id, uploaded_pkgs) {
       h5(selected_pkg()$score)
     })
     
-    # Display comments for selected package.
-    observeEvent(input$select_pkg, {
+    # Display/update overall comments for selected package/version.
+    observeEvent(input$select_ver, {
       req(input$select_pkg)
       req(input$select_ver)
-      
-      if(input$select_pkg == "-")
-        validate("Please select a package")
-      if(input$select_ver == "-")
-        validate("Please select a version")
-      
-      comments <- dbSelect(glue(
-        "SELECT comment FROM comments
+
+      # If no package/version is selected, then clear comments.
+      if(input$select_pkg == "-" || input$select_ver == "-"){
+        updateTextAreaInput(session, "overall_comment",
+                            placeholder = 'Please select a package and a version.')
+      }
+      else {
+        # Display package comments if a package and version are selected.
+        comments <- dbSelect(glue(
+          "SELECT comment FROM comments
           WHERE id = '{input$select_pkg}'
-          AND comment_type = 'o'"))
-      
-      updateTextAreaInput(session, "overall_comment", placeholder = comments$comment)
+          AND comment_type = 'o'"))$comment
+        
+        updateTextAreaInput(session, "overall_comment",
+                            placeholder = glue('Current Overall Comment: {comments}'))
+      }
     })
     
     # Update db if comment is submitted.
@@ -185,39 +192,64 @@ sidebarServer <- function(id, uploaded_pkgs) {
                No - Exits from window and removes the text in comment box."
           ),
           footer = tagList(
-            actionButton("submit_overall_comment_yes", "Yes", class = "btn-success"),
-            actionButton("submit_overall_comment_edit", "Edit", class = "btn-secondary"),
-            actionButton("submit_overall_comment_no", "No", class = "btn-unsuccess")
+            actionButton(NS(id, "submit_overall_comment_yes"), "Yes", class = "btn-success"),
+            actionButton(NS(id, "submit_overall_comment_edit"), "Edit", class = "btn-secondary"),
+            actionButton(NS(id, "submit_overall_comment_no"), "No", class = "btn-unsuccess")
           )
         ))
       } else{
-        print(glue("values('{selected_pkg()$name}', '{input$user$name}', '{input$user$rule}', '{current_comment}', 'o', '{getTimeStamp()}')"))
         dbUpdate(glue(
           "INSERT INTO comments
-          VALUES ('{selected_pkg()$name}', '{input$user$name}', '{input$user$rule}', '{current_comment}', 'o', '{getTimeStamp()}')"))
+          VALUES ('{selected_pkg()$name}', '{user$name}', '{user$role}', '{current_comment}', 'o', '{getTimeStamp()}')"))
         
-        updateTextAreaInput(session, "current_comment", placeholder = paste("current comment:", current_comment))
+        updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", current_comment))
       }
     })
     
-    # Update overall comment by user's request.
     observeEvent(input$submit_overall_comment_yes, {
-      dbUpdate(glue(
+
+      command <-glue(
         "UPDATE comments
-          SET comment = '{input$overall_comment}' added_on = '{getTimeStamp()}'
+          SET comment = '{input$overall_comment}', added_on = '{getTimeStamp()}'
           WHERE id = '{selected_pkg()$name}' AND
-          user_name = '{input$user$name}' AND
-          user_role = '{input$user$rule}' AND
+          user_name = '{user$name}' AND
+          user_role = '{user$role}' AND
           comment_type = 'o'"
-      ))
-      
-      updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", overall_comment))
+      )
+      dbUpdate(command)
+      current_comment <- trimws(input$overall_comment)
+      updateTextAreaInput(session, "overall_comment", value = "", placeholder = paste("current comment:", current_comment))
+      removeModal()
+    })
+
+    observeEvent(input$submit_overall_comment_edit, {
+      removeModal()
+    })
+    
+    observeEvent(input$submit_overall_comment_no, {
+      updateTextAreaInput(session, "overall_comment", value = "")
+      removeModal()
     })
     
     # Update decision when package is selected.
-    observeEvent(input$select_pkg, {
-      # Suppose package has been selected with a previously made decision.
-      req(input$select_pkg != "-")
+    observeEvent(input$select_ver, {
+      req(input$select_pkg)
+      req(input$select_ver)
+      
+      # Reset decision if no package/version is selected.
+      if(input$select_pkg == "-" || input$select_ver == "-") {
+        updateSliderTextInput(
+          session,
+          "decision",
+          choices = c("Low", "Medium", "High"),
+          selected = 'Low'
+        )
+        
+        validate('Please select a package and a version.')
+      }
+      
+      req(selected_pkg())
+      
       # Update the risk slider using the info saved.
       updateSliderTextInput(
         session,
@@ -228,8 +260,9 @@ sidebarServer <- function(id, uploaded_pkgs) {
     })
     
     # Enable/disable sidebar decision and comment.
-    observeEvent(input$select_pkg, {
-      if (input$select_pkg != "-" && (is_empty(selected_pkg()$decision) || selected_pkg()$decision == "")) {
+    observeEvent(input$select_ver, {
+      if (input$select_pkg != "-" && input$select_pkg != "-" &&
+          (is_empty(selected_pkg()$decision) || selected_pkg()$decision == "")) {
         enable("decision")
         enable("submit_decision")
         enable("overall_comment")
@@ -282,11 +315,16 @@ sidebarServer <- function(id, uploaded_pkgs) {
           WHERE name = '{selected_pkg()$name}'")
       )
       
+      disable("decision")
+      disable("submit_decision")
+      disable("overall_comment")
+      disable("submit_overall_comment")
+      
       removeModal()
       
       loggit("INFO",
-             glue("decision for the package {input$decisione} is {input$decision}
-                  by {selected_pkg()$name} ({input$user$rule})"))
+             glue("decision for the package {selected_pkg()$name} is {input$decision}
+                  by {user$name} ({user$role})"))
     })
     
     
