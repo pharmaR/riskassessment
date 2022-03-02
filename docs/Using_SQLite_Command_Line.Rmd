@@ -2,14 +2,13 @@
 title: "Using SQLite Command Line"
 output:
   html_document:
-    theme: cerulean
+    theme: spacelab
     highlight: pygments
 ---
 
 <style type="text/css">
   body{
   font-size: 14pt;
-  font-type: arial;
 }
 </style>
 
@@ -19,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
-### What is SQLite?
+### About SQLite
 
 SQLite is a software library that provides a relational database management system. The lite in SQLite means lightweight in terms of setup, database administration, and required resources.
 
@@ -42,9 +41,9 @@ The downloaded file is in the ZIP format and its size is quite small.
 
 Installing SQLite is simple and straightforward.
 
-Create a new folder e.g., C:\sqlite (No IT support is needed). 
+Create a new folder e.g., `C:\sqlite` (No IT support is needed). 
 
-Extract the content of the .zip file that you downloaded in the previous section to the C:\sqlite folder. You should see three programs in the C:\sqlite folder as shown below:
+Extract the content of the .zip file that you downloaded in the previous section to the `C:\sqlite` folder. You should see three programs as shown below:
 
  ![](images/SQLite_files.png)
 
@@ -77,7 +76,29 @@ Use ".open FILENAME" to reopen on a persistent database.
 sqlite>
 ```  
 
-You can type the `.help` command from the sqlite> prompt to see all available commands.
+Navigate to the `risk_assessment` database and use the `.open FILENAME` to open it.
+For example:
+
+`.open database.sqlite;`
+
+To show the tables, type `.tables`
+
+```{r, eval=FALSE}
+sqlite> .tables
+comments                 metric                   package_metrics
+community_usage_metrics  package
+sqlite>
+```
+
+To show the structure of a table, type `.schema TABLE`
+
+```{r, eval=FALSE}
+sqlite> .schema package_metrics
+CREATE TABLE package_metrics (   id           INTEGER PRIMARY KEY AUTOINCREMENT,   package_id   INT,    metric_id    INT,   value        CHAR,   /* value == 'pkg_metric_error' indicates an error. */   /* value == NA indicates metric is not applicable for this package. */   weight       REAL,   FOREIGN KEY (package_id) REFERENCES package(id),   FOREIGN KEY (metric_id) REFERENCES metric(id));
+sqlite>
+```
+
+You can also type `.help` from the sqlite> prompt to see all available commands.
 
 ```{r, eval=FALSE}
 sqlite> .help
@@ -101,29 +122,7 @@ sqlite> .help
 additional output not displayed
 ```
 
-Navigate to the `risk_assessment` database and use the `.open FILENAME` to open it.
-For example:
-
-`.open database.sqlite;`
-
-To show the tables, type `.tables`
-
-```{r, eval=FALSE}
-sqlite> .tables
-comments                 metric                   package_metrics
-community_usage_metrics  package
-sqlite>
-```
-
-To show the structure of a table, type `.schema TABLE`
-
-```{r, eval=FALSE}
-sqlite> .schema package_metrics
-CREATE TABLE package_metrics (   id           INTEGER PRIMARY KEY AUTOINCREMENT,   package_id   INT,    metric_id    INT,   value        CHAR,   /* value == 'pkg_metric_error' indicates an error. */   /* value == NA indicates metric is not applicable for this package. */   weight       REAL,   FOREIGN KEY (package_id) REFERENCES package(id),   FOREIGN KEY (metric_id) REFERENCES metric(id));
-sqlite>
-```
-
-To exit, type `'.quit` or `.exit`
+To exit, type `.quit`or `.exit`
 
 ### Command Line Shell
 
@@ -135,7 +134,7 @@ Verify by typing
 
 `echo %PATH%`
 
-If you are in the risk_assessment directory, you can just enter the following on the command line:
+Then when you are in the risk_assessment directory, you can just enter the following on the command line:
 
 `sqlite3 database.sqlite`
 and then you will see
