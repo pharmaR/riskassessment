@@ -28,16 +28,19 @@ uploaded_pkgs <- reactive({
   names(uploaded_pkgs) <- tolower(names(uploaded_pkgs))
   uploaded_pkgs$package <- trimws(uploaded_pkgs$package)
   
-  url <- "https://cran.rstudio.com/web/packages/available_packages_by_name.html"
+  # use the same url dbupload.R is using to get community usage metrics
+  url <- "https://cran.r-project.org/src/contrib/Archive"
   # open page
   con <- url(url, "rb")
   webpage = rvest::read_html(con)
   
   pkgnames <- webpage %>% 
     html_nodes("a") %>%
-    html_text() 
-  # Drop A-Z
-  CRAN_arch <- pkgnames[27:length(pkgnames)]
+    html_text() %>% 
+    stringr::str_replace_all(.,"/","")
+  
+  # Drop "Name" "Last modified" "Size" "Description" "Parent Directory"
+  CRAN_arch <- pkgnames[6:length(pkgnames)]
   close(con)
   rm(webpage, pkgnames)
 
