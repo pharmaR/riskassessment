@@ -65,6 +65,7 @@ observeEvent(req(upload_complete()), {
          echo = FALSE)
   
   shinyjs::enable("uploaded_file")
+  shinyjs::reset("uploaded_file")
 })
 
 # Download the sample dataset.
