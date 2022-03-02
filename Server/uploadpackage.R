@@ -28,34 +28,39 @@ uploaded_pkgs <- reactive({
   names(uploaded_pkgs) <- tolower(names(uploaded_pkgs))
   uploaded_pkgs$package <- trimws(uploaded_pkgs$package)
   
-  website <- "https://cran.rstudio.com/web/packages/available_packages_by_name.html"
-  namelst <- rvest::read_html(website)
-  pkgnames <- namelst %>% 
+  url <- "https://cran.rstudio.com/web/packages/available_packages_by_name.html"
+  # open page
+  con <- url(url, "rb")
+  webpage = rvest::read_html(con)
+  
+  pkgnames <- webpage %>% 
     html_nodes("a") %>%
     html_text() 
   # Drop A-Z
   CRAN_arch <- pkgnames[27:length(pkgnames)]
-  rm(namelst, pkgnames)
+  close(con)
+  rm(webpage, pkgnames)
 
   j <- rep(TRUE, nrow(uploaded_pkgs))
   
   for (i in seq_along(uploaded_pkgs$package)) {
     ref <- riskmetric::pkg_ref(uploaded_pkgs$package[i])
-    uploaded_pkgs$version[i] <- as.vector(ref$version)  
-    uploaded_pkgs$source[i]  <- as.vector(ref$source)
+    # add version and source
+    suppressWarnings(uploaded_pkgs$version[i] <- as.vector(ref$version))
+    suppressWarnings(uploaded_pkgs$source[i]  <- as.vector(ref$source))
     if (ref$source == "pkg_missing") {
       rlang::inform(glue("NOTE: package ", {ref$name}, 
-                         " was flagged by riskmetric as: '",{ref$source},"' and will be removed. Did you misspell it?"))
+                         " was flagged by riskmetric as '",{ref$source},"' and will be removed. Did you misspell it?"))
       j[i] <- FALSE
     } else {
     if (!ref$name %in% CRAN_arch) {
       rlang::inform(glue("NOTE: package ", {ref$name},
-                         " is not in the CRAN archive and will be removed."))
+                         " was not found in the CRAN archive and will be removed."))
       j[i] <- FALSE
      }
     }
   }
-  
+
   # drop the non-existent packages
   uploaded_pkgs <- uploaded_pkgs[which(j),]
   # drop large string
