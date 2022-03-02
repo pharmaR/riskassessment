@@ -100,9 +100,6 @@ sidebarServer <- function(id, uploaded_pkgs, user) {
     observeEvent(input$select_pkg, {
       req(input$select_pkg)
       
-      if(input$select_pkg == "-")
-        validate("Please select a package")
-      
       version <- ifelse(input$select_pkg == "-", "-", selected_pkg()$version)
       
       updateSelectizeInput(
