@@ -1,23 +1,27 @@
 # IntroJS.
-rv <- reactiveValues( # initialize
-  uploaded_pkgs = data.frame(package = character(0) , version = character(0), status = character(0))
-) 
-# upload_pkg_txt <- reactive({
-#   req(rv$uploaded_pkgs)
-#   if(nrow(rv$uploaded_pkgs) > 0) upload_pkg_complete else upload_pkg
-# })
-# introJSServer(id = "upload_pkg_introJS", text = upload_pkg_txt())
+# rv <- reactiveValues( # initialize
+#   uploaded_pkgs = data.frame(package = character(0) , version = character(0), status = character(0))
+# ) 
 
-# tested and seems to work, but may launch guide on event which is undesired
-# rv <- reactiveValues(upload_pkg_txt = upload_pkg)
-# introJSServer(id = "upload_pkg_introJS", text = rv$upload_pkg_txt)
-# observeEvent(uploaded_pkgs(), {
-#   req(uploaded_pkgs())
-#   rv$upload_pkg_txt <- upload_pkg_complete
-#   introJSServer(id = "upload_pkg_introJS", text = rv$upload_pkg_txt)
-# })
+upload_pkg_txt <- reactive({
+  req(values$uploaded_pkgs)
+  if(nrow(values$uploaded_pkgs) > 0) upload_pkg_complete else upload_pkg
+})
 
-introJSServer(id = "upload_pkg_introJS", text = upload_pkg)
+# Start introjs when help button is pressed. Had to do this outside of
+# a module in order to take a reactive data frame of steps
+observeEvent(
+  input[["upload_pkg_introJS-help"]], # notice input contains "id-help"
+  introjs(session,
+          options = list(
+            steps = 
+              upload_pkg_txt() %>%
+              union(sidebar_steps),
+            "nextLabel" = "Next",
+            "prevLabel" = "Previous"
+          )
+  )
+)
 
 #' Save all the uploaded packages, marking them as 'new', 'not found', or
 #' 'duplicate'.
@@ -89,7 +93,7 @@ observe({
                "Duplicate Packages:", sum(uploaded_packages$status == 'duplicate')),
          echo = FALSE)
   
-  rv$uploaded_pkgs <- uploaded_packages
+  values$uploaded_pkgs <- uploaded_packages
 })
 
 # Download the sample dataset.
@@ -104,16 +108,16 @@ output$download_sample <- downloadHandler(
 
 # Uploaded packages summary.
 output$upload_summary_text <- renderText({
-  req(nrow(rv$uploaded_pkgs) > 0)
+  req(nrow(values$uploaded_pkgs) > 0)
   as.character(tagList(
     br(), br(),
     hr(),
     h5("Summary of uploaded package (s)"),
     br(),
-    p(tags$b("Total Packages: "), nrow(rv$uploaded_pkgs)),
-    p(tags$b("New Packages: "), sum(rv$uploaded_pkgs$status == 'new')),
-    p(tags$b("Undiscovered Packages: "), sum(rv$uploaded_pkgs$status == 'not found')),
-    p(tags$b("Duplicate Packages: "), sum(rv$uploaded_pkgs$status == 'duplicate')),
+    p(tags$b("Total Packages: "), nrow(values$uploaded_pkgs)),
+    p(tags$b("New Packages: "), sum(values$uploaded_pkgs$status == 'new')),
+    p(tags$b("Undiscovered Packages: "), sum(values$uploaded_pkgs$status == 'not found')),
+    p(tags$b("Duplicate Packages: "), sum(values$uploaded_pkgs$status == 'duplicate')),
     p("Note: The assessment will be performed on the latest version of each
         package, irrespective of the uploaded version.")
   ))
@@ -121,10 +125,10 @@ output$upload_summary_text <- renderText({
 
 # Uploaded packages table.
 output$upload_pkgs_table <- DT::renderDataTable({
-  req(nrow(rv$uploaded_pkgs) > 0)
+  req(nrow(values$uploaded_pkgs) > 0)
   
   datatable(
-    rv$uploaded_pkgs,
+    values$uploaded_pkgs,
     escape = FALSE,
     class = "cell-border",
     selection = 'none',
