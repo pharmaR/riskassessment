@@ -6,13 +6,12 @@ sidebarUI <- function(id) {
     
     uiOutput(NS(id, 'select_pkg_ui')),
     
-    div(id = NS(id, "select_ver-grp"),
-      selectizeInput(
-        inputId = NS(id, "select_ver"),
-        label = h5("Select Version"),
-        choices = "-",
-        selected = "-"
-      )
+    
+    selectizeInput(
+      inputId = NS(id, "select_ver"),
+      label = h5("Select Version"),
+      choices = "-",
+      selected = "-"
     ),
     
     br(), br(),

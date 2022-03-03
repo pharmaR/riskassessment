@@ -7,21 +7,21 @@ sidebar_steps <-
   data.frame(
     element = c(
       "#assessment-criteria-tab","#database-tab",
-      "#sidebar-select_pkg_ui", "sidebar-select_ver-grp", # "#sidebar-select_ver", # not working
+      "#sidebar-select_pkg_ui", # "#sidebar-select_ver", # not working
       "#sidebar-status-wp", "#sidebar-score-wp",
       "#sidebar-decision-grp",
       "#sidebar-overall-comment-grp"),
     intro = c(
       "Discover the package assessment process & criteria",
       "Review the R packages that already exist in the database",
-      "Expand this dropdown list to select assess a specific package that was previously uploaded",
-      "The latest version will autopopulate here.",
+      "Expand this dropdown list to selet assess a specific package that was previously uploaded. Then select a version (if more than one exists).",
+      # "The latest version will autopopulate here.", # can't peg ui object name, even with a div!
       "The status can be either 'Under Review' or 'Reviewed'.",
       "The score can take any value between 0 (no risk) and 1 (highest risk).",
       "After reviewing your package, you can leave an overall comment.",
       "Provide your input on the overall risk of the selected package."
     ),
-    position = c(rep("bottom", 8))
+    position = c(rep("bottom", 7))
   )
 
 # upload package tab.
