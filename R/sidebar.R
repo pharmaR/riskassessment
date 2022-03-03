@@ -6,6 +6,7 @@ sidebarUI <- function(id) {
     
     uiOutput(NS(id, 'select_pkg_ui')),
     
+    
     selectizeInput(
       inputId = NS(id, "select_ver"),
       label = h5("Select Version"),
@@ -16,11 +17,11 @@ sidebarUI <- function(id) {
     br(), br(),
     
     fluidRow(
-      column(6, wellPanel(
+      column(6, div(id = NS(id, "status-wp"), wellPanel(
         h5("Status"),
         htmlOutput(NS(id, "status"))
-      )),
-      column(6, wellPanel(
+      ))),
+      column(6, div(id = NS(id, "score-wp"), wellPanel(
         h5("Risk"),
         htmlOutput(NS(id, "score"))
       ))
@@ -29,31 +30,37 @@ sidebarUI <- function(id) {
     br(), br(),
     
     disabled(
-      sliderTextInput(
-        inputId = NS(id, "decision"),
-        h5("Select Overall Risk"), 
-        selected = NULL,
-        grid = TRUE,
-        c("Low", "Medium", "High")
+      div(id = NS(id, "decision-grp"),
+        sliderTextInput(
+          inputId = NS(id, "decision"),
+          h5("Select Overall Risk"), 
+          selected = NULL,
+          grid = TRUE,
+          c("Low", "Medium", "High")
+        ),
+        
+        # Action button to submit decision for selected package.
+        
+        actionButton(NS(id, "submit_decision"), "Submit Decision", width = "100%")
       ),
-      
-      # Action button to submit decision for selected package.
-      
-      actionButton(NS(id, "submit_decision"), "Submit Decision", width = "100%"),
-      
       br(), br(),
       
-      textAreaInput(
-        inputId = NS(id, "overall_comment"),
-        h5("Write Overall Comment"),
-        rows = 5,
-        placeholder = ""
-      ),
-      
-      # Submit Overall Comment for selected Package.
-      actionButton(NS(id, "submit_overall_comment"), "Submit Comment", width = "100%"))
+      div(id = NS(id, "overall-comment-grp"),
+        textAreaInput(
+          inputId = NS(id, "overall_comment"),
+          h5("Write Overall Comment"),
+          rows = 5,
+          placeholder = ""
+        ),
+        
+        # Submit Overall Comment for selected Package.
+        actionButton(NS(id, "submit_overall_comment"), "Submit Comment", width = "100%")
+        )
+      )
+    )
   )
 }
+
 
 sidebarServer <- function(id, uploaded_pkgs, user) {
   moduleServer(id, function(input, output, session) {
