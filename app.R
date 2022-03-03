@@ -1,3 +1,6 @@
+# options
+options(shiny.fullstacktrace = TRUE)
+
 # Load required packages.
 source("global.R")
 
@@ -89,16 +92,12 @@ ui <- fluidPage(
     ), 
     
     tabPanel(
-      title = "Database",
-      icon = icon("database"),
+      title = div(id = "database-tab", icon("database"), "Database"),
       databaseViewUI("databaseView")
     ),
     
     tabPanel(
-      id = "test1",
-      value = "assessment_criteria_tab",
-      title = "Assessment Criteria",
-      icon = icon("info-circle"),
+      title = div(id = "assessment-criteria-tab", icon("info-circle"), "Assessment Criteria"),
       assessmentInfoUI("assessmentInfo")
     )
   ),
@@ -154,6 +153,7 @@ server <- function(session, input, output) {
   })
   
   # Sidebar module.
+  uploaded_pkgs <- reactive(rv$uploaded_pkgs)
   selected_pkg <- sidebarServer("sidebar", uploaded_pkgs, user)
   
   # Assessment criteria information tab.

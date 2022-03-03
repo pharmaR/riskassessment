@@ -8,12 +8,14 @@ output$upload_package <- renderUI({
     fluidRow(
       column(
         width = 4,
-        fileInput(
-          inputId = "uploaded_file",
-          label = "Choose a CSV file",
-          accept = ".csv",
-          placeholder = "No file selected"),
-        
+        div(id = "upload-file-grp",
+          fileInput(
+            inputId = "uploaded_file",
+            label = "Choose a CSV file",
+            accept = ".csv",
+            placeholder = "No file selected"
+          )
+        ),
         actionLink("upload_format", "View Sample Dataset")
       )
     ),

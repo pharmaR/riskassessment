@@ -1,33 +1,51 @@
 # IntroJS.
+rv <- reactiveValues( # initialize
+  uploaded_pkgs = data.frame(package = character(0) , version = character(0), status = character(0))
+) 
+# upload_pkg_txt <- reactive({
+#   req(rv$uploaded_pkgs)
+#   if(nrow(rv$uploaded_pkgs) > 0) upload_pkg_complete else upload_pkg
+# })
+# introJSServer(id = "upload_pkg_introJS", text = upload_pkg_txt())
+
+# tested and seems to work, but may launch guide on event which is undesired
+# rv <- reactiveValues(upload_pkg_txt = upload_pkg)
+# introJSServer(id = "upload_pkg_introJS", text = rv$upload_pkg_txt)
+# observeEvent(uploaded_pkgs(), {
+#   req(uploaded_pkgs())
+#   rv$upload_pkg_txt <- upload_pkg_complete
+#   introJSServer(id = "upload_pkg_introJS", text = rv$upload_pkg_txt)
+# })
+
 introJSServer(id = "upload_pkg_introJS", text = upload_pkg)
 
 #' Save all the uploaded packages, marking them as 'new', 'not found', or
 #' 'duplicate'.
-uploaded_pkgs <- reactive({
+observe({
   req(input$uploaded_file)
   
   if(is.null(input$uploaded_file$datapath))
     validate('Please upload a nonempty CSV file.')
   
-  uploaded_pkgs <- read_csv(input$uploaded_file$datapath)
+  uploaded_packages <- read_csv(input$uploaded_file$datapath)
   template <- read_csv(file.path('Data', 'upload_format.csv'))
   
-  if(nrow(uploaded_pkgs) == 0)
+  if(nrow(uploaded_packages) == 0)
     validate('Please upload a nonempty CSV file.')
   
   if(!all(colnames(packages) == colnames(template)))
     validate("Please upload a CSV with a valid format.")
   
   waitress <- waiter::Waitress$new(
-    max = 3*nrow(uploaded_pkgs) + 4,
+    max = 3*nrow(uploaded_packages) + 4,
     theme = 'overlay-percent')
   on.exit(waitress$close())
   
   waitress$inc(1)
   
-  names(uploaded_pkgs) <- tolower(names(uploaded_pkgs))
-  uploaded_pkgs$package <- trimws(uploaded_pkgs$package)
-  uploaded_pkgs$version <- trimws(uploaded_pkgs$version)
+  names(uploaded_packages) <- tolower(names(uploaded_packages))
+  uploaded_packages$package <- trimws(uploaded_packages$package)
+  uploaded_packages$version <- trimws(uploaded_packages$version)
   
   waitress$inc(2)
   
@@ -37,7 +55,7 @@ uploaded_pkgs <- reactive({
   waitress$inc(1)
   
   # Save the uploaded packages that were not in the db.
-  new_pkgs <- uploaded_pkgs %>% filter(!(package %in% curr_pkgs$name))
+  new_pkgs <- uploaded_packages %>% filter(!(package %in% curr_pkgs$name))
   
   if(nrow(new_pkgs) != 0){
     for (pkg in new_pkgs$package) {
@@ -56,7 +74,7 @@ uploaded_pkgs <- reactive({
   all_pkgs <- dbSelect("SELECT name FROM package")
   
   # Data frame indicating which packages where duplicate, new, and not found.
-  uploaded_pkgs <- uploaded_pkgs %>%
+  uploaded_packages <- uploaded_packages %>%
     mutate(status = case_when(
       !(package %in% all_pkgs$name) ~ 'not found',
       package %in% curr_pkgs$name ~ 'duplicate',
@@ -65,13 +83,13 @@ uploaded_pkgs <- reactive({
   
   loggit("INFO",
          paste("Uploaded file:", input$uploaded_file$name, 
-               "Total Packages:", nrow(uploaded_pkgs$package),
-               "New Packages:", sum(uploaded_pkgs$status == 'new'),
-               "Undiscovered Packages:", sum(uploaded_pkgs$status == 'not found'),
-               "Duplicate Packages:", sum(uploaded_pkgs$status == 'duplicate')),
+               "Total Packages:", nrow(uploaded_packages$package),
+               "New Packages:", sum(uploaded_packages$status == 'new'),
+               "Undiscovered Packages:", sum(uploaded_packages$status == 'not found'),
+               "Duplicate Packages:", sum(uploaded_packages$status == 'duplicate')),
          echo = FALSE)
   
-  uploaded_pkgs
+  rv$uploaded_pkgs <- uploaded_packages
 })
 
 # Download the sample dataset.
@@ -86,16 +104,16 @@ output$download_sample <- downloadHandler(
 
 # Uploaded packages summary.
 output$upload_summary_text <- renderText({
-  req(uploaded_pkgs())
+  req(nrow(rv$uploaded_pkgs) > 0)
   as.character(tagList(
     br(), br(),
     hr(),
     h5("Summary of uploaded package (s)"),
     br(),
-    p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
-    p(tags$b("New Packages: "), sum(uploaded_pkgs()$status == 'new')),
-    p(tags$b("Undiscovered Packages: "), sum(uploaded_pkgs()$status == 'not found')),
-    p(tags$b("Duplicate Packages: "), sum(uploaded_pkgs()$status == 'duplicate')),
+    p(tags$b("Total Packages: "), nrow(rv$uploaded_pkgs)),
+    p(tags$b("New Packages: "), sum(rv$uploaded_pkgs$status == 'new')),
+    p(tags$b("Undiscovered Packages: "), sum(rv$uploaded_pkgs$status == 'not found')),
+    p(tags$b("Duplicate Packages: "), sum(rv$uploaded_pkgs$status == 'duplicate')),
     p("Note: The assessment will be performed on the latest version of each
         package, irrespective of the uploaded version.")
   ))
@@ -103,10 +121,10 @@ output$upload_summary_text <- renderText({
 
 # Uploaded packages table.
 output$upload_pkgs_table <- DT::renderDataTable({
-  req(uploaded_pkgs())
+  req(nrow(rv$uploaded_pkgs) > 0)
   
   datatable(
-    uploaded_pkgs(),
+    rv$uploaded_pkgs,
     escape = FALSE,
     class = "cell-border",
     selection = 'none',
