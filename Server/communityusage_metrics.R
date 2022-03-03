@@ -107,14 +107,20 @@ output$downloads_plot <- plotly::renderPlotly({
     pull(day_month_year)
   
   # First day associated with a version release.
-  frst_version_date <- downloads_data %>%
+  first_version_date <- downloads_data %>%
     filter(!(version %in% c('', 'NA'))) %>%
     slice_min(day_month_year) %>%
     pull(day_month_year)
   
   # Get the difference in months.
   month_last <- interval(last_version_date, latest_date) %/% months(1)
-  month_frst <- interval(frst_version_date, latest_date) %/% months(1)
+  month_first <- interval(first_version_date, latest_date) %/% months(1)
+  
+  # Set plot range: [min - 15 days, max + 15 days].
+  # Dates need to be transformed to milliseconds since epoch.
+  dates_range <- c(
+    (as.numeric(min(downloads_data$day_month_year)) - 15) * 86400000,
+    (as.numeric(max(downloads_data$day_month_year)) + 15) * 86400000)
   
   plot_ly(downloads_data,
           x = ~day_month_year,
@@ -122,19 +128,17 @@ output$downloads_plot <- plotly::renderPlotly({
           name = "# Downloads", type = 'scatter', 
           mode = 'lines+markers', line = list(color = "blue"),
           hoverinfo = "text",
-          text = ~glue('No. of Downloads: {format(downloads, big.mark = ",")} <br> {month} {year}')) %>%
+          text = ~glue('No. of Downloads: {format(downloads, big.mark = ",")}
+                       <br> {month} {year}')) %>%
     layout(title = glue('Number of Downloads by Month: {selected_pkg$name()}'),
            showlegend = FALSE,
            yaxis = list(title = "Downloads"),
            xaxis = list(title = "", type = 'date', tickformat = "%b %Y",
-                        # range is min-15 days, max+15 days
-                        # Dates need to be transformed to milliseconds since epoch
-                        range = c( (as.numeric(min(downloads_data$day_month_year))-15) *86400000,
-                                   (as.numeric(max(downloads_data$day_month_year))+15) *86400000   ) )
+                        range = dates_range)
     ) %>% 
     add_segments(
       x = ~if_else(version %in% c("", "NA"), NA_Date_, day_month_year),
-      xend = ~if_else(version %in% c("","NA"), NA_Date_, day_month_year),
+      xend = ~if_else(version %in% c("", "NA"), NA_Date_, day_month_year),
       y = ~.98 * min(downloads),
       yend = ~1.02 * max(downloads),
       name = "Version Release",
@@ -155,38 +159,35 @@ output$downloads_plot <- plotly::renderPlotly({
     ) %>%
     layout(
       xaxis = list(
-        # range is min-15 days, max+15 days
-        # Dates need to be transformed to milliseconds since epoch
-        range = c( (as.numeric(min(downloads_data$day_month_year))-15) *86400000,
-                   (as.numeric(max(downloads_data$day_month_year))+15) *86400000   ),
+        range = dates_range,
         rangeselector = list(
           buttons = list(
             list(
-              count = 6+1,
+              count = 6 + 1,
               label = "6 mo",
               step = "month",
               stepmode = "backward"),
             list(
-              count = 12+1,
+              count = 12 + 1,
               label = "1 yr",
               step = "month",
               stepmode = "backward"),
             list(
-              count = 24+1,
+              count = 24 + 1,
               label = "2 yr",
               step = "month",
               stepmode = "backward"),
-            list(count = month_last+1,
+            list(count = month_last + 1,
                  label = "Last Release",
                  step = "month",
                  stepmode = "backward"),
-            list(count = month_frst+1,
+            list(count = month_first + 1,
                  label = "First Release",
                  step = "month",
                  stepmode = "todate")
           )),
         rangeslider = list(type = "date", visible = TRUE), 
-        start = as.numeric(min(downloads_data$day_month_year))-15,
-        end =   as.numeric(max(downloads_data$day_month_year))+15)
+        start = dates_range[1],
+        end = dates_range[2])
     )
   })
