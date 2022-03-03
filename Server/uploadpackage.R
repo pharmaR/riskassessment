@@ -29,7 +29,7 @@ uploaded_pkgs <- reactive({
   uploaded_pkgs$package <- trimws(uploaded_pkgs$package)
   
   # use the same url dbupload.R is using to get community usage metrics
-  url <- "https://cran.r-project.org/src/contrib/Archive"
+  url <- "https://cran.r-project.org/web/packages/available_packages_by_name.html"
   # open page
   con <- url(url, "rb")
   webpage = rvest::read_html(con)
@@ -39,8 +39,8 @@ uploaded_pkgs <- reactive({
     html_text() %>% 
     stringr::str_replace_all(.,"/","")
   
-  # Drop "Name" "Last modified" "Size" "Description" "Parent Directory"
-  CRAN_arch <- pkgnames[6:length(pkgnames)]
+  # Drop First 26 values on webpage since they are "A" through "Z"
+  CRAN_avail_pkgs <- pkgnames[27:length(pkgnames)] # Drop A-Z
   close(con)
   rm(webpage, pkgnames)
 
@@ -56,9 +56,9 @@ uploaded_pkgs <- reactive({
                          " was flagged by riskmetric as '",{ref$source},"' and will be removed. Did you misspell it?"))
       j[i] <- FALSE
     } else {
-    if (!ref$name %in% CRAN_arch) {
+    if (!ref$name %in% CRAN_avail_pkgs) {
       rlang::inform(glue("NOTE: package ", {ref$name},
-                         " was not found in the CRAN archive and will be removed."))
+                         " was not found on the CRAN so it will be removed from upload list."))
       j[i] <- FALSE
      }
     }
@@ -67,7 +67,7 @@ uploaded_pkgs <- reactive({
   # drop the non-existent packages
   uploaded_pkgs <- uploaded_pkgs[which(j),]
   # drop large string
-  rm(CRAN_arch)
+  rm(CRAN_avail_pkgs)
   
   waitress$inc(2)
   
