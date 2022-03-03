@@ -94,9 +94,7 @@ output$downloads_plot <- plotly::renderPlotly({
   
   downloads_data <- community_data %>%
     distinct(month, year, .keep_all = TRUE)
-  
-  downloads_data$version[is.na(downloads_data$version)] <- ""
-  
+
   # Last day that appears on the community metrics.
   latest_date <- downloads_data %>%
     slice_max(day_month_year) %>%
