@@ -26,9 +26,7 @@ sidebar_steps <-
 
 # upload package tab.
 upload_pkg <- data.frame(
-  # Note that we access chooseCSVtext with '.' instead of '#', because we track its class and not its id.
   element = c("#upload_pkg_introJS-help", "#upload-file-grp", "#upload_format"),
-              #".chooseCSVtext", ".sample_dataset_link"),
   intro = c(
     "Click here anytime you need help.",
     "Upload a CSV file with the package(s) you would like to assess.",
@@ -55,7 +53,6 @@ upload_pkg_complete <- union(upload_pkg,
 # Maintenance metrics.
 mm_steps <- 
   data.frame(
-    # Note that we access chooseCSVtext with '.' instead of '#', because we track its class and not its id.
     element = c(".card-group", "#comments_for_mm"),
     intro = c(
       "Several ways to measuring package maintenance are assessed here. Please review each!",
@@ -67,7 +64,6 @@ mm_steps <-
 
 # Report Preview.
 rp_steps <- data.frame(
-  # Note that we access chooseCSVtext with '.' instead of '#', because we track its class and not its id.
   element = c( "#dwnld_rp", "#rep_prev"),
   intro = c(
     "Select file output type for report seen below and download for later use",
@@ -79,15 +75,13 @@ rp_steps <- data.frame(
 
 # Community Usage Metrics.
 cum_steps <- data.frame(
-  # Note that we access chooseCSVtext with '.' instead of '#', because we track its class and not its id.
-  element = c("#cum_infoboxes", "#cum_plot", "#cum_add_comment", "#cum_prev_comments"),
+  element = c("#cum_infoboxes", "#cum_plot", "#comments_for_cum"),
   intro = c(
-    "Several ways of measuring community usage assessed here. Please review!",
-    "Digest downloads per month by selecting a pre-defined time periods or toggling the date slider at bottom of plot for custom date range",
-    "Have something to share within your organization? Add a comment.",
-    "Keep track of the on-going conversation for this package's community usage"
+    "Several ways of measuring community usage are assessed here. Please review each!",
+    "Digest the 'downloads per month' metric by selecting a pre-defined time periods or toggling the date slider at bottom of plot for custom date range",
+    "Have something to share within your organization? Add a comment and keep track of the on-going conversation for this package's community usage metrics"
   ),
-  position = c("bottom", rep("top", 3))
+  position = c(rep("left", 3))
   
 )
 
