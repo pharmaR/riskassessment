@@ -28,8 +28,10 @@ observe({
   if(is.null(input$uploaded_file$datapath))
     validate('Please upload a nonempty CSV file.')
   
-  uploaded_packages <- read_csv(input$uploaded_file$datapath)
-  template <- read_csv(file.path('Data', 'upload_format.csv'))
+
+  uploaded_packages <- read_csv(input$uploaded_file$datapath, show_col_types = FALSE)
+  template <- read_csv(file.path('Data', 'upload_format.csv'), show_col_types = FALSE)
+
   
   if(nrow(uploaded_packages) == 0)
     validate('Please upload a nonempty CSV file.')
@@ -44,9 +46,51 @@ observe({
   
   waitress$inc(1)
   
+
   names(uploaded_packages) <- tolower(names(uploaded_packages))
   uploaded_packages$package <- trimws(uploaded_packages$package)
-  uploaded_packages$version <- trimws(uploaded_packages$version)
+  
+  # use the same url dbupload.R is using to get community usage metrics
+  url <- "https://cran.r-project.org/web/packages/available_packages_by_name.html"
+  # open page
+  con <- url(url, "rb")
+  webpage = rvest::read_html(con)
+  
+  pkgnames <- webpage %>% 
+    html_nodes("a") %>%
+    html_text() %>% 
+    stringr::str_replace_all(.,"/","")
+  
+  # Drop First 26 values on webpage since they are "A" through "Z"
+  CRAN_avail_pkgs <- pkgnames[27:length(pkgnames)] # Drop A-Z
+  close(con)
+  rm(webpage, pkgnames)
+
+  j <- rep(TRUE, nrow(uploaded_packages))
+  
+  for (i in seq_along(uploaded_packages$package)) {
+    ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
+    # add version and source
+    suppressWarnings(uploaded_packages$version[i] <- as.vector(ref$version))
+    suppressWarnings(uploaded_packages$source[i]  <- as.vector(ref$source))
+    if (ref$source == "pkg_missing") {
+      rlang::inform(glue("NOTE: package ", {ref$name}, 
+                         " was flagged by riskmetric as '",{ref$source},"' and will be removed. Did you misspell it?"))
+      j[i] <- FALSE
+    } else {
+    if (!ref$name %in% CRAN_avail_pkgs) {
+      rlang::inform(glue("NOTE: package ", {ref$name},
+                         " was not found on the CRAN so it will be removed from upload list."))
+      j[i] <- FALSE
+     }
+    }
+  }
+
+  # drop the non-existent packages
+  uploaded_packages <- uploaded_packages[which(j),]
+  # drop large string
+  rm(CRAN_avail_pkgs)
+
   
   waitress$inc(2)
   
@@ -109,7 +153,7 @@ output$upload_summary_text <- renderText({
   as.character(tagList(
     br(), br(),
     hr(),
-    h5("Summary of uploaded package (s)"),
+    h5("Summary of uploaded package(s)"),
     br(),
     p(tags$b("Total Packages: "), nrow(values$uploaded_pkgs)),
     p(tags$b("New Packages: "), sum(values$uploaded_pkgs$status == 'new')),
