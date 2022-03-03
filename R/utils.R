@@ -132,10 +132,6 @@ dbSelect <- function(query, db_name = database_name){
   
   dat <- dbFetch(rs)
   dbClearResult(rs)
-  if (nrow(dat) == 0 
-      & (str_detect(query, "name = 'Select'") == FALSE) && str_detect(query, "name = ''") == FALSE) {
-    message(paste0("No rows were returned from query\n",query))
-  }
   dbDisconnect(con)
   return(dat)
 }
