@@ -88,8 +88,7 @@ sidebarServer <- function(id, uploaded_pkgs, user) {
     selected_pkg <- reactive({
       req(input$select_pkg)
       req(input$select_ver)
-      req(input$select_pkg != "-")
-      
+
       dbSelect(glue(
         "SELECT *
         FROM package
@@ -99,6 +98,7 @@ sidebarServer <- function(id, uploaded_pkgs, user) {
     # Update package version.
     observeEvent(input$select_pkg, {
       req(input$select_pkg)
+      req(input$select_ver)
       
       version <- ifelse(input$select_pkg == "-", "-", selected_pkg()$version)
       
@@ -169,6 +169,8 @@ sidebarServer <- function(id, uploaded_pkgs, user) {
       if(current_comment == "")
         validate("Please enter a comment.")
       
+      req(selected_pkg())
+      
       previous_comments <- 
         dbSelect(glue(
           "SELECT *
@@ -205,6 +207,8 @@ sidebarServer <- function(id, uploaded_pkgs, user) {
     
     observeEvent(input$submit_overall_comment_yes, {
 
+      req(selected_pkg())
+      
       command <-glue(
         "UPDATE comments
           SET comment = '{input$overall_comment}', added_on = '{getTimeStamp()}'
