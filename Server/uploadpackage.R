@@ -1,8 +1,5 @@
-# IntroJS.
-# rv <- reactiveValues( # initialize
-#   uploaded_pkgs = data.frame(package = character(0) , version = character(0), status = character(0))
-# ) 
 
+# Determine which guide to use for IntroJS.
 upload_pkg_txt <- reactive({
   req(values$uploaded_pkgs)
   if(nrow(values$uploaded_pkgs) > 0) upload_pkg_complete else upload_pkg
