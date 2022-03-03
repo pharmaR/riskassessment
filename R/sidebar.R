@@ -142,20 +142,27 @@ sidebarServer <- function(id, uploaded_pkgs, user) {
       h5(selected_pkg()$score)
     })
     
-    # Display comments for selected package.
-    observeEvent(input$select_pkg, {
+    # Display/update overall comments for selected package/version.
+    observeEvent(input$select_ver, {
       req(input$select_pkg)
+      req(input$select_ver)
 
-      if(input$select_pkg == "-")
-        validate("Please select a package")
-
-      comments <- dbSelect(glue(
-        "SELECT comment FROM comments
+      # If no package/version is selected, then clear comments.
+      if(input$select_pkg == "-" || input$select_ver == "-"){
+        updateTextAreaInput(session, "overall_comment",
+                            placeholder = 'Please select a package and a version.')
+      }
+      else {
+        # Display package comments if a package and version are selected.
+        comments <- dbSelect(glue(
+          "SELECT comment FROM comments
           WHERE id = '{input$select_pkg}'
-          AND comment_type = 'o'"))
-      
-      updateTextAreaInput(session, "overall_comment", placeholder = comments$comment)
-    }, ignoreInit = TRUE)
+          AND comment_type = 'o'"))$comment
+        
+        updateTextAreaInput(session, "overall_comment",
+                            placeholder = glue('Current Overall Comment: {comments}'))
+      }
+    })
     
     # Update db if comment is submitted.
     observeEvent(input$submit_overall_comment, {
@@ -225,9 +232,23 @@ sidebarServer <- function(id, uploaded_pkgs, user) {
     })
     
     # Update decision when package is selected.
-    observeEvent(input$select_pkg, {
-      # Suppose package has been selected with a previously made decision.
-      req(input$select_pkg != "-")
+    observeEvent(input$select_ver, {
+      req(input$select_pkg)
+      req(input$select_ver)
+      
+      # Reset decision if no package/version is selected.
+      if(input$select_pkg == "-" || input$select_ver == "-") {
+        updateSliderTextInput(
+          session,
+          "decision",
+          choices = c("Low", "Medium", "High"),
+          selected = 'Low'
+        )
+        
+        validate('Please select a package and a version.')
+      }
+      
+      req(selected_pkg())
       
       # Update the risk slider using the info saved.
       updateSliderTextInput(
@@ -239,8 +260,9 @@ sidebarServer <- function(id, uploaded_pkgs, user) {
     })
     
     # Enable/disable sidebar decision and comment.
-    observeEvent(input$select_pkg, {
-      if (input$select_pkg != "-" && (is_empty(selected_pkg()$decision) || selected_pkg()$decision == "")) {
+    observeEvent(input$select_ver, {
+      if (input$select_pkg != "-" && input$select_pkg != "-" &&
+          (is_empty(selected_pkg()$decision) || selected_pkg()$decision == "")) {
         enable("decision")
         enable("submit_decision")
         enable("overall_comment")
