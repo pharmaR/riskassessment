@@ -25,17 +25,29 @@ SQLite is a software library that provides a relational database management syst
 SQLite has the following noticeable features: self-contained, serverless, zero-configuration, transactional.
 
 For more information, see [What is SQLite](https://www.sqlitetutorial.net/what-is-sqlite/)
+</br></br>
+
+### Why SQLite?
+
+For one obvious reason -- all the Risk Assessment App data is stored in a SQLite database.
+Also, one of SQLite's advantages is that it can run nearly anywhere. 
+This vignette will provide you with the means of accessing the database outside of 
+the Risk Assessment App.
+</br></br>
 
 ### Download SQLite tools
 
 Open the download page [SQLite Download Page](https://www.sqlite.org/download.html)
 
-To work with SQLite on Windows, you download the command-line shell program as shown in the screenshot below.
+To work with SQLite on Windows, </br>you download the command-line shell program as shown in the screenshot below.
   ![](images/SQLite_Precompiled_Binaries_Win.png)
   
-If you are using a Mac, then you need to download this one:
+</br>
+If you are using a Mac, </br>you need to download this one:
   ![](images/SQLite_Precompiled_Binaries_Mac.png)
-The downloaded file is in the ZIP format and its size is quite small.
+</br></br>
+In either case, the downloaded file is in ZIP format and its size is quite small.
+</br></br>
 
 ### Run SQLite tools
 
@@ -46,14 +58,16 @@ Create a new folder e.g., `C:\sqlite` (No IT support is needed).
 Extract the content of the .zip file that you downloaded in the previous section to the `C:\sqlite` folder. You should see three programs as shown below:
 
  ![](images/SQLite_files.png)
+</br></br>
 
 ### Open the command line window.  
 
 On Windows, type "cmd" in the search bar.
 
  ![](images/Command_Prompt.png)
+</br></br>
 
-### navigate to the C:\sqlite folder.
+### Navigate to the `C:\sqlite` folder.
 
 ```{R, eval=FALSE}
 C:\cd c:\sqlite
@@ -123,6 +137,7 @@ additional output not displayed
 ```
 
 To exit, type `.quit`or `.exit`
+</br></br>
 
 ### Command Line Shell
 
@@ -165,6 +180,8 @@ And you can build queries or commands for SQLite and execute them.
 ```
 
 For more info, see [Command Line Shell for SQLite](https://sqlite.org/cli.html)
+
+</br></br>
 
 ### SQLiteStudio
 
