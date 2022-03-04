@@ -26,8 +26,7 @@ introJSServer <- function(id, text) {
                   text %>%
                   union(sidebar_steps),
                 "nextLabel" = "Next",
-                "prevLabel" = "Previous",
-                "skipLabel" = "Close"
+                "prevLabel" = "Previous"
               )
       )
     )

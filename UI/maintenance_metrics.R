@@ -15,9 +15,10 @@ output$maintenance_metrics <- renderUI({
         br(), br(),
         metricGridUI("mm_metricGrid"),
         br(), br(),
-        fluidRow(
-          addCommentUI("add_comment_for_mm"),
-          viewCommentsUI("view_mm_comments")
+        fluidRow(div(id = "comments_for_mm",
+            addCommentUI("add_comment_for_mm"),
+            viewCommentsUI("view_mm_comments")
+          )
         )
       )
     )
