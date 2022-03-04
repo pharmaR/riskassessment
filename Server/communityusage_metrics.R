@@ -127,8 +127,6 @@ output$downloads_plot <- plotly::renderPlotly({
     max(downloads_data$day_month_year) - 45 - (365 * 2),
     max(downloads_data$day_month_year) + 15)
   
-  print(default_range)
-  
   plot_ly(downloads_data,
           x = ~day_month_year,
           y = ~downloads,
