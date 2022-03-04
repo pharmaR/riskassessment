@@ -84,7 +84,6 @@ sidebarServer <- function(id, uploaded_pkgs, user) {
       
       updateSelectizeInput(
         inputId = "select_pkg",
-        #label = h5("Select Package"),
         choices = c("-", dbSelect('SELECT name FROM package')$name),
         selected = "-"
       )
@@ -95,8 +94,7 @@ sidebarServer <- function(id, uploaded_pkgs, user) {
     selected_pkg <- reactive({
       req(input$select_pkg)
       req(input$select_ver)
-      req(input$select_pkg != "-")
-      
+
       dbSelect(glue(
         "SELECT *
         FROM package
@@ -106,9 +104,7 @@ sidebarServer <- function(id, uploaded_pkgs, user) {
     # Update package version.
     observeEvent(input$select_pkg, {
       req(input$select_pkg)
-      
-      if(input$select_pkg == "-")
-        validate("Please select a package")
+      req(input$select_ver)
       
       version <- ifelse(input$select_pkg == "-", "-", selected_pkg()$version)
       
@@ -130,7 +126,7 @@ sidebarServer <- function(id, uploaded_pkgs, user) {
       if(input$select_ver == "-")
         validate("Please select a version")
       
-      status <- ifelse(selected_pkg()$decision == "", "Under Review", "Reviewed")
+      status <- ifelse(selected_pkg()$decision == '', "Under Review", "Reviewed")
       h5(status)
     })
     
@@ -179,6 +175,8 @@ sidebarServer <- function(id, uploaded_pkgs, user) {
       if(current_comment == "")
         validate("Please enter a comment.")
       
+      req(selected_pkg())
+      
       previous_comments <- 
         dbSelect(glue(
           "SELECT *
@@ -199,33 +197,39 @@ sidebarServer <- function(id, uploaded_pkgs, user) {
                No - Exits from window and removes the text in comment box."
           ),
           footer = tagList(
-            actionButton(NS(id, "submit_overall_comment_yes"), "Yes", class = "btn-success"),
-            actionButton(NS(id, "submit_overall_comment_edit"), "Edit", class = "btn-secondary"),
-            actionButton(NS(id, "submit_overall_comment_no"), "No", class = "btn-unsuccess")
+            actionButton(NS(id, "submit_overall_comment_yes"), "Yes"),
+            actionButton(NS(id, "submit_overall_comment_edit"), "Edit"),
+            actionButton(NS(id, "submit_overall_comment_no"), "No")
           )
         ))
       } else{
         dbUpdate(glue(
           "INSERT INTO comments
-          VALUES ('{selected_pkg()$name}', '{user$name}', '{user$role}', '{current_comment}', 'o', '{getTimeStamp()}')"))
+          VALUES ('{selected_pkg()$name}', '{user$name}', '{user$role}',
+          '{current_comment}', 'o', '{getTimeStamp()}')"))
         
-        updateTextAreaInput(session, "overall_comment", placeholder = paste("current comment:", current_comment))
+        updateTextAreaInput(session, "overall_comment",
+                            placeholder = glue('Current Comment: {current_comment}'))
       }
     })
     
     observeEvent(input$submit_overall_comment_yes, {
 
-      command <-glue(
-        "UPDATE comments
+      req(selected_pkg())
+
+      dbUpdate(
+        glue(
+          "UPDATE comments
           SET comment = '{input$overall_comment}', added_on = '{getTimeStamp()}'
           WHERE id = '{selected_pkg()$name}' AND
           user_name = '{user$name}' AND
           user_role = '{user$role}' AND
           comment_type = 'o'"
+        )
       )
-      dbUpdate(command)
       current_comment <- trimws(input$overall_comment)
-      updateTextAreaInput(session, "overall_comment", value = "", placeholder = paste("current comment:", current_comment))
+      updateTextAreaInput(session, "overall_comment", value = "",
+                          placeholder = glue('Current Comment: {current_comment}'))
       removeModal()
     })
 
