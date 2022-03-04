@@ -158,7 +158,6 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
 
 
 # Get community usage metrics info and upload into DB.
-# pkg_name = "dplyr"
 insert_community_metrics_to_db <- function(pkg_name) {
   
   pkgs_cum_metrics <- tibble()

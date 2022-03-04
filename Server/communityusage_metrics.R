@@ -122,6 +122,13 @@ output$downloads_plot <- plotly::renderPlotly({
     (as.numeric(min(downloads_data$day_month_year)) - 15) * 86400000,
     (as.numeric(max(downloads_data$day_month_year)) + 15) * 86400000)
   
+  # set default at 2 years
+  default_range <- c(
+    max(downloads_data$day_month_year) - 45 - (365 * 2),
+    max(downloads_data$day_month_year) + 15)
+  
+  print(default_range)
+  
   plot_ly(downloads_data,
           x = ~day_month_year,
           y = ~downloads,
@@ -162,6 +169,14 @@ output$downloads_plot <- plotly::renderPlotly({
         range = dates_range,
         rangeselector = list(
           buttons = list(
+            list(count = month_first + 1,
+                 label = "First Release",
+                 step = "month",
+                 stepmode = "todate"),
+            list(count = month_last + 1,
+                 label = "Last Release",
+                 step = "month",
+                 stepmode = "backward"),
             list(
               count = 6 + 1,
               label = "6 mo",
@@ -176,18 +191,9 @@ output$downloads_plot <- plotly::renderPlotly({
               count = 24 + 1,
               label = "2 yr",
               step = "month",
-              stepmode = "backward"),
-            list(count = month_last + 1,
-                 label = "Last Release",
-                 step = "month",
-                 stepmode = "backward"),
-            list(count = month_first + 1,
-                 label = "First Release",
-                 step = "month",
-                 stepmode = "todate")
+              stepmode = "backward")
           )),
-        rangeslider = list(type = "date", visible = TRUE), 
-        start = dates_range[1],
-        end = dates_range[2])
+        rangeslider = list(visible = TRUE)
+      )
     )
   })
