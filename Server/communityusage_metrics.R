@@ -131,7 +131,7 @@ output$downloads_plot <- plotly::renderPlotly({
           x = ~day_month_year,
           y = ~downloads,
           name = "# Downloads", type = 'scatter', 
-          mode = 'lines+markers', line = list(color = "blue"),
+          mode = 'lines+markers', line = list(color = "#1F9CBCF"),# "blue"),
           hoverinfo = "text",
           text = ~glue('No. of Downloads: {format(downloads, big.mark = ",")}
                        <br> {month} {year}')) %>%
@@ -149,7 +149,7 @@ output$downloads_plot <- plotly::renderPlotly({
       name = "Version Release",
       hoverinfo = "text",
       text = ~glue('Version {version}'),
-      line = list(color = "#FF0000")
+      line = list(color = "#D25C5C")
     ) %>% 
     add_annotations(
       yref = 'paper',
@@ -159,7 +159,7 @@ output$downloads_plot <- plotly::renderPlotly({
       xanchor = 'left',
       showarrow = F,
       textangle = 270,
-      font = list(size = 14, color = '#FF0000'),
+      font = list(size = 14, color = '#D25C5C'),
       text = ~ifelse(downloads_data$version %in% c("", "NA"), "", downloads_data$version)
     ) %>%
     layout(
