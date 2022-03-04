@@ -23,6 +23,7 @@ viewCommentsServer(id = "view_overall_comments_for_report",
                    label = 'Overall Comments')
 
 metricGridServer("report_mm_metricGrid", metrics = maint_metrics)
+metricGridServer("report_cum_metricGrid", metrics = com_usage_metrics)
 
 # Display general information of the selected package.
 output$pkg_overview <- renderUI({

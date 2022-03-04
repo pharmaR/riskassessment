@@ -48,7 +48,7 @@ output$report_preview <- renderUI({
           hr(),
           fluidRow(
             h5("Community Usage Metrics"),
-            #metricGridUI("report_mm_metricGrid"),
+            metricGridUI("report_cum_metricGrid"),
             viewCommentsUI("view_cum_comments_for_report")
           )
         )
