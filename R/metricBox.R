@@ -44,13 +44,13 @@ metricBoxServer <- function(id, title, desc, value,
         icon_class <- "text-info"
       }
       
-      card_style = "max-width: 400px; max-height: 250px; overflow-y: scroll;"
+      card_style = "max-width: 400px; max-height: 250px;"
       
       div(class="card mb-3 text-center border-info", style=card_style,
           div(class ="row no-gutters",
               div(class="col-md-4 text-center border-info",
                   icon(icon_name, class=icon_class,
-                       style="padding-top: 40%; font-size:60px; padding-left: 20%;")),
+                       style="padding-top: 40%; font-size: 60px; padding-left: 20%;")),
               div(class="col-md-8",
                   h5(class="card-header bg-transparent", style="font-size: 1vw",
                      title),
