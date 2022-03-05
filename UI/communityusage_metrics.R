@@ -22,7 +22,7 @@ output$community_usage_metrics <- renderUI({
         br(), br(),
         div(id = "cum_plot", fluidRow(
           column(width = 12, style = 'padding-left: 20px; padding-right: 20px;',
-                 plotlyOutput("downloads_plot")))),
+                 plotlyOutput("downloads_plot", height = "500px")))),
         br(), br(),
         div(id = "comments_for_cum", fluidRow( 
           addCommentUI(id = "add_comment_for_cum"),
