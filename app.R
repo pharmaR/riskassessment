@@ -142,11 +142,7 @@ server <- function(session, input, output) {
   observeEvent(res_auth$user, {
     if (res_auth$admin == TRUE)
       loggit("INFO", glue("User {res_auth$user} signed on as admin"))
-    
-    # TODO: Redundant.
-    values$name <- trimws(res_auth$user)
-    values$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
-    
+
     user$name <- trimws(res_auth$user)
     user$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
   })

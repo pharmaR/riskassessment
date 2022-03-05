@@ -156,8 +156,8 @@ databaseViewServer <- function(id) {
                 params = list(package = this_pkg,
                               riskmetric_version = packageVersion("riskmetric"),
                               cwd = values$cwd,
-                              username = values$name,
-                              user_role = values$role)
+                              username = user$name,
+                              user_role = user$role)
               )
               fs <- c(fs, path)  # Save all the reports/
               shiny::incProgress(1) # Increment progress bar.
@@ -400,8 +400,8 @@ databaseViewServer <- function(id) {
           dbUpdate(
             paste0(
               "INSERT INTO comments values('", all_pkgs$pkg_name[i], "',",
-              "'", values$name, "'," ,
-              "'", values$role, "',",
+              "'", user$name, "'," ,
+              "'", user$role, "',",
               "'", paste0(weight_risk_comment(all_pkgs$pkg_name[i]), 
                           ifelse(all_pkgs$pkg_name[i] %in% cmt_or_dec_pkgs$pkg_name, cmt_or_dec_dropped_cmt, "")), "',",
               "'", typ, "',",
