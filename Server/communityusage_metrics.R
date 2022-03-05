@@ -135,7 +135,10 @@ output$downloads_plot <- plotly::renderPlotly({
           hoverinfo = "text",
           text = ~glue('No. of Downloads: {format(downloads, big.mark = ",")}
                        <br> {month} {year}')) %>%
-    layout(title = glue('Number of Downloads by Month: {selected_pkg$name()}'),
+    layout(title = glue('NUMBER OF DOWNLOADS BY MONTH: {selected_pkg$name()}'),
+           font = list(
+             family = '"Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"'
+           ),
            showlegend = FALSE,
            yaxis = list(title = "Downloads"),
            xaxis = list(title = "", type = 'date', tickformat = "%b %Y",
@@ -159,7 +162,9 @@ output$downloads_plot <- plotly::renderPlotly({
       xanchor = 'left',
       showarrow = F,
       textangle = 270,
-      font = list(size = 14, color = '#D25C5C'),
+      font = list(size = 14, color = '#D25C5C'#,
+                  # family = '"Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"'
+                  ),
       text = ~ifelse(downloads_data$version %in% c("", "NA"), "", downloads_data$version)
     ) %>%
     layout(
