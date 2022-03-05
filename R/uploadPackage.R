@@ -59,6 +59,10 @@ uploadPackageServer <- function(id) {
     #' Save all the uploaded packages, marking them as 'new', 'not found', or
     #' 'duplicate'.
     uploaded_pkgs <- reactive({
+      
+      if(is.null(input$uploaded_file))
+        return(data.frame())
+      
       req(input$uploaded_file)
       
       if(is.null(input$uploaded_file$datapath))

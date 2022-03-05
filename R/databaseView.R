@@ -35,11 +35,10 @@ databaseViewUI <- function(id) {
   )
 }
 
-databaseViewServer <- function(id) {
+databaseViewServer <- function(id, uploaded_pkgs) {
   moduleServer(id, function(input, output, session) {
     
-    # Create table for the db dashboard.
-    output$db_pkgs <- DT::renderDataTable({
+    db_table <- eventReactive(uploaded_pkgs(), {
       
       db_pkg_overview <- dbSelect(
         'SELECT pi.name, pi.version, pi.score, pi.decision, c.last_comment
@@ -99,6 +98,11 @@ databaseViewServer <- function(id) {
         )
       ) %>%
         formatStyle(names(db_pkg_overview), textAlign = 'center')
+    })
+    
+    # Create table for the db dashboard.
+    output$db_pkgs <- DT::renderDataTable({
+      db_table()
     })
     
     # Enable the download button when a package is selected.

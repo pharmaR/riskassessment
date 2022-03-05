@@ -154,7 +154,7 @@ server <- function(session, input, output) {
   assessmentInfoServer("assessmentInfo")
   
   # Database view.
-  databaseViewServer("databaseView")
+  databaseViewServer("databaseView", uploaded_pkgs$names)
   
   # Gather maintenance metrics information.
   maint_metrics <- reactive({
