@@ -127,11 +127,6 @@ ui <- shinymanager::secure_app(
 # Create Server Code.
 server <- function(session, input, output) {
   
-  # Generate reactiveValues object with some (but not all) initial values
-  values <- reactiveValues(
-    uploaded_pkgs = data.frame(package = character(0) , version = character(0), status = character(0))
-  )
-  
   # Collect user info.
   user <- reactiveValues()
   
@@ -157,7 +152,11 @@ server <- function(session, input, output) {
   })
   
   # Sidebar module.
-  uploaded_pkgs <- reactive(values$uploaded_pkgs)
+  uploaded_pkgs <- reactive(
+    data.frame(package = character(0),
+               version = character(0),
+               status = character(0))
+  )
   selected_pkg <- sidebarServer("sidebar", uploaded_pkgs, user)
   
   # Assessment criteria information tab.

@@ -6,7 +6,6 @@ sidebarUI <- function(id) {
     
     uiOutput(NS(id, 'select_pkg_ui')),
     
-    
     selectizeInput(
       inputId = NS(id, "select_ver"),
       label = h5("Select Version"),
@@ -337,7 +336,6 @@ sidebarServer <- function(id, uploaded_pkgs, user) {
              glue("decision for the package {selected_pkg()$name} is {input$decision}
                   by {user$name} ({user$role})"))
     })
-    
     
     # Output package id, name, and version.
     # TODO: return the entire selected_pkg instead of doing this below.
