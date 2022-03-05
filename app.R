@@ -70,7 +70,7 @@ ui <- fluidPage(
             tabPanel(
               id = "upload_tab_id",
               title = "Upload Package",
-              uiOutput("upload_package")  # UI for upload package tab panel.
+              uploadPackageUI("upload_package")
             ),
             tabPanel(
               id = "mm_tab_id",
@@ -146,14 +146,12 @@ server <- function(session, input, output) {
     user$name <- trimws(res_auth$user)
     user$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
   })
+
+  # Load server of the uploadPackage module.
+  uploaded_pkgs <- uploadPackageServer("upload_package")
   
-  # Sidebar module.
-  uploaded_pkgs <- reactive(
-    data.frame(package = character(0),
-               version = character(0),
-               status = character(0))
-  )
-  selected_pkg <- sidebarServer("sidebar", uploaded_pkgs, user)
+  # Load server of the sidebar module.
+  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs$names)
   
   # Assessment criteria information tab.
   assessmentInfoServer("assessmentInfo")

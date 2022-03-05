@@ -39,7 +39,6 @@ sidebarUI <- function(id) {
         ),
         
         # Action button to submit decision for selected package.
-        
         actionButton(NS(id, "submit_decision"), "Submit Decision", width = "100%")
       ),
       br(), br(),
@@ -53,15 +52,15 @@ sidebarUI <- function(id) {
         ),
         
         # Submit Overall Comment for selected Package.
-        actionButton(NS(id, "submit_overall_comment"), "Submit Comment", width = "100%")
+        actionButton(NS(id, "submit_overall_comment"),
+                     "Submit Comment", width = "100%")
         )
       )
     )
   )
 }
 
-
-sidebarServer <- function(id, uploaded_pkgs, user) {
+sidebarServer <- function(id, user, uploaded_pkgs) {
   moduleServer(id, function(input, output, session) {
     
     # Required for shinyhelper to work.
