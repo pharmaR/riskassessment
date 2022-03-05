@@ -135,10 +135,7 @@ output$downloads_plot <- plotly::renderPlotly({
           hoverinfo = "text",
           text = ~glue('No. of Downloads: {format(downloads, big.mark = ",")}
                        <br> {month} {year}')) %>%
-    layout(title = #list(pad = list(b = 50), text = 
-             glue('NUMBER OF DOWNLOADS BY MONTH: {selected_pkg$name()}')
-            # )
-            ,
+    layout(title = glue('NUMBER OF DOWNLOADS BY MONTH: {selected_pkg$name()}'),
            margin = list(t = 100),
            font = list(
              size = 16,
