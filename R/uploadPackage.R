@@ -60,6 +60,9 @@ uploadPackageServer <- function(id) {
     #' 'duplicate'.
     uploaded_pkgs <- reactive({
       
+      # Return an empty data.frame when no file is uploaded.
+      # This is to allow for the database view method to update when a package
+      # is uploaded without failing.
       if(is.null(input$uploaded_file))
         return(data.frame())
       
@@ -85,13 +88,12 @@ uploadPackageServer <- function(id) {
       
       waitress$inc(1)
       
-      # Add status/source columns and remove white space around package names.
+      # Add status column and remove white space around package names.
       uploaded_packages <- uploaded_packages %>%
         mutate(
           status = rep('', nrow(uploaded_packages)),
-          source = rep('', nrow(uploaded_packages))
-        ) %>%
-        mutate(package = trimws(package))
+          package = trimws(package)
+        )
       
       for (i in 1:nrow(uploaded_packages)) {
         waitress$inc(1)
@@ -99,17 +101,16 @@ uploadPackageServer <- function(id) {
         
         if (ref$source == "pkg_missing"){
           uploaded_packages$status[i] <- 'not found'
-          
-          loggit('WARNING',
+
+          loggit('WARN',
                  glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
           
           waitress$inc(1)
         }
         else {
-          # Save version and source.
+          # Save version.
           uploaded_packages$version[i] <- as.character(ref$version)
-          uploaded_packages$source[i] <- as.character(ref$source)
-          
+
           found <- nrow(dbSelect(glue(
             "SELECT name
             FROM package
