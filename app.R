@@ -9,9 +9,6 @@ options(dplyr.summarise.inform = FALSE)
 
 # Load source files.
 source(file.path("R", "introJSText.R")) # introJS text.
-source(file.path("R", "viewComments.R"))
-source(file.path("R", "metricBox.R"))
-source(file.path("R", "metricGrid.R"))
 source(file.path("R", "dbupload.R"))
 source(file.path("R", "utils.R"))
 
@@ -189,10 +186,6 @@ server <- function(session, input, output) {
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)
   })
-  
-  # Load Source files of UI and Server modules of Upload Package Tab.
-  source(file.path("UI", "uploadpackage.R"), local = TRUE)
-  source(file.path("Server", "uploadpackage.R"), local = TRUE)
   
   # Load Source files of UI and Server modules of Report Preview Tab
   source(file.path("UI", "reportpreview.R"), local = TRUE)
