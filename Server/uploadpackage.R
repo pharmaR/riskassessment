@@ -1,8 +1,12 @@
 
 # Determine which guide to use for IntroJS.
 upload_pkg_txt <- reactive({
-  req(values$uploaded_pkgs)
-  if(nrow(values$uploaded_pkgs) > 0) upload_pkg_complete else upload_pkg
+  req(uploaded_pkgs())
+  
+  if(nrow(uploaded_pkgs()) > 0) 
+    upload_pkg_complete 
+  else 
+    upload_pkg
 })
 
 # Start introjs when help button is pressed. Had to do this outside of
@@ -134,7 +138,7 @@ observe({
                "Duplicate Packages:", sum(uploaded_packages$status == 'duplicate')),
          echo = FALSE)
   
-  values$uploaded_pkgs <- uploaded_packages
+  uploaded_pkgs() <- uploaded_packages
 })
 
 # Download the sample dataset.
@@ -149,16 +153,16 @@ output$download_sample <- downloadHandler(
 
 # Uploaded packages summary.
 output$upload_summary_text <- renderText({
-  req(nrow(values$uploaded_pkgs) > 0)
+  req(nrow(uploaded_pkgs()) > 0)
   as.character(tagList(
     br(), br(),
     hr(),
     h5("Summary of uploaded package(s)"),
     br(),
-    p(tags$b("Total Packages: "), nrow(values$uploaded_pkgs)),
-    p(tags$b("New Packages: "), sum(values$uploaded_pkgs$status == 'new')),
-    p(tags$b("Undiscovered Packages: "), sum(values$uploaded_pkgs$status == 'not found')),
-    p(tags$b("Duplicate Packages: "), sum(values$uploaded_pkgs$status == 'duplicate')),
+    p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
+    p(tags$b("New Packages: "), sum(uploaded_pkgs()$status == 'new')),
+    p(tags$b("Undiscovered Packages: "), sum(uploaded_pkgs()$status == 'not found')),
+    p(tags$b("Duplicate Packages: "), sum(uploaded_pkgs()$status == 'duplicate')),
     p("Note: The assessment will be performed on the latest version of each
         package, irrespective of the uploaded version.")
   ))
@@ -166,10 +170,10 @@ output$upload_summary_text <- renderText({
 
 # Uploaded packages table.
 output$upload_pkgs_table <- DT::renderDataTable({
-  req(nrow(values$uploaded_pkgs) > 0)
+  req(nrow(uploaded_pkgs()) > 0)
   
   datatable(
-    values$uploaded_pkgs,
+    uploaded_pkgs(),
     escape = FALSE,
     class = "cell-border",
     selection = 'none',
