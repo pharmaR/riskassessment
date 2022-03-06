@@ -131,16 +131,13 @@ output$downloads_plot <- plotly::renderPlotly({
           x = ~day_month_year,
           y = ~downloads,
           name = "# Downloads", type = 'scatter', 
-          mode = 'lines+markers', line = list(color = "#1F9CBCF"),# "blue"),
+          mode = 'lines+markers', line = list(color = '#1F9BCF'),
+          marker = list(color = '#1F9BCF'),
           hoverinfo = "text",
           text = ~glue('No. of Downloads: {format(downloads, big.mark = ",")}
-                       <br> {month} {year}')) %>%
+                       {month} {year}')) %>%
     layout(title = glue('NUMBER OF DOWNLOADS BY MONTH: {selected_pkg$name()}'),
            margin = list(t = 100),
-           font = list(
-             size = 16,
-             family = '"Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"'
-           ),
            showlegend = FALSE,
            yaxis = list(title = "Downloads"),
            xaxis = list(title = "", type = 'date', tickformat = "%b %Y",
@@ -154,7 +151,7 @@ output$downloads_plot <- plotly::renderPlotly({
       name = "Version Release",
       hoverinfo = "text",
       text = ~glue('Version {version}'),
-      line = list(color = "#D25C5C")
+      line = list(color = '#4BBF73')
     ) %>% 
     add_annotations(
       yref = 'paper',
@@ -164,7 +161,7 @@ output$downloads_plot <- plotly::renderPlotly({
       xanchor = 'left',
       showarrow = F,
       textangle = 270,
-      font = list(size = 14, color = '#D25C5C'),
+      font = list(size = 14, color = '#4BBF73'),
       text = ~ifelse(downloads_data$version %in% c("", "NA"), "", downloads_data$version)
     ) %>%
     layout(
@@ -198,5 +195,6 @@ output$downloads_plot <- plotly::renderPlotly({
           )),
         rangeslider = list(visible = TRUE)
       )
-    )
+    ) %>%
+    config(displayModeBar = F)
   })
