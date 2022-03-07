@@ -42,6 +42,7 @@ ui <- fluidPage(
   theme = theme,
   
   includeCSS(path = "www/css/main.css"),
+  includeCSS(path = "www/css/community_metrics.css"),
   
   tabsetPanel(
     id = "apptabs",

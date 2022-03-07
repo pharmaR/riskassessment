@@ -1,0 +1,26 @@
+/* Modify title in the downloads' plot of community usage metrics tab. */
+text.gtitle {
+  font-family: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+  color: rgb(26, 26, 26) !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  letter-spacing: 3px !important;
+  line-height: 19.19px !important;
+}
+
+/* Modify x-axis text in the downloads' plot of community usage metrics tab. */
+.xtick text {
+    font-family: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+  color: rgb(26, 26, 26) !important;
+  letter-spacing: 1px !important;
+  line-height: 19.19px !important;
+}
+
+/* Modify y-axis text in the downloads' plot of community usage metrics tab. */
+text.ytitle {
+    font-family: "Nunito Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+  fill: rgb(26, 26, 26) !important;
+  font-weight: 600 !important;
+  letter-spacing: 2px !important;
+  line-height: 19.19px !important;
+}

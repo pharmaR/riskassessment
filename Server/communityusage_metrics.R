@@ -94,7 +94,7 @@ output$downloads_plot <- plotly::renderPlotly({
   
   downloads_data <- community_data %>%
     distinct(month, year, .keep_all = TRUE)
-  
+
   # Last day that appears on the community metrics.
   latest_date <- downloads_data %>%
     slice_max(day_month_year) %>%
@@ -106,65 +106,95 @@ output$downloads_plot <- plotly::renderPlotly({
     slice_max(day_month_year) %>%
     pull(day_month_year)
   
+  # First day associated with a version release.
+  first_version_date <- downloads_data %>%
+    filter(!(version %in% c('', 'NA'))) %>%
+    slice_min(day_month_year) %>%
+    pull(day_month_year)
+  
   # Get the difference in months.
-  month_diff <- interval(last_version_date, latest_date) %/% months(1)
+  month_last <- interval(last_version_date, latest_date) %/% months(1)
+  month_first <- interval(first_version_date, latest_date) %/% months(1)
+  
+  # Set plot range: [min - 15 days, max + 15 days].
+  # Dates need to be transformed to milliseconds since epoch.
+  dates_range <- c(
+    (as.numeric(min(downloads_data$day_month_year)) - 15) * 86400000,
+    (as.numeric(max(downloads_data$day_month_year)) + 15) * 86400000)
+  
+  # set default at 2 years
+  default_range <- c(
+    max(downloads_data$day_month_year) - 45 - (365 * 2),
+    max(downloads_data$day_month_year) + 15)
   
   plot_ly(downloads_data,
           x = ~day_month_year,
           y = ~downloads,
           name = "# Downloads", type = 'scatter', 
-          mode = 'lines+markers', line = list(color = "blue"),
+          mode = 'lines+markers', line = list(color = '#1F9BCF'),
+          marker = list(color = '#1F9BCF'),
           hoverinfo = "text",
-          text = ~glue('No. of Downloads: {format(downloads, big.mark = ",")} <br> {month} {year}')) %>%
-    layout(title = glue('Number of Downloads by Month: {selected_pkg$name()}'),
+          text = ~glue('No. of Downloads: {format(downloads, big.mark = ",")}
+                       {month} {year}')) %>%
+    layout(title = glue('NUMBER OF DOWNLOADS BY MONTH: {selected_pkg$name()}'),
+           margin = list(t = 100),
            showlegend = FALSE,
            yaxis = list(title = "Downloads"),
-           xaxis = list(title = "Month")
+           xaxis = list(title = "", type = 'date', tickformat = "%b %Y",
+                        range = dates_range)
     ) %>% 
     add_segments(
       x = ~if_else(version %in% c("", "NA"), NA_Date_, day_month_year),
-      xend = ~if_else(version %in% c("","NA"), NA_Date_, day_month_year),
+      xend = ~if_else(version %in% c("", "NA"), NA_Date_, day_month_year),
       y = ~.98 * min(downloads),
       yend = ~1.02 * max(downloads),
       name = "Version Release",
       hoverinfo = "text",
       text = ~glue('Version {version}'),
-      line = list(color = "#FF0000")
+      line = list(color = '#4BBF73')
     ) %>% 
-    #   add_annotations(
-    #     yref = 'paper', 
-    #     xref = "x", 
-    #     y = .93, 
-    #     x = ver_dat$day_month_year,
-    #     xanchor = 'left',
-    #     showarrow = F,
-    #     textangle = 90,
-    #     font = list(size = 14, color = '#000000'),
-    #     text = ver_dat$version
-    #   ) %>% 
-  layout(
-    xaxis = list(
-      rangeselector = list(
-        buttons = list(
-          list(
-            count = 6,
-            label = "6 mo",
-            step = "month",
-            stepmode = "backward"),
-          list(
-            count = 1,
-            label = "1 yr",
-            step = "year",
-            stepmode = "backward"),
-          list(
-            count = 2,
-            label = "2 yr",
-            step = "year",
-            stepmode = "year"),
-          list(count = month_diff,
-               label = "Last Release",
-               step = "month",
-               stepmode = "backward"))),
-      rangeslider = list(type = "date"))
-  )
-})
+    add_annotations(
+      yref = 'paper',
+      xref = "x",
+      y = .50,
+      x = downloads_data$day_month_year,
+      xanchor = 'left',
+      showarrow = F,
+      textangle = 270,
+      font = list(size = 14, color = '#4BBF73'),
+      text = ~ifelse(downloads_data$version %in% c("", "NA"), "", downloads_data$version)
+    ) %>%
+    layout(
+      xaxis = list(
+        range = dates_range,
+        rangeselector = list(
+          buttons = list(
+            list(count = month_first + 1,
+                 label = "First Release",
+                 step = "month",
+                 stepmode = "todate"),
+            list(count = month_last + 1,
+                 label = "Last Release",
+                 step = "month",
+                 stepmode = "backward"),
+            list(
+              count = 24 + 1,
+              label = "2 yr",
+              step = "month",
+              stepmode = "backward"),
+            list(
+              count = 12 + 1,
+              label = "1 yr",
+              step = "month",
+              stepmode = "backward"),
+            list(
+              count = 6 + 1,
+              label = "6 mo",
+              step = "month",
+              stepmode = "backward")
+          )),
+        rangeslider = list(visible = TRUE)
+      )
+    ) %>%
+    config(displayModeBar = F)
+  })
