@@ -17,13 +17,13 @@ databaseViewUI <- function(id) {
           br(), br(),
           box(width = 12,
               title = h5("Uploaded Packages", style = "margin-top: 5px"),
-              DT::dataTableOutput(NS(id, "db_pkgs")),
+              DT::dataTableOutput(NS(id, "packages_table")),
               br(),
               fluidRow(
                 column(
                   width = 6,
                   style = "margin: auto;",
-                  downloadButton(NS(id, "dwnld_sel_db_pkgs_btn"), "Download Report(s)")),
+                  downloadButton(NS(id, "download_reports"), "Download Report(s)")),
                 column(
                   width = 6,
                   selectInput(NS(id, "report_formats"), "Select Format", c("html", "docx"))
@@ -38,7 +38,8 @@ databaseViewUI <- function(id) {
 databaseViewServer <- function(id, uploaded_pkgs) {
   moduleServer(id, function(input, output, session) {
     
-    db_table <- eventReactive(uploaded_pkgs(), {
+    # Update table_data if a package has been uploaded
+    table_data <- eventReactive(uploaded_pkgs(), {
       
       db_pkg_overview <- dbSelect(
         'SELECT pi.name, pi.version, pi.score, pi.decision, c.last_comment
@@ -49,16 +50,20 @@ databaseViewServer <- function(id, uploaded_pkgs) {
         ORDER BY 1 DESC'
       )
       
-      db_pkg_overview <- db_pkg_overview %>%
+      db_pkg_overview %>%
         mutate(last_comment = as.character(as_datetime(last_comment))) %>%
         mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
         mutate(decision = ifelse(decision != "", paste(decision, "Risk"), "-")) %>%
         mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
         select(name, version, score, was_decision_made, decision, last_comment)
-      
+    })
+    
+    # Create table for the db dashboard.
+    output$packages_table <- DT::renderDataTable({
+
       as.datatable(
         formattable(
-          db_pkg_overview,
+          table_data(),
           list(
             score = formatter(
               "span",
