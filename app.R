@@ -72,13 +72,11 @@ ui <- fluidPage(
             ),
             tabPanel(
               id = "mm_tab_id",
-              value = "mm_tab_value",
               title = "Maintenance Metrics",
               uiOutput("maintenance_metrics") # UI for Maintenance Metrics tab panel.
             ),
             tabPanel(
               id = "cum_tab_id",
-              value = "cum_tab_value",
               title = "Community Usage Metrics",
               uiOutput("community_usage_metrics")  # UI for Community Usage Metrics tab panel.
             ),
