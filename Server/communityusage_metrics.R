@@ -178,8 +178,8 @@ output$downloads_plot <- plotly::renderPlotly({
                  step = "month",
                  stepmode = "backward"),
             list(
-              count = 6 + 1,
-              label = "6 mo",
+              count = 24 + 1,
+              label = "2 yr",
               step = "month",
               stepmode = "backward"),
             list(
@@ -188,8 +188,8 @@ output$downloads_plot <- plotly::renderPlotly({
               step = "month",
               stepmode = "backward"),
             list(
-              count = 24 + 1,
-              label = "2 yr",
+              count = 6 + 1,
+              label = "6 mo",
               step = "month",
               stepmode = "backward")
           )),
