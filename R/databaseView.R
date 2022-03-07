@@ -102,29 +102,21 @@ databaseViewServer <- function(id, uploaded_pkgs) {
           columnDefs = list(list(className = 'dt-center'))
         )
       ) %>%
-        formatStyle(names(db_pkg_overview), textAlign = 'center')
-    })
-    
-    # Create table for the db dashboard.
-    output$db_pkgs <- DT::renderDataTable({
-      db_table()
+        formatStyle(names(table_data()), textAlign = 'center')
     })
     
     # Enable the download button when a package is selected.
     observe({
-      if(!is.null(input$db_pkgs_rows_selected)) {
-        shinyjs::enable("dwnld_sel_db_pkgs_btn")
+      if(!is.null(input$packages_table_rows_selected)) {
+        shinyjs::enable("download_reports")
       } else {
-        shinyjs::disable("dwnld_sel_db_pkgs_btn")
+        shinyjs::disable("download_reports")
       }
     })
     
     values <- reactiveValues()
     
-    # Download handler to create a report for each package selected.
-    values$cwd <- getwd()
-    
-    output$dwnld_sel_db_pkgs_btn <- downloadHandler(
+    output$download_reports <- downloadHandler(
       filename = function() {
         paste(
           "RiskAssessment-Report-",
@@ -136,6 +128,7 @@ databaseViewServer <- function(id, uploaded_pkgs) {
         these_pkgs <- values$db_pkg_overview %>% slice(input$db_pkgs_rows_selected)
         n_pkgs <- nrow(these_pkgs)
         req(n_pkgs > 0)
+        
         shiny::withProgress(
           message = paste0("Downloading ", n_pkgs, " Report", ifelse(n_pkgs > 1, "s", "")),
           value = 0,
@@ -164,7 +157,7 @@ databaseViewServer <- function(id, uploaded_pkgs) {
                 output_file = path,
                 params = list(package = this_pkg,
                               riskmetric_version = packageVersion("riskmetric"),
-                              cwd = values$cwd,
+                              cwd = getwd(),
                               username = user$name,
                               user_role = user$role)
               )
@@ -173,7 +166,7 @@ databaseViewServer <- function(id, uploaded_pkgs) {
             }
             # Zip all the files up. -j retains just the files in zip file.
             zip(zipfile = file, files = fs, extras = "-j")
-            shiny::incProgress(1) # Icrement progress bar.
+            shiny::incProgress(1) # Increment progress bar.
           })
       },
       contentType = "application/zip"
@@ -195,8 +188,7 @@ databaseViewServer <- function(id, uploaded_pkgs) {
       
       all_names <- unique(values$curr_new_wts$name)
       chgd_wt_names <- values$curr_new_wts %>% filter(weight != new_weight) %>% pull(name)
-      my_colors <- ifelse(all_names %in% chgd_wt_names,'#FFEB9C','#FFFFFF')
-      
+      my_colors <- ifelse(all_names %in% chgd_wt_names,'#FFEB9C', '#FFFFFF')
       
       DT::datatable(
         values$curr_new_wts,
@@ -426,11 +418,6 @@ databaseViewServer <- function(id, uploaded_pkgs) {
       for (i in 1:nrow(pkg)) {
         dbUpdate(glue("UPDATE package SET decision = '' where name = '{pkg$pkg_name[i]}'"))
       }
-      
-      # want to update db_dash_screen after creating automated comments and
-      # resetting final decisions. This allows us to capture old risk score in
-      # database and the timestamp of the last automated comment that was just added
-      values$db_pkg_overview <- update_db_dash()
       
       #	Write to the log file
       loggit("INFO", paste("package weights and risk metric scores will be updated for all packages"))
