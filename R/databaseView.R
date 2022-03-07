@@ -118,11 +118,8 @@ databaseViewServer <- function(id, uploaded_pkgs) {
     
     output$download_reports <- downloadHandler(
       filename = function() {
-        paste(
-          "RiskAssessment-Report-",
-          str_replace_all(
-            str_replace(Sys.time(), " ", "_"), ":", "-"),
-          ".zip", sep = "-")
+        report_datetime <- str_replace_all(str_replace(Sys.time(), " ", "_"), ":", "-")
+        glue('RiskAssessment-Report-{report_datetime}.zip')
       },
       content = function(file) {
         these_pkgs <- values$db_pkg_overview %>% slice(input$db_pkgs_rows_selected)
@@ -130,7 +127,7 @@ databaseViewServer <- function(id, uploaded_pkgs) {
         req(n_pkgs > 0)
         
         shiny::withProgress(
-          message = paste0("Downloading ", n_pkgs, " Report", ifelse(n_pkgs > 1, "s", "")),
+          message = glue('Downloading {n_pkgs} Report{ifelse(n_pkgs > 1, "s", "")}'),
           value = 0,
           max = n_pkgs + 2, # Tell the progress bar the total number of events.
           {
@@ -144,12 +141,14 @@ databaseViewServer <- function(id, uploaded_pkgs) {
               Report <- file.path(my_dir, "Report_doc.Rmd")
               file.copy("Reports/Report_doc.Rmd", Report, overwrite = TRUE)
             }
+            
             fs <- c()
             for (i in 1:n_pkgs) {
               # Grab package name and version, then create filename and path.
-              this_pkg <- these_pkgs$name[i]
-              this_ver <- these_pkgs$version[i]
-              file_named <- paste0(this_pkg,"_",this_ver,"_Risk_Assessment.",input$report_formats)
+              this_pkg <- selected_pkgs$name[i]
+              this_ver <- selected_pkgs$version[i]
+              file_named <- glue('{this_pkg}_{this_ver}_Risk_Assessment.{input$report_formats}')
+              
               path <- file.path(my_dir, file_named)
               # Render the report, passing parameters to the rmd file.
               rmarkdown::render(
