@@ -30,8 +30,6 @@ metricGridServer <- function(id, metrics) {
     })
     
     observeEvent(metrics(), {
-      browser()
-      
       apply(metrics(), 1, function(metric)
         metricBoxServer(id = metric['name'],
                         title = metric['title'],
