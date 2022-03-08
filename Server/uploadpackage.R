@@ -41,6 +41,8 @@ observeEvent(input$uploaded_file, {
   names(uploaded_packages) <- tolower(names(uploaded_packages))
   uploaded_packages$package <- trimws(uploaded_packages$package)
   
+  withProgress(message = "Uploading Packages to DB:", detail = "go get some coffee!", value = 0, {
+    
   # use the same url dbupload.R is using to get community usage metrics
   url <- "https://cran.r-project.org/web/packages/available_packages_by_name.html"
   # open page
@@ -89,7 +91,6 @@ observeEvent(input$uploaded_file, {
   # Save the uploaded packages that were not in the db.
   new_pkgs <- uploaded_packages %>% filter(!(package %in% curr_pkgs$name))
 
-  withProgress(message = "Uploading Packages to DB:", detail = "go get some coffee!", value = 0, {
   if(nrow(new_pkgs) != 0){
     for (i in seq_along(new_pkgs$package)) {
       pkg <- new_pkgs$package[i]
