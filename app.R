@@ -78,7 +78,7 @@ ui <- fluidPage(
             tabPanel(
               id = "cum_tab_id",
               title = "Community Usage Metrics",
-              uiOutput("community_usage_metrics")  # UI for Community Usage Metrics tab panel.
+              communityMetricsUI('communityMetrics')
             ),
             tabPanel(
               id = "reportPreview_tab_id",
@@ -190,15 +190,19 @@ server <- function(session, input, output) {
   
   # Load server for the maintenance metrics tab.
   mm_comment_added <- maintenanceMetricsServer('maintenanceMetrics',
-                                               selected_pkg, maint_metrics, user)
+                                               selected_pkg,
+                                               maint_metrics,
+                                               user)
+  
+  # Load server for the community metrics tab.
+  communityMetricsServer('communityMetrics',
+                         selected_pkg,
+                         community_usage_metrics,
+                         user)
   
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)
   })
-  
-  # Load Source files of UI and Server modules of Community Usage Tab.
-  source(file.path("UI", "communityusage_metrics.R"), local = TRUE)
-  source(file.path("Server", "communityusage_metrics.R"), local = TRUE)
 }
 
 shinyApp(ui = ui, server = server)
