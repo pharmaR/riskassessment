@@ -20,11 +20,10 @@ observeEvent(
   )
 )
 
-#' Save all the uploaded packages, marking them as 'new', 'not found', or
-#' 'duplicate'.
+#' Save all the uploaded packages, 
+#' marking them as 'new', 'not found', or 'duplicate'.
 observeEvent(input$uploaded_file, {
-  #req(input$uploaded_file)
-  
+
   if(is.null(input$uploaded_file$datapath))
     validate('Please upload a nonempty CSV file.')
   
@@ -39,12 +38,12 @@ observeEvent(input$uploaded_file, {
   if(!all(colnames(packages) == colnames(template)))
     validate("Please upload a CSV with a valid format.")
   
-  waitress <- waiter::Waitress$new(
-   max = 3*nrow(uploaded_packages) + 4,
-   theme = 'overlay-percent')
-   on.exit(waitress$close())
+  # waitress <- waiter::Waitress$new(
+  #  max = 3*nrow(uploaded_packages) + 4,
+  #  theme = 'overlay-percent')
+  #  on.exit(waitress$close())
 
-  waitress$inc(1)
+  # waitress$inc(1)
   
 
   names(uploaded_packages) <- tolower(names(uploaded_packages))
@@ -92,12 +91,12 @@ observeEvent(input$uploaded_file, {
   rm(CRAN_avail_pkgs)
 
   
-  waitress$inc(2)
+  # waitress$inc(2)
   
   # Current packages on the db.
   curr_pkgs <- dbSelect("SELECT name FROM package")
   
-  waitress$inc(1)
+  # waitress$inc(1)
   
   # Save the uploaded packages that were not in the db.
   new_pkgs <- uploaded_packages %>% filter(!(package %in% curr_pkgs$name))
@@ -106,13 +105,13 @@ observeEvent(input$uploaded_file, {
     for (pkg in new_pkgs$package) {
       # Get and upload pkg general info to db.
       insert_pkg_info_to_db(pkg)
-      waitress$inc(1)
+      # waitress$inc(1)
       # Get and upload maintenance metrics to db.
       insert_maintenance_metrics_to_db(pkg)
-      waitress$inc(1)
+      # waitress$inc(1)
       # Get and upload community metrics to db.
       insert_community_metrics_to_db(pkg)
-      waitress$inc(1)
+      # waitress$inc(1)
     }
   }
   
