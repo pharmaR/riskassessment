@@ -239,5 +239,11 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
         ) %>%
         config(displayModeBar = F)
     })
+    
+    # Return the a reactive element triggered when a comment is added.
+    list(
+      comment_added = comment_added,
+      cards = cards
+    )
   })
 }

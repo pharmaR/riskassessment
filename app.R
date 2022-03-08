@@ -103,11 +103,11 @@ ui <- fluidPage(
   
   footer =
     wellPanel(
-    id = "footer",
-    "Checkout the app's code!",
-    tags$a(href = "https://github.com/pharmaR/risk_assessment",
-           icon("github-alt"), target = "_blank")
-  )
+      id = "footer",
+      "Checkout the app's code!",
+      tags$a(href = "https://github.com/pharmaR/risk_assessment",
+             icon("github-alt"), target = "_blank")
+    )
 )
 
 
@@ -138,11 +138,11 @@ server <- function(session, input, output) {
   observeEvent(res_auth$user, {
     if (res_auth$admin == TRUE)
       loggit("INFO", glue("User {res_auth$user} signed on as admin"))
-
+    
     user$name <- trimws(res_auth$user)
     user$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
   })
-
+  
   # Load server of the uploadPackage module.
   uploaded_pkgs <- uploadPackageServer("upload_package")
   
@@ -167,7 +167,15 @@ server <- function(session, input, output) {
       FROM metric
       INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
       WHERE package_metrics.package_id = '{selected_pkg$id()}' AND 
-      metric.class = 'maintenance' ;"))
+      metric.class = 'maintenance' ;")) %>%
+      mutate(
+        title = long_name,
+        desc = description,
+        succ_icon = rep(x = 'check', times = nrow(.)), 
+        unsucc_icon = rep(x = 'times', times = nrow(.)),
+        icon_class = rep(x = 'text-success', times = nrow(.)),
+        .keep = 'unused'
+      )
   })
   
   
@@ -183,11 +191,6 @@ server <- function(session, input, output) {
     )
   })
   
-  # Load server of the report preview tab.
-  reportPreviewServer("reportPreview", selected_pkg, maint_metrics,
-                      community_usage_metrics,
-                      mm_comment_added, com_comment_added)
-  
   # Load server for the maintenance metrics tab.
   mm_comment_added <- maintenanceMetricsServer('maintenanceMetrics',
                                                selected_pkg,
@@ -195,10 +198,18 @@ server <- function(session, input, output) {
                                                user)
   
   # Load server for the community metrics tab.
-  communityMetricsServer('communityMetrics',
-                         selected_pkg,
-                         community_usage_metrics,
-                         user)
+  community_data <- communityMetricsServer('communityMetrics',
+                                           selected_pkg,
+                                           community_usage_metrics,
+                                           user)
+  
+  # Load server of the report preview tab.
+  reportPreviewServer("reportPreview",
+                      selected_pkg,
+                      maint_metrics,
+                      community_data$cards,
+                      mm_comment_added,
+                      community_data$comment_added)
   
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)
