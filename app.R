@@ -209,7 +209,8 @@ server <- function(session, input, output) {
                       maint_metrics,
                       community_data$cards,
                       mm_comment_added,
-                      community_data$comment_added)
+                      community_data$comment_added,
+                      community_data$downloads_plot_data)
   
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)

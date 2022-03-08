@@ -133,8 +133,10 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
                        pkg_name = selected_pkg$name,
                        comment_type = 'cum')
     
-    
-    output$downloads_plot <- plotly::renderPlotly({
+    # Data to create downloads plot.
+    downloads_plot_data <- reactive({
+      
+      req(community_metrics())
       
       community_data <- community_metrics() %>%
         mutate(day_month_year = glue('1-{month}-{year}')) %>%
@@ -250,10 +252,15 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
         config(displayModeBar = F)
     })
     
+    output$downloads_plot <- plotly::renderPlotly({
+      downloads_plot_data()
+    })
+    
     # Return the a reactive element triggered when a comment is added.
     list(
       comment_added = comment_added,
-      cards = cards
+      cards = cards,
+      downloads_plot_data = downloads_plot_data
     )
   })
 }
