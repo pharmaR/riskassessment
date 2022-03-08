@@ -21,11 +21,7 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
             h4("Community Usage Metrics", style = "text-align: center;"),
             br(), br(),
             # TODO: change this for a grid.
-            div(id = "cum_infoboxes", fluidRow(
-              column(width = 4, metricBoxUI(NS(id, 'time_since_first_version'))),
-              column(width = 4, metricBoxUI(NS(id, "time_since_latest_version"))),
-              column(width = 4, metricBoxUI(NS(id, 'downloads_last_year')))
-            )),
+            div(id = "cum_infoboxes", metricGridUI(NS(id, 'metricGrid'))),
             br(), br(),
             div(id = "cum_plot", fluidRow(
               column(width = 12, style = 'padding-left: 20px; padding-right: 20px;',
@@ -41,11 +37,12 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
     
     # IntroJS.
     introJSServer(id = "introJS", text = cum_steps)
+
+    #' Community cards (saved to share with report preview): the time since
+    #' first release, the time since latest release, 
+    #' and the number of downloads since last year.
+    cards <- eventReactive(community_metrics(), {
     
-    #' Creates three metricBoxes: the time since first release, the time since
-    #' latest release, and the number of downloads since last year.
-    observeEvent(community_metrics(), {
-      
       # Get the first package release.
       first_version <- community_metrics() %>%
         filter(year == min(year)) %>%
@@ -64,13 +61,16 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
         first_version_label <- str_remove(
           string = first_version_label, pattern = 's$')
       
-      metricBoxServer(id = 'time_since_first_version',
-                      title = 'First Version Release',
-                      desc = 'Time passed since first version release',
-                      value = glue('{time_diff_first_version}
-                               {first_version_label} Ago'),
-                      succ_icon = 'black-tie',
-                      icon_class = "text-info")
+      cards <- data.frame(
+        name = 'time_since_first_version',
+        title = 'First Version Release',
+        desc = 'Time passed since first version release',
+        value = glue('{time_diff_first_version} {first_version_label} Ago'),
+        succ_icon = 'black-tie',
+        icon_class = "text-info",
+        is_perc = 0,
+        is_url = 0
+      )
       
       # Get the last package release.
       last_version <- community_metrics() %>%
@@ -90,36 +90,46 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
         latest_version_label <- str_remove(
           string = latest_version_label, pattern = 's$')
       
-      metricBoxServer(id = 'time_since_latest_version',
-                      title = 'Lastest Version Release',
-                      desc = 'Time passed since latest version release',
-                      value = glue('{time_diff_latest_version}
-                               {latest_version_label} Ago'),
-                      succ_icon = 'meteor',
-                      icon_class = "text-info")
+      cards <- cards %>%
+        add_row(name = 'time_since_latest_version',
+                title = 'Lastest Version Release',
+                desc = 'Time passed since latest version release',
+                value = glue('{time_diff_latest_version} {latest_version_label} Ago'),
+                succ_icon = 'meteor',
+                icon_class = "text-info",
+                is_perc = 0,
+                is_url = 0)
       
       downloads_last_year <- community_metrics() %>%
         filter(year == year(Sys.Date()) - 1) %>%
         distinct(year, month, downloads)
       
-      metricBoxServer(id = 'downloads_last_year',
-                      title = 'Package Downloads',
-                      desc = 'Number of downloads since last year',
-                      value = format(sum(downloads_last_year$downloads), big.mark = ","),
-                      succ_icon = 'box-open',
-                      icon_class = "text-info")
+      cards <- cards %>%
+        add_row(name = 'downloads_last_year',
+                title = 'Package Downloads',
+                desc = 'Number of downloads since last year',
+                value = format(sum(downloads_last_year$downloads), big.mark = ","),
+                succ_icon = 'box-open',
+                icon_class = "text-info",
+                is_perc = 0,
+                is_url = 0)
+      
+      cards
     })
     
+    # Create metric grid card.
+    metricGridServer(id = 'metricGrid', metrics = cards)
+    
     # Call module to create comments and save the output.
-    com_comment_added <- addCommentServer(id = "add_comment",
-                                          metric_abrv = 'cum',
-                                          user_name = reactive(user$name),
-                                          user_role = reactive(user$role),
-                                          pkg_name = selected_pkg$name)
+    comment_added <- addCommentServer(id = "add_comment",
+                                      metric_abrv = 'cum',
+                                      user_name = reactive(user$name),
+                                      user_role = reactive(user$role),
+                                      pkg_name = selected_pkg$name)
     
     # View comments.
     viewCommentsServer(id = "view_comments",
-                       comment_added = com_comment_added,
+                       comment_added = comment_added,
                        pkg_name = selected_pkg$name,
                        comment_type = 'cum')
     
