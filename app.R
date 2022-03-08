@@ -83,7 +83,7 @@ ui <- fluidPage(
             tabPanel(
               id = "reportPreview_tab_id",
               title = "Report Preview",
-              uiOutput("report_preview")  # UI for Report Preview tab Panel
+              reportPreviewUI("reportPreview")  # UI for Report Preview tab Panel
             )
           )
         )
@@ -149,10 +149,10 @@ server <- function(session, input, output) {
   # Load server of the sidebar module.
   selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs$names)
   
-  # Assessment criteria information tab.
+  # Load server of the assessment criteria module.
   assessmentInfoServer("assessmentInfo")
   
-  # Database view.
+  # Load server of the database view module.
   databaseViewServer("databaseView", uploaded_pkgs$names)
   
   # Gather maintenance metrics information.
@@ -170,6 +170,7 @@ server <- function(session, input, output) {
       metric.class = 'maintenance' ;"))
   })
   
+  
   # Gather community usage metrics information.
   community_usage_metrics <- reactive({
     req(selected_pkg$name())
@@ -181,7 +182,12 @@ server <- function(session, input, output) {
       WHERE id = '{selected_pkg$name()}'")
     )
   })
-
+  
+  # Load server of the report preview tab.
+  reportPreviewServer("reportPreview", selected_pkg, maint_metrics,
+                      community_usage_metrics,
+                      mm_comment_added, com_comment_added)
+  
   # Load server for the maintenance metrics tab.
   mm_comment_added <- maintenanceMetricsServer('maintenanceMetrics',
                                                selected_pkg, maint_metrics, user)
@@ -189,14 +195,6 @@ server <- function(session, input, output) {
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)
   })
-  
-  # Load Source files of UI and Server modules of Report Preview Tab
-  source(file.path("UI", "reportpreview.R"), local = TRUE)
-  source(file.path("Server", "reportpreview.R"), local = TRUE)
-  
-  # Load Source files of UI and Server modules of Maintenance Metrics Tab.
-  source(file.path("UI", "maintenance_metrics.R"), local = TRUE)
-  source(file.path("Server", "maintenance_metrics.R"), local = TRUE)
   
   # Load Source files of UI and Server modules of Community Usage Tab.
   source(file.path("UI", "communityusage_metrics.R"), local = TRUE)
