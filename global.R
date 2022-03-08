@@ -98,6 +98,9 @@ showHelperMessage <- function(message = "Please select a package"){
 
 # Displays formatted comments.
 showComments <- function(pkg_name, comment_type){
+  if (length(pkg_name) == 0)
+    return("")
+  
   comments <- dbSelect(
     glue(
       "SELECT user_name, user_role, comment, added_on
