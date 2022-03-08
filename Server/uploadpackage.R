@@ -38,14 +38,6 @@ observeEvent(input$uploaded_file, {
   if(!all(colnames(packages) == colnames(template)))
     validate("Please upload a CSV with a valid format.")
   
-  # waitress <- waiter::Waitress$new(
-  #  max = 3*nrow(uploaded_packages) + 4,
-  #  theme = 'overlay-percent')
-  #  on.exit(waitress$close())
-
-  # waitress$inc(1)
-  
-
   names(uploaded_packages) <- tolower(names(uploaded_packages))
   uploaded_packages$package <- trimws(uploaded_packages$package)
   
@@ -91,35 +83,26 @@ observeEvent(input$uploaded_file, {
   rm(CRAN_avail_pkgs)
 
   
-  # waitress$inc(2)
-  
   # Current packages on the db.
   curr_pkgs <- dbSelect("SELECT name FROM package")
   
-  # waitress$inc(1)
-  
   # Save the uploaded packages that were not in the db.
   new_pkgs <- uploaded_packages %>% filter(!(package %in% curr_pkgs$name))
-  print(new_pkgs)
-  
+
   withProgress(message = "Uploading Packages to DB:", detail = "go get some coffee!", value = 0, {
   if(nrow(new_pkgs) != 0){
-    for (i in seq_along(new_pkgs)) {
+    for (i in seq_along(new_pkgs$package)) {
       pkg <- new_pkgs$package[i]
-      print(pkg)
       incProgress(1 / (nrow(new_pkgs) + 1), detail = paste("package", pkg, "version", new_pkgs$version[i]))
       # Get and upload pkg general info to db.
       insert_pkg_info_to_db(pkg)
-      # waitress$inc(1)
       # Get and upload maintenance metrics to db.
       insert_maintenance_metrics_to_db(pkg)
-      # waitress$inc(1)
       # Get and upload community metrics to db.
       insert_community_metrics_to_db(pkg)
-      # waitress$inc(1)
     }
   }
-    setProgress(value = 1, detail = "**completed**")
+    setProgress(value = 1, detail = "finished uploading packages")
     Sys.sleep(0.25)
   })
   
