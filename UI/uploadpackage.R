@@ -5,6 +5,8 @@ output$upload_package <- renderUI({
     
     introJSUI("upload_pkg_introJS"),
     
+    tags$head(tags$style(".shiny-notification {font-size:30px; color:darkblue; position: fixed; width:500px; height: 150px; top: 75% ;right: 10%;")),
+
     fluidRow(
       column(
         width = 4,

@@ -102,7 +102,7 @@ observeEvent(input$uploaded_file, {
       insert_community_metrics_to_db(pkg)
     }
   }
-    setProgress(value = 1, detail = "finished uploading packages")
+    setProgress(value = 1, detail = "-- **Uploading Packages Completed**")
     Sys.sleep(0.25)
   })
   
