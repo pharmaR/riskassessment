@@ -100,9 +100,14 @@ observeEvent(input$uploaded_file, {
   
   # Save the uploaded packages that were not in the db.
   new_pkgs <- uploaded_packages %>% filter(!(package %in% curr_pkgs$name))
+  print(new_pkgs)
   
+  withProgress(message = "Uploading Packages to DB:", detail = "go get some coffee!", value = 0, {
   if(nrow(new_pkgs) != 0){
-    for (pkg in new_pkgs$package) {
+    for (i in seq_along(new_pkgs)) {
+      pkg <- new_pkgs$package[i]
+      print(pkg)
+      incProgress(1 / (nrow(new_pkgs) + 1), detail = paste("package", pkg, "version", new_pkgs$version[i]))
       # Get and upload pkg general info to db.
       insert_pkg_info_to_db(pkg)
       # waitress$inc(1)
@@ -114,6 +119,9 @@ observeEvent(input$uploaded_file, {
       # waitress$inc(1)
     }
   }
+    setProgress(value = 1, detail = "**completed**")
+    Sys.sleep(0.25)
+  })
   
   all_pkgs <- dbSelect("SELECT name FROM package")
   
