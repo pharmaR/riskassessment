@@ -73,7 +73,7 @@ ui <- fluidPage(
             tabPanel(
               id = "mm_tab_id",
               title = "Maintenance Metrics",
-              uiOutput("maintenance_metrics") # UI for Maintenance Metrics tab panel.
+              maintenanceMetricsUI('maintenanceMetrics')
             ),
             tabPanel(
               id = "cum_tab_id",
@@ -181,6 +181,10 @@ server <- function(session, input, output) {
       WHERE id = '{selected_pkg$name()}'")
     )
   })
+
+  # Load server for the maintenance metrics tab.
+  mm_comment_added <- maintenanceMetricsServer('maintenanceMetrics',
+                                               selected_pkg, maint_metrics, user)
   
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)
