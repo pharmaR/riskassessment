@@ -51,6 +51,6 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user) {
                      metrics = maint_metrics)
     
     # Return the a reactive element triggered when a comment is added.
-    list(mm_comment_added = comment_added)
+    return(comment_added)
   })
 }
