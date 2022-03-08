@@ -22,8 +22,8 @@ observeEvent(
 
 #' Save all the uploaded packages, marking them as 'new', 'not found', or
 #' 'duplicate'.
-observe({
-  req(input$uploaded_file)
+observeEvent(input$uploaded_file, {
+  #req(input$uploaded_file)
   
   if(is.null(input$uploaded_file$datapath))
     validate('Please upload a nonempty CSV file.')
@@ -40,10 +40,10 @@ observe({
     validate("Please upload a CSV with a valid format.")
   
   waitress <- waiter::Waitress$new(
-    max = 3*nrow(uploaded_packages) + 4,
-    theme = 'overlay-percent')
-  on.exit(waitress$close())
-  
+   max = 3*nrow(uploaded_packages) + 4,
+   theme = 'overlay-percent')
+   on.exit(waitress$close())
+
   waitress$inc(1)
   
 
@@ -71,8 +71,8 @@ observe({
   for (i in seq_along(uploaded_packages$package)) {
     ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
     # add version and source
-    suppressWarnings(uploaded_packages$version[i] <- as.vector(ref$version))
-    suppressWarnings(uploaded_packages$source[i]  <- as.vector(ref$source))
+    suppressWarnings(uploaded_packages$version[i] <- as.character(ref$version))
+    suppressWarnings(uploaded_packages$source[i]  <- ref$source)
     if (ref$source == "pkg_missing") {
       rlang::inform(glue("NOTE: package ", {ref$name}, 
                          " was flagged by riskmetric as '",{ref$source},"' and will be removed. Did you misspell it?"))
