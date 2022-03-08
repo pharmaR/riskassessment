@@ -8,8 +8,6 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user) {
     # Render Output UI for Maintenance Metrics.
     output$maintenance_metrics_ui <- renderUI({
       
-      browser()
-      
       # Lets the user know that a package needs to be selected.
       if(identical(selected_pkg$name(), character(0)))
         showHelperMessage()

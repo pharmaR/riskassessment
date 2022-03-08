@@ -9,28 +9,27 @@ metricGridServer <- function(id, metrics) {
       req(metrics())
       
       col_length <- nrow(metrics())%/%3
-
+      
       fluidRow(style = "padding-right: 10px", class = "card-group",
                column(width = 4, {
                  lapply(X = 1:col_length, function(i){
-                   metricBoxUI(NS(id, metrics()$name[i]))
+                   metricBoxUI(session$ns(metrics()$name[i]))
                  })
                }),
                column(width = 4, {
                  lapply(X = (col_length + 1):(2*col_length), function(i){
-                   metricBoxUI(NS(id, metrics()$name[i]))
+                   metricBoxUI(session$ns(metrics()$name[i]))
                  })
                }),
                column(width = 4, {
                  lapply(X = (2*col_length + 1):nrow(metrics()), function(i){
-                   metricBoxUI(NS(id, metrics()$name[i]))
+                   metricBoxUI(session$ns(metrics()$name[i]))
                  })
                })
       )
     })
     
     observeEvent(metrics(), {
-      
       apply(metrics(), 1, function(metric)
         metricBoxServer(id = metric['name'],
                         title = metric['long_name'],
