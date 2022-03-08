@@ -1,0 +1,65 @@
+---
+title:    "R Package Risk Assessment"
+subtitle: "Report for `r params$package`"
+author:   "Author (Role): `r params$user_name` (`r params$user_role `)"
+date:     "Report Date: `r format(Sys.time(), '%B %d, %Y')`"
+always_allow_html: true
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 3
+runtime: shiny
+params:
+  package: NA
+  riskmetric_version: NA
+  cwd: NA
+  user_name: NA
+  user_role: NA
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(shiny)
+library(shinyjs)
+
+knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
+```
+
+
+```{r gather_pkg_info, echo=FALSE, include=FALSE, message=FALSE, warning=FALSE}
+
+setwd(params$cwd)
+
+pkg_info <- dbSelect(glue(
+  "SELECT *
+  FROM package
+  WHERE name ='{params$package}'"
+))
+
+```
+
+<br>
+
+## General Information
+
+**Package:** `r pkg_info$name`
+
+**Version:** `r pkg_info$version`
+
+**Title:** `r pkg_info$title`
+
+**Description:** `r pkg_info$description`
+
+**Author:** `r pkg_info$author`
+
+**Maintainer:** `r pkg_info$maintainer`
+
+**License:** `r pkg_info$license`
+
+**Published:** `r pkg_info$published`
+
