@@ -1,16 +1,16 @@
 reportPreviewUI <- function(id) {
-  uiOutput(NS(id, "report_preview_ui"))
+  uiOutput(NS(id, "reportPreview_ui"))
 }
 
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
-                                mm_comment_added, com_comment_added) {
+                                mm_comment_added, cm_comment_added, downloads_plot_data) {
   moduleServer(id, function(input, output, session) {
     
     # IntroJS.
     introJSServer(id = "introJS", text = rp_steps)
     
     # Render Output UI for Report Preview.
-    output$report_preview_ui <- renderUI({
+    output$reportPreview_ui <- renderUI({
       
       # Lets the user know that a package needs to be selected.
       if(identical(selected_pkg$name(), character(0)))
@@ -19,7 +19,6 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       else {
         
         fluidPage(
-          
           tagList(
             br(),
             introJSUI(NS(id, "introJS")),
@@ -49,17 +48,23 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                 hr(),
                 fluidRow(
                   column(width = 12,
-                         h5("Maintenance Metrics"),
-                         metricGridUI('mm_metricGrid'),
+                         h5("Maintenance Metrics",
+                            style = "text-align: center; padding-bottom: 50px;"),
+                         metricGridUI(session$ns('mm_metricGrid')),
                          viewCommentsUI(NS(id, 'mm_comments')))
                 ),
                 
                 br(), br(),
                 hr(),
                 fluidRow(
-                  h5("Community Usage Metrics"),
-                  metricGridUI('com_metricGrid'),
-                  viewCommentsUI(NS(id, 'com_comments'))
+                  column(width = 12,
+                         h5("Community Usage Metrics",
+                            style = "text-align: center; padding-bottom: 50px;"),
+                         metricGridUI(NS(id, 'cm_metricGrid')),
+                         div(id = "cum_plot", fluidRow(
+                           column(width = 12, style = 'padding-left: 20px; padding-right: 20px;',
+                                  plotlyOutput(NS(id, "downloads_plot"), height = "500px")))),
+                         viewCommentsUI(NS(id, 'cm_comments')))
                 )
             )
           )
@@ -67,12 +72,16 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       }
     })
     
+    output$downloads_plot <- plotly::renderPlotly({
+      downloads_plot_data()
+    })
+    
     # View comments.
-    viewCommentsServer(id = "com_comments",
-                       comment_added = com_comment_added,
+    viewCommentsServer(id = 'overall_comments',
+                       comment_added = selected_pkg$overall_comment_added,
                        pkg_name = selected_pkg$name,
-                       comment_type = 'cum',
-                       label = 'Community Usage Metrics Comments')
+                       comment_type = 'o',
+                       label = 'Overall Comments')
     
     # View comments.
     viewCommentsServer(id = "mm_comments",
@@ -82,23 +91,23 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                        label = 'Maintainance Metrics Comments')
     
     # View comments.
-    viewCommentsServer(id = 'overall_comments',
-                       comment_added = selected_pkg$overall_comment_added,
+    viewCommentsServer(id = 'cm_comments',
+                       comment_added = cm_comment_added,
                        pkg_name = selected_pkg$name,
-                       comment_type = 'o',
-                       label = 'Overall Comments')
+                       comment_type = 'cum',
+                       label = 'Community Usage Metrics Comments')
     
     # Maintenance metrics cards.
     metricGridServer("mm_metricGrid", metrics = maint_metrics)
     
     # Community usage metrics cards.
-    metricGridServer("com_metricGrid", metrics = com_metrics)
+    metricGridServer("cm_metricGrid", metrics = com_metrics)
     
     
     # Display general information of the selected package.
     output$pkg_overview <- renderUI({
       req(selected_pkg$name())
-      
+
       tagList(
         h5('Package:'), selected_pkg$name(),
         h5('Version:'), selected_pkg$version(),
