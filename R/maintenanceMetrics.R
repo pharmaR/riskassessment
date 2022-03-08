@@ -22,7 +22,7 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user) {
             introJSUI(NS(id, 'introJS')),
             h4("Maintenance Metrics", style = "text-align: center;"),
             br(), br(),
-            metricGridUI('metricGrid'),
+            metricGridUI(NS(id, 'metricGrid')),
             br(), br(),
             fluidRow(div(id = "comments_for_mm",
                          addCommentUI(NS(id, 'add_comment')),
