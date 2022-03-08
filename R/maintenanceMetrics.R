@@ -36,10 +36,10 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user) {
     
     # Call module that creates section to add comments.
     comment_added <- addCommentServer(id = "add_comment",
-                                         metric_abrv = 'mm',
-                                         user_name = reactive(user$name),
-                                         user_role = reactive(user$role),
-                                         pkg_name = selected_pkg$name)
+                                      metric_abrv = 'mm',
+                                      user_name = reactive(user$name),
+                                      user_role = reactive(user$role),
+                                      pkg_name = selected_pkg$name)
     
     # Call module that creates comments view.
     viewCommentsServer(id = "view_comments",
@@ -50,8 +50,7 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user) {
     metricGridServer(id = "metricGrid",
                      metrics = maint_metrics)
     
-    list(
-      mm_comment_added = comment_added
-    )
+    # Return the a reactive element triggered when a comment is added.
+    list(mm_comment_added = comment_added)
   })
 }
