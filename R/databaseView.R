@@ -60,7 +60,7 @@ databaseViewServer <- function(id, uploaded_pkgs) {
     
     # Create table for the db dashboard.
     output$packages_table <- DT::renderDataTable({
-
+      
       as.datatable(
         formattable(
           table_data(),
@@ -114,16 +114,18 @@ databaseViewServer <- function(id, uploaded_pkgs) {
       }
     })
     
-    values <- reactiveValues()
-    
     output$download_reports <- downloadHandler(
       filename = function() {
         report_datetime <- str_replace_all(str_replace(Sys.time(), " ", "_"), ":", "-")
         glue('RiskAssessment-Report-{report_datetime}.zip')
       },
       content = function(file) {
-        these_pkgs <- values$db_pkg_overview %>% slice(input$db_pkgs_rows_selected)
-        n_pkgs <- nrow(these_pkgs)
+
+        selected_pkgs <- table_data() %>%
+          slice(input$packages_table_rows_selected)
+        
+        n_pkgs <- nrow(selected_pkgs)
+        
         req(n_pkgs > 0)
         
         shiny::withProgress(
@@ -171,26 +173,19 @@ databaseViewServer <- function(id, uploaded_pkgs) {
       contentType = "application/zip"
     )
     
-    # Manage admin adjusting weights and recaluclating risk scores
-    # initialize temporary df that keeps track of the current and new weights exactly once
-    values$curr_new_wts <- get_metric_weights() %>%
-      mutate(weight = ifelse(name == "covr_coverage", 0, weight))
-    
-    observeEvent(input$update_weight, {
-      values$curr_new_wts <-
-        values$curr_new_wts %>%
-        mutate(new_weight = ifelse(name == isolate(input$metric_name),
-                                   isolate(input$metric_weight), new_weight))
+    curr_new_wts <- eventReactive(input$update_weight, {
+      get_metric_weights() %>%
+        mutate(weight = ifelse(name == "covr_coverage", 0, weight))
     })
     
     output$weights_table <- DT::renderDataTable({
       
-      all_names <- unique(values$curr_new_wts$name)
-      chgd_wt_names <- values$curr_new_wts %>% filter(weight != new_weight) %>% pull(name)
+      all_names <- unique(curr_new_wts$name)
+      chgd_wt_names <- curr_new_wts %>% filter(weight != new_weight) %>% pull(name)
       my_colors <- ifelse(all_names %in% chgd_wt_names,'#FFEB9C', '#FFFFFF')
       
       DT::datatable(
-        values$curr_new_wts,
+        curr_new_wts,
         selection = list(mode = 'single'),
         colnames = c("Name", "Current Weight", "New Weight"),
         rownames = FALSE,
@@ -201,7 +196,7 @@ databaseViewServer <- function(id, uploaded_pkgs) {
           columnDefs = list(list(className = 'dt-center', targets = 1:2))
         )
       ) %>%
-        DT::formatStyle(names(values$curr_new_wts),lineHeight='80%') %>%
+        DT::formatStyle(names(curr_new_wts),lineHeight='80%') %>%
         DT::formatStyle(columns =  "name", target = 'row',
                         backgroundColor = styleEqual(all_names, my_colors))
       
@@ -224,9 +219,9 @@ databaseViewServer <- function(id, uploaded_pkgs) {
                 )),
               fluidRow(
                 column(width = 2, offset = 5, align = "left",
-                       selectInput("metric_name", "Select metric", values$curr_new_wts$name, selected = values$curr_new_wts$name[1]) ),
+                       selectInput("metric_name", "Select metric", curr_new_wts$name, selected = curr_new_wts$name[1]) ),
                 column(width = 2, align = "left",
-                       numericInput("metric_weight", "Choose new weight", min = 0, value = values$curr_new_wts$weight[1]) ),
+                       numericInput("metric_weight", "Choose new weight", min = 0, value = curr_new_wts$weight[1]) ),
                 column(width = 1,
                        br(),
                        actionButton("update_weight", "Update weight", class = "btn-secondary") ) ),
@@ -283,7 +278,7 @@ databaseViewServer <- function(id, uploaded_pkgs) {
     n_wts_chngd <- reactive({
       req(input$metric_weight)
       
-      values$curr_new_wts %>%
+      curr_new_wts %>%
         filter(weight != new_weight) %>%
         nrow()
     })
@@ -307,7 +302,7 @@ databaseViewServer <- function(id, uploaded_pkgs) {
                            value = 0, min = 0, max = 0)
       } else {
         updateNumericInput(session, "metric_weight",
-                           value = values$curr_new_wts %>%
+                           value = curr_new_wts %>%
                              filter(name == input$metric_name) %>%
                              select(weight) %>% # current weight
                              pull())
@@ -321,7 +316,7 @@ databaseViewServer <- function(id, uploaded_pkgs) {
     # the selected metric name is updated.
     observeEvent(input$weights_table_rows_selected, {
       updateSelectInput(session, "metric_name",
-                        selected = values$curr_new_wts$name[input$weights_table_rows_selected])
+                        selected = curr_new_wts$name[input$weights_table_rows_selected])
     })
     
     
@@ -371,7 +366,7 @@ databaseViewServer <- function(id, uploaded_pkgs) {
       # Update the weights in the `metric` table to reflect recent changes
       # First, which weights are different than the originals?
       wt_chgd_df <- 
-        values$curr_new_wts %>%
+        curr_new_wts %>%
         filter(weight != new_weight)
       
       wt_chgd_metric <- wt_chgd_df %>% select(name) %>% pull()
@@ -379,8 +374,7 @@ databaseViewServer <- function(id, uploaded_pkgs) {
       message("Metrics & Weights changed...")
       message(paste(wt_chgd_metric, ": ", wt_chgd_wt))
       purrr::walk2(wt_chgd_metric, wt_chgd_wt, update_metric_weight)
-      values$curr_new_wts <- get_metric_weights() # reset the current and new wts from the database
-      
+
       
       # update for each package
       all_pkgs <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")
@@ -462,7 +456,5 @@ databaseViewServer <- function(id, uploaded_pkgs) {
             h3("The database as been downloaded as datase_backup-[date].sqlite"))))
       }
     )
-    
-    
   })
 }
