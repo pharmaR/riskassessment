@@ -127,11 +127,21 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
                                       user_role = reactive(user$role),
                                       pkg_name = selected_pkg$name)
     
+    comments <- eventReactive(comment_added(), {
+      dbSelect(
+        glue(
+          "SELECT user_name, user_role, comment, added_on
+          FROM comments
+          WHERE id = '{selected_pkg$name()}' AND comment_type = 'cum'"
+        )
+      ) %>%
+        map(rev)
+    })
+    
     # View comments.
     viewCommentsServer(id = "view_comments",
-                       comment_added = comment_added,
-                       pkg_name = selected_pkg$name,
-                       comment_type = 'cum')
+                       comments = comments,
+                       pkg_name = selected_pkg$name)
     
     # Data to create downloads plot.
     downloads_plot_data <- reactive({
@@ -259,6 +269,7 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
     # Return the a reactive element triggered when a comment is added.
     list(
       comment_added = comment_added,
+      comments = comments,
       cards = cards,
       downloads_plot_data = downloads_plot_data
     )
