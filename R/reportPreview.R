@@ -3,7 +3,8 @@ reportPreviewUI <- function(id) {
 }
 
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
-                                mm_comment_added, cm_comment_added, downloads_plot_data) {
+                                mm_comments, cm_comments,
+                                downloads_plot_data, user) {
   moduleServer(id, function(input, output, session) {
     
     # IntroJS.
@@ -78,23 +79,22 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     
     # View comments.
     viewCommentsServer(id = 'overall_comments',
-                       comment_added = selected_pkg$overall_comment_added,
+                       comments = reactive(dbSelect(glue(
+                       "SELECT * FROM comments
+                       WHERE comment_type = 'o' AND id = '{selected_pkg$name()}'"))),
                        pkg_name = selected_pkg$name,
-                       comment_type = 'o',
                        label = 'Overall Comments')
     
     # View comments.
     viewCommentsServer(id = "mm_comments",
-                       comment_added = mm_comment_added,
+                       comments = mm_comments,
                        pkg_name = selected_pkg$name,
-                       comment_type = 'mm',
                        label = 'Maintainance Metrics Comments')
     
     # View comments.
     viewCommentsServer(id = 'cm_comments',
-                       comment_added = cm_comment_added,
+                       comments = cm_comments,
                        pkg_name = selected_pkg$name,
-                       comment_type = 'cum',
                        label = 'Community Usage Metrics Comments')
     
     # Maintenance metrics cards.
