@@ -192,7 +192,7 @@ server <- function(session, input, output) {
   })
   
   # Load server for the maintenance metrics tab.
-  mm_comment_added <- maintenanceMetricsServer('maintenanceMetrics',
+  maintenance_data <- maintenanceMetricsServer('maintenanceMetrics',
                                                selected_pkg,
                                                maint_metrics,
                                                user)
@@ -208,9 +208,10 @@ server <- function(session, input, output) {
                       selected_pkg,
                       maint_metrics,
                       community_data$cards,
-                      mm_comment_added,
-                      community_data$comment_added,
-                      community_data$downloads_plot_data)
+                      maintenance_data$comments,
+                      community_data$comments,
+                      community_data$downloads_plot_data,
+                      user)
   
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)
