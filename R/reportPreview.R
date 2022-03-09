@@ -77,11 +77,17 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       downloads_plot_data()
     })
     
+    overall_comments <- reactive({
+      selected_pkg$overall_comment_added()
+      
+      dbSelect(glue(
+        "SELECT * FROM comments
+        WHERE comment_type = 'o' AND id = '{selected_pkg$name()}'"))
+    })
+    
     # View comments.
     viewCommentsServer(id = 'overall_comments',
-                       comments = reactive(dbSelect(glue(
-                       "SELECT * FROM comments
-                       WHERE comment_type = 'o' AND id = '{selected_pkg$name()}'"))),
+                       comments = overall_comments,
                        pkg_name = selected_pkg$name,
                        label = 'Overall Comments')
     
