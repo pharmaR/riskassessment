@@ -204,14 +204,14 @@ server <- function(session, input, output) {
                                            user)
   
   # Load server of the report preview tab.
-  reportPreviewServer("reportPreview",
-                      selected_pkg,
-                      maint_metrics,
-                      community_data$cards,
-                      maintenance_data$comments,
-                      community_data$comments,
-                      community_data$downloads_plot_data,
-                      user)
+  reportPreviewServer(id = "reportPreview",
+                      selected_pkg = selected_pkg,
+                      maint_metrics = maint_metrics,
+                      com_metrics = community_data$cards,
+                      mm_comments = maintenance_data$comments,
+                      cm_comments = community_data$comments,
+                      downloads_plot_data = community_data$downloads_plot_data,
+                      user = user)
   
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)
