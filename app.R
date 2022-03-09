@@ -7,11 +7,6 @@ source("global.R")
 # suppress dplyr summarize msg "summarise()` has grouped output by..."
 options(dplyr.summarise.inform = FALSE)
 
-# Load source files.
-source(file.path("R", "introJSText.R")) # introJS text.
-source(file.path("R", "dbupload.R"))
-source(file.path("R", "utils.R"))
-
 # Create db if it doesn't exist.
 if(!file.exists(database_name)) create_db()
 
