@@ -6,7 +6,6 @@ sidebarUI <- function(id) {
     
     uiOutput(NS(id, 'select_pkg_ui')),
     
-    
     selectizeInput(
       inputId = NS(id, "select_ver"),
       label = h5("Select Version"),
@@ -40,7 +39,6 @@ sidebarUI <- function(id) {
         ),
         
         # Action button to submit decision for selected package.
-        
         actionButton(NS(id, "submit_decision"), "Submit Decision", width = "100%")
       ),
       br(), br(),
@@ -54,15 +52,15 @@ sidebarUI <- function(id) {
         ),
         
         # Submit Overall Comment for selected Package.
-        actionButton(NS(id, "submit_overall_comment"), "Submit Comment", width = "100%")
+        actionButton(NS(id, "submit_overall_comment"),
+                     "Submit Comment", width = "100%")
         )
       )
     )
   )
 }
 
-
-sidebarServer <- function(id, uploaded_pkgs, user) {
+sidebarServer <- function(id, user, uploaded_pkgs) {
   moduleServer(id, function(input, output, session) {
     
     # Required for shinyhelper to work.
@@ -337,7 +335,6 @@ sidebarServer <- function(id, uploaded_pkgs, user) {
              glue("decision for the package {selected_pkg()$name} is {input$decision}
                   by {user$name} ({user$role})"))
     })
-    
     
     # Output package id, name, and version.
     # TODO: return the entire selected_pkg instead of doing this below.
