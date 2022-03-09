@@ -39,63 +39,8 @@ ui <- fluidPage(
   includeCSS(path = "www/css/main.css"),
   includeCSS(path = "www/css/community_metrics.css"),
   
-  tabsetPanel(
-    id = "apptabs",
-    tabPanel(
-      title = "Risk Assessment",
-      icon = icon("clipboard-list"),
-      
-      titlePanel(
-        windowTitle = "Risk Assessment",
-        title = div(id = "page-title", "R Package Risk Assessment App")
-      ),
-      
-      sidebarLayout(
-        sidebarPanel = sidebarPanel(
-          width = 4,
-          sidebarUI("sidebar")
-        ),
-        
-        mainPanel = mainPanel(
-          width = 8,
-          tabsetPanel(
-            id = "tabs",
-            tabPanel(
-              id = "upload_tab_id",
-              title = "Upload Package",
-              uploadPackageUI("upload_package")
-            ),
-            tabPanel(
-              id = "mm_tab_id",
-              title = "Maintenance Metrics",
-              maintenanceMetricsUI('maintenanceMetrics')
-            ),
-            tabPanel(
-              id = "cum_tab_id",
-              title = "Community Usage Metrics",
-              communityMetricsUI('communityMetrics')
-            ),
-            tabPanel(
-              id = "reportPreview_tab_id",
-              title = "Report Preview",
-              reportPreviewUI("reportPreview")  # UI for Report Preview tab Panel
-            )
-          )
-        )
-      )
-    ), 
-    
-    tabPanel(
-      title = div(id = "database-tab", icon("database"), "Database"),
-      databaseViewUI("databaseView")
-    ),
-    
-    tabPanel(
-      title = div(id = "assessment-criteria-tab", icon("info-circle"), "Assessment Criteria"),
-      assessmentInfoUI("assessmentInfo")
-    )
-  ),
-  
+  uiOutput("tabPanel"),
+
   footer =
     wellPanel(
       id = "footer",
@@ -128,6 +73,125 @@ server <- function(session, input, output) {
       passphrase = key_get("R-shinymanager-key", getOption("keyring_user"))
     )
   )
+  
+  output$tabPanel <- renderUI({
+    if (res_auth$admin == TRUE) {
+      tabsetPanel(
+        id = "apptabs",
+        tabPanel(
+          title = "Risk Assessment",
+          icon = icon("clipboard-list"),
+          
+          titlePanel(
+            windowTitle = "Risk Assessment",
+            title = div(id = "page-title", "R Package Risk Assessment App")
+          ),
+          
+          sidebarLayout(
+            sidebarPanel = sidebarPanel(
+              width = 4,
+              sidebarUI("sidebar")
+            ),
+            
+            mainPanel = mainPanel(
+              width = 8,
+              tabsetPanel(
+                id = "tabs",
+                tabPanel(
+                  id = "upload_tab_id",
+                  title = "Upload Package",
+                  uiOutput("upload_package")  # UI for upload package tab panel.
+                ),
+                tabPanel(
+                  id = "mm_tab_id",
+                  value = "mm_tab_value",
+                  title = "Maintenance Metrics",
+                  uiOutput("maintenance_metrics") # UI for Maintenance Metrics tab panel.
+                ),
+                tabPanel(
+                  id = "cum_tab_id",
+                  value = "cum_tab_value",
+                  title = "Community Usage Metrics",
+                  uiOutput("community_usage_metrics")  # UI for Community Usage Metrics tab panel.
+                ),
+                tabPanel(
+                  id = "reportPreview_tab_id",
+                  title = "Report Preview",
+                  uiOutput("report_preview")  # UI for Report Preview tab Panel
+                )
+              )
+            )
+          )
+        ), 
+        
+        tabPanel(
+          title = div(id = "database-tab", icon("database"), "Database"),
+          databaseViewUI("databaseView")
+        ),
+        
+        tabPanel(
+          title = div(id = "administrative-tab", icon("cogs"), "Administrative Tools"),
+          assessmentInfoUI("assessmentInfo"),
+          shinymanager:::admin_ui("admin")
+        )
+      )
+    } else {
+      tabsetPanel(
+        id = "apptabs",
+        tabPanel(
+          title = "Risk Assessment",
+          icon = icon("clipboard-list"),
+          
+          titlePanel(
+            windowTitle = "Risk Assessment",
+            title = div(id = "page-title", "R Package Risk Assessment App")
+          ),
+          
+          sidebarLayout(
+            sidebarPanel = sidebarPanel(
+              width = 4,
+              sidebarUI("sidebar")
+            ),
+            
+            mainPanel = mainPanel(
+              width = 8,
+              tabsetPanel(
+                id = "tabs",
+                tabPanel(
+                  id = "upload_tab_id",
+                  title = "Upload Package",
+                  uiOutput("upload_package")  # UI for upload package tab panel.
+                ),
+                tabPanel(
+                  id = "mm_tab_id",
+                  value = "mm_tab_value",
+                  title = "Maintenance Metrics",
+                  uiOutput("maintenance_metrics") # UI for Maintenance Metrics tab panel.
+                ),
+                tabPanel(
+                  id = "cum_tab_id",
+                  value = "cum_tab_value",
+                  title = "Community Usage Metrics",
+                  uiOutput("community_usage_metrics")  # UI for Community Usage Metrics tab panel.
+                ),
+                tabPanel(
+                  id = "reportPreview_tab_id",
+                  title = "Report Preview",
+                  uiOutput("report_preview")  # UI for Report Preview tab Panel
+                )
+              )
+            )
+          )
+        ), 
+        
+        tabPanel(
+          title = div(id = "database-tab", icon("database"), "Database"),
+          databaseViewUI("databaseView")
+        ),
+        
+      )
+    }
+  })
   
   # Save user name and role.  
   observeEvent(res_auth$user, {
