@@ -1,25 +1,22 @@
 ---
 title:    "R Package Risk Assessment"
-subtitle: "Report for `r params$package`"
+subtitle: "Report for `r params$pkg$name()`"
 author:   "Author (Role): `r params$user_name` (`r params$user_role `)"
 date:     "Report Date: `r format(Sys.time(), '%B %d, %Y')`"
 always_allow_html: true
-output:
+output: 
   html_document:
-    theme: cerulean
-    highlight: pygments
-    toc: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: false
-    toc_depth: 3
+    theme:
+      bootswatch: lux
 runtime: shiny
 params:
-  package: NA
+  pkg: NA
   riskmetric_version: NA
-  cwd: NA
   user_name: NA
   user_role: NA
+  overall_comments: NA
+  mm_comments: NA
+  cm_comments: NA
 ---
 
 ```{r setup, include=FALSE}
@@ -31,35 +28,70 @@ knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 ```
 
 
-```{r gather_pkg_info, echo=FALSE, include=FALSE, message=FALSE, warning=FALSE}
-
-setwd(params$cwd)
-
-pkg_info <- dbSelect(glue(
-  "SELECT *
-  FROM package
-  WHERE name ='{params$package}'"
-))
+```{r gather_pkg, echo=FALSE, include=FALSE, message=FALSE, warning=FALSE}
 
 ```
 
 <br>
 
-## General Information
+```{r general_pkg_info}
+h5('General Information')
 
-**Package:** `r pkg_info$name`
+tagList(
+  h6('Package:'), params$pkg$name(),
+  h6('Version:'), params$pkg$version(),
+  h6('Title:'), params$pkg$title(),
+  h6('Description:'), params$pkg$description(),
+  h6('Author:'), params$pkg$author(),
+  h6('Maintainer:'), params$pkg$maintainer(),
+  h6('License:'), params$pkg$license(),
+  h6('Published:'), params$pkg$published(),
+  h6('Overall Risk:'), ifelse(params$pkg$decision() == '', 'Pending', params$pkg$decision())
+)
+```
 
-**Version:** `r pkg_info$version`
 
-**Title:** `r pkg_info$title`
+```{r overall_comments}
+tagList(
+  h5('Overall Comments', style = "padding-bottom:10px;"),
+  wellPanel(
+    HTML(showComments(
+      pkg_name = params$pkg$name(),
+      comments = params$overall_comments()))
+  )
+)
+```
 
-**Description:** `r pkg_info$description`
 
-**Author:** `r pkg_info$author`
+```{r maintenance_metrics_comments}
+tagList(
+  h5('Comments', style = "padding-bottom:10px;"),
+  wellPanel(
+    HTML(showComments(
+      pkg_name = params$pkg$name(),
+      comments = params$mm_comments()))
+  )
+)
+```
 
-**Maintainer:** `r pkg_info$maintainer`
 
-**License:** `r pkg_info$license`
+```{r community_metrics_comments}
+tagList(
+  h5('Comments', style = "padding-bottom:10px;"),
+  wellPanel(
+    HTML(showComments(
+      pkg_name = params$pkg$name(),
+      comments = params$cm_comments()))
+  )
+)
+```
 
-**Published:** `r pkg_info$published`
+<style>
+.title {
+font-size: 1.5rem;
+}
 
+.subtitle, .author, .date {
+font-size: 1.1rem;
+}
+</style>
