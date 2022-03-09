@@ -128,42 +128,56 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     
     # Display the decision status of the selected package.
     output$decision_display <- renderUI({
+
       tagList(
         h5('Overall risk:'),
         ifelse(selected_pkg$decision() == '', 
                'Pending',
                selected_pkg$decision()))
     })
-    
+
     # Create report.
     output$download_report <- downloadHandler(
       filename = function() {
-        glue("{selected_pkg$name()_{selected_pkg$version()}_Risk_Assessment.
-               {switch(input$report_format, 'docx = 'docx, html = 'html)}")
+        glue('{selected_pkg$name()}_{selected_pkg$version()}_Risk_Assessment.',
+        "{switch(input$report_format, docx = 'docx', html = 'html')}")
       },
       content = function(file) {
         shiny::withProgress(
-          message = glue('Downloading {input$dataset} Report'),
+          message = glue('Downloading Report'),
           value = 0,
           {
             shiny::incProgress(1 / 10)
             shiny::incProgress(5 / 10)
+            
+            report <- ''
+            report_path <- ''
+            
             if (input$report_format == "html") {
-              Report <- file.path(tempdir(), "Report_html.Rmd")
-              file.copy("Reports/Report_html.Rmd", Report, overwrite = TRUE)
-            } else {
-              Report <- file.path(tempdir(), "Report_doc.Rmd")
-              file.copy("Reports/Report_doc.Rmd", Report, overwrite = TRUE)
+              report <- file.path('Reports', 'reportHtml.Rmd')
+              report_path <- tempfile(fileext = ".Rmd")
+            }
+            else {
+              report <- file.path('Reports', 'Report_doc.Rmd')
+              report_path <- tempfile(fileext = ".docx")
             }
             
+            file.copy(report, report_path, overwrite = TRUE)
+            
             rmarkdown::render(
-              Report,
+              report_path,
               output_file = file,
-              params = list(package = selected_pkg$name(),
+              params = list(pkg = selected_pkg,
                             riskmetric_version = packageVersion("riskmetric"),
-                            cwd = getwd(),
-                            username = user$name,
-                            user_role = user$role)
+                            user_name = user$name,
+                            user_role = user$role,
+                            overall_comments = overall_comments,
+                            mm_comments = mm_comments,
+                            cm_comments = cm_comments,
+                            maint_metrics = maint_metrics,
+                            com_metrics = com_metrics,
+                            downloads_plot_data = downloads_plot_data),
+              envir = new.env(parent = globalenv())
             )
           })
       }

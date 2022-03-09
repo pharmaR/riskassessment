@@ -19,6 +19,7 @@ params:
   cm_comments: NA
   maint_metrics: NA
   com_metrics: NA
+  downloads_plot_data: NA
 ---
 
 ```{r setup, include=FALSE}
@@ -171,12 +172,17 @@ tagList(
 <hr>
 <br>
 
-```{r community_metrics}
+```{r community_metrics, warning=FALSE, message=FALSE}
 tagList(
   br(),
   h5("Community Usage Metrics", style = "text-align: center;"),
   br(), br(),
   createGrid(metrics = params$com_metrics()),
+  br(), br(),
+  fluidRow(
+    column(width = 12, style = 'padding-left: 20px; padding-right: 20px;',
+           params$downloads_plot_data(),
+           height = "500px")),
   br(), br(),
   h5('Comments', style = "padding-bottom:10px;"),
   wellPanel(
