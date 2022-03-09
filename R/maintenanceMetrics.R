@@ -41,16 +41,28 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user) {
                                       user_role = reactive(user$role),
                                       pkg_name = selected_pkg$name)
     
+    comments <- eventReactive(comment_added(), {
+      dbSelect(
+        glue(
+        "SELECT user_name, user_role, comment, added_on
+        FROM comments
+        WHERE id = '{selected_pkg$name()}' AND comment_type = 'mm'"
+        )
+      ) %>%
+        map(rev)
+    })
+    
     # Call module that creates comments view.
     viewCommentsServer(id = "view_comments",
-                       comment_added = comment_added,
-                       pkg_name = selected_pkg$name,
-                       comment_type = 'mm')
+                       comments = comments,
+                       pkg_name = selected_pkg$name)
     
     metricGridServer(id = "metricGrid",
                      metrics = maint_metrics)
     
-    # Return the a reactive element triggered when a comment is added.
-    return(comment_added)
+    list(
+      comments = comments,
+      comment_added = comment_added
+    )
   })
 }
