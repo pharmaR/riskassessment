@@ -41,7 +41,7 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user) {
                                       user_role = reactive(user$role),
                                       pkg_name = selected_pkg$name)
     
-    comments <- eventReactive(comment_added(), {
+    comments <- eventReactive(list(comment_added(), selected_pkg$name()), {
       dbSelect(
         glue(
         "SELECT user_name, user_role, comment, added_on
