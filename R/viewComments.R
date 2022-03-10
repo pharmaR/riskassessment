@@ -12,17 +12,16 @@ viewCommentsUI <- function(id) {
   )
 }
 
-viewCommentsServer <- function(id, pkg_name, comment_type, comment_added,
+viewCommentsServer <- function(id, pkg_name, comments,
                                label = 'Current Comments') {
   moduleServer(id, function(input, output, session) {
     # Show the comments on the package.
     output$view_comments <- renderUI({
-      comment_added()
       
       tagList(
         h5(label, style = "padding-bottom:10px;"),
         wellPanel(
-          HTML(showComments(pkg_name = pkg_name(), comment_type = comment_type))
+          HTML(showComments(pkg_name = pkg_name(), comments = comments()))
         )
       )
     })

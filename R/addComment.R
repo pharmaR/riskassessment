@@ -20,7 +20,7 @@ addCommentServer <- function(id, metric_abrv, user_name, user_role, pkg_name) {
                             "Community Usage Metrics")
       
       textAreaInput(
-        NS(id, "add_comment"),
+        session$ns("add_comment"),
         h5(glue("Add Comment for {metric_name}")),
         width = "100%",
         rows = 4,

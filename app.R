@@ -7,14 +7,6 @@ source("global.R")
 # suppress dplyr summarize msg "summarise()` has grouped output by..."
 options(dplyr.summarise.inform = FALSE)
 
-# Load source files.
-source(file.path("R", "introJSText.R")) # introJS text.
-source(file.path("R", "viewComments.R"))
-source(file.path("R", "metricBox.R"))
-source(file.path("R", "metricGrid.R"))
-source(file.path("R", "dbupload.R"))
-source(file.path("R", "utils.R"))
-
 # Create db if it doesn't exist.
 if(!file.exists(database_name)) create_db()
 
@@ -71,24 +63,22 @@ ui <- fluidPage(
             tabPanel(
               id = "upload_tab_id",
               title = "Upload Package",
-              uiOutput("upload_package")  # UI for upload package tab panel.
+              uploadPackageUI("upload_package")
             ),
             tabPanel(
               id = "mm_tab_id",
-              value = "mm_tab_value",
               title = "Maintenance Metrics",
-              uiOutput("maintenance_metrics") # UI for Maintenance Metrics tab panel.
+              maintenanceMetricsUI('maintenanceMetrics')
             ),
             tabPanel(
               id = "cum_tab_id",
-              value = "cum_tab_value",
               title = "Community Usage Metrics",
-              uiOutput("community_usage_metrics")  # UI for Community Usage Metrics tab panel.
+              communityMetricsUI('communityMetrics')
             ),
             tabPanel(
               id = "reportPreview_tab_id",
               title = "Report Preview",
-              uiOutput("report_preview")  # UI for Report Preview tab Panel
+              reportPreviewUI("reportPreview")  # UI for Report Preview tab Panel
             )
           )
         )
@@ -108,11 +98,11 @@ ui <- fluidPage(
   
   footer =
     wellPanel(
-    id = "footer",
-    "Checkout the app's code!",
-    tags$a(href = "https://github.com/pharmaR/risk_assessment",
-           icon("github-alt"), target = "_blank")
-  )
+      id = "footer",
+      "Checkout the app's code!",
+      tags$a(href = "https://github.com/pharmaR/risk_assessment",
+             icon("github-alt"), target = "_blank")
+    )
 )
 
 
@@ -128,18 +118,13 @@ ui <- shinymanager::secure_app(
 # Create Server Code.
 server <- function(session, input, output) {
   
-  # Generate reactiveValues object with some (but not all) initial values
-  values <- reactiveValues(
-    uploaded_pkgs = data.frame(package = character(0) , version = character(0), status = character(0))
-  )
-  
   # Collect user info.
   user <- reactiveValues()
   
   # check_credentials directly on sqlite db
   res_auth <- secure_server(
     check_credentials = check_credentials(
-      file.path("credentials.sqlite"),
+      'credentials.sqlite',
       passphrase = key_get("R-shinymanager-key", getOption("keyring_user"))
     )
   )
@@ -149,23 +134,21 @@ server <- function(session, input, output) {
     if (res_auth$admin == TRUE)
       loggit("INFO", glue("User {res_auth$user} signed on as admin"))
     
-    # TODO: Redundant.
-    values$name <- trimws(res_auth$user)
-    values$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
-    
     user$name <- trimws(res_auth$user)
     user$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
   })
   
-  # Sidebar module.
-  uploaded_pkgs <- reactive(values$uploaded_pkgs)
-  selected_pkg <- sidebarServer("sidebar", uploaded_pkgs, user)
+  # Load server of the uploadPackage module.
+  uploaded_pkgs <- uploadPackageServer("upload_package")
   
-  # Assessment criteria information tab.
+  # Load server of the sidebar module.
+  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs$names)
+  
+  # Load server of the assessment criteria module.
   assessmentInfoServer("assessmentInfo")
   
-  # Database view.
-  databaseViewServer("databaseView")
+  # Load server of the database view module.
+  databaseViewServer("databaseView", uploaded_pkgs$names)
   
   # Gather maintenance metrics information.
   maint_metrics <- reactive({
@@ -179,8 +162,17 @@ server <- function(session, input, output) {
       FROM metric
       INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
       WHERE package_metrics.package_id = '{selected_pkg$id()}' AND 
-      metric.class = 'maintenance' ;"))
+      metric.class = 'maintenance' ;")) %>%
+      mutate(
+        title = long_name,
+        desc = description,
+        succ_icon = rep(x = 'check', times = nrow(.)), 
+        unsucc_icon = rep(x = 'times', times = nrow(.)),
+        icon_class = rep(x = 'text-success', times = nrow(.)),
+        .keep = 'unused'
+      )
   })
+  
   
   # Gather community usage metrics information.
   community_usage_metrics <- reactive({
@@ -194,25 +186,31 @@ server <- function(session, input, output) {
     )
   })
   
+  # Load server for the maintenance metrics tab.
+  maintenance_data <- maintenanceMetricsServer('maintenanceMetrics',
+                                               selected_pkg,
+                                               maint_metrics,
+                                               user)
+  
+  # Load server for the community metrics tab.
+  community_data <- communityMetricsServer('communityMetrics',
+                                           selected_pkg,
+                                           community_usage_metrics,
+                                           user)
+  
+  # Load server of the report preview tab.
+  reportPreviewServer(id = "reportPreview",
+                      selected_pkg = selected_pkg,
+                      maint_metrics = maint_metrics,
+                      com_metrics = community_data$cards,
+                      mm_comments = maintenance_data$comments,
+                      cm_comments = community_data$comments,
+                      downloads_plot_data = community_data$downloads_plot_data,
+                      user = user)
+  
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)
   })
-  
-  # Load Source files of UI and Server modules of Upload Package Tab.
-  source(file.path("UI", "uploadpackage.R"), local = TRUE)
-  source(file.path("Server", "uploadpackage.R"), local = TRUE)
-  
-  # Load Source files of UI and Server modules of Report Preview Tab
-  source(file.path("UI", "reportpreview.R"), local = TRUE)
-  source(file.path("Server", "reportpreview.R"), local = TRUE)
-  
-  # Load Source files of UI and Server modules of Maintenance Metrics Tab.
-  source(file.path("UI", "maintenance_metrics.R"), local = TRUE)
-  source(file.path("Server", "maintenance_metrics.R"), local = TRUE)
-  
-  # Load Source files of UI and Server modules of Community Usage Tab.
-  source(file.path("UI", "communityusage_metrics.R"), local = TRUE)
-  source(file.path("Server", "communityusage_metrics.R"), local = TRUE)
 }
 
 shinyApp(ui = ui, server = server)

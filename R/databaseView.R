@@ -17,13 +17,13 @@ databaseViewUI <- function(id) {
           br(), br(),
           box(width = 12,
               title = h5("Uploaded Packages", style = "margin-top: 5px"),
-              DT::dataTableOutput(NS(id, "db_pkgs")),
+              DT::dataTableOutput(NS(id, "packages_table")),
               br(),
               fluidRow(
                 column(
                   width = 6,
                   style = "margin: auto;",
-                  downloadButton(NS(id, "dwnld_sel_db_pkgs_btn"), "Download Report(s)")),
+                  downloadButton(NS(id, "download_reports"), "Download Report(s)")),
                 column(
                   width = 6,
                   selectInput(NS(id, "report_formats"), "Select Format", c("html", "docx"))
@@ -35,11 +35,11 @@ databaseViewUI <- function(id) {
   )
 }
 
-databaseViewServer <- function(id) {
+databaseViewServer <- function(id, uploaded_pkgs) {
   moduleServer(id, function(input, output, session) {
     
-    # Create table for the db dashboard.
-    output$db_pkgs <- DT::renderDataTable({
+    # Update table_data if a package has been uploaded
+    table_data <- eventReactive(uploaded_pkgs(), {
       
       db_pkg_overview <- dbSelect(
         'SELECT pi.name, pi.version, pi.score, pi.decision, c.last_comment
@@ -50,16 +50,20 @@ databaseViewServer <- function(id) {
         ORDER BY 1 DESC'
       )
       
-      db_pkg_overview <- db_pkg_overview %>%
+      db_pkg_overview %>%
         mutate(last_comment = as.character(as_datetime(last_comment))) %>%
         mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
         mutate(decision = ifelse(decision != "", paste(decision, "Risk"), "-")) %>%
         mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
         select(name, version, score, was_decision_made, decision, last_comment)
+    })
+    
+    # Create table for the db dashboard.
+    output$packages_table <- DT::renderDataTable({
       
       as.datatable(
         formattable(
-          db_pkg_overview,
+          table_data(),
           list(
             score = formatter(
               "span",
@@ -98,37 +102,34 @@ databaseViewServer <- function(id) {
           columnDefs = list(list(className = 'dt-center'))
         )
       ) %>%
-        formatStyle(names(db_pkg_overview), textAlign = 'center')
+        formatStyle(names(table_data()), textAlign = 'center')
     })
     
     # Enable the download button when a package is selected.
     observe({
-      if(!is.null(input$db_pkgs_rows_selected)) {
-        shinyjs::enable("dwnld_sel_db_pkgs_btn")
+      if(!is.null(input$packages_table_rows_selected)) {
+        shinyjs::enable("download_reports")
       } else {
-        shinyjs::disable("dwnld_sel_db_pkgs_btn")
+        shinyjs::disable("download_reports")
       }
     })
     
-    values <- reactiveValues()
-    
-    # Download handler to create a report for each package selected.
-    values$cwd <- getwd()
-    
-    output$dwnld_sel_db_pkgs_btn <- downloadHandler(
+    output$download_reports <- downloadHandler(
       filename = function() {
-        paste(
-          "RiskAssessment-Report-",
-          str_replace_all(
-            str_replace(Sys.time(), " ", "_"), ":", "-"),
-          ".zip", sep = "-")
+        report_datetime <- str_replace_all(str_replace(Sys.time(), " ", "_"), ":", "-")
+        glue('RiskAssessment-Report-{report_datetime}.zip')
       },
       content = function(file) {
-        these_pkgs <- values$db_pkg_overview %>% slice(input$db_pkgs_rows_selected)
-        n_pkgs <- nrow(these_pkgs)
+
+        selected_pkgs <- table_data() %>%
+          slice(input$packages_table_rows_selected)
+        
+        n_pkgs <- nrow(selected_pkgs)
+        
         req(n_pkgs > 0)
+        
         shiny::withProgress(
-          message = paste0("Downloading ", n_pkgs, " Report", ifelse(n_pkgs > 1, "s", "")),
+          message = glue('Downloading {n_pkgs} Report{ifelse(n_pkgs > 1, "s", "")}'),
           value = 0,
           max = n_pkgs + 2, # Tell the progress bar the total number of events.
           {
@@ -142,12 +143,14 @@ databaseViewServer <- function(id) {
               Report <- file.path(my_dir, "Report_doc.Rmd")
               file.copy("Reports/Report_doc.Rmd", Report, overwrite = TRUE)
             }
+            
             fs <- c()
             for (i in 1:n_pkgs) {
               # Grab package name and version, then create filename and path.
-              this_pkg <- these_pkgs$name[i]
-              this_ver <- these_pkgs$version[i]
-              file_named <- paste0(this_pkg,"_",this_ver,"_Risk_Assessment.",input$report_formats)
+              this_pkg <- selected_pkgs$name[i]
+              this_ver <- selected_pkgs$version[i]
+              file_named <- glue('{this_pkg}_{this_ver}_Risk_Assessment.{input$report_formats}')
+              
               path <- file.path(my_dir, file_named)
               # Render the report, passing parameters to the rmd file.
               rmarkdown::render(
@@ -155,42 +158,34 @@ databaseViewServer <- function(id) {
                 output_file = path,
                 params = list(package = this_pkg,
                               riskmetric_version = packageVersion("riskmetric"),
-                              cwd = values$cwd,
-                              username = values$name,
-                              user_role = values$role)
+                              cwd = getwd(),
+                              username = user$name,
+                              user_role = user$role)
               )
               fs <- c(fs, path)  # Save all the reports/
               shiny::incProgress(1) # Increment progress bar.
             }
             # Zip all the files up. -j retains just the files in zip file.
             zip(zipfile = file, files = fs, extras = "-j")
-            shiny::incProgress(1) # Icrement progress bar.
+            shiny::incProgress(1) # Increment progress bar.
           })
       },
       contentType = "application/zip"
     )
     
-    # Manage admin adjusting weights and recaluclating risk scores
-    # initialize temporary df that keeps track of the current and new weights exactly once
-    values$curr_new_wts <- get_metric_weights() %>%
-      mutate(weight = ifelse(name == "covr_coverage", 0, weight))
-    
-    observeEvent(input$update_weight, {
-      values$curr_new_wts <-
-        values$curr_new_wts %>%
-        mutate(new_weight = ifelse(name == isolate(input$metric_name),
-                                   isolate(input$metric_weight), new_weight))
+    curr_new_wts <- eventReactive(input$update_weight, {
+      get_metric_weights() %>%
+        mutate(weight = ifelse(name == "covr_coverage", 0, weight))
     })
     
     output$weights_table <- DT::renderDataTable({
       
-      all_names <- unique(values$curr_new_wts$name)
-      chgd_wt_names <- values$curr_new_wts %>% filter(weight != new_weight) %>% pull(name)
-      my_colors <- ifelse(all_names %in% chgd_wt_names,'#FFEB9C','#FFFFFF')
-      
+      all_names <- unique(curr_new_wts$name)
+      chgd_wt_names <- curr_new_wts %>% filter(weight != new_weight) %>% pull(name)
+      my_colors <- ifelse(all_names %in% chgd_wt_names,'#FFEB9C', '#FFFFFF')
       
       DT::datatable(
-        values$curr_new_wts,
+        curr_new_wts,
         selection = list(mode = 'single'),
         colnames = c("Name", "Current Weight", "New Weight"),
         rownames = FALSE,
@@ -201,7 +196,7 @@ databaseViewServer <- function(id) {
           columnDefs = list(list(className = 'dt-center', targets = 1:2))
         )
       ) %>%
-        DT::formatStyle(names(values$curr_new_wts),lineHeight='80%') %>%
+        DT::formatStyle(names(curr_new_wts),lineHeight='80%') %>%
         DT::formatStyle(columns =  "name", target = 'row',
                         backgroundColor = styleEqual(all_names, my_colors))
       
@@ -224,9 +219,9 @@ databaseViewServer <- function(id) {
                 )),
               fluidRow(
                 column(width = 2, offset = 5, align = "left",
-                       selectInput("metric_name", "Select metric", values$curr_new_wts$name, selected = values$curr_new_wts$name[1]) ),
+                       selectInput("metric_name", "Select metric", curr_new_wts$name, selected = curr_new_wts$name[1]) ),
                 column(width = 2, align = "left",
-                       numericInput("metric_weight", "Choose new weight", min = 0, value = values$curr_new_wts$weight[1]) ),
+                       numericInput("metric_weight", "Choose new weight", min = 0, value = curr_new_wts$weight[1]) ),
                 column(width = 1,
                        br(),
                        actionButton("update_weight", "Update weight", class = "btn-secondary") ) ),
@@ -283,7 +278,7 @@ databaseViewServer <- function(id) {
     n_wts_chngd <- reactive({
       req(input$metric_weight)
       
-      values$curr_new_wts %>%
+      curr_new_wts %>%
         filter(weight != new_weight) %>%
         nrow()
     })
@@ -307,7 +302,7 @@ databaseViewServer <- function(id) {
                            value = 0, min = 0, max = 0)
       } else {
         updateNumericInput(session, "metric_weight",
-                           value = values$curr_new_wts %>%
+                           value = curr_new_wts %>%
                              filter(name == input$metric_name) %>%
                              select(weight) %>% # current weight
                              pull())
@@ -321,7 +316,7 @@ databaseViewServer <- function(id) {
     # the selected metric name is updated.
     observeEvent(input$weights_table_rows_selected, {
       updateSelectInput(session, "metric_name",
-                        selected = values$curr_new_wts$name[input$weights_table_rows_selected])
+                        selected = curr_new_wts$name[input$weights_table_rows_selected])
     })
     
     
@@ -371,7 +366,7 @@ databaseViewServer <- function(id) {
       # Update the weights in the `metric` table to reflect recent changes
       # First, which weights are different than the originals?
       wt_chgd_df <- 
-        values$curr_new_wts %>%
+        curr_new_wts %>%
         filter(weight != new_weight)
       
       wt_chgd_metric <- wt_chgd_df %>% select(name) %>% pull()
@@ -379,8 +374,7 @@ databaseViewServer <- function(id) {
       message("Metrics & Weights changed...")
       message(paste(wt_chgd_metric, ": ", wt_chgd_wt))
       purrr::walk2(wt_chgd_metric, wt_chgd_wt, update_metric_weight)
-      values$curr_new_wts <- get_metric_weights() # reset the current and new wts from the database
-      
+
       
       # update for each package
       all_pkgs <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")
@@ -400,8 +394,8 @@ databaseViewServer <- function(id) {
           dbUpdate(
             paste0(
               "INSERT INTO comments values('", all_pkgs$pkg_name[i], "',",
-              "'", values$name, "'," ,
-              "'", values$role, "',",
+              "'", user$name, "'," ,
+              "'", user$role, "',",
               "'", paste0(weight_risk_comment(all_pkgs$pkg_name[i]), 
                           ifelse(all_pkgs$pkg_name[i] %in% cmt_or_dec_pkgs$pkg_name, cmt_or_dec_dropped_cmt, "")), "',",
               "'", typ, "',",
@@ -417,11 +411,6 @@ databaseViewServer <- function(id) {
       for (i in 1:nrow(pkg)) {
         dbUpdate(glue("UPDATE package SET decision = '' where name = '{pkg$pkg_name[i]}'"))
       }
-      
-      # want to update db_dash_screen after creating automated comments and
-      # resetting final decisions. This allows us to capture old risk score in
-      # database and the timestamp of the last automated comment that was just added
-      values$db_pkg_overview <- update_db_dash()
       
       #	Write to the log file
       loggit("INFO", paste("package weights and risk metric scores will be updated for all packages"))
@@ -467,7 +456,5 @@ databaseViewServer <- function(id) {
             h3("The database as been downloaded as datase_backup-[date].sqlite"))))
       }
     )
-    
-    
   })
 }
