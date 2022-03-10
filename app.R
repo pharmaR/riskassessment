@@ -38,7 +38,7 @@ ui <- fluidPage(
   
   includeCSS(path = "www/css/main.css"),
   includeCSS(path = "www/css/community_metrics.css"),
-  
+
   tabsetPanel(
     id = "apptabs",
     tabPanel(
@@ -142,7 +142,11 @@ server <- function(session, input, output) {
     } else {
       removeTab(inputId = "apptabs", target = "admin-mode-tab")
     }
-  })  
+  }, priority = 1)
+  
+  purrr::walk(c("admin-edited_user", "admin-edited_mult_user", "admin-delete_selected_users", "admin-delete_user"),
+             ~ observeEvent(input[[.x]], removeModal(), priority = -1))
+  
 
   # Save user name and role.  
   observeEvent(res_auth$user, {
