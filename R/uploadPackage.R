@@ -5,6 +5,8 @@ uploadPackageUI <- function(id) {
     
     introJSUI(NS(id, "upload_pkg_introJS")),
     
+    tags$head(tags$style(".shiny-notification {font-size:30px; color:darkblue; position: fixed; width:500px; height: 150px; top: 75% ;right: 10%;")),
+
     fluidRow(
       column(
         width = 4,
@@ -81,13 +83,6 @@ uploadPackageServer <- function(id) {
       if(!all(colnames(uploaded_packages) == colnames(template)))
         validate("Please upload a CSV with a valid format.")
       
-      waitress <- waiter::Waitress$new(
-        max = 3*nrow(uploaded_packages) + 1,
-        theme = 'overlay-percent')
-      on.exit(waitress$close())
-      
-      waitress$inc(1)
-      
       # Add status column and remove white space around package names.
       uploaded_packages <- uploaded_packages %>%
         mutate(
@@ -95,9 +90,14 @@ uploadPackageServer <- function(id) {
           package = trimws(package)
         )
       
+      withProgress(message = "Uploading Packages to DB:", value = 0, {
+        
       for (i in 1:nrow(uploaded_packages)) {
-        waitress$inc(1)
         ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
+      
+        incProgress(1 / (nrow(uploaded_packages) + 1), 
+                    detail = paste("package", uploaded_packages$package[i], "version", as.character(ref$version)))
+        
         
         if (ref$source == "pkg_missing"){
           uploaded_packages$status[i] <- 'not found'
@@ -105,7 +105,6 @@ uploadPackageServer <- function(id) {
           loggit('WARN',
                  glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
           
-          waitress$inc(1)
         }
         else {
           # Save version.
@@ -122,15 +121,17 @@ uploadPackageServer <- function(id) {
           if(!found) {
             # Get and upload pkg general info to db.
             insert_pkg_info_to_db(uploaded_packages$package[i])
-            waitress$inc(1)
             # Get and upload maintenance metrics to db.
             insert_maintenance_metrics_to_db(uploaded_packages$package[i])
-            waitress$inc(1)
             # Get and upload community metrics to db.
             insert_community_metrics_to_db(uploaded_packages$package[i])
           }
         }
       }
+        setProgress(value = 1, detail = "   **Completed Uploading Packages**")
+        Sys.sleep(0.25)
+        
+      }) #withProgress
       
       uploaded_packages
     })
