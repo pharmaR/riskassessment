@@ -34,6 +34,23 @@ ui <- fluidPage(
   useShinyjs(),
   waiter::use_waitress(),
   
+  tags$script(HTML(
+    "$(function() {
+
+  // trigger redraw of sparklines after each event value
+  $(document).on({
+    'shiny:value': function(event) {
+      if (event.name === 'tabPanel') {
+        // defer to next tick to add sparklines
+        setTimeout(function() {
+          document.getElementById('admin-add_user').style.width = 'auto';
+        }, 0)
+      }
+    }
+  });
+});"
+  )),
+  
   theme = theme,
   
   includeCSS(path = "www/css/main.css"),
