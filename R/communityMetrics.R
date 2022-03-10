@@ -8,10 +8,14 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
     # Render Output UI for Community Usage Metrics.
     output$communityMetrics_ui <- renderUI({
       
+      vect <- dbSelect("select distinct id from community_usage_metrics") %>% pull()
       # Lets the user know that a package needs to be selected.
       if(identical(selected_pkg$name(), character(0)))
         showHelperMessage()
       
+      else if(!selected_pkg$name() %in% vect) {
+          showHelperMessage(message = glue("Community Usage Metrics not avaiable for ", {selected_pkg$name()} ))
+      }
       else {
         fluidPage(
           
@@ -43,12 +47,14 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
     #' and the number of downloads since last year.
     cards <- eventReactive(community_metrics(), {
     
+      req(nrow(community_metrics()) > 0)
+      
       # Get the first package release.
       first_version <- community_metrics() %>%
         filter(year == min(year)) %>%
         filter(month == min(month)) %>%
         slice_head(n = 1)
-      
+
       # Get difference between today and first release in years.
       time_diff_first_version <- year(Sys.Date()) - first_version$year
       first_version_label <- 'Years'
@@ -146,8 +152,8 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
     # Data to create downloads plot.
     downloads_plot_data <- reactive({
       
-      req(community_metrics())
-      
+      if (nrow(community_metrics()) == 0) return(NULL)
+
       community_data <- community_metrics() %>%
         mutate(day_month_year = glue('1-{month}-{year}')) %>%
         mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
@@ -157,7 +163,7 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
       
       downloads_data <- community_data %>%
         distinct(month, year, .keep_all = TRUE)
-      
+
       # Last day that appears on the community metrics.
       latest_date <- downloads_data %>%
         slice_max(day_month_year) %>%
@@ -265,7 +271,7 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
     output$downloads_plot <- plotly::renderPlotly({
       downloads_plot_data()
     })
-    
+
     # Return the a reactive element triggered when a comment is added.
     list(
       comment_added = comment_added,
