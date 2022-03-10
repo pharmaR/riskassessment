@@ -34,29 +34,69 @@ ui <- fluidPage(
   useShinyjs(),
   waiter::use_waitress(),
   
-  tags$script(HTML(
-    "$(function() {
-
-  // trigger redraw of sparklines after each event value
-  $(document).on({
-    'shiny:value': function(event) {
-      if (event.name === 'tabPanel') {
-        // defer to next tick to add sparklines
-        setTimeout(function() {
-          document.getElementById('admin-add_user').style.width = 'auto';
-        }, 0)
-      }
-    }
-  });
-});"
-  )),
-  
   theme = theme,
   
   includeCSS(path = "www/css/main.css"),
   includeCSS(path = "www/css/community_metrics.css"),
   
-  uiOutput("tabPanel"),
+  tabsetPanel(
+    id = "apptabs",
+    tabPanel(
+      title = "Risk Assessment",
+      icon = icon("clipboard-list"),
+      
+      titlePanel(
+        windowTitle = "Risk Assessment",
+        title = div(id = "page-title", "R Package Risk Assessment App")
+      ),
+      
+      sidebarLayout(
+        sidebarPanel = sidebarPanel(
+          width = 4,
+          sidebarUI("sidebar")
+        ),
+        
+        mainPanel = mainPanel(
+          width = 8,
+          tabsetPanel(
+            id = "tabs",
+            tabPanel(
+              id = "upload_tab_id",
+              title = "Upload Package",
+              uiOutput("upload_package")  # UI for upload package tab panel.
+            ),
+            tabPanel(
+              id = "mm_tab_id",
+              value = "mm_tab_value",
+              title = "Maintenance Metrics",
+              uiOutput("maintenance_metrics") # UI for Maintenance Metrics tab panel.
+            ),
+            tabPanel(
+              id = "cum_tab_id",
+              value = "cum_tab_value",
+              title = "Community Usage Metrics",
+              uiOutput("community_usage_metrics")  # UI for Community Usage Metrics tab panel.
+            ),
+            tabPanel(
+              id = "reportPreview_tab_id",
+              title = "Report Preview",
+              uiOutput("report_preview")  # UI for Report Preview tab Panel
+            )
+          )
+        )
+      )
+    ), 
+    
+    tabPanel(
+      title = div(id = "database-tab", icon("database"), "Database"),
+      databaseViewUI("databaseView")
+    ),
+    
+    tabPanel(
+      title = div(id = "assessment-criteria-tab", icon("info-circle"), "Assessment Criteria"),
+      assessmentInfoUI("assessmentInfo"),
+    )
+  ),
 
   footer =
     wellPanel(
@@ -90,126 +130,20 @@ server <- function(session, input, output) {
       passphrase = key_get("R-shinymanager-key", getOption("keyring_user"))
     )
   )
-  
-  output$tabPanel <- renderUI({
+
+  observeEvent(res_auth$user, {
     if (res_auth$admin == TRUE) {
-      tabsetPanel(
-        id = "apptabs",
-        tabPanel(
-          title = "Risk Assessment",
-          icon = icon("clipboard-list"),
-          
-          titlePanel(
-            windowTitle = "Risk Assessment",
-            title = div(id = "page-title", "R Package Risk Assessment App")
-          ),
-          
-          sidebarLayout(
-            sidebarPanel = sidebarPanel(
-              width = 4,
-              sidebarUI("sidebar")
-            ),
-            
-            mainPanel = mainPanel(
-              width = 8,
-              tabsetPanel(
-                id = "tabs",
+      appendTab("apptabs",
                 tabPanel(
-                  id = "upload_tab_id",
-                  title = "Upload Package",
-                  uiOutput("upload_package")  # UI for upload package tab panel.
-                ),
-                tabPanel(
-                  id = "mm_tab_id",
-                  value = "mm_tab_value",
-                  title = "Maintenance Metrics",
-                  uiOutput("maintenance_metrics") # UI for Maintenance Metrics tab panel.
-                ),
-                tabPanel(
-                  id = "cum_tab_id",
-                  value = "cum_tab_value",
-                  title = "Community Usage Metrics",
-                  uiOutput("community_usage_metrics")  # UI for Community Usage Metrics tab panel.
-                ),
-                tabPanel(
-                  id = "reportPreview_tab_id",
-                  title = "Report Preview",
-                  uiOutput("report_preview")  # UI for Report Preview tab Panel
-                )
-              )
-            )
-          )
-        ), 
-        
-        tabPanel(
-          title = div(id = "database-tab", icon("database"), "Database"),
-          databaseViewUI("databaseView")
-        ),
-        
-        tabPanel(
-          title = div(id = "administrative-tab", icon("cogs"), "Administrative Tools"),
-          assessmentInfoUI("assessmentInfo"),
-          shinymanager:::admin_ui("admin")
-        )
-      )
+                  title = div(id = "admin-mode-tab", icon("cogs"), "Administrative Tools"),
+                  shinymanager:::admin_ui("admin"),
+                  tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';"))
+                ))
     } else {
-      tabsetPanel(
-        id = "apptabs",
-        tabPanel(
-          title = "Risk Assessment",
-          icon = icon("clipboard-list"),
-          
-          titlePanel(
-            windowTitle = "Risk Assessment",
-            title = div(id = "page-title", "R Package Risk Assessment App")
-          ),
-          
-          sidebarLayout(
-            sidebarPanel = sidebarPanel(
-              width = 4,
-              sidebarUI("sidebar")
-            ),
-            
-            mainPanel = mainPanel(
-              width = 8,
-              tabsetPanel(
-                id = "tabs",
-                tabPanel(
-                  id = "upload_tab_id",
-                  title = "Upload Package",
-                  uiOutput("upload_package")  # UI for upload package tab panel.
-                ),
-                tabPanel(
-                  id = "mm_tab_id",
-                  value = "mm_tab_value",
-                  title = "Maintenance Metrics",
-                  uiOutput("maintenance_metrics") # UI for Maintenance Metrics tab panel.
-                ),
-                tabPanel(
-                  id = "cum_tab_id",
-                  value = "cum_tab_value",
-                  title = "Community Usage Metrics",
-                  uiOutput("community_usage_metrics")  # UI for Community Usage Metrics tab panel.
-                ),
-                tabPanel(
-                  id = "reportPreview_tab_id",
-                  title = "Report Preview",
-                  uiOutput("report_preview")  # UI for Report Preview tab Panel
-                )
-              )
-            )
-          )
-        ), 
-        
-        tabPanel(
-          title = div(id = "database-tab", icon("database"), "Database"),
-          databaseViewUI("databaseView")
-        ),
-        
-      )
+      removeTab(inputId = "apptabs", target = "admin-mode-tab")
     }
-  })
-  
+  })  
+
   # Save user name and role.  
   observeEvent(res_auth$user, {
     if (res_auth$admin == TRUE)
