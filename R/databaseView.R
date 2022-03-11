@@ -219,12 +219,12 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                 )),
               fluidRow(
                 column(width = 2, offset = 5, align = "left",
-                       selectInput("metric_name", "Select metric", curr_new_wts()$name, selected = curr_new_wts()$name[1]) ),
+                       selectInput(NS(id, "metric_name"), "Select metric", curr_new_wts()$name, selected = curr_new_wts()$name[1]) ),
                 column(width = 2, align = "left",
-                       numericInput("metric_weight", "Choose new weight", min = 0, value = curr_new_wts()$weight[1]) ),
+                       numericInput(NS(id, "metric_weight"), "Choose new weight", min = 0, value = curr_new_wts()$weight[1]) ),
                 column(width = 1,
                        br(),
-                       actionButton("update_weight", "Update weight", class = "btn-secondary") ) ),
+                       actionButton(NS(id, "update_weight"), "Update weight", class = "btn-secondary") ) ),
               br(), br(), 
               fluidRow(
                 column(width = 3, offset = 1, align = "center",
@@ -234,7 +234,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                        br(), br(),
                        
                        h3("Download database"),
-                       downloadButton("download_database_btn",
+                       downloadButton(NS(id, "download_database_btn"),
                                       "Download",
                                       class = "btn-secondary"),
                        
@@ -243,13 +243,13 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                        br(), br(),
                        
                        h3("Apply new weights and re-calculate risk for each package"),
-                       actionButton("update_pkg_risk", "Re-calculate", class = "btn-secondary")
+                       actionButton(NS(id, "update_pkg_risk"), "Re-calculate", class = "btn-secondary")
                        
                 ),
                 column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
                        offset = 1,
                        h3("Current Risk Score Weights by Metric"),
-                       dataTableOutput("weights_table"))
+                       dataTableOutput(NS(id, "weights_table")))
               ),
               br(), br(), br(),
               conditionalPanel("input.metric_name === 'covr_coverage'", 
