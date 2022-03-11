@@ -173,7 +173,8 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
       contentType = "application/zip"
     )
     
-    curr_new_wts <- eventReactive(input$update_weight, {
+    # curr_new_wts <- eventReactive(input$update_weight, {
+      curr_new_wts <- reactive({
       get_metric_weights() %>%
         mutate(weight = ifelse(name == "covr_coverage", 0, weight))
     })
@@ -278,7 +279,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
     n_wts_chngd <- reactive({
       req(input$metric_weight)
       
-      curr_new_wts %>%
+      curr_new_wts() %>%
         filter(weight != new_weight) %>%
         nrow()
     })
