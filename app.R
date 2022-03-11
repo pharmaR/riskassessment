@@ -121,10 +121,37 @@ add_tags <- function(ui, ...) {
   ui <- force(ui)
   
   function(request) {
+    query <- parseQueryString(request$QUERY_STRING)
+    admin <- query$admin
+    
   if (is.function(ui)) {
     ui <- ui(request)
   }
-  tagList(ui, tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';")))
+  
+  if (identical(admin, "true")) {
+    tagList(ui, 
+            tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';")),
+            tags$script(HTML("var paragraphs = Array.prototype.slice.call(document.getElementsByClassName('mfb-component--br'), 0);
+                             for (var i = 0; i < paragraphs.length; ++i) {
+                               paragraphs[i].remove();
+                             }")),
+            fab_button(
+              position = "bottom-right",
+              actionButton(
+                inputId = ".shinymanager_logout",
+                label = "Logout",
+                icon = icon("sign-out-alt")
+              ),
+              actionButton(
+                inputId = ".shinymanager_app",
+                label = "Go to application",
+                icon = icon("share")
+              )
+            )
+            )
+  } else {
+    tagList(ui)
+  }
   }
 }
 
