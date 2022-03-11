@@ -117,6 +117,19 @@ ui <- shinymanager::secure_app(
     tags$h2("Risk Assessment Application", style = "align:center")),
   enable_admin = TRUE, theme = theme)
 
+add_tags <- function(ui, ...) {
+  ui <- force(ui)
+  
+  function(request) {
+  if (is.function(ui)) {
+    ui <- ui(request)
+  }
+  tagList(ui, tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';")))
+  }
+}
+
+ui <- add_tags(ui)
+
 # Create Server Code.
 server <- function(session, input, output) {
   
