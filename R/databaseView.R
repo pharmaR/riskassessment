@@ -180,12 +180,12 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
     
     output$weights_table <- DT::renderDataTable({
       
-      all_names <- unique(curr_new_wts$name)
-      chgd_wt_names <- curr_new_wts %>% filter(weight != new_weight) %>% pull(name)
+      all_names <- unique(curr_new_wts()$name)
+      chgd_wt_names <- curr_new_wts() %>% filter(weight != new_weight) %>% pull(name)
       my_colors <- ifelse(all_names %in% chgd_wt_names,'#FFEB9C', '#FFFFFF')
       
       DT::datatable(
-        curr_new_wts,
+        curr_new_wts(),
         selection = list(mode = 'single'),
         colnames = c("Name", "Current Weight", "New Weight"),
         rownames = FALSE,
@@ -196,7 +196,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
           columnDefs = list(list(className = 'dt-center', targets = 1:2))
         )
       ) %>%
-        DT::formatStyle(names(curr_new_wts),lineHeight='80%') %>%
+        DT::formatStyle(names(curr_new_wts()),lineHeight='80%') %>%
         DT::formatStyle(columns =  "name", target = 'row',
                         backgroundColor = styleEqual(all_names, my_colors))
       
@@ -219,9 +219,9 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                 )),
               fluidRow(
                 column(width = 2, offset = 5, align = "left",
-                       selectInput("metric_name", "Select metric", curr_new_wts$name, selected = curr_new_wts$name[1]) ),
+                       selectInput("metric_name", "Select metric", curr_new_wts()$name, selected = curr_new_wts()$name[1]) ),
                 column(width = 2, align = "left",
-                       numericInput("metric_weight", "Choose new weight", min = 0, value = curr_new_wts$weight[1]) ),
+                       numericInput("metric_weight", "Choose new weight", min = 0, value = curr_new_wts()$weight[1]) ),
                 column(width = 1,
                        br(),
                        actionButton("update_weight", "Update weight", class = "btn-secondary") ) ),
@@ -302,7 +302,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                            value = 0, min = 0, max = 0)
       } else {
         updateNumericInput(session, "metric_weight",
-                           value = curr_new_wts %>%
+                           value = curr_new_wts() %>%
                              filter(name == input$metric_name) %>%
                              select(weight) %>% # current weight
                              pull())
@@ -316,7 +316,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
     # the selected metric name is updated.
     observeEvent(input$weights_table_rows_selected, {
       updateSelectInput(session, "metric_name",
-                        selected = curr_new_wts$name[input$weights_table_rows_selected])
+                        selected = curr_new_wts()$name[input$weights_table_rows_selected])
     })
     
     
@@ -366,7 +366,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
       # Update the weights in the `metric` table to reflect recent changes
       # First, which weights are different than the originals?
       wt_chgd_df <- 
-        curr_new_wts %>%
+        curr_new_wts() %>%
         filter(weight != new_weight)
       
       wt_chgd_metric <- wt_chgd_df %>% select(name) %>% pull()
