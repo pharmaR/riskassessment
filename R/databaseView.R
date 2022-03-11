@@ -35,7 +35,7 @@ databaseViewUI <- function(id) {
   )
 }
 
-databaseViewServer <- function(id, uploaded_pkgs) {
+databaseViewServer <- function(id, user, uploaded_pkgs) {
   moduleServer(id, function(input, output, session) {
     
     # Update table_data if a package has been uploaded
@@ -205,7 +205,7 @@ databaseViewServer <- function(id, uploaded_pkgs) {
     
     # Section displayed only for authorized users.
     output$admins_view <- renderUI({
-      req(input$res_auth$admin == TRUE)  # show this only if user is an admin
+      req(user$role == "admin")  # show this only if user is an admin
       tagList(
         tags$section(
           br(), br(),
