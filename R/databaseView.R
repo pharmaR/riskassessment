@@ -172,11 +172,23 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
       },
       contentType = "application/zip"
     )
-    
     curr_new_wts <- eventReactive(input$update_weight, {
-      get_metric_weights() %>%
-        mutate(weight = ifelse(name == "covr_coverage", 0, weight))
+      print(paste("in eventReactive for input$update_weight:",input$update_weight))
+      if (is_empty(input$update_weight)) {
+        get_metric_weights() %>%
+          mutate(weight = ifelse(name == "covr_coverage", 0, weight)) 
+      } else {
+        print(paste(input$metric_name, input$metric_weight, input$update_weight))
+          save_curr_new_wts %>%
+          mutate(new_weight = ifelse(name == isolate(input$metric_name),
+                                    isolate(input$metric_weight), new_weight))
+      }
     }, ignoreNULL = FALSE)
+    
+    observeEvent(curr_new_wts(), {
+      print("in observeEvent for curr_new_wts()")
+      save_curr_new_wts <<- isolate(curr_new_wts())
+    })
     
     output$weights_table <- DT::renderDataTable({
       
@@ -221,7 +233,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                 column(width = 2, offset = 5, align = "left",
                        selectInput(NS(id, "metric_name"), "Select metric", curr_new_wts()$name, selected = curr_new_wts()$name[1]) ),
                 column(width = 2, align = "left",
-                       numericInput(NS(id, "metric_weight"), "Choose new weight", min = 0, value = curr_new_wts()$weight[1]) ),
+                       numericInput(NS(id, "metric_weight"), "Choose new weight", min = 0, value = curr_new_wts()$new_weight[1]) ),
                 column(width = 1,
                        br(),
                        actionButton(NS(id, "update_weight"), "Update weight", class = "btn-secondary") ) ),
@@ -295,7 +307,8 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
     
     # Update metric weight dropdown so that it matches the metric name.
     observeEvent(input$metric_name, {
-      
+        print(paste("observeEvent for input$metric_name", input$metric_name))
+
       if(input$metric_name == "covr_coverage"){
         # set to zero, don't allow change until riskmetric fixes this assessment
         updateNumericInput(session, "metric_weight",
@@ -304,7 +317,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
         updateNumericInput(session, "metric_weight",
                            value = curr_new_wts() %>%
                              filter(name == input$metric_name) %>%
-                             select(weight) %>% # current weight
+                             select(new_weight) %>% # new weight
                              pull())
       }
       
@@ -349,9 +362,9 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
             h3(strong("Note:"), "Updating the risk metrics cannot be reverted.", class = "mt-25 mb-0"),
             h3("Its strongly recommended to 'Download database' for backup purposes before re-calculating risk."),
             footer = tagList(
-              actionButton("confirm_update_risk", "Submit",
+              actionButton(NS(id, "confirm_update_risk"), "Submit",
                            class = "submit_confirmed_decision_class btn-secondary"),
-              actionButton("edit", "Cancel", class = "edit_class btn-unsuccess")
+              actionButton(NS(id, "edit"), "Cancel", class = "edit_class btn-unsuccess")
             )
           )
         ))
