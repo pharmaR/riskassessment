@@ -172,22 +172,22 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
       },
       contentType = "application/zip"
     )
+    
+    save <- reactiveValues(data=NULL)
+    
     curr_new_wts <- eventReactive(input$update_weight, {
-      print(paste("in eventReactive for input$update_weight:",input$update_weight))
       if (is_empty(input$update_weight)) {
         get_metric_weights() %>%
           mutate(weight = ifelse(name == "covr_coverage", 0, weight)) 
       } else {
-        print(paste(input$metric_name, input$metric_weight, input$update_weight))
-          save_curr_new_wts %>%
+          save$data %>%
           mutate(new_weight = ifelse(name == isolate(input$metric_name),
                                     isolate(input$metric_weight), new_weight))
       }
     }, ignoreNULL = FALSE)
     
     observeEvent(curr_new_wts(), {
-      print("in observeEvent for curr_new_wts()")
-      save_curr_new_wts <<- isolate(curr_new_wts())
+      save$data <- isolate(curr_new_wts())
     })
     
     output$weights_table <- DT::renderDataTable({
