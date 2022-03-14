@@ -19,6 +19,7 @@ params:
   cm_comments: NA
   maint_metrics: NA
   com_metrics: NA
+  com_metrics_raw: NA
   downloads_plot_data: NA
 ---
 
