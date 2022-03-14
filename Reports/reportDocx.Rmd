@@ -69,7 +69,7 @@ tagList(
 
 ```{r overall_comments}
 tagList(
-  h5('Overall Comments', style = "padding-bottom:10px;"),
+  h2('Overall Comments', style = "padding-bottom:10px;"),
   wellPanel(
     HTML(outputComments(
       pkg_name = params$pkg$name(),
@@ -79,8 +79,9 @@ tagList(
 ```
 
 
+\newpage
 ```{r maintenance_metrics}
-tagList(br(), h5('Maintenance Metrics'), br())
+tagList(br(), h2('Maintenance Metrics'))
 ```
 
 
@@ -99,7 +100,7 @@ params$maint_metrics() %>%
 ```{r maintenance_metrics_comments}
 tagList(
   br(),
-  h5('Comments'),
+  h2('Comments'),
   HTML(outputComments(
     pkg_name = params$pkg$name(),
     comments = params$mm_comments()))
@@ -107,8 +108,9 @@ tagList(
 ```
 
 
+\newpage
 ```{r community_metrics, warning=FALSE, message=FALSE}
-tagList(br(), h5("Community Usage Metrics"), br())
+tagList(br(), h2("Community Usage Metrics"))
 ```
 
 
@@ -127,7 +129,7 @@ params$com_metrics() %>%
 ```{r community_metrics_plot_title}
 tagList(
   br(),
-  h5('Number of Downloads by Month/Year')
+  h2('Number of Downloads by Month/Year')
 )
 ```
 
@@ -153,7 +155,7 @@ params$com_metrics_raw() %>%
 ```{r community_metrics_comments}
 tagList(
   br(),
-  h5('Comments'),
+  h2('Comments'),
   HTML(outputComments(
     pkg_name = params$pkg$name(),
     comments = params$cm_comments()))
