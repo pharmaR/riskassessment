@@ -141,8 +141,10 @@ params$com_metrics_raw() %>%
   distinct(month, year, .keep_all = TRUE) %>%
   ggplot(aes(x = day_month_year, y = downloads)) +
   geom_point() +
+  geom_line() +
+  scale_x_date(date_breaks = "3 months", date_labels = "%m-%Y") +
   labs(
-    x = 'Year',
+    x = 'Month/Year',
     y = 'Downloads'
   )
 ```
