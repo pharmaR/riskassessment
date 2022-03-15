@@ -307,7 +307,6 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
     
     # Update metric weight dropdown so that it matches the metric name.
     observeEvent(input$metric_name, {
-        print(paste("observeEvent for input$metric_name", input$metric_name))
 
       if(input$metric_name == "covr_coverage"){
         # set to zero, don't allow change until riskmetric fixes this assessment
@@ -384,11 +383,10 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
       
       wt_chgd_metric <- wt_chgd_df %>% select(name) %>% pull()
       wt_chgd_wt <- wt_chgd_df %>% select(new_weight) %>% pull()
-      message("Metrics & Weights changed...")
-      message(paste(wt_chgd_metric, ": ", wt_chgd_wt))
-      purrr::walk2(wt_chgd_metric, wt_chgd_wt, update_metric_weight)
+      rlang::inform("Metrics & Weights changed...")
+      rlang::inform(paste(wt_chgd_metric, ": ", wt_chgd_wt))
+      purrr::walk2(wt_chgd_metric, wt_chgd_wt, ~update_metric_weight(.x, .y))
 
-      
       # update for each package
       all_pkgs <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")
       cmt_or_dec_pkgs <- unique(bind_rows(
@@ -421,8 +419,10 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
       
       # Reset any decisions made prior to this.
       pkg <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package WHERE decision != ''")
-      for (i in 1:nrow(pkg)) {
-        dbUpdate(glue("UPDATE package SET decision = '' where name = '{pkg$pkg_name[i]}'"))
+      if (nrow(pkg) > 0) {
+        for (i in 1:nrow(pkg)) {
+          dbUpdate(glue("UPDATE package SET decision = '' where name = '{pkg$pkg_name[i]}'"))
+        }
       }
       
       #	Write to the log file
@@ -437,7 +437,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
           dbUpdate(glue(
             "DELETE FROM package_metrics WHERE package_id = 
             (SELECT id FROM package WHERE name = '{pkg$pkg_name[i]}')") )
-          metric_mm_tm_Info_upload_to_DB(pkg$pkg_name[i])
+          # metric_mm_tm_Info_upload_to_DB(pkg$pkg_name[i])
         }
       })
       
