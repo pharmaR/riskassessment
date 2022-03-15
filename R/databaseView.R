@@ -438,6 +438,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
             "DELETE FROM package_metrics WHERE package_id = 
             (SELECT id FROM package WHERE name = '{pkg$pkg_name[i]}')") )
           # metric_mm_tm_Info_upload_to_DB(pkg$pkg_name[i])
+          insert_maintenance_metrics_to_db(pkg$pkg_name[i])
         }
       })
       
