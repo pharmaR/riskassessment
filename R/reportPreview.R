@@ -3,7 +3,7 @@ reportPreviewUI <- function(id) {
 }
 
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
-                                mm_comments, cm_comments,
+                                com_metrics_raw, mm_comments, cm_comments,
                                 downloads_plot_data, user) {
   moduleServer(id, function(input, output, session) {
     
@@ -18,7 +18,6 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
         showHelperMessage()
       
       else {
-        
         fluidPage(
           tagList(
             br(),
@@ -158,14 +157,14 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
               report_path <- tempfile(fileext = ".Rmd")
             }
             else {
-              report <- file.path('Reports', 'Report_doc.Rmd')
+              report <- file.path('Reports', 'reportDocx.Rmd')
               report_path <- tempfile(fileext = ".docx")
             }
             
             file.copy(report, report_path, overwrite = TRUE)
-            
+
             rmarkdown::render(
-              report_path,
+              report,
               output_file = file,
               params = list(pkg = selected_pkg,
                             riskmetric_version = packageVersion("riskmetric"),
@@ -176,6 +175,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                             cm_comments = cm_comments,
                             maint_metrics = maint_metrics,
                             com_metrics = com_metrics,
+                            com_metrics_raw = com_metrics_raw,
                             downloads_plot_data = downloads_plot_data),
               envir = new.env(parent = globalenv())
             )
