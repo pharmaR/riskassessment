@@ -188,7 +188,7 @@ weight_risk_comment <- function(pkg_name) {
 update_metric_weight <- function(metric_name, metric_weight){
   dbUpdate(glue(
     "UPDATE metric
-    SET weight = {metric_weight},
+    SET weight = {metric_weight}
     WHERE name = '{metric_name}'"
   ))
 }
