@@ -98,6 +98,9 @@ showHelperMessage <- function(message = "Please select a package"){
 
 # Displays formatted comments.
 showComments <- function(pkg_name, comments){
+  if (length(pkg_name) == 0)
+    return("")
+
   ifelse(
     length(comments$user_name) == 0, 
     "No comments",
