@@ -203,6 +203,7 @@ server <- function(session, input, output) {
                       selected_pkg = selected_pkg,
                       maint_metrics = maint_metrics,
                       com_metrics = community_data$cards,
+                      com_metrics_raw = community_usage_metrics,
                       mm_comments = maintenance_data$comments,
                       cm_comments = community_data$comments,
                       downloads_plot_data = community_data$downloads_plot_data,
