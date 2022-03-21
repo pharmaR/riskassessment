@@ -80,10 +80,11 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
       
       # Get the last package release.
       last_version <- community_metrics() %>%
+        filter(version != "NA") %>%
         filter(year == max(year)) %>%
         filter(month == max(month)) %>%
         slice_head(n = 1)
-      
+
       # Get difference between today and latest release.
       time_diff_latest_version <- year(Sys.Date()) - last_version$year
       latest_version_label <- 'Years'
@@ -92,13 +93,14 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
         time_diff_latest_version <- month(Sys.Date()) - last_version$month
         latest_version_label <- 'Months'
       }
+      # remove "s" off of "Years" or "Months" if 1
       if(time_diff_latest_version == 1)
         latest_version_label <- str_remove(
           string = latest_version_label, pattern = 's$')
       
       cards <- cards %>%
         add_row(name = 'time_since_latest_version',
-                title = 'Lastest Version Release',
+                title = 'Latest Version Release',
                 desc = 'Time passed since latest version release',
                 value = glue('{time_diff_latest_version} {latest_version_label} Ago'),
                 succ_icon = 'meteor',
