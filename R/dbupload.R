@@ -96,7 +96,6 @@ upload_package_to_db <- function(name, version, title, description,
 
 # Get the maintenance and testing metrics info and upload into DB.
 insert_maintenance_metrics_to_db <- function(pkg_name){
-  # pkg_name <- "samplesizeCMH"
   
   riskmetric_assess <-
     pkg_ref(pkg_name) %>%
