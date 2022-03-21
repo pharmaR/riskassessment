@@ -89,14 +89,16 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     }, ignoreNULL = TRUE)
     
     # Get information about selected package.
-    selected_pkg <- reactive({
+    selected_pkg <- reactiveVal()
+    
+    observe({
       req(input$select_pkg)
       req(input$select_ver)
 
-      dbSelect(glue(
+      selected_pkg(dbSelect(glue(
         "SELECT *
         FROM package
-        WHERE name = '{input$select_pkg}'"))
+        WHERE name = '{input$select_pkg}'")))
     })
     
     # Update package version.
