@@ -36,7 +36,6 @@ get_latest_pkg_info <- function(pkg_name) {
 
 
 # Call function to get and upload info from CRAN/local to db.
-# TODO: get and upload should be distinct functions.
 insert_pkg_info_to_db <- function(pkg_name) {
   tryCatch(
     expr = {
@@ -97,6 +96,7 @@ upload_package_to_db <- function(name, version, title, description,
 
 # Get the maintenance and testing metrics info and upload into DB.
 insert_maintenance_metrics_to_db <- function(pkg_name){
+  # pkg_name <- "samplesizeCMH"
   
   riskmetric_assess <-
     pkg_ref(pkg_name) %>%
@@ -159,26 +159,24 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
 
 # Get community usage metrics info and upload into DB.
 # pkg_name <- "samplesizeCMH"
+# pkg_name <- "rlang"
 insert_community_metrics_to_db <- function(pkg_name) {
-  
+  print(pkg_name)
   pkgs_cum_metrics <- tibble()
   
   tryCatch(
     expr = {
-      
-      pkg_name <- "samplesizeCMH"
-      pkg_name <- "dplyr"
       
       # get current release version number and date
       curr_release <- get_latest_pkg_info(pkg_name) %>%
         select(`Last modified` = Published, version = Version)
       
       # Get the packages past versions and dates.
-      pkg_page <- read_html(
-        glue('https://cran.r-project.org/src/contrib/Archive/{pkg_name}'))
+      pkg_url <- url(glue('https://cran.r-project.org/src/contrib/Archive/{pkg_name}'))
+      pkg_page <- try(read_html(pkg_url), silent = TRUE)
       
       # if past releases exist... they usually do!
-      if(exists("pkg_page")){ 
+      if(all(class(pkg_page) != "try-error")){ #exists("pkg_page")
         versions_with_dates0 <- pkg_page %>% 
           html_node('table') %>%
           html_table() %>%
@@ -192,6 +190,7 @@ insert_community_metrics_to_db <- function(pkg_name) {
       } else {
         versions_with_dates0 <- curr_release
       }
+      # close(pkg_url)
       
       versions_with_dates <- versions_with_dates0 %>%
         mutate(date = as.Date(`Last modified`), .keep = 'unused') %>%
@@ -220,6 +219,10 @@ insert_community_metrics_to_db <- function(pkg_name) {
         left_join(versions_with_dates, by = c('month', 'year')) %>%
         arrange(year, month) %>%
         select(-date)
+      
+      print("pkgs_cum_metrics:")
+      print(pkgs_cum_metrics)
+      
     },
     error = function(e) {
       loggit("ERROR", paste("Error extracting cum metric info of the package:",
@@ -228,7 +231,11 @@ insert_community_metrics_to_db <- function(pkg_name) {
     }
   )
   
-  if(nrow(pkgs_cum_metrics) != 0)
+  print(paste(pkg_name, "made it past tryCatch"))
+  print("nrow(pkgs_cum_metrics) != 0...")
+  print(nrow(pkgs_cum_metrics) != 0)
+  if(nrow(pkgs_cum_metrics) != 0){
+    print(paste(pkg_name, "made it into dbUpdate!!!"))
     for (i in 1:nrow(pkgs_cum_metrics)) {
       dbUpdate(glue(
         "INSERT INTO community_usage_metrics 
@@ -238,3 +245,5 @@ insert_community_metrics_to_db <- function(pkg_name) {
         '{pkgs_cum_metrics$version[i]}')"))
     }
   }
+}
+

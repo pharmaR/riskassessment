@@ -5,7 +5,7 @@ uploadPackageUI <- function(id) {
     
     introJSUI(NS(id, "upload_pkg_introJS")),
     
-    tags$head(tags$style(".shiny-notification {font-size:30px; color:darkblue; position: fixed; width:500px; height: 150px; top: 75% ;right: 10%;")),
+    tags$head(tags$style(".shiny-notification {font-size:30px; color:darkblue; position: fixed; width:415px; height: 150px; top: 75% ;right: 10%;")),
 
     fluidRow(
       column(
@@ -87,7 +87,8 @@ uploadPackageServer <- function(id) {
       uploaded_packages <- uploaded_packages %>%
         mutate(
           status = rep('', np),
-          package = trimws(package)
+          package = trimws(package),
+          version = trimws(version)
         )
       
       # Start progress bar. Need to establish a maximum increment
@@ -98,11 +99,24 @@ uploadPackageServer <- function(id) {
                    message = "Uploading Packages to DB:", {
         
         for (i in 1:np) {
+
+          user_ver <- uploaded_packages$version[i]
+          incProgress(1, detail = glue::glue("
+                                             {uploaded_packages$package[i]} {user_ver}"))
           
-          incProgress(1)
+          # run pkg_ref() to get pkg version and source info
           ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
-          deets <- paste("package", uploaded_packages$package[i],
-                         "version", as.character(ref$version))
+          
+          ref_ver <- as.character(ref$version)
+          if(user_ver == ref_ver){
+            ver_msg <- ref_ver
+          } else {
+            ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
+          }
+          
+          as.character(ref$version)
+          deets <- glue::glue("
+                              {uploaded_packages$package[i]} {ver_msg}")
           
           
           if (ref$source == "pkg_missing"){
@@ -144,7 +158,7 @@ uploadPackageServer <- function(id) {
             }
           }
         }
-        incProgress(1, detail = "   **Completed Uploading Packages**")
+        incProgress(1, detail = "   **Completed Pkg Uploads**")
         Sys.sleep(0.25)
         
       }) #withProgress
