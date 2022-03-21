@@ -92,44 +92,44 @@ uploadPackageServer <- function(id) {
       
       withProgress(message = "Uploading Packages to DB:", value = 0, {
         
-      for (i in 1:nrow(uploaded_packages)) {
-        ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
-      
-        incProgress(1 / (nrow(uploaded_packages) + 1), 
-                    detail = paste("package", uploaded_packages$package[i], "version", as.character(ref$version)))
+        for (i in 1:nrow(uploaded_packages)) {
+          ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
         
-        
-        if (ref$source == "pkg_missing"){
-          uploaded_packages$status[i] <- 'not found'
-
-          loggit('WARN',
-                 glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
+          incProgress(1 / (nrow(uploaded_packages) + 1), 
+                      detail = paste("package", uploaded_packages$package[i], "version", as.character(ref$version)))
           
-        }
-        else {
-          # Save version.
-          uploaded_packages$version[i] <- as.character(ref$version)
-
-          found <- nrow(dbSelect(glue(
-            "SELECT name
-            FROM package
-            WHERE name = '{uploaded_packages$package[i]}'")))
           
-          uploaded_packages$status[i] <- ifelse(found == 0, 'new', 'duplicate')
-          
-          # Add package and metrics to the db if package is not in the db.
-          if(!found) {
-            # Get and upload pkg general info to db.
-            insert_pkg_info_to_db(uploaded_packages$package[i])
-            # Get and upload maintenance metrics to db.
-            insert_maintenance_metrics_to_db(uploaded_packages$package[i])
-            # Get and upload community metrics to db.
-            insert_community_metrics_to_db(uploaded_packages$package[i])
+          if (ref$source == "pkg_missing"){
+            uploaded_packages$status[i] <- 'not found'
+  
+            loggit('WARN',
+                   glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
+            
+          }
+          else {
+            # Save version.
+            uploaded_packages$version[i] <- as.character(ref$version)
+  
+            found <- nrow(dbSelect(glue(
+              "SELECT name
+              FROM package
+              WHERE name = '{uploaded_packages$package[i]}'")))
+            
+            uploaded_packages$status[i] <- ifelse(found == 0, 'new', 'duplicate')
+            
+            # Add package and metrics to the db if package is not in the db.
+            if(!found) {
+              # Get and upload pkg general info to db.
+              insert_pkg_info_to_db(uploaded_packages$package[i])
+              # Get and upload maintenance metrics to db.
+              insert_maintenance_metrics_to_db(uploaded_packages$package[i])
+              # Get and upload community metrics to db.
+              insert_community_metrics_to_db(uploaded_packages$package[i])
+            }
           }
         }
-      }
-        setProgress(value = 1, detail = "   **Completed Uploading Packages**")
-        Sys.sleep(0.25)
+          setProgress(value = 1, detail = "   **Completed Uploading Packages**")
+          Sys.sleep(0.25)
         
       }) #withProgress
       
