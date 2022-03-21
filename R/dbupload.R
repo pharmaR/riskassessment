@@ -157,11 +157,8 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
 }
 
 
-# Get community usage metrics info and upload into DB.
-# pkg_name <- "samplesizeCMH"
-# pkg_name <- "rlang"
+
 insert_community_metrics_to_db <- function(pkg_name) {
-  print(pkg_name)
   pkgs_cum_metrics <- tibble()
   
   tryCatch(
@@ -220,9 +217,6 @@ insert_community_metrics_to_db <- function(pkg_name) {
         arrange(year, month) %>%
         select(-date)
       
-      print("pkgs_cum_metrics:")
-      print(pkgs_cum_metrics)
-      
     },
     error = function(e) {
       loggit("ERROR", paste("Error extracting cum metric info of the package:",
@@ -231,11 +225,7 @@ insert_community_metrics_to_db <- function(pkg_name) {
     }
   )
   
-  print(paste(pkg_name, "made it past tryCatch"))
-  print("nrow(pkgs_cum_metrics) != 0...")
-  print(nrow(pkgs_cum_metrics) != 0)
   if(nrow(pkgs_cum_metrics) != 0){
-    print(paste(pkg_name, "made it into dbUpdate!!!"))
     for (i in 1:nrow(pkgs_cum_metrics)) {
       dbUpdate(glue(
         "INSERT INTO community_usage_metrics 
