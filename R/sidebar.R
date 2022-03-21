@@ -89,16 +89,19 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     }, ignoreNULL = TRUE)
     
     # Get information about selected package.
-    selected_pkg <- reactiveVal()
+    selected_pkg <- reactiveValues()
     
     observe({
       req(input$select_pkg)
       req(input$select_ver)
 
-      selected_pkg(dbSelect(glue(
+      pkg_selected <- dbSelect(glue(
         "SELECT *
         FROM package
-        WHERE name = '{input$select_pkg}'")))
+        WHERE name = '{input$select_pkg}'"))
+      
+      pkg_selected %>%
+        walk2(names(.), function(.x, .y) {selected_pkg[[.y]] <- .x})
     })
     
     # Update package version.
@@ -106,7 +109,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       req(input$select_pkg)
       req(input$select_ver)
       
-      version <- ifelse(input$select_pkg == "-", "-", selected_pkg()$version)
+      version <- ifelse(input$select_pkg == "-", "-", selected_pkg$version)
       
       updateSelectizeInput(
         session,
@@ -126,7 +129,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       if(input$select_ver == "-")
         validate("Please select a version")
       
-      status <- ifelse(selected_pkg()$decision == '', "Under Review", "Reviewed")
+      status <- ifelse(selected_pkg$decision == '', "Under Review", "Reviewed")
       h5(status)
     })
     
@@ -140,9 +143,9 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       if(input$select_ver == "-")
         validate("Please select a version")
       
-      req(selected_pkg())
+      req(selected_pkg$score)
       
-      h5(selected_pkg()$score)
+      h5(selected_pkg$score)
     })
     
     # Display/update overall comments for selected package/version.
@@ -175,13 +178,13 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       if(current_comment == "")
         validate("Please enter a comment.")
       
-      req(selected_pkg())
+      req(selected_pkg$name)
       
       previous_comments <- 
         dbSelect(glue(
           "SELECT *
             FROM comments
-            WHERE comment_type = 'o' AND id = '{selected_pkg()$name}'"))
+            WHERE comment_type = 'o' AND id = '{selected_pkg$name}'"))
       
       if (nrow(previous_comments) != 0) {
         showModal(modalDialog(
@@ -205,7 +208,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       } else{
         dbUpdate(glue(
           "INSERT INTO comments
-          VALUES ('{selected_pkg()$name}', '{user$name}', '{user$role}',
+          VALUES ('{selected_pkg$name}', '{user$name}', '{user$role}',
           '{current_comment}', 'o', '{getTimeStamp()}')"))
         
         updateTextAreaInput(session, "overall_comment",
@@ -215,13 +218,13 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     
     observeEvent(input$submit_overall_comment_yes, {
 
-      req(selected_pkg())
+      req(selected_pkg$name)
 
       dbUpdate(
         glue(
           "UPDATE comments
           SET comment = '{input$overall_comment}', added_on = '{getTimeStamp()}'
-          WHERE id = '{selected_pkg()$name}' AND
+          WHERE id = '{selected_pkg$name}' AND
           user_name = '{user$name}' AND
           user_role = '{user$role}' AND
           comment_type = 'o'"
@@ -259,21 +262,21 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
         validate('Please select a package and a version.')
       }
       
-      req(selected_pkg())
+      req(selected_pkg$decision)
       
       # Update the risk slider using the info saved.
       updateSliderTextInput(
         session,
         "decision",
         choices = c("Low", "Medium", "High"),
-        selected = selected_pkg()$decision
+        selected = selected_pkg$decision
       )
     })
     
     # Enable/disable sidebar decision and comment.
     observeEvent(input$select_ver, {
       if (input$select_pkg != "-" && input$select_pkg != "-" &&
-          (is_empty(selected_pkg()$decision) || selected_pkg()$decision == "")) {
+          (is_empty(selected_pkg$decision) || selected_pkg$decision == "")) {
         enable("decision")
         enable("submit_decision")
         enable("overall_comment")
@@ -323,8 +326,10 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       dbUpdate(glue(
         "UPDATE package
           SET decision = '{input$decision}'
-          WHERE name = '{selected_pkg()$name}'")
+          WHERE name = '{selected_pkg$name}'")
       )
+      
+      selected_pkg$decision <- input$decision
       
       disable("decision")
       disable("submit_decision")
@@ -334,23 +339,23 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       removeModal()
       
       loggit("INFO",
-             glue("decision for the package {selected_pkg()$name} is {input$decision}
+             glue("decision for the package {selected_pkg$name} is {input$decision}
                   by {user$name} ({user$role})"))
     })
     
     # Output package id, name, and version.
     # TODO: return the entire selected_pkg instead of doing this below.
     list(
-      id = reactive(selected_pkg()$id),
-      name = reactive(selected_pkg()$name),
-      version = reactive(selected_pkg()$version),
-      title = reactive(selected_pkg()$title),
-      decision = reactive(selected_pkg()$decision),
-      description = reactive(selected_pkg()$description),
-      author = reactive(selected_pkg()$author),
-      maintainer = reactive(selected_pkg()$maintainer),
-      license = reactive(selected_pkg()$license),
-      published = reactive(selected_pkg()$published),
+      id = reactive(selected_pkg$id),
+      name = reactive(selected_pkg$name),
+      version = reactive(selected_pkg$version),
+      title = reactive(selected_pkg$title),
+      decision = reactive(selected_pkg$decision),
+      description = reactive(selected_pkg$description),
+      author = reactive(selected_pkg$author),
+      maintainer = reactive(selected_pkg$maintainer),
+      license = reactive(selected_pkg$license),
+      published = reactive(selected_pkg$published),
       overall_comment_added = reactive(input$submit_overall_comment)
     )
   })
