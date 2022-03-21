@@ -158,6 +158,7 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
 
 
 # Get community usage metrics info and upload into DB.
+# pkg_name <- "samplesizeCMH"
 insert_community_metrics_to_db <- function(pkg_name) {
   
   pkgs_cum_metrics <- tibble()
@@ -165,25 +166,38 @@ insert_community_metrics_to_db <- function(pkg_name) {
   tryCatch(
     expr = {
       
-      # Get the package versions and dates.
+      pkg_name <- "samplesizeCMH"
+      pkg_name <- "dplyr"
+      
+      # get current release version number and date
+      curr_release <- get_latest_pkg_info(pkg_name) %>%
+        select(`Last modified` = Published, version = Version)
+      
+      # Get the packages past versions and dates.
       pkg_page <- read_html(
         glue('https://cran.r-project.org/src/contrib/Archive/{pkg_name}'))
-      versions_with_dates <- pkg_page %>%
-        html_node('table') %>%
-        html_table() %>%
-        select(-c("", "Description", 'Size')) %>%
-        filter(`Last modified` != "") %>%
-        mutate(version = str_remove_all(
-          string = Name, pattern = glue('{pkg_name}_|.tar.gz')),
-          .keep = 'unused') %>%
-        # get latest high-level package info
-        union(
-          get_latest_pkg_info(pkg_name) %>%
-            select(`Last modified` = Published, version = Version)
-        ) %>%
+      
+      # if past releases exist... they usually do!
+      if(exists("pkg_page")){ 
+        versions_with_dates0 <- pkg_page %>% 
+          html_node('table') %>%
+          html_table() %>%
+          select(-c("", "Description", 'Size')) %>%
+          filter(`Last modified` != "") %>%
+          mutate(version = str_remove_all(
+            string = Name, pattern = glue('{pkg_name}_|.tar.gz')),
+            .keep = 'unused') %>%
+          # get latest high-level package info
+          union(curr_release) 
+      } else {
+        versions_with_dates0 <- curr_release
+      }
+      
+      versions_with_dates <- versions_with_dates0 %>%
         mutate(date = as.Date(`Last modified`), .keep = 'unused') %>%
         mutate(month = month(date)) %>%
         mutate(year = year(date))
+      
 
       # First release date.
       first_release_date <- versions_with_dates %>%
