@@ -93,10 +93,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     # Get information about selected package.
     selected_pkg <- reactiveValues()
     
-    observe({
-      req(input$select_pkg)
-      req(input$select_ver)
-
+    observeEvent(input$select_pkg, {
       pkg_selected <- dbSelect(glue(
         "SELECT *
         FROM package
@@ -104,7 +101,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       
       pkg_selected %>%
         walk2(names(.), function(.x, .y) {selected_pkg[[.y]] <- .x})
-    })
+    }, priority = 1)
     
     # Update package version.
     observeEvent(input$select_pkg, {
