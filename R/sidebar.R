@@ -38,6 +38,8 @@ sidebarUI <- function(id) {
           c("Low", "Medium", "High")
         ),
         
+        # Action button to reset decision for selected package.
+        uiOutput(NS(id, "reset_decision_ui")),
         # Action button to submit decision for selected package.
         actionButton(NS(id, "submit_decision"), "Submit Decision", width = "100%")
       ),
@@ -275,7 +277,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     
     # Enable/disable sidebar decision and comment.
     observeEvent(input$select_ver, {
-      if (input$select_pkg != "-" && input$select_pkg != "-" &&
+      if (input$select_pkg != "-" && input$select_ver != "-" &&
           (is_empty(selected_pkg$decision) || selected_pkg$decision == "")) {
         enable("decision")
         enable("submit_decision")
@@ -287,6 +289,20 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
         disable("submit_decision")
         disable("overall_comment")
         disable("submit_overall_comment")
+      }
+    }, ignoreInit = TRUE)
+    
+    # Show reset final decision link if user is admin the a final decision has been made.
+    observeEvent(selected_pkg$decision, {
+      req(user$role == "admin")
+      
+      if (input$select_pkg == "-" && input$select_ver == "-" ||
+          (is_empty(selected_pkg$decision) || selected_pkg$decision == "")) {
+        shinyjs::show("submit_decision")
+        removeUI(paste0("#", NS(id, "reset_decision")), immediate = TRUE)
+      } else {
+        shinyjs::hide("submit_decision")
+        output$reset_decision_ui <- renderUI(actionButton(NS(id, "reset_decision"), "Reset Decision", width = "100%"))
       }
     }, ignoreInit = TRUE)
     
@@ -303,15 +319,38 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
         fluidRow(
           column(
             width = 12,
-            'Please confirm your choosen risk: ', span(class = 'text-info', input$decision),
+            'Please confirm your chosen risk: ', span(class = 'text-info', input$decision),
             br(),
             br(),
-            em('Note: Once submitted, this final risk cannot be reverted.')
+            em('Note: Once submitted, this final risk can only be reverted by an administrator.')
           )
         ),
         br(),
         footer = tagList(
           actionButton(NS(id, 'submit_confirmed_decision'), 'Submit'),
+          actionButton(NS(id, 'cancel'), 'Cancel')
+        )))
+    })
+    
+    # Show a confirmation modal when resetting a decision
+    observeEvent(input$reset_decision, {
+      req(input$decision)
+      
+      showModal(modalDialog(
+        size = "l",
+        easyClose = TRUE,
+        h5("Reset Decision", style = 'text-align: center !important'),
+        hr(),
+        br(),
+        fluidRow(
+          column(
+            width = 12,
+            'Please confirm to reset the risk: ', span(class = 'text-info', input$decision),
+          )
+        ),
+        br(),
+        footer = tagList(
+          actionButton(NS(id, 'reset_confirmed_decision'), 'Reset'),
           actionButton(NS(id, 'cancel'), 'Cancel')
         )))
     })
@@ -340,6 +379,27 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       
       loggit("INFO",
              glue("decision for the package {selected_pkg$name} is {input$decision}
+                  by {user$name} ({user$role})"))
+    })
+    
+    observeEvent(input$reset_confirmed_decision, {
+      dbUpdate(glue(
+        "UPDATE package
+          SET decision = ''
+          WHERE name = '{selected_pkg$name}'")
+      )
+      
+      selected_pkg$decision <- ''
+      
+      enable("decision")
+      enable("submit_decision")
+      enable("overall_comment")
+      enable("submit_overall_comment")
+      
+      removeModal()
+      
+      loggit("INFO",
+             glue("decision for the package {selected_pkg$name} is reset
                   by {user$name} ({user$role})"))
     })
     
