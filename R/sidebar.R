@@ -250,7 +250,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       req(input$select_ver)
       
       # Reset decision if no package/version is selected.
-      if(input$select_pkg == "-" || input$select_ver == "-") {
+      if(input$select_pkg == "-" || input$select_ver == "-" || selected_pkg$decision == "") {
         updateSliderTextInput(
           session,
           "decision",
@@ -392,6 +392,13 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       enable("submit_decision")
       enable("overall_comment")
       enable("submit_overall_comment")
+      
+      updateSliderTextInput(
+        session,
+        "decision",
+        choices = c("Low", "Medium", "High"),
+        selected = 'Low'
+      )
       
       removeModal()
       
