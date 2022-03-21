@@ -74,8 +74,8 @@ uploadPackageServer <- function(id) {
         validate('Please upload a nonempty CSV file.')
       
       uploaded_packages <- read_csv(input$uploaded_file$datapath, show_col_types = FALSE)
-      
-      if(nrow(uploaded_packages) == 0)
+      np <- nrow(uploaded_packages)
+      if(np == 0)
         validate('Please upload a nonempty CSV file.')
       
       template <- read_csv(file.path('Data', 'upload_format.csv'), show_col_types = FALSE)
@@ -86,28 +86,41 @@ uploadPackageServer <- function(id) {
       # Add status column and remove white space around package names.
       uploaded_packages <- uploaded_packages %>%
         mutate(
-          status = rep('', nrow(uploaded_packages)),
+          status = rep('', np),
           package = trimws(package)
         )
       
-      withProgress(message = "Uploading Packages to DB:", value = 0, {
+      # Start progress bar. Need to establish a maximum increment
+      # value based on the number of packages, np, and the number of
+      # incProgress() function calls in the loop, plus one to show
+      # the incProgress() that the process is completed.
+      withProgress(max = (np * 5) + 1, value = 0,
+                   message = "Uploading Packages to DB:", {
         
-        for (i in 1:nrow(uploaded_packages)) {
+        for (i in 1:np) {
+          
+          incProgress(1)
           ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
-        
-          incProgress(1 / (nrow(uploaded_packages) + 1), 
-                      detail = paste("package", uploaded_packages$package[i], "version", as.character(ref$version)))
+          deets <- paste("package", uploaded_packages$package[i],
+                         "version", as.character(ref$version))
           
           
           if (ref$source == "pkg_missing"){
+            incProgress(1, detail = deets)
+            
             uploaded_packages$status[i] <- 'not found'
   
             loggit('WARN',
                    glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
-            
+            # need to increment the progress bar the same amounts in both
+            # IF and ELSE statements
+            incProgress(1, detail = deets)
+            incProgress(1, detail = deets)
+            incProgress(1, detail = deets)
           }
           else {
             # Save version.
+            incProgress(1, detail = deets)
             uploaded_packages$version[i] <- as.character(ref$version)
   
             found <- nrow(dbSelect(glue(
@@ -120,16 +133,19 @@ uploadPackageServer <- function(id) {
             # Add package and metrics to the db if package is not in the db.
             if(!found) {
               # Get and upload pkg general info to db.
+              incProgress(1, detail = deets)
               insert_pkg_info_to_db(uploaded_packages$package[i])
               # Get and upload maintenance metrics to db.
+              incProgress(1, detail = deets)
               insert_maintenance_metrics_to_db(uploaded_packages$package[i])
               # Get and upload community metrics to db.
+              incProgress(1, detail = deets)
               insert_community_metrics_to_db(uploaded_packages$package[i])
             }
           }
         }
-          setProgress(value = 1, detail = "   **Completed Uploading Packages**")
-          Sys.sleep(0.25)
+        incProgress(1, detail = "   **Completed Uploading Packages**")
+        Sys.sleep(0.25)
         
       }) #withProgress
       
