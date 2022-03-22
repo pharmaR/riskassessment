@@ -175,17 +175,14 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
     
     save <- reactiveValues(data=NULL)
     
-    curr_new_wts <- eventReactive(input$update_weight, {
-      if (is_empty(input$update_weight)) {
-        get_metric_weights() %>%
-          mutate(weight = ifelse(name == "covr_coverage", 0, weight)) 
-      } else {
-          save$data %>%
-          mutate(new_weight = ifelse(name == isolate(input$metric_name),
-                                    isolate(input$metric_weight), new_weight))
-      }
-    }, ignoreNULL = FALSE)
-    
+    curr_new_wts <- reactiveVal(get_metric_weights() %>%
+                                  mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
+    observeEvent(input$update_weight, {
+      curr_new_wts(save$data %>%
+                     mutate(new_weight = ifelse(name == isolate(input$metric_name),
+                                                isolate(input$metric_weight), new_weight)))
+    })
+
     observeEvent(curr_new_wts(), {
       save$data <- isolate(curr_new_wts())
     })
@@ -444,7 +441,8 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
       
       showNotification(id = "show_notification_id", "Updates completed", type = "message")
       
-      
+      curr_new_wts(get_metric_weights() %>%
+                     mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
     }, ignoreInit = TRUE)
     
     
