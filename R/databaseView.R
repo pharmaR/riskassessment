@@ -99,7 +99,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
           #dom = 'Blftpr',
           pageLength = 15,
           lengthMenu = list(c(15, 60, 120, -1), c('15', '60', '120', "All")),
-          columnDefs = list(list(className = 'dt-center'))
+          columnDefs = list(list(className = 'dt-center', targets = "_all"))
         )
       ) %>%
         formatStyle(names(table_data()), textAlign = 'center')
