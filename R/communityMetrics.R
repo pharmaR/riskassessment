@@ -53,54 +53,43 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
       first_version <- community_metrics() %>%
         filter(year == min(year)) %>%
         filter(month == min(month)) %>%
-        slice_head(n = 1)
-
-      # Get difference between today and first release in years.
-      time_diff_first_version <- year(Sys.Date()) - first_version$year
-      first_version_label <- 'Years'
-      if(time_diff_first_version == 0){
-        # Get difference in months.
-        time_diff_first_version <- month(Sys.Date()) - first_version$month
-        first_version_label <- 'Months'
-      }
-      if(time_diff_first_version == 1)
-        first_version_label <- str_remove(
-          string = first_version_label, pattern = 's$')
+        slice_head(n = 1) %>%
+        mutate(fake_rel_date = lubridate::make_date(year, month, 15))
+      
+      # get the time span in months or years depending on how much time
+      # has elapsed
+      time_diff_first_rel <- get_date_span(first_version$fake_rel_date)
       
       cards <- data.frame(
         name = 'time_since_first_version',
         title = 'First Version Release',
         desc = 'Time passed since first version release',
-        value = glue('{time_diff_first_version} {first_version_label} Ago'),
+        value = glue('{time_diff_first_rel$value} {time_diff_first_rel$label} Ago'),
         succ_icon = 'black-tie',
         icon_class = "text-info",
         is_perc = 0,
         is_url = 0
       )
       
-      # Get the last package release.
-      last_version <- community_metrics() %>%
+      
+      # Get the last package release's month and year, then
+      # make add in the release date
+      last_ver <- community_metrics() %>%
+        filter(!(version %in% c('', 'NA'))) %>%
         filter(year == max(year)) %>%
         filter(month == max(month)) %>%
-        slice_head(n = 1)
+        slice_head(n = 1) %>%
+        mutate(fake_rel_date = lubridate::make_date(year, month, 15))
       
-      # Get difference between today and latest release.
-      time_diff_latest_version <- year(Sys.Date()) - last_version$year
-      latest_version_label <- 'Years'
-      if(time_diff_latest_version == 0) {
-        # Get difference in months.
-        time_diff_latest_version <- month(Sys.Date()) - last_version$month
-        latest_version_label <- 'Months'
-      }
-      if(time_diff_latest_version == 1)
-        latest_version_label <- str_remove(
-          string = latest_version_label, pattern = 's$')
+      # get the time span in months or years depending on how much time
+      # has elapsed
+      time_diff_latest_rel <- get_date_span(last_ver$fake_rel_date)
       
       cards <- cards %>%
         add_row(name = 'time_since_latest_version',
-                title = 'Lastest Version Release',
+                title = 'Latest Version Release',
                 desc = 'Time passed since latest version release',
-                value = glue('{time_diff_latest_version} {latest_version_label} Ago'),
+                value = glue('{time_diff_latest_rel$value} {time_diff_latest_rel$label} Ago'),
                 succ_icon = 'meteor',
                 icon_class = "text-info",
                 is_perc = 0,
