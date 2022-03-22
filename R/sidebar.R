@@ -206,8 +206,16 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
           VALUES ('{selected_pkg()$name}', '{user$name}', '{user$role}',
           '{current_comment}', 'o', '{getTimeStamp()}')"))
         
-        updateTextAreaInput(session, "overall_comment",
+        updateTextAreaInput(session, "overall_comment", value = "",
                             placeholder = glue('Current Comment: {current_comment}'))
+        
+        showModal(modalDialog(
+          title = h2("Overall Comment Submitted"),
+          br(),
+          h5(strong("Current Comment:")),
+          h5(current_comment),
+          easyClose = TRUE
+        ))
       }
     })
     
@@ -349,7 +357,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       maintainer = reactive(selected_pkg()$maintainer),
       license = reactive(selected_pkg()$license),
       published = reactive(selected_pkg()$published),
-      overall_comment_added = reactive(input$submit_overall_comment)
+      overall_comment_added = reactive(c(input$submit_overall_comment, input$submit_overall_comment_yes))
     )
   })
 }
