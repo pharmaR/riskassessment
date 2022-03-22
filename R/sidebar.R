@@ -401,13 +401,6 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       enable("overall_comment")
       enable("submit_overall_comment")
       
-      updateSliderTextInput(
-        session,
-        "decision",
-        choices = c("Low", "Medium", "High"),
-        selected = 'Low'
-      )
-      
       removeModal()
       
       loggit("INFO",
