@@ -192,3 +192,24 @@ update_metric_weight <- function(metric_name, metric_weight){
     WHERE name = '{metric_name}'"
   ))
 }
+
+# Function accepts a start date and optional end date and will 
+get_date_span <- function(start, end = Sys.Date()) {
+  # Get approximate difference between today and latest release.
+  # time_diff_latest_version <- year(Sys.Date()) - last_ver$year
+  time_diff <- interval(start, end)
+  time_diff_val <- time_diff %/% months(1)
+  time_diff_label <- 'Months'
+  
+  if(time_diff_val >= 12) {
+    # Get difference in months.
+    time_diff_val <- time_diff %/% years(1)
+    time_diff_label <- 'Years'
+  }
+  # remove "s" off of "Years" or "Months" if 1
+  if(time_diff_val == 1)
+    time_diff_label <- str_remove(
+      string = time_diff_label, pattern = 's$')
+  return(list(value = time_diff_val, label = time_diff_label))
+}
+
