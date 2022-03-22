@@ -127,7 +127,8 @@ add_tags <- function(ui, ...) {
   }
   
   if (identical(admin, "true")) {
-    tagList(ui, 
+    tagList(useShinyjs(),
+            ui, 
             tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';")),
             tags$script(HTML("var paragraphs = Array.prototype.slice.call(document.getElementsByClassName('mfb-component--br'), 0);
                              for (var i = 0; i < paragraphs.length; ++i) {
@@ -187,6 +188,30 @@ server <- function(session, input, output) {
   
   purrr::walk(c("admin-reseted_password", "admin-changed_password", "admin-added_user"),
               ~ observeEvent(input[[.x]], shinyjs::runjs("document.body.setAttribute('data-bs-overflow', 'auto');"), priority = -1))
+  
+  observeEvent(input$`admin-edit_selected_users`, {
+    shinyjs::runjs(
+      "document.getElementById('admin-edit_mult_user-start-label').innerHTML = 'Start Date';
+       document.getElementById('admin-edit_mult_user-expire-label').innerHTML = 'Expiration Date';
+       document.getElementById('admin-edit_mult_user-user-label').innerHTML = 'User Name';"
+    )
+  }, priority = -1)
+  
+  observeEvent(input$`admin-edit_user`, {
+    shinyjs::runjs(
+      "document.getElementById('admin-edit_user-start-label').innerHTML = 'Start Date';
+       document.getElementById('admin-edit_user-expire-label').innerHTML = 'Expiration Date';
+       document.getElementById('admin-edit_user-user-label').innerHTML = 'User Name';"
+    )
+  }, priority = -1)
+  
+  observeEvent(input$`admin-add_user`, {
+    shinyjs::runjs(
+      "document.getElementById('admin-add_user-start-label').innerHTML = 'Start Date';
+       document.getElementById('admin-add_user-expire-label').innerHTML = 'Expiration Date';
+       document.getElementById('admin-add_user-user-label').innerHTML = 'User Name';"
+    )
+  }, priority = -1)
   
 
   # Save user name and role.  
