@@ -363,7 +363,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
             footer = tagList(
               actionButton(NS(id, "confirm_update_risk"), "Submit",
                            class = "submit_confirmed_decision_class btn-secondary"),
-              actionButton(NS(id, "edit"), "Cancel", class = "edit_class btn-unsuccess")
+              modalButton("Cancel")
             )
           )
         ))
