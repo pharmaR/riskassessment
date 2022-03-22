@@ -38,7 +38,7 @@ ui <- fluidPage(
   
   includeCSS(path = "www/css/main.css"),
   includeCSS(path = "www/css/community_metrics.css"),
-  
+
   tabsetPanel(
     id = "apptabs",
     tabPanel(
@@ -68,17 +68,17 @@ ui <- fluidPage(
             tabPanel(
               id = "mm_tab_id",
               title = "Maintenance Metrics",
-              maintenanceMetricsUI('maintenanceMetrics')
+              maintenanceMetricsUI("maintenanceMetrics")
             ),
             tabPanel(
               id = "cum_tab_id",
               title = "Community Usage Metrics",
-              communityMetricsUI('communityMetrics')
+              communityMetricsUI("communityMetrics")
             ),
             tabPanel(
               id = "reportPreview_tab_id",
               title = "Report Preview",
-              reportPreviewUI("reportPreview")  # UI for Report Preview tab Panel
+              reportPreviewUI("reportPreview")
             )
           )
         )
@@ -92,10 +92,10 @@ ui <- fluidPage(
     
     tabPanel(
       title = div(id = "assessment-criteria-tab", icon("info-circle"), "Assessment Criteria"),
-      assessmentInfoUI("assessmentInfo")
+      assessmentInfoUI("assessmentInfo"),
     )
   ),
-  
+
   footer =
     wellPanel(
       id = "footer",
@@ -115,6 +115,46 @@ ui <- shinymanager::secure_app(
     tags$h2("Risk Assessment Application", style = "align:center")),
   enable_admin = TRUE, theme = theme)
 
+add_tags <- function(ui, ...) {
+  ui <- force(ui)
+  
+  function(request) {
+    query <- parseQueryString(request$QUERY_STRING)
+    admin <- query$admin
+    
+  if (is.function(ui)) {
+    ui <- ui(request)
+  }
+  
+  if (identical(admin, "true")) {
+    tagList(ui, 
+            tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';")),
+            tags$script(HTML("var paragraphs = Array.prototype.slice.call(document.getElementsByClassName('mfb-component--br'), 0);
+                             for (var i = 0; i < paragraphs.length; ++i) {
+                               paragraphs[i].remove();
+                             }")),
+            fab_button(
+              position = "bottom-right",
+              actionButton(
+                inputId = ".shinymanager_logout",
+                label = "Logout",
+                icon = icon("sign-out-alt")
+              ),
+              actionButton(
+                inputId = ".shinymanager_app",
+                label = "Go to application",
+                icon = icon("share")
+              )
+            )
+            )
+  } else {
+    tagList(ui)
+  }
+  }
+}
+
+ui <- add_tags(ui)
+
 # Create Server Code.
 server <- function(session, input, output) {
   
@@ -128,7 +168,27 @@ server <- function(session, input, output) {
       passphrase = key_get("R-shinymanager-key", getOption("keyring_user"))
     )
   )
+
+  observeEvent(res_auth$user, {
+    if (res_auth$admin == TRUE) {
+      appendTab("apptabs",
+                tabPanel(
+                  title = div(id = "admin-mode-tab", icon("cogs"), "Administrative Tools"),
+                  shinymanager:::admin_ui("admin"),
+                  tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';"))
+                ))
+    } else {
+      removeTab(inputId = "apptabs", target = "admin-mode-tab")
+    }
+  }, priority = 1)
   
+  purrr::walk(c("admin-edited_user", "admin-edited_mult_user", "admin-delete_selected_users", "admin-delete_user"),
+             ~ observeEvent(input[[.x]], removeModal(), priority = -1))
+  
+  purrr::walk(c("admin-reseted_password", "admin-changed_password", "admin-added_user"),
+              ~ observeEvent(input[[.x]], shinyjs::runjs("document.body.setAttribute('data-bs-overflow', 'auto');"), priority = -1))
+  
+
   # Save user name and role.  
   observeEvent(res_auth$user, {
     if (res_auth$admin == TRUE)
