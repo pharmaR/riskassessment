@@ -350,7 +350,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
         fluidRow(
           column(
             width = 12,
-            'Please confirm to reset the risk: ', span(class = 'text-info', input$decision),
+            'Please confirm to reset the risk decision: ', span(class = 'text-info', input$decision),
           )
         ),
         br(),
