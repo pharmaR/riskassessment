@@ -38,6 +38,8 @@ sidebarUI <- function(id) {
           c("Low", "Medium", "High")
         ),
         
+        # Action button to reset decision for selected package.
+        uiOutput(NS(id, "reset_decision_ui")),
         # Action button to submit decision for selected package.
         actionButton(NS(id, "submit_decision"), "Submit Decision", width = "100%")
       ),
@@ -89,22 +91,24 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     }, ignoreNULL = TRUE)
     
     # Get information about selected package.
-    selected_pkg <- reactive({
-      req(input$select_pkg)
-      req(input$select_ver)
-
-      dbSelect(glue(
+    selected_pkg <- reactiveValues()
+    
+    observeEvent(input$select_pkg, {
+      pkg_selected <- dbSelect(glue(
         "SELECT *
         FROM package
         WHERE name = '{input$select_pkg}'"))
-    })
+      
+      pkg_selected %>%
+        walk2(names(.), function(.x, .y) {selected_pkg[[.y]] <- .x})
+    }, priority = 1)
     
     # Update package version.
     observeEvent(input$select_pkg, {
       req(input$select_pkg)
       req(input$select_ver)
       
-      version <- ifelse(input$select_pkg == "-", "-", selected_pkg()$version)
+      version <- ifelse(input$select_pkg == "-", "-", selected_pkg$version)
       
       updateSelectizeInput(
         session,
@@ -124,7 +128,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       if(input$select_ver == "-")
         validate("Please select a version")
       
-      status <- ifelse(selected_pkg()$decision == '', "Under Review", "Reviewed")
+      status <- ifelse(selected_pkg$decision == '', "Under Review", "Reviewed")
       h5(status)
     })
     
@@ -138,9 +142,9 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       if(input$select_ver == "-")
         validate("Please select a version")
       
-      req(selected_pkg())
+      req(selected_pkg$score)
       
-      h5(selected_pkg()$score)
+      h5(selected_pkg$score)
     })
     
     # Display/update overall comments for selected package/version.
@@ -173,13 +177,13 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       if(current_comment == "")
         validate("Please enter a comment.")
       
-      req(selected_pkg())
+      req(selected_pkg$name)
       
       previous_comments <- 
         dbSelect(glue(
           "SELECT *
             FROM comments
-            WHERE comment_type = 'o' AND id = '{selected_pkg()$name}'"))
+            WHERE comment_type = 'o' AND id = '{selected_pkg$name}'"))
       
       if (nrow(previous_comments) != 0) {
         showModal(modalDialog(
@@ -203,23 +207,31 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       } else{
         dbUpdate(glue(
           "INSERT INTO comments
-          VALUES ('{selected_pkg()$name}', '{user$name}', '{user$role}',
+          VALUES ('{selected_pkg$name}', '{user$name}', '{user$role}',
           '{current_comment}', 'o', '{getTimeStamp()}')"))
         
-        updateTextAreaInput(session, "overall_comment",
+        updateTextAreaInput(session, "overall_comment", value = "",
                             placeholder = glue('Current Comment: {current_comment}'))
+        
+        showModal(modalDialog(
+          title = h2("Overall Comment Submitted"),
+          br(),
+          h5(strong("Current Comment:")),
+          h5(current_comment),
+          easyClose = TRUE
+        ))
       }
     })
     
     observeEvent(input$submit_overall_comment_yes, {
 
-      req(selected_pkg())
+      req(selected_pkg$name)
 
       dbUpdate(
         glue(
           "UPDATE comments
           SET comment = '{input$overall_comment}', added_on = '{getTimeStamp()}'
-          WHERE id = '{selected_pkg()$name}' AND
+          WHERE id = '{selected_pkg$name}' AND
           user_name = '{user$name}' AND
           user_role = '{user$role}' AND
           comment_type = 'o'"
@@ -246,7 +258,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       req(input$select_ver)
       
       # Reset decision if no package/version is selected.
-      if(input$select_pkg == "-" || input$select_ver == "-") {
+      if(input$select_pkg == "-" || input$select_ver == "-" || selected_pkg$decision == "") {
         updateSliderTextInput(
           session,
           "decision",
@@ -257,21 +269,21 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
         validate('Please select a package and a version.')
       }
       
-      req(selected_pkg())
+      req(selected_pkg$decision)
       
       # Update the risk slider using the info saved.
       updateSliderTextInput(
         session,
         "decision",
         choices = c("Low", "Medium", "High"),
-        selected = selected_pkg()$decision
+        selected = selected_pkg$decision
       )
     })
     
     # Enable/disable sidebar decision and comment.
     observeEvent(input$select_ver, {
-      if (input$select_pkg != "-" && input$select_pkg != "-" &&
-          (is_empty(selected_pkg()$decision) || selected_pkg()$decision == "")) {
+      if (input$select_pkg != "-" && input$select_ver != "-" &&
+          (is_empty(selected_pkg$decision) || selected_pkg$decision == "")) {
         enable("decision")
         enable("submit_decision")
         enable("overall_comment")
@@ -282,6 +294,20 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
         disable("submit_decision")
         disable("overall_comment")
         disable("submit_overall_comment")
+      }
+    }, ignoreInit = TRUE)
+    
+    # Show reset final decision link if user is admin the a final decision has been made.
+    observeEvent(selected_pkg$decision, {
+      req(user$role == "admin")
+      
+      if (input$select_pkg == "-" && input$select_ver == "-" ||
+          (is_empty(selected_pkg$decision) || selected_pkg$decision == "")) {
+        shinyjs::show("submit_decision")
+        removeUI(paste0("#", NS(id, "reset_decision")), immediate = TRUE)
+      } else {
+        shinyjs::hide("submit_decision")
+        output$reset_decision_ui <- renderUI(actionButton(NS(id, "reset_decision"), "Reset Decision", width = "100%"))
       }
     }, ignoreInit = TRUE)
     
@@ -298,15 +324,38 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
         fluidRow(
           column(
             width = 12,
-            'Please confirm your choosen risk: ', span(class = 'text-info', input$decision),
+            'Please confirm your chosen risk: ', span(class = 'text-info', input$decision),
             br(),
             br(),
-            em('Note: Once submitted, this final risk cannot be reverted.')
+            em('Note: Once submitted, this final risk can only be reverted by an administrator.')
           )
         ),
         br(),
         footer = tagList(
           actionButton(NS(id, 'submit_confirmed_decision'), 'Submit'),
+          actionButton(NS(id, 'cancel'), 'Cancel')
+        )))
+    })
+    
+    # Show a confirmation modal when resetting a decision
+    observeEvent(input$reset_decision, {
+      req(input$decision)
+      
+      showModal(modalDialog(
+        size = "l",
+        easyClose = TRUE,
+        h5("Reset Decision", style = 'text-align: center !important'),
+        hr(),
+        br(),
+        fluidRow(
+          column(
+            width = 12,
+            'Please confirm to reset the risk decision: ', span(class = 'text-info', input$decision),
+          )
+        ),
+        br(),
+        footer = tagList(
+          actionButton(NS(id, 'reset_confirmed_decision'), 'Reset'),
           actionButton(NS(id, 'cancel'), 'Cancel')
         )))
     })
@@ -321,8 +370,10 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       dbUpdate(glue(
         "UPDATE package
           SET decision = '{input$decision}'
-          WHERE name = '{selected_pkg()$name}'")
+          WHERE name = '{selected_pkg$name}'")
       )
+      
+      selected_pkg$decision <- input$decision
       
       disable("decision")
       disable("submit_decision")
@@ -332,24 +383,45 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       removeModal()
       
       loggit("INFO",
-             glue("decision for the package {selected_pkg()$name} is {input$decision}
+             glue("decision for the package {selected_pkg$name} is {input$decision}
+                  by {user$name} ({user$role})"))
+    })
+    
+    observeEvent(input$reset_confirmed_decision, {
+      dbUpdate(glue(
+        "UPDATE package
+          SET decision = ''
+          WHERE name = '{selected_pkg$name}'")
+      )
+      
+      selected_pkg$decision <- ''
+      
+      enable("decision")
+      enable("submit_decision")
+      enable("overall_comment")
+      enable("submit_overall_comment")
+      
+      removeModal()
+      
+      loggit("INFO",
+             glue("decision for the package {selected_pkg$name} is reset
                   by {user$name} ({user$role})"))
     })
     
     # Output package id, name, and version.
     # TODO: return the entire selected_pkg instead of doing this below.
     list(
-      id = reactive(selected_pkg()$id),
-      name = reactive(selected_pkg()$name),
-      version = reactive(selected_pkg()$version),
-      title = reactive(selected_pkg()$title),
-      decision = reactive(selected_pkg()$decision),
-      description = reactive(selected_pkg()$description),
-      author = reactive(selected_pkg()$author),
-      maintainer = reactive(selected_pkg()$maintainer),
-      license = reactive(selected_pkg()$license),
-      published = reactive(selected_pkg()$published),
-      overall_comment_added = reactive(input$submit_overall_comment)
+      id = reactive(selected_pkg$id),
+      name = reactive(selected_pkg$name),
+      version = reactive(selected_pkg$version),
+      title = reactive(selected_pkg$title),
+      decision = reactive(selected_pkg$decision),
+      description = reactive(selected_pkg$description),
+      author = reactive(selected_pkg$author),
+      maintainer = reactive(selected_pkg$maintainer),
+      license = reactive(selected_pkg$license),
+      published = reactive(selected_pkg$published),
+      overall_comment_added = reactive(c(input$submit_overall_comment, input$submit_overall_comment_yes))
     )
   })
 }
