@@ -183,8 +183,8 @@ server <- function(session, input, output) {
     }
   }, priority = 1)
   
-  purrr::walk(c("admin-edited_user", "admin-edited_mult_user", "admin-delete_selected_users", "admin-delete_user"),
-             ~ observeEvent(input[[.x]], removeModal(), priority = -1))
+  purrr::walk(paste("admin", c("edited_user", "edited_mult_user", "delete_selected_users", "delete_user", "changed_password", "changed_password_users"), sep = "-"),
+             ~ observeEvent(input[[.x]], removeModal(), priority = 1))
   
   purrr::walk(c("admin-reseted_password", "admin-changed_password", "admin-added_user"),
               ~ observeEvent(input[[.x]], shinyjs::runjs("document.body.setAttribute('data-bs-overflow', 'auto');"), priority = -1))
