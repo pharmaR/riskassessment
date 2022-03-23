@@ -130,9 +130,9 @@ add_tags <- function(ui, ...) {
     tagList(useShinyjs(),
             ui, 
             tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';")),
-            tags$script(HTML("var paragraphs = Array.prototype.slice.call(document.getElementsByClassName('mfb-component--br'), 0);
-                             for (var i = 0; i < paragraphs.length; ++i) {
-                               paragraphs[i].remove();
+            tags$script(HTML("var oldfab = Array.prototype.slice.call(document.getElementsByClassName('mfb-component--br'), 0);
+                             for (var i = 0; i < oldfab.length; ++i) {
+                               oldfab[i].remove();
                              }")),
             fab_button(
               position = "bottom-right",
@@ -196,6 +196,23 @@ server <- function(session, input, output) {
                   shinyjs::runjs(paste0("document.getElementById('", .x, c("-start-", "-expire-", "-user-"), "label').innerHTML = ", c("'Start Date'", "'Expiration Date'", "'User Name'"), collapse = ";\n"))
                 }, priority = -1)
               })
+  
+  purrr::walk(paste("admin", c("edited_user", "edited_mult_user", "added_user", "changed_password", "reset_pwd", "changed_password_users"), sep = "-"),
+              ~ observeEvent(input[[.x]], {
+                shinyjs::delay(1000,
+                               shinyjs::runjs("
+                   var elements = document.getElementsByClassName('shiny-notification');
+                   var sendToR = [];
+                   for (var i = 0; i < elements.length; i++) {
+                      sendToR.push(elements[i].id);
+                   }
+                   Shiny.onInputChange('shinyjs-returns', sendToR)
+                   "))
+              }, priority = -2))
+  
+  observeEvent(input$`shinyjs-returns`, {
+    purrr::walk(input$`shinyjs-returns`, ~ removeNotification(stringr::str_remove(.x, "shiny-notification-")))
+  })
 
   # Save user name and role.  
   observeEvent(res_auth$user, {
