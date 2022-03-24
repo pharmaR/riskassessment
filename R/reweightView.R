@@ -32,9 +32,11 @@ reweightViewServer <- function(id, user) {
         colnames = c("Name", "Current Weight", "New Weight"),
         rownames = FALSE,
         options = list(
+          dom = "t",
           searching = FALSE,
           lengthChange = FALSE,
           pageLength = -1,
+          ordering = FALSE,
           columnDefs = list(list(className = 'dt-center', targets = 1:2))
         )
       ) %>%
@@ -88,7 +90,7 @@ reweightViewServer <- function(id, user) {
                 ),
                 column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
                        offset = 1,
-                       h3("Current Risk Score Weights by Metric"),
+                       h3("Current Risk Score Weights by Metric", align = "center"),
                        dataTableOutput(NS(id, "weights_table")))
               ),
               br(), br(), br(),
