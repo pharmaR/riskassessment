@@ -275,6 +275,8 @@ reweightViewServer <- function(id, user) {
       
       curr_new_wts(get_metric_weights() %>%
                      mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
+      
+      user$metrics_reweighted <- user$metrics_reweighted + 1
     }, ignoreInit = TRUE)
     
     
