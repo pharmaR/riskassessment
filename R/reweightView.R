@@ -271,7 +271,7 @@ reweightViewServer <- function(id, user) {
         }
       })
       
-      showNotification(id = "show_notification_id", "Updates completed", type = "message")
+      showNotification(id = "show_notification_id", "Updates completed", type = "message", duration = 1)
       
       curr_new_wts(get_metric_weights() %>%
                      mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
