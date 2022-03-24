@@ -151,6 +151,15 @@ add_tags <- function(ui, ...) {
   } else {
     tagList(ui)
   }
+    tagList(useShinyjs(),
+            ui,
+            tags$script(HTML("$(document).on('shiny:value', function(event) {
+                             if (event.target.id === 'admin-table_users') {
+                             Shiny.onInputChange('table_users-returns', document.getElementById('admin-table_users').innerHTML)
+                             } else if (event.target.id === 'admin-table_pwds') {
+                             Shiny.onInputChange('table_pwds-returns', document.getElementById('admin-table_pwds').innerHTML)
+                             }
+                             });")))
   }
 }
 
@@ -212,6 +221,19 @@ server <- function(session, input, output) {
   
   observeEvent(input$`shinyjs-returns`, {
     purrr::walk(input$`shinyjs-returns`, ~ removeNotification(stringr::str_remove(.x, "shiny-notification-")))
+  })
+  
+  observeEvent(input$`table_users-returns`, {
+    shinyjs::runjs("
+                   $($('#admin-table_users').find('table').DataTable().column(0).header()).text('user name');
+                   $($('#admin-table_users').find('table').DataTable().column(1).header()).text('start date');
+                   $($('#admin-table_users').find('table').DataTable().column(2).header()).text('expiration date');")
+  })
+  
+  observeEvent(input$`table_pwds-returns`, {
+    shinyjs::runjs("
+                   $($('#admin-table_pwds').find('table').DataTable().column(0).header()).text('user name');
+                   $($('#admin-table_pwds').find('table').DataTable().column(3).header()).text('date last changed');")
   })
 
   # Save user name and role.  
