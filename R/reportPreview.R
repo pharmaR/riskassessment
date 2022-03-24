@@ -123,6 +123,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
         h5('License:'), selected_pkg$license(),
         h5('Published:'), selected_pkg$published()
       )
+      # print(isolate(reactiveValuesToList(selected_pkg)))
     })
     
     # Display the decision status of the selected package.
@@ -143,7 +144,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       },
       content = function(file) {
         shiny::withProgress(
-          message = glue('Downloading Report'),
+          message = glue('Downloading Report: {selected_pkg$name()}'),
           value = 0,
           {
             shiny::incProgress(1 / 10)
@@ -153,11 +154,11 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             report_path <- ''
             
             if (input$report_format == "html") {
-              report <- file.path('Reports', 'reportHtml.Rmd')
+              report <- file.path('www', 'reportHtml.Rmd')
               report_path <- tempfile(fileext = ".Rmd")
             }
             else {
-              report <- file.path('Reports', 'reportDocx.Rmd')
+              report <- file.path('www', 'reportDocx.Rmd')
               report_path <- tempfile(fileext = ".docx")
             }
             
@@ -170,13 +171,13 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                             riskmetric_version = packageVersion("riskmetric"),
                             user_name = user$name,
                             user_role = user$role,
-                            overall_comments = overall_comments,
-                            mm_comments = mm_comments,
-                            cm_comments = cm_comments,
-                            maint_metrics = maint_metrics,
-                            com_metrics = com_metrics,
-                            com_metrics_raw = com_metrics_raw,
-                            downloads_plot_data = downloads_plot_data),
+                            overall_comments = isolate(overall_comments),
+                            mm_comments = isolate(mm_comments),
+                            cm_comments = isolate(cm_comments),
+                            maint_metrics = isolate(maint_metrics),
+                            com_metrics = isolate(com_metrics),
+                            com_metrics_raw = isolate(com_metrics_raw), # isn't being used
+                            downloads_plot_data = isolate(downloads_plot_data)),
               envir = new.env(parent = globalenv())
             )
           })

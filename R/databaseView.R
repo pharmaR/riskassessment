@@ -123,7 +123,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
 
         selected_pkgs <- table_data() %>%
           slice(input$packages_table_rows_selected)
-        
+        print(selected_pkgs)
         n_pkgs <- nrow(selected_pkgs)
         
         req(n_pkgs > 0)
@@ -137,11 +137,11 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
             
             my_dir <- tempdir()
             if (input$report_formats == "html") {
-              Report <- file.path(my_dir, "Report_html.Rmd")
-              file.copy("Reports/Report_html.Rmd", Report, overwrite = TRUE)
+              Report <- file.path(my_dir, "reportHtml.Rmd")
+              file.copy("www/ReportHtml.Rmd", Report, overwrite = TRUE)
             } else {
-              Report <- file.path(my_dir, "Report_doc.Rmd")
-              file.copy("Reports/Report_doc.Rmd", Report, overwrite = TRUE)
+              Report <- file.path(my_dir, "ReportDocx.Rmd")
+              file.copy("www/ReportDocx.Rmd", Report, overwrite = TRUE)
             }
             
             fs <- c()
@@ -150,17 +150,81 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
               this_pkg <- selected_pkgs$name[i]
               this_ver <- selected_pkgs$version[i]
               file_named <- glue('{this_pkg}_{this_ver}_Risk_Assessment.{input$report_formats}')
-              
               path <- file.path(my_dir, file_named)
+              
+              this_pkg_list <- list()
+              pkg_selected <- dbSelect(glue(
+                "SELECT *
+                  FROM package
+                  WHERE name = '{this_pkg}'"))
+              
+              pkg_selected %>%
+                walk2(names(.), function(.x, .y) {this_pkg_list[[.y]] <- .x})
+              
+              overall_comments <- dbSelect(
+                glue(
+                "SELECT * FROM comments 
+                 WHERE comment_type = 'o' AND id = '{this_pkg}'")
+              )
+              mm_comments <- dbSelect(
+                glue(
+                  "SELECT user_name, user_role, comment, added_on FROM comments
+                   WHERE id = '{this_pkg}' AND comment_type = 'mm'"
+                  )
+                ) %>%
+                map(rev)
+              cm_comments <- dbSelect(
+                glue(
+                  "SELECT user_name, user_role, comment, added_on FROM comments
+                   WHERE id = '{this_pkg}' AND comment_type = 'cum'"
+                  )
+                ) %>%
+                map(rev)
+              mm_data <- dbSelect(glue(
+                "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
+                  metric.is_url, package_metrics.value
+                  FROM metric
+                  INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
+                  WHERE package_metrics.package_id = '{this_pkg}' AND 
+                  metric.class = 'maintenance' ;")) %>%
+                mutate(
+                  title = long_name,
+                  desc = description,
+                  succ_icon = rep(x = 'check', times = nrow(.)), 
+                  unsucc_icon = rep(x = 'times', times = nrow(.)),
+                  icon_class = rep(x = 'text-success', times = nrow(.)),
+                  .keep = 'unused'
+                )
+              com_data <- dbSelect(glue(
+                "SELECT * FROM community_usage_metrics
+                 WHERE id = '{this_pkg}'")
+              )
+              com_cards <- build_com_cards(com_data)
+              downloads_plot <- build_com_plotly(com_data)
+              
               # Render the report, passing parameters to the rmd file.
               rmarkdown::render(
                 input = Report,
                 output_file = path,
-                params = list(package = this_pkg,
+                params = list(
+                              # pkg = this_pkg,
+                              # riskmetric_version = packageVersion("riskmetric"),
+                              # # cwd = getwd(),
+                              # username = user$name,
+                              # user_role = user$role
+                              
+                              pkg = this_pkg_list,
                               riskmetric_version = packageVersion("riskmetric"),
-                              cwd = getwd(),
-                              username = user$name,
-                              user_role = user$role)
+                              user_name = user$name,
+                              user_role = user$role,
+                              overall_comments = overall_comments,
+                              mm_comments = mm_comments,
+                              cm_comments = cm_comments,
+                              maint_metrics = mm_data,
+                              com_metrics = com_cards,
+                              com_metrics_raw = com_data, # isn't being used
+                              downloads_plot_data = downloads_plot
+                              )
               )
               fs <- c(fs, path)  # Save all the reports/
               shiny::incProgress(1) # Increment progress bar.
