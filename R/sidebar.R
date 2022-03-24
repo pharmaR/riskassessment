@@ -103,6 +103,17 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
         walk2(names(.), function(.x, .y) {selected_pkg[[.y]] <- .x})
     }, priority = 1)
     
+    observeEvent(user$metrics_reweighted, {
+      req(input$select_pkg)
+      req(input$select_ver)
+      
+      updateSelectizeInput(
+        inputId = "select_pkg",
+        choices = c("-", dbSelect('SELECT name FROM package')$name),
+        selected = "-"
+      )
+    })
+    
     # Update package version.
     observeEvent(input$select_pkg, {
       req(input$select_pkg)
