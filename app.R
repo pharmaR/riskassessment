@@ -160,6 +160,7 @@ server <- function(session, input, output) {
   
   # Collect user info.
   user <- reactiveValues()
+  user$metrics_reweighted <- 0
   
   # check_credentials directly on sqlite db
   res_auth <- secure_server(
