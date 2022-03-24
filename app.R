@@ -174,7 +174,20 @@ server <- function(session, input, output) {
       appendTab("apptabs",
                 tabPanel(
                   title = div(id = "admin-mode-tab", icon("cogs"), "Administrative Tools"),
-                  shinymanager:::admin_ui("admin"),
+                  br(), br(),
+                  tabsetPanel(
+                    id = "credentials",
+                    tabPanel(
+                      id = "credentials_id",
+                      title = "Credential Manager",
+                      shinymanager:::admin_ui("admin")
+                    ),
+                    tabPanel(
+                      id = "reweight_id",
+                      title = "Assessment Reweighting",
+                      reweightViewUI("reweightInfo")
+                    )
+                  ),
                   tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';"))
                 ))
     } else {
@@ -197,6 +210,9 @@ server <- function(session, input, output) {
     user$name <- trimws(res_auth$user)
     user$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
   })
+  
+  # Load server of the reweightView module.
+  reweightViewServer("reweightInfo", user)
   
   # Load server of the uploadPackage module.
   uploaded_pkgs <- uploadPackageServer("upload_package")
