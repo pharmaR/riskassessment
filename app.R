@@ -127,30 +127,28 @@ add_tags <- function(ui, ...) {
   }
   
   if (identical(admin, "true")) {
-    tagList(useShinyjs(),
-            ui, 
-            tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';")),
-            tags$script(HTML("var oldfab = Array.prototype.slice.call(document.getElementsByClassName('mfb-component--br'), 0);
+    ui <- tagList(ui, 
+                  tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';")),
+                  tags$script(HTML("var oldfab = Array.prototype.slice.call(document.getElementsByClassName('mfb-component--br'), 0);
                              for (var i = 0; i < oldfab.length; ++i) {
                                oldfab[i].remove();
                              }")),
-            fab_button(
-              position = "bottom-right",
-              actionButton(
-                inputId = ".shinymanager_logout",
-                label = "Logout",
-                icon = icon("sign-out-alt")
-              ),
-              actionButton(
-                inputId = ".shinymanager_app",
-                label = "Go to application",
-                icon = icon("share")
-              )
-            )
-            )
-  } else {
-    tagList(ui)
+                  fab_button(
+                    position = "bottom-right",
+                    actionButton(
+                      inputId = ".shinymanager_logout",
+                      label = "Logout",
+                      icon = icon("sign-out-alt")
+                    ),
+                    actionButton(
+                      inputId = ".shinymanager_app",
+                      label = "Go to application",
+                      icon = icon("share")
+                    )
+                  )
+    )
   }
+    
     tagList(useShinyjs(),
             ui,
             tags$script(HTML("$(document).on('shiny:value', function(event) {
