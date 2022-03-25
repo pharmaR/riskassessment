@@ -175,7 +175,7 @@ server <- function(session, input, output) {
       appendTab("apptabs",
                 tabPanel(
                   title = div(id = "admin-mode-tab", icon("cogs"), "Administrative Tools"),
-                  br(), br(),
+                  h2("Administrative Tools & Options", align = "center", `padding-bottom`="20px"),
                   tabsetPanel(
                     id = "credentials",
                     tabPanel(
