@@ -123,7 +123,6 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
 
         selected_pkgs <- table_data() %>%
           slice(input$packages_table_rows_selected)
-        print(selected_pkgs)
         n_pkgs <- nrow(selected_pkgs)
         
         req(n_pkgs > 0)
@@ -179,7 +178,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
               mm_data <- get_mm_data(this_pack$id)
               comm_data <- get_comm_data(this_pkg)
               comm_cards <- build_comm_cards(comm_data)
-              downloads_plot <- build_com_plotly(comm_data)
+              downloads_plot <- build_comm_plotly(comm_data)
               
               # Render the report, passing parameters to the rmd file.
               rmarkdown::render(

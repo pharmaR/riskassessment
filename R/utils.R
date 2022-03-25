@@ -278,7 +278,7 @@ build_comm_cards <- function(data){
   cards
 }
 
-build_com_plotly <- function(data) {
+build_comm_plotly <- function(data) {
   if (nrow(data) == 0) return(NULL)
   
   pkg_name <- unique(data$id)

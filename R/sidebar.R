@@ -95,10 +95,6 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     
     observeEvent(input$select_pkg, {
       pkg_selected <- get_pkg_info(input$select_pkg)
-        # dbSelect(glue(
-        # "SELECT *
-        # FROM package
-        # WHERE name = '{input$select_pkg}'"))
       
       pkg_selected %>%
         walk2(names(.), function(.x, .y) {selected_pkg[[.y]] <- .x})
