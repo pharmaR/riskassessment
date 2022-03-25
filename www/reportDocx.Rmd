@@ -1,6 +1,6 @@
 ---
 title:    "R Package Risk Assessment"
-subtitle: "Report for `r params$pkg[['name']]()`"
+subtitle: "Report for `r params$pkg[['name']]`"
 author:   "Author (Role): `r params$user_name` (`r params$user_role `)"
 date:     "Report Date: `r format(Sys.time(), '%B %d, %Y')`"
 always_allow_html: true
@@ -54,15 +54,15 @@ outputComments <- function(pkg_name, comments){
 
 ```{r general_pkg_info}
 tagList(
-  strong('Package:'),      br(), getElement(params$pkg, 'name')(),         br(), br(),
-  strong('Version:'),      br(), getElement(params$pkg, 'version')(),      br(), br(),
-  strong('Title:'),        br(), getElement(params$pkg, 'title')(),        br(), br(),
-  strong('Description:'),  br(), getElement(params$pkg, 'description')(),  br(), br(),
-  strong('Author:'),       br(), getElement(params$pkg, 'author')(),       br(), br(),
-  strong('Maintainer:'),   br(), getElement(params$pkg, 'maintainer')(),   br(), br(),
-  strong('License:'),      br(), getElement(params$pkg, 'license')(),      br(), br(),
-  strong('Published:'),    br(), getElement(params$pkg, 'published')(),    br(), br(),
-  strong('Overall Risk:'), br(), ifelse(params$pkg[['decision']]() == '', 'Pending', params$pkg[['decision']]())
+  strong('Package:'),      br(), getElement(params$pkg, 'name'),         br(), br(),
+  strong('Version:'),      br(), getElement(params$pkg, 'version'),      br(), br(),
+  strong('Title:'),        br(), getElement(params$pkg, 'title'),        br(), br(),
+  strong('Description:'),  br(), getElement(params$pkg, 'description'),  br(), br(),
+  strong('Author:'),       br(), getElement(params$pkg, 'author'),       br(), br(),
+  strong('Maintainer:'),   br(), getElement(params$pkg, 'maintainer'),   br(), br(),
+  strong('License:'),      br(), getElement(params$pkg, 'license'),      br(), br(),
+  strong('Published:'),    br(), getElement(params$pkg, 'published'),    br(), br(),
+  strong('Overall Risk:'), br(), ifelse(params$pkg[['decision']] == '', 'Pending', params$pkg[['decision']])
 )
 ```
 
@@ -72,8 +72,8 @@ tagList(
   h2('Overall Comments', style = "padding-bottom:10px;"),
   wellPanel(
     HTML(outputComments(
-      pkg_name = params$pkg$name(),
-      comments = params$overall_comments()))
+      pkg_name = params$pkg$name,
+      comments = params$overall_comments))
   )
 )
 ```
@@ -86,7 +86,7 @@ tagList(br(), h2('Maintenance Metrics'))
 
 
 ```{r maintenance_metrics_table}
-params$maint_metrics() %>%
+params$maint_metrics %>%
   mutate(
     `Metric Name` = title,
     `Metric Description` = desc,
@@ -102,8 +102,8 @@ tagList(
   br(),
   h2('Comments'),
   HTML(outputComments(
-    pkg_name = params$pkg$name(),
-    comments = params$mm_comments()))
+    pkg_name = params$pkg$name,
+    comments = params$mm_comments))
 )
 ```
 
@@ -115,7 +115,7 @@ tagList(br(), h2("Community Usage Metrics"))
 
 
 ```{r community_metrics_table, warning=FALSE, message=FALSE, error=FALSE, results='HIDE', echo=FALSE}
-params$com_metrics() %>%
+params$com_metrics %>%
   mutate(
     `Metric Name` = title,
     `Metric Description` = desc,
@@ -135,7 +135,7 @@ tagList(
 
 
 ```{r community_metrics_plot}
-params$com_metrics_raw() %>%
+params$com_metrics_raw %>%
   mutate(day_month_year = glue('1-{month}-{year}')) %>%
   mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
   mutate(month = month.name[month]) %>%
@@ -157,8 +157,8 @@ tagList(
   br(),
   h2('Comments'),
   HTML(outputComments(
-    pkg_name = params$pkg$name(),
-    comments = params$cm_comments()))
+    pkg_name = params$pkg$name,
+    comments = params$cm_comments))
 )
 ```
 

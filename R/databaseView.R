@@ -135,32 +135,47 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
           {
             shiny::incProgress(1)
             
-            my_dir <- tempdir()
+            my_tempdir <- tempdir()
             if (input$report_formats == "html") {
-              Report <- file.path(my_dir, "reportHtml.Rmd")
+              Report <- file.path(my_tempdir, "reportHtml.Rmd")
               file.copy("www/ReportHtml.Rmd", Report, overwrite = TRUE)
-            } else {
-              Report <- file.path(my_dir, "ReportDocx.Rmd")
+            } else { 
+              # docx
+              Report <- file.path(my_tempdir, "ReportDocx.Rmd")
               file.copy("www/ReportDocx.Rmd", Report, overwrite = TRUE)
+              file.copy("www/read_html.lua", file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
             }
-            
+
             fs <- c()
             for (i in 1:n_pkgs) {
               # Grab package name and version, then create filename and path.
-              this_pkg <- selected_pkgs$name[i]
+              # this_pkg <- "stringr" # for testing
+              this_pkg <- selected_pkgs$name[i] # from DT table
               this_ver <- selected_pkgs$version[i]
               file_named <- glue('{this_pkg}_{this_ver}_Risk_Assessment.{input$report_formats}')
-              path <- file.path(my_dir, file_named)
+              path <- file.path(my_tempdir, file_named)
               
-              this_pkg_list <- list()
-              pkg_selected <- dbSelect(glue(
+              
+              selected_pkg <- dbSelect(glue(
                 "SELECT *
                   FROM package
                   WHERE name = '{this_pkg}'"))
-              
-              pkg_selected %>%
-                walk2(names(.), function(.x, .y) {this_pkg_list[[.y]] <- .x})
-              
+              this_pack <- list(
+                id = selected_pkg$id,
+                name = selected_pkg$name,
+                version = selected_pkg$version,
+                title = selected_pkg$title,
+                decision = selected_pkg$decision,
+                description = selected_pkg$description,
+                author = selected_pkg$author,
+                maintainer = selected_pkg$maintainer,
+                license = selected_pkg$license,
+                published = selected_pkg$published
+              )
+              # this_pack <- list()
+              # selected_pkg %>%
+              #   walk2(names(.), function(.x, .y) {this_pack[[.y]] <- .x[.y]})
+
               overall_comments <- dbSelect(
                 glue(
                 "SELECT * FROM comments 
@@ -185,7 +200,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                   metric.is_url, package_metrics.value
                   FROM metric
                   INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
-                  WHERE package_metrics.package_id = '{this_pkg}' AND 
+                  WHERE package_metrics.package_id = '{this_pack$id}' AND 
                   metric.class = 'maintenance' ;")) %>%
                 mutate(
                   title = long_name,
@@ -195,6 +210,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                   icon_class = rep(x = 'text-success', times = nrow(.)),
                   .keep = 'unused'
                 )
+              
               com_data <- dbSelect(glue(
                 "SELECT * FROM community_usage_metrics
                  WHERE id = '{this_pkg}'")
@@ -206,14 +222,8 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
               rmarkdown::render(
                 input = Report,
                 output_file = path,
-                params = list(
-                              # pkg = this_pkg,
-                              # riskmetric_version = packageVersion("riskmetric"),
-                              # # cwd = getwd(),
-                              # username = user$name,
-                              # user_role = user$role
-                              
-                              pkg = this_pkg_list,
+                clean = FALSE,
+                params = list(pkg = this_pack,
                               riskmetric_version = packageVersion("riskmetric"),
                               user_name = user$name,
                               user_role = user$role,
@@ -222,7 +232,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                               cm_comments = cm_comments,
                               maint_metrics = mm_data,
                               com_metrics = com_cards,
-                              com_metrics_raw = com_data, # isn't being used
+                              com_metrics_raw = com_data,
                               downloads_plot_data = downloads_plot
                               )
               )
