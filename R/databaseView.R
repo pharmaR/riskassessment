@@ -156,10 +156,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
               path <- file.path(my_tempdir, file_named)
               
               
-              selected_pkg <- dbSelect(glue(
-                "SELECT *
-                  FROM package
-                  WHERE name = '{this_pkg}'"))
+              selected_pkg <- get_pkg_info(this_pkg)
               this_pack <- list(
                 id = selected_pkg$id,
                 name = selected_pkg$name,
@@ -172,51 +169,17 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                 license = selected_pkg$license,
                 published = selected_pkg$published
               )
-              # this_pack <- list()
-              # selected_pkg %>%
-              #   walk2(names(.), function(.x, .y) {this_pack[[.y]] <- .x[.y]})
 
-              overall_comments <- dbSelect(
-                glue(
-                "SELECT * FROM comments 
-                 WHERE comment_type = 'o' AND id = '{this_pkg}'")
-              )
-              mm_comments <- dbSelect(
-                glue(
-                  "SELECT user_name, user_role, comment, added_on FROM comments
-                   WHERE id = '{this_pkg}' AND comment_type = 'mm'"
-                  )
-                ) %>%
-                map(rev)
-              cm_comments <- dbSelect(
-                glue(
-                  "SELECT user_name, user_role, comment, added_on FROM comments
-                   WHERE id = '{this_pkg}' AND comment_type = 'cum'"
-                  )
-                ) %>%
-                map(rev)
-              mm_data <- dbSelect(glue(
-                "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
-                  metric.is_url, package_metrics.value
-                  FROM metric
-                  INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
-                  WHERE package_metrics.package_id = '{this_pack$id}' AND 
-                  metric.class = 'maintenance' ;")) %>%
-                mutate(
-                  title = long_name,
-                  desc = description,
-                  succ_icon = rep(x = 'check', times = nrow(.)), 
-                  unsucc_icon = rep(x = 'times', times = nrow(.)),
-                  icon_class = rep(x = 'text-success', times = nrow(.)),
-                  .keep = 'unused'
-                )
+              # gather comments data
+              overall_comments <- get_overall_comments(this_pkg)
+              mm_comments <- get_mm_comments(this_pkg)
+              cm_comments <- get_cm_comments(this_pkg)
               
-              com_data <- dbSelect(glue(
-                "SELECT * FROM community_usage_metrics
-                 WHERE id = '{this_pkg}'")
-              )
-              com_cards <- build_com_cards(com_data)
-              downloads_plot <- build_com_plotly(com_data)
+              # gather maint metrics & community metric data
+              mm_data <- get_mm_data(this_pack$id)
+              comm_data <- get_comm_data(this_pkg)
+              comm_cards <- build_comm_cards(comm_data)
+              downloads_plot <- build_com_plotly(comm_data)
               
               # Render the report, passing parameters to the rmd file.
               rmarkdown::render(
@@ -231,8 +194,8 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                               mm_comments = mm_comments,
                               cm_comments = cm_comments,
                               maint_metrics = mm_data,
-                              com_metrics = com_cards,
-                              com_metrics_raw = com_data,
+                              com_metrics = comm_cards,
+                              com_metrics_raw = comm_data,
                               downloads_plot_data = downloads_plot
                               )
               )

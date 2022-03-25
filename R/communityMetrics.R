@@ -42,75 +42,12 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
     # IntroJS.
     introJSServer(id = "introJS", text = cum_steps)
 
-    #' Community cards (saved to share with report preview): the time since
-    #' first release, the time since latest release, 
-    #' and the number of downloads since last year.
+    # Community cards (saved to share with report preview): the 
+    # time since first release, the time since latest release, 
+    # and the number of downloads since last year.
     cards <- eventReactive(community_metrics(), {
-    
       req(nrow(community_metrics()) > 0)
-      
-      # # Get the first package release.
-      # first_version <- community_metrics() %>%
-      #   filter(year == min(year)) %>%
-      #   filter(month == min(month)) %>%
-      #   slice_head(n = 1) %>%
-      #   mutate(fake_rel_date = lubridate::make_date(year, month, 15))
-      # 
-      # # get the time span in months or years depending on how much time
-      # # has elapsed
-      # time_diff_first_rel <- get_date_span(first_version$fake_rel_date)
-      # 
-      # cards <- data.frame(
-      #   name = 'time_since_first_version',
-      #   title = 'First Version Release',
-      #   desc = 'Time passed since first version release',
-      #   value = glue('{time_diff_first_rel$value} {time_diff_first_rel$label} Ago'),
-      #   succ_icon = 'black-tie',
-      #   icon_class = "text-info",
-      #   is_perc = 0,
-      #   is_url = 0
-      # )
-      # 
-      # 
-      # # Get the last package release's month and year, then
-      # # make add in the release date
-      # last_ver <- community_metrics() %>%
-      #   filter(!(version %in% c('', 'NA'))) %>%
-      #   filter(year == max(year)) %>%
-      #   filter(month == max(month)) %>%
-      #   slice_head(n = 1) %>%
-      #   mutate(fake_rel_date = lubridate::make_date(year, month, 15))
-      # 
-      # # get the time span in months or years depending on how much time
-      # # has elapsed
-      # time_diff_latest_rel <- get_date_span(last_ver$fake_rel_date)
-      # 
-      # cards <- cards %>%
-      #   add_row(name = 'time_since_latest_version',
-      #           title = 'Latest Version Release',
-      #           desc = 'Time passed since latest version release',
-      #           value = glue('{time_diff_latest_rel$value} {time_diff_latest_rel$label} Ago'),
-      #           succ_icon = 'meteor',
-      #           icon_class = "text-info",
-      #           is_perc = 0,
-      #           is_url = 0)
-      # 
-      # downloads_last_year <- community_metrics() %>%
-      #   filter(year == year(Sys.Date()) - 1) %>%
-      #   distinct(year, month, downloads)
-      # 
-      # cards <- cards %>%
-      #   add_row(name = 'downloads_last_year',
-      #           title = 'Package Downloads',
-      #           desc = 'Number of downloads since last year',
-      #           value = format(sum(downloads_last_year$downloads), big.mark = ","),
-      #           succ_icon = 'box-open',
-      #           icon_class = "text-info",
-      #           is_perc = 0,
-      #           is_url = 0)
-      # 
-      # cards
-      build_com_cards(community_metrics())
+      build_comm_cards(community_metrics())
     })
     
     # Create metric grid card.
@@ -124,14 +61,15 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
                                       pkg_name = selected_pkg$name)
     
     comments <- eventReactive(list(comment_added(), selected_pkg$name()), {
-      dbSelect(
-        glue(
-          "SELECT user_name, user_role, comment, added_on
-          FROM comments
-          WHERE id = '{selected_pkg$name()}' AND comment_type = 'cum'"
-        )
-      ) %>%
-        map(rev)
+      get_cm_comments(selected_pkg$name())
+      # dbSelect(
+      #   glue(
+      #     "SELECT user_name, user_role, comment, added_on
+      #     FROM comments
+      #     WHERE id = '{selected_pkg$name()}' AND comment_type = 'cum'"
+      #   )
+      # ) %>%
+      #   map(rev)
     })
     
     # View comments.

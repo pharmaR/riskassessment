@@ -42,14 +42,15 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user) {
                                       pkg_name = selected_pkg$name)
     
     comments <- eventReactive(list(comment_added(), selected_pkg$name()), {
-      dbSelect(
-        glue(
-        "SELECT user_name, user_role, comment, added_on
-        FROM comments
-        WHERE id = '{selected_pkg$name()}' AND comment_type = 'mm'"
-        )
-      ) %>%
-        map(rev)
+      get_mm_comments(selected_pkg$name())
+      # dbSelect(
+      #   glue(
+      #   "SELECT user_name, user_role, comment, added_on
+      #   FROM comments
+      #   WHERE id = '{selected_pkg$name()}' AND comment_type = 'mm'"
+      #   )
+      # ) %>%
+      #   map(rev)
     })
     
     # Call module that creates comments view.

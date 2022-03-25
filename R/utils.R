@@ -213,7 +213,7 @@ get_date_span <- function(start, end = Sys.Date()) {
   return(list(value = time_diff_val, label = time_diff_label))
 }
 
-build_com_cards <- function(data){
+build_comm_cards <- function(data){
 
   # Get the first package release.
   first_version <- data %>%
@@ -396,3 +396,81 @@ build_com_plotly <- function(data) {
     ) %>%
     config(displayModeBar = F)
 }
+
+# Below are a series of get_* functions that help us query
+# certain sql tables in a certain way. They are used 2 - 3
+# times throughout the app, so it's best to maintain them
+# in a central location
+
+# retrieve the overall comments for a specific package
+get_overall_comments <- function(pkg_name) {
+  dbSelect(glue(
+    "SELECT * FROM comments 
+     WHERE comment_type = 'o' AND id = '{pkg_name}'")
+  )
+}
+
+# retrieve the Maint Metrics comments for a specific package
+get_mm_comments <- function(pkg_name) {
+  dbSelect(
+    glue(
+      "SELECT user_name, user_role, comment, added_on
+       FROM comments
+       WHERE id = '{pkg_name}' AND comment_type = 'mm'"
+    )
+  ) %>%
+    map(rev)
+}
+
+# retrieve the Community Metrics comments for a specific package
+get_cm_comments <- function(pkg_name) {
+  dbSelect(
+    glue(
+      "SELECT user_name, user_role, comment, added_on
+       FROM comments
+       WHERE id = '{pkg_name}' AND comment_type = 'cum'"
+    )
+  ) %>%
+    map(rev)
+}
+
+# Pull the maint metrics data for a specific package id, and create 
+# necessary columns for Cards UI
+get_mm_data <- function(pkg_id){
+  dbSelect(glue(
+    "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
+                    metric.is_url, package_metrics.value
+                    FROM metric
+                    INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
+                    WHERE package_metrics.package_id = '{pkg_id}' AND 
+                    metric.class = 'maintenance' ;")) %>%
+    mutate(
+      title = long_name,
+      desc = description,
+      succ_icon = rep(x = 'check', times = nrow(.)), 
+      unsucc_icon = rep(x = 'times', times = nrow(.)),
+      icon_class = rep(x = 'text-success', times = nrow(.)),
+      .keep = 'unused'
+    )
+}
+
+
+# Get all community metric data on a specific package
+get_comm_data <- function(pkg_name){
+  dbSelect(glue(
+    "SELECT *
+     FROM community_usage_metrics
+     WHERE id = '{pkg_name}'")
+  )
+}
+
+# Get all general info on a specific package
+get_pkg_info <- function(pkg_name){
+  dbSelect(glue(
+    "SELECT *
+     FROM package
+     WHERE name = '{pkg_name}'")
+    )
+}
+
+##### End of get_* functions #####

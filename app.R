@@ -261,21 +261,7 @@ server <- function(session, input, output) {
     req(selected_pkg$name() != "-")
     
     # Collect all the metric names and values associated to package_id.
-    dbSelect(glue(
-      "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
-      metric.is_url, package_metrics.value
-      FROM metric
-      INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
-      WHERE package_metrics.package_id = '{selected_pkg$id()}' AND 
-      metric.class = 'maintenance' ;")) %>%
-      mutate(
-        title = long_name,
-        desc = description,
-        succ_icon = rep(x = 'check', times = nrow(.)), 
-        unsucc_icon = rep(x = 'times', times = nrow(.)),
-        icon_class = rep(x = 'text-success', times = nrow(.)),
-        .keep = 'unused'
-      )
+    get_mm_data(selected_pkg$id())
   })
   
   
@@ -284,11 +270,7 @@ server <- function(session, input, output) {
     req(selected_pkg$name())
     req(selected_pkg$name() != "-")
     
-    dbSelect(glue(
-      "SELECT * 
-      FROM community_usage_metrics
-      WHERE id = '{selected_pkg$name()}'")
-    )
+    get_comm_data(selected_pkg$name())
   })
   
   # Load server for the maintenance metrics tab.
