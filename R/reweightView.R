@@ -260,7 +260,8 @@ reweightViewServer <- function(id, user) {
       # update for each package
       pkg <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")
       
-      withProgress(message = "Applying weights and updating risk scores \n", value = 0, {
+      withProgress(message = "Applying weights and updating risk scores: \n", value = 0, {
+        shinyjs::runjs("$('<br>').insertAfter('.progress-message');")
         for (i in 1:nrow(pkg)) {
           incProgress(1 / (nrow(pkg) + 1), detail = pkg$pkg_name[i])
           dbUpdate(glue(
