@@ -101,12 +101,15 @@ reweightViewServer <- function(id, user) {
                "))))
                                ),
                                br()
-              ), 
+              ),
+              br(), br(),
               fluidRow(
-                column(width = 12,
+                column(width = 1),
+                column(width = 10,
                        h5(em("Note: Changing the weights of the metrics will not update the
                risk of the packages on the database until 'Re-calculate' button is selected.
-               ")))
+               ")), align = "center"),
+                column(width = 1)
               )
           )
         )
