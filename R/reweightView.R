@@ -102,7 +102,6 @@ reweightViewServer <- function(id, user) {
                                ),
                                br()
               ),
-              br(), br(),
               fluidRow(
                 column(width = 1),
                 column(width = 10,
@@ -110,7 +109,8 @@ reweightViewServer <- function(id, user) {
                risk of the packages on the database until 'Re-calculate' button is selected.
                ")), align = "center"),
                 column(width = 1)
-              )
+              ),
+              br(), br()
           )
         )
       )
