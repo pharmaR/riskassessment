@@ -263,7 +263,8 @@ reweightViewServer <- function(id, user) {
       # update for each package
       pkg <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")
       
-      withProgress(message = "Applying weights and updating risk scores: \n", value = 0, {
+      withProgress(message = "Applying weights and updating risk scores:", value = 0, {
+        shinyjs::runjs("$('.shiny-notification').css('width', '450px');")
         shinyjs::runjs("$('<br>').insertAfter('.progress-message');")
         for (i in 1:nrow(pkg)) {
           incProgress(1 / (nrow(pkg) + 1), detail = pkg$pkg_name[i])
@@ -276,6 +277,7 @@ reweightViewServer <- function(id, user) {
       })
       
       showNotification(id = "show_notification_id", "Updates completed", type = "message", duration = 1)
+      shinyjs::runjs("$('.shiny-notification').css('width', '450px');")
       
       curr_new_wts(get_metric_weights() %>%
                      mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
