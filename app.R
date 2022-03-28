@@ -184,6 +184,7 @@ server <- function(session, input, output) {
                 tabPanel(
                   title = div(id = "admin-mode-tab", icon("cogs"), "Administrative Tools"),
                   h2("Administrative Tools & Options", align = "center", `padding-bottom`="20px"),
+                  br(),
                   tabsetPanel(
                     id = "credentials",
                     tabPanel(
