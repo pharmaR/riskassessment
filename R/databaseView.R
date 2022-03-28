@@ -97,7 +97,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
           #dom = 'Blftpr',
           pageLength = 15,
           lengthMenu = list(c(15, 60, 120, -1), c('15', '60', '120', "All")),
-          columnDefs = list(list(className = 'dt-center'))
+          columnDefs = list(list(className = 'dt-center', targets = "_all"))
         )
       ) %>%
         formatStyle(names(table_data()), textAlign = 'center')
@@ -121,7 +121,6 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
 
         selected_pkgs <- table_data() %>%
           slice(input$packages_table_rows_selected)
-        
         n_pkgs <- nrow(selected_pkgs)
         
         req(n_pkgs > 0)
@@ -133,32 +132,69 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
           {
             shiny::incProgress(1)
             
-            my_dir <- tempdir()
+            my_tempdir <- tempdir()
             if (input$report_formats == "html") {
-              Report <- file.path(my_dir, "Report_html.Rmd")
-              file.copy("Reports/Report_html.Rmd", Report, overwrite = TRUE)
-            } else {
-              Report <- file.path(my_dir, "Report_doc.Rmd")
-              file.copy("Reports/Report_doc.Rmd", Report, overwrite = TRUE)
+              Report <- file.path(my_tempdir, "reportHtml.Rmd")
+              file.copy("www/ReportHtml.Rmd", Report, overwrite = TRUE)
+            } else { 
+              # docx
+              Report <- file.path(my_tempdir, "ReportDocx.Rmd")
+              file.copy("www/ReportDocx.Rmd", Report, overwrite = TRUE)
+              file.copy("www/read_html.lua", file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
             }
-            
+
             fs <- c()
             for (i in 1:n_pkgs) {
               # Grab package name and version, then create filename and path.
-              this_pkg <- selected_pkgs$name[i]
+              # this_pkg <- "stringr" # for testing
+              this_pkg <- selected_pkgs$name[i] # from DT table
               this_ver <- selected_pkgs$version[i]
               file_named <- glue('{this_pkg}_{this_ver}_Risk_Assessment.{input$report_formats}')
+              path <- file.path(my_tempdir, file_named)
               
-              path <- file.path(my_dir, file_named)
+              
+              selected_pkg <- get_pkg_info(this_pkg)
+              this_pack <- list(
+                id = selected_pkg$id,
+                name = selected_pkg$name,
+                version = selected_pkg$version,
+                title = selected_pkg$title,
+                decision = selected_pkg$decision,
+                description = selected_pkg$description,
+                author = selected_pkg$author,
+                maintainer = selected_pkg$maintainer,
+                license = selected_pkg$license,
+                published = selected_pkg$published
+              )
+
+              # gather comments data
+              overall_comments <- get_overall_comments(this_pkg)
+              mm_comments <- get_mm_comments(this_pkg)
+              cm_comments <- get_cm_comments(this_pkg)
+              
+              # gather maint metrics & community metric data
+              mm_data <- get_mm_data(this_pack$id)
+              comm_data <- get_comm_data(this_pkg)
+              comm_cards <- build_comm_cards(comm_data)
+              downloads_plot <- build_comm_plotly(comm_data)
+              
               # Render the report, passing parameters to the rmd file.
               rmarkdown::render(
                 input = Report,
                 output_file = path,
-                params = list(package = this_pkg,
+                clean = FALSE,
+                params = list(pkg = this_pack,
                               riskmetric_version = packageVersion("riskmetric"),
-                              cwd = getwd(),
-                              username = user$name,
-                              user_role = user$role)
+                              user_name = user$name,
+                              user_role = user$role,
+                              overall_comments = overall_comments,
+                              mm_comments = mm_comments,
+                              cm_comments = cm_comments,
+                              maint_metrics = mm_data,
+                              com_metrics = comm_cards,
+                              com_metrics_raw = comm_data,
+                              downloads_plot_data = downloads_plot
+                              )
               )
               fs <- c(fs, path)  # Save all the reports/
               shiny::incProgress(1) # Increment progress bar.

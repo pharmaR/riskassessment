@@ -127,29 +127,37 @@ add_tags <- function(ui, ...) {
   }
   
   if (identical(admin, "true")) {
-    tagList(ui, 
-            tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';")),
-            tags$script(HTML("var paragraphs = Array.prototype.slice.call(document.getElementsByClassName('mfb-component--br'), 0);
-                             for (var i = 0; i < paragraphs.length; ++i) {
-                               paragraphs[i].remove();
+    ui <- tagList(ui, 
+                  tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';")),
+                  tags$script(HTML("var oldfab = Array.prototype.slice.call(document.getElementsByClassName('mfb-component--br'), 0);
+                             for (var i = 0; i < oldfab.length; ++i) {
+                               oldfab[i].remove();
                              }")),
-            fab_button(
-              position = "bottom-right",
-              actionButton(
-                inputId = ".shinymanager_logout",
-                label = "Logout",
-                icon = icon("sign-out-alt")
-              ),
-              actionButton(
-                inputId = ".shinymanager_app",
-                label = "Go to application",
-                icon = icon("share")
-              )
-            )
-            )
-  } else {
-    tagList(ui)
+                  fab_button(
+                    position = "bottom-right",
+                    actionButton(
+                      inputId = ".shinymanager_logout",
+                      label = "Logout",
+                      icon = icon("sign-out-alt")
+                    ),
+                    actionButton(
+                      inputId = ".shinymanager_app",
+                      label = "Go to application",
+                      icon = icon("share")
+                    )
+                  )
+    )
   }
+    
+    tagList(useShinyjs(),
+            ui,
+            tags$script(HTML("$(document).on('shiny:value', function(event) {
+                             if (event.target.id === 'admin-table_users') {
+                             Shiny.onInputChange('table_users-returns', document.getElementById('admin-table_users').innerHTML)
+                             } else if (event.target.id === 'admin-table_pwds') {
+                             Shiny.onInputChange('table_pwds-returns', document.getElementById('admin-table_pwds').innerHTML)
+                             }
+                             });")))
   }
 }
 
@@ -196,12 +204,49 @@ server <- function(session, input, output) {
     }
   }, priority = 1)
   
-  purrr::walk(c("admin-edited_user", "admin-edited_mult_user", "admin-delete_selected_users", "admin-delete_user"),
-             ~ observeEvent(input[[.x]], removeModal(), priority = -1))
+  purrr::walk(paste("admin", c("edited_user", "edited_mult_user", "delete_selected_users", "delete_user", "changed_password", "changed_password_users"), sep = "-"),
+             ~ observeEvent(input[[.x]], removeModal(), priority = 1))
   
   purrr::walk(c("admin-reseted_password", "admin-changed_password", "admin-added_user"),
               ~ observeEvent(input[[.x]], shinyjs::runjs("document.body.setAttribute('data-bs-overflow', 'auto');"), priority = -1))
   
+  purrr::walk(paste("admin", c("edit_mult_user", "edit_user", "add_user"), sep = "-"),
+              function(.x) {
+                y <- ifelse(.x == "admin-edit_mult_user", "admin-edit_selected_users", .x)
+                observeEvent(input[[y]], {
+                  shinyjs::runjs(paste0("document.getElementById('", .x, c("-start-", "-expire-", "-user-"), "label').innerHTML = ", c("'Start Date'", "'Expiration Date'", "'User Name'"), collapse = ";\n"))
+                }, priority = -1)
+              })
+  
+  purrr::walk(paste("admin", c("edited_user", "edited_mult_user", "added_user", "changed_password", "reset_pwd", "changed_password_users"), sep = "-"),
+              ~ observeEvent(input[[.x]], {
+                shinyjs::delay(1000,
+                               shinyjs::runjs("
+                   var elements = document.getElementsByClassName('shiny-notification');
+                   var sendToR = [];
+                   for (var i = 0; i < elements.length; i++) {
+                      sendToR.push(elements[i].id);
+                   }
+                   Shiny.onInputChange('shinyjs-returns', sendToR)
+                   "))
+              }, priority = -2))
+  
+  observeEvent(input$`shinyjs-returns`, {
+    purrr::walk(input$`shinyjs-returns`, ~ removeNotification(stringr::str_remove(.x, "shiny-notification-")))
+  })
+  
+  observeEvent(input$`table_users-returns`, {
+    shinyjs::runjs("
+                   $($('#admin-table_users').find('table').DataTable().column(0).header()).text('user name');
+                   $($('#admin-table_users').find('table').DataTable().column(1).header()).text('start date');
+                   $($('#admin-table_users').find('table').DataTable().column(2).header()).text('expiration date');")
+  })
+  
+  observeEvent(input$`table_pwds-returns`, {
+    shinyjs::runjs("
+                   $($('#admin-table_pwds').find('table').DataTable().column(0).header()).text('user name');
+                   $($('#admin-table_pwds').find('table').DataTable().column(3).header()).text('date last changed');")
+  })
 
   # Save user name and role.  
   observeEvent(res_auth$user, {
@@ -233,21 +278,7 @@ server <- function(session, input, output) {
     req(selected_pkg$name() != "-")
     
     # Collect all the metric names and values associated to package_id.
-    dbSelect(glue(
-      "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
-      metric.is_url, package_metrics.value
-      FROM metric
-      INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
-      WHERE package_metrics.package_id = '{selected_pkg$id()}' AND 
-      metric.class = 'maintenance' ;")) %>%
-      mutate(
-        title = long_name,
-        desc = description,
-        succ_icon = rep(x = 'check', times = nrow(.)), 
-        unsucc_icon = rep(x = 'times', times = nrow(.)),
-        icon_class = rep(x = 'text-success', times = nrow(.)),
-        .keep = 'unused'
-      )
+    get_mm_data(selected_pkg$id())
   })
   
   
@@ -256,11 +287,7 @@ server <- function(session, input, output) {
     req(selected_pkg$name())
     req(selected_pkg$name() != "-")
     
-    dbSelect(glue(
-      "SELECT * 
-      FROM community_usage_metrics
-      WHERE id = '{selected_pkg$name()}'")
-    )
+    get_comm_data(selected_pkg$name())
   })
   
   # Load server for the maintenance metrics tab.

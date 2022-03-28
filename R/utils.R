@@ -192,3 +192,285 @@ update_metric_weight <- function(metric_name, metric_weight){
     WHERE name = '{metric_name}'"
   ))
 }
+
+# Function accepts a start date and optional end date and will 
+get_date_span <- function(start, end = Sys.Date()) {
+  # Get approximate difference between today and latest release.
+  # time_diff_latest_version <- year(Sys.Date()) - last_ver$year
+  time_diff <- interval(start, end)
+  time_diff_val <- time_diff %/% months(1)
+  time_diff_label <- 'Months'
+  
+  if(time_diff_val >= 12) {
+    # Get difference in months.
+    time_diff_val <- time_diff %/% years(1)
+    time_diff_label <- 'Years'
+  }
+  # remove "s" off of "Years" or "Months" if 1
+  if(time_diff_val == 1)
+    time_diff_label <- str_remove(
+      string = time_diff_label, pattern = 's$')
+  return(list(value = time_diff_val, label = time_diff_label))
+}
+
+build_comm_cards <- function(data){
+
+  # Get the first package release.
+  first_version <- data %>%
+    filter(year == min(year)) %>%
+    filter(month == min(month)) %>%
+    slice_head(n = 1) %>%
+    mutate(fake_rel_date = lubridate::make_date(year, month, 15))
+  
+  # get the time span in months or years depending on how much time
+  # has elapsed
+  time_diff_first_rel <- get_date_span(first_version$fake_rel_date)
+  
+  cards <- data.frame(
+    name = 'time_since_first_version',
+    title = 'First Version Release',
+    desc = 'Time passed since first version release',
+    value = glue('{time_diff_first_rel$value} {time_diff_first_rel$label} Ago'),
+    succ_icon = 'black-tie',
+    icon_class = "text-info",
+    is_perc = 0,
+    is_url = 0
+  )
+  
+  
+  # Get the last package release's month and year, then
+  # make add in the release date
+  last_ver <- data %>%
+    filter(!(version %in% c('', 'NA'))) %>%
+    filter(year == max(year)) %>%
+    filter(month == max(month)) %>%
+    slice_head(n = 1) %>%
+    mutate(fake_rel_date = lubridate::make_date(year, month, 15))
+  
+  # get the time span in months or years depending on how much time
+  # has elapsed
+  time_diff_latest_rel <- get_date_span(last_ver$fake_rel_date)
+  
+  cards <- cards %>%
+    add_row(name = 'time_since_latest_version',
+            title = 'Latest Version Release',
+            desc = 'Time passed since latest version release',
+            value = glue('{time_diff_latest_rel$value} {time_diff_latest_rel$label} Ago'),
+            succ_icon = 'meteor',
+            icon_class = "text-info",
+            is_perc = 0,
+            is_url = 0)
+  
+  downloads_last_year <- data %>%
+    filter(year == year(Sys.Date()) - 1) %>%
+    distinct(year, month, downloads)
+  
+  cards <- cards %>%
+    add_row(name = 'downloads_last_year',
+            title = 'Package Downloads',
+            desc = 'Number of downloads since last year',
+            value = format(sum(downloads_last_year$downloads), big.mark = ","),
+            succ_icon = 'box-open',
+            icon_class = "text-info",
+            is_perc = 0,
+            is_url = 0)
+  
+  cards
+}
+
+build_comm_plotly <- function(data) {
+  if (nrow(data) == 0) return(NULL)
+  
+  pkg_name <- unique(data$id)
+  
+  community_data <- data %>%
+    mutate(day_month_year = glue('1-{month}-{year}')) %>%
+    mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
+    mutate(month_year = glue('{months(day_month_year)} {year}')) %>%
+    mutate(month = month.name[month]) %>%
+    arrange(day_month_year)
+  
+  downloads_data <- community_data %>%
+    distinct(month, year, .keep_all = TRUE)
+  
+  # Last day that appears on the community metrics.
+  latest_date <- downloads_data %>%
+    slice_max(day_month_year) %>%
+    pull(day_month_year)
+  
+  # Last day associated with a version release.
+  last_version_date <- downloads_data %>%
+    filter(!(version %in% c('', 'NA'))) %>%
+    slice_max(day_month_year) %>%
+    pull(day_month_year)
+  
+  # First day associated with a version release.
+  first_version_date <- downloads_data %>%
+    filter(!(version %in% c('', 'NA'))) %>%
+    slice_min(day_month_year) %>%
+    pull(day_month_year)
+  
+  # Get the difference in months.
+  month_last <- interval(last_version_date, latest_date) %/% months(1)
+  month_first <- interval(first_version_date, latest_date) %/% months(1)
+  
+  # Set plot range: [min - 15 days, max + 15 days].
+  # Dates need to be transformed to milliseconds since epoch.
+  dates_range <- c(
+    (as.numeric(min(downloads_data$day_month_year)) - 15) * 86400000,
+    (as.numeric(max(downloads_data$day_month_year)) + 15) * 86400000)
+  
+  # set default at 2 years
+  default_range <- c(
+    max(downloads_data$day_month_year) - 45 - (365 * 2),
+    max(downloads_data$day_month_year) + 15)
+  
+  plot_ly(downloads_data,
+          x = ~day_month_year,
+          y = ~downloads,
+          name = "# Downloads", type = 'scatter', 
+          mode = 'lines+markers', line = list(color = '#1F9BCF'),
+          marker = list(color = '#1F9BCF'),
+          hoverinfo = "text",
+          text = ~glue('No. of Downloads: {format(downloads, big.mark = ",")}
+                         {month} {year}')) %>%
+    layout(title = glue('NUMBER OF DOWNLOADS BY MONTH: {pkg_name}'),
+           margin = list(t = 100),
+           showlegend = FALSE,
+           yaxis = list(title = "Downloads"),
+           xaxis = list(title = "", type = 'date', tickformat = "%b %Y",
+                        range = dates_range)
+    ) %>% 
+    add_segments(
+      x = ~if_else(version %in% c("", "NA"), NA_Date_, day_month_year),
+      xend = ~if_else(version %in% c("", "NA"), NA_Date_, day_month_year),
+      y = ~.98 * min(downloads),
+      yend = ~1.02 * max(downloads),
+      name = "Version Release",
+      hoverinfo = "text",
+      text = ~glue('Version {version}'),
+      line = list(color = '#4BBF73')
+    ) %>% 
+    add_annotations(
+      yref = 'paper',
+      xref = "x",
+      y = .50,
+      x = downloads_data$day_month_year,
+      xanchor = 'left',
+      showarrow = F,
+      textangle = 270,
+      font = list(size = 14, color = '#4BBF73'),
+      text = ~ifelse(downloads_data$version %in% c("", "NA"), "", downloads_data$version)
+    ) %>%
+    layout(
+      xaxis = list(
+        range = dates_range,
+        rangeselector = list(
+          buttons = list(
+            list(count = month_first + 1,
+                 label = "First Release",
+                 step = "month",
+                 stepmode = "todate"),
+            list(count = month_last + 1,
+                 label = "Last Release",
+                 step = "month",
+                 stepmode = "backward"),
+            list(
+              count = 24 + 1,
+              label = "2 yr",
+              step = "month",
+              stepmode = "backward"),
+            list(
+              count = 12 + 1,
+              label = "1 yr",
+              step = "month",
+              stepmode = "backward"),
+            list(
+              count = 6 + 1,
+              label = "6 mo",
+              step = "month",
+              stepmode = "backward")
+          )),
+        rangeslider = list(visible = TRUE)
+      )
+    ) %>%
+    config(displayModeBar = F)
+}
+
+# Below are a series of get_* functions that help us query
+# certain sql tables in a certain way. They are used 2 - 3
+# times throughout the app, so it's best to maintain them
+# in a central location
+
+# retrieve the overall comments for a specific package
+get_overall_comments <- function(pkg_name) {
+  dbSelect(glue(
+    "SELECT * FROM comments 
+     WHERE comment_type = 'o' AND id = '{pkg_name}'")
+  )
+}
+
+# retrieve the Maint Metrics comments for a specific package
+get_mm_comments <- function(pkg_name) {
+  dbSelect(
+    glue(
+      "SELECT user_name, user_role, comment, added_on
+       FROM comments
+       WHERE id = '{pkg_name}' AND comment_type = 'mm'"
+    )
+  ) %>%
+    map(rev)
+}
+
+# retrieve the Community Metrics comments for a specific package
+get_cm_comments <- function(pkg_name) {
+  dbSelect(
+    glue(
+      "SELECT user_name, user_role, comment, added_on
+       FROM comments
+       WHERE id = '{pkg_name}' AND comment_type = 'cum'"
+    )
+  ) %>%
+    map(rev)
+}
+
+# Pull the maint metrics data for a specific package id, and create 
+# necessary columns for Cards UI
+get_mm_data <- function(pkg_id){
+  dbSelect(glue(
+    "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
+                    metric.is_url, package_metrics.value
+                    FROM metric
+                    INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
+                    WHERE package_metrics.package_id = '{pkg_id}' AND 
+                    metric.class = 'maintenance' ;")) %>%
+    mutate(
+      title = long_name,
+      desc = description,
+      succ_icon = rep(x = 'check', times = nrow(.)), 
+      unsucc_icon = rep(x = 'times', times = nrow(.)),
+      icon_class = rep(x = 'text-success', times = nrow(.)),
+      .keep = 'unused'
+    )
+}
+
+
+# Get all community metric data on a specific package
+get_comm_data <- function(pkg_name){
+  dbSelect(glue(
+    "SELECT *
+     FROM community_usage_metrics
+     WHERE id = '{pkg_name}'")
+  )
+}
+
+# Get all general info on a specific package
+get_pkg_info <- function(pkg_name){
+  dbSelect(glue(
+    "SELECT *
+     FROM package
+     WHERE name = '{pkg_name}'")
+    )
+}
+
+##### End of get_* functions #####

@@ -5,7 +5,7 @@ uploadPackageUI <- function(id) {
     
     introJSUI(NS(id, "upload_pkg_introJS")),
     
-    tags$head(tags$style(".shiny-notification {font-size:30px; color:darkblue; position: fixed; width:500px; height: 150px; top: 75% ;right: 10%;")),
+    tags$head(tags$style(".shiny-notification {font-size:30px; color:darkblue; position: fixed; width:415px; height: 150px; top: 75% ;right: 10%;")),
 
     fluidRow(
       column(
@@ -74,8 +74,8 @@ uploadPackageServer <- function(id) {
         validate('Please upload a nonempty CSV file.')
       
       uploaded_packages <- read_csv(input$uploaded_file$datapath, show_col_types = FALSE)
-      
-      if(nrow(uploaded_packages) == 0)
+      np <- nrow(uploaded_packages)
+      if(np == 0)
         validate('Please upload a nonempty CSV file.')
       
       template <- read_csv(file.path('Data', 'upload_format.csv'), show_col_types = FALSE)
@@ -86,49 +86,79 @@ uploadPackageServer <- function(id) {
       # Add status column and remove white space around package names.
       uploaded_packages <- uploaded_packages %>%
         mutate(
-          status = rep('', nrow(uploaded_packages)),
-          package = trimws(package)
+          status = rep('', np),
+          package = trimws(package),
+          version = trimws(version)
         )
       
-      withProgress(message = "Uploading Packages to DB:", value = 0, {
+      # Start progress bar. Need to establish a maximum increment
+      # value based on the number of packages, np, and the number of
+      # incProgress() function calls in the loop, plus one to show
+      # the incProgress() that the process is completed.
+      withProgress(max = (np * 5) + 1, value = 0,
+                   message = "Uploading Packages to DB:", {
         
-      for (i in 1:nrow(uploaded_packages)) {
-        ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
-      
-        incProgress(1 / (nrow(uploaded_packages) + 1), 
-                    detail = paste("package", uploaded_packages$package[i], "version", as.character(ref$version)))
-        
-        
-        if (ref$source == "pkg_missing"){
-          uploaded_packages$status[i] <- 'not found'
+        for (i in 1:np) {
 
-          loggit('WARN',
-                 glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
+          user_ver <- uploaded_packages$version[i]
+          incProgress(1, detail = glue::glue("
+                                             {uploaded_packages$package[i]} {user_ver}"))
           
-        }
-        else {
-          # Save version.
-          uploaded_packages$version[i] <- as.character(ref$version)
-
-          found <- nrow(dbSelect(glue(
-            "SELECT name
-            FROM package
-            WHERE name = '{uploaded_packages$package[i]}'")))
+          # run pkg_ref() to get pkg version and source info
+          ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
           
-          uploaded_packages$status[i] <- ifelse(found == 0, 'new', 'duplicate')
+          ref_ver <- as.character(ref$version)
+          if(user_ver == ref_ver){
+            ver_msg <- ref_ver
+          } else {
+            ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
+          }
           
-          # Add package and metrics to the db if package is not in the db.
-          if(!found) {
-            # Get and upload pkg general info to db.
-            insert_pkg_info_to_db(uploaded_packages$package[i])
-            # Get and upload maintenance metrics to db.
-            insert_maintenance_metrics_to_db(uploaded_packages$package[i])
-            # Get and upload community metrics to db.
-            insert_community_metrics_to_db(uploaded_packages$package[i])
+          as.character(ref$version)
+          deets <- glue::glue("
+                              {uploaded_packages$package[i]} {ver_msg}")
+          
+          
+          if (ref$source == "pkg_missing"){
+            incProgress(1, detail = deets)
+            
+            uploaded_packages$status[i] <- 'not found'
+  
+            loggit('WARN',
+                   glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
+            # need to increment the progress bar the same amounts in both
+            # IF and ELSE statements
+            incProgress(1, detail = deets)
+            incProgress(1, detail = deets)
+            incProgress(1, detail = deets)
+          }
+          else {
+            # Save version.
+            incProgress(1, detail = deets)
+            uploaded_packages$version[i] <- as.character(ref$version)
+  
+            found <- nrow(dbSelect(glue(
+              "SELECT name
+              FROM package
+              WHERE name = '{uploaded_packages$package[i]}'")))
+            
+            uploaded_packages$status[i] <- ifelse(found == 0, 'new', 'duplicate')
+            
+            # Add package and metrics to the db if package is not in the db.
+            if(!found) {
+              # Get and upload pkg general info to db.
+              incProgress(1, detail = deets)
+              insert_pkg_info_to_db(uploaded_packages$package[i])
+              # Get and upload maintenance metrics to db.
+              incProgress(1, detail = deets)
+              insert_maintenance_metrics_to_db(uploaded_packages$package[i])
+              # Get and upload community metrics to db.
+              incProgress(1, detail = deets)
+              insert_community_metrics_to_db(uploaded_packages$package[i])
+            }
           }
         }
-      }
-        setProgress(value = 1, detail = "   **Completed Uploading Packages**")
+        incProgress(1, detail = "   **Completed Pkg Uploads**")
         Sys.sleep(0.25)
         
       }) #withProgress
