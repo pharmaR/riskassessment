@@ -247,7 +247,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     })
     
     # Update decision when package is selected.
-    observeEvent(req(input$select_ver, user$metrics_reweighted), {
+    observeEvent(req(input$select_ver), {
       req(input$select_pkg)
       req(input$select_ver)
       
