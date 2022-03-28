@@ -79,9 +79,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     overall_comments <- reactive({
       selected_pkg$overall_comment_added()
       
-      dbSelect(glue(
-        "SELECT * FROM comments
-        WHERE comment_type = 'o' AND id = '{selected_pkg$name()}'"))
+      get_overall_comments(selected_pkg$name())
     })
     
     # View comments.
@@ -112,7 +110,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     # Display general information of the selected package.
     output$pkg_overview <- renderUI({
       req(selected_pkg$name())
-
+      
       tagList(
         h5('Package:'), selected_pkg$name(),
         h5('Version:'), selected_pkg$version(),
@@ -123,6 +121,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
         h5('License:'), selected_pkg$license(),
         h5('Published:'), selected_pkg$published()
       )
+      
     })
     
     # Display the decision status of the selected package.
@@ -143,7 +142,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       },
       content = function(file) {
         shiny::withProgress(
-          message = glue('Downloading Report'),
+          message = glue('Downloading Report: {selected_pkg$name()}'),
           value = 0,
           {
             shiny::incProgress(1 / 10)
@@ -153,20 +152,43 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             report_path <- ''
             
             if (input$report_format == "html") {
-              report <- file.path('Reports', 'reportHtml.Rmd')
+              report <- file.path('www', 'reportHtml.Rmd')
               report_path <- tempfile(fileext = ".Rmd")
             }
             else {
-              report <- file.path('Reports', 'reportDocx.Rmd')
+              report <- file.path('www', 'reportDocx.Rmd')
               report_path <- tempfile(fileext = ".docx")
             }
             
             file.copy(report, report_path, overwrite = TRUE)
 
+            # make each param non-reactive. Why? Because this same report
+            # has to be used for the Database Overview tab
+            this_pack <- list(
+              id = selected_pkg$id(),
+              name = selected_pkg$name(),
+              version = selected_pkg$version(),
+              title = selected_pkg$title(),
+              decision = selected_pkg$decision(),
+              description = selected_pkg$description(),
+              author = selected_pkg$author(),
+              maintainer = selected_pkg$maintainer(),
+              license = selected_pkg$license(),
+              published = selected_pkg$published(),
+              overall_comment_added = selected_pkg$overall_comment_added()
+            )
+            overall_comments <- overall_comments()
+            mm_comments = mm_comments()
+            cm_comments = cm_comments()
+            maint_metrics = maint_metrics()
+            com_metrics = com_metrics()
+            com_metrics_raw = com_metrics_raw() # used for word doc
+            downloads_plot_data = downloads_plot_data()
+            
             rmarkdown::render(
               report,
               output_file = file,
-              params = list(pkg = selected_pkg,
+              params = list(pkg = this_pack,
                             riskmetric_version = packageVersion("riskmetric"),
                             user_name = user$name,
                             user_role = user$role,

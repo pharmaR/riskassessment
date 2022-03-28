@@ -94,10 +94,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     selected_pkg <- reactiveValues()
     
     observeEvent(input$select_pkg, {
-      pkg_selected <- dbSelect(glue(
-        "SELECT *
-        FROM package
-        WHERE name = '{input$select_pkg}'"))
+      pkg_selected <- get_pkg_info(input$select_pkg)
       
       pkg_selected %>%
         walk2(names(.), function(.x, .y) {selected_pkg[[.y]] <- .x})
@@ -179,11 +176,8 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       
       req(selected_pkg$name)
       
-      previous_comments <- 
-        dbSelect(glue(
-          "SELECT *
-            FROM comments
-            WHERE comment_type = 'o' AND id = '{selected_pkg$name}'"))
+      previous_comments <- get_overall_comments(selected_pkg$name)
+        
       
       if (nrow(previous_comments) != 0) {
         showModal(modalDialog(
