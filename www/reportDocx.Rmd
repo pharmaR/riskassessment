@@ -134,21 +134,27 @@ tagList(
 ```
 
 
-```{r community_metrics_plot}
-params$com_metrics_raw %>%
+```{r community_metrics_plot, fig.width=10, fig.height=5}
+
+
+d <- params$com_metrics_raw %>%
   mutate(day_month_year = glue('1-{month}-{year}')) %>%
   mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
   mutate(month = month.name[month]) %>%
   arrange(day_month_year) %>%
-  distinct(month, year, .keep_all = TRUE) %>%
-  ggplot(aes(x = day_month_year, y = downloads)) +
+  distinct(month, year, .keep_all = TRUE)
+
+mo <- ceiling(nrow(d) / 9)
+
+ggplot(data = d, aes(x = day_month_year, y = downloads)) +
   geom_point() +
   geom_line() +
-  scale_x_date(date_breaks = "3 months", date_labels = "%m-%Y") +
+  scale_x_date(date_breaks = glue::glue("{mo} months"), date_labels = "%m-%Y") +
   labs(
     x = 'Month/Year',
     y = 'Downloads'
-  )
+  ) +
+  theme(text = element_text(size = 16), axis.text = element_text(size=16))# angle = 30, vjust = 0.5, hjust=1))
 ```
 
 

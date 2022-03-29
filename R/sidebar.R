@@ -93,9 +93,9 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     # Get information about selected package.
     selected_pkg <- reactiveValues()
     
-    observeEvent(input$select_pkg, {
+    observeEvent(req(input$select_pkg, user$metrics_reweighted), {
       pkg_selected <- get_pkg_info(input$select_pkg)
-      
+
       pkg_selected %>%
         walk2(names(.), function(.x, .y) {selected_pkg[[.y]] <- .x})
     }, priority = 1)
@@ -247,7 +247,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     })
     
     # Update decision when package is selected.
-    observeEvent(input$select_ver, {
+    observeEvent(req(input$select_ver), {
       req(input$select_pkg)
       req(input$select_ver)
       
@@ -275,7 +275,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     })
     
     # Enable/disable sidebar decision and comment.
-    observeEvent(input$select_ver, {
+    observeEvent(req(input$select_ver, user$metrics_reweighted), {
       if (input$select_pkg != "-" && input$select_ver != "-" &&
           (is_empty(selected_pkg$decision) || selected_pkg$decision == "")) {
         enable("decision")
