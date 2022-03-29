@@ -97,12 +97,12 @@ uploadPackageServer <- function(id) {
       # the incProgress() that the process is completed.
       withProgress(max = (np * 5) + 1, value = 0,
                    message = "Uploading Packages to DB:", {
+                     shinyjs::runjs("$('<br>').insertAfter('.progress-message');")
         
         for (i in 1:np) {
 
           user_ver <- uploaded_packages$version[i]
-          incProgress(1, detail = glue::glue("
-                                             {uploaded_packages$package[i]} {user_ver}"))
+          incProgress(1, detail = glue::glue("{uploaded_packages$package[i]} {user_ver}"))
           
           # run pkg_ref() to get pkg version and source info
           ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
@@ -115,8 +115,7 @@ uploadPackageServer <- function(id) {
           }
           
           as.character(ref$version)
-          deets <- glue::glue("
-                              {uploaded_packages$package[i]} {ver_msg}")
+          deets <- glue::glue("{uploaded_packages$package[i]} {ver_msg}")
           
           
           if (ref$source == "pkg_missing"){
