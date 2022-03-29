@@ -114,8 +114,17 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
     
     output$download_reports <- downloadHandler(
       filename = function() {
-        report_datetime <- str_replace_all(str_replace(Sys.time(), " ", "_"), ":", "-")
-        glue('RiskAssessment-Report-{report_datetime}.zip')
+        selected_pkgs <- table_data() %>%
+          slice(input$packages_table_rows_selected)
+        n_pkgs <- nrow(selected_pkgs)
+        
+        if (n_pkgs > 1) {
+          report_datetime <- str_replace_all(str_replace(Sys.time(), " ", "_"), ":", "-")
+          glue('RiskAssessment-Report-{report_datetime}.zip')
+        } else {
+          glue('{selected_pkgs$name}_{selected_pkgs$version}_Risk_Assessment.',
+               "{switch(input$report_formats, docx = 'docx', html = 'html')}")
+        }
       },
       content = function(file) {
 
@@ -150,7 +159,11 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
               this_pkg <- selected_pkgs$name[i] # from DT table
               this_ver <- selected_pkgs$version[i]
               file_named <- glue('{this_pkg}_{this_ver}_Risk_Assessment.{input$report_formats}')
-              path <- file.path(my_tempdir, file_named)
+              path <- if (n_pkgs > 1) {
+                file.path(my_tempdir, file_named)
+              } else {
+                file
+              }
               
               
               selected_pkg <- get_pkg_info(this_pkg)
@@ -200,11 +213,10 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
               shiny::incProgress(1) # Increment progress bar.
             }
             # Zip all the files up. -j retains just the files in zip file.
-            zip(zipfile = file, files = fs, extras = "-j")
+            if (n_pkgs > 1) zip(zipfile = file, files = fs, extras = "-j")
             shiny::incProgress(1) # Increment progress bar.
           })
-      },
-      contentType = "application/zip"
+      }
     )
   })
 }
