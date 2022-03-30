@@ -12,7 +12,7 @@ if(!file.exists(database_name)) create_db()
 
 # shinyapps.io is looking for system keyring
 if (!"system" %in% keyring_list()$keyring) {
-  keyring_create("system", password = Sys.getenv("KEYRING_PWD"))
+  keyring_create("system", password = getOption("keyring_pwd"))
 }
 
 # Create credentials db if it doesn't exist.
