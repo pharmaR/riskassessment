@@ -86,6 +86,7 @@ if(!require(riskmetric)){
 # library(rintrojs)
 
 options(keyring_user = "NeildeGrasseTyson")
+options(keyring_pwd = "polarJetStream")
 
 #' Displays a helper message. By default, it informs the user that he should
 #' select a package.
