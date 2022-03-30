@@ -198,11 +198,12 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
             actionButton(NS(id, "submit_overall_comment_no"), "No")
           )
         ))
-      } else{
+      } else {
+        comment <- stringr::str_replace_all(current_comment, "'", "''")
         dbUpdate(glue(
           "INSERT INTO comments
           VALUES ('{selected_pkg$name}', '{user$name}', '{user$role}',
-          '{current_comment}', 'o', '{getTimeStamp()}')"))
+          '{comment}', 'o', '{getTimeStamp()}')"))
         
         updateTextAreaInput(session, "overall_comment", value = "",
                             placeholder = glue('Current Comment: {current_comment}'))
@@ -220,11 +221,13 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     observeEvent(input$submit_overall_comment_yes, {
 
       req(selected_pkg$name)
+      
+      comment <- stringr::str_replace_all(input$overall_comment, "'", "''")
 
       dbUpdate(
         glue(
           "UPDATE comments
-          SET comment = '{input$overall_comment}', added_on = '{getTimeStamp()}'
+          SET comment = '{comment}', added_on = '{getTimeStamp()}'
           WHERE id = '{selected_pkg$name}' AND
           user_name = '{user$name}' AND
           user_role = '{user$role}' AND
