@@ -10,6 +10,11 @@ options(dplyr.summarise.inform = FALSE)
 # Create db if it doesn't exist.
 if(!file.exists(database_name)) create_db()
 
+# shinyapps.io is looking for system keyring
+if (!"system" %in% keyring_list()$keyring) {
+  keyring_create("system", password = Sys.getenv("KEYRING_PWD"))
+}
+
 # Create credentials db if it doesn't exist.
 if(!file.exists(credentials_name)) create_credentials_db()
 
