@@ -32,8 +32,7 @@ theme <- bs_theme(
 ui <- fluidPage(
   introjsUI(),
   useShinyjs(),
-  waiter::use_waitress(),
-  
+
   theme = theme,
   
   includeCSS(path = "www/css/main.css"),
