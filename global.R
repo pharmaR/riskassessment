@@ -17,7 +17,6 @@ packages = c("shiny"
              ,"dplyr"
              ,"tools"
              ,"stringr"
-             ,"tidyverse"
              ,"loggit"
              ,"rAmCharts"
              ,"devtools"
@@ -30,7 +29,9 @@ packages = c("shiny"
              ,"rstudioapi"
              ,"glue"
              ,"bslib"
-             ,'waiter'
+             ,"rlang"
+             ,"purrr"
+             ,"shinycssloaders"
 )
 
 # Install and load required packages.
@@ -52,7 +53,7 @@ if(!require(riskmetric)){
 
 
 # Note: If deploying the app to shinyapps.io, then the code to directly install
-# missing packages will need to be removed as the app will fail to deploy.
+# missing packages will need to be removed as the app will fail to deploy. --Nonsense! rjk
 # Instead comment the code that install packages and attach them directly by
 # uncommenting the lines below.
 
