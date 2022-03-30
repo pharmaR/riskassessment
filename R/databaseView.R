@@ -140,18 +140,18 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
           max = n_pkgs + 2, # Tell the progress bar the total number of events.
           {
             shiny::incProgress(1)
-            
+
             my_tempdir <- tempdir()
             if (input$report_formats == "html") {
               Report <- file.path(my_tempdir, "reportHtml.Rmd")
-              file.copy("www/ReportHtml.Rmd", Report, overwrite = TRUE)
+              file.copy("www/reportHtml.Rmd", Report, overwrite = TRUE)
             } else { 
               # docx
-              Report <- file.path(my_tempdir, "ReportDocx.Rmd")
-              file.copy("www/ReportDocx.Rmd", Report, overwrite = TRUE)
+              Report <- file.path(my_tempdir, "reportDocx.Rmd")
+              file.copy("www/reportDocx.Rmd", Report, overwrite = TRUE)
               file.copy("www/read_html.lua", file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
             }
-
+            
             fs <- c()
             for (i in 1:n_pkgs) {
               # Grab package name and version, then create filename and path.
