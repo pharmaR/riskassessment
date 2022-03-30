@@ -5,3 +5,4 @@
 .Ruserdata
 loggit.json
 .DS_Store
+*.dcf
