@@ -24,13 +24,8 @@ set_logfile("loggit.json")
 theme <- bs_theme(
   bootswatch = "lux",
   version = 5,
-  # bg = "white", 
-  # fg = "#023967",
   primary = "#24305E",
   secondary = "#F76C6C",
-  # success = "orange",
-  # info = "yellow",
-  # warning = "pink"
 )
 
 # Create User Interface (UI).
