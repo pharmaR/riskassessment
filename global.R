@@ -53,7 +53,7 @@ if(!require(riskmetric)){
 
 
 # Note: If deploying the app to shinyapps.io, then the code to directly install
-# missing packages will need to be removed as the app will fail to deploy. --Nonsense! rjk
+# missing packages will need to be removed as the app will fail to deploy. 
 # Instead comment the code that install packages and attach them directly by
 # uncommenting the lines below.
 
