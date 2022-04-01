@@ -15,7 +15,7 @@ serv_name <- "R-shinymanager-key"
 if (!"system" %in% keyring_list()$keyring) {
   keyring_create("system", password = getOption("keyring_pwd"))
   keyring_unlock("system", password = getOption("keyring_pwd"))
-  key_set_with_value(service = serv_name, username = getOption("keyring_user"), password = getOption("keyring_pwd"))
+  key_set_with_value(service = serv_name, username = getOption("keyring_user"), password = getOption("keyring_pwd"), keyring = "system")
 }
 
 # Create credentials db if it doesn't exist.
