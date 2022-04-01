@@ -152,15 +152,17 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             report_path <- ''
             
             if (input$report_format == "html") {
-              report <- file.path('www', 'reportHtml.Rmd')
-              report_path <- tempfile(fileext = ".Rmd")
+              # report <- file.path('www', 'reportHtml.Rmd')
+              # report_path <- tempfile(fileext = ".Rmd")
+              report <- 'www/reportHtml.Rmd'
             }
             else {
-              report <- file.path('www', 'reportDocx.Rmd')
-              report_path <- tempfile(fileext = ".docx")
+              # report <- file.path('www', 'reportDocx.Rmd')
+              # report_path <- tempfile(fileext = ".docx")
+              report <- 'www/reportDocx.Rmd'
             }
             
-            file.copy(report, report_path, overwrite = TRUE)
+            # file.copy(report, report_path, overwrite = TRUE)
 
             # make each param non-reactive. Why? Because this same report
             # has to be used for the Database Overview tab

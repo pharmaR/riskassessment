@@ -143,13 +143,15 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
             
             my_tempdir <- tempdir()
             if (input$report_formats == "html") {
-              Report <- file.path(my_tempdir, "reportHtml.Rmd")
-              file.copy("www/ReportHtml.Rmd", Report, overwrite = TRUE)
+              # Report <- file.path(my_tempdir, "reportHtml.Rmd")
+              # file.copy("www/ReportHtml.Rmd", Report, overwrite = TRUE)
+              Report <- "www/ReportHtml.Rmd"
             } else { 
               # docx
-              Report <- file.path(my_tempdir, "ReportDocx.Rmd")
-              file.copy("www/ReportDocx.Rmd", Report, overwrite = TRUE)
-              file.copy("www/read_html.lua", file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
+              # Report <- file.path(my_tempdir, "ReportDocx.Rmd")
+              # file.copy("www/ReportDocx.Rmd", Report, overwrite = TRUE)
+              # file.copy("www/read_html.lua", file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
+              Report <- "www/ReportDocx.Rmd"
             }
 
             fs <- c()
