@@ -32,6 +32,7 @@ packages = c("shiny"
              ,"rlang"
              ,"purrr"
              ,"shinycssloaders"
+             ,"tidyr"
 )
 
 # Install and load required packages.
@@ -85,6 +86,7 @@ if(!require(riskmetric)){
 # library(formattable)
 # library(rintrojs)
 
+library(riskmetric)
 options(keyring_user = "NeildeGrasseTyson")
 options(keyring_pwd = "polarJetStream")
 
