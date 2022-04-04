@@ -1,4 +1,3 @@
-
 # Get the package general information from CRAN/local
 get_latest_pkg_info <- function(pkg_name) {
   webpage <- read_html(glue(
@@ -7,6 +6,11 @@ get_latest_pkg_info <- function(pkg_name) {
   #' Regex that finds entry: '\n ', "'", and '"' (the `|` mean 'or' and the 
   #' `\`` is to scape the double quotes).
   pattern <- '\n |\'|\"|\\"'
+  cln_string <- function(string) {
+    str_remove_all(string, "\n") %>%
+      str_replace_all("  +", " ") %>%
+      str_replace_all("'", "''")
+  }
   
   # Save div with class container to get the title and description.
   div_container <- webpage %>% html_nodes("div.container")
@@ -15,25 +19,24 @@ get_latest_pkg_info <- function(pkg_name) {
   title <- div_container %>% 
     html_nodes("h2") %>% 
     html_text() %>%
-    str_remove_all(pattern = pattern)
+    cln_string()
   
   # Read package description and clean it.
   description <- div_container %>% 
     html_nodes("h2 + p") %>% 
     html_text() %>%
-    str_remove_all(pattern = pattern)
+    cln_string()
   
   # Get the table displaying version, authors, etc.
   table_info <- (webpage %>% html_table())[[1]] %>%
     mutate(X1 = str_remove_all(string = X1, pattern = ':')) %>%
-    mutate(X2 = str_remove_all(string = X2, pattern = pattern)) %>%
+    mutate(X2 = cln_string(string = X2)) %>%
     pivot_wider(names_from = X1, values_from = X2) %>%
     select(Version, Maintainer, Author, License, Published) %>%
     mutate(Title = title, Description = description)
   
   return(table_info)
 }
-
 
 # Call function to get and upload info from CRAN/local to db.
 insert_pkg_info_to_db <- function(pkg_name) {
@@ -63,7 +66,6 @@ insert_pkg_info_to_db <- function(pkg_name) {
             lis <- d$get("License")
             pub <- d$get("Packaged")
             
-            desc <- gsub("'","", desc)
             upload_package_to_db(pkg_name, ver, title, desc, auth, main, lis, pub)
           }}
       } else{
@@ -116,7 +118,7 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
   
   # Leave method if package not found.
   if(nrow(package_id) == 0){
-    print("PACKAGE NOT FOUND.")
+    rlang::inform("PACKAGE NOT FOUND.")
     loggit("WARN", paste("Package", pkg_name, "not found."))
     return()
   }
@@ -159,8 +161,8 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
 
 # Get community usage metrics info and upload into DB.
 insert_community_metrics_to_db <- function(pkg_name) {
-  pkgs_cum_metrics <- tibble()
-  
+  #pkgs_cum_metrics <- tibble()
+
   tryCatch(
     expr = {
       
@@ -169,7 +171,9 @@ insert_community_metrics_to_db <- function(pkg_name) {
         select(`Last modified` = Published, version = Version)
       
       # Get the packages past versions and dates.
-      pkg_url <- url(glue('https://cran.r-project.org/src/contrib/Archive/{pkg_name}'))
+      pkg_url <- glue('https://cran.r-project.org/src/contrib/Archive/{pkg_name}')
+      pkg_url = url(pkg_url, "rb")
+      on.exit(close(pkg_url))
       pkg_page <- try(read_html(pkg_url), silent = TRUE)
       
       # if past releases exist... they usually do!
@@ -187,8 +191,7 @@ insert_community_metrics_to_db <- function(pkg_name) {
       } else {
         versions_with_dates0 <- curr_release
       }
-      # close(pkg_url)
-      
+
       versions_with_dates <- versions_with_dates0 %>%
         mutate(date = as.Date(`Last modified`), .keep = 'unused') %>%
         mutate(month = month(date)) %>%
