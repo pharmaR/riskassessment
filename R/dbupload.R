@@ -63,6 +63,7 @@ insert_pkg_info_to_db <- function(pkg_name) {
             lis <- d$get("License")
             pub <- d$get("Packaged")
             
+            desc <- gsub("'","", desc)
             upload_package_to_db(pkg_name, ver, title, desc, auth, main, lis, pub)
           }}
       } else{
