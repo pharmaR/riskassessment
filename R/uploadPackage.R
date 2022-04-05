@@ -191,14 +191,16 @@ uploadPackageServer <- function(id) {
       as.character(tagList(
         br(), br(),
         hr(),
-        h5("Summary of uploaded package(s)"),
-        br(),
-        p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
-        p(tags$b("New Packages: "), sum(uploaded_pkgs()$status == 'new')),
-        p(tags$b("Undiscovered Packages: "), sum(uploaded_pkgs()$status == 'not found')),
-        p(tags$b("Duplicate Packages: "), sum(uploaded_pkgs()$status == 'duplicate')),
-        p("Note: The assessment will be performed on the latest version of each
-        package, irrespective of the uploaded version.")
+        div(id = "upload_summary_div",
+          h5("Summary of uploaded package(s)"),
+          br(),
+          p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
+          p(tags$b("New Packages: "), sum(uploaded_pkgs()$status == 'new')),
+          p(tags$b("Undiscovered Packages: "), sum(uploaded_pkgs()$status == 'not found')),
+          p(tags$b("Duplicate Packages: "), sum(uploaded_pkgs()$status == 'duplicate')),
+          p("Note: The assessment will be performed on the latest version of each
+          package, irrespective of the uploaded version.")
+        )
       ))
     })
     
