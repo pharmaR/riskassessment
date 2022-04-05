@@ -3,7 +3,7 @@ uploadPackageUI <- function(id) {
   fluidPage(
     br(), br(),
     
-    introJSUI(NS(id, "upload_pkg_introJS")),
+    introJSUI(NS(id, "introJS")),
     
     tags$head(tags$style(".shiny-notification {font-size:30px; color:darkblue; position: fixed; width:415px; height: 150px; top: 75% ;right: 10%;")),
 
@@ -46,7 +46,7 @@ uploadPackageServer <- function(id) {
     # Start introjs when help button is pressed. Had to do this outside of
     # a module in order to take a reactive data frame of steps
     observeEvent(
-      input[["upload_pkg_introJS-help"]], # notice input contains "id-help"
+      input[["introJS-help"]], # notice input contains "id-help"
       introjs(session,
               options = list(
                 steps = 
