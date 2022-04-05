@@ -148,8 +148,12 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
             } else { 
               # docx
               Report <- file.path(my_tempdir, "ReportDocx.Rmd")
+              if (!dir.exists(file.path(my_tempdir, "images"))) dir.create(file.path(my_tempdir, "images"))
               file.copy("www/ReportDocx.Rmd", Report, overwrite = TRUE)
               file.copy("www/read_html.lua", file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
+              file.copy("www/images/user-tie.png", file.path(my_tempdir, "images", "user-tie.png"), overwrite = TRUE)
+              file.copy("www/images/user-shield.png", file.path(my_tempdir, "images", "user-shield.png"), overwrite = TRUE)
+              file.copy("www/images/calendar-alt.png", file.path(my_tempdir, "images", "calendar-alt.png"), overwrite = TRUE)
             }
 
             fs <- c()

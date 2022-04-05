@@ -39,10 +39,10 @@ outputComments <- function(pkg_name, comments){
     "No comments",
     paste0(
       "<div class='well'>",
-      icon("user-tie"), " ", "user: ", comments$user_name, ", ", 
-      icon("user-shield"), " ", "role: ", comments$user_role, ", ",
-      icon("calendar-alt"), " ", "date: ", comments$added_on, ': ',
-      comments$comment,
+      "<img src='images/user-tie.png' width='16' height='16'>", " ", "user: ", comments$user_name, ", ", 
+      "<img src='images/user-shield.png' width='16' height='16'>", " ", "role: ", comments$user_role, ", ",
+      "<img src='images/calendar-alt.png' width='16' height='16'>", " ", "date: ", comments$added_on,
+      "<br>", comments$comment,
       "</div>",
       collapse = ""
     )
