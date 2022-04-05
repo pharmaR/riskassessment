@@ -143,15 +143,17 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
             
             my_tempdir <- tempdir()
             if (input$report_formats == "html") {
-              # Report <- file.path(my_tempdir, "reportHtml.Rmd")
-              # file.copy("www/ReportHtml.Rmd", Report, overwrite = TRUE)
-              Report <- "www/ReportHtml.Rmd"
+              Report <- file.path(my_tempdir, "reportHtml.Rmd")
+              file.copy("www/ReportHtml.Rmd", Report, overwrite = TRUE)
             } else { 
               # docx
-              # Report <- file.path(my_tempdir, "ReportDocx.Rmd")
-              # file.copy("www/ReportDocx.Rmd", Report, overwrite = TRUE)
-              # file.copy("www/read_html.lua", file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
-              Report <- "www/ReportDocx.Rmd"
+              Report <- file.path(my_tempdir, "ReportDocx.Rmd")
+              if (!dir.exists(file.path(my_tempdir, "images"))) dir.create(file.path(my_tempdir, "images"))
+              file.copy("www/ReportDocx.Rmd", Report, overwrite = TRUE)
+              file.copy("www/read_html.lua", file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
+              file.copy("www/images/user-tie.png", file.path(my_tempdir, "images", "user-tie.png"), overwrite = TRUE)
+              file.copy("www/images/user-shield.png", file.path(my_tempdir, "images", "user-shield.png"), overwrite = TRUE)
+              file.copy("www/images/calendar-alt.png", file.path(my_tempdir, "images", "calendar-alt.png"), overwrite = TRUE)
             }
 
             fs <- c()

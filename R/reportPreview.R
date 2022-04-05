@@ -149,17 +149,19 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             shiny::incProgress(5 / 10)
             
             report <- ''
-            report_path <- ''
+            my_tempdir <- tempdir()
             
             if (input$report_format == "html") {
-              # report <- file.path('www', 'reportHtml.Rmd')
-              # report_path <- tempfile(fileext = ".Rmd")
-              report <- 'www/reportHtml.Rmd'
+              report <- file.path('www', 'reportHtml.Rmd')
             }
             else {
-              # report <- file.path('www', 'reportDocx.Rmd')
-              # report_path <- tempfile(fileext = ".docx")
-              report <- 'www/reportDocx.Rmd'
+              report <- file.path(my_tempdir, "ReportDocx.Rmd")
+              if (!dir.exists(file.path(my_tempdir, "images"))) dir.create(file.path(my_tempdir, "images"))
+              file.copy("www/ReportDocx.Rmd", report, overwrite = TRUE)
+              file.copy("www/read_html.lua", file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
+              file.copy("www/images/user-tie.png", file.path(my_tempdir, "images", "user-tie.png"), overwrite = TRUE)
+              file.copy("www/images/user-shield.png", file.path(my_tempdir, "images", "user-shield.png"), overwrite = TRUE)
+              file.copy("www/images/calendar-alt.png", file.path(my_tempdir, "images", "calendar-alt.png"), overwrite = TRUE)
             }
             
             # file.copy(report, report_path, overwrite = TRUE)
