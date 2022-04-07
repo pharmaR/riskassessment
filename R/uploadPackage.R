@@ -132,6 +132,11 @@ uploadPackageServer <- function(id) {
                    glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
             # need to increment the progress bar the same amounts in both
             # IF and ELSE statements
+            
+            # Suggest alternative spellings using utils::adist() function
+            v <- utils::adist(uploaded_packages$package[i], CRAN_arch, ignore.case = FALSE)
+            rlang::inform(paste("Package name",uploaded_packages$package[i],"was not found."))
+            rlang::inform(paste("suggested package names:",paste(head(CRAN_arch[which(v == min(v))], 10),collapse = ", ")))
           }
           else {
             
