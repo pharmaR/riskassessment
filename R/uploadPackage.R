@@ -91,6 +91,20 @@ uploadPackageServer <- function(id) {
           version = trimws(version)
         )
       
+      # read website to create vector of available packages by name
+      website <- "https://cran.rstudio.com/web/packages/available_packages_by_name.html"
+      con <- url(website, open = "rb")
+      namelst <- rvest::read_html(con)
+      close(con)
+      
+      pkgnames <- namelst %>% 
+        html_nodes("a") %>%
+        html_text() 
+      
+      # Drop A-Z
+      CRAN_arch <- pkgnames[27:length(pkgnames)]
+      rm(namelst, pkgnames)
+      
       # Start progress bar. Need to establish a maximum increment
       # value based on the number of packages, np, and the number of
       # incProgress() function calls in the loop, plus one to show
