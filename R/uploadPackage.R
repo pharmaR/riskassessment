@@ -107,18 +107,9 @@ uploadPackageServer <- function(id) {
           # run pkg_ref() to get pkg version and source info
           ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
           
-          ref_ver <- as.character(ref$version)
-          if(user_ver == ref_ver){
-            ver_msg <- ref_ver
-          } else {
-            ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
-          }
-          
-          as.character(ref$version)
-          deets <- glue::glue("{uploaded_packages$package[i]} {ver_msg}")
-          
-          
           if (ref$source == "pkg_missing"){
+            
+            deets <- glue::glue("{uploaded_packages$package[i]} {user_ver}")
             incProgress(1, detail = deets)
             
             uploaded_packages$status[i] <- 'not found'
@@ -127,11 +118,19 @@ uploadPackageServer <- function(id) {
                    glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
             # need to increment the progress bar the same amounts in both
             # IF and ELSE statements
-            incProgress(1, detail = deets)
-            incProgress(1, detail = deets)
-            incProgress(1, detail = deets)
           }
           else {
+            
+            ref_ver <- as.character(ref$version)
+            if(user_ver == ref_ver){
+              ver_msg <- ref_ver
+            } else {
+              ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
+            }
+            
+            as.character(ref$version)
+            deets <- glue::glue("{uploaded_packages$package[i]} {ver_msg}")
+            
             # Save version.
             incProgress(1, detail = deets)
             uploaded_packages$version[i] <- as.character(ref$version)
