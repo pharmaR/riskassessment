@@ -20,7 +20,7 @@ addCommentServer <- function(id, metric_abrv, user_name, user_role, pkg_name) {
                             "Community Usage Metrics")
       
       textAreaInput(
-        NS(id, "add_comment"),
+        session$ns("add_comment"),
         h5(glue("Add Comment for {metric_name}")),
         width = "100%",
         rows = 4,
@@ -39,13 +39,15 @@ addCommentServer <- function(id, metric_abrv, user_name, user_role, pkg_name) {
         
         #' TODO: comments can't contain "'". Check for other invalid
         #' characters.
-        if(str_count(string = comment, pattern = "'") != 0)
-          validate("Invalid character: comments cannot contain single
-                   quotes (')")
+        # if(str_count(string = comment, pattern = "'") != 0)
+        #   validate("Invalid character: comments cannot contain single
+        #            quotes (')")
+        
+        comment <- stringr::str_replace_all(comment, "'", "''")
 
         dbUpdate(glue(
         "INSERT INTO comments values('{pkg_name()}', '{user_name()}', 
-        '{user_role()}', '{input$add_comment}', '{metric_abrv}',
+        '{user_role()}', '{comment}', '{metric_abrv}',
         '{getTimeStamp()}')")
         )
         

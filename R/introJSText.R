@@ -26,7 +26,7 @@ sidebar_steps <-
 
 # upload package tab.
 upload_pkg <- data.frame(
-  element = c("#upload_pkg_introJS-help", "#upload-file-grp", "#upload_format"),
+  element = c("#upload_package-introJS-help", "#upload-file-grp", "#upload_package-upload_format"),
   intro = c(
     "Click here anytime you need help.",
     "Upload a CSV file with the package(s) you would like to assess.",
@@ -37,7 +37,7 @@ upload_pkg <- data.frame(
 
 upload_pkg_complete <- union(upload_pkg,
     data.frame(
-      element = c("#upload_summary_text", "#upload_pkgs_table"),
+      element = c("#upload_summary_div", "#upload_package-upload_pkgs_table"),
       intro = c(
         "Text description of packages uploaded. Counts by type: 'Total', 'New', 'Undiscovered', 'Duplicate'.",
         "Confirm uploaded packages list, filter by type"
