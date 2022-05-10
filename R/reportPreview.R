@@ -157,7 +157,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             else {
               report <- file.path(my_tempdir, "ReportDocx.Rmd")
               if (!dir.exists(file.path(my_tempdir, "images"))) dir.create(file.path(my_tempdir, "images"))
-              file.copy("www/ReportDocx.Rmd", report, overwrite = TRUE)
+              file.copy("www/reportDocx.Rmd", report, overwrite = TRUE)
               file.copy("www/read_html.lua", file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
               file.copy("www/images/user-tie.png", file.path(my_tempdir, "images", "user-tie.png"), overwrite = TRUE)
               file.copy("www/images/user-shield.png", file.path(my_tempdir, "images", "user-shield.png"), overwrite = TRUE)
