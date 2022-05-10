@@ -3,7 +3,7 @@ uploadPackageUI <- function(id) {
   fluidPage(
     br(), br(),
     
-    introJSUI(NS(id, "upload_pkg_introJS")),
+    introJSUI(NS(id, "introJS")),
     
     tags$head(tags$style(".shiny-notification {font-size:30px; color:darkblue; position: fixed; width:415px; height: 150px; top: 75% ;right: 10%;")),
 
@@ -46,7 +46,7 @@ uploadPackageServer <- function(id) {
     # Start introjs when help button is pressed. Had to do this outside of
     # a module in order to take a reactive data frame of steps
     observeEvent(
-      input[["upload_pkg_introJS-help"]], # notice input contains "id-help"
+      input[["introJS-help"]], # notice input contains "id-help"
       introjs(session,
               options = list(
                 steps = 
@@ -191,14 +191,16 @@ uploadPackageServer <- function(id) {
       as.character(tagList(
         br(), br(),
         hr(),
-        h5("Summary of uploaded package(s)"),
-        br(),
-        p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
-        p(tags$b("New Packages: "), sum(uploaded_pkgs()$status == 'new')),
-        p(tags$b("Undiscovered Packages: "), sum(uploaded_pkgs()$status == 'not found')),
-        p(tags$b("Duplicate Packages: "), sum(uploaded_pkgs()$status == 'duplicate')),
-        p("Note: The assessment will be performed on the latest version of each
-        package, irrespective of the uploaded version.")
+        div(id = "upload_summary_div",
+          h5("Summary of uploaded package(s)"),
+          br(),
+          p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
+          p(tags$b("New Packages: "), sum(uploaded_pkgs()$status == 'new')),
+          p(tags$b("Undiscovered Packages: "), sum(uploaded_pkgs()$status == 'not found')),
+          p(tags$b("Duplicate Packages: "), sum(uploaded_pkgs()$status == 'duplicate')),
+          p("Note: The assessment will be performed on the latest version of each
+          package, irrespective of the uploaded version.")
+        )
       ))
     })
     
