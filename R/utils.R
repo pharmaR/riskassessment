@@ -268,7 +268,7 @@ build_comm_cards <- function(data){
   cards <- cards %>%
     add_row(name = 'downloads_last_year',
             title = 'Package Downloads',
-            desc = 'Number of downloads since last year',
+            desc = 'Number of package downloads since last year',
             value = format(sum(downloads_last_year$downloads), big.mark = ","),
             succ_icon = 'box-open',
             icon_class = "text-info",
