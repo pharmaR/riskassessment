@@ -155,13 +155,23 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
               report <- file.path('www', 'reportHtml.Rmd')
             }
             else {
-              report <- file.path(my_tempdir, "ReportDocx.Rmd")
-              if (!dir.exists(file.path(my_tempdir, "images"))) dir.create(file.path(my_tempdir, "images"))
-              file.copy("www/ReportDocx.Rmd", report, overwrite = TRUE)
-              file.copy("www/read_html.lua", file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
-              file.copy("www/images/user-tie.png", file.path(my_tempdir, "images", "user-tie.png"), overwrite = TRUE)
-              file.copy("www/images/user-shield.png", file.path(my_tempdir, "images", "user-shield.png"), overwrite = TRUE)
-              file.copy("www/images/calendar-alt.png", file.path(my_tempdir, "images", "calendar-alt.png"), overwrite = TRUE)
+              report <- file.path(my_tempdir, "reportDocx.Rmd")
+              if (!dir.exists(file.path(my_tempdir, "images")))
+                dir.create(file.path(my_tempdir, "images"))
+              file.copy(file.path('www', 'reportDocx.Rmd'),
+                        report, overwrite = TRUE)
+              file.copy(file.path('www', 'read_html.lua'),
+                        file.path(my_tempdir, "read_html.lua"),
+                        overwrite = TRUE)
+              file.copy(file.path('www', 'images', 'user-tie.png'),
+                        file.path(my_tempdir, "images", "user-tie.png"),
+                        overwrite = TRUE)
+              file.copy(file.path('www', 'images', 'user-shield.png'),
+                        file.path(my_tempdir, "images", "user-shield.png"),
+                        overwrite = TRUE)
+              file.copy(file.path('www', 'images', 'calendar-alt.png'),
+                        file.path(my_tempdir, "images", "calendar-alt.png"),
+                        overwrite = TRUE)
             }
             
             # file.copy(report, report_path, overwrite = TRUE)
