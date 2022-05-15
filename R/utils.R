@@ -10,9 +10,6 @@ credentials <- data.frame(
 
 # Stores the database name.
 database_name <- "database.sqlite"
-# Store default backup name.
-bk_name <- "dbbackup.sqlite"
-
 
 # Create a local database.
 create_db <- function(db_name = database_name){
