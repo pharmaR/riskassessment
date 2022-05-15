@@ -144,16 +144,26 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
             my_tempdir <- tempdir()
             if (input$report_formats == "html") {
               Report <- file.path(my_tempdir, "reportHtml.Rmd")
-              file.copy("www/ReportHtml.Rmd", Report, overwrite = TRUE)
+              file.copy(file.path('www', 'reportHtml.Rmd'), Report, overwrite = TRUE)
             } else { 
               # docx
-              Report <- file.path(my_tempdir, "ReportDocx.Rmd")
-              if (!dir.exists(file.path(my_tempdir, "images"))) dir.create(file.path(my_tempdir, "images"))
-              file.copy("www/ReportDocx.Rmd", Report, overwrite = TRUE)
-              file.copy("www/read_html.lua", file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
-              file.copy("www/images/user-tie.png", file.path(my_tempdir, "images", "user-tie.png"), overwrite = TRUE)
-              file.copy("www/images/user-shield.png", file.path(my_tempdir, "images", "user-shield.png"), overwrite = TRUE)
-              file.copy("www/images/calendar-alt.png", file.path(my_tempdir, "images", "calendar-alt.png"), overwrite = TRUE)
+              Report <- file.path(my_tempdir, "reportDocx.Rmd")
+              if (!dir.exists(file.path(my_tempdir, "images")))
+                dir.create(file.path(my_tempdir, "images"))
+              file.copy(file.path('www', 'ReportDocx.Rmd'),
+                        Report,
+                        overwrite = TRUE)
+              file.copy(file.path('www', 'read_html.lua'),
+                        file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
+              file.copy(file.path('www', 'images', 'user-tie.png'),
+                        file.path(my_tempdir, "images", "user-tie.png"),
+                        overwrite = TRUE)
+              file.copy(file.path('www', 'images', 'user-shield.png'),
+                        file.path(my_tempdir, "images", "user-shield.png"),
+                        overwrite = TRUE)
+              file.copy(file.path('www', 'images', 'calendar-alt.png'),
+                        file.path(my_tempdir, "images", "calendar-alt.png"),
+                        overwrite = TRUE)
             }
 
             fs <- c()
