@@ -1,3 +1,4 @@
+rsconnect/
 *.sqlite
 .Rproj.user
 .Rhistory
