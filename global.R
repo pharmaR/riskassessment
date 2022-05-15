@@ -31,24 +31,30 @@ packages = c("shiny"
              ,"glue"
              ,"bslib"
              ,'waiter'
+             ,'riskmetric'
+)
+
+# Load required packages.
+package.check <- lapply(
+  packages, FUN = function(x) { library(x, character.only = TRUE) }
 )
 
 # Install and load required packages.
-package.check <- lapply(
-  packages,
-  FUN = function(x) {
-    if (!require(x, character.only = TRUE)) {
-      install.packages(x, dependencies = TRUE)
-      library(x, character.only = TRUE)
-    }
-  }
-)
+# package.check <- lapply(
+#   packages,
+#   FUN = function(x) {
+#     if (!require(x, character.only = TRUE)) {
+#       install.packages(x, dependencies = TRUE)
+#       library(x, character.only = TRUE)
+#     }
+#   }
+# )
 
 # Install a specific version of riskmetric from GitHub and load it.
-if(!require(riskmetric)){
-  devtools::install_github("pharmaR/riskmetric", ref = "release-v0.1.1")
-  library(riskmetric)
-}
+# if(!require(riskmetric)){
+#   devtools::install_github("pharmaR/riskmetric", ref = "release-v0.1.1")
+#   library(riskmetric)
+# }
 
 
 # Note: If deploying the app to shinyapps.io, then the code to directly install
