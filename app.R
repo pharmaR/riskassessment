@@ -96,13 +96,12 @@ ui <- fluidPage(
     )
   ),
 
-  footer =
-    wellPanel(
-      id = "footer",
-      "Checkout the app's code!",
-      tags$a(href = "https://github.com/pharmaR/risk_assessment",
-             icon("github-alt"), target = "_blank")
-    )
+  wellPanel(
+    id = "footer",
+    "Checkout the app's code!",
+    tags$a(href = "https://github.com/pharmaR/risk_assessment",
+           icon("github-alt"), target = "_blank")
+  )
 )
 
 
