@@ -36,8 +36,8 @@ ui <- fluidPage(
   
   theme = theme,
   
-  includeCSS(path = "www/css/main.css"),
-  includeCSS(path = "www/css/community_metrics.css"),
+  includeCSS(path = file.path('www', 'css', 'main.css')),
+  includeCSS(path = file.path('www', 'css', 'community_metrics.css')),
 
   tabsetPanel(
     id = "apptabs",
@@ -110,7 +110,8 @@ ui <- shinymanager::secure_app(
   ui, 
   # customize top and bottom of login screen
   tags_top = tags$div(
-    tags$link(rel = "stylesheet", type = "text/css", href = "css/login_screen.css"),
+    tags$link(rel = "stylesheet", type = "text/css",
+              href = file.path('css', 'login_screen.css')),
     id = "login_screen",
     tags$h2("Risk Assessment Application", style = "align:center")),
   enable_admin = TRUE, theme = theme)
