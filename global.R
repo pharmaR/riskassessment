@@ -90,7 +90,7 @@ package.check <- lapply(
 # library(formattable)
 # library(rintrojs)
 
-options(keyring_user = "NeildeGrasseTyson")
+passphrase <- 'somepassphrase'
 
 #' Displays a helper message. By default, it informs the user that he should
 #' select a package.
@@ -106,7 +106,7 @@ showHelperMessage <- function(message = "Please select a package"){
 showComments <- function(pkg_name, comments){
   if (length(pkg_name) == 0)
     return("")
-
+  
   ifelse(
     length(comments$user_name) == 0, 
     "No comments",

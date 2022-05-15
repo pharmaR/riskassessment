@@ -57,23 +57,20 @@ create_db <- function(db_name = database_name){
 credentials_name <- "credentials.sqlite"
 
 # Create credentials database
-create_credentials_db <- function(db_name = credentials_name, username = getOption("keyring_user")){
-  
-  key_set_with_value("R-shinymanager-key", username, 
-                     password = rstudioapi::askForPassword("Please create a keyring password"))
+create_credentials_db <- function(db_name = credentials_name){
   
   # Init the credentials database
   shinymanager::create_db(
     credentials_data = credentials,
     sqlite_path = file.path(db_name), 
-    passphrase = key_get("R-shinymanager-key", username)
+    passphrase = passphrase
   )
   
   # set pwd_mngt$must_change to TRUE
   con <- dbConnect(RSQLite::SQLite(), db_name)
   pwd <- read_db_decrypt(
     con, name = "pwd_mngt",
-    passphrase = key_get("R-shinymanager-key", username)) %>%
+    passphrase = passphrase) %>%
     mutate(must_change = ifelse(
       have_changed == "TRUE", must_change, as.character(TRUE)))
   
@@ -81,23 +78,20 @@ create_credentials_db <- function(db_name = credentials_name, username = getOpti
     con,
     value = pwd,
     name = "pwd_mngt",
-    passphrase = key_get("R-shinymanager-key", username)
+    passphrase = passphrase
   )
   dbDisconnect(con)
   
   # update expire date here to current date + 365 days
   con <- dbConnect(RSQLite::SQLite(), db_name)
-  dat <- read_db_decrypt(con, name = "credentials",
-                         passphrase = key_get("R-shinymanager-key", username))
-  
-  dat <- dat %>%
-    mutate(expire = as.character(Sys.Date()+365))
+  dat <- read_db_decrypt(con, name = "credentials", passphrase = passphrase) %>%
+    mutate(expire = as.character(Sys.Date() + 365))
   
   write_db_encrypt(
     con,
     value = dat,
     name = "credentials",
-    passphrase = key_get("R-shinymanager-key", username)
+    passphrase = passphrase
   )
   
   dbDisconnect(con)
@@ -106,6 +100,7 @@ create_credentials_db <- function(db_name = credentials_name, username = getOpti
 dbSelect <- function(query, db_name = database_name){
   errFlag <- FALSE
   con <- dbConnect(RSQLite::SQLite(), db_name)
+
   tryCatch(
     expr = {
       rs <- dbSendQuery(con, query)
@@ -130,12 +125,14 @@ dbSelect <- function(query, db_name = database_name){
   dat <- dbFetch(rs)
   dbClearResult(rs)
   dbDisconnect(con)
+  
   return(dat)
 }
 
 # Deletes, updates or inserts queries.
 dbUpdate <- function(command, db_name = database_name){
   con <- dbConnect(RSQLite::SQLite(), db_name)
+  
   tryCatch({
     rs <- dbSendStatement(con, command)
   }, error = function(err) {
@@ -144,8 +141,10 @@ dbUpdate <- function(command, db_name = database_name){
     loggit("ERROR", message)
     dbDisconnect(con)
   })
+  
   nr <- dbGetRowsAffected(rs)
   dbClearResult(rs)
+  
   if (nr == 0) {
     message <- glue("zero rows were affected by the command: {command}")
     message(message, .loggit = FALSE)
