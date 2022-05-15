@@ -42,7 +42,7 @@ ui <- fluidPage(
   tabsetPanel(
     id = "apptabs",
     tabPanel(
-      title = "Risk Assessment",
+      title = "Risk Assessment - v0.0.1",
       icon = icon("clipboard-list"),
       
       titlePanel(
