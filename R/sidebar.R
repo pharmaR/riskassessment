@@ -13,6 +13,8 @@ sidebarUI <- function(id) {
       selected = "-"
     ),
     
+    helpText(HTML('<em>Note</em>: the latest package version will be used.')),
+    
     br(), br(),
     
     fluidRow(
@@ -105,14 +107,18 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       req(input$select_pkg)
       req(input$select_ver)
       
-      version <- ifelse(input$select_pkg == "-", "-", selected_pkg$version)
+      version <- ifelse(input$select_pkg == "-", "-",
+                        glue('{selected_pkg$version} - latest version'))
       
       updateSelectizeInput(
         session,
-        "select_ver",
+        'select_ver',
         choices = version,
         selected = version
       )
+      
+      disable(id = 'select_ver')
+      
     }, ignoreInit = TRUE)
     
     # Display the review status of the selected package.
