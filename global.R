@@ -90,7 +90,8 @@ package.check <- lapply(
 # library(formattable)
 # library(rintrojs)
 
-passphrase <- 'somepassphrase'
+options(keyring_user = "NeildeGrasseTyson")
+options(keyring_pwd = "polarJetStream")
 
 #' Displays a helper message. By default, it informs the user that he should
 #' select a package.
