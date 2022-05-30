@@ -161,7 +161,7 @@ getTimeStamp <- function(){
 # Get each metric's weight.
 get_metric_weights <- function(){
   dbSelect(
-    "SELECT name, weight, weight AS new_weight
+    "SELECT name, weight
      FROM metric"
   )
 }
