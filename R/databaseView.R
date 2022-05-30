@@ -127,7 +127,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
         }
       },
       content = function(file) {
-
+        
         selected_pkgs <- table_data() %>%
           slice(input$packages_table_rows_selected)
         n_pkgs <- nrow(selected_pkgs)
@@ -165,7 +165,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
             }
-
+            
             fs <- c()
             for (i in 1:n_pkgs) {
               # Grab package name and version, then create filename and path.
@@ -193,7 +193,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                 license = selected_pkg$license,
                 published = selected_pkg$published
               )
-
+              
               # gather comments data
               overall_comments <- get_overall_comments(this_pkg)
               mm_comments <- get_mm_comments(this_pkg)
@@ -221,7 +221,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                               com_metrics = comm_cards,
                               com_metrics_raw = comm_data,
                               downloads_plot_data = downloads_plot
-                              )
+                )
               )
               fs <- c(fs, path)  # Save all the reports/
               shiny::incProgress(1) # Increment progress bar.
