@@ -118,8 +118,7 @@ Infrastructure</a>."
     
     # Display the Community Usage Metrics text content.
     output$community_usage_desc <- renderText({
-      desc_community_usage <- read_file(file.path("Data", "community.txt"))
-      desc_community_usage
+      read_file(file.path("Data", "community.txt"))
     })
     
     
