@@ -39,6 +39,8 @@ package.check <- lapply(
   packages, FUN = function(x) { library(x, character.only = TRUE) }
 )
 
+app_version <- 'beta'
+
 # Install and load required packages.
 # package.check <- lapply(
 #   packages,
