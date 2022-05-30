@@ -67,8 +67,7 @@ numeric value <b>x</b> standardized weight)"
       d <- get_metric_weights() %>%
         mutate(weight = ifelse(name == "covr_coverage", 0, weight)) %>%
         formattable() %>%
-        mutate(standardized_weight = round(weight / sum(weight, na.rm = TRUE), 4)) %>%
-        select(-new_weight)
+        mutate(standardized_weight = round(weight / sum(weight, na.rm = TRUE), 4))
       
       as.datatable(d,
                    selection = list(mode = 'single'),
