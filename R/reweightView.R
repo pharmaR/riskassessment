@@ -8,8 +8,10 @@ reweightViewServer <- function(id, user) {
   moduleServer(id, function(input, output, session) {
     save <- reactiveValues(data=NULL)
     
-    curr_new_wts <- reactiveVal(get_metric_weights() %>%
-                                  mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
+    curr_new_wts <- reactiveVal(
+      get_metric_weights() %>%
+        mutate(new_weight = weight) %>%
+        mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
     observeEvent(input$update_weight, {
       curr_new_wts(save$data %>%
                      mutate(new_weight = ifelse(name == isolate(input$metric_name),
@@ -43,7 +45,6 @@ reweightViewServer <- function(id, user) {
         DT::formatStyle(names(curr_new_wts()),lineHeight='80%') %>%
         DT::formatStyle(columns =  "name", target = 'row',
                         backgroundColor = styleEqual(all_names, my_colors))
-      
     })
     
     # Section displayed only for authorized users.
@@ -279,8 +280,10 @@ reweightViewServer <- function(id, user) {
       showNotification(id = "show_notification_id", "Updates completed", type = "message", duration = 1)
       shinyjs::runjs("$('.shiny-notification').css('width', '450px');")
       
-      curr_new_wts(get_metric_weights() %>%
-                     mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
+      curr_new_wts(
+        get_metric_weights() %>%
+          mutate(new_weight = weight) %>%
+          mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
       
       user$metrics_reweighted <- user$metrics_reweighted + 1
     }, ignoreInit = TRUE)
