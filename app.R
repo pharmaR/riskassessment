@@ -261,7 +261,7 @@ server <- function(session, input, output) {
   })
   
   # Load server of the reweightView module.
-  reweightViewServer("reweightInfo", user)
+  metric_weights <- reweightViewServer("reweightInfo", user)
   
   # Load server of the uploadPackage module.
   uploaded_pkgs <- uploadPackageServer("upload_package")
@@ -270,10 +270,11 @@ server <- function(session, input, output) {
   selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs$names)
   
   # Load server of the assessment criteria module.
-  assessmentInfoServer("assessmentInfo")
+  assessmentInfoServer("assessmentInfo", metric_weights = metric_weights)
   
   # Load server of the database view module.
-  databaseViewServer("databaseView", user, uploaded_pkgs$names)
+  databaseViewServer("databaseView", user, uploaded_pkgs$names,
+                     metric_weights = metric_weights)
   
   # Gather maintenance metrics information.
   maint_metrics <- reactive({
@@ -315,7 +316,8 @@ server <- function(session, input, output) {
                       cm_comments = community_data$comments,
                       downloads_plot_data = community_data$downloads_plot_data,
                       user = user,
-                      app_version = app_version)
+                      app_version = app_version,
+                      metric_weights = metric_weights)
   
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)

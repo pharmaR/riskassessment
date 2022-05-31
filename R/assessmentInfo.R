@@ -38,7 +38,7 @@ assessmentInfoUI <- function(id) {
         ))))
 }
 
-assessmentInfoServer <- function(id) {
+assessmentInfoServer <- function(id, metric_weights) {
   moduleServer(id, function(input, output, session) {
     
     riskcalc_text <- "Per the <b>riskmetric</b> package, there 
@@ -64,7 +64,7 @@ numeric value <b>x</b> standardized weight)"
     
     # Render table for Maintenance Metrics.
     output$riskcalc_weights_table <- DT::renderDataTable({
-      d <- get_metric_weights() %>%
+      d <- metric_weights() %>%
         mutate(weight = ifelse(name == "covr_coverage", 0, weight)) %>%
         formattable() %>%
         mutate(standardized_weight = round(weight / sum(weight, na.rm = TRUE), 4))

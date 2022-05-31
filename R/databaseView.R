@@ -33,7 +33,7 @@ databaseViewUI <- function(id) {
   )
 }
 
-databaseViewServer <- function(id, user, uploaded_pkgs) {
+databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
   moduleServer(id, function(input, output, session) {
     
     # Update table_data if a package has been uploaded
@@ -211,7 +211,9 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                 output_file = path,
                 clean = FALSE,
                 params = list(pkg = this_pack,
-                              riskmetric_version = packageVersion("riskmetric"),
+                              riskmetric_version = paste0(packageVersion("riskmetric")),
+                              app_version = app_version,
+                              metric_weights = metric_weights(),
                               user_name = user$name,
                               user_role = user$role,
                               overall_comments = overall_comments,

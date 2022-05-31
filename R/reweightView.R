@@ -6,12 +6,14 @@ reweightViewUI <- function(id) {
 
 reweightViewServer <- function(id, user) {
   moduleServer(id, function(input, output, session) {
+    
     save <- reactiveValues(data=NULL)
     
     curr_new_wts <- reactiveVal(
       get_metric_weights() %>%
         mutate(new_weight = weight) %>%
         mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
+    
     observeEvent(input$update_weight, {
       curr_new_wts(save$data %>%
                      mutate(new_weight = ifelse(name == isolate(input$metric_name),
@@ -135,8 +137,7 @@ reweightViewServer <- function(id, user) {
         shinyjs::delay(500, shinyjs::disable("update_pkg_risk"))
       }
     })
-    
-    
+
     
     # Update metric weight dropdown so that it matches the metric name.
     observeEvent(input$metric_name, {
@@ -163,10 +164,6 @@ reweightViewServer <- function(id, user) {
       updateSelectInput(session, "metric_name",
                         selected = curr_new_wts()$name[input$weights_table_rows_selected])
     })
-    
-    
-    
-    
     
     # Save new weight into db.
     observeEvent(input$update_pkg_risk, { 
@@ -307,8 +304,12 @@ reweightViewServer <- function(id, user) {
           modalDialog(
             size = "l",
             title = h2("Database downloaded", class = "mb-0 mt-0 txt-color"),
-            h3("The database as been downloaded as datase_backup-[date].sqlite"))))
+            h3("The database has been downloaded as datase_backup-[date].sqlite"))))
       }
     )
+    
+    #' Return metric weights. Doing so guarantees that when a report is
+    #' downloaded, it would have the latest metric weights.
+    return(reactive(curr_new_wts() %>% select(-new_weight)))
   })
 }

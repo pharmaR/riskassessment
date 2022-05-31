@@ -4,7 +4,8 @@ reportPreviewUI <- function(id) {
 
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                                 com_metrics_raw, mm_comments, cm_comments,
-                                downloads_plot_data, user, app_version) {
+                                downloads_plot_data, user, app_version,
+                                metric_weights) {
   moduleServer(id, function(input, output, session) {
     
     # IntroJS.
@@ -155,12 +156,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
         h5('Generated on:'), format(Sys.time(), usetz = TRUE)
       )
     })
-    
-    metric_weights <- reactive({
-      get_metric_weights() %>%
-        mutate(`metric name` = name, .keep = 'unused', .before = 'weight')
-    })
-    
+
     # Display the metric weights.
     output$weights_table <- renderDataTable({
       req(selected_pkg$name())
