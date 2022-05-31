@@ -314,7 +314,8 @@ server <- function(session, input, output) {
                       mm_comments = maintenance_data$comments,
                       cm_comments = community_data$comments,
                       downloads_plot_data = community_data$downloads_plot_data,
-                      user = user)
+                      user = user,
+                      app_version = app_version)
   
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)
