@@ -53,13 +53,9 @@ package.check <- lapply(
   }
 )
 
-<<<<<<< HEAD
 app_version <- 'beta'
-passphrase <- 'somepassphrase'
-=======
 options(keyring_user = "NeildeGrasseTyson")
 options(keyring_pwd = "polarJetStream")
->>>>>>> keyring-prep_for_release
 
 #' Displays a helper message. By default, it informs the user that he should
 #' select a package.
