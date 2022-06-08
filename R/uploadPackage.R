@@ -6,7 +6,7 @@ uploadPackageUI <- function(id) {
     introJSUI(NS(id, "introJS")),
     
     tags$head(tags$style(".shiny-notification {font-size:30px; color:darkblue; position: fixed; width:415px; height: 150px; top: 75% ;right: 10%;")),
-
+    
     fluidRow(
       column(
         width = 4,
@@ -95,47 +95,41 @@ uploadPackageServer <- function(id) {
       # value based on the number of packages, np, and the number of
       # incProgress() function calls in the loop, plus one to show
       # the incProgress() that the process is completed.
-      withProgress(max = (np * 5) + 1, value = 0,
-                   message = "Uploading Packages to DB:", {
-                     shinyjs::runjs("$('<br>').insertAfter('.progress-message');")
-        
-        for (i in 1:np) {
-
-          user_ver <- uploaded_packages$version[i]
-          incProgress(1, detail = glue::glue("{uploaded_packages$package[i]} {user_ver}"))
+      withProgress(
+        max = (np * 5) + 1, value = 0,
+        message = "Uploading Packages to DB:", {
           
-          # run pkg_ref() to get pkg version and source info
-          ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
-          
-          ref_ver <- as.character(ref$version)
-          if(user_ver == ref_ver){
-            ver_msg <- ref_ver
-          } else {
-            ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
-          }
-          
-          as.character(ref$version)
-          deets <- glue::glue("{uploaded_packages$package[i]} {ver_msg}")
-          
-          
-          if (ref$source == "pkg_missing"){
-            incProgress(1, detail = deets)
+          for (i in 1:np) {
             
-            uploaded_packages$status[i] <- 'not found'
-  
-            loggit('WARN',
-                   glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
-            # need to increment the progress bar the same amounts in both
-            # IF and ELSE statements
-            incProgress(1, detail = deets)
-            incProgress(1, detail = deets)
-            incProgress(1, detail = deets)
-          }
-          else {
+            user_ver <- uploaded_packages$version[i]
+            incProgress(1, detail = glue::glue("{uploaded_packages$package[i]} {user_ver}"))
+            
+            # run pkg_ref() to get pkg version and source info
+            ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
+            
+            if (ref$source == "pkg_missing"){
+              incProgress(1, detail = 'Package {uploaded_packages$package[i]} not found')
+              
+              uploaded_packages$status[i] <- 'not found'
+              
+              loggit('WARN',
+                     glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
+              
+              next
+            }
+            
+            ref_ver <- as.character(ref$version)
+            
+            if(user_ver == ref_ver) ver_msg <- ref_ver
+            else ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
+            
+            as.character(ref$version)
+            deets <- glue::glue("{uploaded_packages$package[i]} {ver_msg}")
+            
             # Save version.
             incProgress(1, detail = deets)
             uploaded_packages$version[i] <- as.character(ref$version)
-  
+            
             found <- nrow(dbSelect(glue(
               "SELECT name
               FROM package
@@ -156,11 +150,11 @@ uploadPackageServer <- function(id) {
               insert_community_metrics_to_db(uploaded_packages$package[i])
             }
           }
-        }
-        incProgress(1, detail = "   **Completed Pkg Uploads**")
-        Sys.sleep(0.25)
-        
-      }) #withProgress
+          
+          incProgress(1, detail = "   **Completed Pkg Uploads**")
+          Sys.sleep(0.25)
+          
+        }) #withProgress
       
       uploaded_packages
     })
@@ -192,13 +186,13 @@ uploadPackageServer <- function(id) {
         br(), br(),
         hr(),
         div(id = "upload_summary_div",
-          h5("Summary of uploaded package(s)"),
-          br(),
-          p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
-          p(tags$b("New Packages: "), sum(uploaded_pkgs()$status == 'new')),
-          p(tags$b("Undiscovered Packages: "), sum(uploaded_pkgs()$status == 'not found')),
-          p(tags$b("Duplicate Packages: "), sum(uploaded_pkgs()$status == 'duplicate')),
-          p("Note: The assessment will be performed on the latest version of each
+            h5("Summary of uploaded package(s)"),
+            br(),
+            p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
+            p(tags$b("New Packages: "), sum(uploaded_pkgs()$status == 'new')),
+            p(tags$b("Undiscovered Packages: "), sum(uploaded_pkgs()$status == 'not found')),
+            p(tags$b("Duplicate Packages: "), sum(uploaded_pkgs()$status == 'duplicate')),
+            p("Note: The assessment will be performed on the latest version of each
           package, irrespective of the uploaded version.")
         )
       ))

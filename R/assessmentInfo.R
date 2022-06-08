@@ -38,7 +38,7 @@ assessmentInfoUI <- function(id) {
         ))))
 }
 
-assessmentInfoServer <- function(id) {
+assessmentInfoServer <- function(id, metric_weights) {
   moduleServer(id, function(input, output, session) {
     
     riskcalc_text <- "Per the <b>riskmetric</b> package, there 
@@ -64,11 +64,10 @@ numeric value <b>x</b> standardized weight)"
     
     # Render table for Maintenance Metrics.
     output$riskcalc_weights_table <- DT::renderDataTable({
-      d <- get_metric_weights() %>%
+      d <- metric_weights() %>%
         mutate(weight = ifelse(name == "covr_coverage", 0, weight)) %>%
         formattable() %>%
-        mutate(standardized_weight = round(weight / sum(weight, na.rm = TRUE), 4)) %>%
-        select(-new_weight)
+        mutate(standardized_weight = round(weight / sum(weight, na.rm = TRUE), 4))
       
       as.datatable(d,
                    selection = list(mode = 'single'),
@@ -119,8 +118,7 @@ Infrastructure</a>."
     
     # Display the Community Usage Metrics text content.
     output$community_usage_desc <- renderText({
-      desc_community_usage <- read_file(file.path("Data", "community.txt"))
-      desc_community_usage
+      read_file(file.path("Data", "community.txt"))
     })
     
     

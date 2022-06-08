@@ -36,8 +36,8 @@ ui <- fluidPage(
   
   theme = theme,
   
-  includeCSS(path = "www/css/main.css"),
-  includeCSS(path = "www/css/community_metrics.css"),
+  includeCSS(path = file.path('www', 'css', 'main.css')),
+  includeCSS(path = file.path('www', 'css', 'community_metrics.css')),
 
   tabsetPanel(
     id = "apptabs",
@@ -46,7 +46,7 @@ ui <- fluidPage(
       icon = icon("clipboard-list"),
       
       titlePanel(
-        windowTitle = "Risk Assessment",
+        windowTitle = "Risk Assessment - v0.0.1",
         title = div(id = "page-title", "R Package Risk Assessment App")
       ),
       
@@ -96,13 +96,12 @@ ui <- fluidPage(
     )
   ),
 
-  footer =
-    wellPanel(
-      id = "footer",
-      "Checkout the app's code!",
-      tags$a(href = "https://github.com/pharmaR/risk_assessment",
-             icon("github-alt"), target = "_blank")
-    )
+  wellPanel(
+    id = "footer",
+    "Checkout the app's code!",
+    tags$a(href = "https://github.com/pharmaR/risk_assessment",
+           icon("github-alt"), target = "_blank")
+  )
 )
 
 
@@ -110,9 +109,12 @@ ui <- shinymanager::secure_app(
   ui, 
   # customize top and bottom of login screen
   tags_top = tags$div(
-    tags$link(rel = "stylesheet", type = "text/css", href = "css/login_screen.css"),
+    tags$link(rel = "stylesheet", type = "text/css",
+              href = file.path('css', 'login_screen.css')),
     id = "login_screen",
-    tags$h2("Risk Assessment Application", style = "align:center")),
+    tags$h2("Risk Assessment Application", style = "align:center"),
+    tags$h3(glue('**Version {app_version}**'),
+            style = "align:center; color: darkgray")),
   enable_admin = TRUE, theme = theme)
 
 add_tags <- function(ui, ...) {
@@ -174,7 +176,7 @@ server <- function(session, input, output) {
   res_auth <- secure_server(
     check_credentials = check_credentials(
       'credentials.sqlite',
-      passphrase = key_get("R-shinymanager-key", getOption("keyring_user"))
+      passphrase = passphrase
     )
   )
 
@@ -259,7 +261,7 @@ server <- function(session, input, output) {
   })
   
   # Load server of the reweightView module.
-  reweightViewServer("reweightInfo", user)
+  metric_weights <- reweightViewServer("reweightInfo", user)
   
   # Load server of the uploadPackage module.
   uploaded_pkgs <- uploadPackageServer("upload_package")
@@ -268,10 +270,11 @@ server <- function(session, input, output) {
   selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs$names)
   
   # Load server of the assessment criteria module.
-  assessmentInfoServer("assessmentInfo")
+  assessmentInfoServer("assessmentInfo", metric_weights = metric_weights)
   
   # Load server of the database view module.
-  databaseViewServer("databaseView", user, uploaded_pkgs$names)
+  databaseViewServer("databaseView", user, uploaded_pkgs$names,
+                     metric_weights = metric_weights)
   
   # Gather maintenance metrics information.
   maint_metrics <- reactive({
@@ -312,7 +315,9 @@ server <- function(session, input, output) {
                       mm_comments = maintenance_data$comments,
                       cm_comments = community_data$comments,
                       downloads_plot_data = community_data$downloads_plot_data,
-                      user = user)
+                      user = user,
+                      app_version = app_version,
+                      metric_weights = metric_weights)
   
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)
