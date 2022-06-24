@@ -1,3 +1,49 @@
+add_tags <- function(ui, ...) {
+  ui <- force(ui)
+  
+  function(request) {
+    query <- parseQueryString(request$QUERY_STRING)
+    admin <- query$admin
+    
+    if (is.function(ui)) {
+      ui <- ui(request)
+    }
+    
+    if (identical(admin, "true")) {
+      ui <- tagList(ui, 
+                    tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';")),
+                    tags$script(HTML("var oldfab = Array.prototype.slice.call(document.getElementsByClassName('mfb-component--br'), 0);
+                             for (var i = 0; i < oldfab.length; ++i) {
+                               oldfab[i].remove();
+                             }")),
+                    fab_button(
+                      position = "bottom-right",
+                      actionButton(
+                        inputId = ".shinymanager_logout",
+                        label = "Logout",
+                        icon = icon("sign-out-alt")
+                      ),
+                      actionButton(
+                        inputId = ".shinymanager_app",
+                        label = "Go to application",
+                        icon = icon("share")
+                      )
+                    )
+      )
+    }
+    
+    tagList(useShinyjs(),
+            ui,
+            tags$script(HTML("$(document).on('shiny:value', function(event) {
+                             if (event.target.id === 'admin-table_users') {
+                             Shiny.onInputChange('table_users-returns', document.getElementById('admin-table_users').innerHTML)
+                             } else if (event.target.id === 'admin-table_pwds') {
+                             Shiny.onInputChange('table_pwds-returns', document.getElementById('admin-table_pwds').innerHTML)
+                             }
+                             });")))
+  }
+}
+
 # Init DB using credentials data.
 credentials <- data.frame(
   user = "admin",
@@ -8,9 +54,7 @@ credentials <- data.frame(
   stringsAsFactors = FALSE
 )
 
-# Stores the database name.
-database_name <- "database.sqlite"
-
+# note: database_name is stored in global.R
 # Create a local database.
 create_db <- function(db_name = database_name){
   
@@ -53,9 +97,8 @@ create_db <- function(db_name = database_name){
   dbDisconnect(con)
 }
 
-# Stores the database name.
-credentials_name <- "credentials.sqlite"
 
+# note: the credentials_name object is assigned in global.R
 # Create credentials database
 create_credentials_db <- function(db_name = credentials_name){
   
