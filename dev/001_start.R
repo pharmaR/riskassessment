@@ -20,9 +20,9 @@ usethis::use_description(check_name = F)
 #   pkg_title = "riskassessment: a web app designed to interface with the `riskmetric` package",
 #   pkg_description = 
 #     "The `riskassessment` application allows users to define a list of R
-#     packages to assesss against metrics engineered by the `riskmetric`
+#     packages to assess against metrics engineered by the `riskmetric`
 #     package. In general, those metrics evaluate package development best practices,
-#     code documentation, community engagement, and sustainability that culiminate in a
+#     code documentation, community engagement, and sustainability that culminate in a
 #     quantitative risk score. The app allows users to select and review one package
 #     at a time to consume interactive visuals, download reports for sharing, submit
 #     comments for group collaboration, and even tweak metric weights used to

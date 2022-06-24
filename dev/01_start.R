@@ -33,7 +33,7 @@ golem::set_golem_options()
 usethis::use_readme_rmd( open = TRUE )
 # usethis::use_code_of_conduct() # NOT RUN
 usethis::use_lifecycle_badge( "Experimental" ) #Experimental, Maturing, Stable, Superseded, Archived, Dormant, Questioning
-usethis::use_news_md( open = FALSE )
+usethis::use_news_md( open = TRUE )
 
 ## Use git ---- ran
 usethis::use_git("AC Initial Commit")
@@ -44,10 +44,10 @@ usethis::use_git("AC Initial Commit")
 # Call `use_test()` to initialize a basic test file and open it for editing.
 golem::use_recommended_tests()
 
-## Use Recommended Packages ---- ran slightly altered
+## Use Recommended Packages ---- did not run
 # By Default, this will add “shiny”, “DT”, “attempt”, “glue”, “htmltools”, and “golem” as a dependency 
 # to our package. Since we don't need all of those, we'll adjusted the recommended vector...
-golem::use_recommended_deps(recommended = c("shiny", "DT",  "glue", "golem")) #"attempt", "htmltools",
+# golem::use_recommended_deps(recommended = c("shiny", "DT",  "glue", "golem")) #"attempt", "htmltools",
 
 ## Favicon ---- ran
 # If you want to change the favicon (default is golem's one)

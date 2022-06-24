@@ -10,9 +10,9 @@ Authors@R: as.person(c(
     "Fission Labs India Pvt Ltd [aut]"
   ))
 Description: The `riskassessment` application allows users to define a list of R
-    packages to assesss against metrics engineered by the `riskmetric` package.
+    packages to assess against metrics engineered by the `riskmetric` package.
     In general, those metrics evaluate package development best practices, code
-    documentation, community engagement, and sustainability that culiminate in a
+    documentation, community engagement, and sustainability that culminate in a
     quantitative risk score. The app allows users to select and review one package
     at a time to consume interactive visuals, download reports for sharing, submit
     comments for group collaboration, and even tweak metric weights used to
@@ -66,3 +66,8 @@ Imports:
     shinyWidgets,
     stringr,
     tools
+Suggests: 
+    spelling,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Language: en-US
