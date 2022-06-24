@@ -17,6 +17,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports: 
     bslib (>= 0.3.0),
+    config (>= 0.3.1),
     cranlogs,
     crayon,
     data.table,
@@ -28,6 +29,7 @@ Imports:
     forcats,
     formattable,
     glue,
+    golem (>= 0.3.3),
     haven,
     keyring,
     loggit,
@@ -43,7 +45,7 @@ Imports:
     RSQLite,
     rstudioapi,
     rvest,
-    shiny (>= 1.6.0),
+    shiny (>= 1.7.1),
     shinycssloaders,
     shinydashboard,
     shinyhelper,
