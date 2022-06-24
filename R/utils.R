@@ -62,7 +62,7 @@ create_db <- function(db_name = database_name){
   con <- dbConnect(RSQLite::SQLite(), db_name)
   
   # Set the path to the queries.
-  path <- file.path('sql_queries')
+  path <- app_sys("app/www/sql_queries") #file.path('sql_queries')
   
   # Queries needed to run the first time the db is created.
   queries <- c(
