@@ -51,13 +51,15 @@ golem::use_recommended_tests()
 
 ## Favicon ---- ran
 # If you want to change the favicon (default is golem's one)
-golem::remove_favicon()
-golem::use_favicon("inst/app/www/app_FAVICON.ico") # path = "path/to/ico". Can be an online file. 
+golem::use_favicon() # -- ran
+# run this (below) to change favicon
+# golem::remove_favicon()
+# golem::use_favicon("inst/app/www/app_FAVICON.ico") # path = "path/to/ico". Can be an online file. 
 # Favicon is automatically linked in app_ui via `golem_add_external_resources()`
 
 ## Add helper functions ---- ran. Go checkout new files
-golem::use_utils_ui() # File created at ~tidyCDISC/R/golem_utils_ui.R
-golem::use_utils_server() # tidyCDISC/R/golem_utils_server.R
+# golem::use_utils_ui() # -- not run
+# golem::use_utils_server() # -- not run
 
 # You're now set! ----
 
