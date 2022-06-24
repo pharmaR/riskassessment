@@ -11,28 +11,27 @@
 #### CURRENT FILE: ON START SCRIPT #####
 ########################################
 
-## Fill the DESCRIPTION ---- ran
+## Fill the DESCRIPTION ---- No need to run. Description already filled out
 ## Add meta data about your application
-golem::fill_desc(
-  pkg_name = "tidyCDISC", # The Name of the package containing the App 
-  pkg_title = "tidyCDISC: Quick Exploratory Data Analyses on ADaM-ish Datasets", # The Title of the package containing the App 
-  pkg_description = "The tidyCDISC application relies on sas7bdat files in the ADaM-ish data structure to provide users a quick exploratory dive into common visualizations without writing a sinlge line of code. Prominent modules/ features of the application are the Table Generator, Population Explorer, and the Individual Explorer. The Table Generator allows users to drag and drop variables and desired statistics (frequencies, means, Anova, t-test, and other summary statistics) into bins that automagically create stunning tables with validated information. The Population Explorer offers various plots to visualize general trends in the population from various vantage points. Plot modules currently include scatter plot, spaghetti plot, box plot, histogram, means plot, and bar plot. Each plot type allows the user to plot uploaded variables against one another, and dissect the population by filtering out certain subjects. Last, the Individual Explorer establishes a cohesive patient narrative, allowing the user to interact with patient metrics (params) by visit or plotting important patient events on a timeline. All modules allow for concise filtering & downloading bulk outputs into html or pdf formats to save for later.", 
-  author_first_name = "Maya", # Your First Name
-  author_last_name = "Gans", # Your Last Name
-  author_email = c("maya.gans@biogen.com"), # Your Email
-  repo_url = "https://github.com/biogen-inc/tidyCDISC/" # The URL of the GitHub Repo (optional) 
-)     
+# golem::fill_desc(
+#   pkg_name = "tidyCDISC", # The Name of the package containing the App 
+#   pkg_title = "tidyCDISC: Quick Exploratory Data Analyses on ADaM-ish Datasets", # The Title of the package containing the App 
+#   pkg_description = "The tidyCDISC application relies on sas7bdat files in the ADaM-ish data structure to provide users a quick exploratory dive into common visualizations without writing a sinlge line of code. Prominent modules/ features of the application are the Table Generator, Population Explorer, and the Individual Explorer. The Table Generator allows users to drag and drop variables and desired statistics (frequencies, means, Anova, t-test, and other summary statistics) into bins that automagically create stunning tables with validated information. The Population Explorer offers various plots to visualize general trends in the population from various vantage points. Plot modules currently include scatter plot, spaghetti plot, box plot, histogram, means plot, and bar plot. Each plot type allows the user to plot uploaded variables against one another, and dissect the population by filtering out certain subjects. Last, the Individual Explorer establishes a cohesive patient narrative, allowing the user to interact with patient metrics (params) by visit or plotting important patient events on a timeline. All modules allow for concise filtering & downloading bulk outputs into html or pdf formats to save for later.", 
+#   author_first_name = "Maya", # Your First Name
+#   author_last_name = "Gans", # Your Last Name
+#   author_email = c("maya.gans@biogen.com"), # Your Email
+#   repo_url = "https://github.com/biogen-inc/tidyCDISC/" # The URL of the GitHub Repo (optional) 
+# )     
 
 ## Set {golem} options ---- ran
 golem::set_golem_options()
 
-## Create Common Files ---- ran
+## Create Common Files ---- 
 ## See ?usethis for more information
-usethis::use_agpl_license(version = 3, include_future = TRUE)
-
+# not run - mit license already specified in descirption
 # usethis::use_mit_license( name = "Maya Gans; Aaron Clark; Robert Krajcik; Nate Mockler" )  # You can set another license here
-usethis::use_readme_rmd( open = FALSE )
-usethis::use_code_of_conduct()
+usethis::use_readme_rmd( open = TRUE )
+# usethis::use_code_of_conduct() # NOT RUN
 usethis::use_lifecycle_badge( "Experimental" ) #Experimental, Maturing, Stable, Superseded, Archived, Dormant, Questioning
 usethis::use_news_md( open = FALSE )
 
