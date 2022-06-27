@@ -103,7 +103,7 @@ Infrastructure</a>."
     # Render table for Maintenance Metrics.
     output$maintenance_table <- DT::renderDataTable(
       DT::datatable(
-        suppressMessages(read_csv(file.path("Data", "maintenance.csv"))),
+        suppressMessages(readr::read_csv(file.path("Data", "maintenance.csv"))),
         escape = FALSE,
         class = "cell-border",
         selection = 'none',
@@ -125,7 +125,7 @@ Infrastructure</a>."
     # Render table for Community Usage Metrics.
     output$community_usage_table <- DT::renderDataTable(
       DT::datatable(
-        suppressMessages(read_csv(file.path("Data", "community.csv"))),
+        suppressMessages(readr::read_csv(file.path("Data", "community.csv"))),
         escape = FALSE,
         class = "cell-border",
         selection = 'none',
@@ -148,7 +148,7 @@ Infrastructure</a>."
     # Render table for Testing Metrics.
     output$testing_table <- DT::renderDataTable(
       DT::datatable(
-        read_csv(file.path("Data", "testing.csv")),
+        readr::read_csv(file.path("Data", "testing.csv")),
         escape = FALSE,
         class = "cell-border",
         selection = 'none',

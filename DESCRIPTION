@@ -46,7 +46,6 @@ Imports:
     lubridate,
     plotly,
     purrr,
-    rAmCharts,
     readr (>= 2.0.1),
     rintrojs,
     riskmetric (>= 0.1.1),

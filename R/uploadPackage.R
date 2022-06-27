@@ -73,12 +73,12 @@ uploadPackageServer <- function(id) {
       if(is.null(input$uploaded_file$datapath))
         validate('Please upload a nonempty CSV file.')
       
-      uploaded_packages <- read_csv(input$uploaded_file$datapath, show_col_types = FALSE)
+      uploaded_packages <- readr::read_csv(input$uploaded_file$datapath, show_col_types = FALSE)
       np <- nrow(uploaded_packages)
       if(np == 0)
         validate('Please upload a nonempty CSV file.')
       
-      template <- read_csv(file.path('Data', 'upload_format.csv'), show_col_types = FALSE)
+      template <- readr::read_csv(file.path('Data', 'upload_format.csv'), show_col_types = FALSE)
       
       if(!all(colnames(uploaded_packages) == colnames(template)))
         validate("Please upload a CSV with a valid format.")
@@ -165,7 +165,7 @@ uploadPackageServer <- function(id) {
         paste("template", ".csv", sep = "")
       },
       content = function(file) {
-        write.csv(read_csv(file.path("Data", "upload_format.csv")), file, row.names = F)
+        write.csv(readr::read_csv(file.path("Data", "upload_format.csv")), file, row.names = F)
       }
     )
     
@@ -234,7 +234,7 @@ uploadPackageServer <- function(id) {
             width = 12,
             output$sampletable <- DT::renderDataTable(
               DT::datatable(
-                read_csv(file.path("Data", "upload_format.csv")),
+                readr::read_csv(file.path("Data", "upload_format.csv")),
                 escape = FALSE,
                 editable = FALSE,
                 filter = 'none',
