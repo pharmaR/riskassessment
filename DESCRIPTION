@@ -52,16 +52,15 @@ Imports:
     rlang,
     rmarkdown,
     RSQLite,
-    rstudioapi,
     rvest,
     shiny (>= 1.7.1),
     shinyhelper,
     shinyjs,
     shinymanager,
     shinyWidgets,
-    stringr,
-    tools
+    stringr
 Suggests: 
+    rstudioapi,
     spelling,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3

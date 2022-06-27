@@ -107,7 +107,6 @@ raa_pkgs = c(
              ,"rintrojs"
              ,"shinymanager"
              ,"keyring"
-             ,"rstudioapi"
 )
 use_package_v <- Vectorize(usethis::use_package)
 use_package_v(raa_pkgs)
@@ -118,6 +117,7 @@ use_package_v(tidypkgs)
 usethis::use_package("glue")
 usethis::use_dev_package("riskmetric")
 
+usethis::use_package("rstudioapi", type = "Suggests")
 usethis::use_package("shiny")
 usethis::use_package("shinymanager")
 usethis::use_package("shinyjs")

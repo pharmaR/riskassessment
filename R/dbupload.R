@@ -9,17 +9,17 @@ get_latest_pkg_info <- function(pkg_name) {
   pattern <- '\n |\'|\"|\\"'
   
   # Save div with class container to get the title and description.
-  div_container <- webpage %>% html_nodes("div.container")
+  div_container <- webpage %>% rvest::html_nodes("div.container")
   
   # Read package title and clean it.
   title <- div_container %>% 
-    html_nodes("h2") %>% 
+    rvest::html_nodes("h2") %>% 
     html_text() %>%
     str_remove_all(pattern = pattern)
   
   # Read package description and clean it.
   description <- div_container %>% 
-    html_nodes("h2 + p") %>% 
+    rvest::html_nodes("h2 + p") %>% 
     html_text() %>%
     str_remove_all(pattern = pattern)
   
