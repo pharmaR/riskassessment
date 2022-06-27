@@ -26,7 +26,7 @@ uploadPackageUI <- function(id) {
     fluidRow(column(width = 12, htmlOutput(NS(id, "upload_summary_text")))),
     
     # Summary of packages uploaded.
-    fluidRow(column(width = 12, dataTableOutput(NS(id, "upload_pkgs_table"))))
+    fluidRow(column(width = 12, DT::dataTableOutput(NS(id, "upload_pkgs_table"))))
   )
 }
 
@@ -47,7 +47,7 @@ uploadPackageServer <- function(id) {
     # a module in order to take a reactive data frame of steps
     observeEvent(
       input[["introJS-help"]], # notice input contains "id-help"
-      introjs(session,
+      rintrojs::introjs(session,
               options = list(
                 steps = 
                   upload_pkg_txt() %>%
@@ -112,7 +112,7 @@ uploadPackageServer <- function(id) {
               
               uploaded_packages$status[i] <- 'not found'
               
-              loggit('WARN',
+              loggit::loggit('WARN',
                      glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
               
               next
@@ -174,7 +174,7 @@ uploadPackageServer <- function(id) {
       req(uploaded_pkgs)
       req(nrow(uploaded_pkgs()) > 0)
       
-      loggit("INFO",
+      loggit::loggit("INFO",
              paste("Uploaded file:", input$uploaded_file$name, 
                    "Total Packages:", nrow(uploaded_pkgs()),
                    "New Packages:", sum(uploaded_pkgs()$status == 'new'),
@@ -202,7 +202,7 @@ uploadPackageServer <- function(id) {
     output$upload_pkgs_table <- DT::renderDataTable({
       req(nrow(uploaded_pkgs()) > 0)
       
-      datatable(
+      DT::datatable(
         uploaded_pkgs(),
         escape = FALSE,
         class = "cell-border",
@@ -220,7 +220,7 @@ uploadPackageServer <- function(id) {
     
     # View sample dataset.
     observeEvent(input$upload_format, {
-      dataTableOutput(NS(id, "sampletable"))
+      DT::dataTableOutput(NS(id, "sampletable"))
       
       showModal(modalDialog(
         size = "l",
@@ -233,7 +233,7 @@ uploadPackageServer <- function(id) {
           column(
             width = 12,
             output$sampletable <- DT::renderDataTable(
-              datatable(
+              DT::datatable(
                 read_csv(file.path("Data", "upload_format.csv")),
                 escape = FALSE,
                 editable = FALSE,

@@ -87,7 +87,7 @@ create_db <- function(db_name = database_name){
     }, error = function(err) {
       message <- paste("dbSendStatement",err)
       message(message, .loggit = FALSE)
-      loggit("ERROR", message)
+      loggit::loggit("ERROR", message)
       dbDisconnect(con)
     })
     
@@ -151,13 +151,13 @@ dbSelect <- function(query, db_name = database_name){
     warning = function(warn) {
       message <- paste0("warning:\n", query, "\nresulted in\n", warn)
       message(message, .loggit = FALSE)
-      loggit("WARN", message)
+      loggit::loggit("WARN", message)
       errFlag <<- TRUE
     },
     error = function(err) {
       message <- paste0("error:\n", query, "\nresulted in\n",err)
       message(message, .loggit = FALSE)
-      loggit("ERROR", message)
+      loggit::loggit("ERROR", message)
       dbDisconnect(con)
       errFlag <<- TRUE
     },
@@ -181,7 +181,7 @@ dbUpdate <- function(command, db_name = database_name){
   }, error = function(err) {
     message <- glue("command: {command} resulted in {err}")
     message(message, .loggit = FALSE)
-    loggit("ERROR", message)
+    loggit::loggit("ERROR", message)
     dbDisconnect(con)
   })
   
@@ -458,7 +458,7 @@ get_mm_comments <- function(pkg_name) {
        WHERE id = '{pkg_name}' AND comment_type = 'mm'"
     )
   ) %>%
-    map(rev)
+    purrr::map(rev)
 }
 
 # retrieve the Community Metrics comments for a specific package
@@ -470,7 +470,7 @@ get_cm_comments <- function(pkg_name) {
        WHERE id = '{pkg_name}' AND comment_type = 'cum'"
     )
   ) %>%
-    map(rev)
+    purrr::map(rev)
 }
 
 # Pull the maint metrics data for a specific package id, and create 

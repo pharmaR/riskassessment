@@ -178,7 +178,7 @@ genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis
                      ") ON DUPLICATE KEY UPDATE package = ", "'", package_name, "'" ))
     },
     error = function(e) {
-      loggit("ERROR", paste("Error in uploading the general info of the package", package_name, "info", e), app = "fileupload-DB")
+      loggit::loggit("ERROR", paste("Error in uploading the general info of the package", package_name, "info", e), app = "fileupload-DB")
     }
   )# End of try catch 
 

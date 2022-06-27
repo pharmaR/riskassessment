@@ -32,7 +32,7 @@ sidebarUI <- function(id) {
     
     disabled(
       div(id = NS(id, "decision-grp"),
-        sliderTextInput(
+        shinyWidgets::sliderTextInput(
           inputId = NS(id, "decision"),
           h5("Select Overall Risk"), 
           selected = NULL,
@@ -262,7 +262,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       
       # Reset decision if no package/version is selected.
       if(input$select_pkg == "-" || input$select_ver == "-" || selected_pkg$decision == "") {
-        updateSliderTextInput(
+        shinyWidgets::updateSliderTextInput(
           session,
           "decision",
           choices = c("Low", "Medium", "High"),
@@ -275,7 +275,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       req(selected_pkg$decision)
       
       # Update the risk slider using the info saved.
-      updateSliderTextInput(
+      shinyWidgets::updateSliderTextInput(
         session,
         "decision",
         choices = c("Low", "Medium", "High"),
@@ -385,7 +385,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       
       removeModal()
       
-      loggit("INFO",
+      loggit::loggit("INFO",
              glue("decision for the package {selected_pkg$name} is {input$decision}
                   by {user$name} ({user$role})"))
     })
@@ -406,7 +406,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       
       removeModal()
       
-      loggit("INFO",
+      loggit::loggit("INFO",
              glue("decision for the package {selected_pkg$name} is reset
                   by {user$name} ({user$role})"))
     })

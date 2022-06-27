@@ -211,7 +211,7 @@ tagList(
   h6('Metric Weights:')
 )
 
-datatable(params$metric_weights,
+DT::datatable(params$metric_weights,
           options = list(searching = FALSE, pageLength = 15,
                          lengthChange = FALSE, info = FALSE))
 ```

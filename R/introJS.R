@@ -4,7 +4,7 @@ introJSUI <- function(id) {
     style = "float: right",
     column(
       width = 3,
-      actionBttn(NS(id, "help"),
+      shinyWidgets::actionBttn(NS(id, "help"),
                  "",
                  color = "success",
                  icon = icon("question-circle"),
@@ -20,7 +20,7 @@ introJSServer <- function(id, text) {
     # Start introjs when help button is pressed.
     observeEvent(
       input$help,
-      introjs(session,
+      rintrojs::introjs(session,
               options = list(
                 steps = 
                   text %>%

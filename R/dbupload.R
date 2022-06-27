@@ -66,7 +66,7 @@ insert_pkg_info_to_db <- function(pkg_name) {
             upload_package_to_db(pkg_name, ver, title, desc, auth, main, lis, pub)
           }}
       } else{
-        loggit("ERROR", paste("Error in extracting general info of the package",
+        loggit::loggit("ERROR", paste("Error in extracting general info of the package",
                               pkg_name, "info", e), app = "fileupload-webscraping")
       }
     }
@@ -87,7 +87,7 @@ upload_package_to_db <- function(name, version, title, description,
         '', '{Sys.Date()}')"))
     },
     error = function(e) {
-      loggit("ERROR", paste("Error in uploading the general info of the package", name, "info", e),
+      loggit::loggit("ERROR", paste("Error in uploading the general info of the package", name, "info", e),
              app = "fileupload-DB")
     }
   )
@@ -116,7 +116,7 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
   # Leave method if package not found.
   if(nrow(package_id) == 0){
     print("PACKAGE NOT FOUND.")
-    loggit("WARN", paste("Package", pkg_name, "not found."))
+    loggit::loggit("WARN", paste("Package", pkg_name, "not found."))
     return()
   }
   
@@ -218,7 +218,7 @@ insert_community_metrics_to_db <- function(pkg_name) {
       
     },
     error = function(e) {
-      loggit("ERROR", paste("Error extracting cum metric info of the package:",
+      loggit::loggit("ERROR", paste("Error extracting cum metric info of the package:",
                             pkg_name, "info", e),
              app = "fileupload-webscraping", echo = FALSE)
     }

@@ -64,7 +64,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                          metricGridUI(NS(id, 'cm_metricGrid')),
                          div(id = "cum_plot", fluidRow(
                            column(width = 12, style = 'padding-left: 20px; padding-right: 20px;',
-                                  plotlyOutput(NS(id, "downloads_plot"), height = "500px")))),
+                                  plotly::plotlyOutput(NS(id, "downloads_plot"), height = "500px")))),
                          viewCommentsUI(NS(id, 'cm_comments')))
                 ),
                 br(), br(),
@@ -76,7 +76,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                          fluidRow(column(width = 12,
                                          uiOutput(NS(id, 'about_report')),
                                          h5('Weights Table:'),
-                                         dataTableOutput(NS(id, 'weights_table'))
+                                         DT::dataTableOutput(NS(id, 'weights_table'))
                          )))
                 )
             )
@@ -158,7 +158,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     })
 
     # Display the metric weights.
-    output$weights_table <- renderDataTable({
+    output$weights_table <- DT::renderDataTable({
       req(selected_pkg$name())
       
       metric_weights()
@@ -184,24 +184,24 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             my_tempdir <- tempdir()
             
             if (input$report_format == "html") {
-              report <- file.path('www', 'reportHtml.Rmd')
+              report <- file.path('inst/app/www', 'reportHtml.Rmd')
             }
             else {
               report <- file.path(my_tempdir, "reportDocx.Rmd")
               if (!dir.exists(file.path(my_tempdir, "images")))
                 dir.create(file.path(my_tempdir, "images"))
-              file.copy(file.path('www', 'reportDocx.Rmd'),
+              file.copy(file.path('inst/app/www', 'reportDocx.Rmd'),
                         report, overwrite = TRUE)
-              file.copy(file.path('www', 'read_html.lua'),
+              file.copy(file.path('inst/app/www', 'read_html.lua'),
                         file.path(my_tempdir, "read_html.lua"),
                         overwrite = TRUE)
-              file.copy(file.path('www', 'images', 'user-tie.png'),
+              file.copy(file.path('inst/app/www', 'images', 'user-tie.png'),
                         file.path(my_tempdir, "images", "user-tie.png"),
                         overwrite = TRUE)
-              file.copy(file.path('www', 'images', 'user-shield.png'),
+              file.copy(file.path('inst/app/www', 'images', 'user-shield.png'),
                         file.path(my_tempdir, "images", "user-shield.png"),
                         overwrite = TRUE)
-              file.copy(file.path('www', 'images', 'calendar-alt.png'),
+              file.copy(file.path('inst/app/www', 'images', 'calendar-alt.png'),
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
             }

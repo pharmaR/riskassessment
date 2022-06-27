@@ -12,28 +12,28 @@ assessmentInfoUI <- function(id) {
             h6("About Risk Calculation"),
             uiOutput(NS(id, "riskcalc_desc")),  # Maintenance metrics description.
             br(),
-            dataTableOutput(NS(id, "riskcalc_weights_table"))
+            DT::dataTableOutput(NS(id, "riskcalc_weights_table"))
           ),
           tabPanel(
             title = "Maintenance Metrics",
             h6("About Maintenance Metrics"),
             uiOutput(NS(id, "maintenance_desc")),  # Maintenance metrics description.
             br(),
-            dataTableOutput(NS(id, "maintenance_table"))  # data table for maintenance metrics. 
+            DT::dataTableOutput(NS(id, "maintenance_table"))  # data table for maintenance metrics. 
           ),
           tabPanel(
             title = "Community Usage Metrics",
             h6("About Community Usage Metrics"),
             htmlOutput(NS(id, "community_usage_desc")),  # html output for community usage metrics content.
             br(),
-            dataTableOutput(NS(id, "community_usage_table"))  # data table for community usage metrics.
+            DT::dataTableOutput(NS(id, "community_usage_table"))  # data table for community usage metrics.
           ),
           tabPanel(
             title = "Testing Metrics",
             h6("About Testing Metrics"),
             htmlOutput(NS(id, "testing_desc")),  # html output for testing metrics content.
             br(),
-            dataTableOutput(NS(id, "testing_table"))  # data table for testing metrics.
+            DT::dataTableOutput(NS(id, "testing_table"))  # data table for testing metrics.
           )
         ))))
 }
@@ -66,10 +66,10 @@ numeric value <b>x</b> standardized weight)"
     output$riskcalc_weights_table <- DT::renderDataTable({
       d <- metric_weights() %>%
         mutate(weight = ifelse(name == "covr_coverage", 0, weight)) %>%
-        formattable() %>%
+        formattable::formattable() %>%
         mutate(standardized_weight = round(weight / sum(weight, na.rm = TRUE), 4))
       
-      as.datatable(d,
+      DT::as.datatable(d,
                    selection = list(mode = 'single'),
                    colnames = c("Metric Name", "Admin Weight", "Standardized Weight"),
                    rownames = FALSE,
@@ -102,7 +102,7 @@ Infrastructure</a>."
     
     # Render table for Maintenance Metrics.
     output$maintenance_table <- DT::renderDataTable(
-      datatable(
+      DT::datatable(
         suppressMessages(read_csv(file.path("Data", "maintenance.csv"))),
         escape = FALSE,
         class = "cell-border",
@@ -124,7 +124,7 @@ Infrastructure</a>."
     
     # Render table for Community Usage Metrics.
     output$community_usage_table <- DT::renderDataTable(
-      datatable(
+      DT::datatable(
         suppressMessages(read_csv(file.path("Data", "community.csv"))),
         escape = FALSE,
         class = "cell-border",
@@ -147,7 +147,7 @@ Infrastructure</a>."
     
     # Render table for Testing Metrics.
     output$testing_table <- DT::renderDataTable(
-      datatable(
+      DT::datatable(
         read_csv(file.path("Data", "testing.csv")),
         escape = FALSE,
         class = "cell-border",

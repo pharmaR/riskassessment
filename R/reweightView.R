@@ -94,7 +94,7 @@ reweightViewServer <- function(id, user) {
                 column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
                        offset = 1,
                        h3("Current Risk Score Weights by Metric", align = "center"),
-                       dataTableOutput(NS(id, "weights_table")))
+                       DT::dataTableOutput(NS(id, "weights_table")))
               ),
               br(), br(), br(),
               conditionalPanel("input.metric_name === 'covr_coverage'", 
@@ -256,7 +256,7 @@ reweightViewServer <- function(id, user) {
       }
       
       #	Write to the log file
-      loggit("INFO", paste("package weights and risk metric scores will be updated for all packages"))
+      loggit::loggit("INFO", paste("package weights and risk metric scores will be updated for all packages"))
       
       # update for each package
       pkg <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")

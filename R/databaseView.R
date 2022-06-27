@@ -59,8 +59,8 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
     # Create table for the db dashboard.
     output$packages_table <- DT::renderDataTable({
       
-      as.datatable(
-        formattable(
+      DT::as.datatable(
+        formattable::formattable(
           table_data(),
           list(
             score = formatter(
@@ -100,7 +100,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
           columnDefs = list(list(className = 'dt-center', targets = "_all"))
         )
       ) %>%
-        formatStyle(names(table_data()), textAlign = 'center')
+        DT::formatStyle(names(table_data()), textAlign = 'center')
     })
     
     # Enable the download button when a package is selected.
@@ -144,24 +144,24 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
             my_tempdir <- tempdir()
             if (input$report_formats == "html") {
               Report <- file.path(my_tempdir, "reportHtml.Rmd")
-              file.copy(file.path('www', 'reportHtml.Rmd'), Report, overwrite = TRUE)
+              file.copy(file.path('inst/app/www', 'reportHtml.Rmd'), Report, overwrite = TRUE)
             } else { 
               # docx
               Report <- file.path(my_tempdir, "reportDocx.Rmd")
               if (!dir.exists(file.path(my_tempdir, "images")))
                 dir.create(file.path(my_tempdir, "images"))
-              file.copy(file.path('www', 'ReportDocx.Rmd'),
+              file.copy(file.path('inst/app/www', 'ReportDocx.Rmd'),
                         Report,
                         overwrite = TRUE)
-              file.copy(file.path('www', 'read_html.lua'),
+              file.copy(file.path('inst/app/www', 'read_html.lua'),
                         file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
-              file.copy(file.path('www', 'images', 'user-tie.png'),
+              file.copy(file.path('inst/app/www', 'images', 'user-tie.png'),
                         file.path(my_tempdir, "images", "user-tie.png"),
                         overwrite = TRUE)
-              file.copy(file.path('www', 'images', 'user-shield.png'),
+              file.copy(file.path('inst/app/www', 'images', 'user-shield.png'),
                         file.path(my_tempdir, "images", "user-shield.png"),
                         overwrite = TRUE)
-              file.copy(file.path('www', 'images', 'calendar-alt.png'),
+              file.copy(file.path('inst/app/www', 'images', 'calendar-alt.png'),
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
             }

@@ -58,8 +58,6 @@ Imports:
     rstudioapi,
     rvest,
     shiny (>= 1.7.1),
-    shinycssloaders,
-    shinydashboard,
     shinyhelper,
     shinyjs,
     shinymanager,

@@ -29,7 +29,7 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
             br(), br(),
             div(id = "cum_plot", fluidRow(
               column(width = 12, style = 'padding-left: 20px; padding-right: 20px;',
-                     plotlyOutput(NS(id, "downloads_plot"), height = "500px")))),
+                     plotly::plotlyOutput(NS(id, "downloads_plot"), height = "500px")))),
             br(), br(),
             div(id = "comments_for_cum", fluidRow( 
               addCommentUI(id = session$ns("add_comment")),

@@ -3,19 +3,18 @@
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @import shiny
+#' @importFrom shinymanager secure_app
+#' 
 #' @noRd
 app_ui <- function(request) {
   # Your application UI logic
   ui <- fluidPage(
     
-    introjsUI(),
-    useShinyjs(),
-    waiter::use_waitress(),
+    theme = theme, # defined in global.R
     
-    theme = theme,
-    
-    includeCSS(path = file.path('www', 'css', 'main.css')),
-    includeCSS(path = file.path('www', 'css', 'community_metrics.css')),
+    # not needed any more. Automatically bundled below
+    # includeCSS(path = file.path('www', 'css', 'main.css')),
+    # includeCSS(path = file.path('www', 'css', 'community_metrics.css')),
     
     tabsetPanel(
       id = "apptabs",
@@ -93,10 +92,13 @@ app_ui <- function(request) {
       tags$h3(glue('**Version {app_version}**'),
               style = "align:center; color: darkgray")),
     enable_admin = TRUE, theme = theme)
+  
+  ui <- add_tags(ui)
+  
   tagList(
     # Leave this function for adding external resources
     golem_add_external_resources(),
-    add_tags(ui)
+    ui
   )
 }
 
@@ -106,6 +108,10 @@ app_ui <- function(request) {
 #' resources inside the Shiny application.
 #'
 #' @import shiny
+#' @importFrom golem add_resource_path activate_js favicon bundle_resources
+#' @importFrom rintrojs introjsUI
+#' @importFrom shinyjs useShinyjs
+#' @importFrom waiter use_waitress
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
 #' @noRd
 golem_add_external_resources <- function() {
@@ -119,8 +125,10 @@ golem_add_external_resources <- function() {
     bundle_resources(
       path = app_sys("app/www"),
       app_title = "riskassessment"
-    )
+    ),
     # Add here other external resources
-    # for example, you can add shinyalert::useShinyalert()
+    rintrojs::introjsUI(),
+    shinyjs::useShinyjs(),
+    waiter::use_waitress(),
   )
 }

@@ -3,6 +3,10 @@
 #' @param input,output,session Internal parameters for {shiny}.
 #'     DO NOT REMOVE.
 #' @import shiny
+#' @importFrom shinyjs show hide
+#' @importFrom shinymanager secure_server
+#' @importFrom keyring key_get
+#' @importFrom loggit loggit
 #' @noRd
 app_server <- function(input, output, session) {
   # Collect user info.
@@ -10,7 +14,7 @@ app_server <- function(input, output, session) {
   user$metrics_reweighted <- 0
   
   # check_credentials directly on sqlite db
-  res_auth <- secure_server(
+  res_auth <- shinymanager::secure_server(
     check_credentials = check_credentials(
       'credentials.sqlite',
       passphrase = passphrase
@@ -91,7 +95,7 @@ app_server <- function(input, output, session) {
   # Save user name and role.  
   observeEvent(res_auth$user, {
     if (res_auth$admin == TRUE)
-      loggit("INFO", glue("User {res_auth$user} signed on as admin"))
+      loggit::loggit("INFO", glue("User {res_auth$user} signed on as admin"))
     
     user$name <- trimws(res_auth$user)
     user$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
