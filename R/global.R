@@ -1,4 +1,4 @@
-library_all <- TRUE
+library_all <- FALSE
 
 if(library_all) {
   # Packages needed for the app.
@@ -72,9 +72,9 @@ if(!file.exists(database_name)) create_db()
 if(!file.exists(credentials_name)) create_credentials_db()
 
 # Start logging info.
-set_logfile("loggit.json")
+loggit::set_logfile("loggit.json")
 
-theme <- bs_theme(
+theme <- bslib::bs_theme(
   bootswatch = "lux",
   version = 5,
   # bg = "white", 

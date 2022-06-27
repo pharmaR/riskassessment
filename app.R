@@ -14,9 +14,9 @@ if(!file.exists(database_name)) create_db()
 if(!file.exists(credentials_name)) create_credentials_db()
 
 # Start logging info.
-set_logfile("loggit.json")
+loggit::set_logfile("loggit.json")
 
-theme <- bs_theme(
+theme <- bslib::bs_theme(
   bootswatch = "lux",
   version = 5,
   # bg = "white", 
