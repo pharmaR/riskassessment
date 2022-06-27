@@ -95,7 +95,7 @@ app_server <- function(input, output, session) {
   # Save user name and role.  
   observeEvent(res_auth$user, {
     if (res_auth$admin == TRUE)
-      loggit::loggit("INFO", glue("User {res_auth$user} signed on as admin"))
+      loggit::loggit("INFO", glue::glue("User {res_auth$user} signed on as admin"))
     
     user$name <- trimws(res_auth$user)
     user$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))

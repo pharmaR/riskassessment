@@ -21,10 +21,10 @@ addCommentServer <- function(id, metric_abrv, user_name, user_role, pkg_name) {
       
       textAreaInput(
         session$ns("add_comment"),
-        h5(glue("Add Comment for {metric_name}")),
+        h5(glue::glue("Add Comment for {metric_name}")),
         width = "100%",
         rows = 4,
-        placeholder = glue(
+        placeholder = glue::glue(
           "Commenting as user: {user_name()}, role: {user_role()}"
         )
       )
@@ -45,7 +45,7 @@ addCommentServer <- function(id, metric_abrv, user_name, user_role, pkg_name) {
         
         comment <- stringr::str_replace_all(comment, "'", "''")
 
-        dbUpdate(glue(
+        dbUpdate(glue::glue(
         "INSERT INTO comments values('{pkg_name()}', '{user_name()}', 
         '{user_role()}', '{comment}', '{metric_abrv}',
         '{getTimeStamp()}')")

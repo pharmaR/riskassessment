@@ -138,7 +138,7 @@ tagList(
 
 ```{r community_metrics_plot, fig.width=10, fig.height=5}
 d <- params$com_metrics_raw %>%
-  mutate(day_month_year = glue('1-{month}-{year}')) %>%
+  mutate(day_month_year = glue::glue('1-{month}-{year}')) %>%
   mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
   mutate(month = month.name[month]) %>%
   arrange(day_month_year) %>%

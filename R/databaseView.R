@@ -59,23 +59,23 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
     # Create table for the db dashboard.
     output$packages_table <- DT::renderDataTable({
       
-      DT::as.datatable(
+      formattable::as.datatable(
         formattable::formattable(
           table_data(),
           list(
-            score = formatter(
+            score = formattable::formatter(
               "span",
-              style = x ~ style(display = "block",
+              style = x ~ formattable::style(display = "block",
                                 "border-radius" = "4px",
                                 "padding-right" = "4px",
                                 "font-weight" = "bold",
                                 "color" = "white",
                                 "order" = x,
-                                "background-color" = csscolor(
+                                "background-color" = formattable::csscolor(
                                   setColorPalette(100)[round(as.numeric(x)*100)]))),
-            decision = formatter(
+            decision = formattable::formatter(
               "span",
-              style = x ~ style(display = "block",
+              style = x ~ formattable::style(display = "block",
                                 "border-radius" = "4px",
                                 "padding-right" = "4px",
                                 "font-weight" = "bold",
@@ -84,9 +84,9 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
                                   ifelse(x == "High Risk", high_risk_color,
                                          ifelse(x == "Medium Risk", med_risk_color,
                                                 ifelse(x == "Low Risk", low_risk_color, "transparent"))))),
-            was_decision_made = formatter("span",
-                                          style = x ~ style(color = ifelse(x, "#0668A3", "gray")),
-                                          x ~ icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))
+            was_decision_made = formattable::formatter("span",
+                                          style = x ~ formattable::style(color = ifelse(x, "#0668A3", "gray")),
+                                          x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))
           )),
         selection = list(mode = 'multiple'),
         colnames = c("Package", "Version", "Score", "Decision Made?", "Decision", "Last Comment"),
@@ -119,10 +119,10 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
         n_pkgs <- nrow(selected_pkgs)
         
         if (n_pkgs > 1) {
-          report_datetime <- str_replace_all(str_replace(Sys.time(), " ", "_"), ":", "-")
-          glue('RiskAssessment-Report-{report_datetime}.zip')
+          report_datetime <- stringr::str_replace_all(str_replace(Sys.time(), " ", "_"), ":", "-")
+          glue::glue('RiskAssessment-Report-{report_datetime}.zip')
         } else {
-          glue('{selected_pkgs$name}_{selected_pkgs$version}_Risk_Assessment.',
+          glue::glue('{selected_pkgs$name}_{selected_pkgs$version}_Risk_Assessment.',
                "{switch(input$report_formats, docx = 'docx', html = 'html')}")
         }
       },
@@ -135,7 +135,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
         req(n_pkgs > 0)
         
         shiny::withProgress(
-          message = glue('Downloading {n_pkgs} Report{ifelse(n_pkgs > 1, "s", "")}'),
+          message = glue::glue('Downloading {n_pkgs} Report{ifelse(n_pkgs > 1, "s", "")}'),
           value = 0,
           max = n_pkgs + 2, # Tell the progress bar the total number of events.
           {
@@ -172,7 +172,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
               # this_pkg <- "stringr" # for testing
               this_pkg <- selected_pkgs$name[i] # from DT table
               this_ver <- selected_pkgs$version[i]
-              file_named <- glue('{this_pkg}_{this_ver}_Risk_Assessment.{input$report_formats}')
+              file_named <- glue::glue('{this_pkg}_{this_ver}_Risk_Assessment.{input$report_formats}')
               path <- if (n_pkgs > 1) {
                 file.path(my_tempdir, file_named)
               } else {

@@ -59,7 +59,7 @@ credentials <- data.frame(
 create_db <- function(db_name = database_name){
   
   # Create an empty database.
-  con <- dbConnect(RSQLite::SQLite(), db_name)
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   # Set the path to the queries.
   path <- app_sys("app/www/sql_queries") #file.path('sql_queries')
@@ -81,20 +81,20 @@ create_db <- function(db_name = database_name){
   sapply(queries, function(x){
     
     tryCatch({
-      rs <- dbSendStatement(
+      rs <- DBI::dbSendStatement(
         con,
         paste(scan(x, sep = "\n", what = "character"), collapse = ""))
     }, error = function(err) {
       message <- paste("dbSendStatement",err)
       message(message, .loggit = FALSE)
       loggit::loggit("ERROR", message)
-      dbDisconnect(con)
+      DBI::dbDisconnect(con)
     })
     
-    dbClearResult(rs)
+    DBI::dbClearResult(rs)
   })
   
-  dbDisconnect(con)
+  DBI::dbDisconnect(con)
 }
 
 
@@ -110,43 +110,43 @@ create_credentials_db <- function(db_name = credentials_name){
   )
   
   # set pwd_mngt$must_change to TRUE
-  con <- dbConnect(RSQLite::SQLite(), db_name)
-  pwd <- read_db_decrypt(
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
+  pwd <- shinymanager::read_db_decrypt(
     con, name = "pwd_mngt",
     passphrase = passphrase) %>%
     mutate(must_change = ifelse(
       have_changed == "TRUE", must_change, as.character(TRUE)))
   
-  write_db_encrypt(
+  shinymanager::write_db_encrypt(
     con,
     value = pwd,
     name = "pwd_mngt",
     passphrase = passphrase
   )
-  dbDisconnect(con)
+  DBI::dbDisconnect(con)
   
   # update expire date here to current date + 365 days
-  con <- dbConnect(RSQLite::SQLite(), db_name)
-  dat <- read_db_decrypt(con, name = "credentials", passphrase = passphrase) %>%
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
+  dat <- shinymanager::read_db_decrypt(con, name = "credentials", passphrase = passphrase) %>%
     mutate(expire = as.character(Sys.Date() + 365))
   
-  write_db_encrypt(
+  shinymanager::write_db_encrypt(
     con,
     value = dat,
     name = "credentials",
     passphrase = passphrase
   )
   
-  dbDisconnect(con)
+  DBI::dbDisconnect(con)
 }
 
 dbSelect <- function(query, db_name = database_name){
   errFlag <- FALSE
-  con <- dbConnect(RSQLite::SQLite(), db_name)
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
 
   tryCatch(
     expr = {
-      rs <- dbSendQuery(con, query)
+      rs <- DBI::dbSendQuery(con, query)
     },
     warning = function(warn) {
       message <- paste0("warning:\n", query, "\nresulted in\n", warn)
@@ -158,46 +158,46 @@ dbSelect <- function(query, db_name = database_name){
       message <- paste0("error:\n", query, "\nresulted in\n",err)
       message(message, .loggit = FALSE)
       loggit::loggit("ERROR", message)
-      dbDisconnect(con)
+      DBI::dbDisconnect(con)
       errFlag <<- TRUE
     },
     finally = {
       if (errFlag) return(NULL) 
     })
   
-  dat <- dbFetch(rs)
-  dbClearResult(rs)
-  dbDisconnect(con)
+  dat <- DBI::dbFetch(rs)
+  DBI::dbClearResult(rs)
+  DBI::dbDisconnect(con)
   
   return(dat)
 }
 
 # Deletes, updates or inserts queries.
 dbUpdate <- function(command, db_name = database_name){
-  con <- dbConnect(RSQLite::SQLite(), db_name)
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   tryCatch({
-    rs <- dbSendStatement(con, command)
+    rs <- DBI::dbSendStatement(con, command)
   }, error = function(err) {
-    message <- glue("command: {command} resulted in {err}")
+    message <- glue::glue("command: {command} resulted in {err}")
     message(message, .loggit = FALSE)
     loggit::loggit("ERROR", message)
-    dbDisconnect(con)
+    DBI::dbDisconnect(con)
   })
   
-  nr <- dbGetRowsAffected(rs)
-  dbClearResult(rs)
+  nr <- DBI::dbGetRowsAffected(rs)
+  DBI::dbClearResult(rs)
   
   if (nr == 0) {
-    message <- glue("zero rows were affected by the command: {command}")
+    message <- glue::glue("zero rows were affected by the command: {command}")
     message(message, .loggit = FALSE)
   }
-  dbDisconnect(con)
+  DBI::dbDisconnect(con)
 }
 
 
 getTimeStamp <- function(){
-  initial <- str_replace(Sys.time(), " ", "; ")
+  initial <- stringr::str_replace(Sys.time(), " ", "; ")
   return(paste(initial, Sys.timezone()))
 }
 
@@ -213,19 +213,19 @@ get_metric_weights <- function(){
 # the overall comment & final decision may no longer be applicable.
 weight_risk_comment <- function(pkg_name) {
   
-  pkg_score <- dbSelect(glue(
+  pkg_score <- dbSelect(glue::glue(
     "SELECT score
      FROM package
      WHERE name = '{pkg_name}'"
   ))
   
-  glue('Metric re-weighting has occurred.
+  glue::glue('Metric re-weighting has occurred.
        The previous risk score was {pkg_score}.')
 }
 
 # Update metric's weight.
 update_metric_weight <- function(metric_name, metric_weight){
-  dbUpdate(glue(
+  dbUpdate(glue::glue(
     "UPDATE metric
     SET weight = {metric_weight}
     WHERE name = '{metric_name}'"
@@ -269,7 +269,7 @@ build_comm_cards <- function(data){
     name = 'time_since_first_version',
     title = 'First Version Release',
     desc = 'Time passed since first version release',
-    value = glue('{time_diff_first_rel$value} {time_diff_first_rel$label} Ago'),
+    value = glue::glue('{time_diff_first_rel$value} {time_diff_first_rel$label} Ago'),
     succ_icon = 'black-tie',
     icon_class = "text-info",
     is_perc = 0,
@@ -294,7 +294,7 @@ build_comm_cards <- function(data){
     add_row(name = 'time_since_latest_version',
             title = 'Latest Version Release',
             desc = 'Time passed since latest version release',
-            value = glue('{time_diff_latest_rel$value} {time_diff_latest_rel$label} Ago'),
+            value = glue::glue('{time_diff_latest_rel$value} {time_diff_latest_rel$label} Ago'),
             succ_icon = 'meteor',
             icon_class = "text-info",
             is_perc = 0,
@@ -323,9 +323,9 @@ build_comm_plotly <- function(data) {
   pkg_name <- unique(data$id)
   
   community_data <- data %>%
-    mutate(day_month_year = glue('1-{month}-{year}')) %>%
+    mutate(day_month_year = glue::glue('1-{month}-{year}')) %>%
     mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
-    mutate(month_year = glue('{months(day_month_year)} {year}')) %>%
+    mutate(month_year = glue::glue('{months(day_month_year)} {year}')) %>%
     mutate(month = month.name[month]) %>%
     arrange(day_month_year)
   
@@ -364,33 +364,33 @@ build_comm_plotly <- function(data) {
     max(downloads_data$day_month_year) - 45 - (365 * 2),
     max(downloads_data$day_month_year) + 15)
   
-  plot_ly(downloads_data,
+  plotly::plot_ly(downloads_data,
           x = ~day_month_year,
           y = ~downloads,
           name = "# Downloads", type = 'scatter', 
           mode = 'lines+markers', line = list(color = '#1F9BCF'),
           marker = list(color = '#1F9BCF'),
           hoverinfo = "text",
-          text = ~glue('No. of Downloads: {format(downloads, big.mark = ",")}
+          text = ~glue::glue('No. of Downloads: {format(downloads, big.mark = ",")}
                          {month} {year}')) %>%
-    layout(title = glue('NUMBER OF DOWNLOADS BY MONTH: {pkg_name}'),
+    plotly::layout(title = glue::glue('NUMBER OF DOWNLOADS BY MONTH: {pkg_name}'),
            margin = list(t = 100),
            showlegend = FALSE,
            yaxis = list(title = "Downloads"),
            xaxis = list(title = "", type = 'date', tickformat = "%b %Y",
                         range = dates_range)
     ) %>% 
-    add_segments(
+    plotly::add_segments(
       x = ~if_else(version %in% c("", "NA"), NA_Date_, day_month_year),
       xend = ~if_else(version %in% c("", "NA"), NA_Date_, day_month_year),
       y = ~.98 * min(downloads),
       yend = ~1.02 * max(downloads),
       name = "Version Release",
       hoverinfo = "text",
-      text = ~glue('Version {version}'),
+      text = ~glue::glue('Version {version}'),
       line = list(color = '#4BBF73')
     ) %>% 
-    add_annotations(
+    plotly::add_annotations(
       yref = 'paper',
       xref = "x",
       y = .50,
@@ -401,7 +401,7 @@ build_comm_plotly <- function(data) {
       font = list(size = 14, color = '#4BBF73'),
       text = ~ifelse(downloads_data$version %in% c("", "NA"), "", downloads_data$version)
     ) %>%
-    layout(
+    plotly::layout(
       xaxis = list(
         range = dates_range,
         rangeselector = list(
@@ -443,7 +443,7 @@ build_comm_plotly <- function(data) {
 
 # retrieve the overall comments for a specific package
 get_overall_comments <- function(pkg_name) {
-  dbSelect(glue(
+  dbSelect(glue::glue(
     "SELECT * FROM comments 
      WHERE comment_type = 'o' AND id = '{pkg_name}'")
   )
@@ -452,7 +452,7 @@ get_overall_comments <- function(pkg_name) {
 # retrieve the Maint Metrics comments for a specific package
 get_mm_comments <- function(pkg_name) {
   dbSelect(
-    glue(
+    glue::glue(
       "SELECT user_name, user_role, comment, added_on
        FROM comments
        WHERE id = '{pkg_name}' AND comment_type = 'mm'"
@@ -464,7 +464,7 @@ get_mm_comments <- function(pkg_name) {
 # retrieve the Community Metrics comments for a specific package
 get_cm_comments <- function(pkg_name) {
   dbSelect(
-    glue(
+    glue::glue(
       "SELECT user_name, user_role, comment, added_on
        FROM comments
        WHERE id = '{pkg_name}' AND comment_type = 'cum'"
@@ -476,7 +476,7 @@ get_cm_comments <- function(pkg_name) {
 # Pull the maint metrics data for a specific package id, and create 
 # necessary columns for Cards UI
 get_mm_data <- function(pkg_id){
-  dbSelect(glue(
+  dbSelect(glue::glue(
     "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
                     metric.is_url, package_metrics.value
                     FROM metric
@@ -496,7 +496,7 @@ get_mm_data <- function(pkg_id){
 
 # Get all community metric data on a specific package
 get_comm_data <- function(pkg_name){
-  dbSelect(glue(
+  dbSelect(glue::glue(
     "SELECT *
      FROM community_usage_metrics
      WHERE id = '{pkg_name}'")
@@ -505,7 +505,7 @@ get_comm_data <- function(pkg_name){
 
 # Get all general info on a specific package
 get_pkg_info <- function(pkg_name){
-  dbSelect(glue(
+  dbSelect(glue::glue(
     "SELECT *
      FROM package
      WHERE name = '{pkg_name}'")

@@ -113,7 +113,7 @@ uploadPackageServer <- function(id) {
               uploaded_packages$status[i] <- 'not found'
               
               loggit::loggit('WARN',
-                     glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
+                             glue::glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
               
               next
             }
@@ -130,7 +130,7 @@ uploadPackageServer <- function(id) {
             incProgress(1, detail = deets)
             uploaded_packages$version[i] <- as.character(ref$version)
             
-            found <- nrow(dbSelect(glue(
+            found <- nrow(dbSelect(glue::glue(
               "SELECT name
               FROM package
               WHERE name = '{uploaded_packages$package[i]}'")))

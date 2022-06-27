@@ -88,33 +88,33 @@ in the `create_db()` function inside `utils.R`
 create_db <- function(){
   
   # Create an empty database.
-  # con <- dbConnect(RMySQL::MySQL(), db_name)
+  # con <- DBI::dbConnect(RMySQL::MySQL(), db_name)
 
-  con <-  dbConnect(RMySQL::MySQL(), user = db_user,
+  con <-  DBI::dbConnect(RMySQL::MySQL(), user = db_user,
                     password = db_password,
                     dbname = db_name, host = db_host, port = db_port)
   
   alltables = dbListTables(con)
   
   # create tables if there aren't any yet
-  if (is_empty(alltables)) {
+  if (rlang::is_empty(alltables)) {
     
   # Set the path to the queries.
   ...  # code omitted
     
-    dbClearResult(res)
+    DBI::dbClearResult(res)
   })
-  } # if (is_empty(alltables))
+  } # if (rlang::is_empty(alltables))
   
-  dbDisconnect(con)
+  DBI::dbDisconnect(con)
 }
 ```
 
 Now change the code for the `db_fun()` and `db_ins()` functions like this:
 ```{r, eval = FALSE}
- # con <- dbConnect(RSQLite::SQLite(), db_name)
+ # con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
  
-  con <-  dbConnect(RMySQL::MySQL(), user = db_user, password = db_password,
+  con <-  DBI::dbConnect(RMySQL::MySQL(), user = db_user, password = db_password,
                     dbname = db_name, host = db_host, port = db_port)
 ```
 
@@ -122,7 +122,7 @@ One more change.  Again in Utils.R  The Timestamp created is completely non-stan
 At least using Sys.time() resembles the CURRENT_TIMESTAMP provided in MySQL.
 ```{r, eval=FALSE}
 TimeStamp<-function(){
-  # Timestamp_intial<-str_replace(Sys.time()," ", "; ")
+  # Timestamp_intial<-stringr::str_replace(Sys.time()," ", "; ")
   # Timestamp<-paste(Timestamp_intial, Sys.timezone())
   # return(Timestamp)
   # use something MySQL is expecting to see...

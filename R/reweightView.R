@@ -251,7 +251,7 @@ reweightViewServer <- function(id, user) {
       pkg <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package WHERE decision != ''")
       if (nrow(pkg) > 0) {
         for (i in 1:nrow(pkg)) {
-          dbUpdate(glue("UPDATE package SET decision = '' where name = '{pkg$pkg_name[i]}'"))
+          dbUpdate(glue::glue("UPDATE package SET decision = '' where name = '{pkg$pkg_name[i]}'"))
         }
       }
       
@@ -266,7 +266,7 @@ reweightViewServer <- function(id, user) {
         shinyjs::runjs("$('<br>').insertAfter('.progress-message');")
         for (i in 1:nrow(pkg)) {
           incProgress(1 / (nrow(pkg) + 1), detail = pkg$pkg_name[i])
-          dbUpdate(glue(
+          dbUpdate(glue::glue(
             "DELETE FROM package_metrics WHERE package_id = 
             (SELECT id FROM package WHERE name = '{pkg$pkg_name[i]}')") )
           # metric_mm_tm_Info_upload_to_DB(pkg$pkg_name[i])
@@ -290,14 +290,14 @@ reweightViewServer <- function(id, user) {
     output$download_database_btn <- downloadHandler(
       
       filename = function() {
-        glue("datase_backup-{Sys.Date()}.sqlite")
+        glue::glue("datase_backup-{Sys.Date()}.sqlite")
       },
       content = function(file) {
-        con <- dbConnect(RSQLite::SQLite(), database_name)
-        cbk <- dbConnect(RSQLite::SQLite(), file)
+        con <- DBI::dbConnect(RSQLite::SQLite(), database_name)
+        cbk <- DBI::dbConnect(RSQLite::SQLite(), file)
         RSQLite::sqliteCopyDatabase(con, cbk)
-        dbDisconnect(con)
-        dbDisconnect(cbk)
+        DBI::dbDisconnect(con)
+        DBI::dbDisconnect(cbk)
         
         showModal(tags$div(
           id = "confirmation_id",

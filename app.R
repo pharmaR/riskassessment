@@ -113,7 +113,7 @@ ui <- shinymanager::secure_app(
               href = file.path('css', 'login_screen.css')),
     id = "login_screen",
     tags$h2("Risk Assessment Application", style = "align:center"),
-    tags$h3(glue('**Version {app_version}**'),
+    tags$h3(glue::glue('**Version {app_version}**'),
             style = "align:center; color: darkgray")),
   enable_admin = TRUE, theme = theme)
 
@@ -254,7 +254,7 @@ server <- function(session, input, output) {
   # Save user name and role.  
   observeEvent(res_auth$user, {
     if (res_auth$admin == TRUE)
-      loggit::loggit("INFO", glue("User {res_auth$user} signed on as admin"))
+      loggit::loggit("INFO", glue::glue("User {res_auth$user} signed on as admin"))
     
     user$name <- trimws(res_auth$user)
     user$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))

@@ -69,7 +69,7 @@ numeric value <b>x</b> standardized weight)"
         formattable::formattable() %>%
         mutate(standardized_weight = round(weight / sum(weight, na.rm = TRUE), 4))
       
-      DT::as.datatable(d,
+      formattable::as.datatable(d,
                    selection = list(mode = 'single'),
                    colnames = c("Metric Name", "Admin Weight", "Standardized Weight"),
                    rownames = FALSE,

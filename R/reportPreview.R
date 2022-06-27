@@ -169,12 +169,12 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     # Create report.
     output$download_report <- downloadHandler(
       filename = function() {
-        glue('{selected_pkg$name()}_{selected_pkg$version()}_Risk_Assessment.',
+        glue::glue('{selected_pkg$name()}_{selected_pkg$version()}_Risk_Assessment.',
              "{switch(input$report_format, docx = 'docx', html = 'html')}")
       },
       content = function(file) {
         shiny::withProgress(
-          message = glue('Downloading Report: {selected_pkg$name()}'),
+          message = glue::glue('Downloading Report: {selected_pkg$name()}'),
           value = 0,
           {
             shiny::incProgress(1 / 10)

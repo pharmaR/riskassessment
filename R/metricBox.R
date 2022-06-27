@@ -26,9 +26,9 @@ metricBoxServer <- function(id, title, desc, value,
       if(value %in% c("pkg_metric_error", "NA"))
         value <- "Not found"
       else if(is_perc)
-        value <- glue('{round(as.numeric(value), 1)}%')
+        value <- glue::glue('{round(as.numeric(value), 1)}%')
       else if(is_url)
-        value <- a(glue('{str_sub(value, 1, 29)}...'), href = value)
+        value <- a(glue::glue('{str_sub(value, 1, 29)}...'), href = value)
       else if(value %in% c('TRUE', 'FALSE'))
         value <- ifelse(value == 'TRUE', 'Yes', 'No')
       

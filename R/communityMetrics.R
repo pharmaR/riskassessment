@@ -14,7 +14,7 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
         showHelperMessage()
       
       else if(!selected_pkg$name() %in% vect) {
-          showHelperMessage(message = glue("Community Usage Metrics not avaiable for ", {selected_pkg$name()} ))
+          showHelperMessage(message = glue::glue("Community Usage Metrics not avaiable for ", {selected_pkg$name()} ))
       }
       else {
         fluidPage(

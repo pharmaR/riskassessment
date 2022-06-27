@@ -1,7 +1,7 @@
 
 # Get the package general information from CRAN/local
 get_latest_pkg_info <- function(pkg_name) {
-  webpage <- read_html(glue(
+  webpage <- rvest::read_html(glue::glue(
     'https://cran.r-project.org/web/packages/{pkg_name}'))
   
   #' Regex that finds entry: '\n ', "'", and '"' (the `|` mean 'or' and the 
@@ -78,7 +78,7 @@ upload_package_to_db <- function(name, version, title, description,
                                  authors, maintainers, license, published_on) {
   tryCatch(
     expr = {
-      dbUpdate(glue(
+      dbUpdate(glue::glue(
         "INSERT or REPLACE INTO package
         (name, version, title, description, maintainer, author,
         license, published_on, decision, date_added)
@@ -111,7 +111,7 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
     riskmetric_assess %>%
     pkg_score(weights = metric_weights)
   
-  package_id <- dbSelect(glue("SELECT id FROM package WHERE name = '{pkg_name}'"))
+  package_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"))
   
   # Leave method if package not found.
   if(nrow(package_id) == 0){
@@ -143,13 +143,13 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
              round(riskmetric_score[[metric$name]]*100, 2),
              riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])]))
     
-    dbUpdate(glue(
+    dbUpdate(glue::glue(
       "INSERT INTO package_metrics (package_id, metric_id, weight, value) 
       VALUES ({package_id}, {metric$id}, {metric$weight}, '{metric_value}')")
     )
   }
   
-  dbUpdate(glue(
+  dbUpdate(glue::glue(
     "UPDATE package
     SET score = '{format(round(riskmetric_score$pkg_score[1], 2))}'
     WHERE name = '{pkg_name}'"))
@@ -168,8 +168,8 @@ insert_community_metrics_to_db <- function(pkg_name) {
         select(`Last modified` = Published, version = Version)
       
       # Get the packages past versions and dates.
-      pkg_url <- url(glue('https://cran.r-project.org/src/contrib/Archive/{pkg_name}'))
-      pkg_page <- try(read_html(pkg_url), silent = TRUE)
+      pkg_url <- url(glue::glue('https://cran.r-project.org/src/contrib/Archive/{pkg_name}'))
+      pkg_page <- try(rvest::read_html(pkg_url), silent = TRUE)
       
       # if past releases exist... they usually do!
       if(all(class(pkg_page) != "try-error")){ #exists("pkg_page")
@@ -179,7 +179,7 @@ insert_community_metrics_to_db <- function(pkg_name) {
           select(-c("", "Description", 'Size')) %>%
           filter(`Last modified` != "") %>%
           mutate(version = str_remove_all(
-            string = Name, pattern = glue('{pkg_name}_|.tar.gz')),
+            string = Name, pattern = glue::glue('{pkg_name}_|.tar.gz')),
             .keep = 'unused') %>%
           # get latest high-level package info
           union(curr_release) 
@@ -226,7 +226,7 @@ insert_community_metrics_to_db <- function(pkg_name) {
   
   if(nrow(pkgs_cum_metrics) != 0){
     for (i in 1:nrow(pkgs_cum_metrics)) {
-      dbUpdate(glue(
+      dbUpdate(glue::glue(
         "INSERT INTO community_usage_metrics 
         (id, month, year, downloads, version)
         VALUES ('{pkg_name}', {pkgs_cum_metrics$month[i]},
