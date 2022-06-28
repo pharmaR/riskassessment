@@ -1,40 +1,71 @@
-library_all <- FALSE
+library_all <- TRUE
 
 if(library_all) {
   # Packages needed for the app.
-  packages = c("shiny"
-               ,"shinyhelper"
-               ,"shinyjs"
-               ,"shinydashboard"
-               ,"shinyWidgets"
-               ,"data.table"
-               ,"DT"
-               ,"readr"
-               ,"lubridate"
-               ,"RSQLite"
-               ,"DBI"
-               ,"rvest"
-               ,"xml2"
-               ,"httr"
-               ,"desc"
-               ,"dplyr"
-               ,"tools"
-               ,"stringr"
-               ,"tidyverse"
-               ,"loggit"
-               ,"rAmCharts"
-               ,"devtools"
-               ,"plotly"
-               ,"cranlogs"
-               ,"formattable"
-               ,"rintrojs"
-               ,"shinymanager"
-               ,"keyring"
-               ,"rstudioapi"
-               ,"glue"
-               ,"bslib"
-               ,'waiter'
-               ,'riskmetric'
+  packages = c(
+               # "shiny"
+               # ,"shinyhelper"
+               # ,"shinyjs"
+               # ,
+               "shinydashboard"
+               # ,"shinyWidgets"
+               # ,"data.table"
+               # ,"DT"
+               # ,"readr"
+               # ,"lubridate"
+               # ,"RSQLite"
+               # ,"DBI"
+               # ,"rvest"
+               # ,"xml2"
+               # ,"httr"
+               # ,"desc"
+               # ,"dplyr"
+               # ,"tools"
+               # ,"stringr"
+               # ,"tidyverse"
+               # ,"loggit"
+               # ,"plotly"
+               # ,"cranlogs"
+               # ,"formattable"
+               # ,"rintrojs"
+               # ,"shinymanager"
+               # ,"keyring"
+               # ,"rstudioapi"
+               # ,"glue"
+               # ,"bslib"
+               # ,'riskmetric'
+    ,
+    'bslib',
+    'config',
+    'cranlogs',
+    'crayon',
+    'data.table',
+    'DBI',
+    'desc',
+    'dplyr',
+    'DT',
+    'forcats',
+    'formattable',
+    'glue',
+    'golem',
+    'keyring',
+    'loggit',
+    'lubridate',
+    'plotly',
+    'purrr',
+    'readr',
+    'rintrojs',
+    'riskmetric',
+    'rlang',
+    'rmarkdown',
+    'RSQLite',
+    'rvest',
+    'shiny',
+    'shinyhelper',
+    'shinyjs',
+    'shinymanager',
+    'shinyWidgets',
+    'stringr'
   )
   
   # Load required packages.

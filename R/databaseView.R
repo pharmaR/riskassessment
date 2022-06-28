@@ -15,7 +15,7 @@ databaseViewUI <- function(id) {
         hr(),
         tags$section(
           br(), br(),
-          box(width = 12,
+          shinydashboard::box(width = 12,
               title = h5("Uploaded Packages", style = "margin-top: 5px"),
               DT::dataTableOutput(NS(id, "packages_table")),
               br(),
