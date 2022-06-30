@@ -3,8 +3,9 @@ options(shiny.fullstacktrace = FALSE) # TRUE for more descriptive debugging msgs
 
 # Load required packages.
 source("R/global.R") #instead, run devtools::load_all()
-library(dplyr)
-library(shiny)
+# library(dplyr)
+# library(shiny)
+
 # suppress dplyr summarize msg "summarise()` has grouped output by..."
 options(dplyr.summarise.inform = FALSE)
 
