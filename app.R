@@ -2,19 +2,20 @@
 options(shiny.fullstacktrace = FALSE) # TRUE for more descriptive debugging msgs
 
 # Load required packages.
-source("global.R")
-
+source("R/global.R") #instead, run devtools::load_all()
+library(dplyr)
+library(shiny)
 # suppress dplyr summarize msg "summarise()` has grouped output by..."
 options(dplyr.summarise.inform = FALSE)
 
-# Create db if it doesn't exist.
-if(!file.exists(database_name)) create_db()
-
-# Create credentials db if it doesn't exist.
-if(!file.exists(credentials_name)) create_credentials_db()
-
 # Start logging info.
 loggit::set_logfile("loggit.json")
+
+
+# Create package db & credentials db if it doesn't exist yet.
+if(!file.exists(database_name)) create_db()
+if(!file.exists(credentials_name)) create_credentials_db()
+
 
 theme <- bslib::bs_theme(
   bootswatch = "lux",
@@ -30,8 +31,8 @@ theme <- bslib::bs_theme(
 
 # Create User Interface (UI).
 ui <- fluidPage(
-  introjsUI(),
-  useShinyjs(),
+  rintrojs::introjsUI(),
+  shinyjs::useShinyjs(),
   waiter::use_waitress(),
   
   theme = theme,
@@ -151,7 +152,7 @@ add_tags <- function(ui, ...) {
     )
   }
     
-    tagList(useShinyjs(),
+    tagList(shinyjs::useShinyjs(),
             ui,
             tags$script(HTML("$(document).on('shiny:value', function(event) {
                              if (event.target.id === 'admin-table_users') {
@@ -173,8 +174,8 @@ server <- function(session, input, output) {
   user$metrics_reweighted <- 0
   
   # check_credentials directly on sqlite db
-  res_auth <- secure_server(
-    check_credentials = check_credentials(
+  res_auth <- shinymanager::secure_server(
+    check_credentials = shinymanager::check_credentials(
       'credentials.sqlite',
       passphrase = passphrase
     )

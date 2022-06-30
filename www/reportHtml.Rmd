@@ -26,9 +26,7 @@ params:
 ---
 
 ```{r setup, include=FALSE}
-library(knitr)
 library(shiny)
-library(shinyjs)
 
 knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 ```

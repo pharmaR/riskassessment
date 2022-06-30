@@ -25,10 +25,8 @@ params:
 ---
 
 ```{r setup, include=FALSE}
-library(knitr)
 library(shiny)
-library(ggplot2)
-library(plotly)
+library(dplyr)
 
 knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 ```
@@ -146,15 +144,16 @@ d <- params$com_metrics_raw %>%
 
 mo <- ceiling(nrow(d) / 9)
 
-ggplot(data = d, aes(x = day_month_year, y = downloads)) +
-  geom_point() +
-  geom_line() +
-  scale_x_date(date_breaks = glue::glue("{mo} months"), date_labels = "%m-%Y") +
-  labs(
+ggplot2::ggplot(data = d, ggplot2::aes(x = day_month_year, y = downloads)) +
+  ggplot2::geom_point() +
+  ggplot2::geom_line() +
+  ggplot2::scale_x_date(date_breaks = glue::glue("{mo} months"), date_labels = "%m-%Y") +
+  ggplot2::labs(
     x = 'Month/Year',
     y = 'Downloads'
   ) +
-  theme(text = element_text(size = 16), axis.text = element_text(size=16))# angle = 30, vjust = 0.5, hjust=1))
+  ggplot2::theme(text = ggplot2::element_text(size = 16),
+                 axis.text = ggplot2::element_text(size=16))# angle = 30, vjust = 0.5, hjust=1))
 ```
 
 

@@ -1,3 +1,5 @@
+
+
 add_tags <- function(ui, ...) {
   ui <- force(ui)
   
@@ -32,7 +34,7 @@ add_tags <- function(ui, ...) {
       )
     }
     
-    tagList(useShinyjs(),
+    tagList(shinyjs::useShinyjs(),
             ui,
             tags$script(HTML("$(document).on('shiny:value', function(event) {
                              if (event.target.id === 'admin-table_users') {
@@ -236,7 +238,7 @@ update_metric_weight <- function(metric_name, metric_weight){
 get_date_span <- function(start, end = Sys.Date()) {
   # Get approximate difference between today and latest release.
   # time_diff_latest_version <- year(Sys.Date()) - last_ver$year
-  time_diff <- interval(start, end)
+  time_diff <- lubridate::interval(start, end)
   time_diff_val <- time_diff %/% months(1)
   time_diff_label <- 'Months'
   
@@ -350,8 +352,8 @@ build_comm_plotly <- function(data) {
     pull(day_month_year)
   
   # Get the difference in months.
-  month_last <- interval(last_version_date, latest_date) %/% months(1)
-  month_first <- interval(first_version_date, latest_date) %/% months(1)
+  month_last <- lubridate::interval(last_version_date, latest_date) %/% months(1)
+  month_first <- lubridate::interval(first_version_date, latest_date) %/% months(1)
   
   # Set plot range: [min - 15 days, max + 15 days].
   # Dates need to be transformed to milliseconds since epoch.
@@ -433,7 +435,7 @@ build_comm_plotly <- function(data) {
         rangeslider = list(visible = TRUE)
       )
     ) %>%
-    config(displayModeBar = F)
+    plotly::config(displayModeBar = F)
 }
 
 # Below are a series of get_* functions that help us query

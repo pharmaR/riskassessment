@@ -1,5 +1,23 @@
-library_all <- TRUE
 
+#' The `riskassessment` package
+#'
+#' The Risk Assessment App is an interactive web application serving as a front
+#' end application for the `riskmetric` R package. `riskmetric` is a framework
+#' to quantify risk by assessing a number of metrics meant to evaluate
+#' development best practices, code documentation, community engagement, and
+#' development sustainability. The app and `riskmetric` aim to provide some
+#' context for validation within regulated industries.
+#'
+#' @keywords internal
+#'
+#' @import shiny
+#' @import dplyr
+#' 
+"_PACKAGE"
+
+
+
+library_all <- FALSE
 if(library_all) {
   # Packages needed for the app.
   packages = c(
@@ -96,14 +114,8 @@ database_name <- "database.sqlite"
 credentials_name <- "credentials.sqlite"
 
 
-# Create db if it doesn't exist.
-if(!file.exists(database_name)) create_db()
-
-# Create credentials db if it doesn't exist.
-if(!file.exists(credentials_name)) create_credentials_db()
-
-# Start logging info.
-loggit::set_logfile("loggit.json")
+# # Start logging info.
+# loggit::set_logfile("loggit.json") # do this in app.R instead
 
 theme <- bslib::bs_theme(
   bootswatch = "lux",

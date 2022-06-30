@@ -99,7 +99,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       pkg_selected <- get_pkg_info(input$select_pkg)
 
       pkg_selected %>%
-        walk2(names(.), function(.x, .y) {selected_pkg[[.y]] <- .x})
+        purrr::walk2(names(.), function(.x, .y) {selected_pkg[[.y]] <- .x})
     }, priority = 1)
     
     # Update package version.

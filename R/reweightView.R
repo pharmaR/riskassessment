@@ -54,7 +54,7 @@ reweightViewServer <- function(id, user) {
       tagList(
         tags$section(
           br(), br(),
-          box(width = 12, status = "primary",
+          shinydashboard::box(width = 12, status = "primary",
               title = h2("View/Change Weights", style = "margin-top: 5px", align = "center"),
               solidHeader = TRUE,
               br(),

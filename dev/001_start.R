@@ -136,6 +136,7 @@ usethis::use_package("config", min_version = "0.3.1")
 usethis::use_package("golem", min_version = "0.3.3")
 usethis::use_package("shiny", min_version = "1.7.1")
 usethis::use_package("riskmetric")
+usethis::use_pipe()
 
 
 
