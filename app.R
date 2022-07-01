@@ -2,7 +2,7 @@
 options(shiny.fullstacktrace = FALSE) # TRUE for more descriptive debugging msgs
 
 # Load required packages.
-source("R/global.R") #instead, run devtools::load_all()
+# source("R/global.R") #instead, run devtools::load_all()
 # library(dplyr)
 # library(shiny)
 

@@ -1,5 +1,5 @@
 
-# Get the package general information from CRAN/local
+#' Get the package general information from CRAN/local
 get_latest_pkg_info <- function(pkg_name) {
   webpage <- rvest::read_html(glue::glue(
     'https://cran.r-project.org/web/packages/{pkg_name}'))
@@ -35,7 +35,7 @@ get_latest_pkg_info <- function(pkg_name) {
 }
 
 
-# Call function to get and upload info from CRAN/local to db.
+#' Call function to get and upload info from CRAN/local to db.
 insert_pkg_info_to_db <- function(pkg_name) {
   tryCatch(
     expr = {
@@ -73,7 +73,7 @@ insert_pkg_info_to_db <- function(pkg_name) {
   )
 }
 
-# Upload the general info into DB.
+#' Upload the general info into DB.
 upload_package_to_db <- function(name, version, title, description,
                                  authors, maintainers, license, published_on) {
   tryCatch(
@@ -94,7 +94,7 @@ upload_package_to_db <- function(name, version, title, description,
 }
 
 
-# Get the maintenance and testing metrics info and upload into DB.
+#' Get the maintenance and testing metrics info and upload into DB.
 insert_maintenance_metrics_to_db <- function(pkg_name){
   
   riskmetric_assess <-
@@ -156,7 +156,9 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
 }
 
 
-# Get community usage metrics info and upload into DB.
+#' Generate community usage metrics and upload data into DB
+#' 
+#' @importFrom cranlogs cran_downloads
 insert_community_metrics_to_db <- function(pkg_name) {
   pkgs_cum_metrics <- tibble()
   
