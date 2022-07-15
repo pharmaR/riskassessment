@@ -119,6 +119,10 @@ ui <- shinymanager::secure_app(
             style = "align:center; color: darkgray")),
   enable_admin = TRUE, theme = theme)
 
+
+#' The 'Add tags' function
+#' 
+#' @importFrom shinymanager fab_button
 add_tags <- function(ui, ...) {
   ui <- force(ui)
   
@@ -137,7 +141,7 @@ add_tags <- function(ui, ...) {
                              for (var i = 0; i < oldfab.length; ++i) {
                                oldfab[i].remove();
                              }")),
-                  fab_button(
+                  shinymanager::fab_button(
                     position = "bottom-right",
                     actionButton(
                       inputId = ".shinymanager_logout",

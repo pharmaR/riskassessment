@@ -1,9 +1,15 @@
+#' UI for the 'Re-weight View' module
+#' 
 reweightViewUI <- function(id) {
   tagList(
     uiOutput(NS(id, "reweights_view"))
   )
 }
 
+#' Server logic for the 'Re-weight View' module
+#' 
+#' @importFrom DT styleEqual
+#' 
 reweightViewServer <- function(id, user) {
   moduleServer(id, function(input, output, session) {
     
@@ -46,7 +52,7 @@ reweightViewServer <- function(id, user) {
       ) %>%
         DT::formatStyle(names(curr_new_wts()),lineHeight='80%') %>%
         DT::formatStyle(columns =  "name", target = 'row',
-                        backgroundColor = styleEqual(all_names, my_colors))
+                        backgroundColor = DT::styleEqual(all_names, my_colors))
     })
     
     # Section displayed only for authorized users.

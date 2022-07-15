@@ -1,5 +1,7 @@
 
-
+#' The 'Add tags' function
+#' 
+#' @importFrom shinymanager fab_button
 add_tags <- function(ui, ...) {
   ui <- force(ui)
   
@@ -18,7 +20,7 @@ add_tags <- function(ui, ...) {
                              for (var i = 0; i < oldfab.length; ++i) {
                                oldfab[i].remove();
                              }")),
-                    fab_button(
+                    shinymanager::fab_button(
                       position = "bottom-right",
                       actionButton(
                         inputId = ".shinymanager_logout",
@@ -234,26 +236,37 @@ update_metric_weight <- function(metric_name, metric_weight){
   ))
 }
 
-# Function accepts a start date and optional end date and will 
+#' The 'Get Date Span' function
+#' 
+#' Function accepts a start date and optional end date and will 
+#' 
+#' @importFrom lubridate interval years
+#' @importFrom stringr str_remove
+#' 
 get_date_span <- function(start, end = Sys.Date()) {
   # Get approximate difference between today and latest release.
-  # time_diff_latest_version <- year(Sys.Date()) - last_ver$year
+  # time_diff_latest_version <- lubridate::year(Sys.Date()) - last_ver$year
   time_diff <- lubridate::interval(start, end)
   time_diff_val <- time_diff %/% months(1)
   time_diff_label <- 'Months'
   
   if(time_diff_val >= 12) {
     # Get difference in months.
-    time_diff_val <- time_diff %/% years(1)
+    time_diff_val <- time_diff %/% lubridate::years(1)
     time_diff_label <- 'Years'
   }
   # remove "s" off of "Years" or "Months" if 1
   if(time_diff_val == 1)
-    time_diff_label <- str_remove(
+    time_diff_label <- stringr::str_remove(
       string = time_diff_label, pattern = 's$')
   return(list(value = time_diff_val, label = time_diff_label))
 }
 
+#' The 'Build Community Cards' function
+#' 
+#' @importFrom lubridate interval make_date year
+#' @importFrom glue glue
+#' 
 build_comm_cards <- function(data){
 
   # Get the first package release.
@@ -303,7 +316,7 @@ build_comm_cards <- function(data){
             is_url = 0)
   
   downloads_last_year <- data %>%
-    filter(year == year(Sys.Date()) - 1) %>%
+    filter(year == lubridate::year(Sys.Date()) - 1) %>%
     distinct(year, month, downloads)
   
   cards <- cards %>%
@@ -319,6 +332,12 @@ build_comm_cards <- function(data){
   cards
 }
 
+#' The 'Build Community plot' function
+#' 
+#' @importFrom lubridate NA_Date_ interval
+#' @importFrom glue glue
+#' @importFrom plotly plot_ly layout add_segments add_annotations config
+#' 
 build_comm_plotly <- function(data) {
   if (nrow(data) == 0) return(NULL)
   
@@ -383,8 +402,8 @@ build_comm_plotly <- function(data) {
                         range = dates_range)
     ) %>% 
     plotly::add_segments(
-      x = ~if_else(version %in% c("", "NA"), NA_Date_, day_month_year),
-      xend = ~if_else(version %in% c("", "NA"), NA_Date_, day_month_year),
+      x = ~if_else(version %in% c("", "NA"), lubridate::NA_Date_, day_month_year),
+      xend = ~if_else(version %in% c("", "NA"), lubridate::NA_Date_, day_month_year),
       y = ~.98 * min(downloads),
       yend = ~1.02 * max(downloads),
       name = "Version Release",
@@ -392,7 +411,7 @@ build_comm_plotly <- function(data) {
       text = ~glue::glue('Version {version}'),
       line = list(color = '#4BBF73')
     ) %>% 
-    plotly::add_annotations(
+    plotly::add_annotations( 
       yref = 'paper',
       xref = "x",
       y = .50,
@@ -443,7 +462,9 @@ build_comm_plotly <- function(data) {
 # times throughout the app, so it's best to maintain them
 # in a central location
 
-# retrieve the overall comments for a specific package
+#' The 'Get Overall Comments' function
+#' 
+#' Retrieves the overall comments for a specific package
 get_overall_comments <- function(pkg_name) {
   dbSelect(glue::glue(
     "SELECT * FROM comments 
@@ -451,7 +472,9 @@ get_overall_comments <- function(pkg_name) {
   )
 }
 
-# retrieve the Maint Metrics comments for a specific package
+#' The 'Get Maintenance Metrics Comments' function
+#' 
+#' Retrieves the Maint Metrics comments for a specific package
 get_mm_comments <- function(pkg_name) {
   dbSelect(
     glue::glue(
@@ -463,7 +486,9 @@ get_mm_comments <- function(pkg_name) {
     purrr::map(rev)
 }
 
-# retrieve the Community Metrics comments for a specific package
+#' The 'Get Community Usage Metrics Comments' function
+#' 
+#' Retrieve the Community Metrics comments for a specific package
 get_cm_comments <- function(pkg_name) {
   dbSelect(
     glue::glue(
@@ -475,8 +500,10 @@ get_cm_comments <- function(pkg_name) {
     purrr::map(rev)
 }
 
-# Pull the maint metrics data for a specific package id, and create 
-# necessary columns for Cards UI
+#' The 'Get Maintenance Metrics Data' function
+#' 
+#' Pull the maint metrics data for a specific package id, and create 
+#' necessary columns for Cards UI
 get_mm_data <- function(pkg_id){
   dbSelect(glue::glue(
     "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
@@ -496,7 +523,9 @@ get_mm_data <- function(pkg_id){
 }
 
 
-# Get all community metric data on a specific package
+#' The 'Get Communnity Data' function
+#' 
+#' Get all community metric data on a specific package
 get_comm_data <- function(pkg_name){
   dbSelect(glue::glue(
     "SELECT *
@@ -505,7 +534,9 @@ get_comm_data <- function(pkg_name){
   )
 }
 
-# Get all general info on a specific package
+#' The 'Get Package Info' function
+#' 
+#' Get all general info on a specific package
 get_pkg_info <- function(pkg_name){
   dbSelect(glue::glue(
     "SELECT *

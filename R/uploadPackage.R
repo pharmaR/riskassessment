@@ -1,4 +1,7 @@
-# Module to upload package.
+#' UI for the 'Upload Package' module
+#'
+#' @importFrom DT dataTableOutput
+#' 
 uploadPackageUI <- function(id) {
   fluidPage(
     br(), br(),
@@ -30,6 +33,10 @@ uploadPackageUI <- function(id) {
   )
 }
 
+#' Server logic for the 'Upload Package' module
+#'
+#' @importFrom riskmetric pkg_ref
+#' 
 uploadPackageServer <- function(id) {
   moduleServer(id, function(input, output, session) {
     

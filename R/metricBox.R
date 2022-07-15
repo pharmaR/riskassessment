@@ -1,15 +1,23 @@
+#' The UI for the 'Metric Box' module
+#'
 metricBoxUI <- function(id) {
   uiOutput(NS(id, "metricBox_ui"))
 }
 
-#' `title`: title.
-#' `desc`: description.
-#' `value`: metric value.
-#' `is_true`: whether the metric is TRUE. If true, then the succ_icon will be
-#' used; if false, then the unsucc_icon will be used.
-#' `is_perc`: whether the value is a percentage.
-#' `succ_icon`: icon used if is_true.
-#' `unsucc_icon`: icon used if not is_true.
+#' Server logic for the 'Metric Box' module
+#'
+#' @param title title.
+#' @param desc description.
+#' @param value metric value.
+#' @param is_true whether the metric is TRUE. If true, then the succ_icon will
+#'   be used; if false, then the unsucc_icon will be used.
+#' @param is_perc whether the value is a percentage.
+#' @param succ_icon icon used if is_true.
+#' @param unsucc_icon icon used if not is_true.
+#'
+#' @importFrom stringr str_sub
+#' @importFrom glue glue
+#'   
 metricBoxServer <- function(id, title, desc, value,
                             is_perc = FALSE, is_url = FALSE,
                             succ_icon = "check",  unsucc_icon = "times",
@@ -28,7 +36,7 @@ metricBoxServer <- function(id, title, desc, value,
       else if(is_perc)
         value <- glue::glue('{round(as.numeric(value), 1)}%')
       else if(is_url)
-        value <- a(glue::glue('{str_sub(value, 1, 29)}...'), href = value)
+        value <- a(glue::glue('{stringr::str_sub(value, 1, 29)}...'), href = value)
       else if(value %in% c('TRUE', 'FALSE'))
         value <- ifelse(value == 'TRUE', 'Yes', 'No')
       

@@ -24,7 +24,7 @@ get_latest_pkg_info <- function(pkg_name) {
     str_remove_all(pattern = pattern)
   
   # Get the table displaying version, authors, etc.
-  table_info <- (webpage %>% html_table())[[1]] %>%
+  table_info <- (webpage %>% rvest::html_table())[[1]] %>%
     mutate(X1 = str_remove_all(string = X1, pattern = ':')) %>%
     mutate(X2 = str_remove_all(string = X2, pattern = pattern)) %>%
     pivot_wider(names_from = X1, values_from = X2) %>%
@@ -94,13 +94,17 @@ upload_package_to_db <- function(name, version, title, description,
 }
 
 
+#' The 'Insert MM to DB' Function
+#'
 #' Get the maintenance and testing metrics info and upload into DB.
+#' 
+#' @importFrom riskmetric pkg_ref pkg_assess pkg_score
 insert_maintenance_metrics_to_db <- function(pkg_name){
   
   riskmetric_assess <-
-    pkg_ref(pkg_name) %>%
-    as_tibble() %>%
-    pkg_assess()
+    riskmetric::pkg_ref(pkg_name) %>%
+    dplyr::as_tibble() %>%
+    riskmetric::pkg_assess()
   
   # Get the metrics weights to be used during pkg_score.
   metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric")
@@ -109,7 +113,7 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
   
   riskmetric_score <-
     riskmetric_assess %>%
-    pkg_score(weights = metric_weights)
+    riskmetric::pkg_score(weights = metric_weights)
   
   package_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"))
   
@@ -159,6 +163,11 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
 #' Generate community usage metrics and upload data into DB
 #' 
 #' @importFrom cranlogs cran_downloads
+#' @importFrom lubridate year month
+#' @importFrom glue glue 
+#' @importFrom rvest read_html html_node html_table
+#' @importFrom loggit loggit
+#' 
 insert_community_metrics_to_db <- function(pkg_name) {
   pkgs_cum_metrics <- tibble()
   
@@ -176,8 +185,8 @@ insert_community_metrics_to_db <- function(pkg_name) {
       # if past releases exist... they usually do!
       if(all(class(pkg_page) != "try-error")){ #exists("pkg_page")
         versions_with_dates0 <- pkg_page %>% 
-          html_node('table') %>%
-          html_table() %>%
+          rvest::html_node('table') %>%
+          rvest::html_table() %>%
           select(-c("", "Description", 'Size')) %>%
           filter(`Last modified` != "") %>%
           mutate(version = str_remove_all(
@@ -192,8 +201,8 @@ insert_community_metrics_to_db <- function(pkg_name) {
       
       versions_with_dates <- versions_with_dates0 %>%
         mutate(date = as.Date(`Last modified`), .keep = 'unused') %>%
-        mutate(month = month(date)) %>%
-        mutate(year = year(date))
+        mutate(month = lubridate::month(date)) %>%
+        mutate(year = lubridate::year(date))
       
 
       # First release date.
@@ -207,10 +216,10 @@ insert_community_metrics_to_db <- function(pkg_name) {
           pkg_name,
           from = first_release_date,
           to = Sys.Date()) %>%
-        mutate(month = month(date),
-               year = year(date)) %>%
-        filter(!(month == month(Sys.Date()) &
-                 year == year(Sys.Date()))) %>%
+        mutate(month = lubridate::month(date),
+               year = lubridate::year(date)) %>%
+        filter(!(month == lubridate::month(Sys.Date()) &
+                 year == lubridate::year(Sys.Date()))) %>%
         group_by(month, year) %>%
         summarise(downloads = sum(count)) %>%
         ungroup() %>%

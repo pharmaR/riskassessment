@@ -1,3 +1,7 @@
+#' UI for 'Assessment Info' Module
+#' 
+#' @importFrom DT dataTableOutput
+#' 
 assessmentInfoUI <- function(id) {
   fluidPage(
     fluidRow(
@@ -38,6 +42,10 @@ assessmentInfoUI <- function(id) {
         ))))
 }
 
+#' Server Logic for 'Assessment Info' Module
+#' 
+#' @importFrom readr read_file read_csv
+#' 
 assessmentInfoServer <- function(id, metric_weights) {
   moduleServer(id, function(input, output, session) {
     
@@ -118,7 +126,7 @@ Infrastructure</a>."
     
     # Display the Community Usage Metrics text content.
     output$community_usage_desc <- renderText({
-      read_file(file.path("Data", "community.txt"))
+      readr::read_file(file.path("Data", "community.txt"))
     })
     
     
@@ -140,7 +148,7 @@ Infrastructure</a>."
     
     # Display the Testing Metrics text content.
     output$testing_desc <- renderText({
-      desc_testing <- read_file(file.path("Data", "testing.txt"))
+      desc_testing <- readr::read_file(file.path("Data", "testing.txt"))
       desc_testing
     })
     

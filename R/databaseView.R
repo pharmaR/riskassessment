@@ -5,6 +5,11 @@ med_risk_color  <- "#d1b000"  # dark gold
 high_risk_color <- "#B22222"  # firebrick
 setColorPalette <- colorRampPalette(c(low_risk_color, med_risk_color, high_risk_color))
 
+#' UI for 'Database View' module
+#' 
+#' @importFrom shinydashboard box
+#' @importFrom DT dataTableOutput
+#' 
 databaseViewUI <- function(id) {
   fluidPage(
     fluidRow(
@@ -33,6 +38,11 @@ databaseViewUI <- function(id) {
   )
 }
 
+#' Server logic for 'Database View' module
+#' 
+#' @importFrom lubridate as_datetime
+#' @importFrom stringr str_replace_all str_replace
+#' 
 databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
   moduleServer(id, function(input, output, session) {
     
@@ -49,7 +59,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
       )
       
       db_pkg_overview %>%
-        mutate(last_comment = as.character(as_datetime(last_comment))) %>%
+        mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>%
         mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
         mutate(decision = ifelse(decision != "", paste(decision, "Risk"), "-")) %>%
         mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
@@ -119,7 +129,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
         n_pkgs <- nrow(selected_pkgs)
         
         if (n_pkgs > 1) {
-          report_datetime <- stringr::str_replace_all(str_replace(Sys.time(), " ", "_"), ":", "-")
+          report_datetime <- stringr::str_replace_all(stringr::str_replace(Sys.time(), " ", "_"), ":", "-")
           glue::glue('RiskAssessment-Report-{report_datetime}.zip')
         } else {
           glue::glue('{selected_pkgs$name}_{selected_pkgs$version}_Risk_Assessment.',
