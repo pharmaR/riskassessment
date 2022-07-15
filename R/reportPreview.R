@@ -4,7 +4,8 @@ reportPreviewUI <- function(id) {
 
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                                 com_metrics_raw, mm_comments, cm_comments,
-                                downloads_plot_data, user) {
+                                downloads_plot_data, user, app_version,
+                                metric_weights) {
   moduleServer(id, function(input, output, session) {
     
     # IntroJS.
@@ -65,6 +66,18 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                            column(width = 12, style = 'padding-left: 20px; padding-right: 20px;',
                                   plotlyOutput(NS(id, "downloads_plot"), height = "500px")))),
                          viewCommentsUI(NS(id, 'cm_comments')))
+                ),
+                br(), br(),
+                hr(),
+                fluidRow(
+                  column(width = 12,
+                         h5("About Report",
+                            style = "text-align: center; padding-bottom: 50px;"),
+                         fluidRow(column(width = 12,
+                                         uiOutput(NS(id, 'about_report')),
+                                         h5('Weights Table:'),
+                                         dataTableOutput(NS(id, 'weights_table'))
+                         )))
                 )
             )
           )
@@ -121,24 +134,43 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
         h5('License:'), selected_pkg$license(),
         h5('Published:'), selected_pkg$published()
       )
-      
     })
     
     # Display the decision status of the selected package.
     output$decision_display <- renderUI({
-
+      
       tagList(
         h5('Overall risk:'),
         ifelse(selected_pkg$decision() == '', 
                'Pending',
                selected_pkg$decision()))
     })
+    
+    # Display general information about report.
+    output$about_report <- renderUI({
+      req(selected_pkg$name())
+      
+      tagList(
+        h5('Risk Assessment App Version:'), app_version,
+        h5('riskmetric Version:'), paste0(packageVersion("riskmetric")),
+        h5('Generated on:'), format(Sys.time(), usetz = TRUE)
+      )
+    })
 
+    # Display the metric weights.
+    output$weights_table <- renderDataTable({
+      req(selected_pkg$name())
+      
+      metric_weights()
+      
+    }, options = list(searching = FALSE, pageLength = 15, lengthChange = FALSE,
+                      info = FALSE))
+    
     # Create report.
     output$download_report <- downloadHandler(
       filename = function() {
         glue('{selected_pkg$name()}_{selected_pkg$version()}_Risk_Assessment.',
-        "{switch(input$report_format, docx = 'docx', html = 'html')}")
+             "{switch(input$report_format, docx = 'docx', html = 'html')}")
       },
       content = function(file) {
         shiny::withProgress(
@@ -155,20 +187,29 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
               report <- file.path('www', 'reportHtml.Rmd')
             }
             else {
-              report <- file.path(my_tempdir, "ReportDocx.Rmd")
-              if (!dir.exists(file.path(my_tempdir, "images"))) dir.create(file.path(my_tempdir, "images"))
-              file.copy("www/ReportDocx.Rmd", report, overwrite = TRUE)
-              file.copy("www/read_html.lua", file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
-              file.copy("www/images/user-tie.png", file.path(my_tempdir, "images", "user-tie.png"), overwrite = TRUE)
-              file.copy("www/images/user-shield.png", file.path(my_tempdir, "images", "user-shield.png"), overwrite = TRUE)
-              file.copy("www/images/calendar-alt.png", file.path(my_tempdir, "images", "calendar-alt.png"), overwrite = TRUE)
+              report <- file.path(my_tempdir, "reportDocx.Rmd")
+              if (!dir.exists(file.path(my_tempdir, "images")))
+                dir.create(file.path(my_tempdir, "images"))
+              file.copy(file.path('www', 'reportDocx.Rmd'),
+                        report, overwrite = TRUE)
+              file.copy(file.path('www', 'read_html.lua'),
+                        file.path(my_tempdir, "read_html.lua"),
+                        overwrite = TRUE)
+              file.copy(file.path('www', 'images', 'user-tie.png'),
+                        file.path(my_tempdir, "images", "user-tie.png"),
+                        overwrite = TRUE)
+              file.copy(file.path('www', 'images', 'user-shield.png'),
+                        file.path(my_tempdir, "images", "user-shield.png"),
+                        overwrite = TRUE)
+              file.copy(file.path('www', 'images', 'calendar-alt.png'),
+                        file.path(my_tempdir, "images", "calendar-alt.png"),
+                        overwrite = TRUE)
             }
             
             # file.copy(report, report_path, overwrite = TRUE)
-
-            # make each param non-reactive. Why? Because this same report
-            # has to be used for the Database Overview tab
-            this_pack <- list(
+            
+            # Collect info about package.
+            pkg <- list(
               id = selected_pkg$id(),
               name = selected_pkg$name(),
               version = selected_pkg$version(),
@@ -178,31 +219,26 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
               author = selected_pkg$author(),
               maintainer = selected_pkg$maintainer(),
               license = selected_pkg$license(),
-              published = selected_pkg$published(),
-              overall_comment_added = selected_pkg$overall_comment_added()
+              published = selected_pkg$published()
             )
-            overall_comments <- overall_comments()
-            mm_comments = mm_comments()
-            cm_comments = cm_comments()
-            maint_metrics = maint_metrics()
-            com_metrics = com_metrics()
-            com_metrics_raw = com_metrics_raw() # used for word doc
-            downloads_plot_data = downloads_plot_data()
             
             rmarkdown::render(
               report,
               output_file = file,
-              params = list(pkg = this_pack,
-                            riskmetric_version = packageVersion("riskmetric"),
+              params = list(pkg = pkg,
+                            riskmetric_version = paste0(packageVersion("riskmetric")),
+                            app_version = app_version,
+                            metric_weights = metric_weights(),
                             user_name = user$name,
                             user_role = user$role,
-                            overall_comments = overall_comments,
-                            mm_comments = mm_comments,
-                            cm_comments = cm_comments,
-                            maint_metrics = maint_metrics,
-                            com_metrics = com_metrics,
-                            com_metrics_raw = com_metrics_raw,
-                            downloads_plot_data = downloads_plot_data),
+                            overall_comments = overall_comments(),
+                            mm_comments = mm_comments(),
+                            cm_comments = cm_comments(),
+                            maint_metrics = maint_metrics(),
+                            com_metrics = com_metrics(),
+                            com_metrics_raw = com_metrics_raw(), # used for word doc
+                            downloads_plot_data = downloads_plot_data()
+              ),
               envir = new.env(parent = globalenv())
             )
           })

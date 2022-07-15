@@ -33,7 +33,7 @@ databaseViewUI <- function(id) {
   )
 }
 
-databaseViewServer <- function(id, user, uploaded_pkgs) {
+databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
   moduleServer(id, function(input, output, session) {
     
     # Update table_data if a package has been uploaded
@@ -127,7 +127,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
         }
       },
       content = function(file) {
-
+        
         selected_pkgs <- table_data() %>%
           slice(input$packages_table_rows_selected)
         n_pkgs <- nrow(selected_pkgs)
@@ -144,18 +144,28 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
             my_tempdir <- tempdir()
             if (input$report_formats == "html") {
               Report <- file.path(my_tempdir, "reportHtml.Rmd")
-              file.copy("www/ReportHtml.Rmd", Report, overwrite = TRUE)
+              file.copy(file.path('www', 'reportHtml.Rmd'), Report, overwrite = TRUE)
             } else { 
               # docx
-              Report <- file.path(my_tempdir, "ReportDocx.Rmd")
-              if (!dir.exists(file.path(my_tempdir, "images"))) dir.create(file.path(my_tempdir, "images"))
-              file.copy("www/ReportDocx.Rmd", Report, overwrite = TRUE)
-              file.copy("www/read_html.lua", file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
-              file.copy("www/images/user-tie.png", file.path(my_tempdir, "images", "user-tie.png"), overwrite = TRUE)
-              file.copy("www/images/user-shield.png", file.path(my_tempdir, "images", "user-shield.png"), overwrite = TRUE)
-              file.copy("www/images/calendar-alt.png", file.path(my_tempdir, "images", "calendar-alt.png"), overwrite = TRUE)
+              Report <- file.path(my_tempdir, "reportDocx.Rmd")
+              if (!dir.exists(file.path(my_tempdir, "images")))
+                dir.create(file.path(my_tempdir, "images"))
+              file.copy(file.path('www', 'ReportDocx.Rmd'),
+                        Report,
+                        overwrite = TRUE)
+              file.copy(file.path('www', 'read_html.lua'),
+                        file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
+              file.copy(file.path('www', 'images', 'user-tie.png'),
+                        file.path(my_tempdir, "images", "user-tie.png"),
+                        overwrite = TRUE)
+              file.copy(file.path('www', 'images', 'user-shield.png'),
+                        file.path(my_tempdir, "images", "user-shield.png"),
+                        overwrite = TRUE)
+              file.copy(file.path('www', 'images', 'calendar-alt.png'),
+                        file.path(my_tempdir, "images", "calendar-alt.png"),
+                        overwrite = TRUE)
             }
-
+            
             fs <- c()
             for (i in 1:n_pkgs) {
               # Grab package name and version, then create filename and path.
@@ -183,7 +193,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                 license = selected_pkg$license,
                 published = selected_pkg$published
               )
-
+              
               # gather comments data
               overall_comments <- get_overall_comments(this_pkg)
               mm_comments <- get_mm_comments(this_pkg)
@@ -201,7 +211,9 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                 output_file = path,
                 clean = FALSE,
                 params = list(pkg = this_pack,
-                              riskmetric_version = packageVersion("riskmetric"),
+                              riskmetric_version = paste0(packageVersion("riskmetric")),
+                              app_version = app_version,
+                              metric_weights = metric_weights(),
                               user_name = user$name,
                               user_role = user$role,
                               overall_comments = overall_comments,
@@ -211,7 +223,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs) {
                               com_metrics = comm_cards,
                               com_metrics_raw = comm_data,
                               downloads_plot_data = downloads_plot
-                              )
+                )
               )
               fs <- c(fs, path)  # Save all the reports/
               shiny::incProgress(1) # Increment progress bar.

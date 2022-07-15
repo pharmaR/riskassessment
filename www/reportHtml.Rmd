@@ -12,6 +12,8 @@ runtime: shiny
 params:
   pkg: NA
   riskmetric_version: NA
+  app_version: NA
+  metric_weights: NA
   user_name: NA
   user_role: NA
   overall_comments: NA
@@ -193,6 +195,25 @@ tagList(
       comments = params$cm_comments))
   )
 )
+```
+
+<br>
+<hr>
+<br>
+
+```{r report_info, warning=FALSE, message=FALSE}
+h5('About the Report')
+
+tagList(
+  h6('Risk Assessment App Version:'), params$app_version,
+  h6('riskmetric Version:'), params$riskmetric_version,
+  h6('Generated on:'), format(Sys.time(), usetz = TRUE),
+  h6('Metric Weights:')
+)
+
+datatable(params$metric_weights,
+          options = list(searching = FALSE, pageLength = 15,
+                         lengthChange = FALSE, info = FALSE))
 ```
 
 <style>

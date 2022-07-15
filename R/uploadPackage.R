@@ -6,7 +6,7 @@ uploadPackageUI <- function(id) {
     introJSUI(NS(id, "introJS")),
     
     tags$head(tags$style(".shiny-notification {font-size:30px; color:darkblue; position: fixed; width:415px; height: 150px; top: 75% ;right: 10%;")),
-
+    
     fluidRow(
       column(
         width = 4,
@@ -153,7 +153,7 @@ uploadPackageServer <- function(id) {
             # Save version.
             incProgress(1, detail = deets)
             uploaded_packages$version[i] <- as.character(ref$version)
-  
+            
             found <- nrow(dbSelect(glue(
               "SELECT name
               FROM package
@@ -174,11 +174,11 @@ uploadPackageServer <- function(id) {
               insert_community_metrics_to_db(uploaded_packages$package[i])
             }
           }
-        }
-        incProgress(1, detail = "   **Completed Pkg Uploads**")
-        Sys.sleep(0.25)
-        
-      }) #withProgress
+          
+          incProgress(1, detail = "   **Completed Pkg Uploads**")
+          Sys.sleep(0.25)
+          
+        }) #withProgress
       
       uploaded_packages
     })
@@ -210,13 +210,13 @@ uploadPackageServer <- function(id) {
         br(), br(),
         hr(),
         div(id = "upload_summary_div",
-          h5("Summary of uploaded package(s)"),
-          br(),
-          p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
-          p(tags$b("New Packages: "), sum(uploaded_pkgs()$status == 'new')),
-          p(tags$b("Undiscovered Packages: "), sum(uploaded_pkgs()$status == 'not found')),
-          p(tags$b("Duplicate Packages: "), sum(uploaded_pkgs()$status == 'duplicate')),
-          p("Note: The assessment will be performed on the latest version of each
+            h5("Summary of uploaded package(s)"),
+            br(),
+            p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
+            p(tags$b("New Packages: "), sum(uploaded_pkgs()$status == 'new')),
+            p(tags$b("Undiscovered Packages: "), sum(uploaded_pkgs()$status == 'not found')),
+            p(tags$b("Duplicate Packages: "), sum(uploaded_pkgs()$status == 'duplicate')),
+            p("Note: The assessment will be performed on the latest version of each
           package, irrespective of the uploaded version.")
         )
       ))
