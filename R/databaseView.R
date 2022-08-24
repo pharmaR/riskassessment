@@ -40,6 +40,7 @@ databaseViewUI <- function(id) {
 
 #' Server logic for 'Database View' module
 #' 
+#' @import dplyr
 #' @importFrom lubridate as_datetime
 #' @importFrom stringr str_replace_all str_replace
 #' 
@@ -63,7 +64,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
         dplyr::mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
         dplyr::mutate(decision = ifelse(decision != "", paste(decision, "Risk"), "-")) %>%
         dplyr::mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
-        select(name, version, score, was_decision_made, decision, last_comment)
+        dplyr::select(name, version, score, was_decision_made, decision, last_comment)
     })
     
     # Create table for the db dashboard.
@@ -125,7 +126,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
     output$download_reports <- downloadHandler(
       filename = function() {
         selected_pkgs <- table_data() %>%
-          slice(input$packages_table_rows_selected)
+          dplyr::slice(input$packages_table_rows_selected)
         n_pkgs <- nrow(selected_pkgs)
         
         if (n_pkgs > 1) {
@@ -139,7 +140,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
       content = function(file) {
         
         selected_pkgs <- table_data() %>%
-          slice(input$packages_table_rows_selected)
+          dplyr::slice(input$packages_table_rows_selected)
         n_pkgs <- nrow(selected_pkgs)
         
         req(n_pkgs > 0)

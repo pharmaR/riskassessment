@@ -34,7 +34,7 @@ reweightViewServer <- function(id, user) {
     output$weights_table <- DT::renderDataTable({
       
       all_names <- unique(curr_new_wts()$name)
-      chgd_wt_names <- curr_new_wts() %>% filter(weight != new_weight) %>% pull(name)
+      chgd_wt_names <- curr_new_wts() %>% dplyr::filter(weight != new_weight) %>% dplyr::pull(name)
       my_colors <- ifelse(all_names %in% chgd_wt_names,'#FFEB9C', '#FFFFFF')
       
       DT::datatable(
@@ -133,7 +133,7 @@ reweightViewServer <- function(id, user) {
       req(input$metric_weight)
       
       curr_new_wts() %>%
-        filter(weight != new_weight) %>%
+        dplyr::filter(weight != new_weight) %>%
         nrow()
     })
     
@@ -156,9 +156,9 @@ reweightViewServer <- function(id, user) {
       } else {
         updateNumericInput(session, "metric_weight",
                            value = curr_new_wts() %>%
-                             filter(name == input$metric_name) %>%
-                             select(new_weight) %>% # new weight
-                             pull())
+                             dplyr::filter(name == input$metric_name) %>%
+                             dplyr::select(new_weight) %>% # new weight
+                             dplyr::pull())
       }
       
     })
@@ -216,10 +216,10 @@ reweightViewServer <- function(id, user) {
       # First, which weights are different than the originals?
       wt_chgd_df <- 
         curr_new_wts() %>%
-        filter(weight != new_weight)
+        dplyr::filter(weight != new_weight)
       
-      wt_chgd_metric <- wt_chgd_df %>% select(name) %>% pull()
-      wt_chgd_wt <- wt_chgd_df %>% select(new_weight) %>% pull()
+      wt_chgd_metric <- wt_chgd_df %>% dplyr::select(name) %>% dplyr::pull()
+      wt_chgd_wt <- wt_chgd_df %>% dplyr::select(new_weight) %>% dplyr::pull()
       rlang::inform("Metrics & Weights changed...")
       rlang::inform(paste(wt_chgd_metric, ": ", wt_chgd_wt))
       purrr::walk2(wt_chgd_metric, wt_chgd_wt, ~update_metric_weight(.x, .y))
@@ -317,6 +317,6 @@ reweightViewServer <- function(id, user) {
     
     # Return metric weights. Doing so guarantees that when a report is
     # downloaded, it would have the latest metric weights.
-    return(reactive(curr_new_wts() %>% select(-new_weight)))
+    return(reactive(curr_new_wts() %>% dplyr::select(-new_weight)))
   })
 }

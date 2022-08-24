@@ -264,6 +264,7 @@ get_date_span <- function(start, end = Sys.Date()) {
 
 #' The 'Build Community Cards' function
 #' 
+#' @import dplyr
 #' @importFrom lubridate interval make_date year
 #' @importFrom glue glue
 #' 
@@ -271,8 +272,8 @@ build_comm_cards <- function(data){
 
   # Get the first package release.
   first_version <- data %>%
-    filter(year == min(year)) %>%
-    filter(month == min(month)) %>%
+    dplyr::filter(year == min(year)) %>%
+    dplyr::filter(month == min(month)) %>%
     slice_head(n = 1) %>%
     dplyr::mutate(fake_rel_date = lubridate::make_date(year, month, 15))
   
@@ -295,9 +296,9 @@ build_comm_cards <- function(data){
   # Get the last package release's month and year, then
   # make add in the release date
   last_ver <- data %>%
-    filter(!(version %in% c('', 'NA'))) %>%
-    filter(year == max(year)) %>%
-    filter(month == max(month)) %>%
+    dplyr::filter(!(version %in% c('', 'NA'))) %>%
+    dplyr::filter(year == max(year)) %>%
+    dplyr::filter(month == max(month)) %>%
     slice_head(n = 1) %>%
     dplyr::mutate(fake_rel_date = lubridate::make_date(year, month, 15))
   
@@ -316,8 +317,8 @@ build_comm_cards <- function(data){
             is_url = 0)
   
   downloads_last_year <- data %>%
-    filter(year == lubridate::year(Sys.Date()) - 1) %>%
-    distinct(year, month, downloads)
+    dplyr::filter(year == lubridate::year(Sys.Date()) - 1) %>%
+    dplyr::distinct(year, month, downloads)
   
   cards <- cards %>%
     add_row(name = 'downloads_last_year',
@@ -334,6 +335,7 @@ build_comm_cards <- function(data){
 
 #' The 'Build Community plot' function
 #' 
+#' @import dplyr
 #' @importFrom lubridate NA_Date_ interval
 #' @importFrom glue glue
 #' @importFrom plotly plot_ly layout add_segments add_annotations config
@@ -345,30 +347,30 @@ build_comm_plotly <- function(data) {
   
   community_data <- data %>%
     dplyr::mutate(day_month_year = glue::glue('1-{month}-{year}')) %>%
-    mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
-    mutate(month_year = glue::glue('{months(day_month_year)} {year}')) %>%
-    mutate(month = month.name[month]) %>%
-    arrange(day_month_year)
+    dplyr::mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
+    dplyr::mutate(month_year = glue::glue('{months(day_month_year)} {year}')) %>%
+    dplyr::mutate(month = month.name[month]) %>%
+    dplyr::arrange(day_month_year)
   
   downloads_data <- community_data %>%
-    distinct(month, year, .keep_all = TRUE)
+    dplyr::distinct(month, year, .keep_all = TRUE)
   
   # Last day that appears on the community metrics.
   latest_date <- downloads_data %>%
     slice_max(day_month_year) %>%
-    pull(day_month_year)
+    dplyr::pull(day_month_year)
   
   # Last day associated with a version release.
   last_version_date <- downloads_data %>%
-    filter(!(version %in% c('', 'NA'))) %>%
+    dplyr::filter(!(version %in% c('', 'NA'))) %>%
     slice_max(day_month_year) %>%
-    pull(day_month_year)
+    dplyr::pull(day_month_year)
   
   # First day associated with a version release.
   first_version_date <- downloads_data %>%
-    filter(!(version %in% c('', 'NA'))) %>%
+    dplyr::filter(!(version %in% c('', 'NA'))) %>%
     slice_min(day_month_year) %>%
-    pull(day_month_year)
+    dplyr::pull(day_month_year)
   
   # Get the difference in months.
   month_last <- lubridate::interval(last_version_date, latest_date) %/% months(1)
@@ -465,6 +467,9 @@ build_comm_plotly <- function(data) {
 #' The 'Get Overall Comments' function
 #' 
 #' Retrieves the overall comments for a specific package
+#' 
+#' @importFrom glue glue
+#' 
 get_overall_comments <- function(pkg_name) {
   dbSelect(glue::glue(
     "SELECT * FROM comments 
@@ -475,6 +480,10 @@ get_overall_comments <- function(pkg_name) {
 #' The 'Get Maintenance Metrics Comments' function
 #' 
 #' Retrieves the Maint Metrics comments for a specific package
+#' 
+#' @importFrom glue glue
+#' @importFrom purrr map
+#' 
 get_mm_comments <- function(pkg_name) {
   dbSelect(
     glue::glue(
@@ -489,6 +498,10 @@ get_mm_comments <- function(pkg_name) {
 #' The 'Get Community Usage Metrics Comments' function
 #' 
 #' Retrieve the Community Metrics comments for a specific package
+#' 
+#' @importFrom glue glue
+#' @importFrom purrr map
+#' 
 get_cm_comments <- function(pkg_name) {
   dbSelect(
     glue::glue(
@@ -504,6 +517,10 @@ get_cm_comments <- function(pkg_name) {
 #' 
 #' Pull the maint metrics data for a specific package id, and create 
 #' necessary columns for Cards UI
+#' 
+#' @import dplyr
+#' @importFrom glue glue
+#' 
 get_mm_data <- function(pkg_id){
   dbSelect(glue::glue(
     "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
@@ -512,7 +529,7 @@ get_mm_data <- function(pkg_id){
                     INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
                     WHERE package_metrics.package_id = '{pkg_id}' AND 
                     metric.class = 'maintenance' ;")) %>%
-    mutate(
+    dplyr::mutate(
       title = long_name,
       desc = description,
       succ_icon = rep(x = 'check', times = nrow(.)), 
@@ -526,6 +543,9 @@ get_mm_data <- function(pkg_id){
 #' The 'Get Communnity Data' function
 #' 
 #' Get all community metric data on a specific package
+#' 
+#' @importFrom glue glue
+#' 
 get_comm_data <- function(pkg_name){
   dbSelect(glue::glue(
     "SELECT *
@@ -537,6 +557,9 @@ get_comm_data <- function(pkg_name){
 #' The 'Get Package Info' function
 #' 
 #' Get all general info on a specific package
+#' 
+#' @importFrom glue glue
+#' 
 get_pkg_info <- function(pkg_name){
   dbSelect(glue::glue(
     "SELECT *

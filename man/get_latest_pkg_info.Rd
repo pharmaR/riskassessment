@@ -2,14 +2,10 @@
 % Please edit documentation in R/dbupload.R
 \name{get_latest_pkg_info}
 \alias{get_latest_pkg_info}
-\title{Get the package general information from CRAN/local
-Regex that finds entry: '\n ', "'", and '"' (the \code{|} mean 'or' and the
-`\`` is to scape the double quotes).}
+\title{Get the package general information from CRAN/local}
 \usage{
 get_latest_pkg_info(pkg_name)
 }
 \description{
 Get the package general information from CRAN/local
-Regex that finds entry: '\n ', "'", and '"' (the \code{|} mean 'or' and the
-`\`` is to scape the double quotes).
 }

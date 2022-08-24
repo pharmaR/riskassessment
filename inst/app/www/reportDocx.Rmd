@@ -94,7 +94,7 @@ params$maint_metrics %>%
     `Metric Description` = desc,
     `Metric Value` = value
   ) %>%
-  select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
+  dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
   knitr::kable(format = 'pandoc')
 ```
 
@@ -123,7 +123,7 @@ params$com_metrics %>%
     `Metric Description` = desc,
     `Metric Value` = value
   ) %>%
-  select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
+  dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
   knitr::kable(format = 'pandoc')
 ```
 
@@ -141,8 +141,8 @@ d <- params$com_metrics_raw %>%
   dplyr::mutate(day_month_year = glue::glue('1-{month}-{year}')) %>%
   dplyr::mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
   dplyr::mutate(month = month.name[month]) %>%
-  arrange(day_month_year) %>%
-  distinct(month, year, .keep_all = TRUE)
+  dplyr::arrange(day_month_year) %>%
+  dplyr::distinct(month, year, .keep_all = TRUE)
 
 mo <- ceiling(nrow(d) / 9)
 

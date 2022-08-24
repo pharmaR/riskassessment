@@ -1,14 +1,22 @@
+
+#' Community Usage Metrics UI function
+#' 
+#' @import shiny
 communityMetricsUI <- function(id) {
   uiOutput(NS(id, 'communityMetrics_ui'))
 }
 
+#' Community Usage Metrics server logic
+#' 
+#' @import shiny
+#' @import dplyr
 communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
   moduleServer(id, function(input, output, session) {
     
     # Render Output UI for Community Usage Metrics.
     output$communityMetrics_ui <- renderUI({
       
-      vect <- dbSelect("select distinct id from community_usage_metrics") %>% pull()
+      vect <- dbSelect("select distinct id from community_usage_metrics") %>% dplyr::pull()
       # Lets the user know that a package needs to be selected.
       if(identical(selected_pkg$name(), character(0)))
         showHelperMessage()
