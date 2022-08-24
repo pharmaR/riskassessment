@@ -8,6 +8,7 @@ reweightViewUI <- function(id) {
 
 #' Server logic for the 'Re-weight View' module
 #' 
+#' @import dplyr
 #' @importFrom DT styleEqual
 #' 
 reweightViewServer <- function(id, user) {
@@ -17,12 +18,12 @@ reweightViewServer <- function(id, user) {
     
     curr_new_wts <- reactiveVal(
       get_metric_weights() %>%
-        mutate(new_weight = weight) %>%
-        mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
+        dplyr::mutate(new_weight = weight) %>%
+        dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
     
     observeEvent(input$update_weight, {
       curr_new_wts(save$data %>%
-                     mutate(new_weight = ifelse(name == isolate(input$metric_name),
+                     dplyr::mutate(new_weight = ifelse(name == isolate(input$metric_name),
                                                 isolate(input$metric_weight), new_weight)))
     })
     
@@ -285,8 +286,8 @@ reweightViewServer <- function(id, user) {
       
       curr_new_wts(
         get_metric_weights() %>%
-          mutate(new_weight = weight) %>%
-          mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
+          dplyr::mutate(new_weight = weight) %>%
+          dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
       
       user$metrics_reweighted <- user$metrics_reweighted + 1
     }, ignoreInit = TRUE)
@@ -314,8 +315,8 @@ reweightViewServer <- function(id, user) {
       }
     )
     
-    #' Return metric weights. Doing so guarantees that when a report is
-    #' downloaded, it would have the latest metric weights.
+    # Return metric weights. Doing so guarantees that when a report is
+    # downloaded, it would have the latest metric weights.
     return(reactive(curr_new_wts() %>% select(-new_weight)))
   })
 }

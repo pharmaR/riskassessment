@@ -2,12 +2,10 @@
 % Please edit documentation in R/uploadPackage.R
 \name{uploadPackageServer}
 \alias{uploadPackageServer}
-\title{Save all the uploaded packages, marking them as 'new', 'not found', or
-'duplicate'.}
+\title{Server logic for the 'Upload Package' module}
 \usage{
 uploadPackageServer(id)
 }
 \description{
-Save all the uploaded packages, marking them as 'new', 'not found', or
-'duplicate'.
+Server logic for the 'Upload Package' module
 }

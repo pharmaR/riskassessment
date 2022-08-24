@@ -2,7 +2,7 @@
 % Please edit documentation in R/dbupload.R
 \name{insert_maintenance_metrics_to_db}
 \alias{insert_maintenance_metrics_to_db}
-\title{Get the maintenance and testing metrics info and upload into DB.}
+\title{The 'Insert MM to DB' Function}
 \usage{
 insert_maintenance_metrics_to_db(pkg_name)
 }

@@ -2,14 +2,7 @@
 % Please edit documentation in R/metricBox.R
 \name{metricBoxServer}
 \alias{metricBoxServer}
-\title{\code{title}: title.
-\code{desc}: description.
-\code{value}: metric value.
-\code{is_true}: whether the metric is TRUE. If true, then the succ_icon will be
-used; if false, then the unsucc_icon will be used.
-\code{is_perc}: whether the value is a percentage.
-\code{succ_icon}: icon used if is_true.
-\code{unsucc_icon}: icon used if not is_true.}
+\title{Server logic for the 'Metric Box' module}
 \usage{
 metricBoxServer(
   id,
@@ -23,13 +16,22 @@ metricBoxServer(
   icon_class = "text-success"
 )
 }
+\arguments{
+\item{title}{title.}
+
+\item{desc}{description.}
+
+\item{value}{metric value.}
+
+\item{is_perc}{whether the value is a percentage.}
+
+\item{succ_icon}{icon used if is_true.}
+
+\item{unsucc_icon}{icon used if not is_true.}
+
+\item{is_true}{whether the metric is TRUE. If true, then the succ_icon will
+be used; if false, then the unsucc_icon will be used.}
+}
 \description{
-\code{title}: title.
-\code{desc}: description.
-\code{value}: metric value.
-\code{is_true}: whether the metric is TRUE. If true, then the succ_icon will be
-used; if false, then the unsucc_icon will be used.
-\code{is_perc}: whether the value is a percentage.
-\code{succ_icon}: icon used if is_true.
-\code{unsucc_icon}: icon used if not is_true.
+Server logic for the 'Metric Box' module
 }

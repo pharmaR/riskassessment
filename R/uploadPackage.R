@@ -65,8 +65,8 @@ uploadPackageServer <- function(id) {
       )
     )
     
-    #' Save all the uploaded packages, marking them as 'new', 'not found', or
-    #' 'duplicate'.
+    # Save all the uploaded packages, marking them as 'new', 'not found', or
+    # 'duplicate'.
     uploaded_pkgs <- reactive({
       
       # Return an empty data.frame when no file is uploaded.
@@ -92,7 +92,7 @@ uploadPackageServer <- function(id) {
       
       # Add status column and remove white space around package names.
       uploaded_packages <- uploaded_packages %>%
-        mutate(
+        dplyr::mutate(
           status = rep('', np),
           package = trimws(package),
           version = trimws(version)

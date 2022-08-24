@@ -2,12 +2,10 @@
 % Please edit documentation in R/reweightView.R
 \name{reweightViewServer}
 \alias{reweightViewServer}
-\title{Return metric weights. Doing so guarantees that when a report is
-downloaded, it would have the latest metric weights.}
+\title{Server logic for the 'Re-weight View' module}
 \usage{
 reweightViewServer(id, user)
 }
 \description{
-Return metric weights. Doing so guarantees that when a report is
-downloaded, it would have the latest metric weights.
+Server logic for the 'Re-weight View' module
 }

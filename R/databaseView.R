@@ -59,10 +59,10 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
       )
       
       db_pkg_overview %>%
-        mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>%
-        mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
-        mutate(decision = ifelse(decision != "", paste(decision, "Risk"), "-")) %>%
-        mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
+        dplyr::mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>%
+        dplyr::mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
+        dplyr::mutate(decision = ifelse(decision != "", paste(decision, "Risk"), "-")) %>%
+        dplyr::mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
         select(name, version, score, was_decision_made, decision, last_comment)
     })
     

@@ -44,6 +44,7 @@ assessmentInfoUI <- function(id) {
 
 #' Server Logic for 'Assessment Info' Module
 #' 
+#' @import dplyr
 #' @importFrom readr read_file read_csv
 #' 
 assessmentInfoServer <- function(id, metric_weights) {
@@ -73,9 +74,9 @@ numeric value <b>x</b> standardized weight)"
     # Render table for Maintenance Metrics.
     output$riskcalc_weights_table <- DT::renderDataTable({
       d <- metric_weights() %>%
-        mutate(weight = ifelse(name == "covr_coverage", 0, weight)) %>%
+        dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)) %>%
         formattable::formattable() %>%
-        mutate(standardized_weight = round(weight / sum(weight, na.rm = TRUE), 4))
+        dplyr::mutate(standardized_weight = round(weight / sum(weight, na.rm = TRUE), 4))
       
       formattable::as.datatable(d,
                    selection = list(mode = 'single'),

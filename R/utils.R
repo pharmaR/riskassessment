@@ -118,7 +118,7 @@ create_credentials_db <- function(db_name = credentials_name){
   pwd <- shinymanager::read_db_decrypt(
     con, name = "pwd_mngt",
     passphrase = passphrase) %>%
-    mutate(must_change = ifelse(
+    dplyr::mutate(must_change = ifelse(
       have_changed == "TRUE", must_change, as.character(TRUE)))
   
   shinymanager::write_db_encrypt(
@@ -132,7 +132,7 @@ create_credentials_db <- function(db_name = credentials_name){
   # update expire date here to current date + 365 days
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   dat <- shinymanager::read_db_decrypt(con, name = "credentials", passphrase = passphrase) %>%
-    mutate(expire = as.character(Sys.Date() + 365))
+    dplyr::mutate(expire = as.character(Sys.Date() + 365))
   
   shinymanager::write_db_encrypt(
     con,
@@ -274,7 +274,7 @@ build_comm_cards <- function(data){
     filter(year == min(year)) %>%
     filter(month == min(month)) %>%
     slice_head(n = 1) %>%
-    mutate(fake_rel_date = lubridate::make_date(year, month, 15))
+    dplyr::mutate(fake_rel_date = lubridate::make_date(year, month, 15))
   
   # get the time span in months or years depending on how much time
   # has elapsed
@@ -299,7 +299,7 @@ build_comm_cards <- function(data){
     filter(year == max(year)) %>%
     filter(month == max(month)) %>%
     slice_head(n = 1) %>%
-    mutate(fake_rel_date = lubridate::make_date(year, month, 15))
+    dplyr::mutate(fake_rel_date = lubridate::make_date(year, month, 15))
   
   # get the time span in months or years depending on how much time
   # has elapsed
@@ -344,7 +344,7 @@ build_comm_plotly <- function(data) {
   pkg_name <- unique(data$id)
   
   community_data <- data %>%
-    mutate(day_month_year = glue::glue('1-{month}-{year}')) %>%
+    dplyr::mutate(day_month_year = glue::glue('1-{month}-{year}')) %>%
     mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
     mutate(month_year = glue::glue('{months(day_month_year)} {year}')) %>%
     mutate(month = month.name[month]) %>%

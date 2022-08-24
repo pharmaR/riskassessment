@@ -89,7 +89,7 @@ tagList(br(), h2('Maintenance Metrics'))
 
 ```{r maintenance_metrics_table}
 params$maint_metrics %>%
-  mutate(
+  dplyr::mutate(
     `Metric Name` = title,
     `Metric Description` = desc,
     `Metric Value` = value
@@ -118,7 +118,7 @@ tagList(br(), h2("Community Usage Metrics"))
 
 ```{r community_metrics_table, warning=FALSE, message=FALSE, error=FALSE, results='HIDE', echo=FALSE}
 params$com_metrics %>%
-  mutate(
+  dplyr::mutate(
     `Metric Name` = title,
     `Metric Description` = desc,
     `Metric Value` = value
@@ -138,9 +138,9 @@ tagList(
 
 ```{r community_metrics_plot, fig.width=10, fig.height=5}
 d <- params$com_metrics_raw %>%
-  mutate(day_month_year = glue::glue('1-{month}-{year}')) %>%
-  mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
-  mutate(month = month.name[month]) %>%
+  dplyr::mutate(day_month_year = glue::glue('1-{month}-{year}')) %>%
+  dplyr::mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
+  dplyr::mutate(month = month.name[month]) %>%
   arrange(day_month_year) %>%
   distinct(month, year, .keep_all = TRUE)
 

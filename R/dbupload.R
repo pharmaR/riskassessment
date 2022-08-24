@@ -25,11 +25,11 @@ get_latest_pkg_info <- function(pkg_name) {
   
   # Get the table displaying version, authors, etc.
   table_info <- (webpage %>% rvest::html_table())[[1]] %>%
-    mutate(X1 = str_remove_all(string = X1, pattern = ':')) %>%
-    mutate(X2 = str_remove_all(string = X2, pattern = pattern)) %>%
+    dplyr::mutate(X1 = str_remove_all(string = X1, pattern = ':')) %>%
+    dplyr::mutate(X2 = str_remove_all(string = X2, pattern = pattern)) %>%
     pivot_wider(names_from = X1, values_from = X2) %>%
     select(Version, Maintainer, Author, License, Published) %>%
-    mutate(Title = title, Description = description)
+    dplyr::mutate(Title = title, Description = description)
   
   return(table_info)
 }
@@ -189,7 +189,7 @@ insert_community_metrics_to_db <- function(pkg_name) {
           rvest::html_table() %>%
           select(-c("", "Description", 'Size')) %>%
           filter(`Last modified` != "") %>%
-          mutate(version = str_remove_all(
+          dplyr::mutate(version = str_remove_all(
             string = Name, pattern = glue::glue('{pkg_name}_|.tar.gz')),
             .keep = 'unused') %>%
           # get latest high-level package info
@@ -200,9 +200,9 @@ insert_community_metrics_to_db <- function(pkg_name) {
       # close(pkg_url)
       
       versions_with_dates <- versions_with_dates0 %>%
-        mutate(date = as.Date(`Last modified`), .keep = 'unused') %>%
-        mutate(month = lubridate::month(date)) %>%
-        mutate(year = lubridate::year(date))
+        dplyr::mutate(date = as.Date(`Last modified`), .keep = 'unused') %>%
+        dplyr::mutate(month = lubridate::month(date)) %>%
+        dplyr::mutate(year = lubridate::year(date))
       
 
       # First release date.
@@ -216,7 +216,7 @@ insert_community_metrics_to_db <- function(pkg_name) {
           pkg_name,
           from = first_release_date,
           to = Sys.Date()) %>%
-        mutate(month = lubridate::month(date),
+        dplyr::mutate(month = lubridate::month(date),
                year = lubridate::year(date)) %>%
         filter(!(month == lubridate::month(Sys.Date()) &
                  year == lubridate::year(Sys.Date()))) %>%
