@@ -43,6 +43,7 @@ databaseViewUI <- function(id) {
 #' @import dplyr
 #' @importFrom lubridate as_datetime
 #' @importFrom stringr str_replace_all str_replace
+#' @importFrom shinyjs enable disable
 #' 
 databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
   moduleServer(id, function(input, output, session) {

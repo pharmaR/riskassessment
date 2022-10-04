@@ -267,6 +267,7 @@ get_date_span <- function(start, end = Sys.Date()) {
 #' @import dplyr
 #' @importFrom lubridate interval make_date year
 #' @importFrom glue glue
+#' @importFrom tibble add_row
 #' 
 build_comm_cards <- function(data){
 
@@ -274,7 +275,7 @@ build_comm_cards <- function(data){
   first_version <- data %>%
     dplyr::filter(year == min(year)) %>%
     dplyr::filter(month == min(month)) %>%
-    slice_head(n = 1) %>%
+    dplyr::slice_head(n = 1) %>%
     dplyr::mutate(fake_rel_date = lubridate::make_date(year, month, 15))
   
   # get the time span in months or years depending on how much time
@@ -299,7 +300,7 @@ build_comm_cards <- function(data){
     dplyr::filter(!(version %in% c('', 'NA'))) %>%
     dplyr::filter(year == max(year)) %>%
     dplyr::filter(month == max(month)) %>%
-    slice_head(n = 1) %>%
+    dplyr::slice_head(n = 1) %>%
     dplyr::mutate(fake_rel_date = lubridate::make_date(year, month, 15))
   
   # get the time span in months or years depending on how much time
@@ -307,7 +308,7 @@ build_comm_cards <- function(data){
   time_diff_latest_rel <- get_date_span(last_ver$fake_rel_date)
   
   cards <- cards %>%
-    add_row(name = 'time_since_latest_version',
+    tibble::add_row(name = 'time_since_latest_version',
             title = 'Latest Version Release',
             desc = 'Time passed since latest version release',
             value = glue::glue('{time_diff_latest_rel$value} {time_diff_latest_rel$label} Ago'),
@@ -321,7 +322,7 @@ build_comm_cards <- function(data){
     dplyr::distinct(year, month, downloads)
   
   cards <- cards %>%
-    add_row(name = 'downloads_last_year',
+    tibble::add_row(name = 'downloads_last_year',
             title = 'Package Downloads',
             desc = 'Number of downloads since last year',
             value = format(sum(downloads_last_year$downloads), big.mark = ","),
@@ -357,19 +358,19 @@ build_comm_plotly <- function(data) {
   
   # Last day that appears on the community metrics.
   latest_date <- downloads_data %>%
-    slice_max(day_month_year) %>%
+    dplyr::slice_max(day_month_year) %>%
     dplyr::pull(day_month_year)
   
   # Last day associated with a version release.
   last_version_date <- downloads_data %>%
     dplyr::filter(!(version %in% c('', 'NA'))) %>%
-    slice_max(day_month_year) %>%
+    dplyr::slice_max(day_month_year) %>%
     dplyr::pull(day_month_year)
   
   # First day associated with a version release.
   first_version_date <- downloads_data %>%
     dplyr::filter(!(version %in% c('', 'NA'))) %>%
-    slice_min(day_month_year) %>%
+    dplyr::slice_min(day_month_year) %>%
     dplyr::pull(day_month_year)
   
   # Get the difference in months.
@@ -404,8 +405,8 @@ build_comm_plotly <- function(data) {
                         range = dates_range)
     ) %>% 
     plotly::add_segments(
-      x = ~if_else(version %in% c("", "NA"), lubridate::NA_Date_, day_month_year),
-      xend = ~if_else(version %in% c("", "NA"), lubridate::NA_Date_, day_month_year),
+      x = ~dplyr::if_else(version %in% c("", "NA"), lubridate::NA_Date_, day_month_year),
+      xend = ~dplyr::if_else(version %in% c("", "NA"), lubridate::NA_Date_, day_month_year),
       y = ~.98 * min(downloads),
       yend = ~1.02 * max(downloads),
       name = "Version Release",

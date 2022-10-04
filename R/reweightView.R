@@ -1,5 +1,7 @@
 #' UI for the 'Re-weight View' module
 #' 
+#' @import shiny
+#' 
 reweightViewUI <- function(id) {
   tagList(
     uiOutput(NS(id, "reweights_view"))
@@ -8,8 +10,13 @@ reweightViewUI <- function(id) {
 
 #' Server logic for the 'Re-weight View' module
 #' 
+#' @import shiny
 #' @import dplyr
-#' @importFrom DT styleEqual
+#' @importFrom DT datatable formatStyle styleEqual renderDataTable
+#' @importFrom shinyjs enable disable delay
+#' @importFrom shinydashboard box
+#' @importFrom DBI dbConnect dbDisconnect
+#' @importFrom RSQLite SQLite sqliteCopyDatabase
 #' 
 reweightViewServer <- function(id, user) {
   moduleServer(id, function(input, output, session) {
@@ -24,7 +31,7 @@ reweightViewServer <- function(id, user) {
     observeEvent(input$update_weight, {
       curr_new_wts(save$data %>%
                      dplyr::mutate(new_weight = ifelse(name == isolate(input$metric_name),
-                                                isolate(input$metric_weight), new_weight)))
+                                                       isolate(input$metric_weight), new_weight)))
     })
     
     observeEvent(curr_new_wts(), {
@@ -226,7 +233,7 @@ reweightViewServer <- function(id, user) {
       
       # update for each package
       all_pkgs <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")
-      cmt_or_dec_pkgs <- unique(bind_rows(
+      cmt_or_dec_pkgs <- unique(dplyr::bind_rows(
         dbSelect("SELECT DISTINCT id AS pkg_name FROM comments where comment_type = 'o'"),
         dbSelect("SELECT DISTINCT name AS pkg_name FROM package where decision != ''")
       ))

@@ -63,7 +63,18 @@ sidebarUI <- function(id) {
     )
   )
 }
-
+#' Sidebar Server Logic
+#' 
+#' Also known as the 'Control Panel', and rightfully so, as it controls
+#' most components of the app, central to it's function
+#' 
+#' @param id a module id
+#' @param user a username
+#' @param uploaded_pkgs a vector of packages
+#' 
+#' @import shiny
+#' @importFrom shinyjs enable disable
+#' 
 sidebarServer <- function(id, user, uploaded_pkgs) {
   moduleServer(id, function(input, output, session) {
     
@@ -399,10 +410,10 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       
       selected_pkg$decision <- ''
       
-      enable("decision")
-      enable("submit_decision")
-      enable("overall_comment")
-      enable("submit_overall_comment")
+      shinyjs::enable("decision")
+      shinyjs::enable("submit_decision")
+      shinyjs::enable("overall_comment")
+      shinyjs::enable("submit_overall_comment")
       
       removeModal()
       

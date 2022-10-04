@@ -3,7 +3,7 @@
 #' @param input,output,session Internal parameters for {shiny}.
 #'     DO NOT REMOVE.
 #' @import shiny
-#' @importFrom shinyjs show hide
+#' @importFrom shinyjs show hide delay runjs
 #' @importFrom shinymanager secure_server
 #' @importFrom keyring key_get
 #' @importFrom loggit loggit

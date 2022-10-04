@@ -129,6 +129,8 @@ theme <- bslib::bs_theme(
   # warning = "pink"
 )
 
+#' showHelperMessage
+#' 
 #' Displays a helper message. By default, it informs the user that he should
 #' select a package.
 showHelperMessage <- function(message = "Please select a package"){
@@ -139,7 +141,9 @@ showHelperMessage <- function(message = "Please select a package"){
         padding-top: 50px;")
 }
 
-# Displays formatted comments.
+#' showComments
+#' 
+#' Displays formatted comments
 showComments <- function(pkg_name, comments){
   if (length(pkg_name) == 0)
     return("")

@@ -2,8 +2,7 @@
 % Please edit documentation in R/global.R
 \name{showHelperMessage}
 \alias{showHelperMessage}
-\title{Displays a helper message. By default, it informs the user that he should
-select a package.}
+\title{showHelperMessage}
 \usage{
 showHelperMessage(message = "Please select a package")
 }
