@@ -1,3 +1,15 @@
+#' Sidebar Server Logic
+#' 
+#' Also known as the 'Control Panel', and rightfully so, as it controls
+#' most components of the app, central to it's function
+#' 
+#' @param id a module id
+#' @param user a username
+#' @param uploaded_pkgs a vector of packages
+#' 
+#' @import shiny
+#' @importFrom shinyjs disabled
+#' 
 sidebarUI <- function(id) {
   tagList(
     tags$b(h4("Package Control Panel", style = "text-align: center;")),
@@ -63,6 +75,7 @@ sidebarUI <- function(id) {
     )
   )
 }
+
 #' Sidebar Server Logic
 #' 
 #' Also known as the 'Control Panel', and rightfully so, as it controls
