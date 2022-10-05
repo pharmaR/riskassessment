@@ -1,4 +1,9 @@
-# Module to display introJS button and functionality.
+
+#'UI for Module to display introJS button and functionality.
+#' 
+#' @param id a module id
+#' 
+#' @import shiny
 introJSUI <- function(id) {
   fluidRow(
     style = "float: right",
@@ -14,6 +19,17 @@ introJSUI <- function(id) {
     ))
 }
 
+#' Server logic for introJS module
+#'
+#' @param id a module id
+#' @param text a data.frame containing info about each step: element names, text
+#'   strings guiding users, and a position of where to place the text in
+#'   relationship to the element. Please see `R/introJSText.R` for data.frames
+#'   that populate this argument for the app
+#'
+#' @import shiny
+#' @importFrom rintrojs introjs
+#'   
 introJSServer <- function(id, text) {
   moduleServer(id, function(input, output, session) {
     

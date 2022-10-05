@@ -1,5 +1,8 @@
-#' UI for the 'Upload Package' module
-#'
+#' 'Upload Package' UI
+#' 
+#' @param id a module id
+#' 
+#' @import shiny
 #' @importFrom DT dataTableOutput
 #' 
 uploadPackageUI <- function(id) {
@@ -33,9 +36,14 @@ uploadPackageUI <- function(id) {
   )
 }
 
+
 #' Server logic for the 'Upload Package' module
 #'
+#' @param id a module id
+#' 
 #' @importFrom riskmetric pkg_ref
+#' @importFrom rintrojs introjs
+#' @importFrom readr read_csv
 #' 
 uploadPackageServer <- function(id) {
   moduleServer(id, function(input, output, session) {

@@ -6,6 +6,9 @@
 \usage{
 assessmentInfoUI(id)
 }
+\arguments{
+\item{id}{a module id name}
+}
 \description{
 UI for 'Assessment Info' Module
 }

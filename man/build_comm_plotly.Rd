@@ -6,6 +6,9 @@
 \usage{
 build_comm_plotly(data)
 }
+\arguments{
+\item{data}{a data.frame}
+}
 \description{
 The 'Build Community plot' function
 }

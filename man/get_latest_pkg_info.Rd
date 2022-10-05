@@ -6,6 +6,9 @@
 \usage{
 get_latest_pkg_info(pkg_name)
 }
+\arguments{
+\item{pkg_name}{the package name}
+}
 \description{
 Get the package general information from CRAN/local
 }

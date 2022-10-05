@@ -6,6 +6,9 @@
 \usage{
 get_cm_comments(pkg_name)
 }
+\arguments{
+\item{pkg_name}{string}
+}
 \description{
 Retrieve the Community Metrics comments for a specific package
 }

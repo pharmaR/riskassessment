@@ -1,5 +1,8 @@
 #' UI for 'Assessment Info' Module
 #' 
+#' @param id a module id name
+#' 
+#' @import shiny
 #' @importFrom DT dataTableOutput
 #' 
 assessmentInfoUI <- function(id) {
@@ -44,8 +47,13 @@ assessmentInfoUI <- function(id) {
 
 #' Server Logic for 'Assessment Info' Module
 #' 
+#' @param id a module id name
+#' @param metric_weights placeholder
+#' 
 #' @import dplyr
 #' @importFrom readr read_file read_csv
+#' @importFrom DT renderDataTable formatStyle datatable
+#' @importFrom formattable as.datatable 
 #' 
 assessmentInfoServer <- function(id, metric_weights) {
   moduleServer(id, function(input, output, session) {

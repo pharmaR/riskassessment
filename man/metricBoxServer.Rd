@@ -17,6 +17,8 @@ metricBoxServer(
 )
 }
 \arguments{
+\item{id}{a module id name}
+
 \item{title}{title.}
 
 \item{desc}{description.}

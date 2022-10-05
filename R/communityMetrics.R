@@ -1,6 +1,8 @@
 
 #' Community Usage Metrics UI function
 #' 
+#' @param id a module id name
+#' 
 #' @import shiny
 communityMetricsUI <- function(id) {
   uiOutput(NS(id, 'communityMetrics_ui'))
@@ -8,8 +10,16 @@ communityMetricsUI <- function(id) {
 
 #' Community Usage Metrics server logic
 #' 
+#' @param id a module id name
+#' @param selected_pkg placeholder
+#' @param community_metrics placeholder
+#' @param user placeholder
+#' 
 #' @import shiny
 #' @import dplyr
+#' @importFrom glue glue
+#' @importFrom plotly plotlyOutput renderPlotly
+#' 
 communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
   moduleServer(id, function(input, output, session) {
     

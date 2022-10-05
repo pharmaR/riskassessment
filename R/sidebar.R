@@ -1,4 +1,4 @@
-#' Sidebar Server Logic
+#' Sidebar UI
 #' 
 #' Also known as the 'Control Panel', and rightfully so, as it controls
 #' most components of the app, central to it's function

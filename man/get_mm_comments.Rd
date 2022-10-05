@@ -6,6 +6,9 @@
 \usage{
 get_mm_comments(pkg_name)
 }
+\arguments{
+\item{pkg_name}{string}
+}
 \description{
 Retrieves the Maint Metrics comments for a specific package
 }

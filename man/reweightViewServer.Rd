@@ -6,6 +6,11 @@
 \usage{
 reweightViewServer(id, user)
 }
+\arguments{
+\item{id}{the module id}
+
+\item{user}{the user name}
+}
 \description{
 Server logic for the 'Re-weight View' module
 }

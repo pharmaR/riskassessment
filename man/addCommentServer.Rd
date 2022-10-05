@@ -2,12 +2,21 @@
 % Please edit documentation in R/addComment.R
 \name{addCommentServer}
 \alias{addCommentServer}
-\title{TODO: comments can't contain "'". Check for other invalid
-characters.}
+\title{addComment module's server logic}
 \usage{
 addCommentServer(id, metric_abrv, user_name, user_role, pkg_name)
 }
+\arguments{
+\item{id}{a module id name}
+
+\item{metric_abrv}{placeholder}
+
+\item{user_name}{placeholder}
+
+\item{user_role}{placeholder}
+
+\item{pkg_name}{placeholder}
+}
 \description{
-TODO: comments can't contain "'". Check for other invalid
-characters.
+addComment module's server logic
 }

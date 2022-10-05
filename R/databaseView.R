@@ -1,4 +1,4 @@
-# Risk color palettes.
+# Global Risk color palettes.
 # https://www.rapidtables.com/web/color/html-color-codes.html
 low_risk_color  <- "#228B22"  # forest green
 med_risk_color  <- "#d1b000"  # dark gold
@@ -7,6 +7,9 @@ setColorPalette <- colorRampPalette(c(low_risk_color, med_risk_color, high_risk_
 
 #' UI for 'Database View' module
 #' 
+#' @param id a module id name
+#' 
+#' @import shiny
 #' @importFrom shinydashboard box
 #' @importFrom DT dataTableOutput
 #' 
@@ -39,12 +42,23 @@ databaseViewUI <- function(id) {
 }
 
 #' Server logic for 'Database View' module
-#' 
+#'
+#' @param id a module id name
+#' @param user a user name
+#' @param uploaded_pkgs a vector of uploaded package names
+#' @param metric_weights a reactive data.frame holding metric weights
+#'
+#' @import shiny
 #' @import dplyr
 #' @importFrom lubridate as_datetime
 #' @importFrom stringr str_replace_all str_replace
 #' @importFrom shinyjs enable disable
-#' 
+#' @importFrom rmarkdown render
+#' @importFrom glue glue
+#' @importFrom DT renderDataTable formatStyle
+#' @importFrom formattable formattable as.datatable formatter style csscolor
+#'   icontext
+#'   
 databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
   moduleServer(id, function(input, output, session) {
     

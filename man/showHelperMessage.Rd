@@ -6,6 +6,9 @@
 \usage{
 showHelperMessage(message = "Please select a package")
 }
+\arguments{
+\item{message}{a string}
+}
 \description{
 Displays a helper message. By default, it informs the user that he should
 select a package.

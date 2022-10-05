@@ -6,6 +6,11 @@
 \usage{
 get_date_span(start, end = Sys.Date())
 }
+\arguments{
+\item{start}{starting date}
+
+\item{end}{ending date}
+}
 \description{
 Function accepts a start date and optional end date and will
 }

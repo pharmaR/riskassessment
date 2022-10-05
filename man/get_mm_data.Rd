@@ -6,6 +6,9 @@
 \usage{
 get_mm_data(pkg_id)
 }
+\arguments{
+\item{pkg_id}{string}
+}
 \description{
 Pull the maint metrics data for a specific package id, and create
 necessary columns for Cards UI

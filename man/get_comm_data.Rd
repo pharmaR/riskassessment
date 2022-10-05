@@ -6,6 +6,9 @@
 \usage{
 get_comm_data(pkg_name)
 }
+\arguments{
+\item{pkg_name}{string}
+}
 \description{
 Get all community metric data on a specific package
 }

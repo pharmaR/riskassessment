@@ -6,6 +6,9 @@
 \usage{
 uploadPackageServer(id)
 }
+\arguments{
+\item{id}{a module id}
+}
 \description{
 Server logic for the 'Upload Package' module
 }

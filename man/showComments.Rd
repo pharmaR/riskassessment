@@ -6,6 +6,9 @@
 \usage{
 showComments(pkg_name, comments)
 }
+\arguments{
+\item{pkg_name}{a data.frame}
+}
 \description{
 Displays formatted comments
 }

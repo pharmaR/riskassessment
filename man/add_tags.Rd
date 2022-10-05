@@ -6,6 +6,11 @@
 \usage{
 add_tags(ui, ...)
 }
+\arguments{
+\item{ui}{placeholder}
+
+\item{...}{placeholder}
+}
 \description{
 The 'Add tags' function
 }

@@ -6,6 +6,9 @@
 \usage{
 databaseViewUI(id)
 }
+\arguments{
+\item{id}{a module id name}
+}
 \description{
 UI for 'Database View' module
 }

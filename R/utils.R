@@ -1,7 +1,12 @@
 
 #' The 'Add tags' function
 #' 
+#' @param ui placeholder
+#' @param ... placeholder
+#' 
+#' @import shiny
 #' @importFrom shinymanager fab_button
+#' @importFrom shinyjs useShinyjs
 add_tags <- function(ui, ...) {
   ui <- force(ui)
   
@@ -48,6 +53,7 @@ add_tags <- function(ui, ...) {
   }
 }
 
+# maybe this belongs in R/global.R?
 # Init DB using credentials data.
 credentials <- data.frame(
   user = "admin",
@@ -58,8 +64,8 @@ credentials <- data.frame(
   stringsAsFactors = FALSE
 )
 
-# note: database_name is stored in global.R
-# Create a local database.
+
+
 create_db <- function(db_name = database_name){
   
   # Create an empty database.
@@ -102,8 +108,17 @@ create_db <- function(db_name = database_name){
 }
 
 
-# note: the credentials_name object is assigned in global.R
-# Create credentials database
+#' Create credentials database
+#' 
+#' Note: the credentials_name object is assigned in global.R
+#' 
+#' @param db_name a string
+#' 
+#' @import dplyr
+#' @importFrom DBI dbConnect dbDisconnect
+#' @importFrom RSQLite SQLite
+#' @importFrom shinymanager read_db_decrypt write_db_encrypt
+#' 
 create_credentials_db <- function(db_name = credentials_name){
   
   # Init the credentials database
@@ -144,6 +159,19 @@ create_credentials_db <- function(db_name = credentials_name){
   DBI::dbDisconnect(con)
 }
 
+
+
+
+
+#' Select data from database
+#' 
+#' @param query a sql query as a string
+#' @param db_name a string
+#' 
+#' @import dplyr
+#' @importFrom DBI dbConnect dbSendQuery dbFetch dbClearResult dbDisconnect
+#' @importFrom RSQLite SQLite
+#' @importFrom loggit loggit
 dbSelect <- function(query, db_name = database_name){
   errFlag <- FALSE
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
@@ -176,7 +204,22 @@ dbSelect <- function(query, db_name = database_name){
   return(dat)
 }
 
-# Deletes, updates or inserts queries.
+
+
+
+#' dbUpdate
+#'
+#' Deletes, updates or inserts queries.
+#'
+#' @param command a string
+#' @param db_name a string
+#'
+#' @import dplyr
+#' @importFrom DBI dbConnect dbSendStatement dbClearResult dbDisconnect
+#'   dbGetRowsAffected
+#' @importFrom RSQLite SQLite
+#' @importFrom loggit loggit
+#' @importFrom glue glue
 dbUpdate <- function(command, db_name = database_name){
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
@@ -200,12 +243,21 @@ dbUpdate <- function(command, db_name = database_name){
 }
 
 
+#' getTimeStamp
+#'
+#' Retrieves Sys.time(), but transforms slightly
+#'
+#' @importFrom stringr str_replace
 getTimeStamp <- function(){
   initial <- stringr::str_replace(Sys.time(), " ", "; ")
   return(paste(initial, Sys.timezone()))
 }
 
-# Get each metric's weight.
+
+#' get_metric_weights
+#'
+#' Retrieves metric name and current weight from metric table
+#'
 get_metric_weights <- function(){
   dbSelect(
     "SELECT name, weight
@@ -213,8 +265,14 @@ get_metric_weights <- function(){
   )
 }
 
-# Used to add a comment on every tab saying how the risk and weights changed, and that
-# the overall comment & final decision may no longer be applicable.
+
+#' weight_risk_comment
+#'
+#' Used to add a comment on every tab saying how the risk and weights changed,
+#' and that the overall comment & final decision may no longer be applicable.
+#' 
+#' @param pkg_name a package name, as a string
+#' @importFrom glue glue
 weight_risk_comment <- function(pkg_name) {
   
   pkg_score <- dbSelect(glue::glue(
@@ -227,7 +285,12 @@ weight_risk_comment <- function(pkg_name) {
        The previous risk score was {pkg_score}.')
 }
 
-# Update metric's weight.
+#' update_metric_weight
+#' 
+#' @param metric_name a metric name, as a string
+#' @param metric_name a weight, as a string or double
+#' 
+#' @importFrom glue glue
 update_metric_weight <- function(metric_name, metric_weight){
   dbUpdate(glue::glue(
     "UPDATE metric
@@ -239,6 +302,9 @@ update_metric_weight <- function(metric_name, metric_weight){
 #' The 'Get Date Span' function
 #' 
 #' Function accepts a start date and optional end date and will 
+#' 
+#' @param start starting date
+#' @param end ending date
 #' 
 #' @importFrom lubridate interval years
 #' @importFrom stringr str_remove
@@ -263,6 +329,8 @@ get_date_span <- function(start, end = Sys.Date()) {
 }
 
 #' The 'Build Community Cards' function
+#' 
+#' @param data a data.frame
 #' 
 #' @import dplyr
 #' @importFrom lubridate interval make_date year
@@ -334,7 +402,11 @@ build_comm_cards <- function(data){
   cards
 }
 
+
+
 #' The 'Build Community plot' function
+#' 
+#' @param data a data.frame
 #' 
 #' @import dplyr
 #' @importFrom lubridate NA_Date_ interval
@@ -460,6 +532,14 @@ build_comm_plotly <- function(data) {
     plotly::config(displayModeBar = F)
 }
 
+
+
+
+
+
+
+
+
 # Below are a series of get_* functions that help us query
 # certain sql tables in a certain way. They are used 2 - 3
 # times throughout the app, so it's best to maintain them
@@ -468,6 +548,8 @@ build_comm_plotly <- function(data) {
 #' The 'Get Overall Comments' function
 #' 
 #' Retrieves the overall comments for a specific package
+#' 
+#' @param pkg_name string
 #' 
 #' @importFrom glue glue
 #' 
@@ -481,6 +563,8 @@ get_overall_comments <- function(pkg_name) {
 #' The 'Get Maintenance Metrics Comments' function
 #' 
 #' Retrieves the Maint Metrics comments for a specific package
+#' 
+#' @param pkg_name string
 #' 
 #' @importFrom glue glue
 #' @importFrom purrr map
@@ -500,6 +584,8 @@ get_mm_comments <- function(pkg_name) {
 #' 
 #' Retrieve the Community Metrics comments for a specific package
 #' 
+#' @param pkg_name string
+#' 
 #' @importFrom glue glue
 #' @importFrom purrr map
 #' 
@@ -518,6 +604,8 @@ get_cm_comments <- function(pkg_name) {
 #' 
 #' Pull the maint metrics data for a specific package id, and create 
 #' necessary columns for Cards UI
+#' 
+#' @param pkg_id string
 #' 
 #' @import dplyr
 #' @importFrom glue glue
@@ -545,6 +633,8 @@ get_mm_data <- function(pkg_id){
 #' 
 #' Get all community metric data on a specific package
 #' 
+#' @param pkg_name string
+#' 
 #' @importFrom glue glue
 #' 
 get_comm_data <- function(pkg_name){
@@ -558,6 +648,8 @@ get_comm_data <- function(pkg_name){
 #' The 'Get Package Info' function
 #' 
 #' Get all general info on a specific package
+#' 
+#' @param pkg_name string
 #' 
 #' @importFrom glue glue
 #' 

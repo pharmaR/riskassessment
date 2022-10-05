@@ -6,6 +6,9 @@
 \usage{
 communityMetricsUI(id)
 }
+\arguments{
+\item{id}{a module id name}
+}
 \description{
 Community Usage Metrics UI function
 }

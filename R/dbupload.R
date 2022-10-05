@@ -1,6 +1,8 @@
 
 #' Get the package general information from CRAN/local
 #' 
+#' @param pkg_name the package name
+#' 
 #' @import dplyr
 #' @importFrom tidyr pivot_wider
 #' @importFrom glue glue 

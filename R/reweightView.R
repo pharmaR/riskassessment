@@ -1,5 +1,7 @@
 #' UI for the 'Re-weight View' module
 #' 
+#' @param id the module id
+#' 
 #' @import shiny
 #' 
 reweightViewUI <- function(id) {
@@ -9,6 +11,10 @@ reweightViewUI <- function(id) {
 }
 
 #' Server logic for the 'Re-weight View' module
+#' 
+#' 
+#' @param id the module id
+#' @param user the user name
 #' 
 #' @import shiny
 #' @import dplyr

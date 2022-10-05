@@ -2,10 +2,13 @@
 % Please edit documentation in R/uploadPackage.R
 \name{uploadPackageUI}
 \alias{uploadPackageUI}
-\title{UI for the 'Upload Package' module}
+\title{'Upload Package' UI}
 \usage{
 uploadPackageUI(id)
 }
+\arguments{
+\item{id}{a module id}
+}
 \description{
-UI for the 'Upload Package' module
+'Upload Package' UI
 }

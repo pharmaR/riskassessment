@@ -1,5 +1,12 @@
-# Module to display comments for the specified metric.
-# The comments will update as the user inserts more comments.
+#' The UI for the 'addComment' module
+#'
+#' Module to display comments for the specified metric. The comments will update
+#' as the user inserts more comments.
+#' 
+#' @param id a module id name
+#' 
+#' @import shiny
+#' 
 addCommentUI <- function(id) {
   fluidRow(
     column(
@@ -10,6 +17,19 @@ addCommentUI <- function(id) {
   )
 }
 
+#' addComment module's server logic
+#' 
+#' @param id a module id name
+#' @param metric_abrv placeholder
+#' @param user_name placeholder
+#' @param user_role placeholder
+#' @param pkg_name placeholder
+#' 
+#' @import shiny
+#' @import dplyr
+#' @importFrom glue glue
+#' @importFrom stringr str_replace_all
+#' 
 addCommentServer <- function(id, metric_abrv, user_name, user_role, pkg_name) {
   moduleServer(id, function(input, output, session) {
     
@@ -37,8 +57,8 @@ addCommentServer <- function(id, metric_abrv, user_name, user_role, pkg_name) {
       
       if (comment != "") {
         
-        #' TODO: comments can't contain "'". Check for other invalid
-        #' characters.
+        # TODO: comments can't contain "'". Check for other invalid
+        # characters.
         # if(str_count(string = comment, pattern = "'") != 0)
         #   validate("Invalid character: comments cannot contain single
         #            quotes (')")

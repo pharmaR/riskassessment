@@ -1,7 +1,33 @@
+#' UI for 'Report Preview' module
+#' 
+#' @param id a module id name
+#' 
+#' @import shiny
 reportPreviewUI <- function(id) {
   uiOutput(NS(id, "reportPreview_ui"))
 }
 
+#' Server logic for 'Report Preview' module
+#'
+#' @param id a module id name
+#' @param selected_pkg placeholder
+#' @param maint_metrics placeholder
+#' @param com_metrics placeholder
+#' @param com_metrics_raw placeholder
+#' @param mm_comments placeholder
+#' @param cm_comments placeholder
+#' @param downloads_plot_data placeholder
+#' @param user placeholder
+#' @param app_version placeholder
+#' @param metric_weights placeholder
+#' 
+#' @import shiny
+#' @import dplyr
+#' @importFrom rmarkdown render
+#' @importFrom plotly plotlyOutput renderPlotly
+#' @importFrom DT dataTableOutput renderDataTable
+#' @importFrom glue glue
+#' 
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                                 com_metrics_raw, mm_comments, cm_comments,
                                 downloads_plot_data, user, app_version,

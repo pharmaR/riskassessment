@@ -6,6 +6,9 @@
 \usage{
 get_pkg_info(pkg_name)
 }
+\arguments{
+\item{pkg_name}{string}
+}
 \description{
 Get all general info on a specific package
 }

@@ -6,6 +6,9 @@
 \usage{
 metricBoxUI(id)
 }
+\arguments{
+\item{id}{a module id name}
+}
 \description{
 The UI for the 'Metric Box' module
 }

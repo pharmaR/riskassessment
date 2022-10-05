@@ -6,6 +6,11 @@
 \usage{
 assessmentInfoServer(id, metric_weights)
 }
+\arguments{
+\item{id}{a module id name}
+
+\item{metric_weights}{placeholder}
+}
 \description{
 Server Logic for 'Assessment Info' Module
 }

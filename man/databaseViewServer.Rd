@@ -6,6 +6,15 @@
 \usage{
 databaseViewServer(id, user, uploaded_pkgs, metric_weights)
 }
+\arguments{
+\item{id}{a module id name}
+
+\item{user}{a user name}
+
+\item{uploaded_pkgs}{a vector of uploaded package names}
+
+\item{metric_weights}{a reactive data.frame holding metric weights}
+}
 \description{
 Server logic for 'Database View' module
 }

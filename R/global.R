@@ -21,37 +21,36 @@ library_all <- FALSE
 if(library_all) {
   # Packages needed for the app.
   packages = c(
-               # "shiny"
-               # ,"shinyhelper"
-               # ,"shinyjs"
-               # ,
-               "shinydashboard"
-               # ,"shinyWidgets"
-               # ,"data.table"
-               # ,"DT"
-               # ,"readr"
-               # ,"lubridate"
-               # ,"RSQLite"
-               # ,"DBI"
-               # ,"rvest"
-               # ,"xml2"
-               # ,"httr"
-               # ,"desc"
-               # ,"dplyr"
-               # ,"tools"
-               # ,"stringr"
-               # ,"tidyverse"
-               # ,"loggit"
-               # ,"plotly"
-               # ,"cranlogs"
-               # ,"formattable"
-               # ,"rintrojs"
-               # ,"shinymanager"
-               # ,"keyring"
-               # ,"rstudioapi"
-               # ,"glue"
-               # ,"bslib"
-               # ,'riskmetric'
+     # "shiny"
+     # ,"shinyhelper"
+     # ,"shinyjs"
+     # ,
+     "shinydashboard"
+     # ,"shinyWidgets"
+     # ,"data.table"
+     # ,"DT"
+     # ,"readr"
+     # ,"lubridate"
+     # ,"RSQLite"
+     # ,"DBI"
+     # ,"rvest"
+     # ,"xml2"
+     # ,"httr"
+     # ,"desc"
+     # ,"dplyr"
+     # ,"tools"
+     # ,"stringr"
+     # ,"tidyverse"
+     # ,"loggit"
+     # ,"plotly"
+     # ,"cranlogs"
+     # ,"formattable"
+     # ,"rintrojs"
+     # ,"shinymanager"
+     # ,"keyring"
+     # ,"rstudioapi"
+     # ,"glue"
+     # ,"bslib"
     ,
     'bslib',
     'config',
@@ -133,6 +132,10 @@ theme <- bslib::bs_theme(
 #' 
 #' Displays a helper message. By default, it informs the user that he should
 #' select a package.
+#' 
+#' @param message a string
+#' 
+#' @import shiny
 showHelperMessage <- function(message = "Please select a package"){
   h6(message,
      style = 
@@ -144,6 +147,11 @@ showHelperMessage <- function(message = "Please select a package"){
 #' showComments
 #' 
 #' Displays formatted comments
+#' 
+#' @param pkg_name a string
+#' @param pkg_name a data.frame
+#' 
+#' @import shiny
 showComments <- function(pkg_name, comments){
   if (length(pkg_name) == 0)
     return("")
