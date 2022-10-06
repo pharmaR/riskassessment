@@ -4,7 +4,7 @@
 #'     DO NOT REMOVE.
 #' @import shiny
 #' @importFrom shinyjs show hide delay runjs
-#' @importFrom shinymanager secure_server
+#' @importFrom shinymanager secure_server check_credentials
 #' @importFrom keyring key_get
 #' @importFrom loggit loggit
 #' @noRd
@@ -15,7 +15,7 @@ app_server <- function(input, output, session) {
   
   # check_credentials directly on sqlite db
   res_auth <- shinymanager::secure_server(
-    check_credentials = shinymanagercheck_credentials(
+    check_credentials = shinymanager::check_credentials(
       credentials_name,
       passphrase = passphrase
     )
