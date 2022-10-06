@@ -35,13 +35,6 @@ knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 
 
 ```{r functions, echo=FALSE, include=FALSE, message=FALSE, warning=FALSE}
-#' The 'Create Card' Function
-#'
-#' For html report, creates a single card UI
-#' 
-#' @importFrom glue glue
-#' @importFrom stringr str_sub
-#' 
 createCard <- function(title, desc, value, is_perc = FALSE, is_url = FALSE,
                        succ_icon = "check",  unsucc_icon = "times",
                        icon_class = "text-success"){
