@@ -102,6 +102,7 @@
 # 
 # golem::add_fct( "helpers", module = "dataComply" ) # ran
 # golem::add_fct( "helpers", module = "dataComplyRules" ) # ran
+golem::add_fct( "helpers" )
 # 
 # golem::add_fct( "meanSummary", module = "tableGen" ) 
 # golem::add_fct( "methods", module = "tableGen" ) 
