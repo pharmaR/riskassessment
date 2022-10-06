@@ -26,7 +26,7 @@ BugReports: https://github.com/pharmaR/risk_assessment/issues
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 Imports: 
     bslib (>= 0.3.0),
     config (>= 0.3.1),
@@ -60,10 +60,14 @@ Imports:
     shinymanager,
     shinyWidgets,
     stringr,
-    tidyr
+    tibble,
+    tidyr,
+    waiter
 Suggests: 
     rstudioapi,
     spelling,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Language: en-US
+Depends: 
+    R (>= 2.10)
