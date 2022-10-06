@@ -99,6 +99,7 @@
 # 
 # golem::add_utils( "strObjs" ) # ran
 # golem::add_utils( "helpers" ) # ran, but Maya still has to uncomment and document her funtions
+# golem::add_utils( "initialize" )
 # 
 # golem::add_fct( "helpers", module = "dataComply" ) # ran
 # golem::add_fct( "helpers", module = "dataComplyRules" ) # ran
