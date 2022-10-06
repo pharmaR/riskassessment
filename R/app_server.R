@@ -16,7 +16,7 @@ app_server <- function(input, output, session) {
   # check_credentials directly on sqlite db
   res_auth <- shinymanager::secure_server(
     check_credentials = shinymanagercheck_credentials(
-      'credentials.sqlite',
+      credentials_name,
       passphrase = passphrase
     )
   )

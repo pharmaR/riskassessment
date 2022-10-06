@@ -107,27 +107,6 @@ if(library_all) {
 
 
 
-app_version <- 'beta'
-passphrase <- 'somepassphrase'
-database_name <- "database.sqlite"
-credentials_name <- "credentials.sqlite"
-
-
-# # Start logging info.
-# loggit::set_logfile("loggit.json") # do this in app.R instead
-
-theme <- bslib::bs_theme(
-  bootswatch = "lux",
-  version = 5,
-  # bg = "white", 
-  # fg = "#023967",
-  primary = "#24305E",
-  secondary = "#F76C6C",
-  # success = "orange",
-  # info = "yellow",
-  # warning = "pink"
-)
-
 #' showHelperMessage
 #' 
 #' Displays a helper message. By default, it informs the user that he should

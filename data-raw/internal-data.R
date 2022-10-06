@@ -1,3 +1,21 @@
+# Global variables used within the application
+app_version <- 'beta'
+passphrase <- 'somepassphrase'
+database_name <- "database.sqlite"
+credentials_name <- "credentials.sqlite"
+
+app_theme <- bslib::bs_theme(
+  bootswatch = "lux",
+  version = 5,
+  # bg = "white", 
+  # fg = "#023967",
+  primary = "#24305E",
+  secondary = "#F76C6C",
+  # success = "orange",
+  # info = "yellow",
+  # warning = "pink"
+)
+
 # Overall descriptive text for community usage. Please edit text file to make changes.
 community_usage_txt <- readr::read_file(file.path("data-raw", "community.txt"))
 
@@ -79,6 +97,8 @@ numeric value <b>x</b> standardized weight)")
 template <- readr::read_csv(file.path('data-raw', 'upload_format.csv'), show_col_types = FALSE)
 
 usethis::use_data(
+  app_version, app_theme, passphrase,
+  database_name, credentials_name,
   community_usage_txt, community_usage_tbl,
   maintenance_metrics_text, maintenance_metrics_tbl,
   testing_text, testing_tbl,
