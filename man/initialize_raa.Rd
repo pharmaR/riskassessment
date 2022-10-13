@@ -10,5 +10,7 @@ initialize_raa()
 There is no return value. The function is run for its side effects.
 }
 \description{
-This sets up the environment when running the Risk Assessment Application. It sets the log file, initializes the package database if missing, and initializes the credentials database if missing.
+This sets up the environment when running the Risk Assessment
+Application. It sets the log file, initializes the package database if
+missing, and initializes the credentials database if missing.
 }
