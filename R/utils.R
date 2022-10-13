@@ -108,15 +108,6 @@ create_db <- function(db_name = database_name){
 }
 
 
-# Init DB using credentials data.
-credentials <- data.frame(
-  user = "admin",
-  password = "QWERTY1",
-  # password will automatically be hashed
-  admin = TRUE,
-  expire = as.character(Sys.Date()),
-  stringsAsFactors = FALSE
-)
 
 #' Create credentials database
 #' 
@@ -130,6 +121,16 @@ credentials <- data.frame(
 #' @importFrom shinymanager read_db_decrypt write_db_encrypt
 #' 
 create_credentials_db <- function(db_name = credentials_name){
+  
+  # Init the credentials table for credentials database
+  credentials <- data.frame(
+    user = "admin",
+    password = "QWERTY1",
+    # password will automatically be hashed
+    admin = TRUE,
+    expire = as.character(Sys.Date()),
+    stringsAsFactors = FALSE
+  )
   
   # Init the credentials database
   shinymanager::create_db(
