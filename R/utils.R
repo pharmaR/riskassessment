@@ -53,19 +53,19 @@ add_tags <- function(ui, ...) {
   }
 }
 
-# maybe this belongs in R/global.R?
-# Init DB using credentials data.
-credentials <- data.frame(
-  user = "admin",
-  password = "qwerty",
-  # password will automatically be hashed
-  admin = TRUE,
-  expire = as.character(Sys.Date()),
-  stringsAsFactors = FALSE
-)
 
 
-
+#' Create package database
+#' 
+#' @description Note: the database_name object is assigned in data-raw/internal-data.R
+#' 
+#' @param db_name a string
+#' 
+#' @import dplyr
+#' @importFrom DBI dbConnect dbDisconnect dbSendStatement dbClearResult
+#' @importFrom RSQLite SQLite
+#' @importFrom loggit loggit
+#' 
 create_db <- function(db_name = database_name){
   
   # Create an empty database.
@@ -108,9 +108,19 @@ create_db <- function(db_name = database_name){
 }
 
 
+# Init DB using credentials data.
+credentials <- data.frame(
+  user = "admin",
+  password = "QWERTY1",
+  # password will automatically be hashed
+  admin = TRUE,
+  expire = as.character(Sys.Date()),
+  stringsAsFactors = FALSE
+)
+
 #' Create credentials database
 #' 
-#' Note: the credentials_name object is assigned in global.R
+#' Note: the credentials_name object is assigned in data-raw/internal-data.R
 #' 
 #' @param db_name a string
 #' 

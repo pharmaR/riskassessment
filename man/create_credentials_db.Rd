@@ -10,5 +10,5 @@ create_credentials_db(db_name = credentials_name)
 \item{db_name}{a string}
 }
 \description{
-Note: the credentials_name object is assigned in global.R
+Note: the credentials_name object is assigned in data-raw/internal-data.R
 }
