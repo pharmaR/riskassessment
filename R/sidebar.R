@@ -317,10 +317,10 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
         shinyjs::enable("submit_overall_comment")
         
       } else{
-        shinyjs::enable("decision")
-        shinyjs::enable("submit_decision")
-        shinyjs::enable("overall_comment")
-        shinyjs::enable("submit_overall_comment")
+        shinyjs::disable("decision")
+        shinyjs::disable("submit_decision")
+        shinyjs::disable("overall_comment")
+        shinyjs::disable("submit_overall_comment")
       }
     }, ignoreInit = TRUE)
     
