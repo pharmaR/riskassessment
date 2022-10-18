@@ -2,9 +2,10 @@ Package: riskassessment
 Title: A web app designed to interface with the `riskmetric` package
 Version: 0.0.0.9000
 Authors@R: as.person(c( 
-    "Marly Gotti <marly.cormar@biogen.com> [aut, cre]",
-    "Aaron Clark <aaron.clark@biogen.com> [aut]",
+    "Aaron Clark <aaron.clark@biogen.com> [aut, cre]",
     "Robert Krajcik <robert.krajcik@biogen.com> [aut]",
+    "Jeff Thompson <jeff.thompson51317@gmail.com> [aut]",
+    "Marly Gotti <marly.cormar@biogen.com> [aut]",
     "Maya Gans <maya.gans@biogen.com> [aut]",
     "Aravind Reddy Kallem [aut]",
     "Fission Labs India Pvt Ltd [aut]"
