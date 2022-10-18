@@ -20,9 +20,9 @@ usethis::use_description(check_name = F)
 #   pkg_title = "riskassessment: a web app designed to interface with the `riskmetric` package",
 #   pkg_description = 
 #     "The `riskassessment` application allows users to define a list of R
-#     packages to assesss against metrics engineered by the `riskmetric`
+#     packages to assess against metrics engineered by the `riskmetric`
 #     package. In general, those metrics evaluate package development best practices,
-#     code documentation, community engagement, and sustainability that culiminate in a
+#     code documentation, community engagement, and sustainability that culminate in a
 #     quantitative risk score. The app allows users to select and review one package
 #     at a time to consume interactive visuals, download reports for sharing, submit
 #     comments for group collaboration, and even tweak metric weights used to
@@ -107,7 +107,6 @@ raa_pkgs = c(
              ,"rintrojs"
              ,"shinymanager"
              ,"keyring"
-             ,"rstudioapi"
 )
 use_package_v <- Vectorize(usethis::use_package)
 use_package_v(raa_pkgs)
@@ -118,8 +117,10 @@ use_package_v(tidypkgs)
 usethis::use_package("glue")
 usethis::use_dev_package("riskmetric")
 
+usethis::use_package("rstudioapi", type = "Suggests")
 usethis::use_package("shiny")
 usethis::use_package("shinymanager")
+usethis::use_package("shinydashboard") # for box()
 usethis::use_package("shinyjs")
 usethis::use_package("RSQLite")
 usethis::use_package("rstudioapi")
@@ -129,3 +130,22 @@ usethis::use_package("keyring")
 usethis::use_package("lubridate")
 usethis::use_package("rvest")
 usethis::use_package("bslib")
+
+# start golemizing
+usethis::use_package("config", min_version = "0.3.1")
+usethis::use_package("golem", min_version = "0.3.3")
+usethis::use_package("shiny", min_version = "1.7.1")
+usethis::use_package("riskmetric")
+usethis::use_package("tidyr")
+usethis::use_pipe()
+
+
+
+
+
+
+
+
+
+
+

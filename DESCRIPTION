@@ -1,5 +1,5 @@
 Package: riskassessment
-Title: riskassessment: A web app designed to interface with the `riskmetric` package
+Title: A web app designed to interface with the `riskmetric` package
 Version: 0.0.0.9000
 Authors@R: as.person(c( 
     "Marly Gotti <marly.cormar@biogen.com> [aut, cre]",
@@ -9,48 +9,65 @@ Authors@R: as.person(c(
     "Aravind Reddy Kallem [aut]",
     "Fission Labs India Pvt Ltd [aut]"
   ))
-Description: The `riskassessment` application allows users to define a list of R packages to assesss against metrics engineered by the `riskmetric` package. In general, those metrics evaluate package development best practices, code documentation, community engagement, and sustainability that culiminate in a quantitative risk score. The app allows users to select and review one package at a time to consume interactive visuals, download reports for sharing, submit comments for group collaboration, and even tweak metric weights used to calculate the packages' risk scores. When deployed in the context of an organization, the app serves as a platform for package validation, offering an authentication wall where roles are assigned to various users and 'final decisions' can be made at the package level.
+Description: The `riskassessment` application allows users to define a list of R
+    packages to assess against metrics engineered by the `riskmetric` package.
+    In general, those metrics evaluate package development best practices, code
+    documentation, community engagement, and sustainability that culminate in a
+    quantitative risk score. The app allows users to select and review one package
+    at a time to consume interactive visuals, download reports for sharing, submit
+    comments for group collaboration, and even tweak metric weights used to
+    calculate the packages' risk scores. When deployed in the context of an
+    organization, the app serves as a platform for package validation, offering an
+    authentication wall where roles are assigned to various users and 'final
+    decisions' can be made at the package level.
 License: MIT + file LICENSE
+URL: https://github.com/pharmaR/risk_assessment
+BugReports: https://github.com/pharmaR/risk_assessment/issues
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
 Imports: 
     bslib (>= 0.3.0),
+    config (>= 0.3.1),
     cranlogs,
     crayon,
-    data.table,
     DBI,
     desc,
-    devtools,
     dplyr,
     DT,
     forcats,
     formattable,
     glue,
-    haven,
+    golem (>= 0.3.2),
     keyring,
     loggit,
     lubridate,
+    magrittr,
     plotly,
     purrr,
-    rAmCharts,
     readr (>= 2.0.1),
     rintrojs,
     riskmetric (>= 0.1.1),
     rlang,
     rmarkdown,
     RSQLite,
-    rstudioapi,
     rvest,
-    shiny (>= 1.6.0),
-    shinycssloaders,
+    shiny (>= 1.7.1),
     shinydashboard,
     shinyhelper,
     shinyjs,
     shinymanager,
     shinyWidgets,
     stringr,
-    tools
-Remotes: 
-    pharmaR/riskmetric
+    tibble,
+    tidyr,
+    waiter
+Suggests: 
+    rstudioapi,
+    spelling,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Language: en-US
+Depends: 
+    R (>= 2.10)

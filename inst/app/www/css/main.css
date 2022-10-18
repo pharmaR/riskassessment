@@ -1,0 +1,15 @@
+#page-title {
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+#footer a {
+  text-decoration: none; 
+  padding-left: 5px;
+}
+
+#footer {
+  text-align: center;
+  padding-bottom: 10px;
+  margin-top: 70px;
+}

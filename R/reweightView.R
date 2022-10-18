@@ -1,9 +1,29 @@
+#' UI for the 'Re-weight View' module
+#' 
+#' @param id the module id
+#' 
+#' @import shiny
+#' 
 reweightViewUI <- function(id) {
   tagList(
     uiOutput(NS(id, "reweights_view"))
   )
 }
 
+#' Server logic for the 'Re-weight View' module
+#' 
+#' 
+#' @param id the module id
+#' @param user the user name
+#' 
+#' @import shiny
+#' @import dplyr
+#' @importFrom DT datatable formatStyle styleEqual renderDataTable
+#' @importFrom shinyjs enable disable delay
+#' @importFrom shinydashboard box
+#' @importFrom DBI dbConnect dbDisconnect
+#' @importFrom RSQLite SQLite sqliteCopyDatabase
+#' 
 reweightViewServer <- function(id, user) {
   moduleServer(id, function(input, output, session) {
     
@@ -11,13 +31,13 @@ reweightViewServer <- function(id, user) {
     
     curr_new_wts <- reactiveVal(
       get_metric_weights() %>%
-        mutate(new_weight = weight) %>%
-        mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
+        dplyr::mutate(new_weight = weight) %>%
+        dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
     
     observeEvent(input$update_weight, {
       curr_new_wts(save$data %>%
-                     mutate(new_weight = ifelse(name == isolate(input$metric_name),
-                                                isolate(input$metric_weight), new_weight)))
+                     dplyr::mutate(new_weight = ifelse(name == isolate(input$metric_name),
+                                                       isolate(input$metric_weight), new_weight)))
     })
     
     observeEvent(curr_new_wts(), {
@@ -27,7 +47,7 @@ reweightViewServer <- function(id, user) {
     output$weights_table <- DT::renderDataTable({
       
       all_names <- unique(curr_new_wts()$name)
-      chgd_wt_names <- curr_new_wts() %>% filter(weight != new_weight) %>% pull(name)
+      chgd_wt_names <- curr_new_wts() %>% dplyr::filter(weight != new_weight) %>% dplyr::pull(name)
       my_colors <- ifelse(all_names %in% chgd_wt_names,'#FFEB9C', '#FFFFFF')
       
       DT::datatable(
@@ -46,7 +66,7 @@ reweightViewServer <- function(id, user) {
       ) %>%
         DT::formatStyle(names(curr_new_wts()),lineHeight='80%') %>%
         DT::formatStyle(columns =  "name", target = 'row',
-                        backgroundColor = styleEqual(all_names, my_colors))
+                        backgroundColor = DT::styleEqual(all_names, my_colors))
     })
     
     # Section displayed only for authorized users.
@@ -54,7 +74,7 @@ reweightViewServer <- function(id, user) {
       tagList(
         tags$section(
           br(), br(),
-          box(width = 12, status = "primary",
+          shinydashboard::box(width = 12, status = "primary",
               title = h2("View/Change Weights", style = "margin-top: 5px", align = "center"),
               solidHeader = TRUE,
               br(),
@@ -94,7 +114,7 @@ reweightViewServer <- function(id, user) {
                 column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
                        offset = 1,
                        h3("Current Risk Score Weights by Metric", align = "center"),
-                       dataTableOutput(NS(id, "weights_table")))
+                       DT::dataTableOutput(NS(id, "weights_table")))
               ),
               br(), br(), br(),
               conditionalPanel("input.metric_name === 'covr_coverage'", 
@@ -126,7 +146,7 @@ reweightViewServer <- function(id, user) {
       req(input$metric_weight)
       
       curr_new_wts() %>%
-        filter(weight != new_weight) %>%
+        dplyr::filter(weight != new_weight) %>%
         nrow()
     })
     
@@ -149,9 +169,9 @@ reweightViewServer <- function(id, user) {
       } else {
         updateNumericInput(session, "metric_weight",
                            value = curr_new_wts() %>%
-                             filter(name == input$metric_name) %>%
-                             select(new_weight) %>% # new weight
-                             pull())
+                             dplyr::filter(name == input$metric_name) %>%
+                             dplyr::select(new_weight) %>% # new weight
+                             dplyr::pull())
       }
       
     })
@@ -209,17 +229,17 @@ reweightViewServer <- function(id, user) {
       # First, which weights are different than the originals?
       wt_chgd_df <- 
         curr_new_wts() %>%
-        filter(weight != new_weight)
+        dplyr::filter(weight != new_weight)
       
-      wt_chgd_metric <- wt_chgd_df %>% select(name) %>% pull()
-      wt_chgd_wt <- wt_chgd_df %>% select(new_weight) %>% pull()
+      wt_chgd_metric <- wt_chgd_df %>% dplyr::select(name) %>% dplyr::pull()
+      wt_chgd_wt <- wt_chgd_df %>% dplyr::select(new_weight) %>% dplyr::pull()
       rlang::inform("Metrics & Weights changed...")
       rlang::inform(paste(wt_chgd_metric, ": ", wt_chgd_wt))
       purrr::walk2(wt_chgd_metric, wt_chgd_wt, ~update_metric_weight(.x, .y))
       
       # update for each package
       all_pkgs <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")
-      cmt_or_dec_pkgs <- unique(bind_rows(
+      cmt_or_dec_pkgs <- unique(dplyr::bind_rows(
         dbSelect("SELECT DISTINCT id AS pkg_name FROM comments where comment_type = 'o'"),
         dbSelect("SELECT DISTINCT name AS pkg_name FROM package where decision != ''")
       ))
@@ -251,12 +271,12 @@ reweightViewServer <- function(id, user) {
       pkg <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package WHERE decision != ''")
       if (nrow(pkg) > 0) {
         for (i in 1:nrow(pkg)) {
-          dbUpdate(glue("UPDATE package SET decision = '' where name = '{pkg$pkg_name[i]}'"))
+          dbUpdate(glue::glue("UPDATE package SET decision = '' where name = '{pkg$pkg_name[i]}'"))
         }
       }
       
       #	Write to the log file
-      loggit("INFO", paste("package weights and risk metric scores will be updated for all packages"))
+      loggit::loggit("INFO", paste("package weights and risk metric scores will be updated for all packages"))
       
       # update for each package
       pkg <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")
@@ -266,7 +286,7 @@ reweightViewServer <- function(id, user) {
         shinyjs::runjs("$('<br>').insertAfter('.progress-message');")
         for (i in 1:nrow(pkg)) {
           incProgress(1 / (nrow(pkg) + 1), detail = pkg$pkg_name[i])
-          dbUpdate(glue(
+          dbUpdate(glue::glue(
             "DELETE FROM package_metrics WHERE package_id = 
             (SELECT id FROM package WHERE name = '{pkg$pkg_name[i]}')") )
           # metric_mm_tm_Info_upload_to_DB(pkg$pkg_name[i])
@@ -279,8 +299,8 @@ reweightViewServer <- function(id, user) {
       
       curr_new_wts(
         get_metric_weights() %>%
-          mutate(new_weight = weight) %>%
-          mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
+          dplyr::mutate(new_weight = weight) %>%
+          dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
       
       user$metrics_reweighted <- user$metrics_reweighted + 1
     }, ignoreInit = TRUE)
@@ -290,14 +310,14 @@ reweightViewServer <- function(id, user) {
     output$download_database_btn <- downloadHandler(
       
       filename = function() {
-        glue("datase_backup-{Sys.Date()}.sqlite")
+        glue::glue("datase_backup-{Sys.Date()}.sqlite")
       },
       content = function(file) {
-        con <- dbConnect(RSQLite::SQLite(), database_name)
-        cbk <- dbConnect(RSQLite::SQLite(), file)
+        con <- DBI::dbConnect(RSQLite::SQLite(), database_name)
+        cbk <- DBI::dbConnect(RSQLite::SQLite(), file)
         RSQLite::sqliteCopyDatabase(con, cbk)
-        dbDisconnect(con)
-        dbDisconnect(cbk)
+        DBI::dbDisconnect(con)
+        DBI::dbDisconnect(cbk)
         
         showModal(tags$div(
           id = "confirmation_id",
@@ -308,8 +328,8 @@ reweightViewServer <- function(id, user) {
       }
     )
     
-    #' Return metric weights. Doing so guarantees that when a report is
-    #' downloaded, it would have the latest metric weights.
-    return(reactive(curr_new_wts() %>% select(-new_weight)))
+    # Return metric weights. Doing so guarantees that when a report is
+    # downloaded, it would have the latest metric weights.
+    return(reactive(curr_new_wts() %>% dplyr::select(-new_weight)))
   })
 }

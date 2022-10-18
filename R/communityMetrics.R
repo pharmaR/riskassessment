@@ -1,20 +1,38 @@
+
+#' Community Usage Metrics UI function
+#' 
+#' @param id a module id name
+#' 
+#' @import shiny
 communityMetricsUI <- function(id) {
   uiOutput(NS(id, 'communityMetrics_ui'))
 }
 
+#' Community Usage Metrics server logic
+#' 
+#' @param id a module id name
+#' @param selected_pkg placeholder
+#' @param community_metrics placeholder
+#' @param user placeholder
+#' 
+#' @import shiny
+#' @import dplyr
+#' @importFrom glue glue
+#' @importFrom plotly plotlyOutput renderPlotly
+#' 
 communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
   moduleServer(id, function(input, output, session) {
     
     # Render Output UI for Community Usage Metrics.
     output$communityMetrics_ui <- renderUI({
       
-      vect <- dbSelect("select distinct id from community_usage_metrics") %>% pull()
+      vect <- dbSelect("select distinct id from community_usage_metrics") %>% dplyr::pull()
       # Lets the user know that a package needs to be selected.
       if(identical(selected_pkg$name(), character(0)))
         showHelperMessage()
       
       else if(!selected_pkg$name() %in% vect) {
-          showHelperMessage(message = glue("Community Usage Metrics not avaiable for ", {selected_pkg$name()} ))
+          showHelperMessage(message = glue::glue("Community Usage Metrics not avaiable for ", {selected_pkg$name()} ))
       }
       else {
         fluidPage(
@@ -29,7 +47,7 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
             br(), br(),
             div(id = "cum_plot", fluidRow(
               column(width = 12, style = 'padding-left: 20px; padding-right: 20px;',
-                     plotlyOutput(NS(id, "downloads_plot"), height = "500px")))),
+                     plotly::plotlyOutput(NS(id, "downloads_plot"), height = "500px")))),
             br(), br(),
             div(id = "comments_for_cum", fluidRow( 
               addCommentUI(id = session$ns("add_comment")),

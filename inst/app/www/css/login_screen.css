@@ -1,0 +1,19 @@
+/* Labels of text inputs. */
+#auth-user_id-label,  #auth-user_pwd-label {
+  color: white !important;
+}
+
+/* Title. */
+#login_screen h2 {
+  color: white;
+}
+
+/* Subtitle */
+#auth-shinymanager-auth-head {
+  color: white;
+}
+
+#auth-auth-mod {
+  background: rgb(2,0,36);
+  background: radial-gradient(circle, rgba(2,0,36,1) 0%, rgba(40,96,144,1) 100%, rgba(0,212,255,1) 100%);
+}

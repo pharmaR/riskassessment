@@ -1,4 +1,10 @@
-# Module to upload package.
+#' 'Upload Package' UI
+#' 
+#' @param id a module id
+#' 
+#' @import shiny
+#' @importFrom DT dataTableOutput
+#' 
 uploadPackageUI <- function(id) {
   fluidPage(
     br(), br(),
@@ -26,10 +32,19 @@ uploadPackageUI <- function(id) {
     fluidRow(column(width = 12, htmlOutput(NS(id, "upload_summary_text")))),
     
     # Summary of packages uploaded.
-    fluidRow(column(width = 12, dataTableOutput(NS(id, "upload_pkgs_table"))))
+    fluidRow(column(width = 12, DT::dataTableOutput(NS(id, "upload_pkgs_table"))))
   )
 }
 
+
+#' Server logic for the 'Upload Package' module
+#'
+#' @param id a module id
+#' 
+#' @importFrom riskmetric pkg_ref
+#' @importFrom rintrojs introjs
+#' @importFrom readr read_csv
+#' 
 uploadPackageServer <- function(id) {
   moduleServer(id, function(input, output, session) {
     
@@ -47,7 +62,7 @@ uploadPackageServer <- function(id) {
     # a module in order to take a reactive data frame of steps
     observeEvent(
       input[["introJS-help"]], # notice input contains "id-help"
-      introjs(session,
+      rintrojs::introjs(session,
               options = list(
                 steps = 
                   upload_pkg_txt() %>%
@@ -58,8 +73,8 @@ uploadPackageServer <- function(id) {
       )
     )
     
-    #' Save all the uploaded packages, marking them as 'new', 'not found', or
-    #' 'duplicate'.
+    # Save all the uploaded packages, marking them as 'new', 'not found', or
+    # 'duplicate'.
     uploaded_pkgs <- reactive({
       
       # Return an empty data.frame when no file is uploaded.
@@ -73,19 +88,17 @@ uploadPackageServer <- function(id) {
       if(is.null(input$uploaded_file$datapath))
         validate('Please upload a nonempty CSV file.')
       
-      uploaded_packages <- read_csv(input$uploaded_file$datapath, show_col_types = FALSE)
+      uploaded_packages <- readr::read_csv(input$uploaded_file$datapath, show_col_types = FALSE)
       np <- nrow(uploaded_packages)
       if(np == 0)
         validate('Please upload a nonempty CSV file.')
-      
-      template <- read_csv(file.path('Data', 'upload_format.csv'), show_col_types = FALSE)
       
       if(!all(colnames(uploaded_packages) == colnames(template)))
         validate("Please upload a CSV with a valid format.")
       
       # Add status column and remove white space around package names.
       uploaded_packages <- uploaded_packages %>%
-        mutate(
+        dplyr::mutate(
           status = rep('', np),
           package = trimws(package),
           version = trimws(version)
@@ -112,8 +125,8 @@ uploadPackageServer <- function(id) {
               
               uploaded_packages$status[i] <- 'not found'
               
-              loggit('WARN',
-                     glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
+              loggit::loggit('WARN',
+                             glue::glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
               
               next
             }
@@ -130,7 +143,7 @@ uploadPackageServer <- function(id) {
             incProgress(1, detail = deets)
             uploaded_packages$version[i] <- as.character(ref$version)
             
-            found <- nrow(dbSelect(glue(
+            found <- nrow(dbSelect(glue::glue(
               "SELECT name
               FROM package
               WHERE name = '{uploaded_packages$package[i]}'")))
@@ -165,7 +178,7 @@ uploadPackageServer <- function(id) {
         paste("template", ".csv", sep = "")
       },
       content = function(file) {
-        write.csv(read_csv(file.path("Data", "upload_format.csv")), file, row.names = F)
+        write.csv(template, file, row.names = F)
       }
     )
     
@@ -174,7 +187,7 @@ uploadPackageServer <- function(id) {
       req(uploaded_pkgs)
       req(nrow(uploaded_pkgs()) > 0)
       
-      loggit("INFO",
+      loggit::loggit("INFO",
              paste("Uploaded file:", input$uploaded_file$name, 
                    "Total Packages:", nrow(uploaded_pkgs()),
                    "New Packages:", sum(uploaded_pkgs()$status == 'new'),
@@ -202,7 +215,7 @@ uploadPackageServer <- function(id) {
     output$upload_pkgs_table <- DT::renderDataTable({
       req(nrow(uploaded_pkgs()) > 0)
       
-      datatable(
+      DT::datatable(
         uploaded_pkgs(),
         escape = FALSE,
         class = "cell-border",
@@ -220,7 +233,7 @@ uploadPackageServer <- function(id) {
     
     # View sample dataset.
     observeEvent(input$upload_format, {
-      dataTableOutput(NS(id, "sampletable"))
+      DT::dataTableOutput(NS(id, "sampletable"))
       
       showModal(modalDialog(
         size = "l",
@@ -233,8 +246,8 @@ uploadPackageServer <- function(id) {
           column(
             width = 12,
             output$sampletable <- DT::renderDataTable(
-              datatable(
-                read_csv(file.path("Data", "upload_format.csv")),
+              DT::datatable(
+                template,
                 escape = FALSE,
                 editable = FALSE,
                 filter = 'none',

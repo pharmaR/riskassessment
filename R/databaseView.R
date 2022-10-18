@@ -1,10 +1,18 @@
-# Risk color palettes.
+# Global Risk color palettes.
 # https://www.rapidtables.com/web/color/html-color-codes.html
 low_risk_color  <- "#228B22"  # forest green
 med_risk_color  <- "#d1b000"  # dark gold
 high_risk_color <- "#B22222"  # firebrick
 setColorPalette <- colorRampPalette(c(low_risk_color, med_risk_color, high_risk_color))
 
+#' UI for 'Database View' module
+#' 
+#' @param id a module id name
+#' 
+#' @import shiny
+#' @importFrom shinydashboard box
+#' @importFrom DT dataTableOutput
+#' 
 databaseViewUI <- function(id) {
   fluidPage(
     fluidRow(
@@ -15,7 +23,7 @@ databaseViewUI <- function(id) {
         hr(),
         tags$section(
           br(), br(),
-          box(width = 12,
+          shinydashboard::box(width = 12,
               title = h5("Uploaded Packages", style = "margin-top: 5px"),
               DT::dataTableOutput(NS(id, "packages_table")),
               br(),
@@ -33,11 +41,29 @@ databaseViewUI <- function(id) {
   )
 }
 
-databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
+#' Server logic for 'Database View' module
+#'
+#' @param id a module id name
+#' @param user a user name
+#' @param uploaded_pkgs a vector of uploaded package names
+#' @param metric_weights a reactive data.frame holding metric weights
+#'
+#' @import shiny
+#' @import dplyr
+#' @importFrom lubridate as_datetime
+#' @importFrom stringr str_replace_all str_replace
+#' @importFrom shinyjs enable disable
+#' @importFrom rmarkdown render
+#' @importFrom glue glue
+#' @importFrom DT renderDataTable formatStyle
+#' @importFrom formattable formattable as.datatable formatter style csscolor
+#'   icontext
+#'   
+databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes) {
   moduleServer(id, function(input, output, session) {
     
     # Update table_data if a package has been uploaded
-    table_data <- eventReactive(uploaded_pkgs(), {
+    table_data <- eventReactive({uploaded_pkgs(); changes()}, {
       
       db_pkg_overview <- dbSelect(
         'SELECT pi.name, pi.version, pi.score, pi.decision, c.last_comment
@@ -49,33 +75,33 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
       )
       
       db_pkg_overview %>%
-        mutate(last_comment = as.character(as_datetime(last_comment))) %>%
-        mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
-        mutate(decision = ifelse(decision != "", paste(decision, "Risk"), "-")) %>%
-        mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
-        select(name, version, score, was_decision_made, decision, last_comment)
+        dplyr::mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>%
+        dplyr::mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
+        dplyr::mutate(decision = ifelse(decision != "", paste(decision, "Risk"), "-")) %>%
+        dplyr::mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
+        dplyr::select(name, version, score, was_decision_made, decision, last_comment)
     })
     
     # Create table for the db dashboard.
     output$packages_table <- DT::renderDataTable({
       
-      as.datatable(
-        formattable(
+      formattable::as.datatable(
+        formattable::formattable(
           table_data(),
           list(
-            score = formatter(
+            score = formattable::formatter(
               "span",
-              style = x ~ style(display = "block",
+              style = x ~ formattable::style(display = "block",
                                 "border-radius" = "4px",
                                 "padding-right" = "4px",
                                 "font-weight" = "bold",
                                 "color" = "white",
                                 "order" = x,
-                                "background-color" = csscolor(
+                                "background-color" = formattable::csscolor(
                                   setColorPalette(100)[round(as.numeric(x)*100)]))),
-            decision = formatter(
+            decision = formattable::formatter(
               "span",
-              style = x ~ style(display = "block",
+              style = x ~ formattable::style(display = "block",
                                 "border-radius" = "4px",
                                 "padding-right" = "4px",
                                 "font-weight" = "bold",
@@ -84,9 +110,9 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
                                   ifelse(x == "High Risk", high_risk_color,
                                          ifelse(x == "Medium Risk", med_risk_color,
                                                 ifelse(x == "Low Risk", low_risk_color, "transparent"))))),
-            was_decision_made = formatter("span",
-                                          style = x ~ style(color = ifelse(x, "#0668A3", "gray")),
-                                          x ~ icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))
+            was_decision_made = formattable::formatter("span",
+                                          style = x ~ formattable::style(color = ifelse(x, "#0668A3", "gray")),
+                                          x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))
           )),
         selection = list(mode = 'multiple'),
         colnames = c("Package", "Version", "Score", "Decision Made?", "Decision", "Last Comment"),
@@ -100,7 +126,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
           columnDefs = list(list(className = 'dt-center', targets = "_all"))
         )
       ) %>%
-        formatStyle(names(table_data()), textAlign = 'center')
+        DT::formatStyle(names(table_data()), textAlign = 'center')
     })
     
     # Enable the download button when a package is selected.
@@ -115,27 +141,27 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
     output$download_reports <- downloadHandler(
       filename = function() {
         selected_pkgs <- table_data() %>%
-          slice(input$packages_table_rows_selected)
+          dplyr::slice(input$packages_table_rows_selected)
         n_pkgs <- nrow(selected_pkgs)
         
         if (n_pkgs > 1) {
-          report_datetime <- str_replace_all(str_replace(Sys.time(), " ", "_"), ":", "-")
-          glue('RiskAssessment-Report-{report_datetime}.zip')
+          report_datetime <- stringr::str_replace_all(stringr::str_replace(Sys.time(), " ", "_"), ":", "-")
+          glue::glue('RiskAssessment-Report-{report_datetime}.zip')
         } else {
-          glue('{selected_pkgs$name}_{selected_pkgs$version}_Risk_Assessment.',
+          glue::glue('{selected_pkgs$name}_{selected_pkgs$version}_Risk_Assessment.',
                "{switch(input$report_formats, docx = 'docx', html = 'html')}")
         }
       },
       content = function(file) {
         
         selected_pkgs <- table_data() %>%
-          slice(input$packages_table_rows_selected)
+          dplyr::slice(input$packages_table_rows_selected)
         n_pkgs <- nrow(selected_pkgs)
         
         req(n_pkgs > 0)
         
         shiny::withProgress(
-          message = glue('Downloading {n_pkgs} Report{ifelse(n_pkgs > 1, "s", "")}'),
+          message = glue::glue('Downloading {n_pkgs} Report{ifelse(n_pkgs > 1, "s", "")}'),
           value = 0,
           max = n_pkgs + 2, # Tell the progress bar the total number of events.
           {
@@ -144,24 +170,24 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
             my_tempdir <- tempdir()
             if (input$report_formats == "html") {
               Report <- file.path(my_tempdir, "reportHtml.Rmd")
-              file.copy(file.path('www', 'reportHtml.Rmd'), Report, overwrite = TRUE)
+              file.copy(file.path('inst/app/www', 'reportHtml.Rmd'), Report, overwrite = TRUE)
             } else { 
               # docx
               Report <- file.path(my_tempdir, "reportDocx.Rmd")
               if (!dir.exists(file.path(my_tempdir, "images")))
                 dir.create(file.path(my_tempdir, "images"))
-              file.copy(file.path('www', 'ReportDocx.Rmd'),
+              file.copy(file.path('inst/app/www', 'ReportDocx.Rmd'),
                         Report,
                         overwrite = TRUE)
-              file.copy(file.path('www', 'read_html.lua'),
+              file.copy(file.path('inst/app/www', 'read_html.lua'),
                         file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
-              file.copy(file.path('www', 'images', 'user-tie.png'),
+              file.copy(file.path('inst/app/www', 'images', 'user-tie.png'),
                         file.path(my_tempdir, "images", "user-tie.png"),
                         overwrite = TRUE)
-              file.copy(file.path('www', 'images', 'user-shield.png'),
+              file.copy(file.path('inst/app/www', 'images', 'user-shield.png'),
                         file.path(my_tempdir, "images", "user-shield.png"),
                         overwrite = TRUE)
-              file.copy(file.path('www', 'images', 'calendar-alt.png'),
+              file.copy(file.path('inst/app/www', 'images', 'calendar-alt.png'),
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
             }
@@ -172,7 +198,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
               # this_pkg <- "stringr" # for testing
               this_pkg <- selected_pkgs$name[i] # from DT table
               this_ver <- selected_pkgs$version[i]
-              file_named <- glue('{this_pkg}_{this_ver}_Risk_Assessment.{input$report_formats}')
+              file_named <- glue::glue('{this_pkg}_{this_ver}_Risk_Assessment.{input$report_formats}')
               path <- if (n_pkgs > 1) {
                 file.path(my_tempdir, file_named)
               } else {
