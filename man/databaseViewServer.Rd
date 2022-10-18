@@ -4,7 +4,7 @@
 \alias{databaseViewServer}
 \title{Server logic for 'Database View' module}
 \usage{
-databaseViewServer(id, user, uploaded_pkgs, metric_weights)
+databaseViewServer(id, user, uploaded_pkgs, metric_weights, changes)
 }
 \arguments{
 \item{id}{a module id name}

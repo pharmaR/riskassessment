@@ -22,12 +22,13 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Marly Gotti \email{marly.cormar@biogen.com}
+\strong{Maintainer}: Aaron Clark \email{aaron.clark@biogen.com}
 
 Authors:
 \itemize{
-  \item Aaron Clark \email{aaron.clark@biogen.com}
   \item Robert Krajcik \email{robert.krajcik@biogen.com}
+  \item Jeff Thompson \email{jeff.thompson51317@gmail.com}
+  \item Marly Gotti \email{marly.cormar@biogen.com}
   \item Maya Gans \email{maya.gans@biogen.com}
   \item Aravind Reddy Kallem
   \item Fission Labs India Pvt Ltd
