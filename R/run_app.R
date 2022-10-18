@@ -18,8 +18,7 @@ run_app <- function(
     app = shinyApp(
       ui = add_tags(shinymanager::secure_app(app_ui,
                                     tags_top = tags$div(
-                                      tags$link(rel = "stylesheet", type = "text/css",
-                                                href = file.path('css', 'login_screen.css')),
+                                      tags$head(tags$style(HTML(readLines(system.file("app", "www", "css", "login_screen.css", package = "riskassessment"))))),
                                       id = "login_screen",
                                       tags$h2("Risk Assessment Application", style = "align:center"),
                                       tags$h3(glue::glue('**Version {app_version}**'),
