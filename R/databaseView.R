@@ -59,11 +59,11 @@ databaseViewUI <- function(id) {
 #' @importFrom formattable formattable as.datatable formatter style csscolor
 #'   icontext
 #'   
-databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights) {
+databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes) {
   moduleServer(id, function(input, output, session) {
     
     # Update table_data if a package has been uploaded
-    table_data <- eventReactive(uploaded_pkgs(), {
+    table_data <- eventReactive({uploaded_pkgs(); changes()}, {
       
       db_pkg_overview <- dbSelect(
         'SELECT pi.name, pi.version, pi.score, pi.decision, c.last_comment

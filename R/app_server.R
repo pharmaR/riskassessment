@@ -110,12 +110,18 @@ app_server <- function(input, output, session) {
   # Load server of the sidebar module.
   selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs$names)
   
+  changes <- reactiveVal(0)
+  observe({
+    changes(changes() + 1)
+  }) %>%
+    bindEvent(selected_pkg$decision(), selected_pkg$overall_comment_added())
+  
   # Load server of the assessment criteria module.
   assessmentInfoServer("assessmentInfo", metric_weights = metric_weights)
   
   # Load server of the database view module.
   databaseViewServer("databaseView", user, uploaded_pkgs$names,
-                     metric_weights = metric_weights)
+                     metric_weights = metric_weights, changes)
   
   # Gather maintenance metrics information.
   maint_metrics <- reactive({
