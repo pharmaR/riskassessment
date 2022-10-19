@@ -174,6 +174,7 @@ uploadPackageServer <- function(id) {
               insert_community_metrics_to_db(uploaded_packages$package[i])
             }
           }
+        }
           
           incProgress(1, detail = "   **Completed Pkg Uploads**")
           Sys.sleep(0.25)
