@@ -1,4 +1,10 @@
-# Module to upload package.
+#' 'Upload Package' UI
+#' 
+#' @param id a module id
+#' 
+#' @import shiny
+#' @importFrom DT dataTableOutput
+#' 
 uploadPackageUI <- function(id) {
   fluidPage(
     br(), br(),
@@ -26,10 +32,19 @@ uploadPackageUI <- function(id) {
     fluidRow(column(width = 12, htmlOutput(NS(id, "upload_summary_text")))),
     
     # Summary of packages uploaded.
-    fluidRow(column(width = 12, dataTableOutput(NS(id, "upload_pkgs_table"))))
+    fluidRow(column(width = 12, DT::dataTableOutput(NS(id, "upload_pkgs_table"))))
   )
 }
 
+
+#' Server logic for the 'Upload Package' module
+#'
+#' @param id a module id
+#' 
+#' @importFrom riskmetric pkg_ref
+#' @importFrom rintrojs introjs
+#' @importFrom readr read_csv
+#' 
 uploadPackageServer <- function(id) {
   moduleServer(id, function(input, output, session) {
     
@@ -47,19 +62,19 @@ uploadPackageServer <- function(id) {
     # a module in order to take a reactive data frame of steps
     observeEvent(
       input[["introJS-help"]], # notice input contains "id-help"
-      introjs(session,
-              options = list(
-                steps = 
-                  upload_pkg_txt() %>%
-                  union(sidebar_steps),
-                "nextLabel" = "Next",
-                "prevLabel" = "Previous"
-              )
+      rintrojs::introjs(session,
+                        options = list(
+                          steps = 
+                            upload_pkg_txt() %>%
+                            union(sidebar_steps),
+                          "nextLabel" = "Next",
+                          "prevLabel" = "Previous"
+                        )
       )
     )
     
-    #' Save all the uploaded packages, marking them as 'new', 'not found', or
-    #' 'duplicate'.
+    # Save all the uploaded packages, marking them as 'new', 'not found', or
+    # 'duplicate'.
     uploaded_pkgs <- reactive({
       
       # Return an empty data.frame when no file is uploaded.
@@ -73,19 +88,17 @@ uploadPackageServer <- function(id) {
       if(is.null(input$uploaded_file$datapath))
         validate('Please upload a nonempty CSV file.')
       
-      uploaded_packages <- read_csv(input$uploaded_file$datapath, show_col_types = FALSE)
+      uploaded_packages <- readr::read_csv(input$uploaded_file$datapath, show_col_types = FALSE)
       np <- nrow(uploaded_packages)
       if(np == 0)
         validate('Please upload a nonempty CSV file.')
-      
-      template <- read_csv(file.path('Data', 'upload_format.csv'), show_col_types = FALSE)
       
       if(!all(colnames(uploaded_packages) == colnames(template)))
         validate("Please upload a CSV with a valid format.")
       
       # Add status column and remove white space around package names.
       uploaded_packages <- uploaded_packages %>%
-        mutate(
+        dplyr::mutate(
           status = rep('', np),
           package = trimws(package),
           version = trimws(version)
@@ -104,48 +117,43 @@ uploadPackageServer <- function(id) {
       # Drop A-Z
       CRAN_arch <- pkgnames[27:length(pkgnames)]
       rm(namelst, pkgnames)
-      
+
       # Start progress bar. Need to establish a maximum increment
       # value based on the number of packages, np, and the number of
       # incProgress() function calls in the loop, plus one to show
       # the incProgress() that the process is completed.
-      withProgress(max = (np * 5) + 1, value = 0,
-                   message = "Uploading Packages to DB:", {
-                     shinyjs::runjs("$('<br>').insertAfter('.progress-message');")
-        
-        for (i in 1:np) {
-
-          user_ver <- uploaded_packages$version[i]
-          incProgress(1, detail = glue::glue("{uploaded_packages$package[i]} {user_ver}"))
+      withProgress(
+        max = (np * 5) + 1, value = 0,
+        message = "Uploading Packages to DB:", {
           
-          # run pkg_ref() to get pkg version and source info
-          ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
-          
-          if (ref$source == "pkg_missing"){
+          for (i in 1:np) {
             
-            deets <- glue::glue("{uploaded_packages$package[i]} {user_ver}")
-            incProgress(1, detail = deets)
+            user_ver <- uploaded_packages$version[i]
+            incProgress(1, detail = glue::glue("{uploaded_packages$package[i]} {user_ver}"))
             
-            uploaded_packages$status[i] <- 'not found'
-  
-            loggit('WARN',
-                   glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
-            # need to increment the progress bar the same amounts in both
-            # IF and ELSE statements
+            # run pkg_ref() to get pkg version and source info
+            ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
             
-            # Suggest alternative spellings using utils::adist() function
-            v <- utils::adist(uploaded_packages$package[i], CRAN_arch, ignore.case = FALSE)
-            rlang::inform(paste("Package name",uploaded_packages$package[i],"was not found."))
-            rlang::inform(paste("suggested package names:",paste(head(CRAN_arch[which(v == min(v))], 10),collapse = ", ")))
-          }
-          else {
+            if (ref$source == "pkg_missing"){
+              incProgress(1, detail = 'Package {uploaded_packages$package[i]} not found')
+              
+              uploaded_packages$status[i] <- 'not found'
+              
+              # Suggest alternative spellings using utils::adist() function
+              v <- utils::adist(uploaded_packages$package[i], CRAN_arch, ignore.case = FALSE)
+              rlang::inform(paste("Package name",uploaded_packages$package[i],"was not found."))
+              rlang::inform(paste("suggested package names:",paste(head(CRAN_arch[which(v == min(v))], 10),collapse = ", ")))
+              
+              loggit::loggit('WARN',
+                             glue::glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
+              
+              next
+            }
             
             ref_ver <- as.character(ref$version)
-            if(user_ver == ref_ver){
-              ver_msg <- ref_ver
-            } else {
-              ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
-            }
+            
+            if(user_ver == ref_ver) ver_msg <- ref_ver
+            else ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
             
             as.character(ref$version)
             deets <- glue::glue("{uploaded_packages$package[i]} {ver_msg}")
@@ -154,7 +162,7 @@ uploadPackageServer <- function(id) {
             incProgress(1, detail = deets)
             uploaded_packages$version[i] <- as.character(ref$version)
             
-            found <- nrow(dbSelect(glue(
+            found <- nrow(dbSelect(glue::glue(
               "SELECT name
               FROM package
               WHERE name = '{uploaded_packages$package[i]}'")))
@@ -174,7 +182,6 @@ uploadPackageServer <- function(id) {
               insert_community_metrics_to_db(uploaded_packages$package[i])
             }
           }
-        }
           
           incProgress(1, detail = "   **Completed Pkg Uploads**")
           Sys.sleep(0.25)
@@ -190,7 +197,7 @@ uploadPackageServer <- function(id) {
         paste("template", ".csv", sep = "")
       },
       content = function(file) {
-        write.csv(read_csv(file.path("Data", "upload_format.csv")), file, row.names = F)
+        write.csv(template, file, row.names = F)
       }
     )
     
@@ -199,13 +206,13 @@ uploadPackageServer <- function(id) {
       req(uploaded_pkgs)
       req(nrow(uploaded_pkgs()) > 0)
       
-      loggit("INFO",
-             paste("Uploaded file:", input$uploaded_file$name, 
-                   "Total Packages:", nrow(uploaded_pkgs()),
-                   "New Packages:", sum(uploaded_pkgs()$status == 'new'),
-                   "Undiscovered Packages:", sum(uploaded_pkgs()$status == 'not found'),
-                   "Duplicate Packages:", sum(uploaded_pkgs()$status == 'duplicate')),
-             echo = FALSE)
+      loggit::loggit("INFO",
+                     paste("Uploaded file:", input$uploaded_file$name, 
+                           "Total Packages:", nrow(uploaded_pkgs()),
+                           "New Packages:", sum(uploaded_pkgs()$status == 'new'),
+                           "Undiscovered Packages:", sum(uploaded_pkgs()$status == 'not found'),
+                           "Duplicate Packages:", sum(uploaded_pkgs()$status == 'duplicate')),
+                     echo = FALSE)
       
       as.character(tagList(
         br(), br(),
@@ -227,7 +234,7 @@ uploadPackageServer <- function(id) {
     output$upload_pkgs_table <- DT::renderDataTable({
       req(nrow(uploaded_pkgs()) > 0)
       
-      datatable(
+      DT::datatable(
         uploaded_pkgs(),
         escape = FALSE,
         class = "cell-border",
@@ -245,7 +252,7 @@ uploadPackageServer <- function(id) {
     
     # View sample dataset.
     observeEvent(input$upload_format, {
-      dataTableOutput(NS(id, "sampletable"))
+      DT::dataTableOutput(NS(id, "sampletable"))
       
       showModal(modalDialog(
         size = "l",
@@ -258,8 +265,8 @@ uploadPackageServer <- function(id) {
           column(
             width = 12,
             output$sampletable <- DT::renderDataTable(
-              datatable(
-                read_csv(file.path("Data", "upload_format.csv")),
+              DT::datatable(
+                template,
                 escape = FALSE,
                 editable = FALSE,
                 filter = 'none',

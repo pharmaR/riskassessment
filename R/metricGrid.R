@@ -1,7 +1,21 @@
+
+#' Metric Grid module's UI.
+#' 
+#' @param id a module id name
+#' 
+#' @import shiny
 metricGridUI <- function(id) {
   fluidPage(uiOutput(NS(id, 'grid')))
 }
 
+
+#' Metric Grid module's server logic
+#' 
+#' @param id a module id name
+#' @param metrics placeholder
+#' 
+#' @import shiny
+#' @import dplyr
 metricGridServer <- function(id, metrics) {
   moduleServer(id, function(input, output, session) {
     

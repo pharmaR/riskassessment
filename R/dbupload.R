@@ -1,45 +1,58 @@
 
-# Get the package general information from CRAN/local
+#' Get the package general information from CRAN/local
+#' 
+#' @param pkg_name the package name
+#' 
+#' @import dplyr
+#' @importFrom tidyr pivot_wider
+#' @importFrom glue glue 
+#' @importFrom rvest read_html html_node html_table html_text
+#' @importFrom stringr str_remove_all
+#' 
 get_latest_pkg_info <- function(pkg_name) {
-  webpage <- read_html(glue(
+  webpage <- rvest::read_html(glue::glue(
     'https://cran.r-project.org/web/packages/{pkg_name}'))
   
-  #' Regex that finds entry: '\n ', "'", and '"' (the `|` mean 'or' and the 
-  #' `\`` is to scape the double quotes).
+  # Regex that finds entry: '\n ', "'", and '"' (the `|` mean 'or' and the 
+  # `\`` is to scape the double quotes).
   pattern <- '\n |\'|\"|\\"'
   
   # Save div with class container to get the title and description.
-  div_container <- webpage %>% html_nodes("div.container")
+  div_container <- webpage %>% rvest::html_nodes("div.container")
   
   # Read package title and clean it.
   title <- div_container %>% 
-    html_nodes("h2") %>% 
-    html_text() %>%
-    str_remove_all(pattern = pattern)
+    rvest::html_nodes("h2") %>% 
+    rvest::html_text() %>%
+    stringr::str_remove_all(pattern = pattern)
   
   # Read package description and clean it.
   description <- div_container %>% 
-    html_nodes("h2 + p") %>% 
-    html_text() %>%
-    str_remove_all(pattern = pattern)
+    rvest::html_nodes("h2 + p") %>% 
+    rvest::html_text() %>%
+    stringr::str_remove_all(pattern = pattern)
   
   # Get the table displaying version, authors, etc.
-  table_info <- (webpage %>% html_table())[[1]] %>%
-    mutate(X1 = str_remove_all(string = X1, pattern = ':')) %>%
-    mutate(X2 = str_remove_all(string = X2, pattern = pattern)) %>%
-    pivot_wider(names_from = X1, values_from = X2) %>%
-    select(Version, Maintainer, Author, License, Published) %>%
-    mutate(Title = title, Description = description)
+  table_info <- (webpage %>% rvest::html_table())[[1]] %>%
+    dplyr::mutate(X1 = stringr::str_remove_all(string = X1, pattern = ':')) %>%
+    dplyr::mutate(X2 = stringr::str_remove_all(string = X2, pattern = pattern)) %>%
+    tidyr::pivot_wider(names_from = X1, values_from = X2) %>%
+    dplyr::select(Version, Maintainer, Author, License, Published) %>%
+    dplyr::mutate(Title = title, Description = description)
   
   return(table_info)
 }
 
 
-# Call function to get and upload info from CRAN/local to db.
+#' Call function to get and upload info from CRAN/local to db.
+#' 
+#' @importFrom loggit loggit
+#' 
 insert_pkg_info_to_db <- function(pkg_name) {
   tryCatch(
     expr = {
       # get latest high-level package info
+      # pkg_name <- "dplyr" # testing
       pkg_info <- get_latest_pkg_info(pkg_name)
       
       # store it in the database
@@ -66,19 +79,23 @@ insert_pkg_info_to_db <- function(pkg_name) {
             upload_package_to_db(pkg_name, ver, title, desc, auth, main, lis, pub)
           }}
       } else{
-        loggit("ERROR", paste("Error in extracting general info of the package",
+        loggit::loggit("ERROR", paste("Error in extracting general info of the package",
                               pkg_name, "info", e), app = "fileupload-webscraping")
       }
     }
   )
 }
 
-# Upload the general info into DB.
+#' Upload the general info into DB.
+#' 
+#' @importFrom glue glue
+#' @importFrom loggit loggit
+#' 
 upload_package_to_db <- function(name, version, title, description,
                                  authors, maintainers, license, published_on) {
   tryCatch(
     expr = {
-      dbUpdate(glue(
+      dbUpdate(glue::glue(
         "INSERT or REPLACE INTO package
         (name, version, title, description, maintainer, author,
         license, published_on, decision, date_added)
@@ -87,20 +104,27 @@ upload_package_to_db <- function(name, version, title, description,
         '', '{Sys.Date()}')"))
     },
     error = function(e) {
-      loggit("ERROR", paste("Error in uploading the general info of the package", name, "info", e),
+      loggit::loggit("ERROR", paste("Error in uploading the general info of the package", name, "info", e),
              app = "fileupload-DB")
     }
   )
 }
 
 
-# Get the maintenance and testing metrics info and upload into DB.
+#' The 'Insert MM to DB' Function
+#'
+#' Get the maintenance and testing metrics info and upload into DB.
+#' 
+#' @import dplyr
+#' @importFrom riskmetric pkg_ref pkg_assess pkg_score
+#' @importFrom glue glue 
+#' 
 insert_maintenance_metrics_to_db <- function(pkg_name){
   
   riskmetric_assess <-
-    pkg_ref(pkg_name) %>%
-    as_tibble() %>%
-    pkg_assess()
+    riskmetric::pkg_ref(pkg_name) %>%
+    dplyr::as_tibble() %>%
+    riskmetric::pkg_assess()
   
   # Get the metrics weights to be used during pkg_score.
   metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric")
@@ -109,21 +133,21 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
   
   riskmetric_score <-
     riskmetric_assess %>%
-    pkg_score(weights = metric_weights)
+    riskmetric::pkg_score(weights = metric_weights)
   
-  package_id <- dbSelect(glue("SELECT id FROM package WHERE name = '{pkg_name}'"))
+  package_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"))
   
   # Leave method if package not found.
   if(nrow(package_id) == 0){
     print("PACKAGE NOT FOUND.")
-    loggit("WARN", paste("Package", pkg_name, "not found."))
+    loggit::loggit("WARN", paste("Package", pkg_name, "not found."))
     return()
   }
   
   # Insert all the metrics (columns of class "pkg_score") into the db.
   # TODO: Are pkg_score and pkg_metric_error mutually exclusive?
   for(row in 1:nrow(metric_weights_df)){
-    metric <- metric_weights_df %>% slice(row)
+    metric <- metric_weights_df %>% dplyr::slice(row)
     # If the metric is not part of the assessment, then skip iteration.
     if(!(metric$name %in% colnames(riskmetric_score))) next
     
@@ -143,43 +167,53 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
              round(riskmetric_score[[metric$name]]*100, 2),
              riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])]))
     
-    dbUpdate(glue(
+    dbUpdate(glue::glue(
       "INSERT INTO package_metrics (package_id, metric_id, weight, value) 
       VALUES ({package_id}, {metric$id}, {metric$weight}, '{metric_value}')")
     )
   }
   
-  dbUpdate(glue(
+  dbUpdate(glue::glue(
     "UPDATE package
     SET score = '{format(round(riskmetric_score$pkg_score[1], 2))}'
     WHERE name = '{pkg_name}'"))
 }
 
 
-# Get community usage metrics info and upload into DB.
+#' Generate community usage metrics and upload data into DB
+#' 
+#' @import dplyr
+#' @importFrom cranlogs cran_downloads
+#' @importFrom lubridate year month
+#' @importFrom glue glue 
+#' @importFrom rvest read_html html_node html_table html_text
+#' @importFrom loggit loggit
+#' @importFrom stringr str_remove_all
+#' @importFrom tidyr tibble
+#' 
 insert_community_metrics_to_db <- function(pkg_name) {
-  pkgs_cum_metrics <- tibble()
+  pkgs_cum_metrics <- tidyr::tibble()
   
   tryCatch(
     expr = {
       
       # get current release version number and date
       curr_release <- get_latest_pkg_info(pkg_name) %>%
-        select(`Last modified` = Published, version = Version)
+        dplyr::select(`Last modified` = Published, version = Version)
       
       # Get the packages past versions and dates.
-      pkg_url <- url(glue('https://cran.r-project.org/src/contrib/Archive/{pkg_name}'))
-      pkg_page <- try(read_html(pkg_url), silent = TRUE)
+      pkg_url <- url(glue::glue('https://cran.r-project.org/src/contrib/Archive/{pkg_name}'))
+      pkg_page <- try(rvest::read_html(pkg_url), silent = TRUE)
       
       # if past releases exist... they usually do!
       if(all(class(pkg_page) != "try-error")){ #exists("pkg_page")
         versions_with_dates0 <- pkg_page %>% 
-          html_node('table') %>%
-          html_table() %>%
-          select(-c("", "Description", 'Size')) %>%
-          filter(`Last modified` != "") %>%
-          mutate(version = str_remove_all(
-            string = Name, pattern = glue('{pkg_name}_|.tar.gz')),
+          rvest::html_node('table') %>%
+          rvest::html_table() %>%
+          dplyr::select(-c("", "Description", 'Size')) %>%
+          dplyr::filter(`Last modified` != "") %>%
+          dplyr::mutate(version = stringr::str_remove_all(
+            string = Name, pattern = glue::glue('{pkg_name}_|.tar.gz')),
             .keep = 'unused') %>%
           # get latest high-level package info
           union(curr_release) 
@@ -189,14 +223,14 @@ insert_community_metrics_to_db <- function(pkg_name) {
       # close(pkg_url)
       
       versions_with_dates <- versions_with_dates0 %>%
-        mutate(date = as.Date(`Last modified`), .keep = 'unused') %>%
-        mutate(month = month(date)) %>%
-        mutate(year = year(date))
+        dplyr::mutate(date = as.Date(`Last modified`), .keep = 'unused') %>%
+        dplyr::mutate(month = lubridate::month(date)) %>%
+        dplyr::mutate(year = lubridate::year(date))
       
 
       # First release date.
       first_release_date <- versions_with_dates %>%
-        pull(date) %>%
+        dplyr::pull(date) %>%
         min()
 
       # Get the number of downloads by month, year.
@@ -205,20 +239,20 @@ insert_community_metrics_to_db <- function(pkg_name) {
           pkg_name,
           from = first_release_date,
           to = Sys.Date()) %>%
-        mutate(month = month(date),
-               year = year(date)) %>%
-        filter(!(month == month(Sys.Date()) &
-                 year == year(Sys.Date()))) %>%
+        dplyr::mutate(month = lubridate::month(date),
+               year = lubridate::year(date)) %>%
+        dplyr::filter(!(month == lubridate::month(Sys.Date()) &
+                 year == lubridate::year(Sys.Date()))) %>%
         group_by(month, year) %>%
         summarise(downloads = sum(count)) %>%
         ungroup() %>%
         left_join(versions_with_dates, by = c('month', 'year')) %>%
-        arrange(year, month) %>%
-        select(-date)
+        dplyr::arrange(year, month) %>%
+        dplyr::select(-date)
       
     },
     error = function(e) {
-      loggit("ERROR", paste("Error extracting cum metric info of the package:",
+      loggit::loggit("ERROR", paste("Error extracting cum metric info of the package:",
                             pkg_name, "info", e),
              app = "fileupload-webscraping", echo = FALSE)
     }
@@ -226,7 +260,7 @@ insert_community_metrics_to_db <- function(pkg_name) {
   
   if(nrow(pkgs_cum_metrics) != 0){
     for (i in 1:nrow(pkgs_cum_metrics)) {
-      dbUpdate(glue(
+      dbUpdate(glue::glue(
         "INSERT INTO community_usage_metrics 
         (id, month, year, downloads, version)
         VALUES ('{pkg_name}', {pkgs_cum_metrics$month[i]},

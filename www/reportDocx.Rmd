@@ -25,10 +25,8 @@ params:
 ---
 
 ```{r setup, include=FALSE}
-library(knitr)
 library(shiny)
-library(ggplot2)
-library(plotly)
+library(dplyr)
 
 knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 ```
@@ -89,12 +87,12 @@ tagList(br(), h2('Maintenance Metrics'))
 
 ```{r maintenance_metrics_table}
 params$maint_metrics %>%
-  mutate(
+  dplyr::mutate(
     `Metric Name` = title,
     `Metric Description` = desc,
     `Metric Value` = value
   ) %>%
-  select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
+  dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
   knitr::kable(format = 'pandoc')
 ```
 
@@ -118,12 +116,12 @@ tagList(br(), h2("Community Usage Metrics"))
 
 ```{r community_metrics_table, warning=FALSE, message=FALSE, error=FALSE, results='HIDE', echo=FALSE}
 params$com_metrics %>%
-  mutate(
+  dplyr::mutate(
     `Metric Name` = title,
     `Metric Description` = desc,
     `Metric Value` = value
   ) %>%
-  select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
+  dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
   knitr::kable(format = 'pandoc')
 ```
 
@@ -138,23 +136,24 @@ tagList(
 
 ```{r community_metrics_plot, fig.width=10, fig.height=5}
 d <- params$com_metrics_raw %>%
-  mutate(day_month_year = glue('1-{month}-{year}')) %>%
-  mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
-  mutate(month = month.name[month]) %>%
-  arrange(day_month_year) %>%
-  distinct(month, year, .keep_all = TRUE)
+  dplyr::mutate(day_month_year = glue::glue('1-{month}-{year}')) %>%
+  dplyr::mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
+  dplyr::mutate(month = month.name[month]) %>%
+  dplyr::arrange(day_month_year) %>%
+  dplyr::distinct(month, year, .keep_all = TRUE)
 
 mo <- ceiling(nrow(d) / 9)
 
-ggplot(data = d, aes(x = day_month_year, y = downloads)) +
-  geom_point() +
-  geom_line() +
-  scale_x_date(date_breaks = glue::glue("{mo} months"), date_labels = "%m-%Y") +
-  labs(
+ggplot2::ggplot(data = d, ggplot2::aes(x = day_month_year, y = downloads)) +
+  ggplot2::geom_point() +
+  ggplot2::geom_line() +
+  ggplot2::scale_x_date(date_breaks = glue::glue("{mo} months"), date_labels = "%m-%Y") +
+  ggplot2::labs(
     x = 'Month/Year',
     y = 'Downloads'
   ) +
-  theme(text = element_text(size = 16), axis.text = element_text(size=16))# angle = 30, vjust = 0.5, hjust=1))
+  ggplot2::theme(text = ggplot2::element_text(size = 16),
+                 axis.text = ggplot2::element_text(size=16))# angle = 30, vjust = 0.5, hjust=1))
 ```
 
 

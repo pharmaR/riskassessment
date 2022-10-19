@@ -1,8 +1,21 @@
-# Maintenance Metrics module.
+#' Maintenance Metrics module's UI.
+#' 
+#' @param id a module id name
+#' 
+#' @import shiny
 maintenanceMetricsUI <- function(id) {
   uiOutput(NS(id, 'maintenance_metrics_ui'))
 }
 
+#' Maintenance Metrics module's server logic
+#' 
+#' @param id a module id name
+#' @param selected_pkg placeholder
+#' @param maint_metrics placeholder
+#' @param user placeholder
+#' 
+#' @import shiny
+#' @import dplyr
 maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user) {
   moduleServer(id, function(input, output, session) {
     # Render Output UI for Maintenance Metrics.

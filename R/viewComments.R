@@ -1,6 +1,12 @@
-# Module to display comments for the specified metric.
-# The comments will update as the user inserts more comments.
-
+#' The UI for the 'viewComment' module
+#'
+#' Module to display comments for the specified metric. The comments will update
+#' as the user inserts more comments.
+#' 
+#' @param id a module id name
+#' 
+#' @import shiny
+#' 
 viewCommentsUI <- function(id) {
   fluidRow(
     style = "margin-top: 50px",
@@ -12,6 +18,15 @@ viewCommentsUI <- function(id) {
   )
 }
 
+#' viewComment module's server logic
+#' 
+#' @param id a module id name
+#' @param pkg_name placeholder
+#' @param comments placeholder
+#' @param label placeholder
+#' 
+#' @import shiny
+#' 
 viewCommentsServer <- function(id, pkg_name, comments, label = 'Current Comments') {
   moduleServer(id, function(input, output, session) {
     # Show the comments on the package.
