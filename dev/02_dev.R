@@ -203,7 +203,14 @@ usethis::use_github_action_check_standard() # modified to include @v2 instead of
 
 
 # # Run through other CI/CD suggestions given here
-
+# Consider: https://pharmaverse.github.io/admiralci/main/
+# code-coverage.yml
+# links.yml
+# man-pages.yml
+# r-pkg_validation.yml
+# readme-render.yml
+# spellcheck.yml
+# style.yml
 
 
 
