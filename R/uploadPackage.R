@@ -44,6 +44,7 @@ uploadPackageUI <- function(id) {
 #' @importFrom riskmetric pkg_ref
 #' @importFrom rintrojs introjs
 #' @importFrom readr read_csv
+#' @importFrom rvest read_html html_nodes html_text
 #' 
 uploadPackageServer <- function(id) {
   moduleServer(id, function(input, output, session) {
@@ -63,13 +64,13 @@ uploadPackageServer <- function(id) {
     observeEvent(
       input[["introJS-help"]], # notice input contains "id-help"
       rintrojs::introjs(session,
-              options = list(
-                steps = 
-                  upload_pkg_txt() %>%
-                  union(sidebar_steps),
-                "nextLabel" = "Next",
-                "prevLabel" = "Previous"
-              )
+                        options = list(
+                          steps = 
+                            upload_pkg_txt() %>%
+                            union(sidebar_steps),
+                          "nextLabel" = "Next",
+                          "prevLabel" = "Previous"
+                        )
       )
     )
     
@@ -104,6 +105,20 @@ uploadPackageServer <- function(id) {
           version = trimws(version)
         )
       
+      # read website to create vector of available packages by name
+      website <- "https://cran.rstudio.com/web/packages/available_packages_by_name.html"
+      con <- url(website, open = "rb")
+      namelst <- rvest::read_html(con)
+      close(con)
+      
+      pkgnames <- namelst %>% 
+        rvest::html_nodes("a") %>%
+        rvest::html_text() 
+      
+      # Drop A-Z
+      CRAN_arch <- pkgnames[27:length(pkgnames)]
+      rm(namelst, pkgnames)
+
       # Start progress bar. Need to establish a maximum increment
       # value based on the number of packages, np, and the number of
       # incProgress() function calls in the loop, plus one to show
@@ -123,8 +138,15 @@ uploadPackageServer <- function(id) {
             if (ref$source == "pkg_missing"){
               incProgress(1, detail = 'Package {uploaded_packages$package[i]} not found')
               
-              uploaded_packages$status[i] <- 'not found'
-              
+              # Suggest alternative spellings using utils::adist() function
+              v <- utils::adist(uploaded_packages$package[i], CRAN_arch, ignore.case = FALSE)
+              rlang::inform(paste("Package name",uploaded_packages$package[i],"was not found."))
+                            
+              suggested_nms <- paste("Suggested package name(s):",paste(head(CRAN_arch[which(v == min(v))], 10),collapse = ", "))
+              rlang::inform(suggested_nms)
+                            
+              uploaded_packages$status[i] <- HTML(paste0('<a href="#" title="', suggested_nms, '">not found</a>'))
+
               loggit::loggit('WARN',
                              glue::glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
               
@@ -188,12 +210,12 @@ uploadPackageServer <- function(id) {
       req(nrow(uploaded_pkgs()) > 0)
       
       loggit::loggit("INFO",
-             paste("Uploaded file:", input$uploaded_file$name, 
-                   "Total Packages:", nrow(uploaded_pkgs()),
-                   "New Packages:", sum(uploaded_pkgs()$status == 'new'),
-                   "Undiscovered Packages:", sum(uploaded_pkgs()$status == 'not found'),
-                   "Duplicate Packages:", sum(uploaded_pkgs()$status == 'duplicate')),
-             echo = FALSE)
+                     paste("Uploaded file:", input$uploaded_file$name, 
+                           "Total Packages:", nrow(uploaded_pkgs()),
+                           "New Packages:", sum(uploaded_pkgs()$status == 'new'),
+                           "Undiscovered Packages:", sum(grepl('not found', uploaded_pkgs()$status)),
+                           "Duplicate Packages:", sum(uploaded_pkgs()$status == 'duplicate')),
+                     echo = FALSE)
       
       as.character(tagList(
         br(), br(),
@@ -203,7 +225,7 @@ uploadPackageServer <- function(id) {
             br(),
             p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
             p(tags$b("New Packages: "), sum(uploaded_pkgs()$status == 'new')),
-            p(tags$b("Undiscovered Packages: "), sum(uploaded_pkgs()$status == 'not found')),
+            p(tags$b("Undiscovered Packages: "), sum(grepl('not found', uploaded_pkgs()$status))),
             p(tags$b("Duplicate Packages: "), sum(uploaded_pkgs()$status == 'duplicate')),
             p("Note: The assessment will be performed on the latest version of each
           package, irrespective of the uploaded version.")
