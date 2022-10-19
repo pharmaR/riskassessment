@@ -111,8 +111,8 @@ uploadPackageServer <- function(id) {
       close(con)
       
       pkgnames <- namelst %>% 
-        html_nodes("a") %>%
-        html_text() 
+        rvest::html_nodes("a") %>%
+        rvest::html_text() 
       
       # Drop A-Z
       CRAN_arch <- pkgnames[27:length(pkgnames)]
