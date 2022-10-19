@@ -7,3 +7,4 @@ $run_dev.*
 $credentials.*
 $database.*
 ^README\.Rmd$
+^\.github$
