@@ -183,22 +183,39 @@ pkgdown::build_news()
 pkgdown::build_site() # Run to build entire website
 
 
-# # GitHub Actions
-# usethis::use_github_action()
-#
-usethis::use_github_pages() # failed. Instead run this: https://gist.github.com/ramnathv/2227408
-usethis::use_github_action("pkgdown")
+### GitHub Actions
+# usethis::use_github_action() # general function
+
+# For pkgdown
+usethis::use_github_pages() # It worked! But if it failed, run this instead: 
+# https://gist.github.com/ramnathv/2227408 to create an orphan gh-pages branch
+# and then run this
+usethis::use_github_action("pkgdown") # modified to mirror tidyCDISC & include @v2 instead of @v1
 
 
 # # Chose one of the three
 # # See https://usethis.r-lib.org/reference/use_github_action.html
 # usethis::use_github_action_check_release() 
-usethis::use_github_action_check_standard()
-# usethis::use_github_action_check_full() 
+usethis::use_github_action_check_standard() # modified to include @v2 instead of @v1
+# usethis::use_github_action_check_full() # deprecated
 # # Add action for PR
 # usethis::use_github_action_pr_commands()
 
-# # run R CMD check on CRAN’s servers
+
+# # Run through other CI/CD suggestions given here
+# Consider: https://pharmaverse.github.io/admiralci/main/
+# code-coverage.yml
+# links.yml
+# man-pages.yml
+# r-pkg_validation.yml
+# readme-render.yml
+# spellcheck.yml
+# style.yml
+
+
+
+##### run R CMD check on CRAN’s servers
+
 # # ?devtools::check_win_release
 # devtools::check_win_release() #ran
 # devtools::check_win_oldrelease()
