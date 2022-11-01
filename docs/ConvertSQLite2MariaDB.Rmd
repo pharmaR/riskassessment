@@ -98,16 +98,16 @@ in the `create_db()` function inside `utils.R`
 create_db <- function(){
   
   # Create an empty database.
-  # con <- dbConnect(RMySQL::MySQL(), db_name)
+  # con <- DBI::dbConnect(RMySQL::MySQL(), db_name)
   
-  con <-  dbConnect(RMariaDB::MariaDB(), user = db_user,
+  con <-  DBI::dbConnect(RMariaDB::MariaDB(), user = db_user,
                     password = db_password,
                     dbname = db_name, host = db_host, port = db_port)
   
   alltables = dbListTables(con)  # new line
   
   # create tables if there aren't any yet
-  if (is_empty(alltables)) {     # new line
+  if (rlang::is_empty(alltables)) {     # new line
   
     message(glue::glue("No tables defined for {db_name}, Creating them now.")) # new line
     
@@ -128,24 +128,24 @@ create_db <- function(){
     
     # Apply each query.
     sapply(queries, function(x){
-      res <- dbSendStatement(
+      res <- DBI::dbSendStatement(
         con,
         paste(scan(x, sep = "\n", what = "character"), collapse = ""))
       
-      dbClearResult(res)
+      DBI::dbClearResult(res)
     })
-  } # New line -- if (is_empty(alltables))
+  } # New line -- if (rlang::is_empty(alltables))
   
-  dbDisconnect(con)
+  DBI::dbDisconnect(con)
 }
 
 ```
 
 Now change the code for the `db_fun()` and `db_ins()` functions like this:
 ```{r, eval = FALSE}
- # con <- dbConnect(RSQLite::SQLite(), db_name)
+ # con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
  
-  con <-  dbConnect(RMariaDB::MariaDB(), user = db_user, password = db_password,
+  con <-  DBI::dbConnect(RMariaDB::MariaDB(), user = db_user, password = db_password,
                     dbname = db_name, host = db_host, port = db_port)
 ```
 
@@ -154,7 +154,7 @@ At least using Sys.time() resembles the CURRENT_TIMESTAMP provided in MySQL and 
 I found that a UTC time value was expected and modified as follows:
 ```{r, eval=FALSE}
 TimeStamp<-function(){
-  # Timestamp_intial<-str_replace(Sys.time()," ", "; ")
+  # Timestamp_intial<-stringr::str_replace(Sys.time()," ", "; ")
   # Timestamp<-paste(Timestamp_intial, Sys.timezone())
   # return(Timestamp)
   # use something MySQL is expecting to see...
@@ -178,7 +178,7 @@ genInfo_upload_to_DB <- function(package_name, ver, title, desc, auth, main, lis
                      ") ON DUPLICATE KEY UPDATE package = ", "'", package_name, "'" ))
     },
     error = function(e) {
-      loggit("ERROR", paste("Error in uploading the general info of the package", package_name, "info", e), app = "fileupload-DB")
+      loggit::loggit("ERROR", paste("Error in uploading the general info of the package", package_name, "info", e), app = "fileupload-DB")
     }
   )# End of try catch 
 

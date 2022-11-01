@@ -1,2 +1,10 @@
-^LICENSE\.md$
+^.*\.Rproj$
+^\.Rproj\.user$
+^data-raw$
+dev_history.R
+^dev$
+$run_dev.*
+$credentials.*
+$database.*
 ^README\.Rmd$
+^\.github$
