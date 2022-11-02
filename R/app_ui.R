@@ -68,7 +68,7 @@ app_ui <- function(request) {
       ),
       
       tabPanel(
-        title = div(id = "assessment-criteria-tab", icon("info-circle"), "Assessment Criteria"),
+        title = div(id = "assessment-criteria-tab", icon("circle-info"), "Assessment Criteria"),
         assessmentInfoUI("assessmentInfo"),
       )
     ),
