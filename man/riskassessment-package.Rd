@@ -34,5 +34,10 @@ Authors:
   \item Fission Labs India Pvt Ltd
 }
 
+Other contributors:
+\itemize{
+  \item R Validation Hub [copyright holder]
+}
+
 }
 \keyword{internal}
