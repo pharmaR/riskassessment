@@ -1,0 +1,7 @@
+{
+    "installOptions": {
+        "installFromRepository": false,
+        "libraryPath": "C:/Users/aclark5/OneDrive - Biogen/Documents/R/R-4.1.0/library",
+        "installDependencies": true
+    }
+}

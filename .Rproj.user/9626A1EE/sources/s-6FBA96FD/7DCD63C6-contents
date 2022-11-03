@@ -1,0 +1,38 @@
+
+# install the new version of the package
+# Add secondary repo for packages hosted on RSPM:
+options(repos = c(
+  CRAN = "https://cran.rstudio.com/",
+  rspm = "https://rspm.hpc.biogen.com/RSPM/latest"
+  )
+)
+options('repos') # confirm "rspm" was added
+install.packages("stanly")
+packageVersion("stanly") # should be "0.3.1"
+install.packages("Tplyr")
+packageVersion("Tplyr")
+
+# load the package
+library(stanly)
+
+
+# Set up output directory... 
+my_dir <- 'C:/Users/aclark5/Documents/GitHub2/stanly_output'
+# my_dir <- tempdir()
+
+# Create ae-soc-pt R script and/or output 
+meta_t_ae_socpt(
+  product = "bg12ms", study = "109ms306", project = "interim1lte", # studyid = 7028
+  make_prog = TRUE, prog_dir = my_dir, # for production, should be dev/ folder on J-drive
+  make_xpt = FALSE, xpt_dir = my_dir,
+  make_rtf = TRUE, rtf_dir = my_dir
+)
+
+
+
+
+
+
+
+
+

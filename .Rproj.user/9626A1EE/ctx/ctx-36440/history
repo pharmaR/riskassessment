@@ -1,0 +1,239 @@
+shiny::runApp()
+runApp()
+shiny::runApp()
+runApp()
+runApp()
+library(knitr)
+library(shiny)
+library(ggplot2)
+library(plotly)
+knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
+?theme
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+shiny::runApp()
+runApp()
+runApp()
+shiny::runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+shiny::runApp()
+runApp()
+shiny::runApp()
+?keyring_create
+runApp()
+keyring_create("system")
+runApp()
+getOption("keyring_pwd")
+keyring_list()
+keyring_delete("system")
+keyring_list()
+runApp()
+keyring_create("system")
+runApp()
+runApp()
+runApp()
+runApp()
+devtools::load_all(".")
+shiny::runApp()
+options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
+options(shiny.fullstacktrace = TRUE)
+options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
+# options(shiny.autoload.r=FALSE)
+#Detach all loaded packages and clean your environment
+golem::detach_all_attached()
+# Document and reload your package, which runs these three functions...
+golem::document_and_reload()
+run_app()
+runApp()
+options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
+options(shiny.fullstacktrace = TRUE)
+options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
+# options(shiny.autoload.r=FALSE)
+#Detach all loaded packages and clean your environment
+golem::detach_all_attached()
+# Document and reload your package, which runs these three functions...
+golem::document_and_reload()
+shiny::runApp()
+options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
+options(shiny.fullstacktrace = TRUE)
+options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
+# options(shiny.autoload.r=FALSE)
+#Detach all loaded packages and clean your environment
+golem::detach_all_attached()
+# Document and reload your package, which runs these three functions...
+golem::document_and_reload()
+shiny::runApp()
+runApp()
+# get latest high-level package info
+pkg_name <- "dplyr" # testing
+pkg_info <- get_latest_pkg_info(pkg_name)
+devtools::load_all(".")
+pkg_info <- get_latest_pkg_info(pkg_name)
+?html_text
+devtools::load_all(".")
+pkg_name <- "dplyr"
+pkg_info <- get_latest_pkg_info(pkg_name)
+options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
+options(shiny.fullstacktrace = TRUE)
+options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
+# options(shiny.autoload.r=FALSE)
+#Detach all loaded packages and clean your environment
+golem::detach_all_attached()
+# Document and reload your package, which runs these three functions...
+golem::document_and_reload()
+pkg_info <- get_latest_pkg_info(pkg_name)
+devtools::load_all(".")
+pkg_info <- get_latest_pkg_info(pkg_name)
+options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
+options(shiny.fullstacktrace = TRUE)
+options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
+# options(shiny.autoload.r=FALSE)
+#Detach all loaded packages and clean your environment
+golem::detach_all_attached()
+# Document and reload your package, which runs these three functions...
+golem::document_and_reload()
+options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
+options(shiny.fullstacktrace = TRUE)
+options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
+# options(shiny.autoload.r=FALSE)
+#Detach all loaded packages and clean your environment
+golem::detach_all_attached()
+# Document and reload your package, which runs these three functions...
+golem::document_and_reload()
+options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
+options(shiny.fullstacktrace = TRUE)
+options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
+# options(shiny.autoload.r=FALSE)
+#Detach all loaded packages and clean your environment
+golem::detach_all_attached()
+# Document and reload your package, which runs these three functions...
+golem::document_and_reload()
+options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
+options(shiny.fullstacktrace = TRUE)
+options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
+# options(shiny.autoload.r=FALSE)
+#Detach all loaded packages and clean your environment
+golem::detach_all_attached()
+# Document and reload your package, which runs these three functions...
+golem::document_and_reload()
+pkg_name <- "dplyr"
+pkg_info <- get_latest_pkg_info(pkg_name)
+devtools::load_all(".")
+pkg_info <- get_latest_pkg_info(pkg_name)
+pkg_info
+upload_package_to_db(pkg_name, pkg_info$Version, pkg_info$Title,
+pkg_info$Description, pkg_info$Author,
+pkg_info$Maintainer, pkg_info$License,
+pkg_info$Published)
+options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
+options(shiny.fullstacktrace = TRUE)
+options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
+# options(shiny.autoload.r=FALSE)
+#Detach all loaded packages and clean your environment
+golem::detach_all_attached()
+# Document and reload your package, which runs these three functions...
+golem::document_and_reload()
+shiny::runApp()
+options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
+options(shiny.fullstacktrace = TRUE)
+options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
+# options(shiny.autoload.r=FALSE)
+#Detach all loaded packages and clean your environment
+golem::detach_all_attached()
+# Document and reload your package, which runs these three functions...
+golem::document_and_reload()
+shiny::runApp()
+usethis::use_package("tidyr")
+options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
+options(shiny.fullstacktrace = TRUE)
+options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
+# options(shiny.autoload.r=FALSE)
+#Detach all loaded packages and clean your environment
+golem::detach_all_attached()
+# Document and reload your package, which runs these three functions...
+golem::document_and_reload()
+shiny::runApp()
+?dplyr::slice_head
+options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
+options(shiny.fullstacktrace = TRUE)
+options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
+# options(shiny.autoload.r=FALSE)
+#Detach all loaded packages and clean your environment
+golem::detach_all_attached()
+# Document and reload your package, which runs these three functions...
+golem::document_and_reload()
+con <- DBI::dbConnect(RMySQL::MySQL(),
+user='sasaccount',
+password='Access2o21**',
+dbname='workflow',
+port=3306,
+host='adsapps.biogen.com')
+DBI::dbGetInfo(con)
+cols <- DBI::dbListFields(con, 'tlf')
+DBI::dbDisconnect(con)
+cols
+options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
+options(shiny.fullstacktrace = FALSE)
+options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
+# options(shiny.autoload.r=FALSE)
+#Detach all loaded packages and clean your environment
+golem::detach_all_attached()
+# Document and reload your package, which runs these three functions...
+golem::document_and_reload()
+# Run the application
+run_app()
+options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
+options(shiny.fullstacktrace = FALSE)
+options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
+# options(shiny.autoload.r=FALSE)
+#Detach all loaded packages and clean your environment
+golem::detach_all_attached()
+# Document and reload your package, which runs these three functions...
+golem::document_and_reload()
+# Run the application
+run_app()
+options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
+options(shiny.fullstacktrace = FALSE)
+options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
+# options(shiny.autoload.r=FALSE)
+#Detach all loaded packages and clean your environment
+golem::detach_all_attached()
+# Document and reload your package, which runs these three functions...
+golem::document_and_reload()
+# Run the application
+run_app()
+options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
+options(shiny.fullstacktrace = FALSE)
+options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
+# options(shiny.autoload.r=FALSE)
+#Detach all loaded packages and clean your environment
+golem::detach_all_attached()
+# Document and reload your package, which runs these three functions...
+golem::document_and_reload()
+# Run the application
+run_app()
+usethis::use_github_action()
+?usethis::use_github_action_check_full
+usethis::use_github_action_check_standard()
+# For pkgdown
+usethis::use_github_pages() # failed. Instead run this: https://gist.github.com/ramnathv/2227408
+# https://gist.github.com/ramnathv/2227408 to create an orphan gh-pages branch
+# and then run this
+usethis::use_github_action("pkgdown")
+install.packages("covr")

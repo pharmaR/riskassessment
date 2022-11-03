@@ -1,0 +1,33 @@
+{
+    "dialog-state": {
+        "query": "get_golem_config",
+        "path": "",
+        "regex": false,
+        "caseSensitive": true,
+        "wholeWord": true,
+        "filePatterns": [
+            "*.r",
+            "*.R",
+            "*.rnw",
+            "*.Rnw",
+            "*.rmd",
+            "*.Rmd",
+            "*.rmarkdown",
+            "*.Rmarkdown",
+            "*.qmd",
+            "*.Qmd",
+            "*.md",
+            "*.rhtml",
+            "*.Rhtml",
+            "*.h",
+            "*.hpp",
+            "*.c",
+            "*.cpp"
+        ],
+        "excludeFilePatterns": [],
+        "resultsCount": 3,
+        "errorCount": 0,
+        "replaceErrors": "",
+        "projectRelative": true
+    }
+}
