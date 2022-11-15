@@ -9,6 +9,7 @@
 #'
 #' @export
 initialize_raa <- function() {
+  
   # Start logging info.
   loggit::set_logfile("loggit.json")
   

@@ -1,5 +1,5 @@
 # Global variables used within the application
-app_version <- 'beta'
+# app_version <- 'beta'
 passphrase <- 'somepassphrase'
 database_name <- "database.sqlite"
 credentials_name <- "credentials.sqlite"
@@ -86,7 +86,7 @@ numeric value <b>x</b> standardized weight)")
 template <- readr::read_csv(file.path('data-raw', 'upload_format.csv'), show_col_types = FALSE)
 
 usethis::use_data(
-  app_version,
+  # app_version,
   passphrase,
   database_name, credentials_name,
   community_usage_txt, community_usage_tbl,

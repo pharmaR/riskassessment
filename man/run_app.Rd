@@ -5,10 +5,13 @@
 \title{Run the Shiny Application}
 \usage{
 run_app(
-  onStart = initialize_raa,
+  onStart = initialize_raa(),
   options = list(),
   enableBookmarking = NULL,
   uiPattern = "/",
+  app_ver = paste(packageVersion("riskassessment")),
+ 
+    login_note = HTML("<em>Note:</em> To log in for the first time, use either the admin user:\\n                        <u>admin</u> or the non-admin user: <u>nonadmin</u>, both with\\n                        password <u>QWERTY1</u>."),
   ...
 )
 }
@@ -33,8 +36,15 @@ request to determine whether the \code{ui} should be used to handle the
 request. Note that the entire request path must match the regular
 expression in order for the match to be considered successful.}
 
-\item{...}{arguments to pass to golem_opts.
-See \code{?golem::get_golem_options} for more details.}
+\item{app_ver}{a "global" variable that is passed to several modules &
+reports which details the installed package version when not specified.
+It can be overwritten to include a specific version name as a text string.}
+
+\item{login_note}{a text string to display underneath the auth screen's login
+button, provided to guide users}
+
+\item{...}{arguments to pass to golem_opts. See \code{?golem::get_golem_options}
+for more details.}
 }
 \description{
 Run the Shiny Application
