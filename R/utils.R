@@ -124,11 +124,11 @@ create_credentials_db <- function(db_name = credentials_name){
   
   # Init the credentials table for credentials database
   credentials <- data.frame(
-    user = "admin",
-    password = "QWERTY1",
+    user = c("ADMIN", "admin", "NONADMIN", "nonadmin"),
+    password = rep("QWERTY1", 4),
     # password will automatically be hashed
-    admin = TRUE,
-    expire = as.character(Sys.Date()),
+    admin = c(TRUE, TRUE, FALSE, FALSE),
+    expire = rep(as.character(Sys.Date()), 4),
     stringsAsFactors = FALSE
   )
   
