@@ -9,30 +9,30 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-`riskassessment` is a shiny app providing a handy interface which
-augments the utility of the
+`riskassessment` is a handy interface that augments the utility of the
 [`riskmetric`](https://github.com/pharmaR/riskmetric) package within an
 organizational setting.
 
 <center>
-<a href="rinpharma.shinyapps.io/risk_assessment">
+<a href="https://rinpharma.shinyapps.io/risk_assessment">
 <img src="man/figures/demo_riskassessment.png" alt="Risk Assessment app" width="25%">
 </a>
 </center>
 
 <br>
 
-`riskassessment` is an R package containing an interactive web
-application serving as a front end to the
-[`riskmetric`](https://github.com/pharmaR/riskmetric) R package. Simply
-put, `riskmetric` is a framework to quantify risk by assessing a number
-of meaningful metrics meant to evaluate development best practices, code
-documentation, community engagement, and development sustainability. The
+More over, `riskassessment` is an R package containing an interactive
+shiny application. It serves as a front end interface to the
+[`riskmetric`](https://github.com/pharmaR/riskmetric) R package. If
+you’re unfamiliar, `riskmetric` is a framework to quantify an R
+package’s “risk” by assessing a number of meaningful metrics designed to
+evaluate package development best practices, code documentation,
+community engagement, and development sustainability. Together, the
 `riskassessment` app and the `riskmetric` package aim to provide some
 context for validation within regulated industries.
 
-Furthermore, the app extends the functionality of `riskmetric` by
-allowing the reviewer to
+The app extends the functionality of `riskmetric` by allowing the
+reviewer to:
 
 -   analyze `riskmetric` output without the need to write code in R
 -   contribute personalized comments on the value of individual metrics
@@ -58,8 +58,8 @@ Paper](https://www.pharmar.org/white-paper/).
 
 If you are new to using the `riskassessment` app, welcome! We’d highly
 encourage you to start exploring the
-[`demo verson`](rinpharma.shinyapps.io/risk_assessment) of the app
-currently deployed on shinyapps.io. There, you’ll find a number of
+[`demo verson`](https://rinpharma.shinyapps.io/risk_assessment) of the
+app currently deployed on shinyapps.io. There, you’ll find a number of
 pre-loaded packages just waiting to be assessed. Hands on experience
 will help you become familiar with the general layout of the app as you
 poke around and explore.
@@ -107,7 +107,7 @@ remotes::install_github("pharmaR/risk_assessment")
 With a simple `library(riskassessment)` you can access all the exported
 functions from `riskassessment` that help users reproduce analysis
 performed in the app. Or, you can create an `app.R` file and launch (or
-deploy) the application using:
+deploy) the application if you include the following line of code:
 
 ``` r
 # Run the application 
@@ -118,12 +118,13 @@ riskassessment::run_app()
 
 As you might expect, certain deployment environments offer persistent
 storage and others do not. For example, shinyapps.io does not. That
-means that even our [demo app](rinpharma.shinyapps.io/risk_assessment)
-that’s hosted on shinyapps.io contains a a package database that can’t
-be permanently altered. That’s not advantageous since an organization
-needs to continually add new packages, publish comments, and make
-decisions about packages. Thus, we’d recommend exploring these
-deployment options (which allow persistent storage):
+means that even our [demo
+app](https://rinpharma.shinyapps.io/risk_assessment) that’s hosted on
+shinyapps.io contains a a package database that can’t be permanently
+altered. That’s not advantageous since an organization needs to
+continually add new packages, publish comments, and make decisions about
+packages. Thus, we’d recommend exploring these deployment options (which
+allow persistent storage):
 
 -   Shiny Server
 
