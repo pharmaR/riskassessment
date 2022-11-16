@@ -13,7 +13,7 @@
 #' @importFrom shiny shinyApp
 #' @importFrom golem with_golem_options
 run_app <- function(
-  onStart = initialize_raa(),
+  onStart = initialize_raa,
   options = list(),
   enableBookmarking = NULL,
   uiPattern = "/",
