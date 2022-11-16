@@ -4,7 +4,7 @@
 \alias{dbSelect}
 \title{Select data from database}
 \usage{
-dbSelect(query, db_name = database_name)
+dbSelect(query, db_name = golem::get_golem_options("assessment_db_name"))
 }
 \arguments{
 \item{query}{a sql query as a string}
