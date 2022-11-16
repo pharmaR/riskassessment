@@ -34,7 +34,7 @@ showComments <- function(pkg_name, comments){
       "<div class='well'>",
       icon("user-tie"), " ", "user: ", comments$user_name, ", ", 
       icon("user-shield"), " ", "role: ", comments$user_role, ", ",
-      icon("calendar-alt"), " ", "date: ", comments$added_on,
+      icon("calendar-days"), " ", "date: ", comments$added_on,
       br(), br(), 
       comments$comment,
       "</div>",

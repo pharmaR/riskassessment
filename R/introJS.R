@@ -12,7 +12,7 @@ introJSUI <- function(id) {
       shinyWidgets::actionBttn(NS(id, "help"),
                  "",
                  color = "success",
-                 icon = icon("question-circle"),
+                 icon = icon("circle-question"),
                  block = FALSE,
                  style = "simple",
                  size = "md")

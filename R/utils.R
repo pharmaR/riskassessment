@@ -30,7 +30,7 @@ add_tags <- function(ui, ...) {
                       actionButton(
                         inputId = ".shinymanager_logout",
                         label = "Logout",
-                        icon = icon("sign-out-alt")
+                        icon = icon("right-from-bracket")
                       ),
                       actionButton(
                         inputId = ".shinymanager_app",
