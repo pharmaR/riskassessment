@@ -19,8 +19,9 @@ metricGridUI <- function(id) {
 metricGridServer <- function(id, metrics) {
   moduleServer(id, function(input, output, session) {
     
+    
     output$grid <- renderUI({
-      req(metrics())
+      req(nrow(metrics()) > 0)
       
       col_length <- nrow(metrics())%/%3
       
@@ -43,7 +44,7 @@ metricGridServer <- function(id, metrics) {
       )
     })
     
-    observeEvent(metrics(), {
+    observeEvent(req(nrow(metrics()) > 0), {
       apply(metrics(), 1, function(metric)
         metricBoxServer(id = metric['name'],
                         title = metric['title'],

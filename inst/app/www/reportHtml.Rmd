@@ -179,6 +179,11 @@ tagList(
 tagList(
   br(),
   h5("Community Usage Metrics", style = "text-align: center;"),
+  if (nrow(params$com_metrics) == 0) {
+    h6(glue::glue("Community Usage Metrics not avaiable for {params$pkg$name}"),
+       style = "text-align: center; color: gray; padding-top: 50px;")
+  } else {
+    tagList(
   br(), br(),
   createGrid(metrics = params$com_metrics),
   br(), br(),
@@ -192,7 +197,8 @@ tagList(
     HTML(showComments(
       pkg_name = params$pkg$name,
       comments = params$cm_comments))
-  )
+  ))
+  }
 )
 ```
 

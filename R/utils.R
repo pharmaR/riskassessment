@@ -349,6 +349,20 @@ get_date_span <- function(start, end = Sys.Date()) {
 #' @importFrom tibble add_row
 #' 
 build_comm_cards <- function(data){
+  
+  cards <- dplyr::tibble(
+    name = character(),
+    title = character(),
+    desc = character(),
+    value = character(),
+    succ_icon = character(),
+    icon_class = character(),
+    is_perc = numeric(),
+    is_url = numeric()
+  )
+  
+  if (nrow(data) == 0)
+    return(cards)
 
   # Get the first package release.
   first_version <- data %>%
@@ -361,16 +375,17 @@ build_comm_cards <- function(data){
   # has elapsed
   time_diff_first_rel <- get_date_span(first_version$fake_rel_date)
   
-  cards <- data.frame(
-    name = 'time_since_first_version',
-    title = 'First Version Release',
-    desc = 'Time passed since first version release',
-    value = glue::glue('{time_diff_first_rel$value} {time_diff_first_rel$label} Ago'),
-    succ_icon = 'black-tie',
-    icon_class = "text-info",
-    is_perc = 0,
-    is_url = 0
-  )
+  cards <- cards %>%
+    tibble::add_row(
+      name = 'time_since_first_version',
+      title = 'First Version Release',
+      desc = 'Time passed since first version release',
+      value = glue::glue('{time_diff_first_rel$value} {time_diff_first_rel$label} Ago'),
+      succ_icon = 'black-tie',
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
   
   
   # Get the last package release's month and year, then
