@@ -36,7 +36,9 @@ Authors:
 
 Other contributors:
 \itemize{
-  \item R Validation Hub [copyright holder]
+  \item PSI special interest group Application
+  \item Implementation of Methodologies in Statistics [copyright holder, funder]
+  \item R Validation Hub [copyright holder, funder]
 }
 
 }
