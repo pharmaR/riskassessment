@@ -4,11 +4,11 @@
 \alias{create_db}
 \title{Create package database}
 \usage{
-create_db(db_name = database_name)
+create_db(db_name = golem::get_golem_options("assessment_db_name"))
 }
 \arguments{
 \item{db_name}{a string}
 }
 \description{
-Note: the database_name object is assigned in data-raw/internal-data.R
+Note: the database_name object is assigned by deployment users in R/run_app.R
 }
