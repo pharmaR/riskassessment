@@ -1,7 +1,7 @@
 #' UI for 'Report Preview' module
-#' 
+#'
 #' @param id a module id name
-#' 
+#'
 #' @import shiny
 reportPreviewUI <- function(id) {
   uiOutput(NS(id, "reportPreview_ui"))
@@ -20,30 +20,30 @@ reportPreviewUI <- function(id) {
 #' @param user placeholder
 #' @param app_version placeholder
 #' @param metric_weights placeholder
-#' 
+#'
 #' @import shiny
 #' @import dplyr
 #' @importFrom rmarkdown render
 #' @importFrom plotly plotlyOutput renderPlotly
 #' @importFrom DT dataTableOutput renderDataTable
 #' @importFrom glue glue
-#' 
+#'
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                                 com_metrics_raw, mm_comments, cm_comments,
                                 downloads_plot_data, user, app_version,
                                 metric_weights) {
   moduleServer(id, function(input, output, session) {
-    
+
     # IntroJS.
     introJSServer(id = "introJS", text = rp_steps)
-    
+
     # Render Output UI for Report Preview.
     output$reportPreview_ui <- renderUI({
-      
+
       # Lets the user know that a package needs to be selected.
       if(identical(selected_pkg$name(), character(0)))
         showHelperMessage()
-      
+
       else {
         fluidPage(
           tagList(
@@ -51,14 +51,14 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             introJSUI(NS(id, "introJS")),
             h4("Report Preview", style = "text-align: center;"),
             br(), br(),
-            
+
             div(id = "dwnld_rp",
                 selectInput(NS(id, "report_format"), "Select Format", c("html", "docx")),
                 downloadButton(NS(id, 'download_report'), "Download Report")
             ),
-            
+
             br(), br(),
-            
+
             div(id = "rep_prev",
                 fluidRow(
                   column(
@@ -66,11 +66,11 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                     uiOutput(NS(id, "pkg_overview")),
                     uiOutput(NS(id, "decision_display")))
                 ),
-                
+
                 fluidRow(
                   column(width = 12, viewCommentsUI(NS(id, 'overall_comments')))
                 ),
-                
+
                 br(), br(),
                 hr(),
                 fluidRow(
@@ -80,7 +80,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                          metricGridUI(session$ns('mm_metricGrid')),
                          viewCommentsUI(NS(id, 'mm_comments')))
                 ),
-                
+
                 br(), br(),
                 hr(),
                 fluidRow(
@@ -103,45 +103,45 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
         )
       }
     })
-    
+
     output$downloads_plot <- plotly::renderPlotly({
       downloads_plot_data()
     })
-    
+
     overall_comments <- reactive({
       selected_pkg$overall_comment_added()
-      
+
       get_overall_comments(selected_pkg$name())
     })
-    
+
     # View comments.
     viewCommentsServer(id = 'overall_comments',
                        comments = overall_comments,
                        pkg_name = selected_pkg$name,
                        label = 'Overall Comments')
-    
+
     # View comments.
     viewCommentsServer(id = "mm_comments",
                        comments = mm_comments,
                        pkg_name = selected_pkg$name,
                        label = 'Maintainance Metrics Comments')
-    
+
     # View comments.
     viewCommentsServer(id = 'cm_comments',
                        comments = cm_comments,
                        pkg_name = selected_pkg$name,
                        label = 'Community Usage Metrics Comments')
-    
+
     # Maintenance metrics cards.
     metricGridServer("mm_metricGrid", metrics = maint_metrics)
-    
+
     # Community usage metrics cards.
     metricGridServer("cm_metricGrid", metrics = com_metrics)
-    
+
     output$communityMetrics_ui <- renderUI({
-      
+
       vect <- dbSelect("select distinct id from community_usage_metrics") %>% dplyr::pull()
-      
+
       if(!selected_pkg$name() %in% vect) {
         tagList(
           h5("Community Usage Metrics",
@@ -159,14 +159,14 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
           viewCommentsUI(NS(id, 'cm_comments'))
         )
       }
-      
+
     })
-    
-    
+
+
     # Display general information of the selected package.
     output$pkg_overview <- renderUI({
       req(selected_pkg$name())
-      
+
       tagList(
         h5('Package:'), selected_pkg$name(),
         h5('Version:'), selected_pkg$version(),
@@ -178,21 +178,23 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
         h5('Published:'), selected_pkg$published()
       )
     })
-    
+
     # Display the decision status of the selected package.
     output$decision_display <- renderUI({
-      
+      req(selected_pkg$name())
+
       tagList(
         h5('Overall risk:'),
-        ifelse(selected_pkg$decision() == '', 
+        ifelse(selected_pkg$decision() == '',
                'Pending',
-               selected_pkg$decision()))
+               selected_pkg$decision()),
+        h5('Score:'), selected_pkg$score())
     })
-    
+
     # Display general information about report.
     output$about_report <- renderUI({
       req(selected_pkg$name())
-      
+
       tagList(
         h5('Risk Assessment App Version:'), app_version,
         h5('riskmetric Version:'), paste0(packageVersion("riskmetric")),
@@ -203,12 +205,12 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     # Display the metric weights.
     output$weights_table <- DT::renderDataTable({
       req(selected_pkg$name())
-      
+
       metric_weights()
-      
+
     }, options = list(searching = FALSE, pageLength = 15, lengthChange = FALSE,
                       info = FALSE))
-    
+
     # Create report.
     output$download_report <- downloadHandler(
       filename = function() {
@@ -222,10 +224,10 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
           {
             shiny::incProgress(1 / 10)
             shiny::incProgress(5 / 10)
-            
+
             report <- ''
             my_tempdir <- tempdir()
-            
+
             if (input$report_format == "html") {
               report <- file.path('inst/app/www', 'reportHtml.Rmd')
             }
@@ -248,9 +250,9 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
             }
-            
+
             # file.copy(report, report_path, overwrite = TRUE)
-            
+
             # Collect info about package.
             pkg <- list(
               id = selected_pkg$id(),
@@ -262,9 +264,10 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
               author = selected_pkg$author(),
               maintainer = selected_pkg$maintainer(),
               license = selected_pkg$license(),
-              published = selected_pkg$published()
+              published = selected_pkg$published(),
+              score = selected_pkg$score()
             )
-            
+
             rmarkdown::render(
               report,
               output_file = file,

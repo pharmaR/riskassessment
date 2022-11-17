@@ -37,6 +37,7 @@ Authors:
 Other contributors:
 \itemize{
   \item R Validation Hub [copyright holder]
+  \item Munshi Imran Hossain [contributor]
 }
 
 }
