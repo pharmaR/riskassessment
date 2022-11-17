@@ -5,6 +5,7 @@
 * created a argument for `run_app()` called `login_note` which allows deployment users to add custom login notes on the authentication screen. By default, it will display a note about how to use default usernames and passwords to login for the first time.
 * fixed bug causing Community Usage metrics to not be added on Mac computers
 * fixed bug causing the report downloads to fail if no Community Metrics are available for a package. Instead a message is displayed "Community Usage Metrics not available for {package}"
+* Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/risk_assessment/archive/master.zip")` and `shiny::runGitHub('risk_assessment', 'pharmaR')`
 
 
 # riskassessment 0.0.0.9000
