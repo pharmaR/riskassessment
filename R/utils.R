@@ -124,11 +124,11 @@ create_credentials_db <- function(db_name = golem::get_golem_options('credential
   
   # Init the credentials table for credentials database
   credentials <- data.frame(
-    user = c("ADMIN",  "NONADMIN"),
-    password = rep("QWERTY1", 2),
+    user = "ADMIN",
+    password = "QWERTY1",
     # password will automatically be hashed
-    admin = c(TRUE, FALSE),
-    expire = rep(as.character(Sys.Date()), 2),
+    admin = TRUE,
+    expire = as.character(Sys.Date()),
     stringsAsFactors = FALSE
   )
   
