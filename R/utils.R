@@ -299,7 +299,7 @@ weight_risk_comment <- function(pkg_name) {
 #' update_metric_weight
 #' 
 #' @param metric_name a metric name, as a string
-#' @param metric_name a weight, as a string or double
+#' @param metric_weight a weight, as a string or double
 #' 
 #' @importFrom glue glue
 update_metric_weight <- function(metric_name, metric_weight){

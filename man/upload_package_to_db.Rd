@@ -15,6 +15,23 @@ upload_package_to_db(
   published_on
 )
 }
+\arguments{
+\item{name}{string the package name}
+
+\item{version}{string package version}
+
+\item{title}{string title of the package}
+
+\item{description}{string description of the package}
+
+\item{authors}{string author name(s)}
+
+\item{maintainers}{string names of maintainers}
+
+\item{license}{string type of package license}
+
+\item{published_on}{string char date of publication}
+}
 \description{
 Upload the general info into DB.
 }

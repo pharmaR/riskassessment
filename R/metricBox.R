@@ -13,11 +13,11 @@ metricBoxUI <- function(id) {
 #' @param title title.
 #' @param desc description.
 #' @param value metric value.
-#' @param is_true whether the metric is TRUE. If true, then the succ_icon will
-#'   be used; if false, then the unsucc_icon will be used.
-#' @param is_perc whether the value is a percentage.
+#' @param is_perc logical is the value is a percentage?
+#' @param is_url  logical is the value a url
 #' @param succ_icon icon used if is_true.
 #' @param unsucc_icon icon used if not is_true.
+#' @param icon_class string type of icon
 #'
 #' 
 #' @import dplyr

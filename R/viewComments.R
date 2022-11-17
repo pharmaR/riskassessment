@@ -23,7 +23,7 @@ viewCommentsUI <- function(id) {
 #' @param id the module id name
 #' @param pkg_name string name of the package
 #' @param comments data.frame comments table entry
-#' @param sring default: Current Comments 
+#' @param label string default: Current Comments 
 #' 
 #' 
 #' 

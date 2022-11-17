@@ -89,6 +89,14 @@ insert_pkg_info_to_db <- function(pkg_name) {
 }
 
 #' Upload the general info into DB.
+#' @param name string the package name
+#' @param version string package version
+#' @param title string title of the package
+#' @param description string description of the package
+#' @param authors string author name(s)
+#' @param maintainers string names of maintainers
+#' @param license string type of package license
+#' @param published_on string char date of publication
 #' 
 #' @importFrom glue glue
 #' @importFrom loggit loggit

@@ -6,6 +6,9 @@
 \usage{
 insert_maintenance_metrics_to_db(pkg_name)
 }
+\arguments{
+\item{pkg_name}{string name of the package}
+}
 \description{
 Get the maintenance and testing metrics info and upload into DB.
 }
