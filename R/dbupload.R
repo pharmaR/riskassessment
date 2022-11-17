@@ -1,7 +1,7 @@
 
 #' Get the package general information from CRAN/local
 #' 
-#' @param pkg_name the package name
+#' @param pkg_name string name of the package
 #' 
 #' @import dplyr
 #' @importFrom tidyr pivot_wider
@@ -45,6 +45,8 @@ get_latest_pkg_info <- function(pkg_name) {
 
 
 #' Call function to get and upload info from CRAN/local to db.
+#' 
+#' @param pkg_name string name of the package
 #' 
 #' @importFrom loggit loggit
 #' 
@@ -115,6 +117,8 @@ upload_package_to_db <- function(name, version, title, description,
 #'
 #' Get the maintenance and testing metrics info and upload into DB.
 #' 
+#' @param pkg_name string name of the package
+#' 
 #' @import dplyr
 #' @importFrom riskmetric pkg_ref pkg_assess pkg_score
 #' @importFrom glue glue 
@@ -181,6 +185,8 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
 
 
 #' Generate community usage metrics and upload data into DB
+#' 
+#' @param pkg_name string name of the package
 #' 
 #' @import dplyr
 #' @importFrom cranlogs cran_downloads

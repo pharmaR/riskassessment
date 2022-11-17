@@ -23,7 +23,7 @@ addCommentUI <- function(id) {
 #' @param metric_abrv placeholder
 #' @param user_name placeholder
 #' @param user_role placeholder
-#' @param pkg_name placeholder
+#' @param pkg_name string name of the package
 #' 
 #' 
 #' @import dplyr

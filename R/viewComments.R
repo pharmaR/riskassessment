@@ -20,10 +20,10 @@ viewCommentsUI <- function(id) {
 
 #' viewComment module's server logic
 #' 
-#' @param id a module id name
-#' @param pkg_name placeholder
-#' @param comments placeholder
-#' @param label placeholder
+#' @param id the module id name
+#' @param pkg_name string name of the package
+#' @param comments data.frame comments table entry
+#' @param sring default: Current Comments 
 #' 
 #' 
 #' 

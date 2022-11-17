@@ -18,8 +18,8 @@ showHelperMessage <- function(message = "Please select a package"){
 #' 
 #' Displays formatted comments
 #' 
-#' @param pkg_name a string
-#' @param pkg_name a data.frame
+#' @param pkg_name string name of the package
+#' @param comments data.frame comments table entry
 #' 
 #' 
 #' @export

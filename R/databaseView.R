@@ -47,6 +47,7 @@ databaseViewUI <- function(id) {
 #' @param user a user name
 #' @param uploaded_pkgs a vector of uploaded package names
 #' @param metric_weights a reactive data.frame holding metric weights
+#' @param changes a reactive value integer count
 #'
 #' 
 #' @import dplyr
