@@ -239,7 +239,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
                 clean = FALSE,
                 params = list(pkg = this_pack,
                               riskmetric_version = paste0(packageVersion("riskmetric")),
-                              app_version = app_version,
+                              app_version = golem::get_golem_options('app_version'),
                               metric_weights = metric_weights(),
                               user_name = user$name,
                               user_role = user$role,

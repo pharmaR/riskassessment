@@ -64,7 +64,6 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
     # time since first release, the time since latest release, 
     # and the number of downloads since last year.
     cards <- eventReactive(community_metrics(), {
-      req(nrow(community_metrics()) > 0)
       build_comm_cards(community_metrics())
     })
     

@@ -224,7 +224,7 @@ insert_community_metrics_to_db <- function(pkg_name) {
         versions_with_dates0 <- pkg_page %>% 
           rvest::html_node('table') %>%
           rvest::html_table() %>%
-          dplyr::select(-c("", "Description", 'Size')) %>%
+          dplyr::select("Name", "Last modified") %>%
           dplyr::filter(`Last modified` != "") %>%
           dplyr::mutate(version = stringr::str_remove_all(
             string = Name, pattern = glue::glue('{pkg_name}_|.tar.gz')),

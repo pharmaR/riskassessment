@@ -313,7 +313,7 @@ reweightViewServer <- function(id, user) {
         glue::glue("datase_backup-{Sys.Date()}.sqlite")
       },
       content = function(file) {
-        con <- DBI::dbConnect(RSQLite::SQLite(), database_name)
+        con <- DBI::dbConnect(RSQLite::SQLite(), golem::get_golem_options('assessment_db_name'))
         cbk <- DBI::dbConnect(RSQLite::SQLite(), file)
         RSQLite::sqliteCopyDatabase(con, cbk)
         DBI::dbDisconnect(con)

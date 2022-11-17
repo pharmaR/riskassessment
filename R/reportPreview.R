@@ -84,14 +84,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                 br(), br(),
                 hr(),
                 fluidRow(
-                  column(width = 12,
-                         h5("Community Usage Metrics",
-                            style = "text-align: center; padding-bottom: 50px;"),
-                         metricGridUI(NS(id, 'cm_metricGrid')),
-                         div(id = "cum_plot", fluidRow(
-                           column(width = 12, style = 'padding-left: 20px; padding-right: 20px;',
-                                  plotly::plotlyOutput(NS(id, "downloads_plot"), height = "500px")))),
-                         viewCommentsUI(NS(id, 'cm_comments')))
+                  column(width = 12, uiOutput(NS(id, 'communityMetrics_ui')))
                 ),
                 br(), br(),
                 hr(),
@@ -144,6 +137,30 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     
     # Community usage metrics cards.
     metricGridServer("cm_metricGrid", metrics = com_metrics)
+    
+    output$communityMetrics_ui <- renderUI({
+      
+      vect <- dbSelect("select distinct id from community_usage_metrics") %>% dplyr::pull()
+      
+      if(!selected_pkg$name() %in% vect) {
+        tagList(
+          h5("Community Usage Metrics",
+             style = "text-align: center;"),
+        showHelperMessage(message = glue::glue("Community Usage Metrics not avaiable for ", {selected_pkg$name()} ))
+        )
+      } else {
+        tagList(
+          h5("Community Usage Metrics",
+             style = "text-align: center; padding-bottom: 50px;"),
+          metricGridUI(NS(id, 'cm_metricGrid')),
+          div(id = "cum_plot", fluidRow(
+            column(width = 12, style = 'padding-left: 20px; padding-right: 20px;',
+                   plotly::plotlyOutput(NS(id, "downloads_plot"), height = "500px")))),
+          viewCommentsUI(NS(id, 'cm_comments'))
+        )
+      }
+      
+    })
     
     
     # Display general information of the selected package.

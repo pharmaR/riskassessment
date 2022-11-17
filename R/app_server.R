@@ -16,7 +16,7 @@ app_server <- function(input, output, session) {
   # check_credentials directly on sqlite db
   res_auth <- shinymanager::secure_server(
     check_credentials = shinymanager::check_credentials(
-      credentials_name,
+      golem::get_golem_options('credentials_db_name'),
       passphrase = passphrase
     )
   )
@@ -163,7 +163,7 @@ app_server <- function(input, output, session) {
                       cm_comments = community_data$comments,
                       downloads_plot_data = community_data$downloads_plot_data,
                       user = user,
-                      app_version = app_version,
+                      app_version = golem::get_golem_options('app_version'),
                       metric_weights = metric_weights)
   
   output$auth_output <- renderPrint({
