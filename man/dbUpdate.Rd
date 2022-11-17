@@ -4,7 +4,7 @@
 \alias{dbUpdate}
 \title{dbUpdate}
 \usage{
-dbUpdate(command, db_name = database_name)
+dbUpdate(command, db_name = golem::get_golem_options("assessment_db_name"))
 }
 \arguments{
 \item{command}{a string}
