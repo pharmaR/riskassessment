@@ -3,6 +3,7 @@
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
 #' @rawNamespace import(shiny, except = c(dataTableOutput, renderDataTable))
+#' @importFrom utils head installed.packages packageVersion write.csv zip 
 #' @importFrom shinymanager secure_app
 #' 
 #' @noRd
