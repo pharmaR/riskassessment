@@ -5,7 +5,7 @@
 #' 
 #' @param id a module id name
 #' 
-#' @import shiny
+#' 
 #' 
 viewCommentsUI <- function(id) {
   fluidRow(
@@ -25,7 +25,7 @@ viewCommentsUI <- function(id) {
 #' @param comments placeholder
 #' @param label placeholder
 #' 
-#' @import shiny
+#' 
 #' 
 viewCommentsServer <- function(id, pkg_name, comments, label = 'Current Comments') {
   moduleServer(id, function(input, output, session) {

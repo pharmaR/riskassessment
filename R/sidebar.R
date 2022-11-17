@@ -7,7 +7,7 @@
 #' @param user a username
 #' @param uploaded_pkgs a vector of packages
 #' 
-#' @import shiny
+#' 
 #' @importFrom shinyjs disabled
 #' 
 sidebarUI <- function(id) {
@@ -85,7 +85,7 @@ sidebarUI <- function(id) {
 #' @param user a username
 #' @param uploaded_pkgs a vector of packages
 #' 
-#' @import shiny
+#' 
 #' @importFrom shinyjs enable disable
 #' 
 sidebarServer <- function(id, user, uploaded_pkgs) {

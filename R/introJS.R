@@ -3,7 +3,7 @@
 #' 
 #' @param id a module id
 #' 
-#' @import shiny
+#' 
 introJSUI <- function(id) {
   fluidRow(
     style = "float: right",
@@ -27,7 +27,7 @@ introJSUI <- function(id) {
 #'   relationship to the element. Please see `R/introJSText.R` for data.frames
 #'   that populate this argument for the app
 #'
-#' @import shiny
+#' 
 #' @importFrom rintrojs introjs
 #'   
 introJSServer <- function(id, text) {

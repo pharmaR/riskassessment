@@ -4,7 +4,7 @@
 #' @param ui placeholder
 #' @param ... placeholder
 #' 
-#' @import shiny
+#' 
 #' @importFrom shinymanager fab_button
 #' @importFrom shinyjs useShinyjs
 add_tags <- function(ui, ...) {
