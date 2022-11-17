@@ -11,6 +11,9 @@
 #### CURRENT FILE: DEV SCRIPT #####
 ###################################
 
+# Specify license
+usethis::use_mit_license()
+
 # Engineering
 
 # ## Dependencies ---- not run
@@ -65,8 +68,6 @@
 # usethis::use_package("survival")
 # usethis::use_package("ggcorrplot")
 # usethis::use_pipe()
-
-
 
 # ## Add modules ---- not run. Modules already exist
 # ## Create a module infrastructure in R/

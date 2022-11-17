@@ -8,3 +8,4 @@ $credentials.*
 $database.*
 ^README\.Rmd$
 ^\.github$
+^LICENSE\.md$
