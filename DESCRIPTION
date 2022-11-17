@@ -46,6 +46,7 @@ Imports:
     loggit,
     lubridate,
     magrittr,
+    pkgload,
     plotly,
     purrr,
     readr (>= 2.0.1),
