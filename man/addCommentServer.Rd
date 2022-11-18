@@ -15,7 +15,7 @@ addCommentServer(id, metric_abrv, user_name, user_role, pkg_name)
 
 \item{user_role}{placeholder}
 
-\item{pkg_name}{placeholder}
+\item{pkg_name}{string name of the package}
 }
 \description{
 addComment module's server logic

@@ -2,7 +2,7 @@
 #' 
 #' @param id a module id name
 #' 
-#' @import shiny
+#' 
 maintenanceMetricsUI <- function(id) {
   uiOutput(NS(id, 'maintenance_metrics_ui'))
 }
@@ -14,7 +14,7 @@ maintenanceMetricsUI <- function(id) {
 #' @param maint_metrics placeholder
 #' @param user placeholder
 #' 
-#' @import shiny
+#' 
 #' @import dplyr
 maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user) {
   moduleServer(id, function(input, output, session) {
