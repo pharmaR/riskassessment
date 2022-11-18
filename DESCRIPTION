@@ -1,17 +1,17 @@
 Package: riskassessment
 Title: A web app designed to interface with the `riskmetric` package
 Version: 0.0.0.9002
-Authors@R: as.person(c( 
-    "Aaron Clark <aaron.clark@biogen.com> [aut, cre]",
-    "Robert Krajcik <robert.krajcik@biogen.com> [aut]",
-    "Jeff Thompson <jeff.thompson51317@gmail.com> [aut]",
-    "Marly Gotti <marly.cormar@biogen.com> [aut]",
-    "Maya Gans <maya.gans@biogen.com> [aut]",
-    "Aravind Reddy Kallem [aut]",
-    "Fission Labs India Pvt Ltd [aut]",
-	"PSI special interest group Application and Implementation of Methodologies in Statistics [cph, fnd]",
-    "R Validation Hub [cph, fnd]"
-  ))
+Authors@R: c( 
+    person("Aaron", "Clark", role = c("aut", "cre"), email = "aaron.clark@biogen.com"),
+    person("Robert", "Krajcik", role = "aut", email = "robert.krajcik@biogen.com"),
+    person("Jeff", "Thompson", role = "aut", email = "jeff.thompson51317@gmail.com"),
+    person("Marly", "Gotti", role = "aut", email = "marly.cormar@biogen.com"),
+    person("Maya", "Gans", role = "aut", email = "maya.gans@biogen.com"),
+    person("Aravind Reddy", "Kallem", role = "aut"),
+    person(family = "Fission Labs India Pvt Ltd", role = "aut"),
+	  person(family = "PSI special interest group Application and Implementation of Methodologies in Statistics", role = c("cph", "fnd")),
+    person(family = "R Validation Hub", role = c("cph", "fnd"))
+  )
 Description: The `riskassessment` application allows users to define a list of R
     packages to assess against metrics engineered by the `riskmetric` package.
     In general, those metrics evaluate package development best practices, code
