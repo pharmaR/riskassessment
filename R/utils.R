@@ -4,7 +4,7 @@
 #' @param ui placeholder
 #' @param ... placeholder
 #' 
-#' @import shiny
+#' 
 #' @importFrom shinymanager fab_button
 #' @importFrom shinyjs useShinyjs
 add_tags <- function(ui, ...) {
@@ -30,7 +30,7 @@ add_tags <- function(ui, ...) {
                       actionButton(
                         inputId = ".shinymanager_logout",
                         label = "Logout",
-                        icon = icon("sign-out-alt")
+                        icon = icon("right-from-bracket")
                       ),
                       actionButton(
                         inputId = ".shinymanager_app",
@@ -299,7 +299,7 @@ weight_risk_comment <- function(pkg_name) {
 #' update_metric_weight
 #' 
 #' @param metric_name a metric name, as a string
-#' @param metric_name a weight, as a string or double
+#' @param metric_weight a weight, as a string or double
 #' 
 #' @importFrom glue glue
 update_metric_weight <- function(metric_name, metric_weight){
@@ -655,7 +655,7 @@ get_mm_data <- function(pkg_id){
 }
 
 
-#' The 'Get Communnity Data' function
+#' The 'Get Community Data' function
 #' 
 #' Get all community metric data on a specific package
 #' 

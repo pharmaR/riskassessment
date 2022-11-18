@@ -7,13 +7,13 @@
 viewCommentsServer(id, pkg_name, comments, label = "Current Comments")
 }
 \arguments{
-\item{id}{a module id name}
+\item{id}{the module id name}
 
-\item{pkg_name}{placeholder}
+\item{pkg_name}{string name of the package}
 
-\item{comments}{placeholder}
+\item{comments}{data.frame comments table entry}
 
-\item{label}{placeholder}
+\item{label}{string default: Current Comments}
 }
 \description{
 viewComment module's server logic

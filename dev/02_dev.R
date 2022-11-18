@@ -11,6 +11,9 @@
 #### CURRENT FILE: DEV SCRIPT #####
 ###################################
 
+# Specify license
+usethis::use_mit_license()
+
 # Engineering
 
 # ## Dependencies ---- not run
@@ -65,8 +68,6 @@
 # usethis::use_package("survival")
 # usethis::use_package("ggcorrplot")
 # usethis::use_pipe()
-
-
 
 # ## Add modules ---- not run. Modules already exist
 # ## Create a module infrastructure in R/
@@ -160,7 +161,7 @@ usethis::use_vignette("riskmetric")
 
 
 # Before submitting a PR, run this code & update NEWS.md
-usethis::use_version("patch") #choices: "dev", "patch", "minor", "major"
+usethis::use_version("dev") #choices: "dev", "patch", "minor", "major"
 
 # Build pkg, including vignettes. Do this before updating documentation.
 devtools::build() # calls pkgbuld::build()     # X.X MB

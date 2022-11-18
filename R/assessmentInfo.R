@@ -2,7 +2,7 @@
 #' 
 #' @param id a module id name
 #' 
-#' @import shiny
+#' 
 #' @importFrom DT dataTableOutput
 #' 
 assessmentInfoUI <- function(id) {

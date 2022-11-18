@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_comm_data}
 \alias{get_comm_data}
-\title{The 'Get Communnity Data' function}
+\title{The 'Get Community Data' function}
 \usage{
 get_comm_data(pkg_name)
 }
