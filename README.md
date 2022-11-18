@@ -66,12 +66,12 @@ poke around and explore.
 
 With that said, you should immediately recognize that the app requires
 authentication, since it’s intended use is within an organization. There
-are two pre-defined roles: ‘nonadmin’ users and ‘admin’ users. The
+are two pre-defined roles: ‘non-admin’ users and ‘admin’ users. The
 latter can add/delete users, download an entire copy of the database,
 and modify the metric weights used in calculation of risk scores.
 Initially, both share the same password: `QWERTY1`. If you log in with
 this credential, the app will immediately prompt you to change your
-password and repeat the tje process with your new credentials.
+password and repeat the process with your new credentials.
 
 If you want a quick tour through the app (or need assistance getting
 past the authentication wall), you should watch this short walk through

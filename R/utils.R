@@ -655,7 +655,7 @@ get_mm_data <- function(pkg_id){
 }
 
 
-#' The 'Get Communnity Data' function
+#' The 'Get Community Data' function
 #' 
 #' Get all community metric data on a specific package
 #' 
