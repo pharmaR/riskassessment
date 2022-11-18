@@ -6,6 +6,7 @@
 * fixed bug causing Community Usage metrics to not be added on Mac computers
 * fixed bug causing the report downloads to fail if no Community Metrics are available for a package. Instead a message is displayed "Community Usage Metrics not available for {package}"
 * Add founders/copyright holders to `DESCRIPTION` file
+* fixed bug where Assessment Criteria tables were not being displayed
 
 
 # riskassessment 0.0.0.9000
