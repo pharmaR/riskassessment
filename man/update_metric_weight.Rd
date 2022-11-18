@@ -7,7 +7,9 @@
 update_metric_weight(metric_name, metric_weight)
 }
 \arguments{
-\item{metric_name}{a weight, as a string or double}
+\item{metric_name}{a metric name, as a string}
+
+\item{metric_weight}{a weight, as a string or double}
 }
 \description{
 update_metric_weight

@@ -8,10 +8,6 @@ sidebarUI(id)
 }
 \arguments{
 \item{id}{a module id}
-
-\item{user}{a username}
-
-\item{uploaded_pkgs}{a vector of packages}
 }
 \description{
 Also known as the 'Control Panel', and rightfully so, as it controls

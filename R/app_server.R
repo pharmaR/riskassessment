@@ -2,7 +2,7 @@
 #'
 #' @param input,output,session Internal parameters for {shiny}.
 #'     DO NOT REMOVE.
-#' @import shiny
+#' 
 #' @importFrom shinyjs show hide delay runjs
 #' @importFrom shinymanager secure_server check_credentials
 #' @importFrom keyring key_get
@@ -25,7 +25,7 @@ app_server <- function(input, output, session) {
     if (res_auth$admin == TRUE) {
       appendTab("apptabs",
                 tabPanel(
-                  title = div(id = "admin-mode-tab", icon("cogs"), "Administrative Tools"),
+                  title = div(id = "admin-mode-tab", icon("gears"), "Administrative Tools"),
                   h2("Administrative Tools & Options", align = "center", `padding-bottom`="20px"),
                   br(),
                   tabsetPanel(

@@ -5,7 +5,7 @@
 #' 
 #' @param id a module id name
 #' 
-#' @import shiny
+#' 
 #' 
 addCommentUI <- function(id) {
   fluidRow(
@@ -23,9 +23,9 @@ addCommentUI <- function(id) {
 #' @param metric_abrv placeholder
 #' @param user_name placeholder
 #' @param user_role placeholder
-#' @param pkg_name placeholder
+#' @param pkg_name string name of the package
 #' 
-#' @import shiny
+#' 
 #' @import dplyr
 #' @importFrom glue glue
 #' @importFrom stringr str_replace_all
