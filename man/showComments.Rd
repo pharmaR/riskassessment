@@ -7,7 +7,9 @@
 showComments(pkg_name, comments)
 }
 \arguments{
-\item{pkg_name}{a data.frame}
+\item{pkg_name}{string name of the package}
+
+\item{comments}{data.frame comments table entry}
 }
 \description{
 Displays formatted comments

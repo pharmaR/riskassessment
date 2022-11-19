@@ -5,7 +5,7 @@
 #' 
 #' @param message a string
 #' 
-#' @import shiny
+#' 
 showHelperMessage <- function(message = "Please select a package"){
   h6(message,
      style = 
@@ -18,10 +18,10 @@ showHelperMessage <- function(message = "Please select a package"){
 #' 
 #' Displays formatted comments
 #' 
-#' @param pkg_name a string
-#' @param pkg_name a data.frame
+#' @param pkg_name string name of the package
+#' @param comments data.frame comments table entry
 #' 
-#' @import shiny
+#' 
 #' @export
 showComments <- function(pkg_name, comments){
   if (length(pkg_name) == 0)
@@ -34,7 +34,7 @@ showComments <- function(pkg_name, comments){
       "<div class='well'>",
       icon("user-tie"), " ", "user: ", comments$user_name, ", ", 
       icon("user-shield"), " ", "role: ", comments$user_role, ", ",
-      icon("calendar-alt"), " ", "date: ", comments$added_on,
+      icon("calendar-days"), " ", "date: ", comments$added_on,
       br(), br(), 
       comments$comment,
       "</div>",

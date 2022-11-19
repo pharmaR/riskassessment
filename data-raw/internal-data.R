@@ -9,18 +9,7 @@ passphrase <- 'somepassphrase'
 community_usage_txt <- readr::read_file(file.path("data-raw", "community.txt"))
 
 # Table of community usage descriptions. Please edit the csv file to make changes.
-community_usage_tbl <-
-  DT::datatable(
-    suppressMessages(readr::read_csv(file.path("data-raw", "community.csv"))),
-    escape = FALSE,
-    class = "cell-border",
-    selection = 'none',
-    options = list(
-      sScrollX = "100%",
-      aLengthMenu = list(c(5, 10, 20, 100,-1), list('5', '10', '20', '100', 'All')),
-      iDisplayLength = 15
-    )
-  )
+community_usage_tbl <- readr::read_csv(file.path("data-raw", "community.csv"))
 
 # Overall descriptive text for maintenance metrics.
 maintenance_metrics_text <- shiny::HTML("Best practices in software development and
@@ -34,35 +23,13 @@ A Risk-based Approach for Assessing R package Accuracy within a Validated
 Infrastructure</a>.")
 
 # Table of maintenance metrics descriptions. Please edit the csv file to make changes.
-maintenance_metrics_tbl <-
-  DT::datatable(
-  suppressMessages(readr::read_csv(file.path("data-raw", "maintenance.csv"))),
-  escape = FALSE,
-  class = "cell-border",
-  selection = 'none',
-  options = list(
-    sScrollX = "100%",
-    aLengthMenu = list(c(5, 10, 20, 100,-1), list('5', '10', '20', '100', 'All')),
-    iDisplayLength = 15
-  )
-)
+maintenance_metrics_tbl <- readr::read_csv(file.path("data-raw", "maintenance.csv"))
 
 # Overall descriptive text for testing. Please edit text file to make changes.
 testing_text <- readr::read_file(file.path("data-raw", "testing.txt"))
 
 # Table of testing descriptions. Please edit the csv file to make changes.
-testing_tbl <-
-  DT::datatable(
-  readr::read_csv(file.path("data-raw", "testing.csv")),
-  escape = FALSE,
-  class = "cell-border",
-  selection = 'none',
-  options = list(
-    sScrollX = "100%",
-    aLengthMenu = list(c(5, 10, 20, 100,-1), list('5', '10', '20', '100', 'All')),
-    iDisplayLength = 5
-  )
-)
+testing_tbl <- readr::read_csv(file.path("data-raw", "testing.csv"))
 
 # Overall risk calculation text.
 riskcalc_text <- shiny::HTML("Per the <b>riskmetric</b> package, there 

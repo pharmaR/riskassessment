@@ -31,13 +31,14 @@ Authors:
   \item Marly Gotti \email{marly.cormar@biogen.com}
   \item Maya Gans \email{maya.gans@biogen.com}
   \item Aravind Reddy Kallem
-  \item Fission Labs India Pvt Ltd
+  \item  Fission Labs India Pvt Ltd
 }
 
 Other contributors:
 \itemize{
-  \item R Validation Hub [copyright holder]
-  \item Munshi Imran Hossain [contributor]
+  \item  PSI special interest group Application and Implementation of Methodologies in Statistics [copyright holder, funder]
+  \item  R Validation Hub [copyright holder, funder]
+  \item  Munshi Imran Hossain [contributor]
 }
 
 }
