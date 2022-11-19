@@ -188,7 +188,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
         ifelse(selected_pkg$decision() == '',
                'Pending',
                selected_pkg$decision()),
-        h5('Score:'), selected_pkg$score())
+        h5('Risk Score:'), selected_pkg$score())
     })
 
     # Display general information about report.
