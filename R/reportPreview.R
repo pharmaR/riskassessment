@@ -184,11 +184,12 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       req(selected_pkg$name())
 
       tagList(
+        h5('Risk Score:'), 
+        selected_pkg$score(),
         h5('Overall risk:'),
         ifelse(selected_pkg$decision() == '',
                'Pending',
-               selected_pkg$decision()),
-        h5('Risk Score:'), selected_pkg$score())
+               selected_pkg$decision()))
     })
 
     # Display general information about report.
