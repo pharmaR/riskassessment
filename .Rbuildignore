@@ -8,3 +8,11 @@ $credentials.*
 $database.*
 ^README\.Rmd$
 ^\.github$
+^LICENSE\.md$
+^.open$
+^credentials.sqlite$
+^database.sqlite$
+^docs$
+^loggit.json$
+^app\.R$
+^rsconnect$
