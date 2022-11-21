@@ -1,6 +1,6 @@
 Package: riskassessment
 Title: A web app designed to interface with the `riskmetric` package
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: as.person(c( 
     "Aaron Clark <aaron.clark@biogen.com> [aut, cre]",
     "Robert Krajcik <robert.krajcik@biogen.com> [aut]",
@@ -45,6 +45,7 @@ Imports:
     loggit,
     lubridate,
     magrittr,
+    pkgload,
     plotly,
     purrr,
     readr (>= 2.0.1),
