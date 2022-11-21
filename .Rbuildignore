@@ -8,3 +8,5 @@ $credentials.*
 $database.*
 ^README\.Rmd$
 ^\.github$
+^app\.R$
+^rsconnect$
