@@ -42,7 +42,7 @@ metricBoxServer <- function(id, title, desc, value,
       else if(is_perc)
         value <- glue::glue('{round(as.numeric(value), 1)}%')
       else if(is_url)
-        value <- a(glue::glue('{stringr::str_sub(value, 1, 29)}...'), href = value)
+        value <- a(glue::glue('{stringr::str_sub(value, 1, 45)}...'), href = value)
       else if(value %in% c('TRUE', 'FALSE'))
         value <- ifelse(value == 'TRUE', 'Yes', 'No')
       
@@ -60,6 +60,17 @@ metricBoxServer <- function(id, title, desc, value,
       
       card_style = "max-width: 400px; max-height: 250px; overflow-y: scroll;"
       
+      # for testing purposes:
+      # message(paste("id:", id))
+      # message(paste("title:", title))
+      # message(paste("desc:", desc))
+      # message(paste("value:", value))
+      # auto_font_out <- paste(auto_font(value, txt_max = 45, size_min = .75, size_max = 1.5, num_bins = 3))
+      # message(paste("auto_font_out:", auto_font_out))
+      
+      body_p_style = glue::glue(
+        'font-size: {auto_font(value, txt_max = 45, size_min = .75, size_max = 1.5, num_bins = 3)}vw')
+      
       div(class="card mb-3 text-center border-info", style=card_style,
           div(class ="row no-gutters",
               div(class="col-md-4 text-center border-info",
@@ -69,7 +80,7 @@ metricBoxServer <- function(id, title, desc, value,
                   h5(class="card-header bg-transparent", style="font-size: 1vw",
                      title),
                   div(class="card-body text-info",
-                      p(class="card-title", style="font-size: 1.5vw", value))),
+                      p(class="card-title", style= body_p_style, value))),
               div(class="card-footer bg-transparent", desc)
           )
       )
