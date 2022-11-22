@@ -4,7 +4,7 @@
 #' @param ui placeholder
 #' @param ... placeholder
 #' 
-#' @import shiny
+#' 
 #' @importFrom shinymanager fab_button
 #' @importFrom shinyjs useShinyjs
 add_tags <- function(ui, ...) {
@@ -30,7 +30,7 @@ add_tags <- function(ui, ...) {
                       actionButton(
                         inputId = ".shinymanager_logout",
                         label = "Logout",
-                        icon = icon("sign-out-alt")
+                        icon = icon("right-from-bracket")
                       ),
                       actionButton(
                         inputId = ".shinymanager_app",
@@ -57,7 +57,7 @@ add_tags <- function(ui, ...) {
 
 #' Create package database
 #' 
-#' @description Note: the database_name object is assigned in data-raw/internal-data.R
+#' @description Note: the database_name object is assigned by deployment users in R/run_app.R
 #' 
 #' @param db_name a string
 #' 
@@ -66,7 +66,7 @@ add_tags <- function(ui, ...) {
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
 #' 
-create_db <- function(db_name = database_name){
+create_db <- function(db_name = golem::get_golem_options('assessment_db_name')){
   
   # Create an empty database.
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
@@ -111,7 +111,7 @@ create_db <- function(db_name = database_name){
 
 #' Create credentials database
 #' 
-#' Note: the credentials_name object is assigned in data-raw/internal-data.R
+#' Note: the credentials_db_name object is assigned by the deployment user in R/run_app.R
 #' 
 #' @param db_name a string
 #' 
@@ -120,11 +120,11 @@ create_db <- function(db_name = database_name){
 #' @importFrom RSQLite SQLite
 #' @importFrom shinymanager read_db_decrypt write_db_encrypt
 #' 
-create_credentials_db <- function(db_name = credentials_name){
+create_credentials_db <- function(db_name = golem::get_golem_options('credentials_db_name')){
   
   # Init the credentials table for credentials database
   credentials <- data.frame(
-    user = "admin",
+    user = "ADMIN",
     password = "QWERTY1",
     # password will automatically be hashed
     admin = TRUE,
@@ -183,7 +183,7 @@ create_credentials_db <- function(db_name = credentials_name){
 #' @importFrom DBI dbConnect dbSendQuery dbFetch dbClearResult dbDisconnect
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
-dbSelect <- function(query, db_name = database_name){
+dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_name')){
   errFlag <- FALSE
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
 
@@ -231,7 +231,7 @@ dbSelect <- function(query, db_name = database_name){
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
 #' @importFrom glue glue
-dbUpdate <- function(command, db_name = database_name){
+dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_name')){
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   tryCatch({
@@ -299,7 +299,7 @@ weight_risk_comment <- function(pkg_name) {
 #' update_metric_weight
 #' 
 #' @param metric_name a metric name, as a string
-#' @param metric_name a weight, as a string or double
+#' @param metric_weight a weight, as a string or double
 #' 
 #' @importFrom glue glue
 update_metric_weight <- function(metric_name, metric_weight){
@@ -349,6 +349,20 @@ get_date_span <- function(start, end = Sys.Date()) {
 #' @importFrom tibble add_row
 #' 
 build_comm_cards <- function(data){
+  
+  cards <- dplyr::tibble(
+    name = character(),
+    title = character(),
+    desc = character(),
+    value = character(),
+    succ_icon = character(),
+    icon_class = character(),
+    is_perc = numeric(),
+    is_url = numeric()
+  )
+  
+  if (nrow(data) == 0)
+    return(cards)
 
   # Get the first package release.
   first_version <- data %>%
@@ -361,16 +375,17 @@ build_comm_cards <- function(data){
   # has elapsed
   time_diff_first_rel <- get_date_span(first_version$fake_rel_date)
   
-  cards <- data.frame(
-    name = 'time_since_first_version',
-    title = 'First Version Release',
-    desc = 'Time passed since first version release',
-    value = glue::glue('{time_diff_first_rel$value} {time_diff_first_rel$label} Ago'),
-    succ_icon = 'black-tie',
-    icon_class = "text-info",
-    is_perc = 0,
-    is_url = 0
-  )
+  cards <- cards %>%
+    tibble::add_row(
+      name = 'time_since_first_version',
+      title = 'First Version Release',
+      desc = 'Time passed since first version release',
+      value = glue::glue('{time_diff_first_rel$value} {time_diff_first_rel$label} Ago'),
+      succ_icon = 'black-tie',
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
   
   
   # Get the last package release's month and year, then
@@ -640,7 +655,7 @@ get_mm_data <- function(pkg_id){
 }
 
 
-#' The 'Get Communnity Data' function
+#' The 'Get Community Data' function
 #' 
 #' Get all community metric data on a specific package
 #' 

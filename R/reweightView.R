@@ -2,7 +2,7 @@
 #' 
 #' @param id the module id
 #' 
-#' @import shiny
+#' 
 #' 
 reweightViewUI <- function(id) {
   tagList(
@@ -16,7 +16,7 @@ reweightViewUI <- function(id) {
 #' @param id the module id
 #' @param user the user name
 #' 
-#' @import shiny
+#' 
 #' @import dplyr
 #' @importFrom DT datatable formatStyle styleEqual renderDataTable
 #' @importFrom shinyjs enable disable delay
@@ -313,7 +313,7 @@ reweightViewServer <- function(id, user) {
         glue::glue("datase_backup-{Sys.Date()}.sqlite")
       },
       content = function(file) {
-        con <- DBI::dbConnect(RSQLite::SQLite(), database_name)
+        con <- DBI::dbConnect(RSQLite::SQLite(), golem::get_golem_options('assessment_db_name'))
         cbk <- DBI::dbConnect(RSQLite::SQLite(), file)
         RSQLite::sqliteCopyDatabase(con, cbk)
         DBI::dbDisconnect(con)

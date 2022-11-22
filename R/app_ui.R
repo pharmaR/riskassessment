@@ -2,7 +2,8 @@
 #'
 #' @param request Internal parameter for `{shiny}`.
 #'     DO NOT REMOVE.
-#' @import shiny
+#' @rawNamespace import(shiny, except = c(dataTableOutput, renderDataTable))
+#' @importFrom utils head installed.packages packageVersion write.csv zip 
 #' @importFrom shinymanager secure_app
 #' 
 #' @noRd
@@ -68,7 +69,7 @@ app_ui <- function(request) {
       ),
       
       tabPanel(
-        title = div(id = "assessment-criteria-tab", icon("info-circle"), "Assessment Criteria"),
+        title = div(id = "assessment-criteria-tab", icon("circle-info"), "Assessment Criteria"),
         assessmentInfoUI("assessmentInfo"),
       )
     ),
@@ -94,7 +95,7 @@ app_ui <- function(request) {
 #' This function is internally used to add external
 #' resources inside the Shiny application.
 #'
-#' @import shiny
+#' 
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
 #' @importFrom rintrojs introjsUI
 #' @importFrom shinyjs useShinyjs

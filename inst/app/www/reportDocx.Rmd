@@ -31,6 +31,7 @@ library(ggplot2)
 library(plotly)
 
 knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
+cm_ind <- nrow(params$com_metrics) != 0
 ```
 
 
@@ -117,6 +118,10 @@ tagList(br(), h2("Community Usage Metrics"))
 
 
 ```{r community_metrics_table, warning=FALSE, message=FALSE, error=FALSE, results='HIDE', echo=FALSE}
+if (!cm_ind) {
+    h6(glue::glue("Community Usage Metrics not avaiable for {params$pkg$name}"),
+       style = "text-align: center; color: gray; padding-top: 50px;")
+} else {
 params$com_metrics %>%
   dplyr::mutate(
     `Metric Name` = title,
@@ -125,10 +130,11 @@ params$com_metrics %>%
   ) %>%
   dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
   knitr::kable(format = 'pandoc')
+}
 ```
 
 
-```{r community_metrics_plot_title}
+```{r community_metrics_plot_title, eval=cm_ind}
 tagList(
   br(),
   h2('Number of Downloads by Month/Year')
@@ -136,7 +142,7 @@ tagList(
 ```
 
 
-```{r community_metrics_plot, fig.width=10, fig.height=5}
+```{r community_metrics_plot, fig.width=10, fig.height=5, eval=cm_ind}
 d <- params$com_metrics_raw %>%
   dplyr::mutate(day_month_year = glue::glue('1-{month}-{year}')) %>%
   dplyr::mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
@@ -158,7 +164,7 @@ ggplot(data = d, aes(x = day_month_year, y = downloads)) +
 ```
 
 
-```{r community_metrics_comments}
+```{r community_metrics_comments, eval=cm_ind}
 tagList(
   br(),
   h2('Comments'),

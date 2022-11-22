@@ -14,6 +14,8 @@ databaseViewServer(id, user, uploaded_pkgs, metric_weights, changes)
 \item{uploaded_pkgs}{a vector of uploaded package names}
 
 \item{metric_weights}{a reactive data.frame holding metric weights}
+
+\item{changes}{a reactive value integer count}
 }
 \description{
 Server logic for 'Database View' module

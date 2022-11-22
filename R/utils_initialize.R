@@ -9,13 +9,13 @@
 #'
 #' @export
 initialize_raa <- function() {
+  
   # Start logging info.
   loggit::set_logfile("loggit.json")
   
-  
   # Create package db & credentials db if it doesn't exist yet.
-  if(!file.exists(database_name)) create_db()
-  if(!file.exists(credentials_name)) create_credentials_db()
+  if(!file.exists(golem::get_golem_options('assessment_db_name'))) create_db()
+  if(!file.exists(golem::get_golem_options('credentials_db_name'))) create_credentials_db()
 }
 
 

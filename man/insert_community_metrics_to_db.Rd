@@ -6,6 +6,9 @@
 \usage{
 insert_community_metrics_to_db(pkg_name)
 }
+\arguments{
+\item{pkg_name}{string name of the package}
+}
 \description{
 Generate community usage metrics and upload data into DB
 }

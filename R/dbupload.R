@@ -1,7 +1,7 @@
 
 #' Get the package general information from CRAN/local
 #' 
-#' @param pkg_name the package name
+#' @param pkg_name string name of the package
 #' 
 #' @import dplyr
 #' @importFrom tidyr pivot_wider
@@ -46,6 +46,8 @@ get_latest_pkg_info <- function(pkg_name) {
 
 #' Call function to get and upload info from CRAN/local to db.
 #' 
+#' @param pkg_name string name of the package
+#' 
 #' @importFrom loggit loggit
 #' 
 insert_pkg_info_to_db <- function(pkg_name) {
@@ -87,6 +89,14 @@ insert_pkg_info_to_db <- function(pkg_name) {
 }
 
 #' Upload the general info into DB.
+#' @param name string the package name
+#' @param version string package version
+#' @param title string title of the package
+#' @param description string description of the package
+#' @param authors string author name(s)
+#' @param maintainers string names of maintainers
+#' @param license string type of package license
+#' @param published_on string char date of publication
 #' 
 #' @importFrom glue glue
 #' @importFrom loggit loggit
@@ -114,6 +124,8 @@ upload_package_to_db <- function(name, version, title, description,
 #' The 'Insert MM to DB' Function
 #'
 #' Get the maintenance and testing metrics info and upload into DB.
+#' 
+#' @param pkg_name string name of the package
 #' 
 #' @import dplyr
 #' @importFrom riskmetric pkg_ref pkg_assess pkg_score
@@ -182,6 +194,8 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
 
 #' Generate community usage metrics and upload data into DB
 #' 
+#' @param pkg_name string name of the package
+#' 
 #' @import dplyr
 #' @importFrom cranlogs cran_downloads
 #' @importFrom lubridate year month
@@ -210,7 +224,7 @@ insert_community_metrics_to_db <- function(pkg_name) {
         versions_with_dates0 <- pkg_page %>% 
           rvest::html_node('table') %>%
           rvest::html_table() %>%
-          dplyr::select(-c("", "Description", 'Size')) %>%
+          dplyr::select("Name", "Last modified") %>%
           dplyr::filter(`Last modified` != "") %>%
           dplyr::mutate(version = stringr::str_remove_all(
             string = Name, pattern = glue::glue('{pkg_name}_|.tar.gz')),

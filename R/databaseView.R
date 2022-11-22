@@ -9,7 +9,7 @@ setColorPalette <- colorRampPalette(c(low_risk_color, med_risk_color, high_risk_
 #' 
 #' @param id a module id name
 #' 
-#' @import shiny
+#' 
 #' @importFrom shinydashboard box
 #' @importFrom DT dataTableOutput
 #' 
@@ -47,8 +47,9 @@ databaseViewUI <- function(id) {
 #' @param user a user name
 #' @param uploaded_pkgs a vector of uploaded package names
 #' @param metric_weights a reactive data.frame holding metric weights
+#' @param changes a reactive value integer count
 #'
-#' @import shiny
+#' 
 #' @import dplyr
 #' @importFrom lubridate as_datetime
 #' @importFrom stringr str_replace_all str_replace
@@ -238,7 +239,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
                 clean = FALSE,
                 params = list(pkg = this_pack,
                               riskmetric_version = paste0(packageVersion("riskmetric")),
-                              app_version = app_version,
+                              app_version = golem::get_golem_options('app_version'),
                               metric_weights = metric_weights(),
                               user_name = user$name,
                               user_role = user$role,

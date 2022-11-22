@@ -3,7 +3,7 @@
 #' 
 #' @param id a module id name
 #' 
-#' @import shiny
+#' 
 communityMetricsUI <- function(id) {
   uiOutput(NS(id, 'communityMetrics_ui'))
 }
@@ -15,7 +15,7 @@ communityMetricsUI <- function(id) {
 #' @param community_metrics placeholder
 #' @param user placeholder
 #' 
-#' @import shiny
+#' 
 #' @import dplyr
 #' @importFrom glue glue
 #' @importFrom plotly plotlyOutput renderPlotly
@@ -64,7 +64,6 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
     # time since first release, the time since latest release, 
     # and the number of downloads since last year.
     cards <- eventReactive(community_metrics(), {
-      req(nrow(community_metrics()) > 0)
       build_comm_cards(community_metrics())
     })
     
