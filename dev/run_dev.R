@@ -10,7 +10,9 @@ golem::detach_all_attached()
 # Document and reload your package, which runs these three functions...
 golem::document_and_reload()
 
-# Run the application 
+# Run the application -- these credentials have been entered already
+run_app(pre_auth_user = TRUE, login_creds = list(user_id = "UberAdmin", user_pwd = "ASDfgh1"))
+
 run_app()
 
 # # turn off any options

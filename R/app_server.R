@@ -9,9 +9,47 @@
 #' @importFrom loggit loggit
 #' @noRd
 app_server <- function(input, output, session) {
+  
+  ns <- session$ns
+  
   # Collect user info.
   user <- reactiveValues()
   user$metrics_reweighted <- 0
+
+  pre_auth <- golem::get_golem_options("pre_auth_user")
+  if(!rlang::is_empty(pre_auth) && pre_auth == TRUE) {
+    user$pre_auth_user <- TRUE }
+  else {
+    user$pre_auth_user <- FALSE }
+
+  observeEvent(user$pre_auth_user, {
+  if (user$pre_auth_user == TRUE) {
+    db_name = golem::get_golem_options('credentials_db_name')
+    con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
+    dat <- shinymanager::read_db_decrypt(con, name = "credentials", passphrase = passphrase)
+    DBI::dbDisconnect(con)
+    if ("UberAdmin" %in% dat$user) {
+      user_id <- golem::get_golem_options('login_creds')$user_id
+      user_pwd <- golem::get_golem_options('login_creds')$user_pwd
+      
+      shiny::updateTextInput(session = session, inputId = 'auth-user_id', value = user_id)
+      shiny::updateTextInput(session = session, inputId = 'auth-user_pwd', value = user_pwd)
+      user$set_pwd <- TRUE
+    }
+  }
+  }, priority = 1)
+
+    # go_login <- eventReactive(list(ns(input$user_id), ns(input$user_pwd)), {
+    go_login <- eventReactive(user$set_pwd, {
+    req(user$set_pwd == TRUE) # might not be necessary
+    return(TRUE)
+  })
+    
+  go_loginx <- go_login %>% debounce(500)
+  
+  observeEvent(go_loginx(), {
+    shinyjs::click("auth-go_auth")
+  })
   
   # check_credentials directly on sqlite db
   res_auth <- shinymanager::secure_server(
