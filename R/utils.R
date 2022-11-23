@@ -444,15 +444,6 @@ build_comm_cards <- function(data){
 #' @param num_bins when not NULL (the default), accepts an integer that bins a
 #'   continuous font size into a categorical one.
 #'
-#' @importFrom glue glue
-#' @examples
-#' auto_font(txt = "https://github.com/tidyverse/dplyr/issues")
-#' auto_font(txt = "https://github.com/tidyverse/dplyr/issues", txt_max = 31)
-#' auto_font(txt = "https://github.com/tidyverse/dplyr/issues", num_bins = 3)
-#' auto_font(txt = "https://github.com/tidyverse/dplyr/issues", num_bins = 3)
-#' auto_font(txt = "Yes")
-#' auto_font(txt = "Yes", num_bins = 2)
-#' auto_font(txt = "Yes", num_bins = 3)
 auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
                       num_bins = NULL){
   txt_len <- nchar(txt)
