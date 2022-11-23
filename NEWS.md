@@ -7,6 +7,7 @@
 * fixed bug causing the report downloads to fail if no Community Metrics are available for a package. Instead a message is displayed "Community Usage Metrics not available for {package}"
 * Add founders/copyright holders to `DESCRIPTION` file
 * fixed bug where Assessment Criteria tables were not being displayed
+* allow an automatic login option when running the application in development mode
 
 
 # riskassessment 0.0.1
