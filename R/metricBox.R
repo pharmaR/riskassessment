@@ -67,7 +67,7 @@ metricBoxServer <- function(id, title, desc, value,
       # define some styles prior to building card
       card_style = "max-width: 400px; max-height: 250px; padding-left: 5%; padding-right: 5%;" # overflow-y: scroll;
       auto_font_out <- auto_font(value, txt_max = val_max_nchar,
-                                 size_min = .85, size_max = 1.5, num_bins = 3)
+                                 size_min = .85, size_max = 1.5) #, num_bins = 3
       body_p_style = glue::glue('font-size: {auto_font_out}vw')
       
       div(class="card mb-3 text-center border-info", style=card_style,

@@ -25,6 +25,14 @@ params:
   downloads_plot_data: NA
 ---
 
+<style type="text/css">
+.main-container {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+
 ```{r setup, include=FALSE}
 library(knitr)
 library(shiny)
@@ -69,7 +77,7 @@ createCard <- function(title, desc, value, is_perc = FALSE, is_url = FALSE,
 # overflow-y: scroll;
   card_style <- "max-width: 400px; max-height: 250px; padding-left: 5%; padding-right: 5%;" 
   auto_font_out <- auto_font(value, txt_max = val_max_nchar,
-                             size_min = .85, size_max = 1.5, num_bins = 3)
+                             size_min = .85, size_max = 1.5)
   body_p_style = glue::glue('font-size: {auto_font_out}vw')
       
   div(class="card mb-3 text-center border-info", style=card_style,
