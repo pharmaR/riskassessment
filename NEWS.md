@@ -17,3 +17,8 @@
 
 * Added a `NEWS.md` file to track changes to the package.
 * Used `{golem}` to complete "packagization" of `{riskassessment}`
+
+
+# riskassessment 0.0.1.9007
+
+* Risk score is now available in the Report Preview tab and also in the downloaded HTML and DOCX format reports.
