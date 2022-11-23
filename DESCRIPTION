@@ -1,6 +1,6 @@
 Package: riskassessment
 Title: A web app designed to interface with the `riskmetric` package
-Version: 0.0.0.9005
+Version: 0.0.1.9006
 Authors@R: c( 
     person("Aaron", "Clark", role = c("aut", "cre"), email = "aaron.clark@biogen.com"),
     person("Robert", "Krajcik", role = "aut", email = "robert.krajcik@biogen.com"),
@@ -10,7 +10,8 @@ Authors@R: c(
     person("Aravind Reddy", "Kallem", role = "aut"),
     person(family = "Fission Labs India Pvt Ltd", role = "aut"),
 	  person(family = "PSI special interest group Application and Implementation of Methodologies in Statistics", role = c("cph", "fnd")),
-    person(family = "R Validation Hub", role = c("cph", "fnd"))
+    person(family = "R Validation Hub", role = c("cph", "fnd")),
+    person("Munshi Imran", "Hossain", role = "ctb")
   )
 Description: The `riskassessment` application allows users to define a list of R
     packages to assess against metrics engineered by the `riskmetric` package.
@@ -44,6 +45,7 @@ Imports:
     loggit,
     lubridate,
     magrittr,
+    pkgload,
     plotly,
     purrr,
     readr (>= 2.0.1),
