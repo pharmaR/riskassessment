@@ -35,6 +35,8 @@ metricBoxServer <- function(id, title, desc, value,
     output$metricBox_ui <- renderUI({
       req(title, desc, value)
       
+      # A str length of 41 chars tends to wrap to two rows and look quite nice
+      val_max_nchar <- 31
       is_true <- !(value %in% c(0, "pkg_metric_error", "NA", "", 'FALSE'))
       
       if(value %in% c("pkg_metric_error", "NA"))
@@ -42,10 +44,14 @@ metricBoxServer <- function(id, title, desc, value,
       else if(is_perc)
         value <- glue::glue('{round(as.numeric(value), 1)}%')
       else if(is_url)
-        value <- a(glue::glue('{stringr::str_sub(value, 1, 45)}...'), href = value)
+        value <- a(ifelse(nchar(value) <= val_max_nchar, value,
+                    glue::glue('{stringr::str_sub(value, 1, (val_max_nchar - 3))}...')
+                 ), href = value)
+        # unfortunately, adding the href can sometimes force the footer to fall
+        # outside the card when val_max_nchar is too large.
       else if(value %in% c('TRUE', 'FALSE'))
         value <- ifelse(value == 'TRUE', 'Yes', 'No')
-      
+
       icon_name <- succ_icon
 
       if(!is_true){
@@ -58,21 +64,14 @@ metricBoxServer <- function(id, title, desc, value,
         icon_class <- "text-info"
       }
       
-      card_style = "max-width: 400px; max-height: 250px; overflow-y: scroll;"
-      
-      # for testing purposes:
-      # message(paste("id:", id))
-      # message(paste("title:", title))
-      # message(paste("desc:", desc))
-      # message(paste("value:", value))
-      # auto_font_out <- paste(auto_font(value, txt_max = 45, size_min = .75, size_max = 1.5, num_bins = 3))
-      # message(paste("auto_font_out:", auto_font_out))
-      
-      body_p_style = glue::glue(
-        'font-size: {auto_font(value, txt_max = 45, size_min = .75, size_max = 1.5, num_bins = 3)}vw')
+      # define some styles prior to building card
+      card_style = "max-width: 400px; max-height: 250px; padding-left: 5%; padding-right: 5%;" # overflow-y: scroll;
+      auto_font_out <- auto_font(value, txt_max = val_max_nchar,
+                                 size_min = .85, size_max = 1.5, num_bins = 3)
+      body_p_style = glue::glue('font-size: {auto_font_out}vw')
       
       div(class="card mb-3 text-center border-info", style=card_style,
-          div(class ="row no-gutters",
+          div(class ="row no-gutters;",
               div(class="col-md-4 text-center border-info",
                   icon(icon_name, class=icon_class,
                        style="padding-top: 40%; font-size:60px; padding-left: 20%;")),
@@ -87,3 +86,4 @@ metricBoxServer <- function(id, title, desc, value,
     })
   })
 }
+

@@ -447,7 +447,8 @@ build_comm_cards <- function(data){
 #' @importFrom glue glue
 #' @examples
 #' auto_font(txt = "https://github.com/tidyverse/dplyr/issues")
-#' auto_font(txt = "https://github.com/tidyverse/dplyr/issues", num_bins = 2)
+#' auto_font(txt = "https://github.com/tidyverse/dplyr/issues", txt_max = 31)
+#' auto_font(txt = "https://github.com/tidyverse/dplyr/issues", num_bins = 3)
 #' auto_font(txt = "https://github.com/tidyverse/dplyr/issues", num_bins = 3)
 #' auto_font(txt = "Yes")
 #' auto_font(txt = "Yes", num_bins = 2)
@@ -455,25 +456,26 @@ build_comm_cards <- function(data){
 auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
                       num_bins = NULL){
   txt_len <- nchar(txt)
-  txt_pct <- 1- ifelse(txt_len > txt_max, 1, txt_len / txt_max)
+  txt_pct <- 1- ifelse(txt_len >= txt_max, 1, txt_len / txt_max)
   cont_size <- round(size_min + (txt_pct * (size_max - size_min)), 3)
   if (is.null(num_bins)) {
     return(cont_size)
   } else {
-    # when creating bins, we want them to be equally sized and choose
-    # the left bound if in the lowest category, otherwise, re-calculate
-    # the breaks and choose the upper bound
+    # when creating bins, we want equally sized categories and to choose the
+    # left bound if cont_size falls in the lowest category; otherwise,
+    # re-calculate the breaks to be more proportional and choose the upper bound
     num_bins0 <- ifelse(num_bins < 2, 2, num_bins)
     breaks <- seq(size_min, size_max, length.out = num_bins0 + 1)
     grp <- as.character(cut(cont_size, breaks, include.lowest = TRUE))
-    # message(grp)
-    # message(paste(substr(grp, 1, 1) == "["))
     
     breaks2 <- seq(size_min, size_max, length.out = num_bins0)
-    return(ifelse(substr(grp, 1, 1) == "[", size_min, 
-           breaks2[cut(cont_size, breaks, include.lowest = TRUE, labels = FALSE)]))
+    return(ifelse(substr(grp, 1, 1) == "[",
+             size_min, 
+             breaks2[cut(cont_size, breaks, include.lowest = TRUE, labels = FALSE)])
+           )
   }
 }
+
 
 
 #' The 'Build Community plot' function

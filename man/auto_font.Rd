@@ -28,7 +28,8 @@ the smaller the font. Used in MetricBox.R.
 }
 \examples{
 auto_font(txt = "https://github.com/tidyverse/dplyr/issues")
-auto_font(txt = "https://github.com/tidyverse/dplyr/issues", num_bins = 2)
+auto_font(txt = "https://github.com/tidyverse/dplyr/issues", txt_max = 31)
+auto_font(txt = "https://github.com/tidyverse/dplyr/issues", num_bins = 3)
 auto_font(txt = "https://github.com/tidyverse/dplyr/issues", num_bins = 3)
 auto_font(txt = "Yes")
 auto_font(txt = "Yes", num_bins = 2)
