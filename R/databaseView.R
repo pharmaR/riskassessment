@@ -218,7 +218,8 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
                 author = selected_pkg$author,
                 maintainer = selected_pkg$maintainer,
                 license = selected_pkg$license,
-                published = selected_pkg$published
+                published = selected_pkg$published,
+                score = selected_pkg$score
               )
               
               # gather comments data
