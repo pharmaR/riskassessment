@@ -3,7 +3,7 @@
 #' 
 #' @param id a module id
 #' 
-#' @import shiny
+#' 
 introJSUI <- function(id) {
   fluidRow(
     style = "float: right",
@@ -12,7 +12,7 @@ introJSUI <- function(id) {
       shinyWidgets::actionBttn(NS(id, "help"),
                  "",
                  color = "success",
-                 icon = icon("question-circle"),
+                 icon = icon("circle-question"),
                  block = FALSE,
                  style = "simple",
                  size = "md")
@@ -27,7 +27,7 @@ introJSUI <- function(id) {
 #'   relationship to the element. Please see `R/introJSText.R` for data.frames
 #'   that populate this argument for the app
 #'
-#' @import shiny
+#' 
 #' @importFrom rintrojs introjs
 #'   
 introJSServer <- function(id, text) {

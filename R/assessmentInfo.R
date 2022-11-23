@@ -2,7 +2,7 @@
 #' 
 #' @param id a module id name
 #' 
-#' @import shiny
+#' 
 #' @importFrom DT dataTableOutput
 #' 
 assessmentInfoUI <- function(id) {
@@ -87,7 +87,19 @@ assessmentInfoServer <- function(id, metric_weights) {
     
     
     # Render table for Maintenance Metrics.
-    output$maintenance_table <- DT::renderDataTable(maintenance_metrics_tbl)
+    output$maintenance_table <- DT::renderDataTable(
+      DT::datatable(
+        maintenance_metrics_tbl,
+        escape = FALSE,
+        class = "cell-border",
+        selection = 'none',
+        options = list(
+          sScrollX = "100%",
+          aLengthMenu = list(c(5, 10, 20, 100,-1), list('5', '10', '20', '100', 'All')),
+          iDisplayLength = 15
+        )
+      )
+    )
     
     
     # Display the Community Usage Metrics text content.
@@ -95,7 +107,19 @@ assessmentInfoServer <- function(id, metric_weights) {
     
     
     # Render table for Community Usage Metrics.
-    output$community_usage_table <- DT::renderDataTable(community_usage_tbl)
+    output$community_usage_table <- DT::renderDataTable(
+        DT::datatable(
+          community_usage_tbl,
+          escape = FALSE,
+          class = "cell-border",
+          selection = 'none',
+          options = list(
+            sScrollX = "100%",
+            aLengthMenu = list(c(5, 10, 20, 100,-1), list('5', '10', '20', '100', 'All')),
+            iDisplayLength = 15
+          )
+        )
+      )
     
     
     # Display the Testing Metrics text content.
@@ -103,6 +127,18 @@ assessmentInfoServer <- function(id, metric_weights) {
     
     
     # Render table for Testing Metrics.
-    output$testing_table <- DT::renderDataTable(testing_tbl)
+    output$testing_table <- DT::renderDataTable(
+      DT::datatable(
+        testing_tbl,
+        escape = FALSE,
+        class = "cell-border",
+        selection = 'none',
+        options = list(
+          sScrollX = "100%",
+          aLengthMenu = list(c(5, 10, 20, 100,-1), list('5', '10', '20', '100', 'All')),
+          iDisplayLength = 15
+        )
+      )
+    )
   })
 }
