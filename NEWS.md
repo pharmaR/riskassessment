@@ -6,7 +6,8 @@
 * Fixed bug causing Community Usage metrics to not be added on Mac computers
 * Fixed bug causing the report downloads to fail if no Community Metrics are available for a package. Instead a message is displayed "Community Usage Metrics not available for {package}"
 * Add founders/copyright holders to `DESCRIPTION` file
-* Fixed bug where Assessment Criteria tables were not being displayed
+* Fixed bug where Assessment Criteria tables were not being displayed.
+* Risk score is now available in the Report Preview tab and also in the downloaded HTML and DOCX format reports (#264).
 * Improved metric 'card' aesthetics in order to remove scroll bars (#198).
 
 

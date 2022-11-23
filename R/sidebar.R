@@ -445,7 +445,8 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       maintainer = reactive(selected_pkg$maintainer),
       license = reactive(selected_pkg$license),
       published = reactive(selected_pkg$published),
-      overall_comment_added = reactive(c(input$submit_overall_comment, input$submit_overall_comment_yes))
+      overall_comment_added = reactive(c(input$submit_overall_comment, input$submit_overall_comment_yes)),
+      score = reactive(selected_pkg$score)
     )
   })
 }

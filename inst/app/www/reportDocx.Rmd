@@ -65,6 +65,7 @@ tagList(
   strong('Maintainer:'),   br(), getElement(params$pkg, 'maintainer'),   br(), br(),
   strong('License:'),      br(), getElement(params$pkg, 'license'),      br(), br(),
   strong('Published:'),    br(), getElement(params$pkg, 'published'),    br(), br(),
+  strong('Risk Score:'),   br(), getElement(params$pkg, 'score'),        br(), br(),
   strong('Overall Risk:'), br(), ifelse(params$pkg[['decision']] == '', 'Pending', params$pkg[['decision']])
 )
 ```
