@@ -7,7 +7,7 @@
 * fixed bug causing the report downloads to fail if no Community Metrics are available for a package. Instead a message is displayed "Community Usage Metrics not available for {package}"
 * Add founders/copyright holders to `DESCRIPTION` file
 * fixed bug where Assessment Criteria tables were not being displayed
-
+* Risk score is now available in the Report Preview tab and also in the downloaded HTML and DOCX format reports.
 
 # riskassessment 0.0.1
 * Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/risk_assessment/archive/master.zip")` and `shiny::runGitHub('risk_assessment', 'pharmaR')`
@@ -17,8 +17,3 @@
 
 * Added a `NEWS.md` file to track changes to the package.
 * Used `{golem}` to complete "packagization" of `{riskassessment}`
-
-
-# riskassessment 0.0.1.9007
-
-* Risk score is now available in the Report Preview tab and also in the downloaded HTML and DOCX format reports.
