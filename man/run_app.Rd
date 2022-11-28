@@ -13,6 +13,7 @@ run_app(
   login_note = NULL,
   credentials_db_name = NULL,
   assessment_db_name = NULL,
+  pre_auth_user = NULL,
   ...
 )
 }

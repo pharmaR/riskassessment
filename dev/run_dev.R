@@ -11,7 +11,7 @@ golem::detach_all_attached()
 golem::document_and_reload()
 
 # Run the application 
-run_app(login_creds = list(user_id = "admin", user_pwd = "Password123"))
+run_app(pre_auth_user = TRUE)
 
 # # turn off any options
 # options(shiny.autoload.r=NULL)

@@ -13,6 +13,9 @@ initialize_raa <- function() {
   # Start logging info.
   loggit::set_logfile("loggit.json")
   
+  # TODO: Erase when pushing to master
+  if (!get_golem_config("app_prod") && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(golem::get_golem_options('credentials_db_name'))) create_credentials_dev_db()
+  
   # Create package db & credentials db if it doesn't exist yet.
   if(!file.exists(golem::get_golem_options('assessment_db_name'))) create_db()
   if(!file.exists(golem::get_golem_options('credentials_db_name'))) create_credentials_db()
