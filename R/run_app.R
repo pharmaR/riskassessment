@@ -9,6 +9,8 @@
 #'   Please make sure name ends with '.sqlite'. For example: 'cred_db.sqlite'.
 #' @param assessment_db_name text string that names the credentials databse.
 #'   Please make sure name ends with '.sqlite'. For example: 'assess_db.sqlite'.
+#' @param pre_auth_user if `TRUE` or 'admin', run as admin, if 'nonadmin' run as
+#'   non-admin
 #' @param ... arguments to pass to golem_opts. See `?golem::get_golem_options`
 #'   for more details.
 #' @inheritParams shiny::shinyApp
