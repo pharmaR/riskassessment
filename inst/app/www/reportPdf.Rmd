@@ -7,6 +7,7 @@ always_allow_html: true
 output:
   pdf_document:
     md_extensions: +raw_html-markdown_in_html_blocks
+    pandoc_args: ['--lua-filter', 'read_html.lua']
 params:
   pkg: NA
   riskmetric_version: NA

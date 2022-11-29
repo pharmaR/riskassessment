@@ -168,7 +168,6 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
           {
             shiny::incProgress(1)
             
-            browser
             my_tempdir <- tempdir()
             if (input$report_formats == "html") {
               Report <- file.path(my_tempdir, "reportHtml.Rmd")
@@ -195,7 +194,22 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
             } 
             else { 
               Report <- file.path(my_tempdir, "reportPdf.Rmd")
-              file.copy(file.path('inst/app/www', 'reportPdf.Rmd'), Report, overwrite = TRUE)
+              if (!dir.exists(file.path(my_tempdir, "images")))
+                dir.create(file.path(my_tempdir, "images"))
+              file.copy(file.path('inst/app/www', 'ReportPdf.Rmd'),
+                        Report,
+                        overwrite = TRUE)
+              file.copy(file.path('inst/app/www', 'read_html.lua'),
+                        file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
+              file.copy(file.path('inst/app/www', 'images', 'user-tie.png'),
+                        file.path(my_tempdir, "images", "user-tie.png"),
+                        overwrite = TRUE)
+              file.copy(file.path('inst/app/www', 'images', 'user-shield.png'),
+                        file.path(my_tempdir, "images", "user-shield.png"),
+                        overwrite = TRUE)
+              file.copy(file.path('inst/app/www', 'images', 'calendar-alt.png'),
+                        file.path(my_tempdir, "images", "calendar-alt.png"),
+                        overwrite = TRUE)
             }
             
             fs <- c()
@@ -211,9 +225,9 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
                 file
               }
               
-              
+              # Collect info about package.
               selected_pkg <- get_pkg_info(this_pkg)
-              this_pack <- list(
+              pkg_list <- list(
                 id = selected_pkg$id,
                 name = selected_pkg$name,
                 version = selected_pkg$version,
@@ -233,7 +247,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
               cm_comments <- get_cm_comments(this_pkg)
               
               # gather maint metrics & community metric data
-              mm_data <- get_mm_data(this_pack$id)
+              mm_data <- get_mm_data(pkg_list$id)
               comm_data <- get_comm_data(this_pkg)
               comm_cards <- build_comm_cards(comm_data)
               downloads_plot <- build_comm_plotly(comm_data)
@@ -243,7 +257,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
                 input = Report,
                 output_file = path,
                 clean = FALSE,
-                params = list(pkg = this_pack,
+                params = list(pkg = pkg_list,
                               riskmetric_version = paste0(packageVersion("riskmetric")),
                               app_version = golem::get_golem_options('app_version'),
                               metric_weights = metric_weights(),

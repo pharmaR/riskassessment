@@ -251,13 +251,27 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
             } else {
-              report <- file.path('inst/app/www', 'reportPdf.Rmd')
+              report <- file.path(my_tempdir, "reportPdf.Rmd")
+              if (!dir.exists(file.path(my_tempdir, "images")))
+                dir.create(file.path(my_tempdir, "images"))
+              file.copy(file.path('inst/app/www', 'reportPdf.Rmd'),
+                        report, overwrite = TRUE)
+              file.copy(file.path('inst/app/www', 'read_html.lua'),
+                        file.path(my_tempdir, "read_html.lua"),
+                        overwrite = TRUE)
+              file.copy(file.path('inst/app/www', 'images', 'user-tie.png'),
+                        file.path(my_tempdir, "images", "user-tie.png"),
+                        overwrite = TRUE)
+              file.copy(file.path('inst/app/www', 'images', 'user-shield.png'),
+                        file.path(my_tempdir, "images", "user-shield.png"),
+                        overwrite = TRUE)
+              file.copy(file.path('inst/app/www', 'images', 'calendar-alt.png'),
+                        file.path(my_tempdir, "images", "calendar-alt.png"),
+                        overwrite = TRUE)
             }
             
-            # file.copy(report, report_path, overwrite = TRUE)
-            
             # Collect info about package.
-            pkg <- list(
+            pkg_list <- list(
               id = selected_pkg$id(),
               name = selected_pkg$name(),
               version = selected_pkg$version(),
@@ -274,7 +288,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             rmarkdown::render(
               report,
               output_file = file,
-              params = list(pkg = pkg,
+              params = list(pkg = pkg_list,
                             riskmetric_version = paste0(packageVersion("riskmetric")),
                             app_version = app_version,
                             metric_weights = metric_weights(),
