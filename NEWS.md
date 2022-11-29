@@ -1,13 +1,15 @@
 # riskassessment (development version)
 
 * Updated README to include more description, with a focus on improving the 'Usage' section, which now shows our audience how to install & run the app for the first time. Also, new links to the demo app & a short video walk through were added. Plus, very brief notes were included regarding deployment environments.
-* created a new argument for `run_app()` called `app_version` which allows deployment users to write their own custom app_version name via a text string. This is displayed on authentication screen and any downloaded reports. By default, it will display the installed version of `riskassessment`.
-* created a argument for `run_app()` called `login_note` which allows deployment users to add custom log-in notes on the authentication screen. By default, it will display a note about how to use default usernames and passwords to login for the first time.
-* fixed bug causing Community Usage metrics to not be added on Mac computers
-* fixed bug causing the report downloads to fail if no Community Metrics are available for a package. Instead a message is displayed "Community Usage Metrics not available for {package}"
+* Created a new argument for `run_app()` called `app_version` which allows deployment users to write their own custom app_version name via a text string. This is displayed on authentication screen and any downloaded reports. By default, it will display the installed version of `riskassessment`.
+* Created a argument for `run_app()` called `login_note` which allows deployment users to add custom log-in notes on the authentication screen. By default, it now displays a note about how to use default usernames and passwords to gain entry for the first time.
+* Fixed bug causing Community Usage metrics to not be added on Mac computers
+* Fixed bug causing the report downloads to fail if no Community Metrics are available for a package. Instead a message is displayed "Community Usage Metrics not available for {package}"
 * Add founders/copyright holders to `DESCRIPTION` file
-* fixed bug where Assessment Criteria tables were not being displayed
-* allow an automatic login option when running the application in development mode
+* Fixed bug where Assessment Criteria tables were not being displayed.
+* Risk score is now available in the Report Preview tab and also in the downloaded HTML and DOCX format reports (#264).
+* Improved metric 'card' aesthetics in order to remove scroll bars (#198).
+* Allow an automatic log in option when running the application in development mode
 
 
 # riskassessment 0.0.1

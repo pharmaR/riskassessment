@@ -181,8 +181,11 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     
     # Display the decision status of the selected package.
     output$decision_display <- renderUI({
+      req(selected_pkg$name())
       
       tagList(
+        h5('Risk Score:'),
+        selected_pkg$score(),
         h5('Overall risk:'),
         ifelse(selected_pkg$decision() == '', 
                'Pending',
@@ -262,7 +265,8 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
               author = selected_pkg$author(),
               maintainer = selected_pkg$maintainer(),
               license = selected_pkg$license(),
-              published = selected_pkg$published()
+              published = selected_pkg$published(),
+              score = selected_pkg$score()
             )
             
             rmarkdown::render(
