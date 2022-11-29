@@ -53,7 +53,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             br(), br(),
             
             div(id = "dwnld_rp",
-                selectInput(NS(id, "report_format"), "Select Format", c("html", "docx", "pdf")),
+                selectInput(NS(id, "report_formats"), "Select Format", c("html", "docx", "pdf")),
                 downloadButton(NS(id, 'download_report'), "Download Report")
             ),
             
@@ -216,7 +216,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     output$download_report <- downloadHandler(
       filename = function() {
         glue::glue('{selected_pkg$name()}_{selected_pkg$version()}_Risk_Assessment.',
-             "{switch(input$report_format, docx = 'docx', html = 'html', pdf = 'pdf')}")
+             "{switch(input$report_formats, docx = 'docx', html = 'html', pdf = 'pdf')}")
       },
       content = function(file) {
         shiny::withProgress(
@@ -229,10 +229,10 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             report <- ''
             my_tempdir <- tempdir()
             
-            if (input$report_format == "html") {
+            if (input$report_formats == "html") {
               report <- file.path('inst/app/www', 'reportHtml.Rmd')
             }
-            else if (input$report_format == "docx") {
+            else if (input$report_formats == "docx") {
               report <- file.path(my_tempdir, "reportDocx.Rmd")
               if (!dir.exists(file.path(my_tempdir, "images")))
                 dir.create(file.path(my_tempdir, "images"))

@@ -150,7 +150,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
           glue::glue('RiskAssessment-Report-{report_datetime}.zip')
         } else {
           glue::glue('{selected_pkgs$name}_{selected_pkgs$version}_Risk_Assessment.',
-               "{switch(input$report_format, docx = 'docx', html = 'html', pdf = 'pdf')}")
+                     "{switch(input$report_formats, docx = 'docx', html = 'html', pdf = 'pdf')}")
         }
       },
       content = function(file) {
@@ -168,12 +168,13 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
           {
             shiny::incProgress(1)
             
+            browser
             my_tempdir <- tempdir()
             if (input$report_formats == "html") {
               Report <- file.path(my_tempdir, "reportHtml.Rmd")
               file.copy(file.path('inst/app/www', 'reportHtml.Rmd'), Report, overwrite = TRUE)
             } 
-            else if (input$report_format == "docx") { 
+            else if (input$report_formats == "docx") { 
               Report <- file.path(my_tempdir, "reportDocx.Rmd")
               if (!dir.exists(file.path(my_tempdir, "images")))
                 dir.create(file.path(my_tempdir, "images"))
@@ -191,8 +192,10 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
               file.copy(file.path('inst/app/www', 'images', 'calendar-alt.png'),
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
-            } else {
-              report <- file.path('inst/app/www', 'reportPdf.Rmd')
+            } 
+            else { 
+              Report <- file.path(my_tempdir, "reportPdf.Rmd")
+              file.copy(file.path('inst/app/www', 'reportPdf.Rmd'), Report, overwrite = TRUE)
             }
             
             fs <- c()
