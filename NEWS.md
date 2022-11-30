@@ -1,6 +1,6 @@
 # riskassessment (development version)
 
-* Added new pdf report download option to 'Database' and 'Report Preview' tabs. 
+* Added new pdf report download option to 'Database' and 'Report Preview' tabs (#280) 
 * Updated README to include more description, with a focus on improving the 'Usage' section, which now shows our audience how to install & run the app for the first time. Also, new links to the demo app & a short video walk through were added. Plus, very brief notes were included regarding deployment environments.
 * Created a new argument for `run_app()` called `app_version` which allows deployment users to write their own custom app_version name via a text string. This is displayed on authentication screen and any downloaded reports. By default, it will display the installed version of `riskassessment`.
 * Created a argument for `run_app()` called `login_note` which allows deployment users to add custom log-in notes on the authentication screen. By default, it now displays a note about how to use default usernames and passwords to gain entry for the first time.
