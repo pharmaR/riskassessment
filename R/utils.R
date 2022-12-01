@@ -171,6 +171,32 @@ create_credentials_db <- function(db_name = golem::get_golem_options('credential
 }
 
 
+#' Create credentials dev database
+#' 
+#' @param db_name a string
+#' 
+#' @importFrom shinymanager create_db
+#' 
+create_credentials_dev_db <- function(db_name = golem::get_golem_options('credentials_db_name')){
+  
+  # Init the credentials table for credentials database
+  credentials <- data.frame(
+    user = c("admin", "nonadmin"),
+    password = c("cxk1QEMYSpYcrNB", "Bt0dHK383lLP1NM"),
+    # password will automatically be hashed
+    admin = c(TRUE, FALSE),
+    stringsAsFactors = FALSE
+  )
+  
+  # Init the credentials database
+  shinymanager::create_db(
+    credentials_data = credentials,
+    sqlite_path = file.path(db_name), 
+    passphrase = passphrase
+  )
+}
+
+
 
 
 
