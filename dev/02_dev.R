@@ -171,13 +171,6 @@ Table <- tidyr::as_tibble(data.frame(group = "", fun = rd_dir_files, developer =
 
 knitr::kable(Table)
 
-htmlTable::htmlTable(Table)
-
-ztable::ztable(as.data.frame(Table))
-
-DT::datatable(Table)
-
-stargazer::stargazer(Table, type = "html")
 
 ###################################################################
 # ac golem: Aaron stopped here and pushed code to team on 6/3/2020
