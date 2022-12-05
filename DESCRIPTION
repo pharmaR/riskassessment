@@ -66,6 +66,7 @@ Imports:
     tidyr,
     waiter
 Suggests: 
+    rjson,
     rstudioapi,
     spelling,
     testthat (>= 3.0.0),
