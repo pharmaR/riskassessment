@@ -185,6 +185,9 @@ usethis::use_data_raw( name = "adsl", open = FALSE ) # not run.
 usethis::use_test( "app" )
 usethis::use_test("assessmentInfoServer")
 
+golem::add_module( name = "big_fake" ) # ran
+golem::use_module_test("big_fake")
+
 # Documentation
 ## Vignette ---- notrun
 usethis::use_vignette("riskmetric")
