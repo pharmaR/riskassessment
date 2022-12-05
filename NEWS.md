@@ -10,7 +10,9 @@
 * Fixed bug where Assessment Criteria tables were not being displayed.
 * Risk score is now available in the Report Preview tab and also in the downloaded HTML and DOCX format reports (#264).
 * Improved metric 'card' aesthetics in order to remove scroll bars (#198).
+* Allow an automatic log in option when running the application in development mode
 * Some general re-organizing of the package's infrastructure to make testing and development easier.
+
 
 
 # riskassessment 0.0.1

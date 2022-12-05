@@ -9,6 +9,8 @@
 #'   Please make sure name ends with '.sqlite'. For example: 'cred_db.sqlite'.
 #' @param assessment_db_name text string that names the credentials databse.
 #'   Please make sure name ends with '.sqlite'. For example: 'assess_db.sqlite'.
+#' @param pre_auth_user if `TRUE` or 'admin', run as admin, if 'nonadmin' run as
+#'   non-admin
 #' @param ... arguments to pass to golem_opts. See `?golem::get_golem_options`
 #'   for more details.
 #' @inheritParams shiny::shinyApp
@@ -25,6 +27,7 @@ run_app <- function(
   login_note = NULL,
   credentials_db_name = NULL,
   assessment_db_name = NULL,
+  pre_auth_user = NULL, # TODO: Erase when pushing to master
   ...
 ) {
   # Pre-process some run-app inputs
@@ -36,12 +39,32 @@ run_app <- function(
                         <u>admin</u> with password <u>QWERTY1</u>.')
   }
   
+  # TODO: Erase when pushing to master
+  # Note that this overrides other credential set up
+  login_creds <- NULL
+  if (!is.null(pre_auth_user)) {
+    if (isTRUE(pre_auth_user) || pre_auth_user == "admin") {
+      credentials_db_name <- "credentials_dev.sqlite"
+      login_creds <- list(user_id = "admin",
+                          user_pwd = "cxk1QEMYSpYcrNB")
+    } else if (pre_auth_user == "nonadmin") {
+      credentials_db_name <- "credentials_dev.sqlite"
+      login_creds <- list(user_id = "nonadmin",
+                          user_pwd = "Bt0dHK383lLP1NM")
+    }
+  }
+  
   # Run the app
   with_golem_options(
     app = shinyApp(
       ui = add_tags(shinymanager::secure_app(app_ui,
         tags_top = tags$div(
             tags$head(tags$style(HTML(readLines(system.file("app", "www", "css", "login_screen.css", package = "riskassessment"))))),
+            tags$head(if (!get_golem_config("app_prod") && !is.null(golem::get_golem_options("pre_auth_user"))) {tags$script(HTML(glue::glue("$(document).on('shiny:connected', function () {{
+    Shiny.setInputValue('auth-user_id', '{golem::get_golem_options('login_creds')$user_id}');
+    Shiny.setInputValue('auth-user_pwd', '{golem::get_golem_options('login_creds')$user_pwd}');
+    $('#auth-go_auth').trigger('click');
+  }});")))}),
             id = "login_screen",
             tags$h2("Risk Assessment Application", style = "align:center"),
             tags$h3(glue::glue('**Version {app_ver}**'),
@@ -58,6 +81,8 @@ run_app <- function(
     golem_opts = list(app_version = app_ver,
                       credentials_db_name = credentials_db_name,
                       assessment_db_name = assessment_db_name,
+                      pre_auth_user = pre_auth_user, # TODO: Erase when pushing to master
+                      login_creds = login_creds, # TODO: Erase when pushing to master
                       ...)
   )
 }
