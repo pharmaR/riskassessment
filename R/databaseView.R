@@ -170,6 +170,8 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
             
             my_tempdir <- tempdir()
             if (input$report_formats == "html") {
+              fa_v <- packageVersion("fontawesome")
+              if(fa_v != '0.3.0') warning(glue::glue("HTML reports may require fontawesome 0.3.0 to render. You currently have v{fa_v} installed. If the report download failed, please install correct version using code: remotes::install_version('fontawesome', version = '0.3.0', repos = 'http://cran.us.r-project.org')"))
               Report <- file.path(my_tempdir, "reportHtml.Rmd")
               file.copy(file.path('inst/app/www', 'reportHtml.Rmd'), Report, overwrite = TRUE)
             } 
