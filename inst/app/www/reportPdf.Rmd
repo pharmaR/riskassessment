@@ -5,7 +5,7 @@ author:   "Author (Role): `r params$user_name` (`r params$user_role `)"
 date:     "Report Date: `r format(Sys.time(), '%B %d, %Y')`"
 always_allow_html: true
 output:
-  word_document:
+  pdf_document:
     md_extensions: +raw_html-markdown_in_html_blocks
     pandoc_args: ['--lua-filter', 'read_html.lua']
 params:

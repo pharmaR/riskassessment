@@ -53,7 +53,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             br(), br(),
             
             div(id = "dwnld_rp",
-                selectInput(NS(id, "report_format"), "Select Format", c("html", "docx")),
+                selectInput(NS(id, "report_formats"), "Select Format", c("html", "docx", "pdf")),
                 downloadButton(NS(id, 'download_report'), "Download Report")
             ),
             
@@ -181,8 +181,11 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     
     # Display the decision status of the selected package.
     output$decision_display <- renderUI({
+      req(selected_pkg$name())
       
       tagList(
+        h5('Risk Score:'),
+        selected_pkg$score(),
         h5('Overall risk:'),
         ifelse(selected_pkg$decision() == '', 
                'Pending',
@@ -213,7 +216,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     output$download_report <- downloadHandler(
       filename = function() {
         glue::glue('{selected_pkg$name()}_{selected_pkg$version()}_Risk_Assessment.',
-             "{switch(input$report_format, docx = 'docx', html = 'html')}")
+             "{switch(input$report_formats, docx = 'docx', html = 'html', pdf = 'pdf')}")
       },
       content = function(file) {
         shiny::withProgress(
@@ -226,10 +229,10 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             report <- ''
             my_tempdir <- tempdir()
             
-            if (input$report_format == "html") {
+            if (input$report_formats == "html") {
               report <- file.path('inst/app/www', 'reportHtml.Rmd')
             }
-            else {
+            else if (input$report_formats == "docx") {
               report <- file.path(my_tempdir, "reportDocx.Rmd")
               if (!dir.exists(file.path(my_tempdir, "images")))
                 dir.create(file.path(my_tempdir, "images"))
@@ -247,12 +250,28 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
               file.copy(file.path('inst/app/www', 'images', 'calendar-alt.png'),
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
+            } else {
+              report <- file.path(my_tempdir, "reportPdf.Rmd")
+              if (!dir.exists(file.path(my_tempdir, "images")))
+                dir.create(file.path(my_tempdir, "images"))
+              file.copy(file.path('inst/app/www', 'reportPdf.Rmd'),
+                        report, overwrite = TRUE)
+              file.copy(file.path('inst/app/www', 'read_html.lua'),
+                        file.path(my_tempdir, "read_html.lua"),
+                        overwrite = TRUE)
+              file.copy(file.path('inst/app/www', 'images', 'user-tie.png'),
+                        file.path(my_tempdir, "images", "user-tie.png"),
+                        overwrite = TRUE)
+              file.copy(file.path('inst/app/www', 'images', 'user-shield.png'),
+                        file.path(my_tempdir, "images", "user-shield.png"),
+                        overwrite = TRUE)
+              file.copy(file.path('inst/app/www', 'images', 'calendar-alt.png'),
+                        file.path(my_tempdir, "images", "calendar-alt.png"),
+                        overwrite = TRUE)
             }
             
-            # file.copy(report, report_path, overwrite = TRUE)
-            
             # Collect info about package.
-            pkg <- list(
+            pkg_list <- list(
               id = selected_pkg$id(),
               name = selected_pkg$name(),
               version = selected_pkg$version(),
@@ -262,13 +281,14 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
               author = selected_pkg$author(),
               maintainer = selected_pkg$maintainer(),
               license = selected_pkg$license(),
-              published = selected_pkg$published()
+              published = selected_pkg$published(),
+              score = selected_pkg$score()
             )
             
             rmarkdown::render(
               report,
               output_file = file,
-              params = list(pkg = pkg,
+              params = list(pkg = pkg_list,
                             riskmetric_version = paste0(packageVersion("riskmetric")),
                             app_version = app_version,
                             metric_weights = metric_weights(),
