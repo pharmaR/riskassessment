@@ -6,3 +6,4 @@ rsconnect/
 .Ruserdata
 loggit.json
 .DS_Store
+inst/doc
