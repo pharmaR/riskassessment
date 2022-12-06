@@ -12,6 +12,7 @@ Authors@R: c(
 	  person(family = "PSI special interest group Application and Implementation of Methodologies in Statistics", role = c("cph", "fnd")),
     person(family = "R Validation Hub", role = c("cph", "fnd")),
     person("Munshi Imran", "Hossain", role = "ctb")
+    person("Lars", "Andersen", "Hossain", role = "ctb")
   )
 Description: The `riskassessment` application allows users to define a list of R
     packages to assess against metrics engineered by the `riskmetric` package.
