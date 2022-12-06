@@ -41,7 +41,6 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          packages: any::fontawesome, url::https://cloud.r-project.org/src/contrib/Archive/fontawesome/fontawesome_0.3.0.tar.gz
           extra-packages: rcmdcheck
 
       - uses: r-lib/actions/check-r-package@v2
