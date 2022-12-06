@@ -38,7 +38,7 @@ test_that("database creation", {
   expect_equal(names(comments), c("id", "user_name", "user_role", "comment", "comment_type", "added_on"))
 })
 
-#### create_credentials_db ####
+#### create_credentials_db  tests ####
 
 test_that("invalid arguments", {
   expect_error(create_credentials_db())
@@ -67,4 +67,35 @@ test_that("database creation", {
   expect_equal(creds$expire, as.character(Sys.Date() + 365))
   pwd <- shinymanager::read_db_decrypt(con, name = "pwd_mngt", passphrase = passphrase)
   expect_equal(pwd$must_change, 'TRUE')
+})
+
+#### create_credentials_dev_db tests ####
+
+test_that("invalid arguments", {
+  expect_error(create_credentials_dev_db())
+  expect_error(create_credentials_dev_db(1))
+  expect_error(create_credentials_dev_db("tmp"))
+  expect_error(create_credentials_dev_db(c("tmp.sqlite", "tmp2.sqlite")))
+  expect_error(create_credentials_dev_db(), "db_name must follow SQLite naming conventions.*")
+})
+
+test_that("database creation", {
+  db <- create_credentials_dev_db("tmp.sqlite")
+  
+  expect_equal(db, "tmp.sqlite")
+  
+  con <- DBI::dbConnect(RSQLite::SQLite(), db)
+  on.exit({
+    DBI::dbDisconnect(con)
+    unlink(db)
+  })
+  
+  expect_equal(DBI::dbListTables(con),
+               c("credentials", "logs", "pwd_mngt"))
+  creds <- shinymanager::read_db_decrypt(con, name = "credentials", passphrase = passphrase)
+  expect_equal(creds$user, c("admin", "nonadmin"))
+  expect_equal(creds$admin, c('TRUE', 'FALSE'))
+  expect_equal(creds$expire, c(NA_character_, NA_character_))
+  pwd <- shinymanager::read_db_decrypt(con, name = "pwd_mngt", passphrase = passphrase)
+  expect_equal(pwd$must_change, c('FALSE', 'FALSE'))
 })
