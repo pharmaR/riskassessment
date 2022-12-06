@@ -69,6 +69,9 @@ create_db <- function(db_name = golem::get_golem_options('assessment_db_name')){
 #' 
 create_credentials_db <- function(db_name = golem::get_golem_options('credentials_db_name')){
   
+  if (is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
+    stop("db_name must follow SQLite naming conventions (e.g. 'credentials.sqlite')")
+  
   # Init the credentials table for credentials database
   credentials <- data.frame(
     user = "ADMIN",
@@ -115,6 +118,7 @@ create_credentials_db <- function(db_name = golem::get_golem_options('credential
   )
   
   DBI::dbDisconnect(con)
+  invisible(db_name)
 }
 
 #' Create credentials dev database
