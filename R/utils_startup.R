@@ -11,6 +11,9 @@
 #' 
 create_db <- function(db_name = golem::get_golem_options('assessment_db_name')){
   
+  if (is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
+    stop("db_name must follow SQLite naming conventions (e.g. 'database.sqlite')")
+  
   # Create an empty database.
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
@@ -48,6 +51,7 @@ create_db <- function(db_name = golem::get_golem_options('assessment_db_name')){
   })
   
   DBI::dbDisconnect(con)
+  invisible(db_name)
 }
 
 
