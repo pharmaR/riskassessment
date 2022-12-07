@@ -2,16 +2,16 @@
 #' 
 #' @description Note: the database_name object is assigned by deployment users in R/run_app.R
 #' 
-#' @param db_name a string
+#' @param db_name A string denoting the name of the database
 #' 
 #' @import dplyr
 #' @importFrom DBI dbConnect dbDisconnect dbSendStatement dbClearResult
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
 #' 
-create_db <- function(db_name = golem::get_golem_options('assessment_db_name')){
+create_db <- function(db_name){
   
-  if (is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
+  if (missing(db_name) || is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
     stop("db_name must follow SQLite naming conventions (e.g. 'database.sqlite')")
   
   # Create an empty database.
@@ -60,16 +60,16 @@ create_db <- function(db_name = golem::get_golem_options('assessment_db_name')){
 #' 
 #' Note: the credentials_db_name object is assigned by the deployment user in R/run_app.R
 #' 
-#' @param db_name a string
+#' @param db_name A string denoting the name of the database
 #' 
 #' @import dplyr
 #' @importFrom DBI dbConnect dbDisconnect
 #' @importFrom RSQLite SQLite
 #' @importFrom shinymanager read_db_decrypt write_db_encrypt
 #' 
-create_credentials_db <- function(db_name = golem::get_golem_options('credentials_db_name')){
+create_credentials_db <- function(db_name){
   
-  if (is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
+  if (missing(db_name) || is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
     stop("db_name must follow SQLite naming conventions (e.g. 'credentials.sqlite')")
   
   # Init the credentials table for credentials database
@@ -123,13 +123,13 @@ create_credentials_db <- function(db_name = golem::get_golem_options('credential
 
 #' Create credentials dev database
 #' 
-#' @param db_name a string
+#' @param db_name A string denoting the name of the database
 #' 
 #' @importFrom shinymanager create_db
 #' 
-create_credentials_dev_db <- function(db_name = golem::get_golem_options('credentials_db_name')){
+create_credentials_dev_db <- function(db_name){
   
-  if (is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
+  if (missing(db_name) || is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
     stop("db_name must follow SQLite naming conventions (e.g. 'credentials.sqlite')")
   
   # Init the credentials table for credentials database
