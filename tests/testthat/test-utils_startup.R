@@ -115,6 +115,14 @@ test_that("database initialization", {
   expect_true(file.exists(db_lst[2]))
 })
 
+#### add_tags tests ####
+
+test_that("add_tags works", {
+  at <- add_tags(fluidPage())
+  
+  expect_type(at, "closure")
+})
+
 #### app_theme tests ####
 
 test_that("app_theme runs", {
