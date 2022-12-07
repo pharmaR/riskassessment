@@ -156,22 +156,35 @@ create_credentials_dev_db <- function(db_name = golem::get_golem_options('creden
 #' @description This sets up the environment when running the Risk Assessment
 #'   Application. It sets the log file, initializes the package database if
 #'   missing, and initializes the credentials database if missing.
+#' 
+#' @param assess_db A string denoting the name of the assessment database.
+#' @param cred_db A string denoting the name of the credentials database.
 #'
 #' @return There is no return value. The function is run for its side effects.
 #' @importFrom loggit set_logfile
 #'
 #' @export
-initialize_raa <- function() {
+initialize_raa <- function(assess_db, cred_db) {
+  
+  if (missing(assess_db)) assessment_db <- golem::get_golem_options('assessment_db_name') else assessment_db <- assess_db
+  if (missing(cred_db)) credentials_db <- golem::get_golem_options('credentials_db_name') else credentials_db <- cred_db
+  
+  if (is.null(assessment_db) || typeof(assessment_db) != "character" || length(assessment_db) != 1 || !grepl("\\.sqlite$", assessment_db))
+    stop("assess_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
+  if (is.null(credentials_db) || typeof(credentials_db) != "character" || length(credentials_db) != 1 || !grepl("\\.sqlite$", credentials_db))
+    stop("cred_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
   
   # Start logging info.
-  loggit::set_logfile("loggit.json")
+  if (golem::is_running()) loggit::set_logfile("loggit.json")
   
   # TODO: Erase when pushing to master
-  if (!get_golem_config("app_prod") && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(golem::get_golem_options('credentials_db_name'))) create_credentials_dev_db()
+  if (!get_golem_config("app_prod") && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(credentials_db)) create_credentials_dev_db(credentials_db)
   
   # Create package db & credentials db if it doesn't exist yet.
-  if(!file.exists(golem::get_golem_options('assessment_db_name'))) create_db()
-  if(!file.exists(golem::get_golem_options('credentials_db_name'))) create_credentials_db()
+  if(!file.exists(assessment_db)) create_db(assessment_db)
+  if(!file.exists(credentials_db)) create_credentials_db(credentials_db)
+  
+  invisible(c(assessment_db, credentials_db))
 }
 
 

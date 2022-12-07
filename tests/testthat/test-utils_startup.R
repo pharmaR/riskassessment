@@ -99,3 +99,18 @@ test_that("database creation", {
   pwd <- shinymanager::read_db_decrypt(con, name = "pwd_mngt", passphrase = passphrase)
   expect_equal(pwd$must_change, c('FALSE', 'FALSE'))
 })
+
+#### initialize_raa tests ####
+
+test_that("database initialization", {
+  expect_error(initialize_raa())
+  expect_error(initialize_raa(assess_db = "tmp_assess.sqlite"),
+               "cred_db must follow SQLite naming conventions.*")
+  expect_error(initialize_raa(cred_db = "tmp_cred.sqlite"),
+               "assess_db must follow SQLite naming conventions.*")
+  
+  db_lst <- initialize_raa("tmp_assess.sqlite", "tmp_cred.sqlite")
+  on.exit(unlink(db_lst))
+  expect_true(file.exists(db_lst[1]))
+  expect_true(file.exists(db_lst[2]))
+})
