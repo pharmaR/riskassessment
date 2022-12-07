@@ -1,4 +1,4 @@
-test_that("database has been defined", {
+test_that("database has been defined and dbSelect function works", {
   db_name = golem::get_golem_options('assessment_db_name')
   if(is.null(db_name)) db_name <- "database.sqlite"
   
@@ -27,5 +27,7 @@ test_that("database has been defined", {
   # 6. test that we have at least 10 maintenance metrics
   testthat::expect_gte(nrow(metric), 10)
 
+  rm(query, tbl_names, metric)
+  
 })
 
