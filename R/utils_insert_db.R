@@ -1,48 +1,38 @@
 
-#' Get the package general information from CRAN/local
-#' 
-#' @param pkg_name string name of the package
-#' 
+#' dbUpdate
+#'
+#' Deletes, updates or inserts queries.
+#'
+#' @param command a string
+#' @param db_name a string
+#'
 #' @import dplyr
-#' @importFrom tidyr pivot_wider
-#' @importFrom glue glue 
-#' @importFrom rvest read_html html_node html_table html_text
-#' @importFrom stringr str_remove_all
-#' 
-get_latest_pkg_info <- function(pkg_name) {
-  webpage <- rvest::read_html(glue::glue(
-    'https://cran.r-project.org/web/packages/{pkg_name}'))
+#' @importFrom DBI dbConnect dbSendStatement dbClearResult dbDisconnect
+#'   dbGetRowsAffected
+#' @importFrom RSQLite SQLite
+#' @importFrom loggit loggit
+#' @importFrom glue glue
+dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_name')){
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
-  # Regex that finds entry: '\n ', "'", and '"' (the `|` mean 'or' and the 
-  # `\`` is to scape the double quotes).
-  pattern <- '\n |\'|\"|\\"'
+  tryCatch({
+    rs <- DBI::dbSendStatement(con, command)
+  }, error = function(err) {
+    message <- glue::glue("command: {command} resulted in {err}")
+    message(message, .loggit = FALSE)
+    loggit::loggit("ERROR", message)
+    DBI::dbDisconnect(con)
+  })
   
-  # Save div with class container to get the title and description.
-  div_container <- webpage %>% rvest::html_nodes("div.container")
+  nr <- DBI::dbGetRowsAffected(rs)
+  DBI::dbClearResult(rs)
   
-  # Read package title and clean it.
-  title <- div_container %>% 
-    rvest::html_nodes("h2") %>% 
-    rvest::html_text() %>%
-    stringr::str_remove_all(pattern = pattern)
-  
-  # Read package description and clean it.
-  description <- div_container %>% 
-    rvest::html_nodes("h2 + p") %>% 
-    rvest::html_text() %>%
-    stringr::str_remove_all(pattern = pattern)
-  
-  # Get the table displaying version, authors, etc.
-  table_info <- (webpage %>% rvest::html_table())[[1]] %>%
-    dplyr::mutate(X1 = stringr::str_remove_all(string = X1, pattern = ':')) %>%
-    dplyr::mutate(X2 = stringr::str_remove_all(string = X2, pattern = pattern)) %>%
-    tidyr::pivot_wider(names_from = X1, values_from = X2) %>%
-    dplyr::select(Version, Maintainer, Author, License, Published) %>%
-    dplyr::mutate(Title = title, Description = description)
-  
-  return(table_info)
+  if (nr == 0) {
+    message <- glue::glue("zero rows were affected by the command: {command}")
+    message(message, .loggit = FALSE)
+  }
+  DBI::dbDisconnect(con)
 }
-
 
 #' Call function to get and upload info from CRAN/local to db.
 #' 
@@ -82,11 +72,12 @@ insert_pkg_info_to_db <- function(pkg_name) {
           }}
       } else{
         loggit::loggit("ERROR", paste("Error in extracting general info of the package",
-                              pkg_name, "info", e), app = "fileupload-webscraping")
+                                      pkg_name, "info", e), app = "fileupload-webscraping")
       }
     }
   )
 }
+
 
 #' Upload the general info into DB.
 #' @param name string the package name
@@ -115,7 +106,7 @@ upload_package_to_db <- function(name, version, title, description,
     },
     error = function(e) {
       loggit::loggit("ERROR", paste("Error in uploading the general info of the package", name, "info", e),
-             app = "fileupload-DB")
+                     app = "fileupload-DB")
     }
   )
 }
@@ -241,12 +232,12 @@ insert_community_metrics_to_db <- function(pkg_name) {
         dplyr::mutate(month = lubridate::month(date)) %>%
         dplyr::mutate(year = lubridate::year(date))
       
-
+      
       # First release date.
       first_release_date <- versions_with_dates %>%
         dplyr::pull(date) %>%
         min()
-
+      
       # Get the number of downloads by month, year.
       pkgs_cum_metrics <- 
         cranlogs::cran_downloads(
@@ -254,9 +245,9 @@ insert_community_metrics_to_db <- function(pkg_name) {
           from = first_release_date,
           to = Sys.Date()) %>%
         dplyr::mutate(month = lubridate::month(date),
-               year = lubridate::year(date)) %>%
+                      year = lubridate::year(date)) %>%
         dplyr::filter(!(month == lubridate::month(Sys.Date()) &
-                 year == lubridate::year(Sys.Date()))) %>%
+                          year == lubridate::year(Sys.Date()))) %>%
         group_by(month, year) %>%
         summarise(downloads = sum(count)) %>%
         ungroup() %>%
@@ -267,8 +258,8 @@ insert_community_metrics_to_db <- function(pkg_name) {
     },
     error = function(e) {
       loggit::loggit("ERROR", paste("Error extracting cum metric info of the package:",
-                            pkg_name, "info", e),
-             app = "fileupload-webscraping", echo = FALSE)
+                                    pkg_name, "info", e),
+                     app = "fileupload-webscraping", echo = FALSE)
     }
   )
   
@@ -284,3 +275,17 @@ insert_community_metrics_to_db <- function(pkg_name) {
   }
 }
 
+
+#' update_metric_weight
+#' 
+#' @param metric_name a metric name, as a string
+#' @param metric_weight a weight, as a string or double
+#' 
+#' @importFrom glue glue
+update_metric_weight <- function(metric_name, metric_weight){
+  dbUpdate(glue::glue(
+    "UPDATE metric
+    SET weight = {metric_weight}
+    WHERE name = '{metric_name}'"
+  ))
+}

@@ -14,6 +14,7 @@
 #' @import dplyr
 #' 
 "_PACKAGE"
+
 # avoid "no visible binding for global variable" messages from check()
 utils::globalVariables(c('.',
  'Author', 'day_month_year', 'decision', 'description', 'description', 'downloads',   
