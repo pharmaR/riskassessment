@@ -114,3 +114,16 @@ test_that("database initialization", {
   expect_true(file.exists(db_lst[1]))
   expect_true(file.exists(db_lst[2]))
 })
+
+#### app_theme tests ####
+
+test_that("app_theme runs", {
+  app_thm <- app_theme()
+  expect_equal(app_thm, 
+               bslib::bs_theme(
+                 bootswatch = "lux",
+                 version = 5,
+                 primary = "#24305E",
+                 secondary = "#F76C6C",
+               ))
+})
