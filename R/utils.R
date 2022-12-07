@@ -59,13 +59,16 @@ add_tags <- function(ui, ...) {
 #' 
 #' @description Note: the database_name object is assigned by deployment users in R/run_app.R
 #' 
-#' @param db_name a string
+#' @param db_name a string to name the database
+#' default: golem::get_golem_options('assessment_db_name')
 #' 
 #' @import dplyr
 #' @importFrom DBI dbConnect dbDisconnect dbSendStatement dbClearResult
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
 #' 
+#' @return an sqlite database
+#' @noRd
 create_db <- function(db_name = golem::get_golem_options('assessment_db_name')){
   
   # Create an empty database.
@@ -209,6 +212,10 @@ create_credentials_dev_db <- function(db_name = golem::get_golem_options('creden
 #' @importFrom DBI dbConnect dbSendQuery dbFetch dbClearResult dbDisconnect
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
+#' 
+#' @return a data.frame
+#' @keywords internal
+#' @export
 dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_name')){
   errFlag <- FALSE
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
