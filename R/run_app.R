@@ -71,7 +71,7 @@ run_app <- function(
                     style = "align:center; color: darkgray")),
         tags_bottom = tags$div(
           tags$h6(login_note, style = 'color: white')),
-          enable_admin = TRUE, theme = app_theme)),
+          enable_admin = TRUE, theme = app_theme())),
       server = app_server,
       onStart = onStart,
       options = options,

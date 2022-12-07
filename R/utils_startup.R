@@ -252,14 +252,11 @@ add_tags <- function(ui, ...) {
 #' @importFrom bslib bs_theme
 #'
 #' @export
-app_theme <- bslib::bs_theme(
-  bootswatch = "lux",
-  version = 5,
-  # bg = "white", 
-  # fg = "#023967",
-  primary = "#24305E",
-  secondary = "#F76C6C",
-  # success = "orange",
-  # info = "yellow",
-  # warning = "pink"
-)
+app_theme <- function() {
+  bslib::bs_theme(
+    bootswatch = "lux",
+    version = 5,
+    primary = "#24305E",
+    secondary = "#F76C6C",
+  )
+}
