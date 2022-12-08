@@ -177,6 +177,12 @@ initialize_raa <- function(assess_db, cred_db) {
   # Start logging info.
   if (golem::is_running()) loggit::set_logfile("loggit.json")
   
+  # TODO: Remove temporary warning once bug in fa v0.4.0 is fixed.
+  # https://github.com/rstudio/fontawesome/issues/99
+  # Here, we make sure user has a functional version of fontawesome
+  fa_v <- packageVersion("fontawesome")
+  if(fa_v != '0.3.0') warning(glue::glue("HTML reports may require fontawesome 0.3.0 to render. You currently have v{fa_v} installed. If the report download failed, please install correct version using code: remotes::install_version('fontawesome', version = '0.3.0', repos = 'http://cran.us.r-project.org')"))
+  
   # TODO: Erase when pushing to master
   if (!get_golem_config("app_prod") && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(credentials_db)) create_credentials_dev_db(credentials_db)
   
