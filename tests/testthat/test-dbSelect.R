@@ -1,12 +1,9 @@
 test_that("database has been defined and dbSelect function works", {
 
-  db_name = golem::get_golem_options('assessment_db_name')
-  if(is.null(db_name)) db_name <- "database.sqlite"
+  # this is a copy of the empty database.sqlite db which is in ./inst/testdata
+  db_name <- "skeleton.sqlite"
 
-  base_path <- app_sys()
-  
-  cat("\n", base_path, "\n")
-  rlang::inform(base_path)
+  base_path <- app_sys("testdata")
   
   # 1. file exists?
   testthat::expect_true(file.exists(file.path(base_path, db_name)))
