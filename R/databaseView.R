@@ -61,6 +61,11 @@ databaseViewUI <- function(id) {
 #'   icontext
 #'   
 databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes) {
+  stopifnot(is.reactivevalues(user),
+            is.reactive(uploaded_pkgs),
+            is.reactive(metric_weights),
+            is.reactive(changes))
+  
   moduleServer(id, function(input, output, session) {
     
     # Update table_data if a package has been uploaded
