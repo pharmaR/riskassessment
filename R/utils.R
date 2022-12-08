@@ -276,6 +276,7 @@ auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
 #' @importFrom glue glue
 #' @importFrom plotly plot_ly layout add_segments add_annotations config
 #' 
+#' @export
 build_comm_plotly <- function(data) {
   if (nrow(data) == 0) return(NULL)
   

@@ -230,11 +230,23 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             my_tempdir <- tempdir()
             
             if (input$report_formats == "html") {
-              # Temporary warning: make sure user has a functional version of fontawesome while
-              # this bug still exists in v0.4.0: https://github.com/rstudio/fontawesome/issues/99
+              # TODO: Remove temporary warning once bug in fa v0.4.0 is fixed.
+              # https://github.com/rstudio/fontawesome/issues/99
+              # Here, we make sure user has a functional version of fontawesome
               fa_v <- packageVersion("fontawesome")
-              if(fa_v != '0.3.0') warning(glue::glue("HTML reports may require fontawesome 0.3.0 to render. You currently have v{fa_v} installed. If the report download failed, please install correct version using code: remotes::install_version('fontawesome', version = '0.3.0', repos = 'http://cran.us.r-project.org')"))
-            
+              if(fa_v != '0.3.0') {
+                msg1 <- "HTML reports require {fontawesome} v0.3.0 to render."
+                msg2 <- glue::glue("You currently have v{fa_v} installed. If the report download failed, please install correct version using code:")
+                code <- "remotes::install_version('fontawesome', version = '0.3.0', repos = 'http://cran.us.r-project.org')"
+                warning(paste(msg1, msg2, code))
+                showModal(modalDialog(
+                  size = "l",
+                  title = h3("HTML report requires {fontawesome} v0.3.0", class = "mb-0 mt-0 txt-color"),
+                  h5(msg2),
+                  wellPanel(code)
+                ))
+              }
+              
               report <- file.path('inst/app/www', 'reportHtml.Rmd')
             }
             else if (input$report_formats == "docx") {
