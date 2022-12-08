@@ -12,6 +12,7 @@
 * Improved metric 'card' aesthetics in order to remove scroll bars (#198).
 * Allow an automatic log in option when running the application in development mode
 * Some general re-organizing of the package's infrastructure to make testing and development easier.
+* Unit test cases are now available for get_date_span() function (#295).
 
 
 
