@@ -43,7 +43,7 @@ run_app <- function(
       login_note <- HTML('<em>Note:</em> To log in for the first time, use the admin user:
                           <u>admin</u> with password <u>QWERTY1</u>.')
     } else if(fa_v != '0.3.0') { #TODO: Remove once bug is fixed
-      login_note <- HTML(glue::glue("<em>Note:</em> HTML reports may require fontawesome 0.3.0 to render. You currently have v{fa_v} installed. If the report download fails, please run: `remotes::install_version('fontawesome', version = '0.3.0', repos = 'http://cran.us.r-project.org')`"))
+      login_note <- HTML(glue::glue("<em>Note:</em> HTML reports may require fontawesome v0.3.0 to render. You currently have v{fa_v} installed. If the report download fails, please run: `remotes::install_version('fontawesome', version = '0.3.0', repos = 'http://cran.us.r-project.org')`"))
     }
   }
   
