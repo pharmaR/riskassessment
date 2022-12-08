@@ -10,7 +10,7 @@ $database.*
 ^\.github$
 ^LICENSE\.md$
 ^.open$
-^.*sqlite$
+^credentials.*sqlite$
 ^docs$
 ^loggit.json$
 ^app\.R$
