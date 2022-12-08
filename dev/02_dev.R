@@ -65,6 +65,7 @@ usethis::use_mit_license()
 # usethis::use_package("glue")
 # usethis::use_package("lazyeval",type="Suggests")
 # usethis::use_package("scales",type = "Suggests")
+usethis::use_package("rjson",type = "Suggests")
 # usethis::use_package("GGally")
 # usethis::use_package("survival")
 # usethis::use_package("ggcorrplot")
@@ -183,6 +184,10 @@ usethis::use_data_raw( name = "adsl", open = FALSE ) # not run.
 ## Tests ---- not run
 ## Add one line by test you want to create
 usethis::use_test( "app" )
+usethis::use_test("assessmentInfoServer")
+
+golem::add_module( name = "big_fake" ) # ran
+golem::use_module_test("big_fake")
 
 # Documentation
 ## Vignette ---- notrun
