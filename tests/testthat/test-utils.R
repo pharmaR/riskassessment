@@ -10,5 +10,5 @@ testthat::test_that(desc = "Check output of get_date_span()",
                       testthat::expect_equal(object = get_date_span(start = "2020-03-16", end = "2020-03-21")$label, expected = "Months")
                       
                       ## check error message when function is called without any argument
-                      testthat::expect_error(object = get_date_span(), regexp = 'argument "start" is missing, with no default')
+                      testthat::expect_error(object = get_date_span(), regexp = "argument \"start\" is missing, with no default")
                     })
