@@ -2,14 +2,17 @@
 #' 
 #' @description Note: the database_name object is assigned by deployment users in R/run_app.R
 #' 
-#' @param db_name a string
+#' @param db_name A string denoting the name of the database
 #' 
 #' @import dplyr
 #' @importFrom DBI dbConnect dbDisconnect dbSendStatement dbClearResult
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
 #' 
-create_db <- function(db_name = golem::get_golem_options('assessment_db_name')){
+create_db <- function(db_name){
+  
+  if (missing(db_name) || is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
+    stop("db_name must follow SQLite naming conventions (e.g. 'database.sqlite')")
   
   # Create an empty database.
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
@@ -48,6 +51,7 @@ create_db <- function(db_name = golem::get_golem_options('assessment_db_name')){
   })
   
   DBI::dbDisconnect(con)
+  invisible(db_name)
 }
 
 
@@ -56,14 +60,17 @@ create_db <- function(db_name = golem::get_golem_options('assessment_db_name')){
 #' 
 #' Note: the credentials_db_name object is assigned by the deployment user in R/run_app.R
 #' 
-#' @param db_name a string
+#' @param db_name A string denoting the name of the database
 #' 
 #' @import dplyr
 #' @importFrom DBI dbConnect dbDisconnect
 #' @importFrom RSQLite SQLite
 #' @importFrom shinymanager read_db_decrypt write_db_encrypt
 #' 
-create_credentials_db <- function(db_name = golem::get_golem_options('credentials_db_name')){
+create_credentials_db <- function(db_name){
+  
+  if (missing(db_name) || is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
+    stop("db_name must follow SQLite naming conventions (e.g. 'credentials.sqlite')")
   
   # Init the credentials table for credentials database
   credentials <- data.frame(
@@ -111,15 +118,19 @@ create_credentials_db <- function(db_name = golem::get_golem_options('credential
   )
   
   DBI::dbDisconnect(con)
+  invisible(db_name)
 }
 
 #' Create credentials dev database
 #' 
-#' @param db_name a string
+#' @param db_name A string denoting the name of the database
 #' 
 #' @importFrom shinymanager create_db
 #' 
-create_credentials_dev_db <- function(db_name = golem::get_golem_options('credentials_db_name')){
+create_credentials_dev_db <- function(db_name){
+  
+  if (missing(db_name) || is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
+    stop("db_name must follow SQLite naming conventions (e.g. 'credentials.sqlite')")
   
   # Init the credentials table for credentials database
   credentials <- data.frame(
@@ -136,6 +147,8 @@ create_credentials_dev_db <- function(db_name = golem::get_golem_options('creden
     sqlite_path = file.path(db_name), 
     passphrase = passphrase
   )
+  
+  invisible(db_name)
 }
 
 #' Initialize the Risk Assessment Application
@@ -143,15 +156,26 @@ create_credentials_dev_db <- function(db_name = golem::get_golem_options('creden
 #' @description This sets up the environment when running the Risk Assessment
 #'   Application. It sets the log file, initializes the package database if
 #'   missing, and initializes the credentials database if missing.
+#' 
+#' @param assess_db A string denoting the name of the assessment database.
+#' @param cred_db A string denoting the name of the credentials database.
 #'
 #' @return There is no return value. The function is run for its side effects.
 #' @importFrom loggit set_logfile
 #'
 #' @export
-initialize_raa <- function() {
+initialize_raa <- function(assess_db, cred_db) {
+  
+  if (missing(assess_db)) assessment_db <- golem::get_golem_options('assessment_db_name') else assessment_db <- assess_db
+  if (missing(cred_db)) credentials_db <- golem::get_golem_options('credentials_db_name') else credentials_db <- cred_db
+  
+  if (is.null(assessment_db) || typeof(assessment_db) != "character" || length(assessment_db) != 1 || !grepl("\\.sqlite$", assessment_db))
+    stop("assess_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
+  if (is.null(credentials_db) || typeof(credentials_db) != "character" || length(credentials_db) != 1 || !grepl("\\.sqlite$", credentials_db))
+    stop("cred_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
   
   # Start logging info.
-  loggit::set_logfile("loggit.json")
+  if (golem::is_running()) loggit::set_logfile("loggit.json")
   
   # TODO: Remove temporary warning once bug in fa v0.4.0 is fixed.
   # https://github.com/rstudio/fontawesome/issues/99
@@ -160,11 +184,13 @@ initialize_raa <- function() {
   if(fa_v != '0.3.0') warning(glue::glue("HTML reports may require fontawesome 0.3.0 to render. You currently have v{fa_v} installed. If the report download failed, please install correct version using code: remotes::install_version('fontawesome', version = '0.3.0', repos = 'http://cran.us.r-project.org')"))
   
   # TODO: Erase when pushing to master
-  if (!get_golem_config("app_prod") && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(golem::get_golem_options('credentials_db_name'))) create_credentials_dev_db()
+  if (!get_golem_config("app_prod") && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(credentials_db)) create_credentials_dev_db(credentials_db)
   
   # Create package db & credentials db if it doesn't exist yet.
-  if(!file.exists(golem::get_golem_options('assessment_db_name'))) create_db()
-  if(!file.exists(golem::get_golem_options('credentials_db_name'))) create_credentials_db()
+  if(!file.exists(assessment_db)) create_db(assessment_db)
+  if(!file.exists(credentials_db)) create_credentials_db(credentials_db)
+  
+  invisible(c(assessment_db, credentials_db))
 }
 
 
@@ -232,14 +258,11 @@ add_tags <- function(ui, ...) {
 #' @importFrom bslib bs_theme
 #'
 #' @export
-app_theme <- bslib::bs_theme(
-  bootswatch = "lux",
-  version = 5,
-  # bg = "white", 
-  # fg = "#023967",
-  primary = "#24305E",
-  secondary = "#F76C6C",
-  # success = "orange",
-  # info = "yellow",
-  # warning = "pink"
-)
+app_theme <- function() {
+  bslib::bs_theme(
+    bootswatch = "lux",
+    version = 5,
+    primary = "#24305E",
+    secondary = "#F76C6C",
+  )
+}
