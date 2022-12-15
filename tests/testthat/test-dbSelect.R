@@ -30,7 +30,7 @@ test_that("database has been defined and dbSelect function works", {
   # 6. test that we have at least 10 maintenance metrics
   testthat::expect_gte(nrow(metric), 10)
 
-  rm(base_path, query, tbls, tbl_names, metric)
+  rm(db_name, base_path, query, tbls, tbl_names, metric)
   
 })
 
