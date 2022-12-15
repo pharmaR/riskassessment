@@ -197,71 +197,8 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
 #' @importFrom tidyr tibble
 #' 
 insert_community_metrics_to_db <- function(pkg_name) {
-  pkgs_cum_metrics <- tidyr::tibble()
   
-  tryCatch(
-    expr = {
-      
-      # get current release version number and date
-      curr_release <- get_latest_pkg_info(pkg_name) %>%
-        dplyr::select(`Last modified` = Published, version = Version)
-      
-      # Get the packages past versions and dates.
-      pkg_url <- url(glue::glue('https://cran.r-project.org/src/contrib/Archive/{pkg_name}'))
-      pkg_page <- try(rvest::read_html(pkg_url), silent = TRUE)
-      
-      # if past releases exist... they usually do!
-      if(all(class(pkg_page) != "try-error")){ #exists("pkg_page")
-        versions_with_dates0 <- pkg_page %>% 
-          rvest::html_node('table') %>%
-          rvest::html_table() %>%
-          dplyr::select("Name", "Last modified") %>%
-          dplyr::filter(`Last modified` != "") %>%
-          dplyr::mutate(version = stringr::str_remove_all(
-            string = Name, pattern = glue::glue('{pkg_name}_|.tar.gz')),
-            .keep = 'unused') %>%
-          # get latest high-level package info
-          union(curr_release) 
-      } else {
-        versions_with_dates0 <- curr_release
-      }
-      # close(pkg_url)
-      
-      versions_with_dates <- versions_with_dates0 %>%
-        dplyr::mutate(date = as.Date(`Last modified`), .keep = 'unused') %>%
-        dplyr::mutate(month = lubridate::month(date)) %>%
-        dplyr::mutate(year = lubridate::year(date))
-      
-      
-      # First release date.
-      first_release_date <- versions_with_dates %>%
-        dplyr::pull(date) %>%
-        min()
-      
-      # Get the number of downloads by month, year.
-      pkgs_cum_metrics <- 
-        cranlogs::cran_downloads(
-          pkg_name,
-          from = first_release_date,
-          to = Sys.Date()) %>%
-        dplyr::mutate(month = lubridate::month(date),
-                      year = lubridate::year(date)) %>%
-        dplyr::filter(!(month == lubridate::month(Sys.Date()) &
-                          year == lubridate::year(Sys.Date()))) %>%
-        group_by(month, year) %>%
-        summarise(downloads = sum(count)) %>%
-        ungroup() %>%
-        left_join(versions_with_dates, by = c('month', 'year')) %>%
-        dplyr::arrange(year, month) %>%
-        dplyr::select(-date)
-      
-    },
-    error = function(e) {
-      loggit::loggit("ERROR", paste("Error extracting cum metric info of the package:",
-                                    pkg_name, "info", e),
-                     app = "fileupload-webscraping", echo = FALSE)
-    }
-  )
+  pkgs_cum_metrics <- generate_comm_data(pkg_name)
   
   if(nrow(pkgs_cum_metrics) != 0){
     for (i in 1:nrow(pkgs_cum_metrics)) {

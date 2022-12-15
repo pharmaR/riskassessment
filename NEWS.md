@@ -1,5 +1,8 @@
 # riskassessment (development version)
 
+* Added a new function called generate_comm_data(). I have also exported this function (#266).
+* Updated and cleaned up the insert_community_metrics_to_db() function (#266).
+* Updated and exported the build_comm_plotly() function (#266).
 * Added new pdf report download option to 'Database' and 'Report Preview' tabs (#280) 
 * Updated README to include more description, with a focus on improving the 'Usage' section, which now shows our audience how to install & run the app for the first time. Also, new links to the demo app & a short video walk through were added. Plus, very brief notes were included regarding deployment environments.
 * Created a new argument for `run_app()` called `app_version` which allows deployment users to write their own custom app_version name via a text string. This is displayed on authentication screen and any downloaded reports. By default, it will display the installed version of `riskassessment`.

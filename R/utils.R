@@ -268,15 +268,26 @@ auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
 
 
 #' The 'Build Community plot' function
+#' @description 
+#' build_comm_plotly() is responsible for building the plotly graphic of community usage metrics
 #' 
-#' @param data a data.frame
-#' 
+#' @param data a data.frame that is built in databaseView.R from get_comm_data()
+#' @param pkg_name a string of a package name. This parameter is optional.
+#' @returns a plotly object
+#' @examples 
+#' metricGraph <- build_comm_plotly(pkg_name = "ggplot2")
 #' @import dplyr
 #' @importFrom lubridate NA_Date_ interval
 #' @importFrom glue glue
 #' @importFrom plotly plot_ly layout add_segments add_annotations config
-#' 
-build_comm_plotly <- function(data) {
+#' @export
+build_comm_plotly <- function(data, pkg_name = NULL) {
+  
+  # If there is a package listed, in pkg_name, a plotly graphic will be created
+  if (!is.null(pkg_name)){
+    data <- generate_comm_data(pkg_name)
+  }
+  
   if (nrow(data) == 0) return(NULL)
   
   pkg_name <- unique(data$id)

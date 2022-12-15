@@ -39,6 +39,7 @@ Other contributors:
   \item  PSI special interest group Application and Implementation of Methodologies in Statistics [copyright holder, funder]
   \item  R Validation Hub [copyright holder, funder]
   \item Munshi Imran Hossain [contributor]
+  \item Scott Schumacker \email{scottschu97@gmail.com} [contributor]
 }
 
 }

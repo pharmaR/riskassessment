@@ -4,11 +4,19 @@
 \alias{build_comm_plotly}
 \title{The 'Build Community plot' function}
 \usage{
-build_comm_plotly(data)
+build_comm_plotly(data, pkg_name = NULL)
 }
 \arguments{
-\item{data}{a data.frame}
+\item{data}{a data.frame that is built in databaseView.R from get_comm_data()}
+
+\item{pkg_name}{a string of a package name. This parameter is optional.}
+}
+\value{
+a plotly object
 }
 \description{
-The 'Build Community plot' function
+build_comm_plotly() is responsible for building the plotly graphic of community usage metrics
+}
+\examples{
+metricGraph <- build_comm_plotly(pkg_name = "ggplot2")
 }
