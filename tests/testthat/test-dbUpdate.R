@@ -36,6 +36,16 @@ test_that("both dbUpdate and dbSelect work", {
   testthat::expect_equal(nrow(tbl1), 0L)
   
   pkg_name <- "stringr"
+  
+  command <- glue::glue("DELETE from [package] WHERE ( name = '{pkg_name}')")
+
+  # 5. expect zero rows were affected, referring to existing table 
+  testthat::expect_message(dbUpdate(command, file.path(base_path, db_temp)), regexp = "zero rows were affected by the command:" )
+  
+  command <- glue::glue("DELETE from [thispkg] WHERE (name = '{pkg_name}')")
+  # 6. expect message about "no such table"
+  testthat::expect_message(dbUpdate(command, file.path(base_path, db_temp)), regexp = "Error: no such table:" )
+  
   pkg_info <- get_latest_pkg_info(pkg_name)
   
   command <-(glue::glue(
@@ -50,10 +60,10 @@ test_that("both dbUpdate and dbSelect work", {
   
   tbl1 <- dbSelect(query, file.path(base_path, db_temp))
   
-  # 5. expect one row has been returned.
+  # 7. expect one row has been returned.
   testthat::expect_equal(nrow(tbl1), 1L)
   
-  # 6. query result matches what we wrote into the table
+  # 8. query result matches what we wrote into the table
   testthat::expect_equal(pkg_info$Title, tbl1$title)
   
   # clean up after ourselves
@@ -62,7 +72,7 @@ test_that("both dbUpdate and dbSelect work", {
   
   tbl1 <- dbSelect(query, file.path(base_path, db_temp))
   
-  # 7. expect zero rows have been returned.
+  # 9. expect zero rows have been returned.
   testthat::expect_equal(nrow(tbl1), 0L)
   
   unlink(file.path(base_path, db_temp))
