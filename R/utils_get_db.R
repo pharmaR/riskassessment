@@ -24,13 +24,13 @@ dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_na
     warning = function(warn) {
       message <- paste0("warning:\n", query, "\nresulted in\n", warn)
       message(message, .loggit = FALSE)
-      loggit::loggit("WARN", message)
+      loggit::loggit("WARN", message, echo = FALSE)
       errFlag <<- TRUE
     },
     error = function(err) {
       message <- paste0("error:\n", query, "\nresulted in\n",err)
       message(message, .loggit = FALSE)
-      loggit::loggit("ERROR", message)
+      loggit::loggit("ERROR", message, echo = FALSE)
       DBI::dbDisconnect(con)
       errFlag <<- TRUE
     },

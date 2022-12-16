@@ -24,7 +24,7 @@ dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_
   }, error = function(err) {
     message <- glue::glue("command: {command} resulted in {err}")
     message(message, .loggit = FALSE)
-    loggit::loggit("ERROR", message)
+    loggit::loggit("ERROR", message, echo = FALSE)
     DBI::dbDisconnect(con)
   })
   
