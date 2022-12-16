@@ -29,7 +29,7 @@ showHelperMessage <- function(message = "Please select a package"){
 get_latest_pkg_info <- function(pkg_name) {
   webpage <- rvest::read_html(glue::glue(
     'https://cran.r-project.org/web/packages/{pkg_name}'))
-  
+
   # Regex that finds entry: '\n ', "'", and '"' (the `|` mean 'or' and the 
   # `\`` is to scape the double quotes).
   pattern <- '\n |\'|\"|\\"'

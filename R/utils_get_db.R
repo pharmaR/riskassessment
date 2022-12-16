@@ -8,6 +8,10 @@
 #' @importFrom DBI dbConnect dbSendQuery dbFetch dbClearResult dbDisconnect
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
+#' 
+#' @returns a data frame
+#'
+#' @noRd
 dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_name')){
   errFlag <- FALSE
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
@@ -19,13 +23,13 @@ dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_na
     warning = function(warn) {
       message <- paste0("warning:\n", query, "\nresulted in\n", warn)
       message(message, .loggit = FALSE)
-      loggit::loggit("WARN", message)
+      loggit::loggit("WARN", message, echo = FALSE)
       errFlag <<- TRUE
     },
     error = function(err) {
       message <- paste0("error:\n", query, "\nresulted in\n",err)
       message(message, .loggit = FALSE)
-      loggit::loggit("ERROR", message)
+      loggit::loggit("ERROR", message, echo = FALSE)
       DBI::dbDisconnect(con)
       errFlag <<- TRUE
     },
@@ -54,6 +58,8 @@ dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_na
 #' 
 #' @importFrom glue glue
 #' 
+#' @returns a data frame
+#' @noRd
 get_overall_comments <- function(pkg_name) {
   dbSelect(glue::glue(
     "SELECT * FROM comments 
@@ -70,7 +76,9 @@ get_overall_comments <- function(pkg_name) {
 #' 
 #' @importFrom glue glue
 #' @importFrom purrr map
-#' 
+#'
+#' @returns a data frame
+#' @noRd 
 get_mm_comments <- function(pkg_name) {
   dbSelect(
     glue::glue(
@@ -92,6 +100,8 @@ get_mm_comments <- function(pkg_name) {
 #' @importFrom glue glue
 #' @importFrom purrr map
 #' 
+#' @returns a data frame
+#' @noRd
 get_cm_comments <- function(pkg_name) {
   dbSelect(
     glue::glue(
@@ -113,6 +123,8 @@ get_cm_comments <- function(pkg_name) {
 #' @import dplyr
 #' @importFrom glue glue
 #' 
+#' @returns a data frame
+#' @noRd
 get_mm_data <- function(pkg_id){
   dbSelect(glue::glue(
     "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
@@ -140,6 +152,8 @@ get_mm_data <- function(pkg_id){
 #' 
 #' @importFrom glue glue
 #' 
+#' @returns a data frame
+#' @noRd
 get_comm_data <- function(pkg_name){
   dbSelect(glue::glue(
     "SELECT *
@@ -156,6 +170,8 @@ get_comm_data <- function(pkg_name){
 #' 
 #' @importFrom glue glue
 #' 
+#' @returns a data frame
+#' @noRd
 get_pkg_info <- function(pkg_name){
   dbSelect(glue::glue(
     "SELECT *
@@ -169,6 +185,8 @@ get_pkg_info <- function(pkg_name){
 #'
 #' Retrieves metric name and current weight from metric table
 #'
+#' @returns a data frame
+#' @noRd
 get_metric_weights <- function(){
   dbSelect(
     "SELECT name, weight
@@ -187,6 +205,9 @@ get_metric_weights <- function(){
 #' 
 #' @param pkg_name a package name, as a string
 #' @importFrom glue glue
+#' 
+#' @returns a data frame
+#' @noRd
 weight_risk_comment <- function(pkg_name) {
   
   pkg_score <- dbSelect(glue::glue(
