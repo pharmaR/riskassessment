@@ -4,7 +4,12 @@
 \alias{initialize_raa}
 \title{Initialize the Risk Assessment Application}
 \usage{
-initialize_raa()
+initialize_raa(assess_db, cred_db)
+}
+\arguments{
+\item{assess_db}{A string denoting the name of the assessment database.}
+
+\item{cred_db}{A string denoting the name of the credentials database.}
 }
 \value{
 There is no return value. The function is run for its side effects.

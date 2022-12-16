@@ -12,6 +12,8 @@
 * Improved metric 'card' aesthetics in order to remove scroll bars (#198).
 * Allow an automatic log in option when running the application in development mode
 * Some general re-organizing of the package's infrastructure to make testing and development easier.
+* Added console warnings + login note & modals to warn user there is a bug with latest version of {fontawesome} and they should install v0.3.0 if they want to download HTML reports. For more info, the bug status can be tracked [here](https://github.com/rstudio/fontawesome/issues/99).
+* Add unit tests for functions in utils_startup.R.
 * Added testthat tests for dbSelect and dbUpdate functions (#295)
 
 
