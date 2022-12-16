@@ -30,6 +30,17 @@ test_that("database has been defined and dbSelect function works", {
   # 6. test that we have at least 10 maintenance metrics
   testthat::expect_gte(nrow(metric), 10)
 
+  query <- "select name FROM [thispackage] limit 1"
+  
+  # 7. expect message about "no such table"
+  testthat::expect_message(dbSelect(query, file.path(base_path, db_name)), regexp = "Error: no such table:")
+  
+  # NULL is returned when Trycatch is invoked
+  ret <- suppressMessages(dbSelect(query, file.path(base_path, db_name)))
+  # 8. test NULL is returned
+  testthat::expect_null(ret)
+  
+  
   rm(db_name, base_path, query, tbls, tbl_names, metric)
   
 })
