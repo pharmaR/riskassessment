@@ -11,8 +11,7 @@
 #' 
 #' @returns a data frame
 #'
-#' @keywords internal
-#' @export
+#' @noRd
 dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_name')){
   errFlag <- FALSE
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)

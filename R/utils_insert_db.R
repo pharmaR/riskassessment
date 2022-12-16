@@ -14,8 +14,7 @@
 #' @importFrom glue glue
 #' 
 #' @returns nothing
-#' @keywords internal
-#' @export
+#' @noRd
 dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_name')){
   errFlag <- FALSE
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
