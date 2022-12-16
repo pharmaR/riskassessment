@@ -26,8 +26,12 @@ dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_
     message(message, .loggit = FALSE)
     loggit::loggit("ERROR", message, echo = FALSE)
     DBI::dbDisconnect(con)
+    errFlag <<- TRUE
+  },
+  finally = {
+    if (errFlag) return(invisible(NULL)) 
   })
-  
+
   nr <- DBI::dbGetRowsAffected(rs)
   DBI::dbClearResult(rs)
   
