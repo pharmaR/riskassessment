@@ -12,7 +12,7 @@ test_that("database has been defined and dbSelect function works", {
   testthat::expect_equal(readLines(file.path(base_path, db_name), n =1, warn = FALSE), "SQLite format 3")  
 
   # 3. can we connect?
-  testthat::expect_true(DBI::dbCanConnect(RSQLite::SQLite(), db_name))
+  testthat::expect_true(DBI::dbCanConnect(RSQLite::SQLite(), file.path(base_path, db_name)))
 
   query <- "SELECT [name] FROM sqlite_master WHERE type='table' order by [rootpage]"
   tbls <- dbSelect(query, file.path(base_path, db_name))
