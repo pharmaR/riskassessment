@@ -12,5 +12,5 @@ $run_dev.*
 ^loggit.json$
 ^app\.R$
 ^rsconnect$
-^((?!\/).)*\.sqlite$
+^((?!/).)*sqlite$
 
