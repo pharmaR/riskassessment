@@ -11,7 +11,7 @@ app_ui <- function(request) {
   # Your application UI logic
   ui <- fluidPage(
     
-    theme = app_theme, # defined in data-raw/interanl-data.R
+    theme = app_theme(), # defined in data-raw/interanl-data.R
     
     # not needed any more. Automatically bundled below
     # includeCSS(path = file.path('www', 'css', 'main.css')),
