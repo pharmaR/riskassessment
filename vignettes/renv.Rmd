@@ -17,3 +17,31 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(riskassessment)
 ```
+
+# Overview
+
+The `renv` package provides project-local R dependency management to your projects.  
+It helps manage library paths (and other project-specific state) to help isolate your project’s R dependencies.  
+The `renv` package helps you create **r**eproducible **env**ironments for your R projects.  
+It will make your R packages more **isolated**, **portable** and **reproducable**.
+
+## How to use it
+
+First one has to initialize a new project-local environment with a private R library - which can be done via `renv::init()`.
+Afterwards, work in the project as usual and save the current state of the project library with `renv::snapshot()`.
+This result will be saved into a lockfile - named `renv.lock`.
+Now, continue working on your project and call `renv::snapshot()` again, in order to update the project state - or with `renv::restore()`, revert the previous state if you have encountered problems while developing.
+
+## How to ignore files in the lock file
+
+By default `renv` ignores all files stated in the `.gitignore` file. If you want to extend that further, you can use a `.renvignore` file - which is specified similar to the `.gitignore` file.
+
+## Cache Location on different Operating Systems
+
+*Linux	`~/.local/share/renv`
+*macOS	`~/Library/Application Support/renv`
+*Windows	`%LOCALAPPDATA%/renv`
+
+## References
+* [github.io/renv/](https://rstudio.github.io/renv/)
+* [Introduction to renv](https://rstudio.github.io/renv/articles/renv.html)
