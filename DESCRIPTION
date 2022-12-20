@@ -11,7 +11,7 @@ Authors@R: c(
     person(family = "Fission Labs India Pvt Ltd", role = "aut"),
 	  person(family = "PSI special interest group Application and Implementation of Methodologies in Statistics", role = c("cph", "fnd")),
     person(family = "R Validation Hub", role = c("cph", "fnd")),
-    person("Munshi Imran", "Hossain", role = "ctb")
+    person("Munshi Imran", "Hossain", role = "ctb"),
     person("Lars", "Andersen", role = "ctb")
   )
 Description: The `riskassessment` application allows users to define a list of R
