@@ -4,6 +4,10 @@ describe("utils.R", {
       time <- getTimeStamp()
       
       expect_type(time, "character")
+      expect_equal(object = time,
+                   expected = paste(gsub(x = Sys.time(), pattern = " ", replacement = "; "),
+                                    Sys.timezone())
+                   )
     })
     it("should correctly transform the system time", {
       time <- getTimeStamp()
