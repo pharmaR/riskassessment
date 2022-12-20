@@ -23,6 +23,11 @@ test_that(
     
     shiny::testServer(app_server_test, {
       session
+      stopifnot(
+        !is.null(testing_options$title),
+        !is.null(testing_options$desc),
+        !is.null(testing_options$value)
+      )
       expect_type(metricBoxServer, "closure")
       expect_true(!(testing_options$value %in% c(0, "pkg_metric_error", "NA", "", 'FALSE')))
       if(testing_options$is_perc) {
