@@ -144,7 +144,7 @@ insert_maintenance_metrics_to_db <- function(pkg_name, db_name){
     riskmetric::pkg_assess()
   
   # Get the metrics weights to be used during pkg_score.
-  metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric")
+  metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric", db_name)
   metric_weights <- metric_weights_df$weight
   names(metric_weights) <- metric_weights_df$name
   
@@ -152,7 +152,7 @@ insert_maintenance_metrics_to_db <- function(pkg_name, db_name){
     riskmetric_assess %>%
     riskmetric::pkg_score(weights = metric_weights)
   
-  package_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"))
+  package_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"), db_name)
   
   # Leave method if package not found.
   if(nrow(package_id) == 0){
@@ -214,6 +214,9 @@ insert_maintenance_metrics_to_db <- function(pkg_name, db_name){
 #' @noRd
 insert_community_metrics_to_db <- function(pkg_name, db_name) {
   pkgs_cum_metrics <- tidyr::tibble()
+  
+  # turn off summarise() .groups message
+  options(dplyr.summarise.inform = FALSE)
   
   tryCatch(
     expr = {
