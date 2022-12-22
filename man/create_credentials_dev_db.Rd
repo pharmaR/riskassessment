@@ -4,12 +4,10 @@
 \alias{create_credentials_dev_db}
 \title{Create credentials dev database}
 \usage{
-create_credentials_dev_db(
-  db_name = golem::get_golem_options("credentials_db_name")
-)
+create_credentials_dev_db(db_name)
 }
 \arguments{
-\item{db_name}{a string}
+\item{db_name}{A string denoting the name of the database}
 }
 \description{
 Create credentials dev database

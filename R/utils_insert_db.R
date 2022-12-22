@@ -12,7 +12,11 @@
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
 #' @importFrom glue glue
+#' 
+#' @returns nothing
+#' @noRd
 dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_name')){
+  errFlag <- FALSE
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   tryCatch({
@@ -20,10 +24,14 @@ dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_
   }, error = function(err) {
     message <- glue::glue("command: {command} resulted in {err}")
     message(message, .loggit = FALSE)
-    loggit::loggit("ERROR", message)
+    loggit::loggit("ERROR", message, echo = FALSE)
     DBI::dbDisconnect(con)
+    errFlag <<- TRUE
+  },
+  finally = {
+    if (errFlag) return(invisible(NULL)) 
   })
-  
+
   nr <- DBI::dbGetRowsAffected(rs)
   DBI::dbClearResult(rs)
   
@@ -40,6 +48,8 @@ dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_
 #' 
 #' @importFrom loggit loggit
 #' 
+#' @returns nothing
+#' @noRd
 insert_pkg_info_to_db <- function(pkg_name) {
   tryCatch(
     expr = {
@@ -92,6 +102,8 @@ insert_pkg_info_to_db <- function(pkg_name) {
 #' @importFrom glue glue
 #' @importFrom loggit loggit
 #' 
+#' @returns nothing
+#' @noRd
 upload_package_to_db <- function(name, version, title, description,
                                  authors, maintainers, license, published_on) {
   tryCatch(
@@ -122,6 +134,8 @@ upload_package_to_db <- function(name, version, title, description,
 #' @importFrom riskmetric pkg_ref pkg_assess pkg_score
 #' @importFrom glue glue 
 #' 
+#' @returns nothing
+#' @noRd
 insert_maintenance_metrics_to_db <- function(pkg_name){
   
   riskmetric_assess <-
@@ -196,6 +210,8 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
 #' @importFrom stringr str_remove_all
 #' @importFrom tidyr tibble
 #' 
+#' @returns nothing
+#' @noRd
 insert_community_metrics_to_db <- function(pkg_name) {
   pkgs_cum_metrics <- tidyr::tibble()
   
@@ -282,6 +298,9 @@ insert_community_metrics_to_db <- function(pkg_name) {
 #' @param metric_weight a weight, as a string or double
 #' 
 #' @importFrom glue glue
+#' 
+#' @returns nothing
+#' @noRd
 update_metric_weight <- function(metric_name, metric_weight){
   dbUpdate(glue::glue(
     "UPDATE metric
