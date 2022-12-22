@@ -176,8 +176,8 @@ get_pkg_info <- function(pkg_name, db_name){
   dbSelect(glue::glue(
     "SELECT *
      FROM package
-     WHERE name = '{pkg_name}'")
-  ), db_name
+     WHERE name = '{pkg_name}'"), db_name
+  )
 }
 
 
