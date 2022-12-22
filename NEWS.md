@@ -15,6 +15,7 @@
 * Added console warnings + login note & modals to warn user there is a bug with latest version of {fontawesome} and they should install v0.3.0 if they want to download HTML reports. For more info, the bug status can be tracked [here](https://github.com/rstudio/fontawesome/issues/99).
 * Add unit tests for functions in utils_startup.R.
 * Added testthat tests for dbSelect and dbUpdate functions (#295)
+* Unit test cases are now available for showHelperMessage() function (#295).
 * Unit test cases are now available for get_date_span() function (#295).
 
 
