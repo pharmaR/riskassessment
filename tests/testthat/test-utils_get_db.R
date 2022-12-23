@@ -1,9 +1,19 @@
 test_that("utils_get_db functions other than dbSelect", {
   
   base_path <- app_sys("testdata")
+  # this is a copy of the empty database.sqlite db which is in ./inst/testdata
+  db_name <- "skeleton.sqlite"
+  # and this is a temporary datbase
   db_temp <- "datatest.sqlite"
-  # create temporary database in inst/testdata
-  create_db(file.path(base_path, db_temp))
+  
+  confr <- dbConnect(RSQLite::SQLite(), file.path(base_path, db_name))
+  conto <- dbConnect(RSQLite::SQLite(), file.path(base_path, db_temp))
+  
+  # copy into temp db
+  RSQLite::sqliteCopyDatabase(confr, conto)
+  
+  DBI::dbDisconnect(confr)
+  DBI::dbDisconnect(conto)
   
   # valid db? test this is a valid sqlite database
   testthat::expect_equal(readLines(file.path(base_path, db_temp), n =1, warn = FALSE), "SQLite format 3")
@@ -37,6 +47,11 @@ test_that("utils_get_db functions other than dbSelect", {
     dbUpdate(command, file.path(base_path, db_temp))
   }
 
+  insert_maintenance_metrics_to_db(pkg_name, file.path(base_path, db_temp))
+  pkg_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"), file.path(base_path, db_temp))
+  
+  insert_community_metrics_to_db(pkg_name, file.path(base_path, db_temp))
+  
   test_that("get_overall_comments works", {
     ocmt <- get_overall_comments(pkg_name, db_name = file.path(base_path, db_temp))
     expect_equal(names(ocmt), c("id", "user_name", "user_role", "comment", "comment_type", "added_on"))
@@ -61,22 +76,32 @@ test_that("utils_get_db functions other than dbSelect", {
   })
   
   test_that("get_mm_data works", {
-    mmdata <- get_mm_data(pkg_name, file.path(base_path, db_temp))
+    mmdata <- get_mm_data(pkg_id, file.path(base_path, db_temp))
     expect_s3_class(mmdata, "data.frame")
     expect_equal(names(mmdata), c("name", "is_perc", "is_url", "value", "title", "desc", "succ_icon", "unsucc_icon", "icon_class"))
+    expect_equal(mmdata$name[1], "has_vignettes")
   })
   
   test_that("get_comm_data works", {
     cmdata <- get_comm_data(pkg_name, file.path(base_path, db_temp))
     expect_s3_class(cmdata, "data.frame")
     expect_equal(colnames(cmdata), c("id", "month", "year", "downloads", "version"))
+    expect_equal(cmdata$id[1], pkg_name)
   })
   
   test_that("get_pkg_info works", {
     pkg <- get_pkg_info(pkg_name, file.path(base_path, db_temp))
     expect_s3_class(pkg, "data.frame")
-    expect_equal(nrow(pkg), 1) # we loaded info for the stringr package above
+    expect_equal(nrow(pkg), 1) 
     expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", "score", "weighted_score", "decision", "date_added"))
+  })
+  
+  test_that("get_metric_weights works", {
+  mtwt <-  dbSelect(
+      "SELECT name, weight
+     FROM metric", db_name = file.path(base_path, db_temp)
+    )
+  testthat::expect_equal(mtwt$name[1], "has_vignettes")
   })
   
   test_that("weight_risk_comment works", {
@@ -86,7 +111,7 @@ test_that("utils_get_db functions other than dbSelect", {
   })
 
   unlink(file.path(base_path, db_temp))
-  rm(base_path, db_temp, pkg_name, pkg_info, command, comment, user_name, user_role, abrv)
+  rm(base_path, db_temp, pkg_name, pkg_id, pkg_info, command, comment, user_name, user_role, abrv)
   
 })
   
