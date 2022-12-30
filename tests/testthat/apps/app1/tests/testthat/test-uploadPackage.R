@@ -4,19 +4,21 @@ library(testthat)
 test_that("Uploaded packages show up in sidebar selector", {
   
   ## TODO:
-  #   - add mechanism to always start with clean db (e.g. delete)
   #   - confirm covr picks up coverage appropriately
   app <- AppDriver$new()
-  # app <- AppDriver$new(app_dir = app_sys("app.R"))
-  # app <- AppDriver$new(app_dir = 'app.R')
-  
+
   # test_csv <- app_sys("data-raw/upload_format.csv")
   test_csv <- "upload_format.csv"
   
+  # upload file to 
   app$upload_file(
     `upload_package-uploaded_file` = test_csv
   )
 
+  # choose a package to force input update
+  app$set_inputs(`sidebar-select_pkg` = c("DT"))
+  
+  # wait for app to stabilize
   app$wait_for_idle(500)
     
   # check all uploaded packages show up in selectize input
