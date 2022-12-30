@@ -1,41 +1,33 @@
 
 test_that("Uploaded packages show up in sidebar selector", {
-  
   # set up new app driver object
   app <- AppDriver$new()
 
   # test package data to upload
   test_csv <- "upload_format.csv"
-  
-  # upload file to 
+
+  # upload file to application
   app$upload_file(
     `upload_package-uploaded_file` = test_csv
   )
 
-  # choose a package to force input update
-  app$set_inputs(`sidebar-select_pkg` = c("DT"))
+  # wait for table to be shown
+  app$wait_for_value(output = "upload_package-upload_pkgs_table", ignore = list(NULL))
+  app$wait_for_idle(1000)
   
-  # wait for app to stabilize
-  app$wait_for_idle(500)
-    
-  # get current app state
-  vals <- app$get_values()
-  
-  # check all uploaded packages show up in selectize input
-  side_select <- rvest::minimal_html(vals$output$`sidebar-select_pkg_ui`$html)
-  select_choices <- side_select %>% 
-    rvest::html_elements("option") %>% 
-    rvest::html_attr(name = "value")
-  
-  # "-" is added by default
-  select_choices <- setdiff(select_choices, "-")
-  
+  # parse the package name from the upload summary table
+  uploaded_packages <- app$get_html("#upload_package-upload_pkgs_table") %>%
+    rvest::minimal_html() %>%
+    rvest::html_table() %>%
+    .[[2]] %>% 
+    .[["package"]]
+
   # read in raw data
   test_data <- read.csv(test_csv)
-
-  # confirm values from the two match
+  
+  # confirm packages from the two match
   expect_identical(
-    sort(select_choices),
+    sort(uploaded_packages),
     sort(test_data$package)
   )
 })
