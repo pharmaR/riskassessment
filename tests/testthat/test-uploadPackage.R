@@ -1,7 +1,7 @@
 
 test_that("Uploaded packages show up in sidebar selector", {
   
-  # TODO: reset DB to ensure clean test
+  # reset DB to ensure clean test
   if (file.exists(test_path("apps/app1/database.sqlite"))) {
     file.remove(test_path("apps/app1/database.sqlite"))
   }

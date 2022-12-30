@@ -1,5 +1,5 @@
 
-test_that("Uploaded packages show up in sidebar selector", {
+test_that("Uploaded packages show up in summary table", {
   # set up new app driver object
   app <- AppDriver$new()
 
