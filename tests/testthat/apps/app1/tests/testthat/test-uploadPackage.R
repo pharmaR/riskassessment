@@ -1,13 +1,10 @@
-library(shinytest2)
-library(testthat)
 
 test_that("Uploaded packages show up in sidebar selector", {
   
-  ## TODO:
-  #   - confirm covr picks up coverage appropriately
+  # set up new app driver object
   app <- AppDriver$new()
 
-  # test_csv <- app_sys("data-raw/upload_format.csv")
+  # test package data to upload
   test_csv <- "upload_format.csv"
   
   # upload file to 
@@ -21,9 +18,10 @@ test_that("Uploaded packages show up in sidebar selector", {
   # wait for app to stabilize
   app$wait_for_idle(500)
     
-  # check all uploaded packages show up in selectize input
+  # get current app state
   vals <- app$get_values()
   
+  # check all uploaded packages show up in selectize input
   side_select <- rvest::minimal_html(vals$output$`sidebar-select_pkg_ui`$html)
   select_choices <- side_select %>% 
     rvest::html_elements("option") %>% 
@@ -32,9 +30,10 @@ test_that("Uploaded packages show up in sidebar selector", {
   # "-" is added by default
   select_choices <- setdiff(select_choices, "-")
   
-  # confirm two match
+  # read in raw data
   test_data <- read.csv(test_csv)
-  
+
+  # confirm values from the two match
   expect_identical(
     sort(select_choices),
     sort(test_data$package)
