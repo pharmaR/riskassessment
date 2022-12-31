@@ -64,7 +64,8 @@ Imports:
     stringr,
     tibble,
     tidyr,
-    waiter
+    waiter,
+    fs
 Suggests: 
     rstudioapi,
     shinytest2,
