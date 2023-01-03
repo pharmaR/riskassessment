@@ -50,7 +50,8 @@ dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_
 #' 
 #' @returns nothing
 #' @noRd
-insert_pkg_info_to_db <- function(pkg_name) {
+insert_pkg_info_to_db <- function(pkg_name, 
+                                  db_name = golem::get_golem_options('assessment_db_name')) {
   tryCatch(
     expr = {
       # get latest high-level package info
@@ -61,7 +62,7 @@ insert_pkg_info_to_db <- function(pkg_name) {
       upload_package_to_db(pkg_name, pkg_info$Version, pkg_info$Title,
                            pkg_info$Description, pkg_info$Author,
                            pkg_info$Maintainer, pkg_info$License,
-                           pkg_info$Published)
+                           pkg_info$Published, db_name)
       
     },
     error = function(e) {
@@ -78,7 +79,7 @@ insert_pkg_info_to_db <- function(pkg_name) {
             lis <- d$get("License")
             pub <- d$get("Packaged")
             
-            upload_package_to_db(pkg_name, ver, title, desc, auth, main, lis, pub)
+            upload_package_to_db(pkg_name, ver, title, desc, auth, main, lis, pub, db_name)
           }}
       } else{
         loggit::loggit("ERROR", paste("Error in extracting general info of the package",
@@ -105,7 +106,7 @@ insert_pkg_info_to_db <- function(pkg_name) {
 #' @returns nothing
 #' @noRd
 upload_package_to_db <- function(name, version, title, description,
-                                 authors, maintainers, license, published_on) {
+                                 authors, maintainers, license, published_on, db_name) {
   tryCatch(
     expr = {
       dbUpdate(glue::glue(
@@ -114,7 +115,7 @@ upload_package_to_db <- function(name, version, title, description,
         license, published_on, decision, date_added)
         VALUES('{name}', '{version}', '{title}', '{description}',
         '{maintainers}', '{authors}', '{license}', '{published_on}',
-        '', '{Sys.Date()}')"))
+        '', '{Sys.Date()}')"), db_name)
     },
     error = function(e) {
       loggit::loggit("ERROR", paste("Error in uploading the general info of the package", name, "info", e),
@@ -136,7 +137,8 @@ upload_package_to_db <- function(name, version, title, description,
 #' 
 #' @returns nothing
 #' @noRd
-insert_maintenance_metrics_to_db <- function(pkg_name){
+insert_maintenance_metrics_to_db <- function(pkg_name, 
+                                             db_name = golem::get_golem_options('assessment_db_name')){
   
   riskmetric_assess <-
     riskmetric::pkg_ref(pkg_name) %>%
@@ -186,14 +188,14 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
     
     dbUpdate(glue::glue(
       "INSERT INTO package_metrics (package_id, metric_id, weight, value) 
-      VALUES ({package_id}, {metric$id}, {metric$weight}, '{metric_value}')")
+      VALUES ({package_id}, {metric$id}, {metric$weight}, '{metric_value}')"), db_name
     )
   }
   
   dbUpdate(glue::glue(
     "UPDATE package
     SET score = '{format(round(riskmetric_score$pkg_score[1], 2))}'
-    WHERE name = '{pkg_name}'"))
+    WHERE name = '{pkg_name}'"), db_name)
 }
 
 
@@ -212,7 +214,8 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
 #' 
 #' @returns nothing
 #' @noRd
-insert_community_metrics_to_db <- function(pkg_name) {
+insert_community_metrics_to_db <- function(pkg_name, 
+                                           db_name = golem::get_golem_options('assessment_db_name')) {
   pkgs_cum_metrics <- tidyr::tibble()
   
   tryCatch(
@@ -286,7 +289,7 @@ insert_community_metrics_to_db <- function(pkg_name) {
         (id, month, year, downloads, version)
         VALUES ('{pkg_name}', {pkgs_cum_metrics$month[i]},
         {pkgs_cum_metrics$year[i]}, {pkgs_cum_metrics$downloads[i]},
-        '{pkgs_cum_metrics$version[i]}')"))
+        '{pkgs_cum_metrics$version[i]}')"), db_name)
     }
   }
 }
@@ -301,10 +304,11 @@ insert_community_metrics_to_db <- function(pkg_name) {
 #' 
 #' @returns nothing
 #' @noRd
-update_metric_weight <- function(metric_name, metric_weight){
+update_metric_weight <- function(metric_name, metric_weight, 
+                                 db_name = golem::get_golem_options('assessment_db_name')){
   dbUpdate(glue::glue(
     "UPDATE metric
     SET weight = {metric_weight}
     WHERE name = '{metric_name}'"
-  ))
+  ), db_name)
 }
