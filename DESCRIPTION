@@ -61,9 +61,7 @@ Imports:
     shinymanager,
     shinyWidgets,
     stringr,
-    tibble,
-    tidyr,
-    waiter
+    tidyr
 Suggests: 
     rstudioapi,
     spelling,
