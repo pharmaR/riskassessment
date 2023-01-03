@@ -2,7 +2,7 @@
 #' Select data from database
 #' 
 #' @param query a sql query as a string
-#' @param db_name a string
+#' @param db_name character name (and file path) of the database
 #' 
 #' @import dplyr
 #' @importFrom DBI dbConnect dbSendQuery dbFetch dbClearResult dbDisconnect
@@ -54,7 +54,8 @@ dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_na
 #' 
 #' Retrieves the overall comments for a specific package
 #' 
-#' @param pkg_name string
+#' @param pkg_name character name of the package
+#' @param db_name character name (and file path) of the database
 #' 
 #' @importFrom glue glue
 #' 
@@ -72,7 +73,8 @@ get_overall_comments <- function(pkg_name, db_name = golem::get_golem_options('a
 #' 
 #' Retrieves the Maint Metrics comments for a specific package
 #' 
-#' @param pkg_name string
+#' @param pkg_name character name of the package
+#' @param db_name character name (and file path) of the database
 #' 
 #' @importFrom glue glue
 #' @importFrom purrr map
@@ -95,7 +97,8 @@ get_mm_comments <- function(pkg_name, db_name = golem::get_golem_options('assess
 #' 
 #' Retrieve the Community Metrics comments for a specific package
 #' 
-#' @param pkg_name string
+#' @param pkg_name character name of the package
+#' @param db_name character name (and file path) of the database
 #' 
 #' @importFrom glue glue
 #' @importFrom purrr map
@@ -118,7 +121,8 @@ get_cm_comments <- function(pkg_name, db_name = golem::get_golem_options('assess
 #' Pull the maint metrics data for a specific package id, and create 
 #' necessary columns for Cards UI
 #' 
-#' @param pkg_id string
+#' @param pkg_id integer package id
+#' @param db_name character name (and file path) of the database
 #' 
 #' @import dplyr
 #' @importFrom glue glue
@@ -148,7 +152,8 @@ get_mm_data <- function(pkg_id, db_name = golem::get_golem_options('assessment_d
 #' 
 #' Get all community metric data on a specific package
 #' 
-#' @param pkg_name string
+#' @param pkg_name character name of the package
+#' @param db_name character name (and file path) of the database
 #' 
 #' @importFrom glue glue
 #' 
@@ -166,7 +171,8 @@ get_comm_data <- function(pkg_name, db_name = golem::get_golem_options('assessme
 #' 
 #' Get all general info on a specific package
 #' 
-#' @param pkg_name string
+#' @param pkg_name character name of the package
+#' @param db_name character name (and file path) of the database
 #' 
 #' @importFrom glue glue
 #' 
@@ -203,7 +209,8 @@ get_metric_weights <- function(){
 #' Used to add a comment on every tab saying how the risk and weights changed,
 #' and that the overall comment & final decision may no longer be applicable.
 #' 
-#' @param pkg_name a package name, as a string
+#' @param pkg_name character name of the package
+#' @param db_name character name (and file path) of the database
 #' @importFrom glue glue
 #' 
 #' @returns a data frame
