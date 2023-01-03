@@ -60,7 +60,7 @@ dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_na
 #' 
 #' @returns a data frame
 #' @noRd
-get_overall_comments <- function(pkg_name, db_name) {
+get_overall_comments <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
   dbSelect(glue::glue(
     "SELECT * FROM comments 
      WHERE comment_type = 'o' AND id = '{pkg_name}'"), db_name
@@ -79,7 +79,7 @@ get_overall_comments <- function(pkg_name, db_name) {
 #'
 #' @returns a data frame
 #' @noRd 
-get_mm_comments <- function(pkg_name, db_name) {
+get_mm_comments <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
   dbSelect(
     glue::glue(
       "SELECT user_name, user_role, comment, added_on
@@ -102,7 +102,7 @@ get_mm_comments <- function(pkg_name, db_name) {
 #' 
 #' @returns a data frame
 #' @noRd
-get_cm_comments <- function(pkg_name, db_name) {
+get_cm_comments <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
   dbSelect(
     glue::glue(
       "SELECT user_name, user_role, comment, added_on
@@ -125,7 +125,7 @@ get_cm_comments <- function(pkg_name, db_name) {
 #' 
 #' @returns a data frame
 #' @noRd
-get_mm_data <- function(pkg_id, db_name){
+get_mm_data <- function(pkg_id, db_name = golem::get_golem_options('assessment_db_name')){
   dbSelect(glue::glue(
     "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
                     metric.is_url, package_metrics.value
@@ -154,7 +154,7 @@ get_mm_data <- function(pkg_id, db_name){
 #' 
 #' @returns a data frame
 #' @noRd
-get_comm_data <- function(pkg_name, db_name){
+get_comm_data <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')){
   dbSelect(glue::glue(
     "SELECT *
      FROM community_usage_metrics
@@ -172,7 +172,7 @@ get_comm_data <- function(pkg_name, db_name){
 #' 
 #' @returns a data frame
 #' @noRd
-get_pkg_info <- function(pkg_name, db_name){
+get_pkg_info <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')){
   dbSelect(glue::glue(
     "SELECT *
      FROM package
@@ -208,7 +208,7 @@ get_metric_weights <- function(){
 #' 
 #' @returns a data frame
 #' @noRd
-weight_risk_comment <- function(pkg_name, db_name) {
+weight_risk_comment <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
   
   pkg_score <- dbSelect(glue::glue(
     "SELECT score
