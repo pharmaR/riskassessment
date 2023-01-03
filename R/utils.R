@@ -137,7 +137,6 @@ get_date_span <- function(start, end = Sys.Date()) {
 #' @import dplyr
 #' @importFrom lubridate interval make_date year
 #' @importFrom glue glue
-#' @importFrom tibble add_row
 #' 
 build_comm_cards <- function(data){
   
@@ -167,7 +166,7 @@ build_comm_cards <- function(data){
   time_diff_first_rel <- get_date_span(first_version$fake_rel_date)
   
   cards <- cards %>%
-    tibble::add_row(
+    dplyr::add_row(
       name = 'time_since_first_version',
       title = 'First Version Release',
       desc = 'Time passed since first version release',
@@ -193,7 +192,7 @@ build_comm_cards <- function(data){
   time_diff_latest_rel <- get_date_span(last_ver$fake_rel_date)
   
   cards <- cards %>%
-    tibble::add_row(name = 'time_since_latest_version',
+    dplyr::add_row(name = 'time_since_latest_version',
             title = 'Latest Version Release',
             desc = 'Time passed since latest version release',
             value = glue::glue('{time_diff_latest_rel$value} {time_diff_latest_rel$label} Ago'),
@@ -207,7 +206,7 @@ build_comm_cards <- function(data){
     dplyr::distinct(year, month, downloads)
   
   cards <- cards %>%
-    tibble::add_row(name = 'downloads_last_year',
+    dplyr::add_row(name = 'downloads_last_year',
             title = 'Package Downloads',
             desc = 'Number of downloads since last year',
             value = format(sum(downloads_last_year$downloads), big.mark = ","),
