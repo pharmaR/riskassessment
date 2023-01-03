@@ -4,7 +4,7 @@
 #' Deletes, updates or inserts queries.
 #'
 #' @param command a string
-#' @param db_name a string
+#' @param db_name character name (and file path) of the database
 #'
 #' @import dplyr
 #' @importFrom DBI dbConnect dbSendStatement dbClearResult dbDisconnect
@@ -45,6 +45,7 @@ dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_
 #' Call function to get and upload info from CRAN/local to db.
 #' 
 #' @param pkg_name string name of the package
+#' @param db_name character name (and file path) of the database
 #' 
 #' @importFrom loggit loggit
 #' 
@@ -99,6 +100,7 @@ insert_pkg_info_to_db <- function(pkg_name,
 #' @param maintainers string names of maintainers
 #' @param license string type of package license
 #' @param published_on string char date of publication
+#' @param db_name character name (and file path) of the database
 #' 
 #' @importFrom glue glue
 #' @importFrom loggit loggit
@@ -130,6 +132,7 @@ upload_package_to_db <- function(name, version, title, description,
 #' Get the maintenance and testing metrics info and upload into DB.
 #' 
 #' @param pkg_name string name of the package
+#' @param db_name character name (and file path) of the database
 #' 
 #' @import dplyr
 #' @importFrom riskmetric pkg_ref pkg_assess pkg_score
@@ -202,6 +205,7 @@ insert_maintenance_metrics_to_db <- function(pkg_name,
 #' Generate community usage metrics and upload data into DB
 #' 
 #' @param pkg_name string name of the package
+#' @param db_name character name (and file path) of the database
 #' 
 #' @import dplyr
 #' @importFrom cranlogs cran_downloads
@@ -299,6 +303,7 @@ insert_community_metrics_to_db <- function(pkg_name,
 #' 
 #' @param metric_name a metric name, as a string
 #' @param metric_weight a weight, as a string or double
+#' @param db_name character name (and file path) of the database
 #' 
 #' @importFrom glue glue
 #' 
