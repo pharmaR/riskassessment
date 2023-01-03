@@ -44,7 +44,6 @@ Imports:
     keyring,
     loggit,
     lubridate,
-    magrittr,
     pkgload,
     plotly,
     purrr,
