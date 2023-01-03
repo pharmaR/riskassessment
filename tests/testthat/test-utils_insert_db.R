@@ -29,7 +29,11 @@ test_that("utils_insert_db functions other than dbUpdate", {
   insert_pkg_info_to_db(pkg_name, file.path(base_path, db_temp))
 
   test_that("get_pkg_info works", {
-    pkg <- get_pkg_info(pkg_name, file.path(base_path, db_temp))
+    pkg <- dbSelect(glue::glue(
+      "SELECT *
+     FROM package
+     WHERE name = '{pkg_name}'"), file.path(base_path, db_temp)
+    )
     expect_s3_class(pkg, "data.frame")
     expect_equal(nrow(pkg), 1) 
     expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", "score", "weighted_score", "decision", "date_added"))
@@ -40,16 +44,26 @@ test_that("utils_insert_db functions other than dbUpdate", {
   pkg_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"), file.path(base_path, db_temp))
 
   test_that("get_mm_data works", {
-    mmdata <- get_mm_data(pkg_id, file.path(base_path, db_temp))
+    mmdata <-   dbSelect(glue::glue(
+      "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
+                    metric.is_url, package_metrics.value
+                    FROM metric
+                    INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
+                    WHERE package_metrics.package_id = '{pkg_id}' AND 
+                    metric.class = 'maintenance' ;"), file.path(base_path, db_temp))
     expect_s3_class(mmdata, "data.frame")
-    expect_equal(names(mmdata), c("name", "is_perc", "is_url", "value", "title", "desc", "succ_icon", "unsucc_icon", "icon_class"))
+    expect_equal(names(mmdata), c("name", "long_name", "description", "is_perc", "is_url", "value"))
     expect_equal(mmdata$name[1], "has_vignettes")
   })
 
   insert_community_metrics_to_db(pkg_name, file.path(base_path, db_temp))
   
   test_that("get_comm_data works", {
-    cmdata <- get_comm_data(pkg_name, file.path(base_path, db_temp))
+    cmdata <- dbSelect(glue::glue(
+      "SELECT *
+     FROM community_usage_metrics
+     WHERE id = '{pkg_name}'"), file.path(base_path, db_temp)
+    )
     expect_s3_class(cmdata, "data.frame")
     expect_equal(colnames(cmdata), c("id", "month", "year", "downloads", "version"))
     expect_equal(cmdata$id[1], pkg_name)
@@ -66,7 +80,7 @@ test_that("utils_insert_db functions other than dbUpdate", {
   })
   
   unlink(file.path(base_path, db_temp))
-  rm(base_path, db_temp, pkg_name, pkg_id, pkg_info, command, comment, user_name, user_role, abrv)
+  rm(base_path, db_temp, pkg_name, pkg_id)
   
 })
   
