@@ -16,6 +16,8 @@
 * Add unit tests for functions in utils_startup.R.
 * Added testthat tests for dbSelect and dbUpdate functions (#295)
 * Added `shinytest2` scaffolding. Used `shinytest2` to test `uploadPackageUI`/`uploadPackageServer` (#295)
+* Unit test cases are now available for showHelperMessage() function (#295).
+* Unit test cases are now available for get_date_span() function (#295).
 
 
 # riskassessment 0.0.1
