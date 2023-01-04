@@ -142,7 +142,7 @@ upload_package_to_db <- function(name, version, title, description,
 #' @noRd
 insert_maintenance_metrics_to_db <- function(pkg_name, 
                                              db_name = golem::get_golem_options('assessment_db_name')){
-  
+
   riskmetric_assess <-
     riskmetric::pkg_ref(pkg_name) %>%
     dplyr::as_tibble() %>%
@@ -221,6 +221,9 @@ insert_maintenance_metrics_to_db <- function(pkg_name,
 insert_community_metrics_to_db <- function(pkg_name, 
                                            db_name = golem::get_golem_options('assessment_db_name')) {
   pkgs_cum_metrics <- tidyr::tibble()
+  
+  # turn off summarise() .groups message
+  options(dplyr.summarise.inform = FALSE)
   
   tryCatch(
     expr = {
