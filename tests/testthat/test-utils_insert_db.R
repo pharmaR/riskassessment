@@ -1,10 +1,5 @@
 test_that("utils_insert_db functions other than dbUpdate", {
   
-  # insert_pkg_info_to_db
-  # insert_maintenance_metrics_to_db
-  # insert_community_metrics_to_db
-  # update_metric_weight
-  
   base_path <- app_sys("testdata")
   # this is a copy of the empty database.sqlite db which is in ./inst/testdata
   db_name <- "skeleton.sqlite"
@@ -28,7 +23,7 @@ test_that("utils_insert_db functions other than dbUpdate", {
   
   insert_pkg_info_to_db(pkg_name, file.path(base_path, db_temp))
 
-  test_that("get_pkg_info works", {
+  test_that("insert_pkg_info_to_db works", {
     pkg <- dbSelect(glue::glue(
       "SELECT *
      FROM package
@@ -43,7 +38,7 @@ test_that("utils_insert_db functions other than dbUpdate", {
   
   pkg_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"), file.path(base_path, db_temp))
 
-  test_that("get_mm_data works", {
+  test_that("insert_maintenance_metrics_to_db", {
     mmdata <-   dbSelect(glue::glue(
       "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
                     metric.is_url, package_metrics.value
@@ -58,7 +53,7 @@ test_that("utils_insert_db functions other than dbUpdate", {
 
   insert_community_metrics_to_db(pkg_name, file.path(base_path, db_temp))
   
-  test_that("get_comm_data works", {
+  test_that("insert_community_metrics_to_db works", {
     cmdata <- dbSelect(glue::glue(
       "SELECT *
      FROM community_usage_metrics
