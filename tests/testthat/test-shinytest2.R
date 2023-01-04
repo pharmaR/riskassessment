@@ -1,5 +1,5 @@
 
-test_that("Uploaded packages show up in sidebar selector", {
+test_that("shinytest2 logic works as expected", {
   
   # reset DB to ensure clean test
   if (file.exists(test_path("apps/app1/database.sqlite"))) {
