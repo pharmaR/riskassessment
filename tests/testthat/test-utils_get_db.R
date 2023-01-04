@@ -97,10 +97,7 @@ test_that("utils_get_db functions other than dbSelect", {
   })
   
   test_that("get_metric_weights works", {
-  mtwt <-  dbSelect(
-      "SELECT name, weight
-     FROM metric", db_name = file.path(base_path, db_temp)
-    )
+  mtwt <-  get_metric_weights(file.path(base_path, db_temp))
   testthat::expect_equal(mtwt$name[1], "has_vignettes")
   })
   
