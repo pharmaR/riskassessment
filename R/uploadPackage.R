@@ -43,7 +43,6 @@ uploadPackageUI <- function(id) {
 #' 
 #' @importFrom riskmetric pkg_ref
 #' @importFrom rintrojs introjs
-#' @importFrom readr read_csv
 #' @importFrom rvest read_html html_nodes html_text
 #' 
 uploadPackageServer <- function(id) {
@@ -89,7 +88,7 @@ uploadPackageServer <- function(id) {
       if(is.null(input$uploaded_file$datapath))
         validate('Please upload a nonempty CSV file.')
       
-      uploaded_packages <- readr::read_csv(input$uploaded_file$datapath, show_col_types = FALSE)
+      uploaded_packages <- read.csv(input$uploaded_file$datapath, stringsAsFactors = FALSE)
       np <- nrow(uploaded_packages)
       if(np == 0)
         validate('Please upload a nonempty CSV file.')

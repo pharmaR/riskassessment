@@ -46,7 +46,6 @@ Imports:
     pkgload,
     plotly,
     purrr,
-    readr (>= 2.0.1),
     rintrojs,
     riskmetric (>= 0.1.1),
     rlang,

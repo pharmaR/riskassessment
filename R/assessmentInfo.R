@@ -51,7 +51,6 @@ assessmentInfoUI <- function(id) {
 #' @param metric_weights placeholder
 #' 
 #' @import dplyr
-#' @importFrom readr read_file read_csv
 #' @importFrom DT renderDataTable formatStyle datatable
 #' @importFrom formattable as.datatable 
 #' 

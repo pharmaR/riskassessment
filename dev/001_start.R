@@ -84,7 +84,6 @@ raa_pkgs = c(
              ,"shinyWidgets"
              ,"data.table"
              ,"DT"
-             ,"readr"
              ,"lubridate"
              ,"RSQLite"
              ,"DBI"
