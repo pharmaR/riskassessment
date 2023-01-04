@@ -14,11 +14,12 @@
 * Some general re-organizing of the package's infrastructure to make testing and development easier.
 * Added console warnings + login note & modals to warn user there is a bug with latest version of {fontawesome} and they should install v0.3.0 if they want to download HTML reports. For more info, the bug status can be tracked [here](https://github.com/rstudio/fontawesome/issues/99).
 * Add unit tests for functions in utils_startup.R.
-* Added testthat tests for dbSelect and dbUpdate functions (#295)
+* Added unit tests for dbSelect and dbUpdate functions (#295)
 * Unit test cases are now available for showHelperMessage() function (#295).
 * Unit test cases are now available for get_date_span() function (#295).
+* Added unit tests for all functions in utils_get_db except dbSelect (#295)
+* Added unit tests for all functions in utils_insert_db except dbUpdate (#295)
 * Changed risk-based color gradient to use colorblind-friendly color palette.
-
 
 # riskassessment 0.0.1
 * Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/risk_assessment/archive/master.zip")` and `shiny::runGitHub('risk_assessment', 'pharmaR')`
