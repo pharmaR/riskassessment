@@ -56,7 +56,6 @@ Imports:
     rvest,
     shiny (>= 1.7.1),
     shinydashboard,
-    shinyhelper,
     shinyjs,
     shinymanager,
     shinyWidgets,

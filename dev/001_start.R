@@ -79,7 +79,6 @@ usethis::use_mit_license(copyright_holder = "2020 Fission Labs and R Validation 
 # Packages needed for the app.
 raa_pkgs = c(
               "shiny"
-             ,"shinyhelper"
              ,"shinyjs"
              ,"shinydashboard"
              ,"shinyWidgets"
