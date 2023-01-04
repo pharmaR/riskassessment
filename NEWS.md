@@ -17,6 +17,7 @@
 * Added testthat tests for dbSelect and dbUpdate functions (#295)
 * Unit test cases are now available for showHelperMessage() function (#295).
 * Unit test cases are now available for get_date_span() function (#295).
+* Added unit tests for all functions in utils_get_db except dbSelect (#295)
 
 
 # riskassessment 0.0.1
