@@ -190,13 +190,15 @@ get_pkg_info <- function(pkg_name, db_name = golem::get_golem_options('assessmen
 #' get_metric_weights
 #'
 #' Retrieves metric name and current weight from metric table
+#' 
+#' @param db_name character name (and file path) of the database
 #'
 #' @returns a data frame
 #' @noRd
-get_metric_weights <- function(){
+get_metric_weights <- function(db_name = golem::get_golem_options('assessment_db_name')){
   dbSelect(
     "SELECT name, weight
-     FROM metric"
+     FROM metric", db_name
   )
 }
 
