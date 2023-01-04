@@ -12,7 +12,11 @@ test_that("Uploaded packages show up in summary table", {
   )
 
   # wait for table to be shown
-  app$wait_for_value(output = "upload_package-upload_pkgs_table", ignore = list(NULL))
+  app$wait_for_value(
+    output = "upload_package-upload_pkgs_table", 
+    ignore = list(NULL), 
+    timeout = 30 * 1000 # CI keeps failing here...
+  )
   app$wait_for_idle(1000)
   
   # parse the package name from the upload summary table
