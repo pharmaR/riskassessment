@@ -105,7 +105,6 @@ raa_pkgs = c(
              ,"formattable"
              ,"rintrojs"
              ,"shinymanager"
-             ,"keyring"
 )
 use_package_v <- Vectorize(usethis::use_package)
 use_package_v(raa_pkgs)
@@ -125,7 +124,6 @@ usethis::use_package("RSQLite")
 usethis::use_package("rstudioapi")
 usethis::use_package("rmarkdown")
 usethis::use_package("rintrojs")
-usethis::use_package("keyring")
 usethis::use_package("lubridate")
 usethis::use_package("rvest")
 usethis::use_package("bslib")

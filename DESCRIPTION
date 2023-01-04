@@ -41,7 +41,6 @@ Imports:
     formattable,
     glue,
     golem (>= 0.3.2),
-    keyring,
     loggit,
     lubridate,
     pkgload,
