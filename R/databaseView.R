@@ -2,7 +2,7 @@
 # run locally and paste hex codes
 # viridisLite::turbo(11, begin = 0.4396875, end = .8728125)
 low_risk_color  <- "#6DFE62FF"  # 1st
-med_risk_color  <- "#F7C03AFF"  # dark gold
+med_risk_color  <- "#F7C03AFF"  # 6th
 high_risk_color <- "#D33205FF"  # 11th
 setColorPalette <- colorRampPalette(
   c("#6DFE62FF","#97FE44FF","#B5F836FF","#D1EA34FF","#E8D639FF",
