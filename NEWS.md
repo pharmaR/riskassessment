@@ -17,6 +17,7 @@
 * Added testthat tests for dbSelect and dbUpdate functions (#295)
 * Unit test cases are now available for showHelperMessage() function (#295).
 * Unit test cases are now available for get_date_span() function (#295).
+* Changed risk-based color gradient to use colorblind-friendly color palette.
 
 
 # riskassessment 0.0.1
