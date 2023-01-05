@@ -40,3 +40,45 @@ test_that("Uploaded packages show up in summary table", {
     sort(test_data$package)
   )
 })
+
+
+test_that("Sample upload file can be shown and downloaded", {
+  
+  # delete app DB if exists to ensure clean test
+  if (file.exists(test_path("test-apps", "database.sqlite"))) {
+    file.remove(test_path("test-apps", "database.sqlite"))
+  }
+  
+  # set up new app driver object
+  app <- AppDriver$new(app_dir = test_path("test-apps"))
+  
+  app$click(selector = "#upload_package-upload_format")
+  app$wait_for_idle(500)
+  
+  # table shown matches 
+  display_table <- app$get_html(".modal-body table") %>%
+    .[[2]] %>%
+    rvest::minimal_html() %>%
+    rvest::html_table() %>% 
+    .[[1]] %>% 
+    .[ ,-1]
+    
+  # confirm match
+  expect_identical(
+    display_table,
+    riskassessment:::template
+  )
+  
+  # download file from application and read
+  sample_file <- app$get_download("upload_package-download_sample")
+  dl_data <- readr::read_csv(sample_file)
+  
+  # confirm match
+  expect_identical(
+    dl_data,
+    riskassessment:::template
+  )
+  
+
+  
+})
