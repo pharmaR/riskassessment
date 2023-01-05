@@ -1,4 +1,4 @@
-#' generate_comm_data()
+#' Generate Community Usage Data
 #' 
 #' @description 
 #' generate_comm_data() is a function that extracts usage metrics for a given package.
