@@ -358,7 +358,7 @@ auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
 
 
 
-#' The 'Build Community plot' function
+#' Build a plotly of community usage metrics
 #' @description 
 #' Responsible for building an interactive `{plotly}` graphic containing the trend line for number of CRAN pkg downloads by month.
 #' 
