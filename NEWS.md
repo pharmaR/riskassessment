@@ -1,7 +1,6 @@
 # riskassessment (development version)
 
-* Added a new exportedfunction called generate_comm_data() that builds the community usage data needed to produce
-the downloads by month plot (#266).
+* Added a new exported function called generate_comm_data() that builds the community usage data needed to produce the downloads by month plot (#266).
 * Updated insert_community_metrics_to_db() internals to call generate_comm_data() (#266).
 * Exported and updated the build_comm_plotly() function internals to call generate_comm_data as well as utilize a new parameter pkg_name (#266).
 * Added new pdf report download option to 'Database' and 'Report Preview' tabs (#280) 

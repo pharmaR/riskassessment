@@ -2,12 +2,12 @@
 % Please edit documentation in R/utils.R
 \name{build_comm_plotly}
 \alias{build_comm_plotly}
-\title{The 'Build Community plot' function}
+\title{Build a plotly of community usage metrics}
 \usage{
-build_comm_plotly(data, pkg_name = NULL)
+build_comm_plotly(data = NULL, pkg_name = NULL)
 }
 \arguments{
-\item{data}{a data.frame that is built in databaseView.R from get_comm_data()}
+\item{data}{a data.frame containing monthly download data, built using \code{generate_comm_data()}. This argument is optional, but if \code{NULL}, a \code{pkg_name} must be provided.}
 
 \item{pkg_name}{a string of a package name. This parameter is optional.}
 }
@@ -15,7 +15,7 @@ build_comm_plotly(data, pkg_name = NULL)
 a plotly object
 }
 \description{
-build_comm_plotly() is responsible for building the plotly graphic of community usage metrics
+Responsible for building an interactive \code{{plotly}} graphic containing the trend line for number of CRAN pkg downloads by month.
 }
 \examples{
 metricGraph <- build_comm_plotly(pkg_name = "ggplot2")
