@@ -53,7 +53,7 @@ test_that("Sample upload file can be shown and downloaded", {
   app <- AppDriver$new(app_dir = test_path("test-apps"))
   
   app$click(selector = "#upload_package-upload_format")
-  app$wait_for_idle(500)
+  app$wait_for_idle(1500)
   
   # table shown matches 
   display_table <- app$get_html(".modal-body table") %>%
