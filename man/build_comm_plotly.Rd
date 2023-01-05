@@ -9,7 +9,7 @@ build_comm_plotly(data = NULL, pkg_name = NULL)
 \arguments{
 \item{data}{a data.frame containing monthly download data, built using \code{generate_comm_data()}. This argument is optional, but if \code{NULL}, a \code{pkg_name} must be provided.}
 
-\item{pkg_name}{a string of a package name. This parameter is optional.}
+\item{pkg_name}{a string of a package name. This parameter is optional. If \code{pkg_name} is provided, the data argument should be \code{NULL}.}
 }
 \value{
 a plotly object

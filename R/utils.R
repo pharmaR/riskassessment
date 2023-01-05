@@ -119,7 +119,6 @@ generate_comm_data <- function(pkg_name){
         dplyr::mutate(date = as.Date(`Last modified`), .keep = 'unused') %>%
         dplyr::mutate(month = lubridate::month(date)) %>%
         dplyr::mutate(year = lubridate::year(date))
-      print(versions_with_dates)
       
       # First release date.
       first_release_date <- versions_with_dates %>%
@@ -366,7 +365,7 @@ auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
 #' Responsible for building an interactive `{plotly}` graphic containing the trend line for number of CRAN pkg downloads by month.
 #' 
 #' @param data a data.frame containing monthly download data, built using `generate_comm_data()`. This argument is optional, but if `NULL`, a `pkg_name` must be provided.
-#' @param pkg_name a string of a package name. This parameter is optional.
+#' @param pkg_name a string of a package name. This parameter is optional. If `pkg_name` is provided, the data argument should be `NULL`.
 #' @returns a plotly object
 #' @examples 
 #' metricGraph <- build_comm_plotly(pkg_name = "ggplot2")
@@ -380,6 +379,10 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
   # If there is a package listed, in pkg_name, a plotly graphic will be created
   if (!is.null(pkg_name)){
     data <- generate_comm_data(pkg_name)
+  } else {
+    if (is.null(data)) {
+      stop("must include either data or pkg_name argument")
+    }
   }
   
   if (nrow(data) == 0) return(NULL)
