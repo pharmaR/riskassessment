@@ -59,6 +59,10 @@ uploadPackageServer <- function(id) {
         upload_pkg
     })
     
+    cran_pkgs <- reactive({
+      available.packages("https://cran.rstudio.com/src/contrib")[,1]
+    })
+    
     # Start introjs when help button is pressed. Had to do this outside of
     # a module in order to take a reactive data frame of steps
     observeEvent(
@@ -105,20 +109,8 @@ uploadPackageServer <- function(id) {
           version = trimws(version)
         )
       
-      # read website to create vector of available packages by name
-      website <- "https://cran.rstudio.com/web/packages/available_packages_by_name.html"
-      con <- url(website, open = "rb")
-      namelst <- rvest::read_html(con)
-      close(con)
       
-      pkgnames <- namelst %>% 
-        rvest::html_nodes("a") %>%
-        rvest::html_text() 
       
-      # Drop A-Z
-      CRAN_arch <- pkgnames[27:length(pkgnames)]
-      rm(namelst, pkgnames)
-
       # Start progress bar. Need to establish a maximum increment
       # value based on the number of packages, np, and the number of
       # incProgress() function calls in the loop, plus one to show
@@ -139,10 +131,10 @@ uploadPackageServer <- function(id) {
               incProgress(1, detail = 'Package {uploaded_packages$package[i]} not found')
               
               # Suggest alternative spellings using utils::adist() function
-              v <- utils::adist(uploaded_packages$package[i], CRAN_arch, ignore.case = FALSE)
+              v <- utils::adist(uploaded_packages$package[i], cran_pkgs(), ignore.case = FALSE)
               rlang::inform(paste("Package name",uploaded_packages$package[i],"was not found."))
                             
-              suggested_nms <- paste("Suggested package name(s):",paste(head(CRAN_arch[which(v == min(v))], 10),collapse = ", "))
+              suggested_nms <- paste("Suggested package name(s):",paste(head(cran_pkgs()[which(v == min(v))], 10),collapse = ", "))
               rlang::inform(suggested_nms)
                             
               uploaded_packages$status[i] <- HTML(paste0('<a href="#" title="', suggested_nms, '">not found</a>'))
