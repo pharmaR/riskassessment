@@ -4,7 +4,7 @@
 #' Deletes, updates or inserts queries.
 #'
 #' @param command a string
-#' @param db_name a string
+#' @param db_name character name (and file path) of the database
 #'
 #' @import dplyr
 #' @importFrom DBI dbConnect dbSendStatement dbClearResult dbDisconnect
@@ -12,7 +12,11 @@
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
 #' @importFrom glue glue
+#' 
+#' @returns nothing
+#' @noRd
 dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_name')){
+  errFlag <- FALSE
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   tryCatch({
@@ -20,10 +24,14 @@ dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_
   }, error = function(err) {
     message <- glue::glue("command: {command} resulted in {err}")
     message(message, .loggit = FALSE)
-    loggit::loggit("ERROR", message)
+    loggit::loggit("ERROR", message, echo = FALSE)
     DBI::dbDisconnect(con)
+    errFlag <<- TRUE
+  },
+  finally = {
+    if (errFlag) return(invisible(NULL)) 
   })
-  
+
   nr <- DBI::dbGetRowsAffected(rs)
   DBI::dbClearResult(rs)
   
@@ -37,10 +45,14 @@ dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_
 #' Call function to get and upload info from CRAN/local to db.
 #' 
 #' @param pkg_name string name of the package
+#' @param db_name character name (and file path) of the database
 #' 
 #' @importFrom loggit loggit
 #' 
-insert_pkg_info_to_db <- function(pkg_name) {
+#' @returns nothing
+#' @noRd
+insert_pkg_info_to_db <- function(pkg_name, 
+                                  db_name = golem::get_golem_options('assessment_db_name')) {
   tryCatch(
     expr = {
       # get latest high-level package info
@@ -51,7 +63,7 @@ insert_pkg_info_to_db <- function(pkg_name) {
       upload_package_to_db(pkg_name, pkg_info$Version, pkg_info$Title,
                            pkg_info$Description, pkg_info$Author,
                            pkg_info$Maintainer, pkg_info$License,
-                           pkg_info$Published)
+                           pkg_info$Published, db_name)
       
     },
     error = function(e) {
@@ -68,7 +80,7 @@ insert_pkg_info_to_db <- function(pkg_name) {
             lis <- d$get("License")
             pub <- d$get("Packaged")
             
-            upload_package_to_db(pkg_name, ver, title, desc, auth, main, lis, pub)
+            upload_package_to_db(pkg_name, ver, title, desc, auth, main, lis, pub, db_name)
           }}
       } else{
         loggit::loggit("ERROR", paste("Error in extracting general info of the package",
@@ -88,12 +100,15 @@ insert_pkg_info_to_db <- function(pkg_name) {
 #' @param maintainers string names of maintainers
 #' @param license string type of package license
 #' @param published_on string char date of publication
+#' @param db_name character name (and file path) of the database
 #' 
 #' @importFrom glue glue
 #' @importFrom loggit loggit
 #' 
+#' @returns nothing
+#' @noRd
 upload_package_to_db <- function(name, version, title, description,
-                                 authors, maintainers, license, published_on) {
+                                 authors, maintainers, license, published_on, db_name) {
   tryCatch(
     expr = {
       dbUpdate(glue::glue(
@@ -102,7 +117,7 @@ upload_package_to_db <- function(name, version, title, description,
         license, published_on, decision, date_added)
         VALUES('{name}', '{version}', '{title}', '{description}',
         '{maintainers}', '{authors}', '{license}', '{published_on}',
-        '', '{Sys.Date()}')"))
+        '', '{Sys.Date()}')"), db_name)
     },
     error = function(e) {
       loggit::loggit("ERROR", paste("Error in uploading the general info of the package", name, "info", e),
@@ -117,20 +132,24 @@ upload_package_to_db <- function(name, version, title, description,
 #' Get the maintenance and testing metrics info and upload into DB.
 #' 
 #' @param pkg_name string name of the package
+#' @param db_name character name (and file path) of the database
 #' 
 #' @import dplyr
 #' @importFrom riskmetric pkg_ref pkg_assess pkg_score
 #' @importFrom glue glue 
 #' 
-insert_maintenance_metrics_to_db <- function(pkg_name){
-  
+#' @returns nothing
+#' @noRd
+insert_maintenance_metrics_to_db <- function(pkg_name, 
+                                             db_name = golem::get_golem_options('assessment_db_name')){
+
   riskmetric_assess <-
     riskmetric::pkg_ref(pkg_name) %>%
     dplyr::as_tibble() %>%
     riskmetric::pkg_assess()
   
   # Get the metrics weights to be used during pkg_score.
-  metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric")
+  metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric", db_name)
   metric_weights <- metric_weights_df$weight
   names(metric_weights) <- metric_weights_df$name
   
@@ -138,7 +157,7 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
     riskmetric_assess %>%
     riskmetric::pkg_score(weights = metric_weights)
   
-  package_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"))
+  package_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"), db_name)
   
   # Leave method if package not found.
   if(nrow(package_id) == 0){
@@ -172,20 +191,21 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
     
     dbUpdate(glue::glue(
       "INSERT INTO package_metrics (package_id, metric_id, weight, value) 
-      VALUES ({package_id}, {metric$id}, {metric$weight}, '{metric_value}')")
+      VALUES ({package_id}, {metric$id}, {metric$weight}, '{metric_value}')"), db_name
     )
   }
   
   dbUpdate(glue::glue(
     "UPDATE package
     SET score = '{format(round(riskmetric_score$pkg_score[1], 2))}'
-    WHERE name = '{pkg_name}'"))
+    WHERE name = '{pkg_name}'"), db_name)
 }
 
 
 #' Generate community usage metrics and upload data into DB
 #' 
 #' @param pkg_name string name of the package
+#' @param db_name character name (and file path) of the database
 #' 
 #' @import dplyr
 #' @importFrom cranlogs cran_downloads
@@ -196,8 +216,10 @@ insert_maintenance_metrics_to_db <- function(pkg_name){
 #' @importFrom stringr str_remove_all
 #' @importFrom tidyr tibble
 #' 
-insert_community_metrics_to_db <- function(pkg_name) {
-  
+#' @returns nothing
+#' @noRd
+insert_community_metrics_to_db <- function(pkg_name, 
+                                           db_name = golem::get_golem_options('assessment_db_name')) {
   pkgs_cum_metrics <- generate_comm_data(pkg_name)
   
   if(nrow(pkgs_cum_metrics) != 0){
@@ -207,7 +229,7 @@ insert_community_metrics_to_db <- function(pkg_name) {
         (id, month, year, downloads, version)
         VALUES ('{pkg_name}', {pkgs_cum_metrics$month[i]},
         {pkgs_cum_metrics$year[i]}, {pkgs_cum_metrics$downloads[i]},
-        '{pkgs_cum_metrics$version[i]}')"))
+        '{pkgs_cum_metrics$version[i]}')"), db_name)
     }
   }
 }
@@ -217,12 +239,17 @@ insert_community_metrics_to_db <- function(pkg_name) {
 #' 
 #' @param metric_name a metric name, as a string
 #' @param metric_weight a weight, as a string or double
+#' @param db_name character name (and file path) of the database
 #' 
 #' @importFrom glue glue
-update_metric_weight <- function(metric_name, metric_weight){
+#' 
+#' @returns nothing
+#' @noRd
+update_metric_weight <- function(metric_name, metric_weight, 
+                                 db_name = golem::get_golem_options('assessment_db_name')){
   dbUpdate(glue::glue(
     "UPDATE metric
     SET weight = {metric_weight}
     WHERE name = '{metric_name}'"
-  ))
+  ), db_name)
 }
