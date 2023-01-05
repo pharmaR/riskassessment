@@ -25,6 +25,12 @@ uploadPackageUI <- function(id) {
             )
         ),
         actionLink(NS(id, "upload_format"), "View Sample Dataset")
+      ),
+      column(
+        width = 4,
+        selectizeInput(NS(id, "pkg_lst"), "Manual Input", choices = NULL, multiple = TRUE, 
+                       options = list(create = TRUE, showAddOptionOnCreate = FALSE)),
+        actionButton(NS(id, "add_pkgs"), "Add Packages")
       )
     ),
     
@@ -63,6 +69,12 @@ uploadPackageServer <- function(id) {
       available.packages("https://cran.rstudio.com/src/contrib")[,1]
     })
     
+    observeEvent(cran_pkgs(), {
+      req(cran_pkgs())
+      
+      updateSelectizeInput(session, "pkg_lst", choices = cran_pkgs(), server = TRUE)
+    })
+    
     # Start introjs when help button is pressed. Had to do this outside of
     # a module in order to take a reactive data frame of steps
     observeEvent(
@@ -78,28 +90,21 @@ uploadPackageServer <- function(id) {
       )
     )
     
-    # Save all the uploaded packages, marking them as 'new', 'not found', or
-    # 'duplicate'.
-    uploaded_pkgs <- reactive({
-      
-      # Return an empty data.frame when no file is uploaded.
-      # This is to allow for the database view method to update when a package
-      # is uploaded without failing.
-      if(is.null(input$uploaded_file))
-        return(data.frame())
-      
+    uploaded_pkgs00 <- reactiveVal()
+    
+    observeEvent(input$uploaded_file, {
       req(input$uploaded_file)
       
       if(is.null(input$uploaded_file$datapath))
-        validate('Please upload a nonempty CSV file.')
+        uploaded_pkgs00(validate('Please upload a nonempty CSV file.'))
       
       uploaded_packages <- readr::read_csv(input$uploaded_file$datapath, show_col_types = FALSE)
       np <- nrow(uploaded_packages)
       if(np == 0)
-        validate('Please upload a nonempty CSV file.')
+        uploaded_pkgs00(validate('Please upload a nonempty CSV file.'))
       
       if(!all(colnames(uploaded_packages) == colnames(template)))
-        validate("Please upload a CSV with a valid format.")
+        uploaded_pkgs00(validate("Please upload a CSV with a valid format."))
       
       # Add status column and remove white space around package names.
       uploaded_packages <- uploaded_packages %>%
@@ -109,7 +114,31 @@ uploadPackageServer <- function(id) {
           version = trimws(version)
         )
       
+      uploaded_pkgs00(uploaded_packages)
+    })
+    
+    observeEvent(input$add_pkgs, {
+      req(input$pkg_lst)
       
+      np <- length(input$pkg_lst)
+      uploaded_packages <-
+        dplyr::tibble(status = rep('', np),
+                      package = input$pkg_lst,
+                      version = rep('0.0.0', np)
+                      )
+      
+      updateSelectizeInput(session, "pkg_lst", selected = "")
+      
+      uploaded_pkgs00(uploaded_packages)
+    })
+    
+    # Save all the uploaded packages, marking them as 'new', 'not found', or
+    # 'duplicate'.
+    uploaded_pkgs <- reactive({
+      req(uploaded_pkgs00())
+      
+      uploaded_packages <- uploaded_pkgs00()
+      np <- nrow(uploaded_packages)
       
       # Start progress bar. Need to establish a maximum increment
       # value based on the number of packages, np, and the number of
