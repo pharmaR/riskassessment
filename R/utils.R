@@ -60,12 +60,12 @@ get_latest_pkg_info <- function(pkg_name) {
   return(table_info)
 }
 
-#' generate_comm_data()
+#' Generate Community Usage Data
 #' 
 #' @description 
-#' generate_comm_data() is a function that extracts usage metrics for a given package.
-#' @returns A tibble of package usage metrics
-#' @param pkg_name A string name of the package.
+#' Extracts community usage metrics for a given package.
+#' @returns A tibble of community usage metrics
+#' @param pkg_name A string containing the name of a package.
 #' 
 #' @import dplyr
 #' @importFrom cranlogs cran_downloads
@@ -76,8 +76,10 @@ get_latest_pkg_info <- function(pkg_name) {
 #' @importFrom stringr str_remove_all
 #' @importFrom tidyr tibble
 #' @examples 
-#' metricDF <- generate_comm_data("ggplot2")
-#' metricDF <- generate_comm_data("dplyr")
+#' if( interactive()) {
+#' ggplot_comm_df <- generate_comm_data("ggplot2")
+#' head(ggplot_comm_df)
+#' }
 #' @export
 generate_comm_data <- function(pkg_name){
   pkgs_cum_metrics <- tidyr::tibble()
@@ -358,9 +360,9 @@ auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
 
 #' The 'Build Community plot' function
 #' @description 
-#' build_comm_plotly() is responsible for building the plotly graphic of community usage metrics
+#' Responsible for building an interactive `{plotly}` graphic containing the trend line for number of CRAN pkg downloads by month.
 #' 
-#' @param data a data.frame that is built in databaseView.R from get_comm_data()
+#' @param data a data.frame containing monthly download data, built using `generate_comm_data()`. This argument is optional, but if `NULL`, a `pkg_name` must be provided.
 #' @param pkg_name a string of a package name. This parameter is optional.
 #' @returns a plotly object
 #' @examples 
@@ -370,7 +372,7 @@ auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
 #' @importFrom glue glue
 #' @importFrom plotly plot_ly layout add_segments add_annotations config
 #' @export
-build_comm_plotly <- function(data, pkg_name = NULL) {
+build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
   
   # If there is a package listed, in pkg_name, a plotly graphic will be created
   if (!is.null(pkg_name)){
