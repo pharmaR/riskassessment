@@ -28,8 +28,11 @@ uploadPackageUI <- function(id) {
       ),
       column(
         width = 4,
-        selectizeInput(NS(id, "pkg_lst"), "Manual Input", choices = NULL, multiple = TRUE, 
-                       options = list(create = TRUE, showAddOptionOnCreate = FALSE)),
+        div(
+          id = "type-package-group",
+          selectizeInput(NS(id, "pkg_lst"), "Manual Input", choices = NULL, multiple = TRUE, 
+                         options = list(create = TRUE, showAddOptionOnCreate = FALSE))
+        ),
         actionButton(NS(id, "add_pkgs"), "Add Packages")
       )
     ),
@@ -135,7 +138,8 @@ uploadPackageServer <- function(id) {
     # Save all the uploaded packages, marking them as 'new', 'not found', or
     # 'duplicate'.
     uploaded_pkgs <- reactive({
-      req(uploaded_pkgs00())
+      if (is.null(uploaded_pkgs00()))
+        return(data.frame())
       
       uploaded_packages <- uploaded_pkgs00()
       np <- nrow(uploaded_packages)
