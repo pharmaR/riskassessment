@@ -26,10 +26,10 @@ generate_comm_data <- function(pkg_name){
       # get current release version number and date
       curr_release <- get_latest_pkg_info(pkg_name) %>%
         dplyr::select(`Last modified` = Published, version = Version)
-      
       # Get the packages past versions and dates.
       pkg_url <- url(glue::glue('https://cran.r-project.org/src/contrib/Archive/{pkg_name}'))
       pkg_page <- try(rvest::read_html(pkg_url), silent = TRUE)
+      
       
       # if past releases exist... they usually do!
       if(all(class(pkg_page) != "try-error")){ #exists("pkg_page")
@@ -52,7 +52,7 @@ generate_comm_data <- function(pkg_name){
         dplyr::mutate(date = as.Date(`Last modified`), .keep = 'unused') %>%
         dplyr::mutate(month = lubridate::month(date)) %>%
         dplyr::mutate(year = lubridate::year(date))
-      
+      print(versions_with_dates)
       
       # First release date.
       first_release_date <- versions_with_dates %>%
@@ -75,7 +75,7 @@ generate_comm_data <- function(pkg_name){
         left_join(versions_with_dates, by = c('month', 'year')) %>%
         dplyr::arrange(year, month) %>%
         dplyr::select(-date)
-      
+
     },
     error = function(e) {
       loggit::loggit("ERROR", paste("Error extracting cum metric info of the package:",
