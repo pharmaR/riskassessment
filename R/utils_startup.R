@@ -248,6 +248,44 @@ add_tags <- function(ui, ...) {
   }
 }
 
+#' Add an Authentication Screen
+#' 
+#' Adds an authentication screen via [shinymanager::secure_app()].
+#' 
+#' @param app_ui The [app_ui()] function for the application.
+#' @param app_ver See identical param in [run_app()].
+#' @param login_note See identical param in [run_app()].
+#' 
+#' @importFrom shinymanager secure_app
+#' @importFrom golem get_golem_options
+#' 
+#' @md
+
+add_shinymanager_auth <- function(app_ui, app_ver, login_note) {
+  add_tags(shinymanager::secure_app(app_ui,
+    tags_top = tags$div(
+      tags$head(tags$style(HTML(readLines(system.file("app", "www", "css", "login_screen.css", package = "riskassessment"))))),
+      tags$head(if (!get_golem_config("app_prod") && !is.null(golem::get_golem_options("pre_auth_user"))) {
+        tags$script(HTML(glue::glue("$(document).on('shiny:connected', function () {{
+          Shiny.setInputValue('auth-user_id', '{golem::get_golem_options('login_creds')$user_id}');
+          Shiny.setInputValue('auth-user_pwd', '{golem::get_golem_options('login_creds')$user_pwd}');
+          $('#auth-go_auth').trigger('click');
+        }});")))
+      }),
+      id = "login_screen",
+      tags$h2("Risk Assessment Application", style = "align:center"),
+      tags$h3(glue::glue("**Version {app_ver}**"),
+        style = "align:center; color: darkgray"
+      )
+    ),
+    tags_bottom = tags$div(
+      tags$h6(login_note, style = "color: white")
+    ),
+    enable_admin = TRUE, theme = app_theme()
+  ))
+}
+
+
 #' Application Theme
 #'
 #' @description This sets the Risk Assessment Application theme object using
