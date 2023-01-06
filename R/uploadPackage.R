@@ -14,29 +14,32 @@ uploadPackageUI <- function(id) {
     tags$head(tags$style(".shiny-notification {font-size:30px; color:darkblue; position: fixed; width:415px; height: 150px; top: 75% ;right: 10%;")),
     
     fluidRow(
-      column(
-        width = 4,
-        div(id = "upload-file-grp",
-            fileInput(
-              inputId = NS(id, "uploaded_file"),
-              label = "Choose a CSV file",
-              accept = ".csv",
-              placeholder = "No file selected"
-            )
-        ),
-        actionLink(NS(id, "upload_format"), "View Sample Dataset")
-      ),
+      
       column(
         width = 4,
         div(
           id = "type-package-group",
           style = "display: flex;",
-          selectizeInput(NS(id, "pkg_lst"), "Manual Input", choices = NULL, multiple = TRUE, 
+          selectizeInput(NS(id, "pkg_lst"), "Type Package Name", choices = NULL, multiple = TRUE, 
                          options = list(create = TRUE, showAddOptionOnCreate = FALSE)),
           actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
                        style = 'margin-top: 32px; height: calc(1.5em + 1.5rem + 2px)'),
         ),
-        actionLink(NS(id, "load_cran"), "Load CRAN Package List")
+        uiOutput(NS(id, "load_cran_al"))
+        # actionLink(NS(id, "load_cran"), "Pre-load CRAN Package List")
+      ),
+      column(width = 1),
+      column(
+        width = 4,
+        div(id = "upload-file-grp",
+            fileInput(
+              inputId = NS(id, "uploaded_file"),
+              label = "Or Upload a CSV file",
+              accept = ".csv",
+              placeholder = "No file selected"
+            )
+        ),
+        actionLink(NS(id, "upload_format"), "View Sample Dataset")
       )
     ),
     
@@ -71,17 +74,22 @@ uploadPackageServer <- function(id) {
         upload_pkg
     })
     
+    output$load_cran_al <- renderUI({
+      actionLink(NS(id, "load_cran"), "Pre-load CRAN Package List")
+    })
+    
     cran_pkgs <- reactiveVal()
 
     observeEvent(input$load_cran, {
       cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+      output$load_cran_al <- renderUI(NULL)
     })
     
     observeEvent(cran_pkgs(), {
       req(cran_pkgs())
-      
       updateSelectizeInput(session, "pkg_lst", choices = cran_pkgs(), server = TRUE)
     })
+    
     
     # Start introjs when help button is pressed. Had to do this outside of
     # a module in order to take a reactive data frame of steps
