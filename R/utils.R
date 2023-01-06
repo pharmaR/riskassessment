@@ -21,7 +21,6 @@ showHelperMessage <- function(message = "Please select a package"){
 #' @param pkg_name string name of the package
 #' 
 #' @import dplyr
-#' @importFrom tidyr pivot_wider
 #' @importFrom glue glue 
 #' @importFrom rvest read_html html_node html_table html_text
 #' @importFrom stringr str_remove_all
@@ -50,10 +49,15 @@ get_latest_pkg_info <- function(pkg_name) {
     stringr::str_remove_all(pattern = pattern)
   
   # Get the table displaying version, authors, etc.
-  table_info <- (webpage %>% rvest::html_table())[[1]] %>%
+  table_infx <- (webpage %>% rvest::html_table())[[1]] %>%
     dplyr::mutate(X1 = stringr::str_remove_all(string = X1, pattern = ':')) %>%
-    dplyr::mutate(X2 = stringr::str_remove_all(string = X2, pattern = pattern)) %>%
-    tidyr::pivot_wider(names_from = X1, values_from = X2) %>%
+    dplyr::mutate(X2 = stringr::str_remove_all(string = X2, pattern = pattern)) %>% 
+    dplyr::filter(X1 %in% c("Version", "Maintainer", "Author", "License", "Published"))
+  
+  table_infy <- t(table_infx$X2) %>% dplyr::as_tibble(.name_repair = "minimal")
+  colnames(table_infy) <- t(table_infx$X1) %>% dplyr::as_tibble(.name_repair = "minimal") 
+  
+  table_info <- table_infy %>% 
     dplyr::select(Version, Maintainer, Author, License, Published) %>%
     dplyr::mutate(Title = title, Description = description)
   
