@@ -29,14 +29,12 @@ uploadPackageUI <- function(id) {
       column(
         width = 4,
         div(
-          style = "display: flex;",
-        div(
           id = "type-package-group",
+          style = "display: flex;",
           selectizeInput(NS(id, "pkg_lst"), "Manual Input", choices = NULL, multiple = TRUE, 
-                         options = list(create = TRUE, showAddOptionOnCreate = FALSE))
-          ),
+                         options = list(create = TRUE, showAddOptionOnCreate = FALSE)),
           actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
-                      style = 'margin-top: 32px; height: calc(1.5em + 1.5rem + 2px)'),
+                       style = 'margin-top: 32px; height: calc(1.5em + 1.5rem + 2px)'),
         ),
         actionLink(NS(id, "load_cran"), "Load CRAN Package List")
       )
