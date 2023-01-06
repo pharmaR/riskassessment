@@ -149,12 +149,11 @@ uploadPackageServer <- function(id) {
       uploaded_pkgs00(uploaded_packages)
     })
     
+    uploaded_pkgs <- reactiveVal(data.frame())
     # Save all the uploaded packages, marking them as 'new', 'not found', or
     # 'duplicate'.
-    uploaded_pkgs <- reactive({
-      if (is.null(uploaded_pkgs00()))
-        return(data.frame())
-      
+    observeEvent(uploaded_pkgs00(), {
+
       uploaded_packages <- uploaded_pkgs00()
       np <- nrow(uploaded_packages)
       
@@ -243,7 +242,7 @@ uploadPackageServer <- function(id) {
           
         }) #withProgress
       
-      uploaded_packages
+      uploaded_pkgs(uploaded_packages)
     })
     
     # Download the sample dataset.
