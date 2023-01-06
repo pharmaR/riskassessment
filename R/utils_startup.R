@@ -252,7 +252,7 @@ add_tags <- function(ui, ...) {
 #' 
 #' Adds an authentication screen via [shinymanager::secure_app()].
 #' 
-#' @param app_ui The [app_ui()] function for the application.
+#' @param app_ui The `app_ui` function for the application.
 #' @param app_ver See identical param in [run_app()].
 #' @param login_note See identical param in [run_app()].
 #' 

@@ -7,7 +7,7 @@
 add_shinymanager_auth(app_ui, app_ver, login_note)
 }
 \arguments{
-\item{app_ui}{The \code{\link[=app_ui]{app_ui()}} function for the application.}
+\item{app_ui}{The \code{app_ui} function for the application.}
 
 \item{app_ver}{See identical param in \code{\link[=run_app]{run_app()}}.}
 
