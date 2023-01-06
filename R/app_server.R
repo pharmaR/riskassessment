@@ -18,7 +18,7 @@ app_server <- function(input, output, session) {
   if (isTRUE(getOption("shiny.testmode"))) {
     # mock what is returned by shinymanager::secure_server
     res_auth <- reactiveValues()
-    res_auth[["admin"]] <- TRUE # TODO: this could be configured with an option to allow testing non-admin as well
+    res_auth[["admin"]] <- !isTRUE(golem::get_golem_options('nonadmin'))
     res_auth[["user"]] <- "test_user"
     
   } else {
