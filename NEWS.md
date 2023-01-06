@@ -19,6 +19,7 @@
 * Unit test cases are now available for get_date_span() function (#295).
 * Added unit tests for all functions in utils_get_db except dbSelect (#295)
 * Added unit tests for all functions in utils_insert_db except dbUpdate (#295)
+* Added the option for the user to type in package names to be assessed instead of uploading CSV
 
 # riskassessment 0.0.1
 * Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/risk_assessment/archive/master.zip")` and `shiny::runGitHub('risk_assessment', 'pharmaR')`
