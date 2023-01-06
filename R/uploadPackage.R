@@ -33,6 +33,7 @@ uploadPackageUI <- function(id) {
           selectizeInput(NS(id, "pkg_lst"), "Manual Input", choices = NULL, multiple = TRUE, 
                          options = list(create = TRUE, showAddOptionOnCreate = FALSE))
         ),
+        actionLink(NS(id, "load_cran"), "Load CRAN Package List"),
         actionButton(NS(id, "add_pkgs"), "Add Packages")
       )
     ),
@@ -68,8 +69,10 @@ uploadPackageServer <- function(id) {
         upload_pkg
     })
     
-    cran_pkgs <- reactive({
-      available.packages("https://cran.rstudio.com/src/contrib")[,1]
+    cran_pkgs <- reactiveVal()
+
+    observeEvent(input$load_cran, {
+      cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
     })
     
     observeEvent(cran_pkgs(), {
@@ -143,6 +146,10 @@ uploadPackageServer <- function(id) {
       
       uploaded_packages <- uploaded_pkgs00()
       np <- nrow(uploaded_packages)
+      
+      if (!isTruthy(cran_pkgs())) {
+        cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+      }
       
       # Start progress bar. Need to establish a maximum increment
       # value based on the number of packages, np, and the number of
