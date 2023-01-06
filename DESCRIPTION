@@ -57,8 +57,7 @@ Imports:
     shinyjs,
     shinymanager,
     shinyWidgets,
-    stringr,
-    tidyr
+    stringr
 Suggests: 
     rstudioapi,
     spelling,
