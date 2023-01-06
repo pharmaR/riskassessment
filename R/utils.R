@@ -60,7 +60,7 @@ get_latest_pkg_info <- function(pkg_name) {
   return(table_info)
 }
 
-#' Generate Community Usage Data
+#' generate_comm_data()
 #' 
 #' @description 
 #' Extracts community usage metrics for a given package.
