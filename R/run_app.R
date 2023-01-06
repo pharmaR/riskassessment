@@ -62,16 +62,10 @@ run_app <- function(
     }
   }
   
-  # this skips authentication if the application is running in test mode
-  if (!isTRUE(getOption("shiny.testmode"))) {
-    # if not test mode, append shinymanager login w/ legacy behavior
-    app_ui <- add_shinymanager_auth(app_ui, app_ver, login_note)
-  }
-  
   # Run the app
   with_golem_options(
     app = shinyApp(
-      ui = app_ui,
+      ui = add_shinymanager_auth(app_ui, app_ver, login_note),
       server = app_server,
       onStart = onStart,
       options = options,

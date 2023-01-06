@@ -260,8 +260,8 @@ add_tags <- function(ui, ...) {
 #' @importFrom golem get_golem_options
 #' 
 #' @md
-
 add_shinymanager_auth <- function(app_ui, app_ver, login_note) {
+  if (!isTRUE(getOption("shiny.testmode"))) {
   add_tags(shinymanager::secure_app(app_ui,
     tags_top = tags$div(
       tags$head(tags$style(HTML(readLines(system.file("app", "www", "css", "login_screen.css", package = "riskassessment"))))),
@@ -283,6 +283,9 @@ add_shinymanager_auth <- function(app_ui, app_ver, login_note) {
     ),
     enable_admin = TRUE, theme = app_theme()
   ))
+  } else {
+    app_ui
+  }
 }
 
 
