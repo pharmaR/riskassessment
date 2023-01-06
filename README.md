@@ -54,7 +54,7 @@ Hub: [White Paper](https://www.pharmar.org/white-paper/).
 
 
 We are currently working on improving the app and the documentation. In the meantime, please refer to the documentation
-<a href="https://pharmar.github.io/risk_assessment/Managing_Userids_and_Passwords" target="_blank">here</a>.
+<a href="https://pharmar.github.io/riskassessment/Managing_Userids_and_Passwords" target="_blank">here</a>.
 
 <!---------------------------------------------------------------------------->
 <!---------------------------------------------------------------------------->
