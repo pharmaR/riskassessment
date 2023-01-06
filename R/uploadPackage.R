@@ -55,7 +55,7 @@ uploadPackageUI <- function(id) {
 #' 
 #' @importFrom riskmetric pkg_ref
 #' @importFrom rintrojs introjs
-#' @importFrom utils read.csv
+#' @importFrom utils read.csv available.packages
 #' @importFrom rvest read_html html_nodes html_text
 #' 
 uploadPackageServer <- function(id) {
