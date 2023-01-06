@@ -130,10 +130,11 @@ uploadPackageServer <- function(id) {
       
       np <- length(input$pkg_lst)
       uploaded_packages <-
-        dplyr::tibble(status = rep('', np),
-                      package = input$pkg_lst,
-                      version = rep('0.0.0', np)
-                      )
+        dplyr::tibble(
+          package = input$pkg_lst,
+          version = rep('0.0.0', np),
+          status = rep('', np)
+        )
       
       updateSelectizeInput(session, "pkg_lst", selected = "")
       
@@ -166,23 +167,32 @@ uploadPackageServer <- function(id) {
             user_ver <- uploaded_packages$version[i]
             incProgress(1, detail = glue::glue("{uploaded_packages$package[i]} {user_ver}"))
             
-            # run pkg_ref() to get pkg version and source info
-            ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
+            if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
+              # run pkg_ref() to get pkg version and source info
+              ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
+            } else {
+              ref <- list(name = uploaded_packages$package[i],
+                          source = "name_bad")
+            }
             
-            if (ref$source == "pkg_missing"){
+            if (ref$source %in% c("pkg_missing", "name_bad")) {
               incProgress(1, detail = 'Package {uploaded_packages$package[i]} not found')
               
               # Suggest alternative spellings using utils::adist() function
               v <- utils::adist(uploaded_packages$package[i], cran_pkgs(), ignore.case = FALSE)
               rlang::inform(paste("Package name",uploaded_packages$package[i],"was not found."))
-                            
+              
               suggested_nms <- paste("Suggested package name(s):",paste(head(cran_pkgs()[which(v == min(v))], 10),collapse = ", "))
               rlang::inform(suggested_nms)
-                            
+              
               uploaded_packages$status[i] <- HTML(paste0('<a href="#" title="', suggested_nms, '">not found</a>'))
-
-              loggit::loggit('WARN',
-                             glue::glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
+              
+              if (ref$source == "pkg_missing")
+                loggit::loggit('WARN',
+                               glue::glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
+              else
+                loggit::loggit('WARN',
+                               glue::glue("Riskmetric can't interpret '{ref$name}' as a package reference."))
               
               next
             }
