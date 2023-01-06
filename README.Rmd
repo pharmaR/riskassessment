@@ -21,11 +21,15 @@ knitr::opts_chunk$set(
 
 `riskassessment` is a handy interface that augments the utility of the [`riskmetric`](https://github.com/pharmaR/riskmetric) package within an organizational setting.
 
+<br>
+
 <center>
 <a href="https://rinpharma.shinyapps.io/risk_assessment">
 <img src="man/figures/demo_riskassessment.png" alt="Risk Assessment app" width="25%">
 </a>
 </center>
+
+<br>
 
 <br>
 
@@ -77,7 +81,7 @@ For those who are ready to run/deploy this application in their own environment,
 
 ```{r, eval=FALSE}
 # install.packages("remotes") # if needed
-remotes::install_github("pharmaR/risk_assessment")
+remotes::install_github("pharmaR/riskassessment")
 ```
 
 With a simple `library(riskassessment)` you can access all the exported functions from `riskassessment` that help users reproduce analysis performed in the app. Or, you can create an `app.R` file and launch (or deploy) the application if you include the following line of code:
@@ -104,7 +108,7 @@ For more information on each of these, we highly recommend reading our deploymen
 
 ### User Guides
 
-We are currently working on improving the app and it's documentation. Since they are are currently in-progress, please explore the user guides that have been developed so far, available on the [documentation site](https://pharmar.github.io/risk_assessment/).
+We are currently working on improving the app and it's documentation. Since they are are currently in-progress, please explore the user guides that have been developed so far, available on the [documentation site](https://pharmar.github.io/riskassessment/).
 
 
 ### Contributors/Authors
