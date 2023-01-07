@@ -75,65 +75,100 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div class="section level2">
-<h2 id="risk-assessment-shiny-application">Risk Assessment Shiny Application<a class="anchor" aria-label="anchor" href="#risk-assessment-shiny-application"></a>
-</h2>
+<div class="section level1">
+<div class="page-header"><h1 id="riskassessment-an-extension-of-riskmetric">
+<code>{riskassessment}</code>: an extension of <code>{riskmetric}</code>
+<a class="anchor" aria-label="anchor" href="#riskassessment-an-extension-of-riskmetric"></a>
+</h1></div>
 <!-- badges: start -->
 
-<p>The Risk Assessment App is an interactive web application serving as a front end application for the <a href="https://github.com/pharmaR/riskmetric" class="external-link"><code>riskmetric</code></a> R package. <code>riskmetric</code> is a framework to quantify risk by assessing a number of metrics meant to evaluate development best practices, code documentation, community engagement, and development sustainability. The app and <code>riskmetric</code> aim to provide some context for validation within regulated industries.</p>
-<p>Furthermore, the app extends the functionalities of <code>riskmetric</code> by allowing the reviewer to</p>
+<p><code>riskassessment</code> is a handy interface that augments the utility of the <a href="https://github.com/pharmaR/riskmetric" class="external-link"><code>riskmetric</code></a> package within an organizational setting.</p>
+<p><br></p>
+<center>
+<a href="https://rinpharma.shinyapps.io/risk_assessment" class="external-link"> <img src="reference/figures/demo_riskassessment.png" alt="Risk Assessment app" width="25%"></a>
+</center>
+<p><br></p>
+<p><br></p>
+<p>More over, <code>riskassessment</code> is an R package containing an interactive shiny application. It serves as a front end interface to the <a href="https://github.com/pharmaR/riskmetric" class="external-link"><code>riskmetric</code></a> R package. If you’re unfamiliar, <code>riskmetric</code> is a framework to quantify an R package’s “risk” by assessing a number of meaningful metrics designed to evaluate package development best practices, code documentation, community engagement, and development sustainability. Together, the <code>riskassessment</code> app and the <code>riskmetric</code> package aim to provide some context for validation within regulated industries.</p>
+<p>The app extends the functionality of <code>riskmetric</code> by allowing the reviewer to:</p>
 <ul>
-<li>analyze <code>riskmetric</code> output without the need to code in R,</li>
-<li>comment on the value of individual metrics,</li>
-<li>provide an overall assessment on the package (i.e., low, medium, or high risk) based on the output of the evaluating metrics cohort,</li>
-<li>download a report with the package risk, metrics, and reviewer comments, and</li>
-<li>store assessments on the database for future viewing.</li>
+<li>analyze <code>riskmetric</code> output without the need to write code in R</li>
+<li>contribute personalized comments on the value of individual metrics</li>
+<li>categorize a package with an overall assessment (i.e., low, medium, or high risk) based on subjective opinions or after tabulating user(s) consensus after the evaluating metric output</li>
+<li>download a static reports with the package risk, metrics outputs, and reviewer comments, and more</li>
+<li>store assessments in a database for future viewing and historical backup</li>
+<li>user authentication with with admin roles to manage users and metric weighting</li>
 </ul>
-<p>The app also provides user authentication. There are two roles on the app: regular user and admin. The latter can add/delete users, download an entire copy of the database, and modify the metric weights.</p>
-<p>For further information about the app, please refer to the documentation.</p>
-<!---------------------------------------------------------------------------->
-<!---------------------------------------------------------------------------->
 <div class="section level3">
-<h3 id="our-approach-to-validation">Our Approach to Validation<a class="anchor" aria-label="anchor" href="#our-approach-to-validation"></a>
+<h3 id="echo-ing-riskmetrics-approach-to-validation">Echo-ing <code>{riskmetric}</code>’s Approach to Validation<a class="anchor" aria-label="anchor" href="#echo-ing-riskmetrics-approach-to-validation"></a>
 </h3>
-<p>Validation can serve as an umbrella for various terms, and admittedly, companies will diverge on what is the correct approach to validation. The validation approach we followed during the development of the app is based on the philosophy of the white paper set forth by the R Validation Hub: <a href="https://www.pharmar.org/white-paper/" class="external-link">White Paper</a>.</p>
-<!---------------------------------------------------------------------------->
-<!---------------------------------------------------------------------------->
+<p>Validation can serve as an umbrella for various terms, and admittedly, companies will diverge on what is the correct approach to validation. The validation approach we followed is based on the philosophy of the white paper set forth by the R Validation Hub: <a href="https://www.pharmar.org/white-paper/" class="external-link">White Paper</a>.</p>
 </div>
 <div class="section level3">
-<h3 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
+<h3 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h3>
-<p>We are currently working on improving the app and the documentation. In the meantime, please refer to the documentation <a href="https://pharmar.github.io/riskassessment/Managing_Userids_and_Passwords" target="_blank" class="external-link">here</a>.</p>
-<!---------------------------------------------------------------------------->
-<!---------------------------------------------------------------------------->
+<p>If you are new to using the <code>riskassessment</code> app, welcome! We’d highly encourage you to start exploring the <a href="https://rinpharma.shinyapps.io/risk_assessment" class="external-link"><code>demo verson</code></a> of the app currently deployed on shinyapps.io. There, you’ll find a number of pre-loaded packages just waiting to be assessed. Hands on experience will help you become familiar with the general layout of the app as you poke around and explore.</p>
+<p>With that said, you should immediately recognize that the app requires authentication, since it’s intended use is within an organization. There are two pre-defined roles: ‘nonadmin’ users and ‘admin’ users. The latter can add/delete users, download an entire copy of the database, and modify the metric weights used in calculation of risk scores. Initially, both share the same password: <code>QWERTY1</code>. If you log in with this credential, the app will immediately prompt you to change your password and repeat the tje process with your new credentials.</p>
+<p>If you want a quick tour through the app (or need assistance getting past the authentication wall), you should watch this short walk through on the R Consortium’s website:</p>
+<p><br></p>
+<center>
+<a href="https://www.r-consortium.org/blog/2022/02/03/risk-assessment-shiny-app-update-from-r-validation-hub" class="external-link"> <img src="reference/figures/r_con_update.png" alt="R Validation Hub update" width="75%"></a>
+</center>
+<p><br></p>
+<p>If you desire a more comprehensive overview of <code>riskmetric</code>’s approach to validation in the context of this app, watch our talk at <a href="https://www.youtube.com/watch?v=4uVQXHpNmUQ" class="external-link">Rstudio::Global 2021</a>. But don’t forget to take it for a spin!</p>
+<div class="section level4">
+<h4 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h4>
+<p>For those who are ready to run/deploy this application in their own environment, we’d recommend the below workflow to install the package. Note: the <code>riskassessment</code> package is not on CRAN yet, but you can easily install the latest version from GitHub using:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("remotes") # if needed</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"pharmaR/riskassessment"</span><span class="op">)</span></span></code></pre></div>
+<p>With a simple <code><a href="https://github.com/pharmaR/risk_assessment" class="external-link">library(riskassessment)</a></code> you can access all the exported functions from <code>riskassessment</code> that help users reproduce analysis performed in the app. Or, you can create an <code>app.R</code> file and launch (or deploy) the application if you include the following line of code:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Run the application </span></span>
+<span><span class="fu">riskassessment</span><span class="fu">::</span><span class="fu"><a href="reference/run_app.html">run_app</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level4">
+<h4 id="deployments">Deployments<a class="anchor" aria-label="anchor" href="#deployments"></a>
+</h4>
+<p>As you might expect, certain deployment environments offer persistent storage and others do not. For example, shinyapps.io does not. That means that even our <a href="https://rinpharma.shinyapps.io/risk_assessment" class="external-link">demo app</a> that’s hosted on shinyapps.io contains a a package database that can’t be permanently altered. That’s not advantageous since an organization needs to continually add new packages, publish comments, and make decisions about packages. Thus, we’d recommend exploring these deployment options (which allow persistent storage):</p>
+<ul>
+<li><p>Shiny Server</p></li>
+<li><p>RStudio Connect</p></li>
+<li><p>ShinyProxy</p></li>
+</ul>
+<p>For more information on each of these, we highly recommend reading our deployments article.</p>
+</div>
+</div>
+<div class="section level3">
+<h3 id="user-guides">User Guides<a class="anchor" aria-label="anchor" href="#user-guides"></a>
+</h3>
+<p>We are currently working on improving the app and it’s documentation. Since they are are currently in-progress, please explore the user guides that have been developed so far, available on the <a href="https://pharmar.github.io/riskassessment/" class="external-link">documentation site</a>.</p>
 </div>
 <div class="section level3">
 <h3 id="contributorsauthors">Contributors/Authors<a class="anchor" aria-label="anchor" href="#contributorsauthors"></a>
 </h3>
-<p>We would like to thank all the contributors!</p>
-<p>Specially, we would like to thank the following contributors/authors.</p>
+<p>We would like to thank all the contributors! Specifically, we would like to thank:</p>
 <ul>
 <li><a href="https://www.pharmar.org" class="external-link">R Validation Hub</a></li>
 <li>
-<a href="https://www.marlygotti.com" class="external-link">Marly Gotti</a>, Biogen, <em>Maintainer</em>
-</li>
-<li>
 <a href="https://www.linkedin.com/in/dataaaronclark/" class="external-link">Aaron Clark</a>, Biogen, <em>Maintainer</em>
 </li>
-<li>Robert Krajcik, Cytel, <em>Maintainer</em>
-</li>
+<li>
+<a href="https://www.marlygotti.com" class="external-link">Marly Gotti</a>, Previously Biogen</li>
+<li>Robert Krajcik, Cytel</li>
+<li>Jeff Thompson, Cytel</li>
 <li>Maya Gans, Cytel</li>
 <li>Aravind Reddy Kallem</li>
 <li>Fission Labs India Pvt Ltd</li>
 </ul>
 <p><em>Note:</em> This app was made possible thanks to the <a href="https://www.pharmar.org/about/" class="external-link">R Validation Hub</a>, a collaboration to support the adoption of R within a biopharmaceutical regulatory setting.</p>
-<!---------------------------------------------------------------------------->
-<!---------------------------------------------------------------------------->
 </div>
 <div class="section level3">
 <h3 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
 </h3>
 <p>Please see the <a href="LICENSE.html">License</a> file that lives alongside this repo.</p>
+<p><br></p>
 </div>
 </div>
   </div>
