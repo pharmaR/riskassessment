@@ -20,7 +20,7 @@ uploadPackageUI <- function(id) {
         div(
           id = "type-package-group",
           style = "display: flex;",
-          selectizeInput(NS(id, "pkg_lst"), "Type Package Name", choices = NULL, multiple = TRUE, 
+          selectizeInput(NS(id, "pkg_lst"), "Type Package Name(s)", choices = NULL, multiple = TRUE, 
                          options = list(create = TRUE, showAddOptionOnCreate = FALSE)),
           actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
                        style = 'margin-top: 32px; height: calc(1.5em + 1.5rem + 2px)'),
