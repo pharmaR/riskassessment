@@ -77,7 +77,7 @@ app_ui <- function(request) {
     wellPanel(
       id = "footer",
       "Checkout the app's code!",
-      tags$a(href = "https://github.com/pharmaR/risk_assessment",
+      tags$a(href = "https://github.com/pharmaR/riskassessment",
              icon("github-alt"), target = "_blank")
     )
     

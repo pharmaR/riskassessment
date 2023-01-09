@@ -23,7 +23,7 @@
 * updated `README` to reflect new repo name 'riskassessment' without the '_' to separate the two words.
 
 # riskassessment 0.0.1
-* Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/risk_assessment/archive/master.zip")` and `shiny::runGitHub('risk_assessment', 'pharmaR')`
+* Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/riskassessment/archive/master.zip")` and `shiny::runGitHub('riskassessment', 'pharmaR')`
 
 
 # riskassessment 0.0.0.9000
