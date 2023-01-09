@@ -1,6 +1,6 @@
 Package: riskassessment
 Title: A web app designed to interface with the `riskmetric` package
-Version: 0.0.1.9013
+Version: 0.0.1.9014
 Authors@R: c( 
     person("Aaron", "Clark", role = c("aut", "cre"), email = "aaron.clark@biogen.com"),
     person("Robert", "Krajcik", role = "aut", email = "robert.krajcik@biogen.com"),
@@ -41,14 +41,11 @@ Imports:
     formattable,
     glue,
     golem (>= 0.3.2),
-    keyring,
     loggit,
     lubridate,
-    magrittr,
     pkgload,
     plotly,
     purrr,
-    readr (>= 2.0.1),
     rintrojs,
     riskmetric (>= 0.1.1),
     rlang,
@@ -57,14 +54,10 @@ Imports:
     rvest,
     shiny (>= 1.7.1),
     shinydashboard,
-    shinyhelper,
     shinyjs,
     shinymanager,
     shinyWidgets,
-    stringr,
-    tibble,
-    tidyr,
-    waiter
+    stringr
 Suggests: 
     rstudioapi,
     spelling,

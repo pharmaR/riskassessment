@@ -21,6 +21,7 @@
 * Added unit tests for all functions in utils_insert_db except dbUpdate (#295)
 * Added the option for the user to type in package names to be assessed instead of uploading CSV
 * updated `README` to reflect new repo name 'riskassessment' without the '_' to separate the two words.
+* Reduce number of package dependencies from 33 to 26
 
 # riskassessment 0.0.1
 * Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/riskassessment/archive/master.zip")` and `shiny::runGitHub('riskassessment', 'pharmaR')`

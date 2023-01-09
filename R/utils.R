@@ -21,7 +21,6 @@ showHelperMessage <- function(message = "Please select a package"){
 #' @param pkg_name string name of the package
 #' 
 #' @import dplyr
-#' @importFrom tidyr pivot_wider
 #' @importFrom glue glue 
 #' @importFrom rvest read_html html_node html_table html_text
 #' @importFrom stringr str_remove_all
@@ -50,10 +49,15 @@ get_latest_pkg_info <- function(pkg_name) {
     stringr::str_remove_all(pattern = pattern)
   
   # Get the table displaying version, authors, etc.
-  table_info <- (webpage %>% rvest::html_table())[[1]] %>%
+  table_infx <- (webpage %>% rvest::html_table())[[1]] %>%
     dplyr::mutate(X1 = stringr::str_remove_all(string = X1, pattern = ':')) %>%
-    dplyr::mutate(X2 = stringr::str_remove_all(string = X2, pattern = pattern)) %>%
-    tidyr::pivot_wider(names_from = X1, values_from = X2) %>%
+    dplyr::mutate(X2 = stringr::str_remove_all(string = X2, pattern = pattern)) %>% 
+    dplyr::filter(X1 %in% c("Version", "Maintainer", "Author", "License", "Published"))
+  
+  table_infy <- t(table_infx$X2) %>% dplyr::as_tibble(.name_repair = "minimal")
+  colnames(table_infy) <- t(table_infx$X1) %>% dplyr::as_tibble(.name_repair = "minimal") 
+  
+  table_info <- table_infy %>% 
     dplyr::select(Version, Maintainer, Author, License, Published) %>%
     dplyr::mutate(Title = title, Description = description)
   
@@ -137,7 +141,6 @@ get_date_span <- function(start, end = Sys.Date()) {
 #' @import dplyr
 #' @importFrom lubridate interval make_date year
 #' @importFrom glue glue
-#' @importFrom tibble add_row
 #' 
 build_comm_cards <- function(data){
   
@@ -167,7 +170,7 @@ build_comm_cards <- function(data){
   time_diff_first_rel <- get_date_span(first_version$fake_rel_date)
   
   cards <- cards %>%
-    tibble::add_row(
+    dplyr::add_row(
       name = 'time_since_first_version',
       title = 'First Version Release',
       desc = 'Time passed since first version release',
@@ -193,7 +196,7 @@ build_comm_cards <- function(data){
   time_diff_latest_rel <- get_date_span(last_ver$fake_rel_date)
   
   cards <- cards %>%
-    tibble::add_row(name = 'time_since_latest_version',
+    dplyr::add_row(name = 'time_since_latest_version',
             title = 'Latest Version Release',
             desc = 'Time passed since latest version release',
             value = glue::glue('{time_diff_latest_rel$value} {time_diff_latest_rel$label} Ago'),
@@ -207,7 +210,7 @@ build_comm_cards <- function(data){
     dplyr::distinct(year, month, downloads)
   
   cards <- cards %>%
-    tibble::add_row(name = 'downloads_last_year',
+    dplyr::add_row(name = 'downloads_last_year',
             title = 'Package Downloads',
             desc = 'Number of downloads since last year',
             value = format(sum(downloads_last_year$downloads), big.mark = ","),

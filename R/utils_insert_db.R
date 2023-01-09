@@ -214,13 +214,12 @@ insert_maintenance_metrics_to_db <- function(pkg_name,
 #' @importFrom rvest read_html html_node html_table html_text
 #' @importFrom loggit loggit
 #' @importFrom stringr str_remove_all
-#' @importFrom tidyr tibble
 #' 
 #' @returns nothing
 #' @noRd
 insert_community_metrics_to_db <- function(pkg_name, 
                                            db_name = golem::get_golem_options('assessment_db_name')) {
-  pkgs_cum_metrics <- tidyr::tibble()
+  pkgs_cum_metrics <- dplyr::tibble()
   
   # turn off summarise() .groups message
   options(dplyr.summarise.inform = FALSE)
