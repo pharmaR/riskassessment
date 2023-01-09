@@ -9,9 +9,9 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-`riskassessment` is a handy interface that augments the utility of the
-[`riskmetric`](https://github.com/pharmaR/riskmetric) package within an
-organizational setting.
+`riskassessment` is an R package containing a shiny front-end to augment
+the utility of the [`riskmetric`](https://github.com/pharmaR/riskmetric)
+package within an organizational context.
 
 <br>
 
@@ -25,15 +25,12 @@ organizational setting.
 
 <br>
 
-More over, `riskassessment` is an R package containing an interactive
-shiny application. It serves as a front end interface to the
-[`riskmetric`](https://github.com/pharmaR/riskmetric) R package. If
-you’re unfamiliar, `riskmetric` is a framework to quantify an R
-package’s “risk” by assessing a number of meaningful metrics designed to
-evaluate package development best practices, code documentation,
-community engagement, and development sustainability. Together, the
-`riskassessment` app and the `riskmetric` package aim to provide some
-context for validation within regulated industries.
+`riskmetric` is a framework to quantify an R package’s “risk” by
+assessing a number of meaningful metrics designed to evaluate package
+development best practices, code documentation, community engagement,
+and development sustainability. Together, the `riskassessment` app and
+the `riskmetric` package aim to provide some context for validation
+within regulated industries.
 
 The app extends the functionality of `riskmetric` by allowing the
 reviewer to:
@@ -62,7 +59,7 @@ Paper](https://www.pharmar.org/white-paper/).
 
 If you are new to using the `riskassessment` app, welcome! We’d highly
 encourage you to start exploring the
-[`demo verson`](https://rinpharma.shinyapps.io/risk_assessment) of the
+[`demo version`](https://rinpharma.shinyapps.io/risk_assessment) of the
 app currently deployed on shinyapps.io. There, you’ll find a number of
 pre-loaded packages just waiting to be assessed. Hands on experience
 will help you become familiar with the general layout of the app as you
