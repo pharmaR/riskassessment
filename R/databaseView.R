@@ -1,12 +1,12 @@
 # Global Risk color palettes.
 # run locally and paste hex codes
-# colorspace::darken(viridisLite::turbo(11, begin = 0.4396875, end = .8728125), .25)
-low_risk_color  <- "#26BD05FF"  # 1st
-med_risk_color  <- "#B78B09FF"  # 6th
+# colorspace::darken(viridisLite::turbo(11, begin = 0.4, end = .8725), .25)
+low_risk_color  <- "#06B756FF"  # 1st
+med_risk_color  <- "#B2940AFF"  # 6th
 high_risk_color <- "#9D2710FF"  # 11th
 setColorPalette <- colorRampPalette(
-  c("#26BD05FF","#66BA07FF","#81B50AFF","#97AB0AFF","#AA9C04FF","#B78B09FF",
-    "#BE7804FF","#BD6002FF","#B04D24FF","#A53C23FF","#9D2710FF"))
+  c("#06B756FF","#39BC01FF","#6EB907FF","#88B201FF","#9FA501FF","#B2940AFF",
+    "#BC7F01FF","#BE6700FF","#B35021FF","#A63D24FF","#9D2710FF"))
 
 
 #' UI for 'Database View' module
