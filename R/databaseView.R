@@ -1,12 +1,12 @@
 # Global Risk color palettes.
 # run locally and paste hex codes
-# viridisLite::turbo(11, begin = 0.4396875, end = .8728125)
-low_risk_color  <- "#6DFE62FF"  # 1st
-med_risk_color  <- "#F7C03AFF"  # 6th
-high_risk_color <- "#D33205FF"  # 11th
+# colorspace::darken(viridisLite::turbo(11, begin = 0.4396875, end = .8728125), .25)
+low_risk_color  <- "#26BD05FF"  # 1st
+med_risk_color  <- "#B78B09FF"  # 6th
+high_risk_color <- "#9D2710FF"  # 11th
 setColorPalette <- colorRampPalette(
-  c("#6DFE62FF","#97FE44FF","#B5F836FF","#D1EA34FF","#E8D639FF",
-    "#F7C03AFF","#FEA632FF","#FC8624FF","#F46516FF","#E6480CFF","#D33205FF"))
+  c("#26BD05FF","#66BA07FF","#81B50AFF","#97AB0AFF","#AA9C04FF","#B78B09FF",
+    "#BE7804FF","#BD6002FF","#B04D24FF","#A53C23FF","#9D2710FF"))
 
 
 #' UI for 'Database View' module
@@ -100,7 +100,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
                                 "border-radius" = "4px",
                                 "padding-right" = "4px",
                                 "font-weight" = "bold",
-                                "color" = ifelse(x >= .85, "white", "dimgrey"),
+                                "color" = "white",
                                 "order" = x,
                                 "background-color" = formattable::csscolor(
                                   setColorPalette(100)[round(as.numeric(x)*100)]))),
@@ -110,9 +110,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
                                 "border-radius" = "4px",
                                 "padding-right" = "4px",
                                 "font-weight" = "bold",
-                                "color" = ifelse(x == "High Risk", "white",
-                                                 ifelse(x == "Medium Risk", "dimgrey",
-                                                        ifelse(x == "Low Risk", "dimgrey", "transparent"))),
+                                "color" = "white",
                                 "background-color" = 
                                   ifelse(x == "High Risk", high_risk_color,
                                          ifelse(x == "Medium Risk", med_risk_color,
