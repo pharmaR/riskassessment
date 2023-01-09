@@ -25,8 +25,8 @@ Description: The `riskassessment` application allows users to define a list of R
     authentication wall where roles are assigned to various users and 'final
     decisions' can be made at the package level.
 License: MIT + file LICENSE
-URL: https://github.com/pharmaR/risk_assessment
-BugReports: https://github.com/pharmaR/risk_assessment/issues
+URL: https://github.com/pharmaR/riskassessment
+BugReports: https://github.com/pharmaR/riskassessment/issues
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
