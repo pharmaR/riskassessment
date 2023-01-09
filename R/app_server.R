@@ -5,7 +5,6 @@
 #' 
 #' @importFrom shinyjs show hide delay runjs
 #' @importFrom shinymanager secure_server check_credentials
-#' @importFrom keyring key_get
 #' @importFrom loggit loggit
 #' @noRd
 app_server <- function(input, output, session) {

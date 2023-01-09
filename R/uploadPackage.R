@@ -25,6 +25,18 @@ uploadPackageUI <- function(id) {
             )
         ),
         actionLink(NS(id, "upload_format"), "View Sample Dataset")
+      ),
+      column(
+        width = 4,
+        div(
+          id = "type-package-group",
+          style = "display: flex;",
+          selectizeInput(NS(id, "pkg_lst"), "Manual Input", choices = NULL, multiple = TRUE, 
+                         options = list(create = TRUE, showAddOptionOnCreate = FALSE)),
+          actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
+                       style = 'margin-top: 32px; height: calc(1.5em + 1.5rem + 2px)'),
+        ),
+        actionLink(NS(id, "load_cran"), "Load CRAN Package List")
       )
     ),
     
@@ -43,7 +55,7 @@ uploadPackageUI <- function(id) {
 #' 
 #' @importFrom riskmetric pkg_ref
 #' @importFrom rintrojs introjs
-#' @importFrom readr read_csv
+#' @importFrom utils read.csv available.packages
 #' @importFrom rvest read_html html_nodes html_text
 #' 
 uploadPackageServer <- function(id) {
@@ -57,6 +69,18 @@ uploadPackageServer <- function(id) {
         upload_pkg_complete 
       else 
         upload_pkg
+    })
+    
+    cran_pkgs <- reactiveVal()
+
+    observeEvent(input$load_cran, {
+      cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+    })
+    
+    observeEvent(cran_pkgs(), {
+      req(cran_pkgs())
+      
+      updateSelectizeInput(session, "pkg_lst", choices = cran_pkgs(), server = TRUE)
     })
     
     # Start introjs when help button is pressed. Had to do this outside of
@@ -74,28 +98,21 @@ uploadPackageServer <- function(id) {
       )
     )
     
-    # Save all the uploaded packages, marking them as 'new', 'not found', or
-    # 'duplicate'.
-    uploaded_pkgs <- reactive({
-      
-      # Return an empty data.frame when no file is uploaded.
-      # This is to allow for the database view method to update when a package
-      # is uploaded without failing.
-      if(is.null(input$uploaded_file))
-        return(data.frame())
-      
+    uploaded_pkgs00 <- reactiveVal()
+    
+    observeEvent(input$uploaded_file, {
       req(input$uploaded_file)
       
       if(is.null(input$uploaded_file$datapath))
-        validate('Please upload a nonempty CSV file.')
+        uploaded_pkgs00(validate('Please upload a nonempty CSV file.'))
       
-      uploaded_packages <- readr::read_csv(input$uploaded_file$datapath, show_col_types = FALSE)
+      uploaded_packages <- read.csv(input$uploaded_file$datapath, stringsAsFactors = FALSE)
       np <- nrow(uploaded_packages)
       if(np == 0)
-        validate('Please upload a nonempty CSV file.')
+        uploaded_pkgs00(validate('Please upload a nonempty CSV file.'))
       
       if(!all(colnames(uploaded_packages) == colnames(template)))
-        validate("Please upload a CSV with a valid format.")
+        uploaded_pkgs00(validate("Please upload a CSV with a valid format."))
       
       # Add status column and remove white space around package names.
       uploaded_packages <- uploaded_packages %>%
@@ -105,20 +122,38 @@ uploadPackageServer <- function(id) {
           version = trimws(version)
         )
       
-      # read website to create vector of available packages by name
-      website <- "https://cran.rstudio.com/web/packages/available_packages_by_name.html"
-      con <- url(website, open = "rb")
-      namelst <- rvest::read_html(con)
-      close(con)
+      uploaded_pkgs00(uploaded_packages)
+    })
+    
+    observeEvent(input$add_pkgs, {
+      req(input$pkg_lst)
       
-      pkgnames <- namelst %>% 
-        rvest::html_nodes("a") %>%
-        rvest::html_text() 
+      np <- length(input$pkg_lst)
+      uploaded_packages <-
+        dplyr::tibble(
+          package = input$pkg_lst,
+          version = rep('0.0.0', np),
+          status = rep('', np)
+        )
       
-      # Drop A-Z
-      CRAN_arch <- pkgnames[27:length(pkgnames)]
-      rm(namelst, pkgnames)
-
+      updateSelectizeInput(session, "pkg_lst", selected = "")
+      
+      uploaded_pkgs00(uploaded_packages)
+    })
+    
+    # Save all the uploaded packages, marking them as 'new', 'not found', or
+    # 'duplicate'.
+    uploaded_pkgs <- reactive({
+      if (is.null(uploaded_pkgs00()))
+        return(data.frame())
+      
+      uploaded_packages <- uploaded_pkgs00()
+      np <- nrow(uploaded_packages)
+      
+      if (!isTruthy(cran_pkgs())) {
+        cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+      }
+      
       # Start progress bar. Need to establish a maximum increment
       # value based on the number of packages, np, and the number of
       # incProgress() function calls in the loop, plus one to show
@@ -132,23 +167,32 @@ uploadPackageServer <- function(id) {
             user_ver <- uploaded_packages$version[i]
             incProgress(1, detail = glue::glue("{uploaded_packages$package[i]} {user_ver}"))
             
-            # run pkg_ref() to get pkg version and source info
-            ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
+            if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
+              # run pkg_ref() to get pkg version and source info
+              ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
+            } else {
+              ref <- list(name = uploaded_packages$package[i],
+                          source = "name_bad")
+            }
             
-            if (ref$source == "pkg_missing"){
+            if (ref$source %in% c("pkg_missing", "name_bad")) {
               incProgress(1, detail = 'Package {uploaded_packages$package[i]} not found')
               
               # Suggest alternative spellings using utils::adist() function
-              v <- utils::adist(uploaded_packages$package[i], CRAN_arch, ignore.case = FALSE)
+              v <- utils::adist(uploaded_packages$package[i], cran_pkgs(), ignore.case = FALSE)
               rlang::inform(paste("Package name",uploaded_packages$package[i],"was not found."))
-                            
-              suggested_nms <- paste("Suggested package name(s):",paste(head(CRAN_arch[which(v == min(v))], 10),collapse = ", "))
+              
+              suggested_nms <- paste("Suggested package name(s):",paste(head(cran_pkgs()[which(v == min(v))], 10),collapse = ", "))
               rlang::inform(suggested_nms)
-                            
+              
               uploaded_packages$status[i] <- HTML(paste0('<a href="#" title="', suggested_nms, '">not found</a>'))
-
-              loggit::loggit('WARN',
-                             glue::glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
+              
+              if (ref$source == "pkg_missing")
+                loggit::loggit('WARN',
+                               glue::glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
+              else
+                loggit::loggit('WARN',
+                               glue::glue("Riskmetric can't interpret '{ref$name}' as a package reference."))
               
               next
             }

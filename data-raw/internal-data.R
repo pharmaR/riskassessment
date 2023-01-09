@@ -6,10 +6,10 @@ passphrase <- 'somepassphrase'
 
 
 # Overall descriptive text for community usage. Please edit text file to make changes.
-community_usage_txt <- readr::read_file(file.path("data-raw", "community.txt"))
+community_usage_txt <- readLines(file.path("data-raw", "community.txt"))
 
 # Table of community usage descriptions. Please edit the csv file to make changes.
-community_usage_tbl <- readr::read_csv(file.path("data-raw", "community.csv"))
+community_usage_tbl <- read.csv(file.path("data-raw", "community.csv"), stringsAsFactors = FALSE)
 
 # Overall descriptive text for maintenance metrics.
 maintenance_metrics_text <- shiny::HTML("Best practices in software development and
@@ -23,13 +23,13 @@ A Risk-based Approach for Assessing R package Accuracy within a Validated
 Infrastructure</a>.")
 
 # Table of maintenance metrics descriptions. Please edit the csv file to make changes.
-maintenance_metrics_tbl <- readr::read_csv(file.path("data-raw", "maintenance.csv"))
+maintenance_metrics_tbl <- read.csv(file.path("data-raw", "maintenance.csv"), stringsAsFactors = FALSE)
 
 # Overall descriptive text for testing. Please edit text file to make changes.
-testing_text <- readr::read_file(file.path("data-raw", "testing.txt"))
+testing_text <- readLines(file.path("data-raw", "testing.txt"))
 
 # Table of testing descriptions. Please edit the csv file to make changes.
-testing_tbl <- readr::read_csv(file.path("data-raw", "testing.csv"))
+testing_tbl <- read.csv(file.path("data-raw", "testing.csv"), stringsAsFactors = FALSE)
 
 # Overall risk calculation text.
 riskcalc_text <- shiny::HTML("Per the <b>riskmetric</b> package, there 
@@ -50,7 +50,7 @@ numeric value <b>x</b> standardized weight)")
 
 
 # Upload format template.
-template <- readr::read_csv(file.path('data-raw', 'upload_format.csv'), show_col_types = FALSE)
+template <- read.csv(file.path('data-raw', 'upload_format.csv'),  stringsAsFactors = FALSE)
 
 usethis::use_data(
   # app_version, 
