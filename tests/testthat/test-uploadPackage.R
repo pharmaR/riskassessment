@@ -55,10 +55,11 @@ test_that("Sample upload file can be shown and downloaded", {
   # set up new app driver object
   app <- AppDriver$new(app_dir = test_path("test-apps"))
 
+  # click to show example upload table
   app$click(selector = "#upload_package-upload_format")
   app$wait_for_idle(1500)
 
-  # table shown matches
+  # parse displayed table for comparison
   display_table <- app$get_html(".modal-body table") %>%
     .[[2]] %>%
     rvest::minimal_html() %>%
@@ -66,19 +67,26 @@ test_that("Sample upload file can be shown and downloaded", {
     .[[1]] %>%
     .[, -1]
 
+  # remove the "spec" and "problem" attributes that exist on internal 
+  # represenatation to allow for comparison; these are appended by readr
+  template_tbl <- riskassessment:::template
+  attr(template_tbl, "spec") <- NULL
+  attr(template_tbl, "problems") <- NULL
+  template_tbl <- as.data.frame(template_tbl)
+  
   # confirm match
   expect_identical(
-    display_table,
-    riskassessment:::template
+    as.data.frame(display_table),
+    template_tbl
   )
 
   # download file from application and read
   sample_file <- app$get_download("upload_package-download_sample")
-  dl_data <- readr::read_csv(sample_file)
+  dl_data <- read.csv(sample_file)
 
   # confirm match
   expect_identical(
     dl_data,
-    riskassessment:::template
+    template_tbl
   )
 })
