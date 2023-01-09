@@ -21,12 +21,11 @@ uploadPackageUI <- function(id) {
           id = "type-package-group",
           style = "display: flex;",
           selectizeInput(NS(id, "pkg_lst"), "Type Package Name(s)", choices = NULL, multiple = TRUE, 
-                         options = list(create = TRUE, showAddOptionOnCreate = FALSE)),
+                         options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
+                                        onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_cran"), '", "load", {priority: "event"})}')))),
           actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
                        style = 'margin-top: 32px; height: calc(1.5em + 1.5rem + 2px)'),
-        ),
-        uiOutput(NS(id, "load_cran_al"))
-        # actionLink(NS(id, "load_cran"), "Pre-load CRAN Package List")
+        )
       ),
       column(width = 1),
       column(
@@ -74,16 +73,14 @@ uploadPackageServer <- function(id) {
         upload_pkg
     })
     
-    output$load_cran_al <- renderUI({
-      actionLink(NS(id, "load_cran"), "Pre-load CRAN Package List")
-    })
-    
     cran_pkgs <- reactiveVal()
 
     observeEvent(input$load_cran, {
-      cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
-      output$load_cran_al <- renderUI(NULL)
-    })
+      if (!isTruthy(cran_pkgs())) {
+        cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+      }
+    },
+    once = TRUE)
     
     observeEvent(cran_pkgs(), {
       req(cran_pkgs())
@@ -132,6 +129,8 @@ uploadPackageServer <- function(id) {
       
       uploaded_pkgs00(uploaded_packages)
     })
+    
+    
     
     observeEvent(input$add_pkgs, {
       req(input$pkg_lst)
