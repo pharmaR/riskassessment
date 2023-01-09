@@ -34,7 +34,7 @@ usethis::use_description(check_name = F)
 #   author_first_name = "Marly", # Your First Name
 #   author_last_name = "Gotti", # Your Last Name
 #   author_email = c("marly.cormar@biogen.com"), # Your Email
-#   repo_url = "https://github.com/pharmaR/risk_assessment" # The URL of the GitHub Repo (optional) 
+#   repo_url = "https://github.com/pharmaR/riskassessment" # The URL of the GitHub Repo (optional) 
 # )     
 
 # ## Set {golem} options ---- ran
