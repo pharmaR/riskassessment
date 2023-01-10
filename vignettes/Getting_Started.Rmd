@@ -1,0 +1,99 @@
+---
+title: "Getting Started with riskassessment"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+  html_document:
+    theme: cerulean
+    highlight: pygments
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 3
+---
+
+```{r setup, include=FALSE}
+# Load packages.
+library(fontawesome)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+This guide will help you get started.
+
+We are assuming you are starting with an empty database and and empty credentials file.
+
+## First-time login
+
+After you have instaled the riskmetric package, open it and run:
+  
+riskassessment::run_app()
+
+The initial login page appears with the note on the bottom:
+To login for the first time, use the admin userid ADMIN with password QWERTY1.
+
+<left>
+
+![](images/initial_login.png){width=400px style="margin: 10px 0 10px 0"}
+
+This is a first-time use only.
+
+Once you login, the app will ask you to change your password, and login again.
+
+![](images/change_pwd.png){width=400px style="margin: 10px 0 10px 0"}
+![](images/change_pwd2.png){width=400px style="margin: 10px 0 10px 0"}
+
+## Subsequent login
+
+Now when you use `run_app()`
+the login hint disappears.
+
+![](images/subsequent_login.png){width=400px style="margin: 10px 0 10px 0"}
+
+Or you can use `run_app(pre_auth_user = TRUE)`
+which will skip the login page and take you to the main panel.
+
+Now select the help button in the upper right-hand corner, and let it walk you through the “widgets” defined on the page.  Here are two of the help displays:
+
+![](images/help_display1.png){width=400px style="margin: 10px 0 10px 0"}
+
+![](images/help_display2.png){width=400px style="margin: 10px 0 10px 0"}
+
+
+## Upload a package
+
+The next thing you will need to do is upload some packages to review.
+You can do this either manually or select a .csv file you have created.
+The .csv file requires two columns: “package” and “version.”
+But since the “riskassessment” app always selects the latest version,
+ you can set version to “0.0.0” for all packages.
+Here, we are going to type in “glue” in the “Manual Input” text box  and select the red “next” button
+
+
+![](images/sel_package.png){width=400px style="margin: 10px 0 10px 0"}
+
+Now go to the “package control panel” on the left side and select a package.
+Note that when you do this, the version and STATUS and RISK boxes are populated,
+And the “Select Overall Risk” slider, and the “Submit Decision” and “Submit Overall Comment” buttons become available to you.
+
+![](images/sidebar.png){width=400px style="margin: 10px 0 10px 0"}
+
+## Other main-panel tabs
+
+The “Maintenance Metrics”, “Community Usage Metrics” and “Report Preview” are now available and populated.   Comments can be added at the bottom of the “Maintenance Metrics” panel as well as the “Community Usage Metrics” panel.
+
+The report can be downloaded as either an .html, a .docx, or a .pdf file.
+
+## More tabs
+
+In the upper left, above “R PACKAGE RISK ASSESSMENT APP” are four tabs.
+
+You are currently in the first tab, “Risk Assessment.”
+
+The second tab, “database” shows, for each package loaded, the package name and version, it’s riskassment score, whether a decision has been made, the decision, and last comment provided.  
+A report (in either .html, .docx, or .pdf format) can be downloaded for any selected packages.
+
+![](images/database_view.png){width=400px style="margin: 10px 0 10px 0"}
+
