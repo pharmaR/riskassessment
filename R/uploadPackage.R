@@ -24,7 +24,8 @@ uploadPackageUI <- function(id) {
                          options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
                                         onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_cran"), '", "load", {priority: "event"})}')))),
           actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
-                       style = 'margin-top: 32px; height: calc(1.5em + 1.5rem + 2px)'),
+                       style = 'height: calc(1.5em + 1.5rem + 2px)'),
+          tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "add_pkgs"), '").css("margin-top", $("#', NS(id, "pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
         )
       ),
       column(width = 1),
