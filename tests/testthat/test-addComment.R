@@ -1,86 +1,75 @@
 
-# this is a broad test to confirm comment functionality is working as expected
-# across the applicatio the following modules are in scope for this testing:
-
-# - viewComments[UI/Server]
-# - addComment
-
-
-
-
-test_that("Uploaded packages show up in summary table", {
+test_that("Comments can be added via the addComment module", {
   # delete app DB if exists to ensure clean test
-  db_loc <- test_path("test-apps", "database.sqlite")
-  if (file.exists(db_loc)) {
-    file.remove(db_loc)
+  app_db_loc <- test_path("test-apps", "database.sqlite")
+  if (file.exists(app_db_loc)) {
+    file.remove(app_db_loc)
   }
 
+  # copy in already instantiated database to avoid need to rebuild
+  # this is a database that has been built via inst/testdata/upload_format.csv
+  test_db_loc <- system.file("testdata", "upload_format.database", package = "riskassessment")
+  file.copy(
+    test_db_loc,
+    app_db_loc
+  )
+
+  # confirm no comments exist in the database
+  con <- DBI::dbConnect(RSQLite::SQLite(), app_db_loc)
+  comments <- DBI::dbGetQuery(con, "select * from comments")
+  expect_equal(
+    nrow(comments),
+    0
+  )
+  
   # set up new app driver object
   app <- AppDriver$new(app_dir = test_path("test-apps"))
 
-  # test package data to upload
-  test_csv <- system.file("extdata", "upload_format.csv", package = "riskassessment")
-
-  # upload file to application
-  app$upload_file(
-    `upload_package-uploaded_file` = test_csv
-  )
-
-  # wait for table to be shown
-  app$wait_for_value(
-    output = "upload_package-upload_pkgs_table",
-    ignore = list(NULL),
-    timeout = 30 * 1000 # CI keeps failing here...
-  )
-  app$wait_for_idle(1000)
-
-  
-  # leave a comment on the dplyr package ---------------------------------------
-  
   # select dplyr package
   app$set_inputs(`sidebar-select_pkg` = "dplyr")
 
-  # add a comment for dplyr
-  overall_comment <- "This is an overall comment"
-  
-  app$set_inputs(`sidebar-overall_comment` = overall_comment)
-  app$click("sidebar-submit_overall_comment")
-  app$wait_for_idle(500)
-  
-  # dismiss modal showing comment was added 
-  app$click(selector = ".modal-dialog .btn")
-  app$wait_for_idle(1000)
-  
-  # click on the report preview tab to see the overall comment
-  app$click(selector = '#tabs > li:nth-child(4) > a')
+  # navigate to maintenance metrics tab
+  app$click(selector = "#tabs > li:nth-child(2) > a")
   app$wait_for_idle(500)
 
-  
-    
-  # parse the comment div on the report page
-  comment_well <- app$get_html(selector = "#reportPreview-overall_comments-view_comments > div > div")
-
-  # actual comment shows up after the last <br> tag
-  comment_text <- rev(strsplit(comment_well, split = "<br>")[[1]])[1]
-  comment_text <- gsub("</div>", "", comment_text)
-  
-  expect_identical(
-    comment_text, 
-    overall_comment
+  # confirm no comments are currently shown
+  expect_equal(
+    app$get_text(selector = "#maintenanceMetrics-view_comments-view_comments > div"),
+    "No comments"
   )
-  
-  # leave a comment on the maintenance metrics tab
-  # click on the report preview tab to see the overall comment
-  app$click(selector = '#tabs > li:nth-child(2) > a')
-  app$wait_for_idle(500)
-  
+
+  # enter text in the comment area and submit
   maintenance_comment <- "This is a maintenance comment"
   app$set_inputs(`maintenanceMetrics-add_comment-add_comment` = maintenance_comment)
-  
   app$click("maintenanceMetrics-add_comment-submit_comment")
   app$wait_for_idle(500)
-  
-  
+
+  # parse the comment div on the page
+  added_comments <- app$get_html(selector = "#maintenanceMetrics-view_comments-view_comments > div > div")
+
+  # confirm one comment has been added
+  expect_equal(
+    length(added_comments),
+    1
+  )
+
+  # confirm comment contents match. actual comment shows up after the last <br> tag
+  comment_text <- rev(strsplit(added_comments, split = "<br>")[[1]])[1]
+  comment_text <- gsub("</div>", "", comment_text)
+  expect_equal(
+    comment_text,
+    maintenance_comment
+  )
+
+  # confirm comment is in database and has correct metadata
+  con <- DBI::dbConnect(RSQLite::SQLite(), app_db_loc)
+  comments <- DBI::dbGetQuery(con, "select * from comments")
+  expect_equal(
+    nrow(comments),
+    1
+  )
+  expect_equal(
+    comments$comment,
+    maintenance_comment
+  )
 })
-
-
