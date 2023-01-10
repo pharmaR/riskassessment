@@ -21,7 +21,7 @@
 * Unit test cases are now available for get_date_span() function (#295).
 * Added unit tests for all functions in utils_get_db except dbSelect (#295)
 * Added unit tests for all functions in utils_insert_db except dbUpdate (#295)
-* Added the option for the user to type in package names to be assessed instead of uploading CSV
+* Allowed users to type in package names to be assessed instead of uploading CSV
 * updated `README` to reflect new repo name 'riskassessment' without the '_' to separate the two words.
 * Reduce number of package dependencies from 33 to 26
 

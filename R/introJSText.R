@@ -26,12 +26,12 @@ sidebar_steps <-
 
 # upload package tab.
 upload_pkg <- data.frame(
-  element = c("#upload_package-introJS-help", "#upload-file-grp", "#upload_package-upload_format", "#type-package-group"),
+  element = c("#upload_package-introJS-help", "#type-package-group", "#upload-file-grp", "#upload_package-upload_format"),
   intro = c(
     "Click here anytime you need help.",
-    "Upload a CSV file with the package(s) you would like to assess.",
-    "You can use this sample dataset to explore the app.",
-    "Alternatively, you can manually type in the name of the package(s) you would like to assess."
+    "Type in the name of the package(s) you would like to assess.",
+    "Or you can Upload a CSV file with the package(s) if you have a lot.",
+    "Follow format of this sample data when creating your csv. Or you can even download it to use as a template."
   ),
   position = c("right", rep("top", 3))
 )
