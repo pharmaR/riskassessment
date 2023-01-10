@@ -62,7 +62,6 @@ test_that("Comments can be added via the addComment module", {
   )
 
   # confirm comment is in database and has correct metadata
-  con <- DBI::dbConnect(RSQLite::SQLite(), app_db_loc)
   comments <- DBI::dbGetQuery(con, "select * from comments")
   expect_equal(
     nrow(comments),
