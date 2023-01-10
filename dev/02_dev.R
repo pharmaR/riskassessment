@@ -182,8 +182,8 @@ usethis::use_data_raw( name = "adsl", open = FALSE ) # not run.
 usethis::use_test( "app" )
 
 # Documentation
-## Vignette ---- notrun
-usethis::use_vignette("riskmetric")
+## Vignettes 
+usethis::use_vignette("getting_started")
 
 
 # Before submitting a PR, run this code & update NEWS.md
