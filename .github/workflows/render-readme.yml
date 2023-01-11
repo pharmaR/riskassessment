@@ -34,5 +34,7 @@ jobs:
           Rscript -e ' rmarkdown::render("README.Rmd", output_format = "md_document")'
           git config --local user.name "$GITHUB_ACTOR"
           git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          git commit README.md man/figures/README-* -m 'Re-build Rmarkdown files' || echo "No changes to commit"
+          git add README.md
+          git add man/figures/README-*
+          git commit -m 'Re-build Rmarkdown files' || echo "No changes to commit"
           git push origin || echo "No changes to commit"
