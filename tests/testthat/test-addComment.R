@@ -84,7 +84,7 @@ test_that("Comments can be added via the addComment module", {
     split = ","
   )[[1]][1]
   expect_equal(
-    user_name,
+    user_role,
     "admin"
   )
   
