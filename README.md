@@ -1,4 +1,3 @@
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # `{riskassessment}`: an extension of `{riskmetric}`
@@ -7,6 +6,8 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![Coverage
+status](https://codecov.io/gh/pharmaR/riskassessment/branch/master/graph/badge.svg)](https://codecov.io/github/pharmaR/riskassessment?branch=master)
 <!-- badges: end -->
 
 `riskassessment` is an R package containing a shiny front-end to augment
@@ -35,17 +36,17 @@ within regulated industries.
 The app extends the functionality of `riskmetric` by allowing the
 reviewer to:
 
-- analyze `riskmetric` output without the need to write code in R
-- contribute personalized comments on the value of individual metrics
-- categorize a package with an overall assessment (i.e., low, medium, or
-  high risk) based on subjective opinions or after tabulating user(s)
-  consensus after the evaluating metric output
-- download a static reports with the package risk, metrics outputs, and
-  reviewer comments, and more
-- store assessments in a database for future viewing and historical
-  backup
-- user authentication with with admin roles to manage users and metric
-  weighting
+-   analyze `riskmetric` output without the need to write code in R
+-   contribute personalized comments on the value of individual metrics
+-   categorize a package with an overall assessment (i.e., low, medium,
+    or high risk) based on subjective opinions or after tabulating
+    user(s) consensus after the evaluating metric output
+-   download a static reports with the package risk, metrics outputs,
+    and reviewer comments, and more
+-   store assessments in a database for future viewing and historical
+    backup
+-   user authentication with with admin roles to manage users and metric
+    weighting
 
 ### Echo-ing `{riskmetric}`’s Approach to Validation
 
@@ -100,20 +101,16 @@ environment, we’d recommend the below workflow to install the package.
 Note: the `riskassessment` package is not on CRAN yet, but you can
 easily install the latest version from GitHub using:
 
-``` r
-# install.packages("remotes") # if needed
-remotes::install_github("pharmaR/riskassessment")
-```
+    # install.packages("remotes") # if needed
+    remotes::install_github("pharmaR/riskassessment")
 
 With a simple `library(riskassessment)` you can access all the exported
 functions from `riskassessment` that help users reproduce analysis
 performed in the app. Or, you can create an `app.R` file and launch (or
 deploy) the application if you include the following line of code:
 
-``` r
-# Run the application 
-riskassessment::run_app()
-```
+    # Run the application 
+    riskassessment::run_app()
 
 #### Deployments
 
@@ -127,11 +124,11 @@ continually add new packages, publish comments, and make decisions about
 packages. Thus, we’d recommend exploring these deployment options (which
 allow persistent storage):
 
-- Shiny Server
+-   Shiny Server
 
-- RStudio Connect
+-   RStudio Connect
 
-- ShinyProxy
+-   ShinyProxy
 
 For more information on each of these, we highly recommend reading our
 deployments article.
@@ -148,14 +145,14 @@ site](https://pharmar.github.io/riskassessment/).
 We would like to thank all the contributors! Specifically, we would like
 to thank:
 
-- [R Validation Hub](https://www.pharmar.org)
-- [Aaron Clark](https://www.linkedin.com/in/dataaaronclark/), Biogen,
-  *Maintainer*
-- [Marly Gotti](https://www.marlygotti.com), Previously Biogen
-- Robert Krajcik, Cytel
-- Maya Gans, Cytel
-- Aravind Reddy Kallem
-- Fission Labs India Pvt Ltd
+-   [R Validation Hub](https://www.pharmar.org)
+-   [Aaron Clark](https://www.linkedin.com/in/dataaaronclark/), Biogen,
+    *Maintainer*
+-   [Marly Gotti](https://www.marlygotti.com), Previously Biogen
+-   Robert Krajcik, Cytel
+-   Maya Gans, Cytel
+-   Aravind Reddy Kallem
+-   Fission Labs India Pvt Ltd
 
 *Note:* This app was made possible thanks to the [R Validation
 Hub](https://www.pharmar.org/about/), a collaboration to support the
