@@ -29,7 +29,7 @@ test_that("Comments can be added via the addComment module", {
   app$set_inputs(`sidebar-select_pkg` = "dplyr")
 
   # navigate to maintenance metrics tab
-  app$click(selector = "#tabs > li:nth-child(2) > a")
+  app$set_inputs(tabs = "Maintenance Metrics")
   app$wait_for_idle(500)
 
   # confirm no comments are currently shown
