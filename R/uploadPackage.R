@@ -14,29 +14,32 @@ uploadPackageUI <- function(id) {
     tags$head(tags$style(".shiny-notification {font-size:30px; color:darkblue; position: fixed; width:415px; height: 150px; top: 75% ;right: 10%;")),
     
     fluidRow(
-      column(
-        width = 4,
-        div(id = "upload-file-grp",
-            fileInput(
-              inputId = NS(id, "uploaded_file"),
-              label = "Choose a CSV file",
-              accept = ".csv",
-              placeholder = "No file selected"
-            )
-        ),
-        actionLink(NS(id, "upload_format"), "View Sample Dataset")
-      ),
+      
       column(
         width = 4,
         div(
           id = "type-package-group",
           style = "display: flex;",
-          selectizeInput(NS(id, "pkg_lst"), "Manual Input", choices = NULL, multiple = TRUE, 
-                         options = list(create = TRUE, showAddOptionOnCreate = FALSE)),
+          selectizeInput(NS(id, "pkg_lst"), "Type Package Name(s)", choices = NULL, multiple = TRUE, 
+                         options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
+                                        onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_cran"), '", "load", {priority: "event"})}')))),
           actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
-                       style = 'margin-top: 32px; height: calc(1.5em + 1.5rem + 2px)'),
+                       style = 'height: calc(1.5em + 1.5rem + 2px)'),
+          tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "add_pkgs"), '").css("margin-top", $("#', NS(id, "pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
+        )
+      ),
+      column(width = 1),
+      column(
+        width = 4,
+        div(id = "upload-file-grp",
+            fileInput(
+              inputId = NS(id, "uploaded_file"),
+              label = "Or Upload a CSV file",
+              accept = ".csv",
+              placeholder = "No file selected"
+            )
         ),
-        actionLink(NS(id, "load_cran"), "Load CRAN Package List")
+        actionLink(NS(id, "upload_format"), "View Sample Dataset")
       )
     ),
     
@@ -74,14 +77,17 @@ uploadPackageServer <- function(id) {
     cran_pkgs <- reactiveVal()
 
     observeEvent(input$load_cran, {
-      cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
-    })
+      if (!isTruthy(cran_pkgs())) {
+        cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+      }
+    },
+    once = TRUE)
     
     observeEvent(cran_pkgs(), {
       req(cran_pkgs())
-      
       updateSelectizeInput(session, "pkg_lst", choices = cran_pkgs(), server = TRUE)
     })
+    
     
     # Start introjs when help button is pressed. Had to do this outside of
     # a module in order to take a reactive data frame of steps
@@ -125,6 +131,8 @@ uploadPackageServer <- function(id) {
       uploaded_pkgs00(uploaded_packages)
     })
     
+    
+    
     observeEvent(input$add_pkgs, {
       req(input$pkg_lst)
       
@@ -141,12 +149,11 @@ uploadPackageServer <- function(id) {
       uploaded_pkgs00(uploaded_packages)
     })
     
+    uploaded_pkgs <- reactiveVal(data.frame())
     # Save all the uploaded packages, marking them as 'new', 'not found', or
     # 'duplicate'.
-    uploaded_pkgs <- reactive({
-      if (is.null(uploaded_pkgs00()))
-        return(data.frame())
-      
+    observeEvent(uploaded_pkgs00(), {
+
       uploaded_packages <- uploaded_pkgs00()
       np <- nrow(uploaded_packages)
       
@@ -235,7 +242,7 @@ uploadPackageServer <- function(id) {
           
         }) #withProgress
       
-      uploaded_packages
+      uploaded_pkgs(uploaded_packages)
     })
     
     # Download the sample dataset.
