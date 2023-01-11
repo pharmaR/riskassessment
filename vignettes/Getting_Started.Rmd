@@ -1,6 +1,5 @@
 ---
 title: "Getting Started with riskassessment"
-date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
     theme: cerulean
@@ -21,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-This guide will help you get started.
+This guide will help you get started using the riskmetric package.
 
 We are assuming you are starting with an empty database and and empty credentials file.
 
@@ -38,87 +37,111 @@ Note to login for the first time, use the admin userid ADMIN with password QWERT
 
 ![](images/initial_login.png){width=624px height=424px style="margin: 10px 0 10px 0"}
 
-**This is a first-time use only.**
-
-Once you login, the app will ask you to change your password, then ask you to login again.</br>
-So change your password and click on "update new password" and then click "login"
+Once you login for the first time, you will be asked to change your password.</br>
+Supply a new password and click on "update new password."
 <left>
 
 ![](images/change_pwd.png){width=624px height=424px style="margin: 10px 0 10px 0"}
 </br>
+Now click on "login" to re-login.</br>
+
 ![](images/change_pwd2.png){width=624px height=424px style="margin: 10px 0 10px 0"}
+
 
 ## Subsequent logins
 
-Now when you use `run_app()`
-the login note disappears.
+Now the login note disappears when you use `run_app()`
 
 ![](images/subsequent_login.png){width=624px height=424px style="margin: 10px 0 10px 0"}
 
 Or you can use `run_app(pre_auth_user = TRUE)`
 which will skip the login page and take you to the main panel.
 
-Now select the help button in the upper right-hand corner, and let it walk you through the “widgets” defined on the page.  
+## Select Help Button
 
-![](images/click_help.png){width=630px height=250px style="margin: 10px 0 10px 0"}
+At this point, you should see the Main Panel ("R PACKAGE RISK ASSESSMENT APP")
+With four tabs below it.  You should be on the "Upload Package" tab.
+
+Select the help button in the upper right-hand corner, and let it walk you through the “widgets” defined on the main panel and sidebar panel.  
+
+![](images/click_help.png){width=1265px height=506px style="margin: 10px 0 10px 0"}
 
 
 ## Upload a package
 
-The next thing you will need to do is upload some packages to review.
+Now let's upload some packages to review.
 
-You can do this either manually or select a .csv file you have created.
-The .csv file requires two columns: “package” and “version.”
+This can be done either manually or by selecting a .csv file you have created.
+The .csv file requires two columns: “package” and “version.”</br>
 But since the “riskassessment” app always selects the latest version,
 you can set version to “0.0.0” for all of your packages.
 
-Here, we are going to type in “glue” in the “Manual Input” text box  and select the red “next” button
+Here is a simple example of the .csv file:
+</br>`package,version`</br>`stringr,0.0.0`</br>`tidyr,0.0.0`
+
+Here, we are going to type in “glue” in the “Manual Input” text box  and select the red “>” button
 
 
 ![](images/sel_package.png){width=882px height=414px style="margin: 10px 0 10px 0"}
-You will see a progress display like this one:
+A progress modal like this one will appear:
 
 ![](images/progress_modal.png){width=382px height=157px style="margin: 10px 0 10px 0"}
 
 
-And then it will show you a “Summary of Uploaded Packages”
+Then a “Summary of Uploaded Packages” will display.  This will list the total packages, the number of new packages, the number of undiscovered (probably misspelled) packages, and the number of duplicate packages for the packages just uploaded.
 
-![](images/uploaded_pkgs.png){width=624px height=124px style="margin: 10px 0 10px 0"}
+![](images/uploaded_pkgs.png){width=1248px height=248px style="margin: 10px 0 10px 0"}
 
 ## Sidebar 
 
-Now go to the “package control panel” on the left side and select a package.
-Note that when you do this, the version and STATUS and RISK boxes are populated,
-And the “Select Overall Risk” slider, and the “Submit Decision” and “Submit Overall Comment” buttons become available to you.
+Now go to the “PACKAGE CONTROL PANEL” on the left and select a package.</br>
+Note that when you do this, the VERSION and STATUS and RISK boxes are populated,
+And the SELECT OVERALL RISK slider, and the SUBMIT DECISION and SUBMIT OVERALL COMMENT 
+buttons become available to you.
 
 ![](images/sidebar.png){width=624px Height=729px style="margin: 10px 0 10px 0"}
 
-## Other main-panel tabs
+## Main Panel Tabs
 
-The “Maintenance Metrics”, “Community Usage Metrics” and “Report Preview” are now available and populated.   Comments can be added at the bottom of the “Maintenance Metrics” panel as well as the “Community Usage Metrics” panel.
+The “Maintenance Metrics”, “Community Usage Metrics” and “Report Preview” tabs are now available and populated.  
 
-Here is a look at the Maintenance Metrics for the "glue" package:
+Here is a look at the Maintenance Metrics output for the "glue" package:
 
 ![](images/maint_metric1.png){width=600px style="margin: 10px 0 10px 0"}
 ![](images/maint_metric2.png){width=600px style="margin: 10px 0 10px 0"}
-The report can be downloaded as either an .html, a .docx, or a .pdf file.
+</br>Note that you can add or replace comments to the Maintenance Metrics for this package.
+
+Here is a look at the Community Usage Metrics for the "glue" package:
 
 ![](images/community_usage1.png){width=600px style="margin: 10px 0 10px 0"}
 ![](images/community_usage2.png){width=600px style="margin: 10px 0 10px 0"}
-## More tabs
+</br>Again, you can add or replace comments to the Community Usage metrics for this package.
+
+Here is the first part of the Report Preview for the "glue" package:
+
+</br>The report can be downloaded as either an .html, a .docx, or a .pdf file.
+
+![](images/report_preview.png){width=624x height=393px style="margin: 10px 0 10px 0"}
+
+## Side Panel Tabs
 
 In the upper left, above “R PACKAGE RISK ASSESSMENT APP” are four tabs.
+![](images/top_left_tabs.png){width=730px height=53px style="margin: 10px 0 10px 0"}
 
 You are currently in the first tab, “Risk Assessment.”
 
 The second tab, “database” shows, for each package loaded, the package name and version, it’s riskassment score, whether a decision has been made, the decision, and last comment provided.  
 A report (in either .html, .docx, or .pdf format) can be downloaded for any selected packages.
 
-![](images/database_view.png){width=800px style="margin: 10px 0 10px 0"}
+![](images/database_view.png){width=1376px height=427px style="margin: 10px 0 10px 0"}
 
-The third tab, “assessment criteria”, provides a detailed description of the assessment criteria used for Risk Calculation, Maintenance Metrics, Community Usage Metrics, and Testing metrics (not currently used).
+The third tab, “assessment criteria”, provides a detailed description of the assessment criteria used for Risk Calculation, Maintenance Metrics, Community Usage Metrics, and Testing metrics (not currently used).  The "Risk Calculation" tab is shown below.  Select this tab to for more information.</br>
 
-Select the tab to for more information.
-The fourth tab, “administrative tools”, allows administrators to add or delete users as well as change passwords for themselves or other users.  Details will be provided in the “administrative tools” vignette.
+![](images/assessment_criteria.png){width=1272px height=644px style="margin: 10px 0 10px 0"}
 
+The fourth tab, “administrative tools”, allows administrators to add or delete users as well as change passwords for themselves or other users.  Details will be provided in an “administrative tools” vignette.
+
+## Where to go from here?
+
+Check out some of the riskassessment presentations in [www.pharmar.org](https://www.pharmar.org/present/)
 
