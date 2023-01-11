@@ -24,6 +24,7 @@
 * Allowed users to type in package names to be assessed instead of uploading CSV
 * updated `README` to reflect new repo name 'riskassessment' without the '_' to separate the two words.
 * Reduce number of package dependencies from 33 to 26
+* Changed risk-based color gradient to use colorblind-friendly color palette (#324).
 * Add a "getting started with riskassessment" vignette
 
 # riskassessment 0.0.1
