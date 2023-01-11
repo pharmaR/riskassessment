@@ -37,6 +37,14 @@ test_that("Comments can be added via the addComment module", {
     app$get_text(selector = "#maintenanceMetrics-view_comments-view_comments > div"),
     "No comments"
   )
+  
+  # click submit with empty comment box does not add a comment
+  app$click("maintenanceMetrics-add_comment-submit_comment")
+  app$wait_for_idle(500)
+  expect_equal(
+    app$get_text(selector = "#maintenanceMetrics-view_comments-view_comments > div"),
+    "No comments"
+  )
 
   # enter text in the comment area and submit
   maintenance_comment <- "This is a maintenance comment"
