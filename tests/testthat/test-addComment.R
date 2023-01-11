@@ -71,4 +71,8 @@ test_that("Comments can be added via the addComment module", {
     comments$comment,
     maintenance_comment
   )
+  
+  # close connection
+  DBI::dbDisconnect(con)
+  
 })
