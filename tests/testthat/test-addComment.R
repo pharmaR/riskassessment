@@ -69,6 +69,25 @@ test_that("Comments can be added via the addComment module", {
     maintenance_comment
   )
 
+  # confirm user name and user role are set appropriately
+  user_name <- strsplit(
+    strsplit(added_comments, split = "user: ")[[1]][[2]],
+    split = ","
+  )[[1]][1]
+  expect_equal(
+    user_name,
+    "test_user"
+  )
+
+  user_role <- strsplit(
+    strsplit(added_comments, split = "role: ")[[1]][[2]],
+    split = ","
+  )[[1]][1]
+  expect_equal(
+    user_name,
+    "admin"
+  )
+  
   # confirm comment is in database and has correct metadata
   comments <- DBI::dbGetQuery(con, "select * from comments")
   expect_equal(
