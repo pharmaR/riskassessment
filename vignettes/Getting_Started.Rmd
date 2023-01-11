@@ -1,19 +1,16 @@
 ---
 title: "Getting Started with riskassessment"
-output:
-  html_document:
-    theme: cerulean
-    highlight: pygments
+output: 
+  rmarkdown::html_vignette:
     toc: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: false
-    toc_depth: 3
+vignette: >
+  %\VignetteIndexEntry{Getting_Started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
+
 ```{r setup, include=FALSE}
-# Load packages.
-library(fontawesome)
 
 knitr::opts_chunk$set(echo = TRUE)
 ```
