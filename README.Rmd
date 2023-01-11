@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
   [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+  [![Coverage status](https://codecov.io/gh/pharmaR/riskassessment/branch/master/graph/badge.svg)](https://codecov.io/github/pharmaR/riskassessment?branch=master)
   <!-- badges: end -->
 
 `riskassessment` is an R package containing a shiny front-end to augment the utility of the [`riskmetric`](https://github.com/pharmaR/riskmetric) package within an organizational context.
