@@ -94,3 +94,15 @@ test_that("Download button is disabled if no packages selected.", {
   app$wait_for_idle()
   expect_equal(app$get_js("$('#databaseView-download_reports').attr('disabled')"), "disabled")
 })
+
+test_that("Download file works as expected.", {
+  app$run_js("Shiny.setInputValue('databaseView-packages_table_rows_selected', 1)")
+  app$wait_for_idle()
+  report <- app$get_download("databaseView-download_reports")
+  expect_equal(tools::file_ext(report), "html")
+  
+  app$run_js("Shiny.setInputValue('databaseView-packages_table_rows_selected', [1,2])")
+  app$wait_for_idle()
+  report <- app$get_download("databaseView-download_reports")
+  expect_equal(tools::file_ext(report), "zip")
+})
