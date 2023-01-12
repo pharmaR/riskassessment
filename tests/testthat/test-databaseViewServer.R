@@ -50,9 +50,11 @@ test_that("Reactivity of database view table", {
   
   test_that("`table_data` updates in response to `uploaded_pkgs`", {
     app$run_js("Shiny.setInputValue('upload_package-load_cran', 'load')")
+    app$wait_for_idle()
     app$set_inputs(`upload_package-pkg_lst` = "tidyr")
     app$click("upload_package-add_pkgs", wait_ = FALSE)
-    app$wait_for_value(export = "databaseView-table_data", ignore = tbl_actual)
+    app$wait_for_value(export = "databaseView-table_data", 
+                       ignore = tbl_actual, timeout = 30 * 1000 )
     
     tbl_expect <- structure(list(name = c("tidyr", "dplyr"), 
                                  was_decision_made = c(FALSE, TRUE), 
