@@ -87,6 +87,12 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
         dplyr::select(name, version, score, was_decision_made, decision, last_comment)
     })
     
+    exportTestValues(
+      table_data = {
+        table_data()
+      }
+    )
+    
     # Create table for the db dashboard.
     output$packages_table <- DT::renderDataTable({
       
