@@ -199,24 +199,24 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
               }
               
               Report <- file.path(my_tempdir, "reportHtml.Rmd")
-              file.copy(file.path('inst/app/www', 'reportHtml.Rmd'), Report, overwrite = TRUE)
+              file.copy(system.file("app", "www", "reportHtml.Rmd", package = "riskassessment"), Report, overwrite = TRUE)
             } 
             else if (input$report_formats == "docx") { 
               Report <- file.path(my_tempdir, "reportDocx.Rmd")
               if (!dir.exists(file.path(my_tempdir, "images")))
                 dir.create(file.path(my_tempdir, "images"))
-              file.copy(file.path('inst/app/www', 'ReportDocx.Rmd'),
+              file.copy(system.file("app", "www", 'ReportDocx.Rmd', package = "riskassessment"),
                         Report,
                         overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'read_html.lua'),
+              file.copy(system.file("app", "www", 'read_html.lua', package = "riskassessment"),
                         file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'user-tie.png'),
+              file.copy(system.file("app", "www", 'images', 'user-tie.png', package = "riskassessment"),
                         file.path(my_tempdir, "images", "user-tie.png"),
                         overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'user-shield.png'),
+              file.copy(system.file("app", "www", 'images', 'user-shield.png', package = "riskassessment"),
                         file.path(my_tempdir, "images", "user-shield.png"),
                         overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'calendar-alt.png'),
+              file.copy(system.file("app", "www", 'images', 'calendar-alt.png', package = "riskassessment"),
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
             } 
@@ -224,18 +224,18 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
               Report <- file.path(my_tempdir, "reportPdf.Rmd")
               if (!dir.exists(file.path(my_tempdir, "images")))
                 dir.create(file.path(my_tempdir, "images"))
-              file.copy(file.path('inst/app/www', 'ReportPdf.Rmd'),
+              file.copy(system.file("app", "www", 'ReportPdf.Rmd', package = "riskassessment"),
                         Report,
                         overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'read_html.lua'),
+              file.copy(system.file("app", "www", 'read_html.lua', package = "riskassessment"),
                         file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'user-tie.png'),
+              file.copy(system.file("app", "www", 'images', 'user-tie.png', package = "riskassessment"),
                         file.path(my_tempdir, "images", "user-tie.png"),
                         overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'user-shield.png'),
+              file.copy(system.file("app", "www", 'images', 'user-shield.png', package = "riskassessment"),
                         file.path(my_tempdir, "images", "user-shield.png"),
                         overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'calendar-alt.png'),
+              file.copy(system.file("app", "www", 'images', 'calendar-alt.png', package = "riskassessment"),
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
             }
