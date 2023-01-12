@@ -77,7 +77,7 @@ app_ui <- function(request) {
     wellPanel(
       id = "footer",
       "Checkout the app's code!",
-      tags$a(href = "https://github.com/pharmaR/risk_assessment",
+      tags$a(href = "https://github.com/pharmaR/riskassessment",
              icon("github-alt"), target = "_blank")
     )
     
@@ -99,7 +99,6 @@ app_ui <- function(request) {
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
 #' @importFrom rintrojs introjsUI
 #' @importFrom shinyjs useShinyjs
-#' @importFrom waiter use_waitress
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
 #' @noRd
 golem_add_external_resources <- function() {
@@ -117,6 +116,5 @@ golem_add_external_resources <- function() {
     # Add here other external resources
     rintrojs::introjsUI(),
     shinyjs::useShinyjs(),
-    waiter::use_waitress(),
   )
 }

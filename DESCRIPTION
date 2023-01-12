@@ -1,6 +1,10 @@
 Package: riskassessment
 Title: A web app designed to interface with the `riskmetric` package
+<<<<<<< HEAD
 Version: 0.0.1.9013
+=======
+Version: 0.0.1.9018
+>>>>>>> 037c35fb6d1149575b865b9faf89b306732fc655
 Authors@R: c( 
     person("Aaron", "Clark", role = c("aut", "cre"), email = "aaron.clark@biogen.com"),
     person("Robert", "Krajcik", role = "aut", email = "robert.krajcik@biogen.com"),
@@ -12,7 +16,8 @@ Authors@R: c(
 	  person(family = "PSI special interest group Application and Implementation of Methodologies in Statistics", role = c("cph", "fnd")),
     person(family = "R Validation Hub", role = c("cph", "fnd")),
     person("Munshi Imran", "Hossain", role = "ctb"),
-    person("Lars", "Andersen", role = "ctb")
+    person("Lars", "Andersen", role = "ctb", email = "lars.andersen@boehringer-ingelheim.com"),
+    person("Andrew", "Borgman", role = "ctb", email = "andrew.borgman@biogen.com")
   )
 Description: The `riskassessment` application allows users to define a list of R
     packages to assess against metrics engineered by the `riskmetric` package.
@@ -26,12 +31,12 @@ Description: The `riskassessment` application allows users to define a list of R
     authentication wall where roles are assigned to various users and 'final
     decisions' can be made at the package level.
 License: MIT + file LICENSE
-URL: https://github.com/pharmaR/risk_assessment
-BugReports: https://github.com/pharmaR/risk_assessment/issues
+URL: https://github.com/pharmaR/riskassessment
+BugReports: https://github.com/pharmaR/riskassessment/issues
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
 Imports: 
     bslib (>= 0.3.0),
     config (>= 0.3.1),
@@ -42,14 +47,11 @@ Imports:
     formattable,
     glue,
     golem (>= 0.3.2),
-    keyring,
     loggit,
     lubridate,
-    magrittr,
     pkgload,
     plotly,
     purrr,
-    readr (>= 2.0.1),
     rintrojs,
     riskmetric (>= 0.1.1),
     rlang,
@@ -58,16 +60,13 @@ Imports:
     rvest,
     shiny (>= 1.7.1),
     shinydashboard,
-    shinyhelper,
     shinyjs,
     shinymanager,
     shinyWidgets,
-    stringr,
-    tibble,
-    tidyr,
-    waiter
+    stringr
 Suggests: 
     rstudioapi,
+    shinytest2,
     spelling,
     testthat (>= 3.0.0),
     tinytex
