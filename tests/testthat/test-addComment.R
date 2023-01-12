@@ -103,3 +103,75 @@ test_that("Comments can be added via the addComment module", {
   DBI::dbDisconnect(con)
   
 })
+
+
+test_that("Comment input box is rendered according to the tab and user state", {
+  # delete app DB if exists to ensure clean test
+  app_db_loc <- test_path("test-apps", "database.sqlite")
+  if (file.exists(app_db_loc)) {
+    file.remove(app_db_loc)
+  }
+
+  # copy in already instantiated database to avoid need to rebuild
+  # this is a database that has been built via inst/testdata/upload_format.csv
+  test_db_loc <- system.file("testdata", "upload_format.database", package = "riskassessment")
+  file.copy(
+    test_db_loc,
+    app_db_loc
+  )
+
+  # set up new app driver object
+  app <- AppDriver$new(app_dir = test_path("test-apps"))
+
+  # select dplyr package
+  app$set_inputs(`sidebar-select_pkg` = "dplyr")
+
+  # navigate to maintenance metrics tab
+  app$set_inputs(tabs = "Maintenance Metrics")
+  app$wait_for_idle(500)
+
+  # helper fn
+  get_element_attribute <- function(app, element_id, el_attribute) {
+    app$get_js(
+      sprintf(
+        'document.getElementById("%s").getAttribute("%s")',
+        element_id,
+        el_attribute
+      )
+    )
+  }
+
+  # confirm label & placeholder text are rendered properly
+  expect_equal(
+    app$get_text("#maintenanceMetrics-add_comment-add_comment-label h5"),
+    "Add Comment for Maintenance Metrics"
+  )
+
+  expect_equal(
+    get_element_attribute(
+      app, "maintenanceMetrics-add_comment-add_comment",
+      "placeholder"
+    ),
+    "Commenting as user: test_user, role: admin"
+  )
+
+
+  # change to Community Usage Metrics tab
+  app$set_inputs(tabs = "Community Usage Metrics")
+  app$wait_for_idle(500)
+
+  # confirm label & placeholder text are rendered properly
+  expect_equal(
+    app$get_text("#communityMetrics-add_comment-add_comment-label h5"),
+    "Add Comment for Community Usage Metrics"
+  )
+
+  expect_equal(
+    get_element_attribute(
+      app, "communityMetrics-add_comment-add_comment",
+      "placeholder"
+    ),
+    "Commenting as user: test_user, role: admin"
+  )
+})
+
