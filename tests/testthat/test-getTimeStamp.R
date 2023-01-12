@@ -1,25 +1,10 @@
-describe("utils.R", {
-  describe("getTimeStamp", {
-    it("should return a String", {
-      time <- getTimeStamp()
-      
-      expect_type(time, "character")
-      expect_equal(object = time,
+test_that("utils.R", {
+      expect_type(getTimeStamp(), "character")
+      expect_equal(object = getTimeStamp(),
                    expected = paste(gsub(x = Sys.time(), pattern = " ", replacement = "; "),
                                     Sys.timezone())
                    )
-    })
-    it("should correctly transform the system time", {
-      time <- getTimeStamp()
       str = ";"
-      
-      expect_true(grepl(str, time, fixed = TRUE))
-    })
-    it("should correctly attach the timezone when returning the value", {
-      time <- getTimeStamp()
-      str <- Sys.timezone()
-      
-      expect_true(grepl(str, time, fixed = TRUE))
-    })
-  })
+      expect_true(grepl(str, getTimeStamp(), fixed = TRUE))
+      expect_true(grepl(Sys.timezone(), getTimeStamp(), fixed = TRUE))
 })
