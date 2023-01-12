@@ -34,7 +34,7 @@ usethis::use_description(check_name = F)
 #   author_first_name = "Marly", # Your First Name
 #   author_last_name = "Gotti", # Your Last Name
 #   author_email = c("marly.cormar@biogen.com"), # Your Email
-#   repo_url = "https://github.com/pharmaR/risk_assessment" # The URL of the GitHub Repo (optional) 
+#   repo_url = "https://github.com/pharmaR/riskassessment" # The URL of the GitHub Repo (optional) 
 # )     
 
 # ## Set {golem} options ---- ran
@@ -79,13 +79,11 @@ usethis::use_mit_license(copyright_holder = "2020 Fission Labs and R Validation 
 # Packages needed for the app.
 raa_pkgs = c(
               "shiny"
-             ,"shinyhelper"
              ,"shinyjs"
              ,"shinydashboard"
              ,"shinyWidgets"
              ,"data.table"
              ,"DT"
-             ,"readr"
              ,"lubridate"
              ,"RSQLite"
              ,"DBI"
@@ -106,7 +104,6 @@ raa_pkgs = c(
              ,"formattable"
              ,"rintrojs"
              ,"shinymanager"
-             ,"keyring"
 )
 use_package_v <- Vectorize(usethis::use_package)
 use_package_v(raa_pkgs)
@@ -126,7 +123,6 @@ usethis::use_package("RSQLite")
 usethis::use_package("rstudioapi")
 usethis::use_package("rmarkdown")
 usethis::use_package("rintrojs")
-usethis::use_package("keyring")
 usethis::use_package("lubridate")
 usethis::use_package("rvest")
 usethis::use_package("bslib")
@@ -136,7 +132,6 @@ usethis::use_package("config", min_version = "0.3.1")
 usethis::use_package("golem", min_version = "0.3.3")
 usethis::use_package("shiny", min_version = "1.7.1")
 usethis::use_package("riskmetric")
-usethis::use_package("tidyr")
 usethis::use_pipe()
 
 
