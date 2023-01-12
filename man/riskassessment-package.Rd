@@ -16,8 +16,8 @@ context for validation within regulated industries.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/pharmaR/risk_assessment}
-  \item Report bugs at \url{https://github.com/pharmaR/risk_assessment/issues}
+  \item \url{https://github.com/pharmaR/riskassessment}
+  \item Report bugs at \url{https://github.com/pharmaR/riskassessment/issues}
 }
 
 }
@@ -40,6 +40,7 @@ Other contributors:
   \item  R Validation Hub [copyright holder, funder]
   \item Munshi Imran Hossain [contributor]
   \item Lars Andersen [contributor]
+  \item Andrew Borgman \email{andrew.borgman@biogen.com} [contributor]
 }
 
 }

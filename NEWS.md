@@ -16,10 +16,20 @@
 * Add unit tests for functions in utils_startup.R.
 * Added testthat tests for dbSelect and dbUpdate functions (#295)
 * Added renv and a renv.lock file as well as corresponding vignette
+* Added `shinytest2` scaffolding. Used `shinytest2` to test `uploadPackageUI`/`uploadPackageServer` (#295)
+* Added unit tests for dbSelect and dbUpdate functions (#295)
+* Unit test cases are now available for showHelperMessage() function (#295).
+* Unit test cases are now available for get_date_span() function (#295).
+* Added unit tests for all functions in utils_get_db except dbSelect (#295)
+* Added unit tests for all functions in utils_insert_db except dbUpdate (#295)
+* Allowed users to type in package names to be assessed instead of uploading CSV
+* updated `README` to reflect new repo name 'riskassessment' without the '_' to separate the two words.
+* Reduce number of package dependencies from 33 to 26
+* Changed risk-based color gradient to use colorblind-friendly color palette (#324).
 
 
 # riskassessment 0.0.1
-* Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/risk_assessment/archive/master.zip")` and `shiny::runGitHub('risk_assessment', 'pharmaR')`
+* Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/riskassessment/archive/master.zip")` and `shiny::runGitHub('riskassessment', 'pharmaR')`
 
 
 # riskassessment 0.0.0.9000

@@ -89,7 +89,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
   moduleServer(id, function(input, output, session) {
     
     # Required for shinyhelper to work.
-    shinyhelper::observe_helpers()
+    # shinyhelper::observe_helpers()
     
     # Create list of packages.
     output$select_pkg_ui <- renderUI({

@@ -16,3 +16,4 @@ $run_dev.*
 ^rsconnect$
 ^((?!/).)*sqlite$
 
+_\.new\.png$

@@ -5,7 +5,6 @@
 #' 
 #' @importFrom shinyjs show hide delay runjs
 #' @importFrom shinymanager secure_server check_credentials
-#' @importFrom keyring key_get
 #' @importFrom loggit loggit
 #' @noRd
 app_server <- function(input, output, session) {
@@ -13,13 +12,24 @@ app_server <- function(input, output, session) {
   user <- reactiveValues()
   user$metrics_reweighted <- 0
   
-  # check_credentials directly on sqlite db
-  res_auth <- shinymanager::secure_server(
-    check_credentials = shinymanager::check_credentials(
-      golem::get_golem_options('credentials_db_name'),
-      passphrase = passphrase
+  
+  # this skips authentication if the application is running in test mode
+  if (isTRUE(getOption("shiny.testmode"))) {
+    # mock what is returned by shinymanager::secure_server
+    res_auth <- reactiveValues()
+    res_auth[["admin"]] <- !isTRUE(golem::get_golem_options('nonadmin'))
+    res_auth[["user"]] <- "test_user"
+    
+  } else {
+    # check_credentials directly on sqlite db
+    res_auth <- shinymanager::secure_server(
+      check_credentials = shinymanager::check_credentials(
+        golem::get_golem_options('credentials_db_name'),
+        passphrase = passphrase
+      )
     )
-  )
+  }
+
   
   observeEvent(res_auth$user, {
     if (res_auth$admin == TRUE) {
