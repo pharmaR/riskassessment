@@ -1,5 +1,5 @@
+# Test Reactivity of database view table
 
-test_that("Reactivity of database view table", {
   # delete app DB if exists to ensure clean test
   app_db_loc <- test_path("test-apps", "database.sqlite")
   if (file.exists(app_db_loc)) {
@@ -49,6 +49,9 @@ test_that("Reactivity of database view table", {
   })
   
   test_that("`table_data` updates in response to `uploaded_pkgs`", {
+    tbl_actual <-
+      app$get_value(export = "databaseView-table_data")
+    
     app$run_js("Shiny.setInputValue('upload_package-load_cran', 'load')")
     app$wait_for_idle()
     app$set_inputs(`upload_package-pkg_lst` = "tidyr")
@@ -62,10 +65,22 @@ test_that("Reactivity of database view table", {
                                  last_comment = c("-", "-")), 
                             class = "data.frame", row.names = c(NA, -2L))
     tbl_actual <-
-      app$get_value(export = "databaseView-table_data") %>% 
-      dplyr::select(1,4,5,6) %>% 
-      dplyr::arrange(1)
+      app$get_value(export = "databaseView-table_data")
     
-    expect_equal(tbl_actual, tbl_expect)
+    expect_equal(tbl_actual %>% dplyr::select(1,4,5,6) %>% dplyr::arrange(1), tbl_expect)
   })
-})
+  
+  test_that("`packages_table` is loaded correctly", {
+    tbl_actual <-
+      app$get_value(export = "databaseView-table_data") %>% 
+      dplyr::mutate(was_decision_made = dplyr::if_else(was_decision_made, "Yes", "No"))
+    
+    packages_table <-
+      app$get_html("#databaseView-packages_table") %>%
+      rvest::minimal_html() %>%
+      rvest::html_table() %>%
+      `[[`(1)
+    
+    expect_equal(packages_table, tbl_actual, 
+                 ignore_attr = TRUE)
+  })
