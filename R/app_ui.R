@@ -22,6 +22,7 @@ app_ui <- function(request) {
       tabPanel(
         title = "Risk Assessment",
         icon = icon("clipboard-list"),
+        value = "risk-assessment-tab",
         
         titlePanel(
           windowTitle = "Risk Assessment - v0.0.1",
@@ -64,13 +65,17 @@ app_ui <- function(request) {
       ), 
       
       tabPanel(
-        title = div(id = "database-tab", icon("database"), "Database"),
-        databaseViewUI("databaseView")
+        title = "Database",
+        icon = icon("database"),
+        databaseViewUI("databaseView"),
+        value = "database-tab"
       ),
       
       tabPanel(
-        title = div(id = "assessment-criteria-tab", icon("circle-info"), "Assessment Criteria"),
+        title = "Assessment Criteria",
+        icon = icon("circle-info"),
         assessmentInfoUI("assessmentInfo"),
+        value = "assessment-criteria-tab"
       )
     ),
     
