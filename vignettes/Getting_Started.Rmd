@@ -17,15 +17,16 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-This guide will help you get started using the riskmetric package.
-
-We are assuming you are starting with an empty database and and empty credentials file.
+This guide will help you get started using the `riskassessment` application for the first time. For more information about how to deploy the application, please reference the `Deployments` [INSERT LINK] guide. Please note, we'll assume you've already downloaded the `riskassessment` package & all of it's dependencies following the [installation instructions](../index.html#installation).
 
 ## First-time login
 
-After you have instaled the riskmetric package, open it and run:
-  
+After you have [installed](../index.html#installation) the `riskassessment` package, you are now able to create the usual shiny `app.R` file, open it and insert:
+
+```{r app.R, echo=TRUE, eval=FALSE}
+# for app.R
 riskassessment::run_app()
+```
 
 The initial login page appears with the note on the bottom:</br>
 Note to login for the first time, use the admin userid ADMIN with password QWERTY1.

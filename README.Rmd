@@ -82,7 +82,7 @@ For those who are ready to run/deploy this application in their own environment,
 
 ```{r, eval=FALSE}
 # install.packages("remotes") # if needed
-remotes::install_github("pharmaR/riskassessment")
+remotes::install_github("pharmaR/riskassessment", dependencies = "imports")
 ```
 
 With a simple `library(riskassessment)` you can access all the exported functions from `riskassessment` that help users reproduce analysis performed in the app. Or, you can create an `app.R` file and launch (or deploy) the application if you include the following line of code:
