@@ -1,0 +1,69 @@
+
+test_that("Reactivity of database view table", {
+  # delete app DB if exists to ensure clean test
+  app_db_loc <- test_path("test-apps", "database.sqlite")
+  if (file.exists(app_db_loc)) {
+    file.remove(app_db_loc)
+  }
+  
+  # copy in already instantiated database to avoid need to rebuild
+  # this is a database that has been built via inst/testdata/upload_format.csv
+  test_db_loc <- system.file("testdata", "upload_format.database", package = "riskassessment")
+  file.copy(
+    test_db_loc,
+    app_db_loc
+  )
+  
+  # set up new app driver object
+  app <- AppDriver$new(app_dir = test_path("test-apps"))
+
+  app$set_inputs(apptabs = "database-tab")
+  
+  test_that("The `table_data` loads correctly", {
+    tbl_expect <-
+      structure(list(name = "dplyr", version = "1.0.10", score = 0.1, 
+                     was_decision_made = FALSE, decision = "-", 
+                     last_comment = "-"), 
+                class = "data.frame", row.names = c(NA, -1L))
+    tbl_actual <-
+      app$get_value(export = "databaseView-table_data")
+    
+    expect_equal(tbl_actual, tbl_expect)
+  })
+  
+  test_that("`table_data` updates in response to `changes`", {
+    app$set_inputs(`sidebar-select_pkg` = "dplyr")
+    app$click("sidebar-submit_decision")
+    app$wait_for_idle()
+    app$click("sidebar-submit_confirmed_decision")
+    
+    tbl_expect <-
+      structure(list(name = "dplyr", version = "1.0.10", score = 0.1, 
+                     was_decision_made = TRUE, decision = "Low Risk", 
+                     last_comment = "-"), 
+                class = "data.frame", row.names = c(NA, -1L))
+    tbl_actual <-
+      app$get_value(export = "databaseView-table_data")
+    
+    expect_equal(tbl_actual, tbl_expect)
+  })
+  
+  test_that("`table_data` updates in response to `uploaded_pkgs`", {
+    app$run_js("Shiny.setInputValue('upload_package-load_cran', 'load')")
+    app$set_inputs(`upload_package-pkg_lst` = "tidyr")
+    app$click("upload_package-add_pkgs", wait_ = FALSE)
+    app$wait_for_value(export = "databaseView-table_data", ignore = tbl_actual)
+    
+    tbl_expect <- structure(list(name = c("tidyr", "dplyr"), 
+                                 was_decision_made = c(FALSE, TRUE), 
+                                 decision = c("-", "Low Risk"), 
+                                 last_comment = c("-", "-")), 
+                            class = "data.frame", row.names = c(NA, -2L))
+    tbl_actual <-
+      app$get_value(export = "databaseView-table_data") %>% 
+      dplyr::select(1,4,5,6) %>% 
+      dplyr::arrange(1)
+    
+    expect_equal(tbl_actual, tbl_expect)
+  })
+})
