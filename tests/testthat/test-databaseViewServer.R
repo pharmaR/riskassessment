@@ -202,7 +202,7 @@ test_that("Download file works as expected.", {
   
   report <- app_get_download2(
     self = app$.__enclos_env__$self, app$.__enclos_env__$private,
-    output,
+    output = "databaseView-download_reports",
     filename = NULL
   )
 
