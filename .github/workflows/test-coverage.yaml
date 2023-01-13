@@ -32,6 +32,12 @@ jobs:
         with:
           use-public-rspm: true
 
+      - name: Restore packages
+        shell: Rscript {0}
+        run: |
+          if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
+          renv::restore()
+
       - name: Test coverage
         run: covr::codecov()
         shell: Rscript {0}

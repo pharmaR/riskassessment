@@ -1614,40 +1614,6 @@
         "shiny"
       ]
     },
-    "riskassessment": {
-      "Package": "riskassessment",
-      "Version": "0.0.1.9019",
-      "Source": "unknown",
-      "Hash": "ec9ed990ddf913adf296d68bf6609251",
-      "Requirements": [
-        "DBI",
-        "DT",
-        "RSQLite",
-        "bslib",
-        "config",
-        "cranlogs",
-        "dplyr",
-        "formattable",
-        "glue",
-        "golem",
-        "loggit",
-        "lubridate",
-        "pkgload",
-        "plotly",
-        "purrr",
-        "rintrojs",
-        "riskmetric",
-        "rlang",
-        "rmarkdown",
-        "rvest",
-        "shiny",
-        "shinyWidgets",
-        "shinydashboard",
-        "shinyjs",
-        "shinymanager",
-        "stringr"
-      ]
-    },
     "riskmetric": {
       "Package": "riskmetric",
       "Version": "0.1.2",
