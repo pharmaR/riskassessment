@@ -18,14 +18,22 @@ app_ui <- function(request) {
     # includeCSS(path = file.path('www', 'css', 'community_metrics.css')),
     
     tabsetPanel(
+      # header = div(style="display: inline-block; float:right;",
+      #     img(src="www/raa-image.png",
+      #         style="float:right; padding-right:3px; height:40px;"))
+      # ,
       id = "apptabs",
       tabPanel(
         title = "Risk Assessment",
         icon = icon("clipboard-list"),
         
         titlePanel(
-          windowTitle = "Risk Assessment - v0.0.1",
-          title = div(id = "page-title", "R Package Risk Assessment App")
+          windowTitle = "riskassessment app",
+          title = div(id = "page-title", "R Package Risk Assessment App",
+                      div(style="display: inline-block; float:right;",
+                              img(src="www/raa-image.png",
+                                  style="float:right; padding-right:3px; height:60px;"))
+          )
         ),
         
         sidebarLayout(
@@ -80,7 +88,6 @@ app_ui <- function(request) {
       tags$a(href = "https://github.com/pharmaR/riskassessment",
              icon("github-alt"), target = "_blank")
     )
-    
   )
 
   tagList(
