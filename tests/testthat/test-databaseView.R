@@ -1,25 +1,24 @@
-# Test Reactivity of database view table
-
-# delete app DB if exists to ensure clean test
-app_db_loc <- test_path("test-apps", "database.sqlite")
-if (file.exists(app_db_loc)) {
-  file.remove(app_db_loc)
-}
-
-# copy in already instantiated database to avoid need to rebuild
-# this is a database that has been built via inst/testdata/upload_format.csv
-test_db_loc <- system.file("testdata", "upload_format.database", package = "riskassessment")
-file.copy(
-  test_db_loc,
-  app_db_loc
-)
-
-# set up new app driver object
-app <- AppDriver$new(app_dir = test_path("test-apps"))
-
-app$set_inputs(apptabs = "database-tab")
-
-test_that("The `table_data` loads correctly", {
+test_that("Reactivity of database view table", {
+  # delete app DB if exists to ensure clean test
+  app_db_loc <- test_path("test-apps", "database.sqlite")
+  if (file.exists(app_db_loc)) {
+    file.remove(app_db_loc)
+  }
+  
+  # copy in already instantiated database to avoid need to rebuild
+  # this is a database that has been built via inst/testdata/upload_format.csv
+  test_db_loc <- system.file("testdata", "upload_format.database", package = "riskassessment")
+  file.copy(
+    test_db_loc,
+    app_db_loc
+  )
+  
+  # set up new app driver object
+  app <- AppDriver$new(app_dir = test_path("test-apps"))
+  
+  app$set_inputs(apptabs = "database-tab")
+  
+  #### Test that the `table_data` loads correctly ####
   tbl_expect <-
     structure(list(name = "dplyr", version = "1.0.10", score = 0.1, 
                    was_decision_made = FALSE, decision = "-", 
@@ -29,9 +28,8 @@ test_that("The `table_data` loads correctly", {
     app$get_value(export = "databaseView-table_data")
   
   expect_equal(tbl_actual, tbl_expect)
-})
-
-test_that("`table_data` updates in response to `changes`", {
+  
+  #### Test that`table_data` updates in response to `changes` ####
   app$set_inputs(`sidebar-select_pkg` = "dplyr")
   app$click("sidebar-submit_decision")
   app$wait_for_idle()
@@ -46,9 +44,8 @@ test_that("`table_data` updates in response to `changes`", {
     app$get_value(export = "databaseView-table_data")
   
   expect_equal(tbl_actual, tbl_expect)
-})
-
-test_that("`table_data` updates in response to `uploaded_pkgs`", {
+  
+  #### Test that`table_data` updates in response to `uploaded_pkgs` ####
   tbl_actual <-
     app$get_value(export = "databaseView-table_data")
   
@@ -68,9 +65,8 @@ test_that("`table_data` updates in response to `uploaded_pkgs`", {
     app$get_value(export = "databaseView-table_data")
   
   expect_equal(tbl_actual %>% dplyr::select(1,4,5,6) %>% dplyr::arrange(1), tbl_expect)
-})
-
-test_that("`packages_table` is loaded correctly", {
+  
+  #### Test that `packages_table` is loaded correctly ####
   tbl_actual <-
     app$get_value(export = "databaseView-table_data") %>% 
     dplyr::mutate(was_decision_made = dplyr::if_else(was_decision_made, "Yes", "No"))
@@ -83,9 +79,8 @@ test_that("`packages_table` is loaded correctly", {
   
   expect_equal(packages_table, tbl_actual, 
                ignore_attr = TRUE)
-})
-
-test_that("Download button is disabled if no packages selected.", {
+  
+  #### Test that the download button is disabled if no packages selected ####
   expect_equal(app$get_js("$('#databaseView-download_reports').attr('disabled')"), "disabled")
   app$run_js("Shiny.setInputValue('databaseView-packages_table_rows_selected', 1)")
   app$wait_for_idle()
@@ -93,9 +88,8 @@ test_that("Download button is disabled if no packages selected.", {
   app$run_js("Shiny.setInputValue('databaseView-packages_table_rows_selected', null)")
   app$wait_for_idle()
   expect_equal(app$get_js("$('#databaseView-download_reports').attr('disabled')"), "disabled")
-})
-
-test_that("Download file works as expected.", {
+  
+  #### Test that the download file works as expected ####
   expect_equal(app$get_value(input = "databaseView-report_formats"), "html")
   app$run_js("Shiny.setInputValue('databaseView-packages_table_rows_selected', 1)")
   app$wait_for_idle()
@@ -116,4 +110,6 @@ test_that("Download file works as expected.", {
   app$wait_for_idle()
   report <- app$get_download("databaseView-download_reports")
   expect_equal(tools::file_ext(report), "zip")
+  
+  app$stop()
 })
