@@ -7,6 +7,9 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![R-CMD-check](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml)
+[![Coverage
+status](https://codecov.io/gh/pharmaR/riskassessment/branch/master/graph/badge.svg)](https://codecov.io/github/pharmaR/riskassessment?branch=master)
 <!-- badges: end -->
 
 `riskassessment` is an R package containing a shiny front-end to augment

@@ -17,6 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
   [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+  [![R-CMD-check](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml)
   [![Coverage status](https://codecov.io/gh/pharmaR/riskassessment/branch/master/graph/badge.svg)](https://codecov.io/github/pharmaR/riskassessment?branch=master)
   <!-- badges: end -->
 
@@ -82,7 +83,7 @@ For those who are ready to run/deploy this application in their own environment,
 
 ```{r, eval=FALSE}
 # install.packages("remotes") # if needed
-remotes::install_github("pharmaR/riskassessment", dependencies = "imports")
+remotes::install_github("pharmaR/riskassessment")
 ```
 
 With a simple `library(riskassessment)` you can access all the exported functions from `riskassessment` that help users reproduce analysis performed in the app. Or, you can create an `app.R` file and launch (or deploy) the application if you include the following line of code:
