@@ -29,7 +29,7 @@ jobs:
 
       # install packages needed
       - name: install required fontawesome version
-        run: Rscript -e 'remotes::install_version("fontawesome", version = "0.3.0", repos = "http://cran.us.r-project.org")'
+        run: Rscript -e "remotes::install_version('fontawesome', version = '0.3.0', repos = 'http://cran.us.r-project.org')"
 
       - name: Test coverage
         run: covr::codecov()
