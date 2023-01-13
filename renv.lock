@@ -349,30 +349,6 @@
         "tibble"
       ]
     },
-    "checkhelper": {
-      "Package": "checkhelper",
-      "Version": "0.0.1",
-      "Source": "Repository",
-      "Repository": "https://thinkr-open.r-universe.dev",
-      "RemoteUrl": "https://github.com/ThinkR-open/checkhelper",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "3f31746f2c9a048fb7786908b9d11ae3101015e7",
-      "Hash": "c17e92c212961526f619d95158d6562c",
-      "Requirements": [
-        "cli",
-        "desc",
-        "dplyr",
-        "glue",
-        "magrittr",
-        "pkgbuild",
-        "purrr",
-        "rcmdcheck",
-        "roxygen2",
-        "stringr",
-        "whisker",
-        "withr"
-      ]
-    },
     "checkmate": {
       "Package": "checkmate",
       "Version": "2.1.0",

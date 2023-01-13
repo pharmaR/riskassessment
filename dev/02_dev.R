@@ -274,8 +274,8 @@ rcmdcheck::rcmdcheck(args = c("--no-manual", "--as-cran", "--no-build-vignettes"
 
 # Check content
 # remotes::install_github("ThinkR-open/checkhelper")
-tags <- checkhelper::find_missing_tags()
-View(tags)
+# tags <- checkhelper::find_missing_tags()
+# View(tags)
 
 # Check spelling
 # usethis::use_spell_check()
