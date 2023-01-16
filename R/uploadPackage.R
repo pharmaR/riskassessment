@@ -70,13 +70,14 @@ uploadPackageUI <- function(id) {
 #' Server logic for the 'Upload Package' module
 #'
 #' @param id a module id
+#' @param user a username
 #' 
 #' @importFrom riskmetric pkg_ref
 #' @importFrom rintrojs introjs
 #' @importFrom utils read.csv available.packages
 #' @importFrom rvest read_html html_nodes html_text
 #' 
-uploadPackageServer <- function(id) {
+uploadPackageServer <- function(id, user) {
   moduleServer(id, function(input, output, session) {
     
     # Determine which guide to use for IntroJS.
@@ -130,8 +131,7 @@ uploadPackageServer <- function(id) {
     )
     
     uploaded_pkgs00 <- reactiveVal()
-    removed_pkgs    <- reactiveVal()
-    
+
     observeEvent(input$uploaded_file, {
       req(input$uploaded_file)
       
@@ -176,8 +176,9 @@ uploadPackageServer <- function(id) {
     })
     
     observeEvent(input$rem_pkg_btn, {
+      req(user$role == "admin")
       req(input$rem_pkg_lst)
-      
+
       curr_pkgs <- dbSelect("select name from package")[,1]
       
       np <- length(input$rem_pkg_lst)
