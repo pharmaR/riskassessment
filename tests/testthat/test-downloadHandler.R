@@ -1,4 +1,4 @@
-test_that("downloadHanlder works", {
+test_that("downloadHandler works", {
 
   app <- AppDriver$new(test_path("test-apps", "downloadHandler-app"))
   
