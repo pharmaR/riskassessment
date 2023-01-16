@@ -139,6 +139,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     metricGridServer("cm_metricGrid", metrics = com_metrics)
     
     output$communityMetrics_ui <- renderUI({
+      req(selected_pkg$name())
       
       vect <- dbSelect("select distinct id from community_usage_metrics") %>% dplyr::pull()
       
