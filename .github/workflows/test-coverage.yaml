@@ -31,9 +31,9 @@ jobs:
       - name: Innstall required fontawesome version
         run: Rscript -e "remotes::install_version('fontawesome', version = '0.3.0', repos = 'http://cran.us.r-project.org')"
           
-      # install packages needed
-      - name: Install LaTex
-        run: Rscript -e "install.packages('tiytex'); tinytex::install_tinytex()"
+      # # install packages needed
+      # - name: Install LaTex
+      #   run: Rscript -e "install.packages('tiytex'); tinytex::install_tinytex()"
 
       - name: Test coverage
         run: covr::codecov()
