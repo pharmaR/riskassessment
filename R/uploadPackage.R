@@ -47,7 +47,7 @@ uploadPackageUI <- function(id) {
       column(
         width = 4,
         div(
-          id = "del-package-group",
+          id = "rem-package-group",
           style = "display: flex;",
           selectizeInput(NS(id, "rem_pkg_lst"), "Remove Package(s)", choices = NULL, multiple = TRUE,
                         options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
