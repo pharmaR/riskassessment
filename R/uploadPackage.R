@@ -218,7 +218,7 @@ uploadPackageServer <- function(id) {
       np <- nrow(uploaded_packages)
       
       if (!isTruthy(cran_pkgs())) {
-        cran_pkgs(available.packages("hrtps://cran.rstudio.com/src/contrib")[,1])
+        cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
       }
       
       # Start progress bar. Need to establish a maximum increment
