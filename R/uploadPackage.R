@@ -41,7 +41,9 @@ uploadPackageUI <- function(id) {
         ),
         actionLink(NS(id, "upload_format"), "View Sample Dataset")
       ),
-
+     ),
+    
+     fluidRow(
       column(
         width = 4,
         div(
@@ -56,7 +58,6 @@ uploadPackageUI <- function(id) {
         )
       ),
     ),
-    
     # Display the summary information of the uploaded csv.
     fluidRow(column(width = 12, htmlOutput(NS(id, "upload_summary_text")))),
     
@@ -111,6 +112,7 @@ uploadPackageServer <- function(id, user) {
     
     observeEvent(pkgs_have(), {
       req(pkgs_have())
+      req(user$role == "admin")
       updateSelectizeInput(session, "rem_pkg_lst", choices = pkgs_have(), server = TRUE)
     })
     
@@ -175,8 +177,8 @@ uploadPackageServer <- function(id, user) {
     })
     
     observeEvent(input$rem_pkg_btn, {
-      req(user$role == "admin")
       req(input$rem_pkg_lst)
+      req(user$role == "admin")
 
       np <- length(input$rem_pkg_lst)
 
