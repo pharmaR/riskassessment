@@ -64,9 +64,7 @@ app_ui <- function(request) {
       ), 
       
       tabPanel(
-        title = "Database",
-        icon = icon("database"),
-        value = "database-tab",
+        title = div(id = "database-tab", icon("database"), "Database"),
         databaseViewUI("databaseView")
       ),
       
