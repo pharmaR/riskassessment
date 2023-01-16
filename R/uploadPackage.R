@@ -28,7 +28,7 @@ uploadPackageUI <- function(id) {
           tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "add_pkgs"), '").css("margin-top", $("#', NS(id, "pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
         )
       ),
-      column(width = 1),
+      
       column(
         width = 4,
         div(id = "upload-file-grp",
@@ -41,23 +41,22 @@ uploadPackageUI <- function(id) {
         ),
         actionLink(NS(id, "upload_format"), "View Sample Dataset")
       ),
-    ),
-    fluidRow(
-      
+
       column(
         width = 4,
         div(
           id = "rem-package-group",
           style = "display: flex;",
-          selectizeInput(NS(id, "rem_pkg_lst"), "Remove Package(s)", choices = NULL, multiple = TRUE,
+          selectizeInput(NS(id, "rem_pkg_lst"), "Remove Package(s) (admin only)", choices = NULL, multiple = TRUE,
                         options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
                                       onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "curr_pkgs"), '", "load", {priority: "event"})}')))),
           actionButton(NS(id, "rem_pkg_btn"), shiny::icon("angle-right"),
                        style = 'height: calc(1.5em + 1.5rem + 2px)'),
           tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "rem_pkg_btn"), '").css("margin-top", $("#', NS(id, "rem_pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
         )
-      )
+      ),
     ),
+    
     # Display the summary information of the uploaded csv.
     fluidRow(column(width = 12, htmlOutput(NS(id, "upload_summary_text")))),
     
@@ -179,8 +178,6 @@ uploadPackageServer <- function(id, user) {
       req(user$role == "admin")
       req(input$rem_pkg_lst)
 
-      curr_pkgs <- dbSelect("select name from package")[,1]
-      
       np <- length(input$rem_pkg_lst)
 
       for (i in 1:np) {
@@ -211,8 +208,8 @@ uploadPackageServer <- function(id, user) {
     })
     
     uploaded_pkgs <- reactiveVal(data.frame())
-    # Save all the uploaded packages, marking them as 'new', 'not found', or
-    # 'duplicate'.
+    # Save all the uploaded packages, marking them as 'new', 'not found', 
+    # 'duplicate' or 'removed'
     observeEvent(uploaded_pkgs00(), {
 
       uploaded_packages <- uploaded_pkgs00()
