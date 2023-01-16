@@ -40,9 +40,24 @@ uploadPackageUI <- function(id) {
             )
         ),
         actionLink(NS(id, "upload_format"), "View Sample Dataset")
+      ),
+    ),
+    fluidRow(
+      
+      column(
+        width = 4,
+        div(
+          id = "del-package-group",
+          style = "display: flex;",
+          selectizeInput(NS(id, "rem_pkg_lst"), "Remove Package(s)", choices = NULL, multiple = TRUE,
+                        options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
+                                      onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "curr_pkgs"), '", "load", {priority: "event"})}')))),
+          actionButton(NS(id, "rem_pkg_btn"), shiny::icon("angle-right"),
+                       style = 'height: calc(1.5em + 1.5rem + 2px)'),
+          tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "rem_pkg_btn"), '").css("margin-top", $("#', NS(id, "rem_pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
+        )
       )
     ),
-    
     # Display the summary information of the uploaded csv.
     fluidRow(column(width = 12, htmlOutput(NS(id, "upload_summary_text")))),
     
@@ -83,11 +98,21 @@ uploadPackageServer <- function(id) {
     },
     once = TRUE)
     
+    pkgs_have <- reactiveVal()
+    
+    observeEvent(input$curr_pkgs, {
+      pkgs_have(dbSelect("select name from package")[,1])
+    })
+    
     observeEvent(cran_pkgs(), {
       req(cran_pkgs())
       updateSelectizeInput(session, "pkg_lst", choices = cran_pkgs(), server = TRUE)
     })
     
+    observeEvent(pkgs_have(), {
+      req(pkgs_have())
+      updateSelectizeInput(session, "rem_pkg_lst", choices = pkgs_have(), server = TRUE)
+    })
     
     # Start introjs when help button is pressed. Had to do this outside of
     # a module in order to take a reactive data frame of steps
@@ -105,6 +130,7 @@ uploadPackageServer <- function(id) {
     )
     
     uploaded_pkgs00 <- reactiveVal()
+    removed_pkgs    <- reactiveVal()
     
     observeEvent(input$uploaded_file, {
       req(input$uploaded_file)
@@ -149,6 +175,40 @@ uploadPackageServer <- function(id) {
       uploaded_pkgs00(uploaded_packages)
     })
     
+    observeEvent(input$rem_pkg_btn, {
+      req(input$rem_pkg_lst)
+      
+      curr_pkgs <- dbSelect("select name from package")[,1]
+      
+      np <- length(input$rem_pkg_lst)
+
+      for (i in 1:np) {
+      pkg_name <- input$rem_pkg_lst[i]
+      dbUpdate(glue::glue("delete from package where name = '{pkg_name}'"), db_name = "database.sqlite")
+      }
+      
+      # run this after all packages in rem_pkg_lst have been removed
+      dbUpdate("delete from package_metrics where package_id not in(select id from package)", db_name = "database.sqlite")
+      dbUpdate("delete from community_usage_metrics where id not in(select name from package)", db_name = "database.sqlite")
+      dbUpdate("delete from comments where id not in(select name from package)", db_name = "database.sqlite")
+      
+      # update the list of packages we have
+      pkgs_have(dbSelect("select name from package")[,1])
+
+      updateSelectizeInput(session, "rem_pkg_lst", selected = "")
+      
+      np <- length(input$rem_pkg_lst)
+      uploaded_packages <-
+        dplyr::tibble(
+          package = input$rem_pkg_lst,
+          version = rep('0.0.0', np),
+          status = rep("removed", np)
+        )
+
+      uploaded_pkgs00(uploaded_packages)
+
+    })
+    
     uploaded_pkgs <- reactiveVal(data.frame())
     # Save all the uploaded packages, marking them as 'new', 'not found', or
     # 'duplicate'.
@@ -158,7 +218,7 @@ uploadPackageServer <- function(id) {
       np <- nrow(uploaded_packages)
       
       if (!isTruthy(cran_pkgs())) {
-        cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+        cran_pkgs(available.packages("hrtps://cran.rstudio.com/src/contrib")[,1])
       }
       
       # Start progress bar. Need to establish a maximum increment
@@ -221,7 +281,11 @@ uploadPackageServer <- function(id) {
               FROM package
               WHERE name = '{uploaded_packages$package[i]}'")))
             
-            uploaded_packages$status[i] <- ifelse(found == 0, 'new', 'duplicate')
+            # if pkg was removed then reset found to 1 and keep status as "removed"
+            if(uploaded_packages$status[i] == "removed") found <- 1
+            uploaded_packages$status[i] <- ifelse(found == 0, 'new', 
+                                           ifelse(uploaded_packages$status[i] == "removed",
+                                                  'removed', 'duplicate'))
             
             # Add package and metrics to the db if package is not in the db.
             if(!found) {
@@ -259,10 +323,11 @@ uploadPackageServer <- function(id) {
     output$upload_summary_text <- renderText({
       req(uploaded_pkgs)
       req(nrow(uploaded_pkgs()) > 0)
-      
+
       loggit::loggit("INFO",
                      paste("Uploaded file:", input$uploaded_file$name, 
                            "Total Packages:", nrow(uploaded_pkgs()),
+                           "Removed Packages", sum(uploaded_pkgs()$status == 'removed'),
                            "New Packages:", sum(uploaded_pkgs()$status == 'new'),
                            "Undiscovered Packages:", sum(grepl('not found', uploaded_pkgs()$status)),
                            "Duplicate Packages:", sum(uploaded_pkgs()$status == 'duplicate')),
@@ -275,6 +340,7 @@ uploadPackageServer <- function(id) {
             h5("Summary of uploaded package(s)"),
             br(),
             p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
+            p(tags$b("Removed Packages: "), sum(uploaded_pkgs()$status == 'removed')),
             p(tags$b("New Packages: "), sum(uploaded_pkgs()$status == 'new')),
             p(tags$b("Undiscovered Packages: "), sum(grepl('not found', uploaded_pkgs()$status))),
             p(tags$b("Duplicate Packages: "), sum(uploaded_pkgs()$status == 'duplicate')),
