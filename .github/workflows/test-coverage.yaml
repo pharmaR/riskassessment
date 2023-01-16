@@ -26,6 +26,10 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: covr
+          
+      # install packages needed
+      - name: install required fontawesome version
+        run: Rscript -e "remotes::install_version('fontawesome', version = '0.3.0', repos = 'http://cran.us.r-project.org')"
 
       - name: Test coverage
         run: covr::codecov()
