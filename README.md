@@ -1,12 +1,15 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# `{riskassessment}`: an extension of `{riskmetric}`
+# The `{riskassessment}` application <a href='https://pharmar.github.io/riskassessment/'><img src="man/figures/hex-riskassessment-aspconfig.png" align="right" height="172" style="float:right; height:172px;"/></a>
 
 <!-- badges: start -->
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![R-CMD-check](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml)
+[![Coverage
+status](https://codecov.io/gh/pharmaR/riskassessment/branch/master/graph/badge.svg)](https://codecov.io/github/pharmaR/riskassessment?branch=master)
 <!-- badges: end -->
 
 `riskassessment` is an R package containing a shiny front-end to augment
@@ -47,7 +50,7 @@ reviewer to:
 - user authentication with with admin roles to manage users and metric
   weighting
 
-### Echo-ing `{riskmetric}`’s Approach to Validation
+### Echo-ing `{riskmetric}`’s Approach to Validation <a href='https://pharmar.github.io/riskmetric/'><img src="man/figures/hex-riskmetric-aspconfig.png" align="right" height="172" style="float:right; height:172px;"/></a>
 
 Validation can serve as an umbrella for various terms, and admittedly,
 companies will diverge on what is the correct approach to validation.

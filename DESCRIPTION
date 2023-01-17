@@ -1,6 +1,6 @@
 Package: riskassessment
 Title: A web app designed to interface with the `riskmetric` package
-Version: 0.0.1.9019
+Version: 0.0.1.9021
 Authors@R: c( 
     person("Aaron", "Clark", role = c("aut", "cre"), email = "aaron.clark@biogen.com"),
     person("Robert", "Krajcik", role = "aut", email = "robert.krajcik@biogen.com"),
@@ -61,6 +61,7 @@ Imports:
     shinyWidgets,
     stringr
 Suggests: 
+    knitr,
     rstudioapi,
     shinytest2,
     spelling,
@@ -70,3 +71,4 @@ Config/testthat/edition: 3
 Language: en-US
 Depends: 
     R (>= 2.10)
+VignetteBuilder: knitr
