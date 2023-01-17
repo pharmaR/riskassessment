@@ -1,4 +1,4 @@
-test_that("utils.R", {
+test_that("get_latest_pkg_info() in utils.R", {
       test <- get_latest_pkg_info("rpact")
       
       expect_type(test, "list")
@@ -6,4 +6,5 @@ test_that("utils.R", {
                                      "License", "Published", "Title",
                                      "Description"))
       expect_true(length(test) > 0)
+      expect_true(nrow(test) > 0)
 })
