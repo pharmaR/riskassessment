@@ -29,6 +29,7 @@
 * Add a "getting started with `riskassessment`" vignette
 * Added hex logo to `README` and risk gauge within the app
 * Added favicon to app window tab
+* Implemented the usage of a download handler module
 
 # riskassessment 0.0.1
 * Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/riskassessment/archive/master.zip")` and `shiny::runGitHub('riskassessment', 'pharmaR')`
