@@ -12,7 +12,7 @@ Authors@R: c(
 	  person(family = "PSI special interest group Application and Implementation of Methodologies in Statistics", role = c("cph", "fnd")),
     person(family = "R Validation Hub", role = c("cph", "fnd")),
     person("Munshi Imran", "Hossain", role = "ctb"),
-    person("Lars", "Andersen", role = "ctb", email = "lars.andersen@boehringer-ingelheim.com"),
+    person("Lars", "Andersen", role = "aut", email = "lars.andersen@boehringer-ingelheim.com"),
     person("Andrew", "Borgman", role = "ctb", email = "andrew.borgman@biogen.com")
   )
 Description: The `riskassessment` application allows users to define a list of R
