@@ -10,7 +10,7 @@ test_that("Uploaded packages show up in summary table", {
   app <- AppDriver$new(app_dir = test_path("test-apps"))
 
   # test package data to upload
-  test_csv <- system.file("extdata", "upload_format.csv", package = "riskassessment")
+  test_csv <- system.file("testdata", "upload_format.csv", package = "riskassessment")
 
   # upload file to application
   app$upload_file(

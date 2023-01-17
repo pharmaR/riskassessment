@@ -1,9 +1,13 @@
 # Global Risk color palettes.
-# https://www.rapidtables.com/web/color/html-color-codes.html
-low_risk_color  <- "#228B22"  # forest green
-med_risk_color  <- "#d1b000"  # dark gold
-high_risk_color <- "#B22222"  # firebrick
-setColorPalette <- colorRampPalette(c(low_risk_color, med_risk_color, high_risk_color))
+# run locally and paste hex codes
+# colorspace::darken(viridisLite::turbo(11, begin = 0.4, end = .8225), .25)
+low_risk_color  <- "#06B756FF"  # 1st
+med_risk_color  <- "#A99D04FF"  # 6th
+high_risk_color <- "#A63E24FF"  # 11th
+setColorPalette <- colorRampPalette(
+  c("#06B756FF","#2FBC06FF","#67BA04FF","#81B50AFF","#96AB0AFF","#A99D04FF",
+    "#B78D07FF","#BE7900FF","#BE6200FF","#B24F22FF","#A63E24FF"))
+
 
 #' UI for 'Database View' module
 #' 
@@ -82,6 +86,12 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
         dplyr::mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
         dplyr::select(name, version, score, was_decision_made, decision, last_comment)
     })
+    
+    exportTestValues(
+      table_data = {
+        table_data()
+      }
+    )
     
     # Create table for the db dashboard.
     output$packages_table <- DT::renderDataTable({
@@ -189,24 +199,24 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
               }
               
               Report <- file.path(my_tempdir, "reportHtml.Rmd")
-              file.copy(file.path('inst/app/www', 'reportHtml.Rmd'), Report, overwrite = TRUE)
+              file.copy(system.file("app", "www", "reportHtml.Rmd", package = "riskassessment"), Report, overwrite = TRUE)
             } 
             else if (input$report_formats == "docx") { 
               Report <- file.path(my_tempdir, "reportDocx.Rmd")
               if (!dir.exists(file.path(my_tempdir, "images")))
                 dir.create(file.path(my_tempdir, "images"))
-              file.copy(file.path('inst/app/www', 'ReportDocx.Rmd'),
+              file.copy(system.file("app", "www", 'ReportDocx.Rmd', package = "riskassessment"),
                         Report,
                         overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'read_html.lua'),
+              file.copy(system.file("app", "www", 'read_html.lua', package = "riskassessment"),
                         file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'user-tie.png'),
+              file.copy(system.file("app", "www", 'images', 'user-tie.png', package = "riskassessment"),
                         file.path(my_tempdir, "images", "user-tie.png"),
                         overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'user-shield.png'),
+              file.copy(system.file("app", "www", 'images', 'user-shield.png', package = "riskassessment"),
                         file.path(my_tempdir, "images", "user-shield.png"),
                         overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'calendar-alt.png'),
+              file.copy(system.file("app", "www", 'images', 'calendar-alt.png', package = "riskassessment"),
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
             } 
@@ -214,18 +224,18 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
               Report <- file.path(my_tempdir, "reportPdf.Rmd")
               if (!dir.exists(file.path(my_tempdir, "images")))
                 dir.create(file.path(my_tempdir, "images"))
-              file.copy(file.path('inst/app/www', 'ReportPdf.Rmd'),
+              file.copy(system.file("app", "www", 'ReportPdf.Rmd', package = "riskassessment"),
                         Report,
                         overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'read_html.lua'),
+              file.copy(system.file("app", "www", 'read_html.lua', package = "riskassessment"),
                         file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'user-tie.png'),
+              file.copy(system.file("app", "www", 'images', 'user-tie.png', package = "riskassessment"),
                         file.path(my_tempdir, "images", "user-tie.png"),
                         overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'user-shield.png'),
+              file.copy(system.file("app", "www", 'images', 'user-shield.png', package = "riskassessment"),
                         file.path(my_tempdir, "images", "user-shield.png"),
                         overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'calendar-alt.png'),
+              file.copy(system.file("app", "www", 'images', 'calendar-alt.png', package = "riskassessment"),
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
             }

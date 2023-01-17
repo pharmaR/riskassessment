@@ -21,9 +21,11 @@
 * Unit test cases are now available for get_date_span() function (#295).
 * Added unit tests for all functions in utils_get_db except dbSelect (#295)
 * Added unit tests for all functions in utils_insert_db except dbUpdate (#295)
+* Added tests using `shinytest2` to test the databaseView module(#295)
 * Allowed users to type in package names to be assessed instead of uploading CSV
 * updated `README` to reflect new repo name 'riskassessment' without the '_' to separate the two words.
 * Reduce number of package dependencies from 33 to 26
+* Changed risk-based color gradient to use colorblind-friendly color palette (#324).
 
 # riskassessment 0.0.1
 * Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/riskassessment/archive/master.zip")` and `shiny::runGitHub('riskassessment', 'pharmaR')`
