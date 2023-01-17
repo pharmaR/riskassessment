@@ -31,7 +31,7 @@ jobs:
       
       - name: Render Rmarkdown files and Commit Results
         run: |
-          Rscript -e ' rmarkdown::render("README.Rmd", output_format = "md_document")'
+          Rscript -e 'rmarkdown::render("README.Rmd", output_format = "github_document")'
           git config --local user.name "$GITHUB_ACTOR"
           git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
           git add README.md || echo "WARN: README.md was not updated"
