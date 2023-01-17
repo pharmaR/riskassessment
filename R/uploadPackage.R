@@ -94,7 +94,11 @@ uploadPackageServer <- function(id, user) {
 
     observeEvent(input$load_cran, {
       if (!isTruthy(cran_pkgs())) {
-        cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+        if (isTRUE(getOption("shiny.testmode"))) {
+          cran_pkgs(c("dplyr", "tidyr", "readr", "purrr", "tibble", "stringr", "forcats"))
+        } else {
+          cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+        }
       }
     },
     once = TRUE)
