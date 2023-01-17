@@ -32,6 +32,7 @@ Authors:
   \item Maya Gans \email{maya.gans@biogen.com}
   \item Aravind Reddy Kallem
   \item  Fission Labs India Pvt Ltd
+  \item Andrew Borgman \email{andrew.borgman@biogen.com}
 }
 
 Other contributors:
@@ -39,7 +40,6 @@ Other contributors:
   \item  PSI special interest group Application and Implementation of Methodologies in Statistics [copyright holder, funder]
   \item  R Validation Hub [copyright holder, funder]
   \item Munshi Imran Hossain [contributor]
-  \item Andrew Borgman \email{andrew.borgman@biogen.com} [contributor]
 }
 
 }
