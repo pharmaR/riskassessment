@@ -4,6 +4,10 @@ output:
   html_document:
     theme: spacelab
     highlight: pygments
+vignette: >
+  %\VignetteIndexEntry{Using SQLite Command Line}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 <style type="text/css">
