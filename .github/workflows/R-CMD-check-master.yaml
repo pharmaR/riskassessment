@@ -44,10 +44,6 @@ jobs:
           extra-packages: rcmdcheck
           
       # install packages needed
-      - name: Install required fontawesome version
-        run: Rscript -e "remotes::install_version('fontawesome', version = '0.3.0', repos = 'http://cran.us.r-project.org')"
-          
-      # install packages needed
       - name: install required fontawesome version
         run: Rscript -e "remotes::install_version('fontawesome', version = '0.3.0', repos = 'http://cran.us.r-project.org')"
         
