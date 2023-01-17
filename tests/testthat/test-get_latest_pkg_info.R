@@ -1,5 +1,6 @@
 test_that("get_latest_pkg_info() in utils.R", {
       test <- get_latest_pkg_info("rpact")
+      expect_error(get_latest_pkg_info("r_pact123"))
       
       expect_type(test, "list")
       expect_equal(colnames(test), c("Version", "Maintainer", "Author",
