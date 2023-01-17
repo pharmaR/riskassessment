@@ -26,6 +26,9 @@
 * updated `README` to reflect new repo name 'riskassessment' without the '_' to separate the two words.
 * Reduce number of package dependencies from 33 to 26
 * Changed risk-based color gradient to use colorblind-friendly color palette (#324).
+* Add a "getting started with `riskassessment`" vignette
+* Added hex logo to `README` and risk gauge within the app
+* Added favicon to app window tab
 * Add a package delete option
 
 # riskassessment 0.0.1
