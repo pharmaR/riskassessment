@@ -167,7 +167,7 @@ So, you've uploaded a package, reviewed all it's metrics, the package score, dou
 Head over to the `Package Control Panel`. First we'll start off with an "Overall Comment". Write a few words about what you've learned during your evaluation We recommend being brief and succinct here.
 
 <center>
-![](images/overall comment.png){style="margin: 10px 0 10px 0"}
+![](images/overall_comment.png){style="margin: 10px 0 10px 0"}
 </center>
 
 After clicking submit, you'll receive a prompt that just confirms what you wrote. Click dismiss and now turn your attention to the decision slider, with options "Low", "Medium", and "High". Consider how your organization may treat each category? For example, "Low" might mean it's permitted for use in regulatory environments, "Medium" may mean the package isn't fully endorsed yet, so it needs to stay in a holding patter. "High" of course means rejection.
