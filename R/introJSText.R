@@ -14,7 +14,7 @@ sidebar_steps <-
     intro = c(
       "Discover the package assessment process & criteria",
       "Review the R packages that already exist in the database",
-      "Expand this dropdown list to selet assess a specific package that was previously uploaded. Then select a version (if more than one exists).",
+      "Expand this dropdown list to select a specific package to assess that was previously uploaded.",
       # "The latest version will autopopulate here.", # can't peg ui object name, even with a div!
       "The status can be either 'Under Review' or 'Reviewed'.",
       "The score can take any value between 0 (no risk) and 1 (highest risk).",
