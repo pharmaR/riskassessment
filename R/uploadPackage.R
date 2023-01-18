@@ -136,6 +136,7 @@ uploadPackageServer <- function(id, user) {
         selectizeInput(NS(id, "rem_pkg_lst"), "Remove Package(s)", choices = NULL, multiple = TRUE,
                        options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
                                       onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "curr_pkgs"), '", "load", {priority: "event"})}')))),
+        # note the action button moved out of alignment with 'selectizeInput' under 'renderUI'
         actionButton(NS(id, "rem_pkg_btn"), shiny::icon("angle-right"),
                      style = 'height: calc(1.5em + 1.5rem + 2px); position: relative; top: 32px'),
         tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "rem_pkg_btn"), '").css("margin-top", $("#', NS(id, "rem_pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
@@ -238,7 +239,7 @@ uploadPackageServer <- function(id, user) {
       # the incProgress() that the process is completed.
       withProgress(
         max = (np * 5) + 1, value = 0,
-        message = "Uploading Packages to DB:", {
+        message = "Managing (upload or remove) Packages to DB:", {
           
           for (i in 1:np) {
             
@@ -330,15 +331,33 @@ uploadPackageServer <- function(id, user) {
       }
     )
     
-    # Uploaded packages summary.
+    # Removed/Uploaded packages summary.
     output$upload_summary_text <- renderText({
       req(uploaded_pkgs)
       req(nrow(uploaded_pkgs()) > 0)
-
+      # modify the message if we are removing packages
+      if(isTruthy(sum(uploaded_pkgs()$status == 'removed') >0)) {
+        loggit::loggit("INFO",
+                       paste("Uploaded file:", input$uploaded_file$name, 
+                             "Removed Packages", sum(uploaded_pkgs()$status == 'removed')),
+                       echo = FALSE)
+        
+        as.character(tagList(
+          br(), br(),
+          hr(),
+          div(id = "upload_summary_div",
+              h5("Summary of Removed package(s)"),
+              br(),
+              p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
+              p(tags$b("Removed Packages: "), sum(uploaded_pkgs()$status == 'removed')),
+              p("Note: The assessment will be performed on the latest version of each
+          package, irrespective of the uploaded version.")
+          )
+        ))
+      } else {
       loggit::loggit("INFO",
                      paste("Uploaded file:", input$uploaded_file$name, 
                            "Total Packages:", nrow(uploaded_pkgs()),
-                           "Removed Packages", sum(uploaded_pkgs()$status == 'removed'),
                            "New Packages:", sum(uploaded_pkgs()$status == 'new'),
                            "Undiscovered Packages:", sum(grepl('not found', uploaded_pkgs()$status)),
                            "Duplicate Packages:", sum(uploaded_pkgs()$status == 'duplicate')),
@@ -351,7 +370,6 @@ uploadPackageServer <- function(id, user) {
             h5("Summary of uploaded package(s)"),
             br(),
             p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
-            p(tags$b("Removed Packages: "), sum(uploaded_pkgs()$status == 'removed')),
             p(tags$b("New Packages: "), sum(uploaded_pkgs()$status == 'new')),
             p(tags$b("Undiscovered Packages: "), sum(grepl('not found', uploaded_pkgs()$status))),
             p(tags$b("Duplicate Packages: "), sum(uploaded_pkgs()$status == 'duplicate')),
@@ -359,6 +377,7 @@ uploadPackageServer <- function(id, user) {
           package, irrespective of the uploaded version.")
         )
       ))
+      }
     })
     
     # Uploaded packages table.
