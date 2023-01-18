@@ -44,19 +44,7 @@ uploadPackageUI <- function(id) {
      ),
     
      fluidRow(
-      column(
-        width = 4,
-        div(
-          id = "rem-package-group",
-          style = "display: flex;",
-          selectizeInput(NS(id, "rem_pkg_lst"), "Remove Package(s) (admin only)", choices = NULL, multiple = TRUE,
-                        options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
-                                      onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "curr_pkgs"), '", "load", {priority: "event"})}')))),
-          actionButton(NS(id, "rem_pkg_btn"), shiny::icon("angle-right"),
-                       style = 'height: calc(1.5em + 1.5rem + 2px)'),
-          tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "rem_pkg_btn"), '").css("margin-top", $("#', NS(id, "rem_pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
-        )
-      ),
+        uiOutput(NS(id, "rem_pkg_div"))
     ),
     # Display the summary information of the uploaded csv.
     fluidRow(column(width = 12, htmlOutput(NS(id, "upload_summary_text")))),
@@ -137,6 +125,25 @@ uploadPackageServer <- function(id, user) {
     
     uploaded_pkgs00 <- reactiveVal()
 
+    observeEvent(user$role, {
+    req(user$role == "admin")  
+    output$rem_pkg_div <- renderUI({
+      column(
+        width = 4,
+      div(
+        id = "rem-package-group",
+        style = "display: flex;",
+        selectizeInput(NS(id, "rem_pkg_lst"), "Remove Package(s)", choices = NULL, multiple = TRUE,
+                       options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
+                                      onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "curr_pkgs"), '", "load", {priority: "event"})}')))),
+        actionButton(NS(id, "rem_pkg_btn"), shiny::icon("angle-right"),
+                     style = 'height: calc(1.5em + 1.5rem + 2px); position: relative; top: 32px'),
+        tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "rem_pkg_btn"), '").css("margin-top", $("#', NS(id, "rem_pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
+      ),
+      )
+     })
+    })
+    
     observeEvent(input$uploaded_file, {
       req(input$uploaded_file)
       
