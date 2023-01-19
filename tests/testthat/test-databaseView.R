@@ -80,36 +80,17 @@ test_that("Reactivity of database view table", {
   expect_equal(packages_table, tbl_actual, 
                ignore_attr = TRUE)
   
-  #### Test that the download button is disabled if no packages selected ####
-  expect_equal(app$get_js("$('#databaseView-download_reports').attr('disabled')"), "disabled")
+  #### Test that the selected packages are being passed to the download handler ####
+  expect_equal(app$get_value(export = "databaseView-pkgs"), character(0))
   app$run_js("Shiny.setInputValue('databaseView-packages_table_rows_selected', 1)")
   app$wait_for_idle()
-  expect_equal(app$get_js("$('#databaseView-download_reports').attr('disabled')"), NULL)
-  app$run_js("Shiny.setInputValue('databaseView-packages_table_rows_selected', null)")
-  app$wait_for_idle()
-  expect_equal(app$get_js("$('#databaseView-download_reports').attr('disabled')"), "disabled")
-  
-  #### Test that the download file works as expected ####
-  expect_equal(app$get_value(input = "databaseView-report_formats"), "html")
-  app$run_js("Shiny.setInputValue('databaseView-packages_table_rows_selected', 1)")
-  app$wait_for_idle()
-  report <- app$get_download("databaseView-download_reports")
-  expect_equal(tools::file_ext(report), "html")
-  
-  # TODO: Add DOCX and PDF tests back in when issues are resolved with compiling the Rmd file
-  # app$set_inputs(`databaseView-report_formats` = "docx")
-  # report <- app$get_download("databaseView-download_reports")
-  # expect_equal(tools::file_ext(report), "docx")
-  # 
-  # # app$set_inputs(`databaseView-report_formats` = "pdf")
-  # # report <- app$get_download("databaseView-download_reports")
-  # # expect_equal(tools::file_ext(report), "pdf")
-  # # 
-  # app$set_inputs(`databaseView-report_formats` = "html")
+  expect_equal(app$get_value(export = "databaseView-pkgs"), "tidyr")
   app$run_js("Shiny.setInputValue('databaseView-packages_table_rows_selected', [1,2])")
   app$wait_for_idle()
-  report <- app$get_download("databaseView-download_reports")
-  expect_equal(tools::file_ext(report), "zip")
+  expect_equal(app$get_value(export = "databaseView-pkgs"), c("tidyr", "dplyr"))
+  app$run_js("Shiny.setInputValue('databaseView-packages_table_rows_selected', null)")
+  app$wait_for_idle()
+  expect_equal(app$get_value(export = "databaseView-pkgs"), character(0))
   
   app$stop()
 })

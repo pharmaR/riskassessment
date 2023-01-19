@@ -53,8 +53,8 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             br(), br(),
             
             div(id = "dwnld_rp",
-                selectInput(NS(id, "report_formats"), "Select Format", c("html", "docx", "pdf")),
-                downloadButton(NS(id, 'download_report'), "Download Report")
+                mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
+                mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
             ),
             
             br(), br(),
@@ -139,6 +139,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     metricGridServer("cm_metricGrid", metrics = com_metrics)
     
     output$communityMetrics_ui <- renderUI({
+      req(selected_pkg$name())
       
       vect <- dbSelect("select distinct id from community_usage_metrics") %>% dplyr::pull()
       
@@ -212,117 +213,6 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     }, options = list(searching = FALSE, pageLength = 15, lengthChange = FALSE,
                       info = FALSE))
     
-    # Create report.
-    output$download_report <- downloadHandler(
-      filename = function() {
-        glue::glue('{selected_pkg$name()}_{selected_pkg$version()}_Risk_Assessment.',
-             "{switch(input$report_formats, docx = 'docx', html = 'html', pdf = 'pdf')}")
-      },
-      content = function(file) {
-        shiny::withProgress(
-          message = glue::glue('Downloading Report: {selected_pkg$name()}'),
-          value = 0,
-          {
-            shiny::incProgress(1 / 10)
-            shiny::incProgress(5 / 10)
-            
-            report <- ''
-            my_tempdir <- tempdir()
-            
-            if (input$report_formats == "html") {
-              # TODO: Remove temporary warning once bug in fa v0.4.0 is fixed.
-              # https://github.com/rstudio/fontawesome/issues/99
-              # Here, we make sure user has a functional version of fontawesome
-              fa_v <- packageVersion("fontawesome")
-              if(fa_v != '0.3.0') {
-                msg1 <- "HTML reports require {fontawesome} v0.3.0 to render."
-                msg2 <- glue::glue("You currently have v{fa_v} installed. If the report download failed, please install correct version using code:")
-                code <- "remotes::install_version('fontawesome', version = '0.3.0', repos = 'http://cran.us.r-project.org')"
-                warning(paste(msg1, msg2, code))
-                showModal(modalDialog(
-                  size = "l",
-                  title = h3("HTML report requires {fontawesome} v0.3.0", class = "mb-0 mt-0 txt-color"),
-                  h5(msg2),
-                  wellPanel(code)
-                ))
-              }
-              
-              report <- file.path('inst/app/www', 'reportHtml.Rmd')
-            }
-            else if (input$report_formats == "docx") {
-              report <- file.path(my_tempdir, "reportDocx.Rmd")
-              if (!dir.exists(file.path(my_tempdir, "images")))
-                dir.create(file.path(my_tempdir, "images"))
-              file.copy(file.path('inst/app/www', 'reportDocx.Rmd'),
-                        report, overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'read_html.lua'),
-                        file.path(my_tempdir, "read_html.lua"),
-                        overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'user-tie.png'),
-                        file.path(my_tempdir, "images", "user-tie.png"),
-                        overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'user-shield.png'),
-                        file.path(my_tempdir, "images", "user-shield.png"),
-                        overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'calendar-alt.png'),
-                        file.path(my_tempdir, "images", "calendar-alt.png"),
-                        overwrite = TRUE)
-            } else {
-              report <- file.path(my_tempdir, "reportPdf.Rmd")
-              if (!dir.exists(file.path(my_tempdir, "images")))
-                dir.create(file.path(my_tempdir, "images"))
-              file.copy(file.path('inst/app/www', 'reportPdf.Rmd'),
-                        report, overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'read_html.lua'),
-                        file.path(my_tempdir, "read_html.lua"),
-                        overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'user-tie.png'),
-                        file.path(my_tempdir, "images", "user-tie.png"),
-                        overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'user-shield.png'),
-                        file.path(my_tempdir, "images", "user-shield.png"),
-                        overwrite = TRUE)
-              file.copy(file.path('inst/app/www', 'images', 'calendar-alt.png'),
-                        file.path(my_tempdir, "images", "calendar-alt.png"),
-                        overwrite = TRUE)
-            }
-            
-            # Collect info about package.
-            pkg_list <- list(
-              id = selected_pkg$id(),
-              name = selected_pkg$name(),
-              version = selected_pkg$version(),
-              title = selected_pkg$title(),
-              decision = selected_pkg$decision(),
-              description = selected_pkg$description(),
-              author = selected_pkg$author(),
-              maintainer = selected_pkg$maintainer(),
-              license = selected_pkg$license(),
-              published = selected_pkg$published(),
-              score = selected_pkg$score()
-            )
-            
-            rmarkdown::render(
-              report,
-              output_file = file,
-              params = list(pkg = pkg_list,
-                            riskmetric_version = paste0(packageVersion("riskmetric")),
-                            app_version = app_version,
-                            metric_weights = metric_weights(),
-                            user_name = user$name,
-                            user_role = user$role,
-                            overall_comments = overall_comments(),
-                            mm_comments = mm_comments(),
-                            cm_comments = cm_comments(),
-                            maint_metrics = maint_metrics(),
-                            com_metrics = com_metrics(),
-                            com_metrics_raw = com_metrics_raw(), # used for word doc
-                            downloads_plot_data = downloads_plot_data()
-              ),
-              envir = new.env(parent = globalenv())
-            )
-          })
-      }
-    )
+    mod_downloadHandler_server("downloadHandler", selected_pkg$name, user, metric_weights)
   })
 }
