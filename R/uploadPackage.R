@@ -26,8 +26,11 @@ uploadPackageUI <- function(id) {
           actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
                        style = 'height: calc(1.5em + 1.5rem + 2px)'),
           tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "add_pkgs"), '").css("margin-top", $("#', NS(id, "pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
-        )
+        ),
+        
+        uiOutput(NS(id, "rem_pkg_div"))
       ),
+      column(width = 1),
       
       column(
         width = 4,
@@ -43,9 +46,6 @@ uploadPackageUI <- function(id) {
       ),
      ),
     
-     fluidRow(
-        uiOutput(NS(id, "rem_pkg_div"))
-    ),
     # Display the summary information of the uploaded csv.
     fluidRow(column(width = 12, htmlOutput(NS(id, "upload_summary_text")))),
     
@@ -128,8 +128,6 @@ uploadPackageServer <- function(id, user) {
     observeEvent(user$role, {
     req(user$role == "admin")  
     output$rem_pkg_div <- renderUI({
-      column(
-        width = 4,
       div(
         id = "rem-package-group",
         style = "display: flex;",
@@ -137,10 +135,9 @@ uploadPackageServer <- function(id, user) {
                        options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
                                       onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "curr_pkgs"), '", "load", {priority: "event"})}')))),
         # note the action button moved out of alignment with 'selectizeInput' under 'renderUI'
-        actionButton(NS(id, "rem_pkg_btn"), shiny::icon("angle-right"),
-                     style = 'height: calc(1.5em + 1.5rem + 2px); position: relative; top: 32px'),
+        actionButton(NS(id, "rem_pkg_btn"), shiny::icon("trash-can"),
+                     style = 'height: calc(1.5em + 1.5rem + 2px); margin-top: 32px'),
         tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "rem_pkg_btn"), '").css("margin-top", $("#', NS(id, "rem_pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
-      ),
       )
      })
     })
