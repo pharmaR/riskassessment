@@ -1,4 +1,5 @@
 
 coverage:
   status:
-    patch: off  # disable codecov/patch
+    patch: off
+    project: off
