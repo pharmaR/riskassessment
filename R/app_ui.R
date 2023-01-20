@@ -13,17 +13,9 @@ app_ui <- function(request) {
     
     theme = app_theme(), # defined in data-raw/interanl-data.R
     
-    # not needed any more. Automatically bundled below
-    # includeCSS(path = file.path('www', 'css', 'main.css')),
-    # includeCSS(path = file.path('www', 'css', 'community_metrics.css')),
-    
     div(id = "raa-logo", img(src="www/raa-image.png")),
     
     tabsetPanel(
-      # header = div(style="display: inline-block; float:right;",
-      #     img(src="www/raa-image.png",
-      #         style="float:right; padding-right:3px; height:40px;"))
-      # ,
       id = "apptabs",
       tabPanel(
         title = "Risk Assessment",
@@ -32,8 +24,7 @@ app_ui <- function(request) {
         
         titlePanel(
           windowTitle = "riskassessment app",
-          title = div(id = "page-title", "R Package Risk Assessment App"
-          )
+          title = div(id = "page-title", "R Package Risk Assessment App")
         ),
         
         sidebarLayout(
