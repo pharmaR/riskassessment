@@ -199,12 +199,14 @@ uploadPackageServer <- function(id, user) {
       # run this after all packages in rem_pkg_lst have been removed
       dbUpdate("delete from package_metrics where package_id not in(select id from package)", db_name = "database.sqlite")
       dbUpdate("delete from community_usage_metrics where id not in(select name from package)", db_name = "database.sqlite")
+      cmts <- dbSelect("select distinct id from comments")
+      if (nrow(cmts) >0) {
       dbUpdate("delete from comments where id not in(select name from package)", db_name = "database.sqlite")
-      
+      }
       # update the list of packages we have
       pkgs_have(dbSelect("select name from package")[,1])
 
-      updateSelectizeInput(session, "rem_pkg_lst", selected = "")
+      updateSelectizeInput(session, "rem_pkg_lst", choices=pkgs_have(), selected = "")
       
       np <- length(input$rem_pkg_lst)
       uploaded_packages <-
@@ -345,8 +347,8 @@ uploadPackageServer <- function(id, user) {
           div(id = "upload_summary_div",
               h5("Summary of Removed package(s)"),
               br(),
-              p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
               p(tags$b("Removed Packages: "), sum(uploaded_pkgs()$status == 'removed')),
+              p(tags$b("Remaining Packages: "), nrow(dbSelect("SELECT name FROM package"))),
               p("Note: The assessment will be performed on the latest version of each
           package, irrespective of the uploaded version.")
           )
