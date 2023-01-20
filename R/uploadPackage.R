@@ -196,13 +196,9 @@ uploadPackageServer <- function(id, user) {
       dbUpdate(glue::glue("delete from package where name = '{pkg_name}'"), db_name = "database.sqlite")
       }
       
-      # run this after all packages in rem_pkg_lst have been removed
-      dbUpdate("delete from package_metrics where package_id not in(select id from package)", db_name = "database.sqlite")
-      dbUpdate("delete from community_usage_metrics where id not in(select name from package)", db_name = "database.sqlite")
-      cmts <- dbSelect("select distinct id from comments")
-      if (nrow(cmts) >0) {
-      dbUpdate("delete from comments where id not in(select name from package)", db_name = "database.sqlite")
-      }
+      # clean up other db tables
+      db_trash_collection(db_name = "database.sqlite")
+      
       # update the list of packages we have
       pkgs_have(dbSelect("select name from package")[,1])
 
