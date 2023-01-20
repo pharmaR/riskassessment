@@ -333,7 +333,7 @@ db_trash_collection <- function(db_name = golem::get_golem_options('assessment_d
   
   dbUpdate("delete from package_metrics where package_id not in(select id from package)", db_name)
   dbUpdate("delete from community_usage_metrics where id not in(select name from package)", db_name)
-  cmtbl <- dbSelect("select distinct id from comments")
+  cmtbl <- dbSelect("select distinct id from comments", db_name)
   if (nrow(cmtbl) >0) {
     dbUpdate("delete from comments where id not in(select name from package)", db_name)
   }
