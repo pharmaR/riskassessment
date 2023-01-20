@@ -49,7 +49,7 @@ app_ui <- function(request) {
               id = "tabs",
               tabPanel(
                 id = "upload_tab_id",
-                title = "Package Control",
+                title = "Upload Package",
                 uploadPackageUI("upload_package")
               ),
               tabPanel(
