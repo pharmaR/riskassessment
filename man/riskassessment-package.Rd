@@ -32,7 +32,6 @@ Authors:
   \item Maya Gans \email{maya.gans@biogen.com}
   \item Aravind Reddy Kallem
   \item  Fission Labs India Pvt Ltd
-  \item Lars Andersen \email{lars.andersen@boehringer-ingelheim.com}
   \item Andrew Borgman \email{andrew.borgman@biogen.com}
 }
 

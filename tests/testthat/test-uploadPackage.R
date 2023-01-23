@@ -1,5 +1,4 @@
 
-
 test_that("Uploaded packages show up in summary table", {
   # delete app DB if exists to ensure clean test
   db_loc <- test_path("test-apps", "database.sqlite")
@@ -90,63 +89,4 @@ test_that("Sample upload file can be shown and downloaded", {
     dl_data,
     template_tbl
   )
-})
-
-test_that("Removed packages show up in summary table", {
-  # delete app DB if exists to ensure clean test
-  app_db_loc <- test_path("test-apps", "database.sqlite")
-  if (file.exists(app_db_loc)) {
-    file.remove(app_db_loc)
-  }
-  
-  # copy in already instantiated database to avoid need to rebuild
-  # this is a database created for test-downloadHandler
-  test_db_loc <- test_path("test-apps", "downloadHandler-app", "dplyr_tidyr.sqlite")
-
-  file.copy(
-    test_db_loc,
-    app_db_loc
-  )
-
-  pkgs <- dbSelect("select name from package", app_db_loc)[,1]
-  expect_equal(length(pkgs), 2L)
-  
-  # set up new app driver object
-  app <- AppDriver$new(app_dir = test_path("test-apps"))
-  
-  expect_equal(app$get_value(input = "tabs"), "Upload Package")
-  
-  # set focus
-  app$run_js('Shiny.setInputValue("upload_package-curr_pkgs", "load", {priority: "event"})')
-  app$wait_for_idle(1000)
-  
-  # set dplyr as package to remove
-  app$set_inputs(`upload_package-rem_pkg_lst` = "dplyr")
-  
-  app$click(selector = "#upload_package-rem_pkg_btn")
-  
-  # wait for table to be shown
-  app$wait_for_value(
-    output = "upload_package-upload_pkgs_table",
-    ignore = list(NULL),
-    timeout = 30 * 1000 # CI keeps failing here...
-  )
-  app$wait_for_idle(1000)
-  
-  # parse the package name from the upload summary table
-  uploaded_packages <- app$get_html("#upload_package-upload_pkgs_table") %>%
-    rvest::minimal_html() %>%
-    rvest::html_table() %>%
-    .[[2]]
-  
-  # expect status is removed
-  expect_true(all(uploaded_packages$status == "removed"))
-  expect_identical(uploaded_packages$package[1], "dplyr")
-  
-  # There should be just one package left in the db: stringr
-  pkgs_left <- app$get_value(export = "databaseView-table_data")$name
-  expect_equal(length(pkgs_left), 1L)
-  expect_identical(pkgs_left[1], "tidyr")
-
-  app$stop()
 })

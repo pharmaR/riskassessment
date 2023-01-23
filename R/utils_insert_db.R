@@ -319,22 +319,3 @@ update_metric_weight <- function(metric_name, metric_weight,
     WHERE name = '{metric_name}'"
   ), db_name)
 }
-
-#' db trash collection
-#' 
-#' clean up tables package_metrics, community_usage_metrics and comments
-#' after one or more packages have been removed from the package table.
-#' 
-#' @param db_name character name (and file path) of the database 
-#' 
-#' @returns nothing
-#' @noRd
-db_trash_collection <- function(db_name = golem::get_golem_options('assessment_db_name')){
-  
-  dbUpdate("delete from package_metrics where package_id not in(select id from package)", db_name)
-  dbUpdate("delete from community_usage_metrics where id not in(select name from package)", db_name)
-  cmtbl <- dbSelect("select distinct id from comments", db_name)
-  if (nrow(cmtbl) >0) {
-    dbUpdate("delete from comments where id not in(select name from package)", db_name)
-  }
-}

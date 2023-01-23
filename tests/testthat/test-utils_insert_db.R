@@ -74,23 +74,6 @@ test_that("utils_insert_db functions other than dbUpdate", {
   testthat::expect_equal(mtwt$weight, 2)
   })
   
-  test_that("db_trash_collection works", {
-    cmdata1 <- dbSelect(glue::glue(
-      "SELECT *
-     FROM community_usage_metrics
-     WHERE id = '{pkg_name}'"), file.path(base_path, db_temp)
-    )
-    dbUpdate(glue::glue("delete from package where name = '{pkg_name}'"), db_name = file.path(base_path, db_temp))
-    db_trash_collection(db_name = file.path(base_path, db_temp))
-    cmdata2 <- dbSelect(glue::glue(
-      "SELECT *
-     FROM community_usage_metrics
-     WHERE id = '{pkg_name}'"), file.path(base_path, db_temp)
-    )
-    testthat::expect_true(nrow(cmdata2) == 0)
-    testthat::expect_lt(nrow(cmdata2), nrow(cmdata1))
-  })
-  
   unlink(file.path(base_path, db_temp))
   rm(base_path, db_temp, pkg_name, pkg_id)
   
