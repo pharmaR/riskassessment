@@ -212,7 +212,7 @@ uploadPackageServer <- function(id, user) {
           status = rep("removed", np)
         )
 
-      uploaded_pkgs00(uploaded_packages)
+      uploaded_pkgs(uploaded_packages)
 
     })
     
@@ -234,7 +234,7 @@ uploadPackageServer <- function(id, user) {
       # the incProgress() that the process is completed.
       withProgress(
         max = (np * 5) + 1, value = 0,
-        message = "Managing (upload or remove) Packages to DB:", {
+        message = "Uploading Packages to DB:", {
           
           for (i in 1:np) {
             
