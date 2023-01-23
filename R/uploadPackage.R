@@ -132,7 +132,7 @@ uploadPackageServer <- function(id, user) {
         id = "rem-package-group",
         style = "display: flex;",
         selectizeInput(NS(id, "rem_pkg_lst"), "Remove Package(s)", choices = NULL, multiple = TRUE,
-                       options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
+                       options = list(create = FALSE, showAddOptionOnCreate = FALSE, 
                                       onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "curr_pkgs"), '", "load", {priority: "event"})}')))),
         # note the action button moved out of alignment with 'selectizeInput' under 'renderUI'
         actionButton(NS(id, "rem_pkg_btn"), shiny::icon("trash-can"),
