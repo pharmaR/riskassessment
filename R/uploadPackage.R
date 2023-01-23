@@ -193,11 +193,11 @@ uploadPackageServer <- function(id, user) {
 
       for (i in 1:np) {
       pkg_name <- input$rem_pkg_lst[i]
-      dbUpdate(glue::glue("delete from package where name = '{pkg_name}'"), db_name = "database.sqlite")
+      dbUpdate(glue::glue("delete from package where name = '{pkg_name}'"), db_name = golem::get_golem_options('assessment_db_name'))
       }
       
       # clean up other db tables
-      db_trash_collection(db_name = "database.sqlite")
+      db_trash_collection(db_name = golem::get_golem_options('assessment_db_name'))
       
       # update the list of packages we have
       pkgs_have(dbSelect("select name from package")[,1])
@@ -288,12 +288,8 @@ uploadPackageServer <- function(id, user) {
               FROM package
               WHERE name = '{uploaded_packages$package[i]}'")))
             
-            # if pkg was removed then reset found to 1 and keep status as "removed"
-            if(uploaded_packages$status[i] == "removed") found <- 1
-            uploaded_packages$status[i] <- ifelse(found == 0, 'new', 
-                                           ifelse(uploaded_packages$status[i] == "removed",
-                                                  'removed', 'duplicate'))
-            
+            uploaded_packages$status[i] <- ifelse(found == 0, 'new', 'duplicate')
+
             # Add package and metrics to the db if package is not in the db.
             if(!found) {
               # Get and upload pkg general info to db.
