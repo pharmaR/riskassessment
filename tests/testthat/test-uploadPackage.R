@@ -100,17 +100,14 @@ test_that("Removed packages show up in summary table", {
   }
   
   # copy in already instantiated database to avoid need to rebuild
-  # this is a database that has been built via inst/testdata/upload_format.csv
-  test_db_loc <- system.file("testdata", "upload_format.database", package = "riskassessment")
-  
+  # this is a database created for test-downloadHandler
+  test_db_loc <- test_path("test-apps", "downloadHandler-app", "dplyr_tidyr.sqlite")
+
   file.copy(
     test_db_loc,
     app_db_loc
   )
-  # add a package
-  pkg_name <- "stringr"
-  insert_pkg_info_to_db(pkg_name, app_db_loc)
-  
+
   pkgs <- dbSelect("select name from package", app_db_loc)[,1]
   expect_equal(length(pkgs), 2L)
   
@@ -149,7 +146,7 @@ test_that("Removed packages show up in summary table", {
   # There should be just one package left in the db: stringr
   pkgs_left <- app$get_value(export = "databaseView-table_data")$name
   expect_equal(length(pkgs_left), 1L)
-  expect_identical(pkgs_left[1], "stringr")
-  
+  expect_identical(pkgs_left[1], "tidyr")
+
   app$stop()
 })
