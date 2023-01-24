@@ -5,6 +5,8 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session) {
+  shinyOptions(golem_options = list(assessment_db_name = "dplyr.sqlite"))
+  
   user <- reactiveValues(
     name = "tester",
     role = "admin"
