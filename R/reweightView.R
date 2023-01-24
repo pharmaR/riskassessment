@@ -27,6 +27,15 @@ reweightViewUI <- function(id) {
 reweightViewServer <- function(id, user) {
   moduleServer(id, function(input, output, session) {
     
+    exportTestValues(
+      save = {
+        reactiveValuesToList(save)
+      },
+      curr_new_wts = {
+        curr_new_wts()
+      }
+    )
+    
     save <- reactiveValues(data=NULL)
     
     curr_new_wts <- reactiveVal(
