@@ -24,6 +24,7 @@ test_that("reweightView works", {
   expect_equal(app$get_value(input = "reweightInfo-metric_weight"), 1)
   
   db_backup <- app$get_download("reweightInfo-download_database_btn")
+  app$wait_for_idle()
   app$click(selector = "#confirmation_id button")
   
   con1 <- DBI::dbConnect(RSQLite::SQLite(), app_db_loc)
@@ -83,7 +84,8 @@ test_that("reweightView works", {
   )
   
   db_backup <- app$get_download("reweightInfo-download_database_btn")
-  app$click(selector = "[data-dismiss=modal]")
+  app$wait_for_idle()
+  app$click(selector = "#confirmation_id button")
   
   expect_equal(nrow(dbSelect("select * from comments", db_backup)), 2)
   expect_equal(dbSelect("select * from package", db_backup)[["decision"]], "Low")
@@ -93,7 +95,8 @@ test_that("reweightView works", {
   app$wait_for_idle()
   
   db_backup <- app$get_download("reweightInfo-download_database_btn")
-  app$click(selector = "[data-dismiss=modal]")
+  app$wait_for_idle()
+  app$click(selector = "#confirmation_id button")
   
   expect_equal(nrow(dbSelect("select * from comments where comment_type = 'o'", db_backup)), 0)
   expect_equal(nrow(dbSelect("select * from comments", db_backup)), 3)
