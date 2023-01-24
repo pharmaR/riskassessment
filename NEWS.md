@@ -32,6 +32,7 @@
 * Added favicon to app window tab
 * Implemented the usage of a download handler module
 * Added a package delete option
+* Added an "Administrative Tools and Options" vignette
 
 # riskassessment 0.0.1
 * Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/riskassessment/archive/master.zip")` and `shiny::runGitHub('riskassessment', 'pharmaR')`
