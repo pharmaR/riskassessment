@@ -1,6 +1,7 @@
 library(shiny)
 
 ui <- fluidPage(
+  shinyjs::useShinyjs(),
   riskassessment:::reweightViewUI("reweightInfo")
 )
 
@@ -12,7 +13,13 @@ server <- function(input, output, session) {
     role = "admin"
   )
   
-  riskassessment:::reweightViewServer("reweightInfo", user)
+  exportTestValues(
+    metric_weights = {
+      metric_weights()
+    }
+  )
+  
+  metric_weights <- riskassessment:::reweightViewServer("reweightInfo", user)
 }
 
 shinyApp(ui, server)
