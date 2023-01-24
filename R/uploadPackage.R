@@ -211,7 +211,10 @@ uploadPackageServer <- function(id, user) {
           version = rep('0.0.0', np),
           status = rep("removed", np)
         )
-
+      # get the current version
+      for (i in 1:np) {
+      uploaded_packages$version[i] <- riskmetric::pkg_ref(uploaded_packages$package[i])$version %>% as.character()
+      }
       uploaded_pkgs(uploaded_packages)
 
     })
