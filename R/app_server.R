@@ -117,7 +117,7 @@ app_server <- function(input, output, session) {
   metric_weights <- reweightViewServer("reweightInfo", user)
   
   # Load server of the uploadPackage module.
-  uploaded_pkgs <- uploadPackageServer("upload_package")
+  uploaded_pkgs <- uploadPackageServer("upload_package", user)
   
   # Load server of the sidebar module.
   selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs$names)
