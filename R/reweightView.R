@@ -118,11 +118,13 @@ reweightViewServer <- function(id, user) {
                        DT::dataTableOutput(NS(id, "weights_table")))
               ),
               br(), br(), br(),
-              conditionalPanel("input.metric_name === 'covr_coverage'", 
+              conditionalPanel("input.metric_name === 'covr_coverage'",
+                               ns = NS(id),
                                fluidRow(
-                                 column(width = 12, tags$div(style = "color: red",
-                                                             h5(em("Note: the 'covr_coverage' metric is currently disabled (weight = 0) until the 'riskmetric' package returns a non-NA value for this metric. 
-               "))))
+                                 column(1),
+                                 column(width = 10, h5(em("Note: the 'covr_coverage' metric is currently disabled (weight = 0) until the 'riskmetric' package returns a non-NA value for this metric. 
+               "), style = "color: red;"), align = "center"),
+                                 column(1)
                                ),
                                br()
               ),
