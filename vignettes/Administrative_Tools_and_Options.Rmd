@@ -18,12 +18,10 @@ knitr::opts_chunk$set(echo = TRUE)
 
 <br><br><br>
 
-## Introduction
+# Introduction
 
 This guide is to assist admins with managing credentials (user IDs and passwords) and Assessment Reweighting for the Risk Assessment App. 
 
-
-## Administrative Tools 
 
 Only users with administrator privileges have access to the Administrative Tools and Options section. To verify you have access to  this, first verify that you can see all four navigation tabs at the top of the app, with the rightmost one showing "Administrative Tools".
 
@@ -35,11 +33,11 @@ Only users with administrator privileges have access to the Administrative Tools
 
 You can also hover your cursor over the xmark `r fa("xmark")` symbol in the bottom-right corner of the app. Upon hovering, two additional buttons should appear. The middle one is the logout `r fa("right-from-bracket")` button,  while the Administrator mode `r fa("gears")` button will appear on top, as seen below.  This button will not appear from non-admin users.
 
-<center>
+<left>
 
 ![](images/admin_mode_button.png){width=750px style="margin: 10px 0 10px 0"}
 
-</center>
+</left>
 
 
 <br>
@@ -50,24 +48,24 @@ The first is "Credential Manager" and the second is "Assessment Reweighting."
 
 ![](images/admin_tools_tabs.png)
 </br>
-We will cover the "Credential Manager" tab first.
 
-### Credential Manager
+## Credential Manager
 
 Two tables are presented. The first one, indicated by the `r fa("users")` Users icon, is used to manage users.
 </br>The the second one, indicated by the `r fa("key")` key icon, is used to manage passwords.
+There is also a button at the bottom to download a copy of the current sqlite database.
 
-<center>
+<left>
 
 ![](images/admin_mode_tables.png){width=750px}
 
-</center>
+</left>
 
-## Managing Users
-<br> 
+### Managing Users
+
 The first table allows adding, editing, and deleting users.
 
-### Add a User
+#### Add a User
 
 Given the only user ID at the moment is "ADMIN", this would be a good time to add some users. At the top of the **Users** table, click the dark blue button labelled: "Add a user".
  
@@ -96,7 +94,7 @@ Upon submission, a confirmation modal will appear, so you can notify the user an
 ![](images/new_user_modal.png)
 
 
-## User `start` and `expire` dates
+#### User `start` and `expire` dates
 
 If either the **start** date is set to a future date or the **expire** date is set to *before* today's date, an "account expired" message will appear, and the log in attempt will fail.  See image below.
 
@@ -113,96 +111,121 @@ them blank.
 
 <br>
 
-### Edit a user
+#### Edit a user
 
 
-<center>
+<left>
 
-![](images/users_table.png){width=750px}
+![](images/users_table.png){width=1590px, height=348px}
 
-</center>
+</left>
 
 <br>
 
-Edit user information by clicking on the blue `r fa(name = "pen-to-square", fill = "blue", height = "2em")` <a style="color:blue">Edit</a> button, found on the right-hand side of the table.
+Edit user information by clicking on the dark blue `r fa(name = "pen-to-square", fill = "darkblue", height = "2em")` <a style="color:darkblue">Edit</a> button, found on the right-hand side of the table.
 
 An Edit User window will appear.
+
+<left>
 ![](images/edit_user_popup.png){width=416px, height=478px}
 
 Make your changes, and then click on "Confirm Change"
 
-A small modal will briefly appear indicated the user has been updated.
-![](images/user_updated_modal.png){width=343px, height=124px}
+A small modal will briefly appear indicating the user has been updated.
 
+![](images/user_updated_modal.png){width=343px, height=124px}
+</left>
 <br>
 
-### Delete a user
+At the bottom of this table is a bar with three buttons. 
+The first one is a checkbox `r fa(name = "square-check", fill = "red", height = "2em")`
+to select multiple users followed by an "Edit Selected Users" and a "Remove Selected Users" button.
 
+These buttons are enabled when you select two or more users.
 
-Delete any user by clicking on the red `r fa(name = "trash-can", fill = "red", height = "2em")` <a style="color:red">Remove</a> button, also on the right-hand side of the table.
+![](images/edit_remove_select_users.png)
+
+But the "Edit Selected Users" button only allows you to modify the start and expire dates for that selected group of users.
+
+Make your changes, and then click on "Confirm Change"
+
+Again, A small modal will briefly appear indicating the user has been updated.
+
+![](images/edit_select_users.png){width=406px, height=327px}
+
+#### Delete a user
+
+Delete any user by clicking on the red `r fa(name = "trash-can", fill = "red", height = "2em")` 
+<a style="color:red">Remove</a> button, also on the right-hand side of the table.
 
 You will see a confirmatory modal message
+
+<left>
 ![](images/delete_user_modal.png){width=410px, height=151px}
 
+</left>
 
-## Replace initial `Admin` user
+You can also select multiple users like you did with editing multiple users and click on the "Remove Selected Users" button at the bottom of the table.
+
+#### Replace initial `Admin` user
 
 As an administrator, it's recommended you replace your initial `admin` user ID with one unique to you. Note that there must always be **at least** one admin user, and **you cannot delete yourself!**  If you want to delete the initial `admin` user you will first need to create another user ID first with administrative privileges, as described below.
 
 
-Click the blue "Add a user" button and make sure to check the `Admin` box. The temporary password can be overridden by un-checking the "ask to change password" box.
+Click the blue "Add a user" button and make sure to check the `Admin` box. The temporary password can be overridden by un-checking the "ask to change password" box and setting the password to whatever you want.
 
 <br>
 
-<center>
+<left>
 
 ![](images/create_new_admin.png){width=410px, height=557px} 
 
-</center>
+</left>
 
 <br>
 
-After completing the form, sign in using your new credentials and delete the original `admin` user by clicking the red <a style="color:red">remove</a> button.
+After completing the form, sign in using your new credentials and delete the original `admin` user by clicking on the red `r fa(name = "trash-can", fill = "red", height = "2em")` 
+<a style="color:red">Remove</a> button on the "admin" row.
 
 <br>
 
 
-## Password management
+### Managing Passwords
 
 The second table allows for password management.
 
-<center>
+<left>
 
-![](images/password_table.png) 
+![](images/password_table.png){width=1560px, height=368px} 
 
-</center>
+</left>
 
-Click on the blue <a style="color:blue">*Change password*</a> button to force
+Click on the dark blue `r fa(name = "key", fill = "darkblue", height = "2em")`<a style="color:darkblue">*Change password*</a> button to force
 corresponding user to change his/her password on the next log-in.
 
-Click on the orange <a style="color:orange">*Reset password*</a> button to generate a temporary password. You are responsible for delivering the new password to the user.
+Click on the orange `r fa(name = "arrow-rotate-left", fill = "orange", height = "2em")`
+<a style="color:orange">*Reset password*</a> button to generate a temporary password. 
+</br>You are responsible for delivering the new password to the user.
 
 <br>
 
-### Additional column definitions
+Like the bottom of the User table, There is also a
+checkbox `r fa(name = "square-check", fill = "red", height = "2em")`
+to select multiple users followed by a "Force Selected Users to Change Password" button.
+
+This button is enabled when you select two or more users.
+
+![](images/force_change_password.png){width=395px, height=47px}
+#### Additional column definitions:
 
 - Must change column: Indicates whether the user has to change his/her password
 next log-in.
 - Have changed column: Indicates the user has already changed his/her password.
-- Date change column: Indicates the date the password was updated.
+- Date Last changed column: Indicates the date the password was updated.
 
 <br>
 
-## Have an issue?
+## Assessment Reweighting
 
-That's all for this tutorial. If you have any issues or feature requests as it pertains to managing user IDs and passwords in the app, please open a new issue on our [Github repo](https://github.com/pharmaR/riskassessment/issues). 
-
-
-
-<br>
-
-<br>
-
-<br>
 
 <br>
