@@ -20,20 +20,12 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-This guide is to assist admins manage user IDs and passwords for the Risk Assessment App. 
-
-
-### Default user
-
-The first time you login, you will have used 
-the admin user ID: <u>ADMIN</u> with password <u>QWERTY1</u>.
-and will have have changed your password by now.
+This guide is to assist admins with managing credentials (user IDs and passwords) and Assessment Reweighting for the Risk Assessment App. 
 
 
 ## Administrative Tools 
 
-Only users with administrator privileges have access to the Administrative Tools and Options section. To verify you have access to  this, first verify that you can see all four navigation tabs at the top of the app, with the rightmost 
-one showing "Administrative Tools".
+Only users with administrator privileges have access to the Administrative Tools and Options section. To verify you have access to  this, first verify that you can see all four navigation tabs at the top of the app, with the rightmost one showing "Administrative Tools".
 
 <left>
 
@@ -52,13 +44,15 @@ You can also hover your cursor over the xmark `r fa("xmark")` symbol in the bott
 
 <br>
 
-Once you have entered this section,
-you should see two tabs here:  The first is "Credential Manager" and the second is "Assessment Reweighting."
+Once you have entered "Administrative Tools",
+you should see two tabs here.
+The first is "Credential Manager" and the second is "Assessment Reweighting."
+
 ![](images/admin_tools_tabs.png)
 </br>
 We will cover the "Credential Manager" tab first.
 
-### Credential Manager tab
+### Credential Manager
 
 Two tables are presented. The first one, indicated by the `r fa("users")` Users icon, is used to manage users.
 </br>The the second one, indicated by the `r fa("key")` key icon, is used to manage passwords.
@@ -71,32 +65,35 @@ Two tables are presented. The first one, indicated by the `r fa("users")` Users 
 
 ## Managing Users
 <br> 
+The first table allows adding, editing, and deleting users.
+
+### Add a User
 
 Given the only user ID at the moment is "ADMIN", this would be a good time to add some users. At the top of the **Users** table, click the dark blue button labelled: "Add a user".
  
-<center>
+<left>
 
 ![](images/add_a_user_btn.png){width=142px}
 
-</center>
+</left>
 
 <br>
 
-A prompt will appear where you can specify a user name and **optional** start & expire dates which by default are set at today's date (more on those later). A check box to grant the new user administrator authority is also checked by default. A custom password is generated which will require changing the first time the new user logs in, if the "Ask to change password" box is left checked. Here, we'll type "PeterParker" into the User name field.
- 
-<center>
-
-![](images/add_user.png){width=750px}
-
-</center>
-
-<br>
-
-Upon submission, a confirmation message will appear, so you can notify the user and send them his/her temporary password.</br>
+A prompt will appear where you can specify a user name and **optional** start & expire dates which by default are set at today's date (more on those later). A check box to grant the new user administrator authority is also checked by default. A custom password is generated which will require changing the first time the new user logs in, if the "Ask to change password" box remains checked. Here, we'll type "PeterParker" into the User name field.
  
 <left>
 
-![](images/new_user_msg.png)
+![](images/add_user.png){width=411px, height=560px}
+
+</left>
+
+<br>
+
+Upon submission, a confirmation modal will appear, so you can notify the user and send them his/her temporary password.</br>
+ 
+<left>
+
+![](images/new_user_modal.png)
 
 
 ## User `start` and `expire` dates
@@ -116,9 +113,8 @@ them blank.
 
 <br>
 
-## Managing users
+### Edit a user
 
-The first table allows adding, editing, and deleting users.
 
 <center>
 
@@ -128,10 +124,15 @@ The first table allows adding, editing, and deleting users.
 
 <br>
 
-### Edit current user
+Edit user information by clicking on the blue `r fa(name = "pen-to-square", fill = "blue", height = "2em")` <a style="color:blue">Edit</a> button, found on the right-hand side of the table.
 
+An Edit User window will appear.
+![](images/edit_user_popup.png){width=416px, height=478px}
 
-Edit a user information by clicking on the blue `r fa(name = "pen-to-square", fill = "blue", height = "2em")` <a style="color:blue">Edit</a> button, found on the right-hand side of the table.
+Make your changes, and then click on "Confirm Change"
+
+A small modal will briefly appear indicated the user has been updated.
+![](images/user_updated_modal.png){width=343px, height=124px}
 
 <br>
 
@@ -139,6 +140,9 @@ Edit a user information by clicking on the blue `r fa(name = "pen-to-square", fi
 
 
 Delete any user by clicking on the red `r fa(name = "trash-can", fill = "red", height = "2em")` <a style="color:red">Remove</a> button, also on the right-hand side of the table.
+
+You will see a confirmatory modal message
+![](images/delete_user_modal.png){width=410px, height=151px}
 
 
 ## Replace initial `Admin` user
@@ -152,7 +156,8 @@ Click the blue "Add a user" button and make sure to check the `Admin` box. The t
 
 <center>
 
-![](images/new_admin.png) 
+![](images/create_new_admin.png){width=410px, height=557px} 
+
 </center>
 
 <br>
