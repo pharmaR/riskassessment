@@ -142,7 +142,26 @@ reweightViewServer <- function(id, user) {
       )
     })
     
-    # make sure "Re-calculate" button is disbaled if no weights have changed. Need to make
+    metric_weight <- debounce(reactive(input$metric_weight), 500)
+    
+    observeEvent(input$metric_weight, {
+      shinyjs::disable("update_weight")
+    })
+    observeEvent(metric_weight(), {
+      req(input$metric_name)
+      
+      if (input$metric_name == "covr_coverage" && (is.na(metric_weight()) || metric_weight() != 0)) {
+        updateNumericInput(session, "metric_weight", value = 0)
+      } else if (is.na(metric_weight()) || metric_weight() < 0) {
+        updateNumericInput(session, "metric_weight", value = 0)
+      } else if (metric_weight() != curr_new_wts() %>%
+                 dplyr::filter(name == input$metric_name) %>%
+                 dplyr::pull(new_weight)){
+        shinyjs::enable("update_weight")
+      }
+    })
+    
+    # make sure "Re-calculate" button is disabled if no weights have changed. Need to make
     # sure renderUI exists, so we put a req() on metric_name input and also a .5 second delay
     # on the disable/ enable functions to give renderUI enough time to re-render
     n_wts_chngd <- reactive({
