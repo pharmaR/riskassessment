@@ -24,7 +24,7 @@ test_that("reweightView works", {
   expect_equal(app$get_value(input = "reweightInfo-metric_weight"), 1)
   
   db_backup <- app$get_download("reweightInfo-download_database_btn")
-  app$click(selector = "[data-dismiss=modal]")
+  app$click(selector = "#confirmation_id button")
   
   con1 <- DBI::dbConnect(RSQLite::SQLite(), app_db_loc)
   con2 <- DBI::dbConnect(RSQLite::SQLite(), db_backup)
