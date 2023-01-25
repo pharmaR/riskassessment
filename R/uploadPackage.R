@@ -14,19 +14,37 @@ uploadPackageUI <- function(id) {
     tags$head(tags$style(".shiny-notification {font-size:30px; color:darkblue; position: fixed; width:415px; height: 150px; top: 75% ;right: 10%;")),
     
     fluidRow(
+      
+      column(
+        width = 4,
+        div(
+          id = "type-package-group",
+          style = "display: flex;",
+          selectizeInput(NS(id, "pkg_lst"), "Type Package Name(s)", choices = NULL, multiple = TRUE, 
+                         options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
+                                        onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_cran"), '", "load", {priority: "event"})}')))),
+          actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
+                       style = 'height: calc(1.5em + 1.5rem + 2px)'),
+          tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "add_pkgs"), '").css("margin-top", $("#', NS(id, "pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
+        ),
+        
+        uiOutput(NS(id, "rem_pkg_div"))
+      ),
+      column(width = 1),
+      
       column(
         width = 4,
         div(id = "upload-file-grp",
             fileInput(
               inputId = NS(id, "uploaded_file"),
-              label = "Choose a CSV file",
+              label = "Or Upload a CSV file",
               accept = ".csv",
               placeholder = "No file selected"
             )
         ),
         actionLink(NS(id, "upload_format"), "View Sample Dataset")
-      )
-    ),
+      ),
+     ),
     
     # Display the summary information of the uploaded csv.
     fluidRow(column(width = 12, htmlOutput(NS(id, "upload_summary_text")))),
@@ -40,13 +58,14 @@ uploadPackageUI <- function(id) {
 #' Server logic for the 'Upload Package' module
 #'
 #' @param id a module id
+#' @param user a username
 #' 
 #' @importFrom riskmetric pkg_ref
 #' @importFrom rintrojs introjs
-#' @importFrom readr read_csv
+#' @importFrom utils read.csv available.packages
 #' @importFrom rvest read_html html_nodes html_text
 #' 
-uploadPackageServer <- function(id) {
+uploadPackageServer <- function(id, user) {
   moduleServer(id, function(input, output, session) {
     
     # Determine which guide to use for IntroJS.
@@ -57,6 +76,36 @@ uploadPackageServer <- function(id) {
         upload_pkg_complete 
       else 
         upload_pkg
+    })
+    
+    cran_pkgs <- reactiveVal()
+
+    observeEvent(input$load_cran, {
+      if (!isTruthy(cran_pkgs())) {
+        if (isTRUE(getOption("shiny.testmode"))) {
+          cran_pkgs(c("dplyr", "tidyr", "readr", "purrr", "tibble", "stringr", "forcats"))
+        } else {
+          cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+        }
+      }
+    },
+    once = TRUE)
+    
+    pkgs_have <- reactiveVal()
+    
+    observeEvent(input$curr_pkgs, {
+      pkgs_have(dbSelect("select name from package")[,1])
+    })
+    
+    observeEvent(cran_pkgs(), {
+      req(cran_pkgs())
+      updateSelectizeInput(session, "pkg_lst", choices = cran_pkgs(), server = TRUE)
+    })
+    
+    observeEvent(pkgs_have(), {
+      req(pkgs_have())
+      req(user$role == "admin")
+      updateSelectizeInput(session, "rem_pkg_lst", choices = pkgs_have(), server = TRUE)
     })
     
     # Start introjs when help button is pressed. Had to do this outside of
@@ -74,28 +123,38 @@ uploadPackageServer <- function(id) {
       )
     )
     
-    # Save all the uploaded packages, marking them as 'new', 'not found', or
-    # 'duplicate'.
-    uploaded_pkgs <- reactive({
-      
-      # Return an empty data.frame when no file is uploaded.
-      # This is to allow for the database view method to update when a package
-      # is uploaded without failing.
-      if(is.null(input$uploaded_file))
-        return(data.frame())
-      
+    uploaded_pkgs00 <- reactiveVal()
+
+    observeEvent(user$role, {
+    req(user$role == "admin")  
+    output$rem_pkg_div <- renderUI({
+      div(
+        id = "rem-package-group",
+        style = "display: flex;",
+        selectizeInput(NS(id, "rem_pkg_lst"), "Remove Package(s)", choices = NULL, multiple = TRUE,
+                       options = list(create = FALSE, showAddOptionOnCreate = FALSE, 
+                                      onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "curr_pkgs"), '", "load", {priority: "event"})}')))),
+        # note the action button moved out of alignment with 'selectizeInput' under 'renderUI'
+        actionButton(NS(id, "rem_pkg_btn"), shiny::icon("trash-can"),
+                     style = 'height: calc(1.5em + 1.5rem + 2px); margin-top: 32px; background-color:#3399ff;'),
+        tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "rem_pkg_btn"), '").css("margin-top", $("#', NS(id, "rem_pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
+      )
+     })
+    })
+    
+    observeEvent(input$uploaded_file, {
       req(input$uploaded_file)
       
       if(is.null(input$uploaded_file$datapath))
-        validate('Please upload a nonempty CSV file.')
+        uploaded_pkgs00(validate('Please upload a nonempty CSV file.'))
       
-      uploaded_packages <- readr::read_csv(input$uploaded_file$datapath, show_col_types = FALSE)
+      uploaded_packages <- read.csv(input$uploaded_file$datapath, stringsAsFactors = FALSE)
       np <- nrow(uploaded_packages)
       if(np == 0)
-        validate('Please upload a nonempty CSV file.')
+        uploaded_pkgs00(validate('Please upload a nonempty CSV file.'))
       
       if(!all(colnames(uploaded_packages) == colnames(template)))
-        validate("Please upload a CSV with a valid format.")
+        uploaded_pkgs00(validate("Please upload a CSV with a valid format."))
       
       # Add status column and remove white space around package names.
       uploaded_packages <- uploaded_packages %>%
@@ -105,20 +164,70 @@ uploadPackageServer <- function(id) {
           version = trimws(version)
         )
       
-      # read website to create vector of available packages by name
-      website <- "https://cran.rstudio.com/web/packages/available_packages_by_name.html"
-      con <- url(website, open = "rb")
-      namelst <- rvest::read_html(con)
-      close(con)
+      uploaded_pkgs00(uploaded_packages)
+    })
+    
+    
+    
+    observeEvent(input$add_pkgs, {
+      req(input$pkg_lst)
       
-      pkgnames <- namelst %>% 
-        rvest::html_nodes("a") %>%
-        rvest::html_text() 
+      np <- length(input$pkg_lst)
+      uploaded_packages <-
+        dplyr::tibble(
+          package = input$pkg_lst,
+          version = rep('0.0.0', np),
+          status = rep('', np)
+        )
       
-      # Drop A-Z
-      CRAN_arch <- pkgnames[27:length(pkgnames)]
-      rm(namelst, pkgnames)
+      updateSelectizeInput(session, "pkg_lst", selected = "")
+      
+      uploaded_pkgs00(uploaded_packages)
+    })
+    
+    observeEvent(input$rem_pkg_btn, {
+      req(input$rem_pkg_lst)
+      req(user$role == "admin")
 
+      np <- length(input$rem_pkg_lst)
+      uploaded_packages <-
+        dplyr::tibble(
+          package = input$rem_pkg_lst,
+          version = rep('0.0.0', np),
+          status = rep("removed", np)
+        )
+
+      for (i in 1:np) {
+      pkg_name <- input$rem_pkg_lst[i]
+      # update version with what is in the package table
+      uploaded_packages$version[i] <- dbSelect(glue::glue("select version from package where name = '{pkg_name}'"), db_name = golem::get_golem_options('assessment_db_name')) 
+      dbUpdate(glue::glue("delete from package where name = '{pkg_name}'"), db_name = golem::get_golem_options('assessment_db_name'))
+      }
+      
+      # clean up other db tables
+      db_trash_collection(db_name = golem::get_golem_options('assessment_db_name'))
+      
+      # update the list of packages we have
+      pkgs_have(dbSelect("select name from package")[,1])
+
+      updateSelectizeInput(session, "rem_pkg_lst", choices=pkgs_have(), selected = "")
+      
+      uploaded_pkgs(uploaded_packages)
+
+    })
+    
+    uploaded_pkgs <- reactiveVal(data.frame())
+    # Save all the uploaded packages, marking them as 'new', 'not found', 
+    # 'duplicate' or 'removed'
+    observeEvent(uploaded_pkgs00(), {
+
+      uploaded_packages <- uploaded_pkgs00()
+      np <- nrow(uploaded_packages)
+      
+      if (!isTruthy(cran_pkgs())) {
+        cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+      }
+      
       # Start progress bar. Need to establish a maximum increment
       # value based on the number of packages, np, and the number of
       # incProgress() function calls in the loop, plus one to show
@@ -132,23 +241,32 @@ uploadPackageServer <- function(id) {
             user_ver <- uploaded_packages$version[i]
             incProgress(1, detail = glue::glue("{uploaded_packages$package[i]} {user_ver}"))
             
-            # run pkg_ref() to get pkg version and source info
-            ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
+            if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
+              # run pkg_ref() to get pkg version and source info
+              ref <- riskmetric::pkg_ref(uploaded_packages$package[i])
+            } else {
+              ref <- list(name = uploaded_packages$package[i],
+                          source = "name_bad")
+            }
             
-            if (ref$source == "pkg_missing"){
+            if (ref$source %in% c("pkg_missing", "name_bad")) {
               incProgress(1, detail = 'Package {uploaded_packages$package[i]} not found')
               
               # Suggest alternative spellings using utils::adist() function
-              v <- utils::adist(uploaded_packages$package[i], CRAN_arch, ignore.case = FALSE)
+              v <- utils::adist(uploaded_packages$package[i], cran_pkgs(), ignore.case = FALSE)
               rlang::inform(paste("Package name",uploaded_packages$package[i],"was not found."))
-                            
-              suggested_nms <- paste("Suggested package name(s):",paste(head(CRAN_arch[which(v == min(v))], 10),collapse = ", "))
+              
+              suggested_nms <- paste("Suggested package name(s):",paste(head(cran_pkgs()[which(v == min(v))], 10),collapse = ", "))
               rlang::inform(suggested_nms)
-                            
+              
               uploaded_packages$status[i] <- HTML(paste0('<a href="#" title="', suggested_nms, '">not found</a>'))
-
-              loggit::loggit('WARN',
-                             glue::glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
+              
+              if (ref$source == "pkg_missing")
+                loggit::loggit('WARN',
+                               glue::glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
+              else
+                loggit::loggit('WARN',
+                               glue::glue("Riskmetric can't interpret '{ref$name}' as a package reference."))
               
               next
             }
@@ -171,7 +289,7 @@ uploadPackageServer <- function(id) {
               WHERE name = '{uploaded_packages$package[i]}'")))
             
             uploaded_packages$status[i] <- ifelse(found == 0, 'new', 'duplicate')
-            
+
             # Add package and metrics to the db if package is not in the db.
             if(!found) {
               # Get and upload pkg general info to db.
@@ -191,7 +309,7 @@ uploadPackageServer <- function(id) {
           
         }) #withProgress
       
-      uploaded_packages
+      uploaded_pkgs(uploaded_packages)
     })
     
     # Download the sample dataset.
@@ -204,11 +322,30 @@ uploadPackageServer <- function(id) {
       }
     )
     
-    # Uploaded packages summary.
+    # Removed/Uploaded packages summary.
     output$upload_summary_text <- renderText({
       req(uploaded_pkgs)
       req(nrow(uploaded_pkgs()) > 0)
-      
+      # modify the message if we are removing packages
+      if(isTruthy(sum(uploaded_pkgs()$status == 'removed') >0)) {
+        loggit::loggit("INFO",
+                       paste("Uploaded file:", input$uploaded_file$name, 
+                             "Removed Packages", sum(uploaded_pkgs()$status == 'removed')),
+                       echo = FALSE)
+        
+        as.character(tagList(
+          br(), br(),
+          hr(),
+          div(id = "upload_summary_div",
+              h5("Summary of Removed package(s)"),
+              br(),
+              p(tags$b("Removed Packages: "), sum(uploaded_pkgs()$status == 'removed')),
+              p(tags$b("Remaining Packages: "), nrow(dbSelect("SELECT name FROM package"))),
+              p("Note: The assessment will be performed on the latest version of each
+          package, irrespective of the uploaded version.")
+          )
+        ))
+      } else {
       loggit::loggit("INFO",
                      paste("Uploaded file:", input$uploaded_file$name, 
                            "Total Packages:", nrow(uploaded_pkgs()),
@@ -231,6 +368,7 @@ uploadPackageServer <- function(id) {
           package, irrespective of the uploaded version.")
         )
       ))
+      }
     })
     
     # Uploaded packages table.

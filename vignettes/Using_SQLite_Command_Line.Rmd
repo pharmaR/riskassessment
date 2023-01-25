@@ -4,6 +4,10 @@ output:
   html_document:
     theme: spacelab
     highlight: pygments
+vignette: >
+  %\VignetteIndexEntry{Using SQLite Command Line}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
 <style type="text/css">
@@ -53,7 +57,7 @@ In either case, the downloaded file is in ZIP format and its size is quite small
 
 Installing SQLite is simple and straightforward.
 
-Create a new folder e.g., `C:\sqlite` (No IT support is needed). 
+Create a new folder e.g., `C:\sqlite`. 
 
 Extract the content of the .zip file that you downloaded in the previous section to the `C:\sqlite` folder. You should see three programs as shown below:
 
@@ -90,8 +94,7 @@ Use ".open FILENAME" to reopen on a persistent database.
 sqlite>
 ```  
 
-Navigate to the `risk_assessment` database and use the `.open FILENAME` to open it.
-For example:
+Navigate to the directory containing the `riskassessment` database. Note: the app's default behavior is to call this database "database.sqlite", unless you've specified otherwise using the `assessment_db_name` arg in `run_app()`. Next, use the `.open FILENAME` command to open it. For example:
 
 `.open database.sqlite;`
 
@@ -149,7 +152,7 @@ Verify by typing
 
 `echo %PATH%`
 
-Then when you are in the risk_assessment directory, you can just enter the following on the command line:
+Then when you are in the `riskassessment` directory, you can just enter the following on the command line:
 
 `sqlite3 database.sqlite`
 and then you will see

@@ -27,6 +27,15 @@ reweightViewUI <- function(id) {
 reweightViewServer <- function(id, user) {
   moduleServer(id, function(input, output, session) {
     
+    exportTestValues(
+      save = {
+        reactiveValuesToList(save)
+      },
+      curr_new_wts = {
+        curr_new_wts()
+      }
+    )
+    
     save <- reactiveValues(data=NULL)
     
     curr_new_wts <- reactiveVal(
@@ -35,6 +44,7 @@ reweightViewServer <- function(id, user) {
         dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
     
     observeEvent(input$update_weight, {
+      req(user$role == "admin")
       curr_new_wts(save$data %>%
                      dplyr::mutate(new_weight = ifelse(name == isolate(input$metric_name),
                                                        isolate(input$metric_weight), new_weight)))
@@ -117,11 +127,13 @@ reweightViewServer <- function(id, user) {
                        DT::dataTableOutput(NS(id, "weights_table")))
               ),
               br(), br(), br(),
-              conditionalPanel("input.metric_name === 'covr_coverage'", 
+              conditionalPanel("input.metric_name === 'covr_coverage'",
+                               ns = NS(id),
                                fluidRow(
-                                 column(width = 12, tags$div(style = "color: red",
-                                                             h5(em("Note: the 'covr_coverage' metric is currently disabled (weight = 0) until the 'riskmetric' package returns a non-NA value for this metric. 
-               "))))
+                                 column(1),
+                                 column(width = 10, h5(em("Note: the 'covr_coverage' metric is currently disabled (weight = 0) until the 'riskmetric' package returns a non-NA value for this metric. 
+               "), style = "color: red;"), align = "center"),
+                                 column(1)
                                ),
                                br()
               ),
@@ -139,7 +151,26 @@ reweightViewServer <- function(id, user) {
       )
     })
     
-    # make sure "Re-calculate" button is disbaled if no weights have changed. Need to make
+    metric_weight <- debounce(reactive(input$metric_weight), 500)
+    
+    observeEvent(input$metric_weight, {
+      shinyjs::disable("update_weight")
+    })
+    observeEvent(metric_weight(), {
+      req(input$metric_name)
+      
+      if (input$metric_name == "covr_coverage" && (is.na(metric_weight()) || metric_weight() != 0)) {
+        updateNumericInput(session, "metric_weight", value = 0)
+      } else if (is.na(metric_weight()) || metric_weight() < 0) {
+        updateNumericInput(session, "metric_weight", value = 0)
+      } else if (metric_weight() != curr_new_wts() %>%
+                 dplyr::filter(name == input$metric_name) %>%
+                 dplyr::pull(new_weight)){
+        shinyjs::enable("update_weight")
+      }
+    })
+    
+    # make sure "Re-calculate" button is disabled if no weights have changed. Need to make
     # sure renderUI exists, so we put a req() on metric_name input and also a .5 second delay
     # on the disable/ enable functions to give renderUI enough time to re-render
     n_wts_chngd <- reactive({
@@ -161,6 +192,7 @@ reweightViewServer <- function(id, user) {
     
     # Update metric weight dropdown so that it matches the metric name.
     observeEvent(input$metric_name, {
+      req(user$role == "admin")
       
       if(input$metric_name == "covr_coverage"){
         # set to zero, don't allow change until riskmetric fixes this assessment
@@ -181,12 +213,14 @@ reweightViewServer <- function(id, user) {
     # Note that another of the observeEvents will update the metric weight after
     # the selected metric name is updated.
     observeEvent(input$weights_table_rows_selected, {
+      req(user$role == "admin")
       updateSelectInput(session, "metric_name",
                         selected = curr_new_wts()$name[input$weights_table_rows_selected])
     })
     
     # Save new weight into db.
-    observeEvent(input$update_pkg_risk, { 
+    observeEvent(input$update_pkg_risk, {
+      req(user$role == "admin")
       
       # if you the user goes input$back2dash, then when they return to the 
       if(n_wts_chngd() == 0){
@@ -223,6 +257,7 @@ reweightViewServer <- function(id, user) {
     
     # Upon confirming the risk re-calculation
     observeEvent(input$confirm_update_risk, {
+      req(user$role == "admin")
       removeModal()
       
       # Update the weights in the `metric` table to reflect recent changes

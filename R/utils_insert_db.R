@@ -214,12 +214,12 @@ insert_maintenance_metrics_to_db <- function(pkg_name,
 #' @importFrom rvest read_html html_node html_table html_text
 #' @importFrom loggit loggit
 #' @importFrom stringr str_remove_all
-#' @importFrom tidyr tibble
 #' 
 #' @returns nothing
 #' @noRd
 insert_community_metrics_to_db <- function(pkg_name, 
                                            db_name = golem::get_golem_options('assessment_db_name')) {
+  
   pkgs_cum_metrics <- generate_comm_data(pkg_name)
   
   if(nrow(pkgs_cum_metrics) != 0){
@@ -252,4 +252,23 @@ update_metric_weight <- function(metric_name, metric_weight,
     SET weight = {metric_weight}
     WHERE name = '{metric_name}'"
   ), db_name)
+}
+
+#' db trash collection
+#' 
+#' clean up tables package_metrics, community_usage_metrics and comments
+#' after one or more packages have been removed from the package table.
+#' 
+#' @param db_name character name (and file path) of the database 
+#' 
+#' @returns nothing
+#' @noRd
+db_trash_collection <- function(db_name = golem::get_golem_options('assessment_db_name')){
+  
+  dbUpdate("delete from package_metrics where package_id not in(select id from package)", db_name)
+  dbUpdate("delete from community_usage_metrics where id not in(select name from package)", db_name)
+  cmtbl <- dbSelect("select distinct id from comments", db_name)
+  if (nrow(cmtbl) >0) {
+    dbUpdate("delete from comments where id not in(select name from package)", db_name)
+  }
 }

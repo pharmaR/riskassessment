@@ -58,9 +58,6 @@ usethis::use_mit_license()
 # usethis::use_package("dplyr")
 # usethis::use_package("stringr")
 # usethis::use_package("purrr")
-# usethis::use_package("tidyr")
-# # usethis::use_package("tibble")
-# # usethis::use_package("magrittr")
 # usethis::use_package("cicerone")
 # usethis::use_package("glue")
 # usethis::use_package("lazyeval",type="Suggests")
@@ -148,7 +145,7 @@ golem::add_css_file( "styles" )
 
 
 rd_dir_files <- stringr::str_remove(list.files("./man/", pattern = "\\.Rd$"), ".Rd")
-Table <- tidyr::as_tibble(data.frame(group = "", fun = rd_dir_files, developer = "", complete = "")) %>%
+Table <- dplyr::as_tibble(data.frame(group = "", fun = rd_dir_files, developer = "", complete = "")) %>%
   filter(fun != "riskassessment-package") %>%
   mutate(group = dplyr::case_when(
     (stringr::str_detect(fun,"UI") | stringr::str_detect(fun,"Server")) & 
@@ -185,8 +182,8 @@ usethis::use_data_raw( name = "adsl", open = FALSE ) # not run.
 usethis::use_test( "app" )
 
 # Documentation
-## Vignette ---- notrun
-usethis::use_vignette("riskmetric")
+## Vignettes 
+usethis::use_vignette("getting_started")
 
 
 # Before submitting a PR, run this code & update NEWS.md
