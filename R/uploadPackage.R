@@ -136,7 +136,7 @@ uploadPackageServer <- function(id, user) {
                                       onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "curr_pkgs"), '", "load", {priority: "event"})}')))),
         # note the action button moved out of alignment with 'selectizeInput' under 'renderUI'
         actionButton(NS(id, "rem_pkg_btn"), shiny::icon("trash-can"),
-                     style = 'height: calc(1.5em + 1.5rem + 2px); margin-top: 32px'),
+                     style = 'height: calc(1.5em + 1.5rem + 2px); margin-top: 32px; background-color:#3399ff;'),
         tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "rem_pkg_btn"), '").css("margin-top", $("#', NS(id, "rem_pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
       )
      })
@@ -190,9 +190,17 @@ uploadPackageServer <- function(id, user) {
       req(user$role == "admin")
 
       np <- length(input$rem_pkg_lst)
+      uploaded_packages <-
+        dplyr::tibble(
+          package = input$rem_pkg_lst,
+          version = rep('0.0.0', np),
+          status = rep("removed", np)
+        )
 
       for (i in 1:np) {
       pkg_name <- input$rem_pkg_lst[i]
+      # update version with what is in the package table
+      uploaded_packages$version[i] <- dbSelect(glue::glue("select version from package where name = '{pkg_name}'"), db_name = golem::get_golem_options('assessment_db_name')) 
       dbUpdate(glue::glue("delete from package where name = '{pkg_name}'"), db_name = golem::get_golem_options('assessment_db_name'))
       }
       
@@ -204,14 +212,6 @@ uploadPackageServer <- function(id, user) {
 
       updateSelectizeInput(session, "rem_pkg_lst", choices=pkgs_have(), selected = "")
       
-      np <- length(input$rem_pkg_lst)
-      uploaded_packages <-
-        dplyr::tibble(
-          package = input$rem_pkg_lst,
-          version = rep('0.0.0', np),
-          status = rep("removed", np)
-        )
-
       uploaded_pkgs(uploaded_packages)
 
     })
