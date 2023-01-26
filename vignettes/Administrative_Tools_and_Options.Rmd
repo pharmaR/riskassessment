@@ -16,7 +16,7 @@ library(fontawesome)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-<br><br><br>
+</br></br></br>
 
 # Introduction
 
@@ -24,8 +24,6 @@ This guide is to assist admins with managing credentials (user IDs and passwords
 
 
 Only users with administrator privileges have access to the Administrative Tools and Options section. To verify your access to  this, first check that you can see all four navigation tabs at the top of the app, with the rightmost one showing "Administrative Tools".
-
-<left>
 
 ![](images/top_left_tabs.png){style="margin: 10px 0 10px 0"}
 
@@ -42,63 +40,59 @@ The first is "Credential Manager" and the second is "Assessment Reweighting."
 ![](images/admin_tools_tabs.png)
 </br>
 
-## Credential Manager
+# Credential Manager
 
-Two tables are presented. The first one, indicated by the `r fa("users")` Users icon, is used to manage users.
+The Credential Manager tab is shown by default.  Two tables are presented. 
+</br>The first one, indicated by the `r fa("users")` Users icon, is used to manage users.
 </br>The the second one, indicated by the `r fa("key")` key icon, is used to manage passwords.
-There is also a button at the bottom to download a copy of the current sqlite database.
+</br>There is also a button at the bottom to download a copy of the current sqlite database.
 
-<left>
 
-![](images/admin_mode_tables.png){width=750px}
+![](images/admin_mode_tables.png){style="posiiton:left; width:790px; height:430px"}
 
-</left>
 
-### Managing Users
+## Managing Users
 
 The first table allows adding, editing, and deleting users.
 
-#### Add a User
+### Add a User
 
-![](images/add_a_user_btn.png){width=142px style="float:right"}
+![](images/add_a_user_btn.png){style="float:left; width:142px"}
 Now would be a good time to add some users. 
 </br></br></br>
 At the top of the **Users** table, click the dark blue button labelled: "Add a user".
  
 </br></br></br></br></br>
 
-![](images/add_user.png){width=411px, height=560px, style="float:right"}
+![](images/add_user.png){style="float:right; width:411px; height:560px;"}
 </br>
 A prompt will appear where you can specify a user name as well as **optional** start & expire dates.  These are by default set to today's date (more on those later). 
-</br></br>Here, we'll type "PeterParker" into the User name field.
-</br></br></br></br></br></br></br></br></br></br></br>
+</br></br>Here, we'll type "PeterParker" into the User Name field.
+</br></br></br></br></br></br></br></br></br></br></br></br>
 A check box to grant the new user administrator authority is also checked by default. A custom password is generated which will require changing the first time the new user logs in, if the "Ask to change password" box remains checked. 
 
 
-</br></br></br>
-</br></br></br></br></br></br>
-</br>
+</br></br></br></br></br></br></br></br></br>
 
 
-![](images/new_user_modal.png){width=410px, height=158px, style="float:right"}
+![](images/new_user_modal.png){style="float:right; width:410px; height:158px;"}
 </br>Upon clicking "Confirm New User", a confirmation modal will appear, so you can notify the user and send them his/her temporary password.
 </br></br></br></br></br></br></br>
 
-#### User `start` and `expire` dates
+### User `start` and `expire` dates
 
 </br>
 ![](images/account_expired_msg.png){style="float:right; width:312px; height:162px"}
 
-If either the **start** date is set to a future date or the **expire** date is set to *before* today's date, an "account expired" message will appear, and the log in attempt will fail.  
+If either the **start** date is set to a future date or the **expire** date is set to **before** today's date, an "account expired" message will appear, and the login attempt will fail.  
 
-<br>
+</br>
 
-As an administrator, you can set either or both of these dates or just leave
-them blank.
+You can set either or both of these dates or just leave them blank.
 
-<br>
+</br>
 
-#### Edit a user
+### Edit a user
 
 ![](images/users_table.png){style="position:left; width:780px; height:174px"}
 
@@ -113,47 +107,57 @@ Make your changes, and then click on "Confirm Change"</br>
 
 ![](images/user_updated_modal.png){style="position:left; width:343px; height:124px"}
 
-A small modal will briefly appear indicating the user has been updated.
+A small modal dialog box will briefly appear indicating the user has been successfully updated.
 
-<br>
+</br>
 
-#### More Edit options
+### More Edit options
 
 At the bottom of this table is a bar with three buttons. 
 ![](images/edit_remove_select_users.png){style="position:left; width:456px; height:59px"}
 
 The first one is a checkbox `r fa(name = "square-check", fill = "red", height = "1em")`
-to select multiple users followed by an "Edit Selected Users" and a "Remove Selected Users" button.
+to select multiple users followed by an `r fa(name = "pen-to-square", fill = "darkblue", height = "1em")` "Edit Selected Users" and a `r fa(name = "trash-can", fill = "red", height = "1em")` "Remove Selected Users" button.
 
-These buttons are enabled when you select two or more users.
+These buttons are enabled when you select **two or more** users.
 
-![](images/edit_select_users.png){style="float:right; width:406px; height:327px"}
+![](images/edit_select_users.png){style="float:left; width:406px; height:327px"}
 
-</br></br>But the "Edit Selected Users" button only allows you to modify the start and expire dates for that selected group of users.
+Note the "Edit Selected Users" button only allows you to modify the start and expire dates for that selected group of users.
 
 Make your changes, and then click on "Confirm Change"
 
-Again, A small modal will briefly appear indicating the user has been updated.
+Again, A small modal dialog box will briefly appear indicating the users have been updated.
 
-</br></br></br></br></br></br></br>
+![](images/user_updated_modal.png){style="float:right; width:257px; height:93px"}
 
-#### Delete a user
+</br></br></br></br></br></br></br></br></br></br>
 
-Delete any user by clicking on the red `r fa(name = "trash-can", fill = "red", height = "1em")` 
+### Delete a user
+
+![](images/users_table.png){style="position:left; width:780px; height:174px"}
+
+</br>Delete any user by clicking on the red `r fa(name = "trash-can", fill = "red", height = "1em")` 
 <a style="color:red">Remove</a> button, also on the right-hand side of the table.
 
-You will see a confirmatory modal message
+You will see a confirmatory modal dialog box.  Click on "Delete User(s)."
 
-<left>
-![](images/delete_user_modal.png){width=410px, height=151px}
+![](images/delete_user_modal.png){style="position:left; width:410px; height:151px;"}
 
-You can also select multiple users like you did with editing multiple users and click on the "Remove Selected Users" button at the bottom of the table.
+</br>You can also delete multiple users like you did with editing multiple users.
+</br>click on the `r fa(name = "trash-can", fill = "red", height = "1em")` "Remove Selected Users" button at the bottom of the table.
+
 ![](images/edit_remove_select_users.png){style="position:left; width:456px; height:59px"}
+</br>The same confirmatory modal dialog box will appear.  Click on "Delete User(s)."
 
-#### Replace initial `Admin` user
+![](images/confirm_delete_users.png){style="position:left; width:410px; height:151px"}
+
+
+
+### Replace initial `Admin` user
 
 ![](images/create_new_admin.png){style="float:right; width:410px; height:557px"} 
-<br>As an administrator, it's recommended you replace your initial `admin` user ID with one unique to you. Note that there must always be **at least** one admin user, and **you cannot delete yourself!**  If you want to delete the initial `admin` user you will first need to create another user ID first with administrative privileges, as described below.
+</br>As an administrator, it's recommended you replace your initial `admin` user ID with one unique to you. Note that there must always be **at least** one admin user, and **you cannot delete yourself!**  If you want to delete the initial `admin` user you will first need to create another user ID first with administrative privileges, as described below.
 
 Click the blue "Add a user" button and make sure to check the `Admin` box. The temporary password can be overridden by un-checking the "ask to change password" box and setting the password to whatever you want.
 
@@ -164,62 +168,90 @@ After completing the form, sign in using your new credentials and delete the ori
 </br></br></br></br></br></br></br></br></br>
 
 
-### Managing Passwords
+## Managing Passwords
 
 The second table allows for password management.
 
-<left>
-
 ![](images/password_table.png){style="position:left; width:780px; height:184px"} 
 
-</left>
+Click on the dark blue `r fa(name = "key", fill = "darkblue", height = "1em")`<a style="color:darkblue">*Change password*</a> button to force the corresponding user to change his/her password on the next log-in.
 
-Click on the dark blue `r fa(name = "key", fill = "darkblue", height = "1em")`<a style="color:darkblue">*Change password*</a> button to force
-corresponding user to change his/her password on the next log-in.
+A confirmatory modal dialog box will appear, like this:
+![](images/confirm_change_password.png){style="position:left; width:416px; height:195px"} 
 
 Click on the orange `r fa(name = "arrow-rotate-left", fill = "orange", height = "1em")`
 <a style="color:orange">*Reset password*</a> button to generate a temporary password. 
-</br>You are responsible for delivering the new password to the user.
 
-<br>
+Again, a confirmatory modal dialog box will appear, like this:
+![](images/confirm_reset_password.png){style="position:left; width:416px; height:195px"}
+</br>
+Click on "Confirm" and you will see another modal dialog box with the new temporary password in it.
+![](images/password_reset.png){style="position:left; width:415px; height:163px"}
+</br>You are responsible for delivering the new temporary password to the user.
 
-Like the bottom of the User table, There is also a
+</br>As on the bottom of the User table, There is also a
 checkbox `r fa(name = "square-check", fill = "red", height = "1em")`
-to select multiple users followed by a "Force Selected Users to Change Password" button.
+to select multiple users followed by</br> a "Force Selected Users to Change Password" button.
 
 This button is enabled when you select two or more users.
 
-![](images/force_change_password.png){width=395px, height=47px}
+![](images/force_change_password.png){style="position:left; width=395px; height:47px"}
 </br>
 
-#### Additional column definitions:
+### Additional column definitions:
 
 - Must change column: Indicates whether the user has to change his/her password
 next log-in.
 - Have changed column: Indicates the user has already changed his/her password.
 - Date Last changed column: Indicates the date the password was updated.
 
-<br>
+</br>
 
-## Assessment Reweighting
+# Assessment Reweighting
 
 
-![](images/assessment_reweighting_tab.png){width=800px, height=400px}
-</br></br>On this tab, the first thing we are going to cover is setting and updating weights.
+![](images/assessment_reweighting_tab.png){style="position:left; width:800px; height:400px"}
+</br></br>There are three buttons on this page: "Update Weight" on the top right, "Download" on the middle left, and "Re-Calculate" on the bottom left. 
 
-![](images/set_update_weights.png){width=812px, height=160px}
-Here you can either select a metric from the "Select metric" dropdown box
-or select a roww in the "CURRENT RISK SCORE WEIGHTS BY METRIC" table.
+First, the download button.
+
+![](images/download_db_btn.png){style="position:left; width:392px; height:160px"}
+
+The "Download" button sits just above the "Re-Calculate" button.  This will download a copy of the current database ("database.sqlite").  You should do this first, before anything else.
+
+Next, we are going to cover is setting and updating weights.
+
+![](images/set_update_weights.png){style="position:left; width:812px; height:160px"}
+</br>Here you can either select a metric from the "Select metric" dropdown box
+or select a row </br>in the "CURRENT RISK SCORE WEIGHTS BY METRIC" table.
 
 Now enter a new weight in the "Choose new weight" box and select
 the <a style="color:red">"Update Weight"</a> button
 
-After you have updated **at least one* metric weight,
+After you have updated **at least one** metric weight,
 the "Re-Calculate" button is enabled, allowing you to 
-apply new weights and re-calculated risk for each package.
+apply new weights and re-calculated risk for each package.</br>
 
-![](images/apply_new_weights.png){width=481px, height=165px}
+Note that this reweighting will be applied to all packages you have selected.
+Take a moment now to confirm that you have all the packages you want these new weights
+to apply to and remove any packages these new weights should not apply to.
 
-![](images/download_db_btn.png){width=392px, height=160px}
-There is also a "Download" button available, which will download a copy of the current database ("database.sqlite") 
+![](images/apply_new_weights.png){style="position:left; width:481px; height:165px"}
+
+</br></br>Once you click on "Re-Calculate" you will get a confirmation modal,
+reminding you that "updating the risk metrics cannot be reverted",
+and strongly recommending you download a copy of the current database
+first before clicking on "Submit"
+
+![](images/confirm_update_weights.png){style="position:left; width:654px; height:535px"}
+
+Once you click on "Submit" a modal dialog box will appear indicating
+that it is applying weights and updating risk scores to each package you have uploaded.
+This will be followed by a brief "updates completed" message.
+
+![](images/reweighting_modal.png){style="position:left; width:373px; height:122px"}
+
+Now go to the database overview tab to confirm that the risk scores have been updated.
+
+ 
 
