@@ -251,8 +251,6 @@ build_comm_cards <- function(data){
 #' auto_font("https://github.com/tidyverse/dplyr/issues", txt_max = 31)
 #' auto_font("https://github.com/tidyverse/dplyr/issues", num_bins = 3)
 #' 
-#' @export
-#' @keywords internal
 auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
                       num_bins = NULL){
   txt_len <- nchar(txt)

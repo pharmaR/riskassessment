@@ -32,4 +32,3 @@ auto_font("https://github.com/tidyverse/dplyr/issues", txt_max = 31)
 auto_font("https://github.com/tidyverse/dplyr/issues", num_bins = 3)
 
 }
-\keyword{internal}
