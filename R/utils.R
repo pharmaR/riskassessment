@@ -26,8 +26,16 @@ showHelperMessage <- function(message = "Please select a package"){
 #' @importFrom stringr str_remove_all
 #' 
 get_latest_pkg_info <- function(pkg_name) {
-  webpage <- rvest::read_html(glue::glue(
-    'https://cran.r-project.org/web/packages/{pkg_name}'))
+  url <- glue::glue('https://cran.r-project.org/web/packages/{pkg_name}')
+  tryCatch(
+    expr = { 
+      url = url(url, "rb")
+      on.exit(close(url)) 
+    },
+    warning = function(w) {
+      stop("HTTP status was '404 Not Found'")
+    })
+  webpage <- rvest::read_html(url)
 
   # Regex that finds entry: '\n ', "'", and '"' (the `|` mean 'or' and the 
   # `\`` is to scape the double quotes).
