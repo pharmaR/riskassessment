@@ -26,9 +26,3 @@ A function that adjusts the number (to be used as font size) that is
 proportional to the length of a text string. So the longer the text string,
 the smaller the font. Used in MetricBox.R.
 }
-\examples{
-auto_font("https://github.com/tidyverse/dplyr/issues")
-auto_font("https://github.com/tidyverse/dplyr/issues", txt_max = 31)
-auto_font("https://github.com/tidyverse/dplyr/issues", num_bins = 3)
-
-}
