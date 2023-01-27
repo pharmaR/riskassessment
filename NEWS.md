@@ -33,6 +33,7 @@
 * Added favicon to app window tab
 * Implemented the usage of a download handler module
 * Added a package delete option
+* updated function get_latest_pkg_info to prevent warning message
 * Added an "Administrative Tools and Options" vignette
 
 # riskassessment 0.0.1
