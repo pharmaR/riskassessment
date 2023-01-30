@@ -448,18 +448,16 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
            showlegend = FALSE,
            yaxis = list(title = "Downloads"),
            xaxis = list(title = "", type = 'date', tickformat = "%b %Y",
-                        range = dates_range)
-    ) %>% 
+                        range = dates_range)) %>% 
     plotly::add_segments(
-      x = ~dplyr::if_else(version %in% c("", "NA"), lubridate::NA_Date_, day_month_year),
-      xend = ~dplyr::if_else(version %in% c("", "NA"), lubridate::NA_Date_, day_month_year),
+      x = ~dplyr::if_else(version %in% c("", "NA", NA), lubridate::NA_Date_, day_month_year),
+      xend = ~dplyr::if_else(version %in% c("", "NA", NA), lubridate::NA_Date_, day_month_year),
       y = ~.98 * min(downloads),
       yend = ~1.02 * max(downloads),
       name = "Version Release",
       hoverinfo = "text",
       text = ~glue::glue('Version {version}'),
-      line = list(color = '#4BBF73')
-    ) %>% 
+      line = list(color = '#4BBF73')) %>% 
     plotly::add_annotations( 
       yref = 'paper',
       xref = "x",
@@ -469,8 +467,7 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
       showarrow = F,
       textangle = 270,
       font = list(size = 14, color = '#4BBF73'),
-      text = ~ifelse(downloads_data$version %in% c("", "NA"), "", downloads_data$version)
-    ) %>%
+      text = ~ifelse(downloads_data$version %in% c("", "NA", NA), "", downloads_data$version)) %>%
     plotly::layout(
       xaxis = list(
         range = dates_range,
@@ -501,8 +498,7 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
               stepmode = "backward")
           )),
         rangeslider = list(visible = TRUE)
-      )
-    ) %>%
+      )) %>%
     plotly::config(displayModeBar = F)
 }
 
