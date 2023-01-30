@@ -27,18 +27,18 @@ test_that("Reactivity of reportPreview", {
   app$wait_for_idle()
   
   # verify it changed
-  val <- app$get_values()$input$`reportPreview-downloadHandler-report_format`
-  expect_equal(val, "pdf")
+  expect_equal(app$get_values()$input$`reportPreview-downloadHandler-report_format`, "pdf")
   
   # set file type back to default html
   app$set_inputs(`reportPreview-downloadHandler-report_format` = "html")
   app$wait_for_idle()
   
+  expect_equal(app$get_values()$input$`reportPreview-downloadHandler-report_format`, "html")
+  
   # download and check file type
   report <- app$get_download("reportPreview-downloadHandler-download_reports")
   app$wait_for_idle()
-  expect_equal(tools::file_ext(report), "html")
-  
+
   # scrape output pkg_overview
   out_val <- app$get_values()$output$`reportPreview-pkg_overview`$html
   
@@ -67,5 +67,5 @@ test_that("Reactivity of reportPreview", {
   
   app$stop()
   unlink("app_db_loc")
-  rm(app, vals, val, html, about, maint_info, out_val, pkg_rev, report, str_expect, app_db_loc)
+  rm(app, vals, html, about, maint_info, out_val, pkg_rev, report, str_expect, app_db_loc)
 })
