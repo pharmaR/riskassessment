@@ -86,6 +86,8 @@ get_latest_pkg_info <- function(pkg_name) {
 #' }
 #' @export
 generate_comm_data <- function(pkg_name){
+  
+  # initialize empty tibble
   pkgs_cum_metrics <- tidyr::tibble()
   
   # turn off summarise() .groups message
@@ -139,7 +141,7 @@ generate_comm_data <- function(pkg_name){
                       year = lubridate::year(date)) %>%
         dplyr::filter(!(month == lubridate::month(Sys.Date()) &
                           year == lubridate::year(Sys.Date()))) %>%
-        group_by(month, year) %>%
+        group_by(id = package, month, year) %>%
         summarise(downloads = sum(count)) %>%
         ungroup() %>%
         left_join(versions_with_dates, by = c('month', 'year')) %>%
