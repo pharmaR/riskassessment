@@ -5,11 +5,12 @@
 
 <!-- badges: start -->
 
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[<img src="https://img.shields.io/badge/Slack-RValidationHub-blue?style=flat&logo=slack">](https://RValidationHub.slack.com)
 [![R-CMD-check](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml)
 [![Coverage
 status](https://codecov.io/gh/pharmaR/riskassessment/branch/master/graph/badge.svg)](https://codecov.io/github/pharmaR/riskassessment?branch=master)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 `riskassessment` is an R package containing a shiny front-end to augment
@@ -75,7 +76,7 @@ latter can add/delete users, download an entire copy of the database,
 and modify the metric weights used in calculation of risk scores.
 Initially, both share the same password: `QWERTY1`. If you log in with
 this credential, the app will immediately prompt you to change your
-password and repeat the tje process with your new credentials.
+password and repeat the the process with your new credentials.
 
 If you want a quick tour through the app (or need assistance getting
 past the authentication wall), you should watch this short walk through

@@ -16,10 +16,11 @@ knitr::opts_chunk$set(
 # The `{riskassessment}` application <a href='https://pharmar.github.io/riskassessment/'><img src="man/figures/hex-riskassessment-aspconfig.png" align="right" height="172" style="float:right; height:172px;"/></a>
 
 <!-- badges: start -->
-  [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-  [![R-CMD-check](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml)
-  [![Coverage status](https://codecov.io/gh/pharmaR/riskassessment/branch/master/graph/badge.svg)](https://codecov.io/github/pharmaR/riskassessment?branch=master)
-  <!-- badges: end -->
+[<img src="https://img.shields.io/badge/Slack-RValidationHub-blue?style=flat&logo=slack">](https://RValidationHub.slack.com)
+[![R-CMD-check](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml)
+[![Coverage status](https://codecov.io/gh/pharmaR/riskassessment/branch/master/graph/badge.svg)](https://codecov.io/github/pharmaR/riskassessment?branch=master)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+<!-- badges: end -->
 
 `riskassessment` is an R package containing a shiny front-end to augment the utility of the [`riskmetric`](https://github.com/pharmaR/riskmetric) package within an organizational context.
 
@@ -60,7 +61,7 @@ Validation can serve as an umbrella for various terms, and admittedly, companies
 
 If you are new to using the `riskassessment` app, welcome! We'd highly encourage you to start exploring the [`demo version`](https://rinpharma.shinyapps.io/risk_assessment) of the app currently deployed on shinyapps.io. There, you'll find a number of pre-loaded packages just waiting to be assessed. Hands on experience will help you become familiar with the general layout of the app as you poke around and explore.
 
-With that said, you should immediately recognize that the app requires authentication, since it's intended use is within an organization. There are two pre-defined roles: 'nonadmin' users and 'admin' users. The latter can add/delete users, download an entire copy of the database, and modify the metric weights used in calculation of risk scores. Initially, both share the same password: `QWERTY1`. If you log in with this credential, the app will immediately prompt you to change your password and repeat the tje process with your new credentials.
+With that said, you should immediately recognize that the app requires authentication, since it's intended use is within an organization. There are two pre-defined roles: 'nonadmin' users and 'admin' users. The latter can add/delete users, download an entire copy of the database, and modify the metric weights used in calculation of risk scores. Initially, both share the same password: `QWERTY1`. If you log in with this credential, the app will immediately prompt you to change your password and repeat the the process with your new credentials.
 
 If you want a quick tour through the app (or need assistance getting past the authentication wall), you should watch this short walk through on the R Consortium's website:
 
