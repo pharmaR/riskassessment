@@ -14,7 +14,7 @@ sidebar_steps <-
     intro = c(
       "Discover the package assessment process & criteria",
       "Review the R packages that already exist in the database",
-      "Expand this dropdown list to selet assess a specific package that was previously uploaded. Then select a version (if more than one exists).",
+      "Expand this dropdown list to select a specific package to assess that was previously uploaded.",
       # "The latest version will autopopulate here.", # can't peg ui object name, even with a div!
       "The status can be either 'Under Review' or 'Reviewed'.",
       "The score can take any value between 0 (no risk) and 1 (highest risk).",
@@ -26,14 +26,15 @@ sidebar_steps <-
 
 # upload package tab.
 upload_pkg <- data.frame(
-  element = c("#upload_package-introJS-help", "#type-package-group", "#upload-file-grp", "#upload_package-upload_format"),
+  element = c("#upload_package-introJS-help", "#type-package-group", "#upload-file-grp", "#upload_package-upload_format", "#rem-package-group"),
   intro = c(
     "Click here anytime you need help.",
     "Type in the name of the package(s) you would like to assess.",
     "Or you can Upload a CSV file with the package(s) if you have a lot.",
-    "Follow format of this sample data when creating your csv. Or you can even download it to use as a template."
+    "Follow format of this sample data when creating your csv. Or you can even download it to use as a template.",
+    "If you are an admin, you can also remove packages here."
   ),
-  position = c("right", rep("top", 3))
+  position = c("right", rep("top", 4))
 )
 
 upload_pkg_complete <- union(upload_pkg,

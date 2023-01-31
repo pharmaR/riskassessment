@@ -13,18 +13,17 @@ app_ui <- function(request) {
     
     theme = app_theme(), # defined in data-raw/interanl-data.R
     
-    # not needed any more. Automatically bundled below
-    # includeCSS(path = file.path('www', 'css', 'main.css')),
-    # includeCSS(path = file.path('www', 'css', 'community_metrics.css')),
+    div(id = "raa-logo", img(src="www/raa-image.png")),
     
     tabsetPanel(
       id = "apptabs",
       tabPanel(
         title = "Risk Assessment",
         icon = icon("clipboard-list"),
+        value = "risk-assessment-tab",
         
         titlePanel(
-          windowTitle = "Risk Assessment - v0.0.1",
+          windowTitle = "riskassessment app",
           title = div(id = "page-title", "R Package Risk Assessment App")
         ),
         
@@ -64,13 +63,17 @@ app_ui <- function(request) {
       ), 
       
       tabPanel(
-        title = div(id = "database-tab", icon("database"), "Database"),
-        databaseViewUI("databaseView")
+        title = "Database",
+        icon = icon("database"),
+        databaseViewUI("databaseView"),
+        value = "database-tab"
       ),
       
       tabPanel(
-        title = div(id = "assessment-criteria-tab", icon("circle-info"), "Assessment Criteria"),
+        title = "Assessment Criteria",
+        icon = icon("circle-info"),
         assessmentInfoUI("assessmentInfo"),
+        value = "assessment-criteria-tab"
       )
     ),
     
@@ -80,7 +83,6 @@ app_ui <- function(request) {
       tags$a(href = "https://github.com/pharmaR/riskassessment",
              icon("github-alt"), target = "_blank")
     )
-    
   )
 
   tagList(

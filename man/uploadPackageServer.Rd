@@ -4,10 +4,12 @@
 \alias{uploadPackageServer}
 \title{Server logic for the 'Upload Package' module}
 \usage{
-uploadPackageServer(id)
+uploadPackageServer(id, user)
 }
 \arguments{
 \item{id}{a module id}
+
+\item{user}{a username}
 }
 \description{
 Server logic for the 'Upload Package' module

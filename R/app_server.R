@@ -35,7 +35,9 @@ app_server <- function(input, output, session) {
     if (res_auth$admin == TRUE) {
       appendTab("apptabs",
                 tabPanel(
-                  title = div(id = "admin-mode-tab", icon("gears"), "Administrative Tools"),
+                  title = "Administrative Tools",
+                  icon = icon("gears"),
+                  value = "admin-mode-tab",
                   h2("Administrative Tools & Options", align = "center", `padding-bottom`="20px"),
                   br(),
                   tabsetPanel(
@@ -115,7 +117,7 @@ app_server <- function(input, output, session) {
   metric_weights <- reweightViewServer("reweightInfo", user)
   
   # Load server of the uploadPackage module.
-  uploaded_pkgs <- uploadPackageServer("upload_package")
+  uploaded_pkgs <- uploadPackageServer("upload_package", user)
   
   # Load server of the sidebar module.
   selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs$names)

@@ -22,10 +22,19 @@
 * Unit test cases are now available for get_date_span() function (#295).
 * Added unit tests for all functions in utils_get_db except dbSelect (#295)
 * Added unit tests for all functions in utils_insert_db except dbUpdate (#295)
+* Added tests using `shinytest2` to test the databaseView module(#295)
+* Added tests using `shinytest2` to test the introJS module(#295)
+* Added tests using `shinytest2` to test the reweightView module(#295)
 * Allowed users to type in package names to be assessed instead of uploading CSV
 * updated `README` to reflect new repo name 'riskassessment' without the '_' to separate the two words.
 * Reduce number of package dependencies from 33 to 26
 * Changed risk-based color gradient to use colorblind-friendly color palette (#324).
+* Added a "getting started with `riskassessment`" vignette
+* Added hex logo to `README` and risk gauge within the app
+* Added favicon to app window tab
+* Implemented the usage of a download handler module
+* Added a package delete option
+* updated function get_latest_pkg_info to prevent warning message
 
 
 # riskassessment 0.0.1
