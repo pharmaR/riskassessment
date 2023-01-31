@@ -49,6 +49,7 @@ nonadmin’
 packagization
 param
 pharmar
+plotly
 pre
 px
 repo
@@ -60,7 +61,7 @@ showComments
 showHelperMessage
 sqlite
 testthat
-tje
+tibble
 transactional
 ui
 un
