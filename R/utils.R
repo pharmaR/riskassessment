@@ -72,6 +72,100 @@ get_latest_pkg_info <- function(pkg_name) {
   return(table_info)
 }
 
+#' Generate Community Usage Data
+#' 
+#' @description 
+#' Extracts community usage metrics for a given package.
+#' @returns A tibble of community usage metrics
+#' @param pkg_name A string containing the name of a package.
+#' 
+#' @import dplyr
+#' @importFrom cranlogs cran_downloads
+#' @importFrom lubridate year month
+#' @importFrom glue glue 
+#' @importFrom rvest read_html html_node html_table html_text
+#' @importFrom loggit loggit
+#' @importFrom stringr str_remove_all
+#' @examples 
+#' if( interactive()) {
+#' ggplot_comm_df <- generate_comm_data("ggplot2")
+#' head(ggplot_comm_df)
+#' }
+#' @export
+generate_comm_data <- function(pkg_name){
+  
+  # initialize empty tibble
+  pkgs_cum_metrics <- dplyr::tibble()
+  
+  # turn off summarise() .groups message
+  options(dplyr.summarise.inform = FALSE)
+  
+  tryCatch(
+    expr = {
+      
+      # get current release version number and date
+      curr_release <- get_latest_pkg_info(pkg_name) %>%
+        dplyr::select(`Last modified` = Published, version = Version)
+      # Get the packages past versions and dates.
+      pkg_url <- url(glue::glue('https://cran.r-project.org/src/contrib/Archive/{pkg_name}'))
+      pkg_page <- try(rvest::read_html(pkg_url), silent = TRUE)
+      
+      
+      # if past releases exist... they usually do!
+      if(all(class(pkg_page) != "try-error")){ #exists("pkg_page")
+        versions_with_dates0 <- pkg_page %>% 
+          rvest::html_node('table') %>%
+          rvest::html_table() %>%
+          dplyr::select("Name", "Last modified") %>%
+          dplyr::filter(`Last modified` != "") %>%
+          dplyr::mutate(version = stringr::str_remove_all(
+            string = Name, pattern = glue::glue('{pkg_name}_|.tar.gz')),
+            .keep = 'unused') %>%
+          # get latest high-level package info
+          union(curr_release) 
+      } else {
+        versions_with_dates0 <- curr_release
+      }
+      # close(pkg_url)
+      
+      versions_with_dates <- versions_with_dates0 %>%
+        dplyr::mutate(date = as.Date(`Last modified`), .keep = 'unused') %>%
+        dplyr::mutate(month = lubridate::month(date)) %>%
+        dplyr::mutate(year = lubridate::year(date))
+      
+      # First release date.
+      first_release_date <- versions_with_dates %>%
+        dplyr::pull(date) %>%
+        min()
+      
+      # Get the number of downloads by month, year.
+      pkgs_cum_metrics <- 
+        cranlogs::cran_downloads(
+          pkg_name,
+          from = first_release_date,
+          to = Sys.Date()) %>%
+        dplyr::mutate(month = lubridate::month(date),
+                      year = lubridate::year(date)) %>%
+        dplyr::filter(!(month == lubridate::month(Sys.Date()) &
+                          year == lubridate::year(Sys.Date()))) %>%
+        group_by(id = package, month, year) %>%
+        summarise(downloads = sum(count)) %>%
+        ungroup() %>%
+        left_join(versions_with_dates, by = c('month', 'year')) %>%
+        dplyr::arrange(year, month) %>%
+        dplyr::select(-date)
+      
+    },
+    error = function(e) {
+      loggit::loggit("ERROR", paste("Error extracting cum metric info of the package:",
+                                    pkg_name, "info", e),
+                     app = "fileupload-webscraping", echo = FALSE)
+    }
+  )
+  
+  return(pkgs_cum_metrics)
+}
+
 #' showComments
 #' 
 #' Displays formatted comments
@@ -278,16 +372,31 @@ auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
 
 
 
-#' The 'Build Community plot' function
+#' Build a plotly of community usage metrics
+#' @description 
+#' Responsible for building an interactive `{plotly}` graphic containing the trend line for number of CRAN pkg downloads by month.
 #' 
-#' @param data a data.frame
-#' 
+#' @param data a data.frame containing monthly download data, built using `generate_comm_data()`. This argument is optional, but if `NULL`, a `pkg_name` must be provided.
+#' @param pkg_name a string of a package name. This parameter is optional. If `pkg_name` is provided, the data argument should be `NULL`.
+#' @returns a plotly object
+#' @examples 
+#' metricGraph <- build_comm_plotly(pkg_name = "ggplot2")
 #' @import dplyr
 #' @importFrom lubridate NA_Date_ interval
 #' @importFrom glue glue
 #' @importFrom plotly plot_ly layout add_segments add_annotations config
-#' 
-build_comm_plotly <- function(data) {
+#' @export
+build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
+  
+  # If there is a package listed, in pkg_name, a plotly graphic will be created
+  if (!is.null(pkg_name)){
+    data <- generate_comm_data(pkg_name)
+  } else {
+    if (is.null(data)) {
+      stop("must include either data or pkg_name argument")
+    }
+  }
+  
   if (nrow(data) == 0) return(NULL)
   
   pkg_name <- unique(data$id)
@@ -348,18 +457,16 @@ build_comm_plotly <- function(data) {
            showlegend = FALSE,
            yaxis = list(title = "Downloads"),
            xaxis = list(title = "", type = 'date', tickformat = "%b %Y",
-                        range = dates_range)
-    ) %>% 
+                        range = dates_range)) %>% 
     plotly::add_segments(
-      x = ~dplyr::if_else(version %in% c("", "NA"), lubridate::NA_Date_, day_month_year),
-      xend = ~dplyr::if_else(version %in% c("", "NA"), lubridate::NA_Date_, day_month_year),
+      x = ~dplyr::if_else(version %in% c("", "NA", NA), lubridate::NA_Date_, day_month_year),
+      xend = ~dplyr::if_else(version %in% c("", "NA", NA), lubridate::NA_Date_, day_month_year),
       y = ~.98 * min(downloads),
       yend = ~1.02 * max(downloads),
       name = "Version Release",
       hoverinfo = "text",
       text = ~glue::glue('Version {version}'),
-      line = list(color = '#4BBF73')
-    ) %>% 
+      line = list(color = '#4BBF73')) %>% 
     plotly::add_annotations( 
       yref = 'paper',
       xref = "x",
@@ -369,8 +476,7 @@ build_comm_plotly <- function(data) {
       showarrow = F,
       textangle = 270,
       font = list(size = 14, color = '#4BBF73'),
-      text = ~ifelse(downloads_data$version %in% c("", "NA"), "", downloads_data$version)
-    ) %>%
+      text = ~ifelse(downloads_data$version %in% c("", "NA", NA), "", downloads_data$version)) %>%
     plotly::layout(
       xaxis = list(
         range = dates_range,
@@ -401,8 +507,7 @@ build_comm_plotly <- function(data) {
               stepmode = "backward")
           )),
         rangeslider = list(visible = TRUE)
-      )
-    ) %>%
+      )) %>%
     plotly::config(displayModeBar = F)
 }
 

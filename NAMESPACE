@@ -2,6 +2,8 @@
 
 export(app_theme)
 export(auto_font)
+export(build_comm_plotly)
+export(generate_comm_data)
 export(initialize_raa)
 export(run_app)
 export(showComments)

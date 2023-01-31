@@ -12,6 +12,7 @@ Authors@R: c(
 	  person(family = "PSI special interest group Application and Implementation of Methodologies in Statistics", role = c("cph", "fnd")),
     person(family = "R Validation Hub", role = c("cph", "fnd")),
     person("Munshi Imran", "Hossain", role = "ctb"),
+    person("Scott", "Schumacker", role = "ctb", email = "scottschu97@gmail.com"),
     person("Lars", "Andersen", role = "aut", email = "lars.andersen@boehringer-ingelheim.com"),
     person("Andrew", "Borgman", role = "aut", email = "andrew.borgman@biogen.com")
   )
