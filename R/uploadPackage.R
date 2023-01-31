@@ -136,7 +136,7 @@ uploadPackageServer <- function(id, user) {
                                       onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "curr_pkgs"), '", "load", {priority: "event"})}')))),
         # note the action button moved out of alignment with 'selectizeInput' under 'renderUI'
         actionButton(NS(id, "rem_pkg_btn"), shiny::icon("trash-can"),
-                     style = 'height: calc(1.5em + 1.5rem + 2px); margin-top: 32px; background-color:#3399ff;'),
+                     style = 'height: calc(1.5em + 1.5rem + 2px); margin-top: 32px; background-color:#3399ff; border-color:#3399ff;'),
         tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "rem_pkg_btn"), '").css("margin-top", $("#', NS(id, "rem_pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
       )
      })
