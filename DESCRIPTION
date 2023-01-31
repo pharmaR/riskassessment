@@ -60,8 +60,7 @@ Imports:
     shinyjs,
     shinymanager,
     shinyWidgets,
-    stringr,
-    tidyr
+    stringr
 Suggests: 
     knitr,
     rstudioapi,

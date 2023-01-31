@@ -86,7 +86,6 @@ get_latest_pkg_info <- function(pkg_name) {
 #' @importFrom rvest read_html html_node html_table html_text
 #' @importFrom loggit loggit
 #' @importFrom stringr str_remove_all
-#' @importFrom tidyr tibble
 #' @examples 
 #' if( interactive()) {
 #' ggplot_comm_df <- generate_comm_data("ggplot2")
@@ -96,7 +95,7 @@ get_latest_pkg_info <- function(pkg_name) {
 generate_comm_data <- function(pkg_name){
   
   # initialize empty tibble
-  pkgs_cum_metrics <- tidyr::tibble()
+  pkgs_cum_metrics <- dplyr::tibble()
   
   # turn off summarise() .groups message
   options(dplyr.summarise.inform = FALSE)
