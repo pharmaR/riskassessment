@@ -2,13 +2,21 @@
 % Please edit documentation in R/utils.R
 \name{build_comm_plotly}
 \alias{build_comm_plotly}
-\title{The 'Build Community plot' function}
+\title{Build a plotly of community usage metrics}
 \usage{
-build_comm_plotly(data)
+build_comm_plotly(data = NULL, pkg_name = NULL)
 }
 \arguments{
-\item{data}{a data.frame}
+\item{data}{a data.frame containing monthly download data, built using \code{generate_comm_data()}. This argument is optional, but if \code{NULL}, a \code{pkg_name} must be provided.}
+
+\item{pkg_name}{a string of a package name. This parameter is optional. If \code{pkg_name} is provided, the data argument should be \code{NULL}.}
+}
+\value{
+a plotly object
 }
 \description{
-The 'Build Community plot' function
+Responsible for building an interactive \code{{plotly}} graphic containing the trend line for number of CRAN pkg downloads by month.
+}
+\examples{
+metricGraph <- build_comm_plotly(pkg_name = "ggplot2")
 }

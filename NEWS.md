@@ -1,5 +1,6 @@
 # riskassessment (development version)
 
+* Exported a function called `generate_comm_data()` that helps build the community usage data needed to produce the downloads by month plot, which is also now exported as `build_comm_plotly()`. And, of course, updated internals to call generate_comm_data() (#266).
 * Added new pdf report download option to 'Database' and 'Report Preview' tabs (#280) 
 * Updated README to include more description, with a focus on improving the 'Usage' section, which now shows our audience how to install & run the app for the first time. Also, new links to the demo app & a short video walk through were added. Plus, very brief notes were included regarding deployment environments.
 * Created a new argument for `run_app()` called `app_version` which allows deployment users to write their own custom app_version name via a text string. This is displayed on authentication screen and any downloaded reports. By default, it will display the installed version of `riskassessment`.
@@ -35,6 +36,7 @@
 * Implemented the usage of a download handler module
 * Added a package delete option
 * updated function get_latest_pkg_info to prevent warning message
+* Added tests using `shinytest2` to test the reportPreview module(#295)
 
 
 # riskassessment 0.0.1
