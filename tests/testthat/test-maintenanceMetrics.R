@@ -20,7 +20,8 @@ test_that("Reactivity of maintenanceMetrics", {
   
   # get to the Maintenance Metrics tab
   app$set_inputs(tabs = "Maintenance Metrics")
-
+  app$wait_for_idle()
+  
   # read the current comment -- set to "No comments"
   out_cmt <- app$get_values()$output$`maintenanceMetrics-view_comments-view_comments`$html
   
