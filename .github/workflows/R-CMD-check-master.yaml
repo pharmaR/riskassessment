@@ -29,6 +29,14 @@ jobs:
       R_KEEP_PKG_SOURCE: yes
 
     steps:
+      - name: Install Linux system dependencies
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get install -y libcurl4-openssl-dev
+          sudo apt-get install -y libharfbuzz-dev
+          sudo apt-get install -y libfribidi-dev
+          
       - uses: actions/checkout@v3
 
       - uses: r-lib/actions/setup-pandoc@v2

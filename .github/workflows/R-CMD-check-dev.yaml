@@ -37,7 +37,7 @@ jobs:
           sudo apt-get install -y libharfbuzz-dev
           sudo apt-get install -y libfribidi-dev
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: r-lib/actions/setup-pandoc@v2
 
