@@ -34,6 +34,8 @@ jobs:
         shell: bash
         run: |
           sudo apt-get install -y libcurl4-openssl-dev
+          sudo apt-get install -y libharfbuzz-dev
+          sudo apt-get install -y libfribidi-dev
 
       - uses: actions/checkout@v2
 
