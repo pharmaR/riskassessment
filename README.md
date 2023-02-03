@@ -51,7 +51,6 @@ reviewer to:
 - user authentication with with admin roles to manage users and metric
   weighting
 
-
 ### Echo-ing `{riskmetric}`’s Approach to Validation <a href='https://pharmar.github.io/riskmetric/'><img src="man/figures/hex-riskmetric-aspconfig.png" align="right" height="172" style="float:right; height:172px;"/></a>
 
 Validation can serve as an umbrella for various terms, and admittedly,
@@ -78,7 +77,6 @@ and modify the metric weights used in calculation of risk scores.
 Initially, both share the same password: `QWERTY1`. If you log in with
 this credential, the app will immediately prompt you to change your
 password and repeat the the process with your new credentials.
-
 
 If you want a quick tour through the app (or need assistance getting
 past the authentication wall), you should watch this short walk through
