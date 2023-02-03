@@ -47,6 +47,7 @@ jobs:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
+          extra-packages: rcmdcheck
           
       # install packages needed
       - name: install required fontawesome version
