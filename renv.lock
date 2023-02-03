@@ -4,7 +4,7 @@
     "Repositories": [
       {
         "Name": "CRAN",
-        "URL": "https://cran.rstudio.com"
+        "URL": "https://packagemanager.rstudio.com/cran/2023-02-01"
       }
     ]
   },
@@ -327,6 +327,34 @@
         "tibble"
       ]
     },
+    "checkhelper": {
+      "Package": "checkhelper",
+      "Version": "0.0.1.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "checkhelper",
+      "RemoteUsername": "thinkr-open",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "d2e4fcada1b094d7af06324f6c54301c7586ffee",
+      "Hash": "694eebe322e5cbdf101c152ad0a67d28",
+      "Requirements": [
+        "cli",
+        "desc",
+        "devtools",
+        "dplyr",
+        "glue",
+        "lifecycle",
+        "magrittr",
+        "pkgbuild",
+        "purrr",
+        "rcmdcheck",
+        "roxygen2",
+        "stringr",
+        "whisker",
+        "withr"
+      ]
+    },
     "checkmate": {
       "Package": "checkmate",
       "Version": "2.1.0",
@@ -372,6 +400,14 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "3f038e5ac7f41d4ac41ce658c85e3042",
+      "Requirements": []
+    },
+    "clisymbols": {
+      "Package": "clisymbols",
+      "Version": "1.2.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "96c01552bfd5661b9bbdefbc762f4bcd",
       "Requirements": []
     },
     "colorspace": {
@@ -423,6 +459,42 @@
       "Repository": "CRAN",
       "Hash": "fa53ce256cd280f468c080a58ea5ba8c",
       "Requirements": []
+    },
+    "crancache": {
+      "Package": "crancache",
+      "Version": "0.0.0.9001",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "crancache",
+      "RemoteUsername": "r-lib",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "7ea4e479bdf780adadd1bd421a5ca23e5f951697",
+      "Hash": "795b8389734f11481fdcdf9cdde3002f",
+      "Requirements": [
+        "callr",
+        "cranlike",
+        "curl",
+        "desc",
+        "digest",
+        "parsedate",
+        "rappdirs",
+        "rematch2",
+        "withr"
+      ]
+    },
+    "cranlike": {
+      "Package": "cranlike",
+      "Version": "1.0.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "2a531c8d1d45799fe2e880708dfc1097",
+      "Requirements": [
+        "DBI",
+        "RSQLite",
+        "debugme",
+        "desc"
+      ]
     },
     "cranlogs": {
       "Package": "cranlogs",
@@ -508,6 +580,16 @@
         "tidyselect",
         "vctrs",
         "withr"
+      ]
+    },
+    "debugme": {
+      "Package": "debugme",
+      "Version": "1.1.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "2d8a9e4f08f3dd669cb8ddd1eb575959",
+      "Requirements": [
+        "crayon"
       ]
     },
     "desc": {
@@ -801,6 +883,24 @@
       "Repository": "CRAN",
       "Hash": "4f2596dfb05dac67b9dc558e5c6fba2e",
       "Requirements": []
+    },
+    "gmailr": {
+      "Package": "gmailr",
+      "Version": "1.0.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "185e047cb2392acf320b8bc657a55c92",
+      "Requirements": [
+        "base64enc",
+        "crayon",
+        "gargle",
+        "httr",
+        "jsonlite",
+        "lifecycle",
+        "magrittr",
+        "mime",
+        "rematch2"
+      ]
     },
     "golem": {
       "Package": "golem",
@@ -1548,6 +1648,51 @@
         "withr"
       ]
     },
+    "revdepcheck": {
+      "Package": "revdepcheck",
+      "Version": "1.0.0.9001",
+      "Source": "GitHub",
+      "Remotes": "r-lib/crancache",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "revdepcheck",
+      "RemoteUsername": "r-lib",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "73933982d9bb34244902b80fa95d8a5fd965470e",
+      "Hash": "0840f4cc4619466fe424153d8426c0be",
+      "Requirements": [
+        "DBI",
+        "RSQLite",
+        "assertthat",
+        "brio",
+        "callr",
+        "cli",
+        "clisymbols",
+        "crancache",
+        "crayon",
+        "curl",
+        "desc",
+        "glue",
+        "gmailr",
+        "hms",
+        "httr",
+        "jsonlite",
+        "knitr",
+        "pkgbuild",
+        "prettyunits",
+        "processx",
+        "progress",
+        "rcmdcheck",
+        "rematch2",
+        "remotes",
+        "rlang",
+        "sessioninfo",
+        "tibble",
+        "whoami",
+        "withr",
+        "yaml"
+      ]
+    },
     "rex": {
       "Package": "rex",
       "Version": "1.2.1",
@@ -1596,6 +1741,46 @@
       "Requirements": [
         "jsonlite",
         "shiny"
+      ]
+    },
+    "riskassessment": {
+      "Package": "riskassessment",
+      "Version": "0.0.1.9026",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "riskassessment",
+      "RemoteUsername": "pharmaR",
+      "RemoteRef": "dev",
+      "RemoteSha": "c41e643773dd2e0d9d7c1c062cb3b7f82e8fb4ae",
+      "Hash": "3b87f07364d916119f71395d138d846b",
+      "Requirements": [
+        "DBI",
+        "DT",
+        "RSQLite",
+        "bslib",
+        "config",
+        "cranlogs",
+        "dplyr",
+        "formattable",
+        "glue",
+        "golem",
+        "loggit",
+        "lubridate",
+        "pkgload",
+        "plotly",
+        "purrr",
+        "rintrojs",
+        "riskmetric",
+        "rlang",
+        "rmarkdown",
+        "rvest",
+        "shiny",
+        "shinyWidgets",
+        "shinydashboard",
+        "shinyjs",
+        "shinymanager",
+        "stringr"
       ]
     },
     "riskmetric": {
