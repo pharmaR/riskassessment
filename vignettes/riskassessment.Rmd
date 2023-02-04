@@ -154,7 +154,7 @@ Below is the top portion of the `Report Preview` tab for the `glue` package. Thi
 ![](images/report_preview.png){style="margin: 10px 0 10px 0"}
 </center>
 
-Below is a quick view of the metadata referenced above. It's vital to understand the context in which the report & score was calculated. Users are encouraged to send these information rich reports to whom they so choose, espcially if they are not savvy with the `riskassessment` app... yet.
+Below is a quick view of the metadata referenced above. It's vital to understand the context in which the report & score was calculated. Users are encouraged to send these information rich reports to whom they so choose, especially if they are not savvy with the `riskassessment` app... yet.
 
 <center>
 ![](images/report_preview2.png){style="margin: 10px 0 10px 0"}
@@ -176,7 +176,7 @@ After clicking submit, you'll receive a prompt that just confirms what you wrote
 ![](images/decision_slider.png){style="margin: 10px 0 10px 0"}
 </center>
 
-For the purposes of this guide, we submitted a decision with selection "Low" and recieved the following dialogue box asking us to confirm our decision:
+For the purposes of this guide, we submitted a decision with selection "Low" and received the following dialogue box asking us to confirm our decision:
 
 <center>
 ![](images/submit_decision.png){style="margin: 10px 0 10px 0"}
