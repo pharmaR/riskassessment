@@ -175,7 +175,7 @@ initialize_raa <- function(assess_db, cred_db) {
     stop("cred_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
   
   # Start logging info.
-  if (golem::is_running()) loggit::set_logfile("loggit.json")
+  if (isRunning()) loggit::set_logfile("loggit.json")
   
   # TODO: Remove temporary warning once bug in fa v0.4.0 is fixed.
   # https://github.com/rstudio/fontawesome/issues/99
