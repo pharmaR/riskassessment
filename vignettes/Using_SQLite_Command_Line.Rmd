@@ -44,11 +44,11 @@ the Risk Assessment App.
 Open the download page [SQLite Download Page](https://www.sqlite.org/download.html)
 
 To work with SQLite on Windows, </br>you download the command-line shell program as shown in the screenshot below.
-  ![](images/SQLite_Precompiled_Binaries_Win.png)
+  <!-- ![](images/SQLite_Precompiled_Binaries_Win.png) -->
   
 </br>
 If you are using a Mac, </br>you need to download this one:
-  ![](images/SQLite_Precompiled_Binaries_Mac.png)
+  <!-- ![](images/SQLite_Precompiled_Binaries_Mac.png) -->
 </br></br>
 In either case, the downloaded file is in ZIP format and its size is quite small.
 </br></br>
@@ -61,14 +61,14 @@ Create a new folder e.g., `C:\sqlite`.
 
 Extract the content of the .zip file that you downloaded in the previous section to the `C:\sqlite` folder. You should see three programs as shown below:
 
- ![](images/SQLite_files.png)
+ <!-- ![](images/SQLite_files.png) -->
 </br></br>
 
 ### Open the command line window.  
 
 On Windows, type "cmd" in the search bar.
 
- ![](images/Command_Prompt.png)
+ <!-- ![](images/Command_Prompt.png) -->
 </br></br>
 
 ### Navigate to the `C:\sqlite` folder.
@@ -196,4 +196,4 @@ You can download the SQLiteStudio installer or its portable version by visiting 
 
 The following picture illustrates how to launch the SQLiteStudio:
 
- ![](images/SQLiteStudio.png)
+ <!-- ![](images/SQLiteStudio.png) -->
