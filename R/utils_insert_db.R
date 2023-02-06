@@ -140,8 +140,8 @@ upload_package_to_db <- function(name, version, title, description,
 #' 
 #' @returns nothing
 #' @noRd
-insert_maintenance_metrics_to_db <- function(pkg_name, 
-                                             db_name = golem::get_golem_options('assessment_db_name')){
+insert_riskmetric_to_db <- function(pkg_name, 
+    db_name = golem::get_golem_options('assessment_db_name')){
 
   riskmetric_assess <-
     riskmetric::pkg_ref(pkg_name) %>%

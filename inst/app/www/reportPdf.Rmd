@@ -184,7 +184,7 @@ tagList(br(), h2('About Report'))
 ```{r about_report}
 
 tagList(
-  strong('Risk Assessment App Version:'), br(), getElement(params, 'app_version'), br(), br(),
+  strong('{riskassessment} App Version:'), br(), getElement(params, 'app_version'), br(), br(),
   strong('riskmetric Version:'), br(), getElement(params, 'riskmetric_version'), br(), br(),
   strong('Generated on:'), br(), format(Sys.time(), usetz = TRUE), br(), br(),
   strong('Metric Weights:')

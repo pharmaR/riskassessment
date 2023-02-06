@@ -15,9 +15,10 @@
 * Some general re-organizing of the package's infrastructure to make testing and development easier.
 * Added console warnings + login note & modals to warn user there is a bug with latest version of {fontawesome} and they should install v0.3.0 if they want to download HTML reports. For more info, the bug status can be tracked [here](https://github.com/rstudio/fontawesome/issues/99).
 * Add unit tests for functions in utils_startup.R.
-* Added testthat tests for dbSelect and dbUpdate functions (#295)
+* Added testthat tests for dbSelect and dbUpdate functions and changed github action workflow accordingly (#295)
+* Added renv and a renv.lock file as well as corresponding vignette
 * Added `shinytest2` scaffolding. Used `shinytest2` to test `uploadPackageUI`/`uploadPackageServer` (#295)
-* Added unit tests for dbSelect and dbUpdate functions (#295)
+* Added unit tests for dbSelect() and dbUpdate() functions (#295)
 * Unit test cases are now available for showHelperMessage() function (#295).
 * Unit test cases are now available for get_date_span() function (#295).
 * Added unit tests for all functions in utils_get_db except dbSelect (#295)
@@ -25,6 +26,7 @@
 * Added tests using `shinytest2` to test the databaseView module(#295)
 * Added tests using `shinytest2` to test the introJS module(#295)
 * Added tests using `shinytest2` to test the reweightView module(#295)
+* Added tests for internal auto_font() function (#295)
 * Allowed users to type in package names to be assessed instead of uploading CSV
 * updated `README` to reflect new repo name 'riskassessment' without the '_' to separate the two words.
 * Reduce number of package dependencies from 33 to 26
@@ -35,6 +37,12 @@
 * Implemented the usage of a download handler module
 * Added a package delete option
 * updated function get_latest_pkg_info to prevent warning message
+* Added tests using `shinytest2` to test the reportPreview module(#295)
+* Added tests using `shinytest2` to test the communityMetrics module(#295)
+* Added tests using `shinytest2` to test the maintenanceMetrics module(#295)
+* Fixed bug where the logging file was not being set
+
+
 
 # riskassessment 0.0.1
 * Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/riskassessment/archive/master.zip")` and `shiny::runGitHub('riskassessment', 'pharmaR')`
