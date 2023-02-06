@@ -47,8 +47,8 @@ The Credential Manager tab is shown by default which contains two tables:
 
 There is also a button at the bottom to download a copy of the current sqlite database.
 
-![](images/admin_mode_tables1.png){style="posiiton:center; width:790px"}
-![](images/admin_mode_tables2.png){style="posiiton:center; width:790px"}
+![](images/admin_mode_tables1.png){style="position:center; width:790px"}
+![](images/admin_mode_tables2.png){style="position:center; width:790px"}
 
 ## Managing Users
 
