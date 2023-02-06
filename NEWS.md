@@ -40,12 +40,9 @@
 * Added tests using `shinytest2` to test the reportPreview module(#295)
 * Added tests using `shinytest2` to test the communityMetrics module(#295)
 * Added tests using `shinytest2` to test the maintenanceMetrics module(#295)
-<<<<<<< HEAD
 * Added an "Administrative Tools and Options" vignette
-=======
 * Fixed bug where the logging file was not being set
 
->>>>>>> dev
 
 
 # riskassessment 0.0.1
