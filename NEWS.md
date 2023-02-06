@@ -39,6 +39,7 @@
 * Added tests using `shinytest2` to test the reportPreview module(#295)
 * Added tests using `shinytest2` to test the communityMetrics module(#295)
 * Added tests using `shinytest2` to test the maintenanceMetrics module(#295)
+* Rename internal modules to follow golem standard. I.E. 'mod_...'
 
 
 # riskassessment 0.0.1
