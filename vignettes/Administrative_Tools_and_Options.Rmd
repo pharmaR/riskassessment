@@ -182,7 +182,7 @@ The same confirmatory modal dialog box will appear.  Click on "Delete User(s)."
 
 ### Replace initial `Admin` user
 
-![](images/create_new_admin.png){style="float:right; width:410px; height:557px"} 
+![](images/create_new_admin.png){style="float:right; width:410px"} 
 </br>As an administrator, it's recommended you replace the initial `ADMIN` user ID created the first time the app is launched. Note that there must always be **at least** one admin user, and **you cannot delete yourself!**  If you want to delete the initial `admin` user you will first need to create another user ID with administrative privileges, as described below.
 
 </br>
@@ -280,7 +280,7 @@ After you've made all final re-weighting changes, you can click the "Re-calculat
 <br>
 
 <center>
-![](images/apply_new_weights.png){style="position:center; width:481px; height:165px"}
+![](images/apply_new_weights.png){style="position:center; width:481px"}
 </center>
 
 </br></br>Once you click on "Re-Calculate" you will get a confirmation modal, reminding you that "updating the risk metrics cannot be reverted", and strongly recommending you download a copy of the current database first before clicking on "Submit". The modal also details all the actions that will take effect in the app if you submit these changes.
@@ -295,7 +295,7 @@ that it is applying weights and updating risk scores to each package you have up
 <br>
 
 <center>
-![](images/reweighting_modal.png){style="position:center; width:373px; height:122px"}
+![](images/reweighting_modal.png){style="position:center; width:373px"}
 </center>
 
 Now go to the database overview tab to confirm that the risk scores have been updated. You can also view the new weights, including the standardized weight on the `Assessment Criteria` tab.
