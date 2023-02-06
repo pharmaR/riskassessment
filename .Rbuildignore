@@ -13,5 +13,6 @@ $run_dev.*
 ^app\.R$
 ^rsconnect$
 ^((?!/).)*sqlite$
+^auto_decisions\.json$
 
 _\.new\.png$
