@@ -271,7 +271,7 @@ As the name suggests, this modules allows to us view existing and change metric 
 
 Once the metric is selected, enter a new (numeric) weight in the "Choose new weight" box and select the <a style="color:red">"Update Weight"</a> button. You'll notice the row with the change will appear highlighted, showing you the old weight value and the new weight value:
 
-![](images/weight_updated.png){style="position:center; width:812px"}
+![](images/weight_updated.png){style="position:center; width:540px"}
 
 After you have updated **at least one** metric weight, the "Re-Calculate" button is enabled, allowing you to apply new weights and re-calculated the risk for each package.</br>
 
