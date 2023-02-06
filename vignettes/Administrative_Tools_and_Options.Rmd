@@ -25,7 +25,9 @@ This guide is to assist `ADMIN` users to manage credentials (aka, user IDs and p
 
 It's no secret that only users with administrator privileges have access to certain features of the application. To verify if you have `ADMIN` access, first check that you can see all THE navigation tabs within the app, especially the rightmost "Administrative Tools" tab. If you do not see this tab, you have not been granted access! To gain access, you'll have to request access from a known `ADMIN` user within your organization.
 
+<center>
 ![](images/top_left_tabs.png){style="margin: 10px 0 10px 0"}
+</center>
 
 ![](images/admin_mode_button.png){style="float:right; width:60px"}
 </br> You can also hover your cursor over the `r fa("plus")` symbol in the bottom-right corner of the page. Upon hovering, two additional buttons should appear. The middle one is the log out `r fa("right-from-bracket")` button,  while the Administrator mode `r fa("gears")` button will appear on top, as shown.  This button will not appear from non-`ADMIN` users.
@@ -34,7 +36,10 @@ It's no secret that only users with administrator privileges have access to cert
 
 Once you have selected the `Administrative Tools` tab, there are currently two areas available for review: the first is `Credential Manager` and the second is `Assessment Reweighting`, as seen below.
 
+<center>
 ![](images/admin_tools_tabs.png)
+</center>
+
 </br>
 
 # Credential Manager
@@ -108,15 +113,23 @@ Edit user information by clicking on the dark blue `r fa(name = "pen-to-square",
 
 An Edit User window will appear:
 
+<br>
+
 <center>
 ![](images/edit_user_popup.png){style="position:center; width:416px"}
 </center>
 
+<br>
+
 Make your changes, and then click on "Confirm Change".</br>
+
+<br>
 
 <center>
 ![](images/user_updated_modal.png){style="position:center; width:343px"}
 </center>
+
+<br>
 
 A small modal dialog box will appear (briefly) indicating the user has been successfully updated.
 
@@ -131,6 +144,8 @@ At the bottom of this table is a bar with three buttons:
 <center>
 ![](images/edit_remove_select_users.png){style="position:left; width:456px"}
 </center>
+
+<br>
 
 
 The first one is a checkbox `r fa(name = "square-check", fill = "red", height = "1em")`
@@ -164,6 +179,8 @@ Again, A small modal dialog box will briefly appear indicating the users have be
 
 </br>Delete any user by clicking on the red `r fa(name = "trash-can", fill = "red", height = "1em")` 
 <a style="color:red">Remove</a> button on the right-hand side of the table. You will see a confirmatory modal dialog box.  Click on "Delete User(s)."
+
+<br>
 
 <center>
 ![](images/delete_user_modal.png){style="position:center; width:410px"}
@@ -208,19 +225,29 @@ After completing the form, sign in using your new credentials and delete the ori
 
 The second table allows for password management.
 
+<br>
+
 ![](images/password_table.png){style="position:center; width:780px"} 
+
+<br>
 
 Click on the dark blue `r fa(name = "key", fill = "darkblue", height = "1em")`<a style="color:darkblue">*Change password*</a> button to force the corresponding user to change his/her password on the next log-in.
 
 A confirmatory modal dialog box will appear, like this:
 
+<br>
+
 <center>
 ![](images/confirm_change_password.png){style="position:center; width:416px"} 
 </center>
 
+<br>
+
 If you click on the orange `r fa(name = "arrow-rotate-left", fill = "orange", height = "1em")` <a style="color:orange">*Reset password*</a> button to generate a temporary password. 
 
 Again, a confirmatory modal dialog box will appear, like this:
+
+<br>
 
 <center>
 ![](images/confirm_reset_password.png){style="position:center; width:416px"}
@@ -230,17 +257,25 @@ Again, a confirmatory modal dialog box will appear, like this:
 
 Click on "Confirm" and you will see another modal dialog box with the new temporary password in it.
 
+<br>
+
 <center>
 ![](images/password_reset.png){style="position:center; width:415px"}
 </center>
 
-</br>You are responsible for delivering the new temporary password to the user.
+<br>
+
+You are responsible for delivering the new temporary password to the user.
 
 </br>As on the bottom of the User table, There is also a checkbox `r fa(name = "square-check", fill = "red", height = "1em")` to select multiple users followed by</br> a "Force Selected Users to Change Password" button. This button is enabled when you select two or more users.
 
-![](images/force_change_password.png){style="position:center; width=395px"}
+<br>
 
-</br>
+<center>
+![](images/force_change_password.png){style="position:center; width=395px"}
+</center>
+
+<br>
 
 ### Additional columns in Passwords table
 
@@ -263,9 +298,13 @@ Head over to the other tab available to `ADMIN` users called `Assessment Reweigh
 
 First, the simplest: the "Download Database" button.
 
+<br>
+
 <center>
 ![](images/download_db_btn.png){style="position:center; width:392px"}
 </center>
+
+<br>
 
 When clicked, this button will download a copy of the current database (by default, called "database.sqlite"). The app developers recommend doing this anytime you plan to make integral changes to the database (like changing metric weights), before anything else.
 
@@ -273,13 +312,25 @@ When clicked, this button will download a copy of the current database (by defau
 
 As the name suggests, this modules allows to us view existing and change metric weights used to calculate a risk score using `riskmemtric`.
 
+<br>
+
+<center>
 ![](images/set_update_weights.png){style="position:center; width:812px"}
+</center>
+
+<br>
 
 </br>Here you can either select a metric from the "Select metric" dropdown box or select a row </br>in the "CURRENT RISK SCORE WEIGHTS BY METRIC" table.
 
 Once the metric is selected, enter a new (numeric) weight in the "Choose new weight" box and select the <a style="color:red">"Update Weight"</a> button. You'll notice the row with the change will appear highlighted, showing you the old weight value and the new weight value:
 
+<br>
+
+<center>
 ![](images/weight_updated.png){style="position:center; width:540px"}
+</center>
+
+<br>
 
 After you have updated **at least one** metric weight, the "Re-Calculate" button is enabled, allowing you to apply new weights and re-calculated the risk for each package.</br>
 
@@ -291,11 +342,17 @@ After you've made all final re-weighting changes, you can click the "Re-calculat
 ![](images/apply_new_weights.png){style="position:center; width:481px"}
 </center>
 
+<br>
+
 </br></br>Once you click on "Re-Calculate" you will get a confirmation modal, reminding you that "updating the risk metrics cannot be reverted", and strongly recommending you download a copy of the current database first before clicking on "Submit". The modal also details all the actions that will take effect in the app if you submit these changes.
 
 <br>
 
+<center>
 ![](images/confirm_update_weights.png){style="position:center; width:654px"}
+</center>
+
+<br>
 
 Once you click on "Submit" a modal dialog box will appear indicating
 that it is applying weights and updating risk scores to each package you have uploaded. This will be followed by a brief "updates completed" message.
@@ -305,6 +362,8 @@ that it is applying weights and updating risk scores to each package you have up
 <center>
 ![](images/reweighting_modal.png){style="position:center; width:373px"}
 </center>
+
+<br>
 
 Now go to the database overview tab to confirm that the risk scores have been updated. You can also view the new weights, including the standardized weight on the `Assessment Criteria` tab.
 
