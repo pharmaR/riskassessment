@@ -108,7 +108,9 @@ Edit user information by clicking on the dark blue `r fa(name = "pen-to-square",
 
 An Edit User window will appear:
 
+<center>
 ![](images/edit_user_popup.png){style="position:center; width:416px"}
+</center>
 
 Make your changes, and then click on "Confirm Change".</br>
 
@@ -126,7 +128,9 @@ At the bottom of this table is a bar with three buttons:
 
 <br>
 
+<center>
 ![](images/edit_remove_select_users.png){style="position:left; width:456px"}
+</center>
 
 
 The first one is a checkbox `r fa(name = "square-check", fill = "red", height = "1em")`
@@ -134,7 +138,9 @@ to select multiple users followed by an `r fa(name = "pen-to-square", fill = "da
 
 <br>
 
+<center>
 ![](images/edit_select_users.png){style="float:left; width:406px"}
+</center>
 
 Note the "Edit Selected Users" button only allows you to modify the `start` and `expire` dates for that selected group of users.
 
@@ -167,7 +173,9 @@ Again, A small modal dialog box will briefly appear indicating the users have be
 
 <br>
 
+<center>
 ![](images/edit_remove_select_users.png){style="position:left; width:456px"}
+</center>
 
 <br>
 
