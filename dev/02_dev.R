@@ -180,6 +180,7 @@ usethis::use_data_raw( name = "adsl", open = FALSE ) # not run.
 ## Tests ---- not run
 ## Add one line by test you want to create
 usethis::use_test( "app" )
+usethis::use_test( "auto_font" )
 
 # Documentation
 ## Vignettes 
