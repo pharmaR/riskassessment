@@ -45,7 +45,8 @@ uploadPackageUI <- function(id) {
         actionLink(NS(id, "upload_format"), "View Sample Dataset")
       ),
      ),
-    
+    fluidRow(mod_decision_automation_ui(NS(id, "automate"))),
+
     # Display the summary information of the uploaded csv.
     fluidRow(column(width = 12, htmlOutput(NS(id, "upload_summary_text")))),
     
@@ -78,8 +79,10 @@ uploadPackageServer <- function(id, user) {
         upload_pkg
     })
     
-    cran_pkgs <- reactiveVal()
+    auto_list <- mod_decision_automation_server("automate", user)
 
+    cran_pkgs <- reactiveVal()
+    
     observeEvent(input$load_cran, {
       if (!isTruthy(cran_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
@@ -301,6 +304,11 @@ uploadPackageServer <- function(id, user) {
               # Get and upload community metrics to db.
               incProgress(1, detail = deets)
               insert_community_metrics_to_db(uploaded_packages$package[i])
+              if (!rlang::is_empty(auto_list())) {
+                score <- get_pkg_info(uploaded_packages$package[i])$score
+                decision <- paste0(names(auto_list())[purrr::map_lgl(auto_list(), ~ .x[1] <= score && score < .x[2])], "")
+                dbUpdate(glue::glue("UPDATE package SET decision = '{decision}' WHERE name = '{uploaded_packages$package[i]}'"))
+              }
             }
           }
           
