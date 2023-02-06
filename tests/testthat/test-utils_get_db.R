@@ -47,7 +47,7 @@ test_that("utils_get_db functions other than dbSelect", {
     dbUpdate(command, file.path(base_path, db_temp))
   }
 
-  insert_maintenance_metrics_to_db(pkg_name, file.path(base_path, db_temp))
+  insert_riskmetric_to_db(pkg_name, file.path(base_path, db_temp))
   pkg_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"), file.path(base_path, db_temp))
   
   insert_community_metrics_to_db(pkg_name, file.path(base_path, db_temp))

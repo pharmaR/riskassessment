@@ -1,7 +1,7 @@
 
 #' The `riskassessment` package
 #'
-#' The Risk Assessment App is an interactive web application serving as a front
+#' The `riskassessment` App is an interactive web application serving as a front
 #' end application for the `riskmetric` R package. `riskmetric` is a framework
 #' to quantify risk by assessing a number of metrics meant to evaluate
 #' development best practices, code documentation, community engagement, and

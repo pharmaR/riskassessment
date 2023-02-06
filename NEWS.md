@@ -15,7 +15,8 @@
 * Some general re-organizing of the package's infrastructure to make testing and development easier.
 * Added console warnings + login note & modals to warn user there is a bug with latest version of {fontawesome} and they should install v0.3.0 if they want to download HTML reports. For more info, the bug status can be tracked [here](https://github.com/rstudio/fontawesome/issues/99).
 * Add unit tests for functions in utils_startup.R.
-* Added testthat tests for dbSelect and dbUpdate functions (#295)
+* Added testthat tests for dbSelect and dbUpdate functions and changed github action workflow accordingly (#295)
+* Added renv and a renv.lock file as well as corresponding vignette
 * Added `shinytest2` scaffolding. Used `shinytest2` to test `uploadPackageUI`/`uploadPackageServer` (#295)
 * Added unit tests for dbSelect() and dbUpdate() functions (#295)
 * Unit test cases are now available for showHelperMessage() function (#295).
@@ -39,7 +40,12 @@
 * Added tests using `shinytest2` to test the reportPreview module(#295)
 * Added tests using `shinytest2` to test the communityMetrics module(#295)
 * Added tests using `shinytest2` to test the maintenanceMetrics module(#295)
+<<<<<<< HEAD
 * Added an "Administrative Tools and Options" vignette
+=======
+* Fixed bug where the logging file was not being set
+
+>>>>>>> dev
 
 
 # riskassessment 0.0.1

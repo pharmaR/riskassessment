@@ -21,7 +21,7 @@ package within an organizational context.
 
 <center>
 <a href="https://rinpharma.shinyapps.io/risk_assessment">
-<img src="man/figures/demo_riskassessment.png" alt="Risk Assessment app" width="25%">
+<img src="man/figures/demo_riskassessment.png" alt="{riskassessment} app" width="25%">
 </a>
 </center>
 
