@@ -35,6 +35,7 @@ Now, continue working on your project and call `renv::snapshot()` again, in orde
 ## How to ignore files in the lock file
 
 By default `renv` ignores all files stated in the `.gitignore` file. If you want to extend that further, you can use a `.renvignore` file - which is specified similar to the `.gitignore` file.
+The `lockfile` will only be upgraded in case of need for very important features as the development team wants to keep a stable version at any given time.
 
 ## Cache Location on different Operating Systems
 
