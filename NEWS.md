@@ -39,6 +39,7 @@
 * Added tests using `shinytest2` to test the reportPreview module(#295)
 * Added tests using `shinytest2` to test the communityMetrics module(#295)
 * Added tests using `shinytest2` to test the maintenanceMetrics module(#295)
+* Regarding community usage data, if there was more than one version release in the same month, the first and last version numbers from each month were concatenated together to summarize.
 
 
 # riskassessment 0.0.1
