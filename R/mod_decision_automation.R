@@ -9,7 +9,7 @@ mod_decision_automation_ui <- function(id){
   ns <- NS(id)
   tagList(
     uiOutput(ns("auto_classify")),
-    uiOutput(ns("auto_settings"))
+    DT::dataTableOutput(ns("auto_table"))
   )
 }
 
@@ -26,60 +26,114 @@ mod_decision_automation_server <- function(id, user){
     auto_json <- jsonlite::read_json("auto_decisions.json")
     auto_list <- reactiveVal(auto_json)
     
+    output$auto_table <-
+      DT::renderDataTable({
+        req(!rlang::is_empty(auto_list()))
+        
+        DT::datatable({
+          auto_list() %>%
+            purrr::imap_dfr(~ dplyr::tibble(decision = .y, ll = .x[[1]], ul = .x[[2]])) %>%
+            dplyr::arrange(ll,)
+        },
+        escape = FALSE,
+        class = "cell-border",
+        selection = 'none',
+        colnames = c("Decision Category", "Lower Limit", "Upper Limit"),
+        rownames = FALSE,
+        options = list(
+          dom = "t",
+          searching = FALSE,
+          sScrollX = "100%",
+          iDisplayLength = -1,
+          ordering = FALSE
+        ))
+      })
+    
+    output$empty_auto <- 
+      renderUI({
+        if (rlang::is_empty(auto_list())) {
+          tagList(
+            br(),
+            p("Decision automation is not enabled. Click on the gear to the right if you wish to add.")
+          )
+        }
+      })
+    
     observe({
       req(user$role)
+      req(user$role == "admin" || !rlang::is_empty(auto_json))
       
-      if (rlang::is_empty(auto_list())) {
-        if (user$role == "admin")
-          output$auto_classify <-
-            renderUI({
-              tagList(
-                br(),br(),
-                h5("Decision Automation:"),
-                p("Decision automation is not enabled. Click on the gear to the right if you wish to add.")
-              )
-            })
-      } else {
+      if (user$role == "admin") {
         output$auto_classify <-
           renderUI({
             tagList(
-              br(), br(),
-              h5("Decision Automation:")
+              br(),br(),
+              hr(),
+              fluidRow(
+              column(9, h5("Decision Automation:")),
+              column(3, uiOutput(ns("auto_settings")))
+              ),
+              uiOutput(ns("empty_auto")),
+            )
+          })
+      } else if (!rlang::is_empty(auto_json)) {
+        output$auto_classify <-
+          renderUI({
+            tagList(
+              br(),br(),
+              hr(),
+              h5("Decision Automation:"),
             )
           })
       }
       
       if (user$role == "admin") {
+        initial_values <- list(Low = .2, Medium = c(.2,.5), High = .5)
+        initial_selection <- NULL
+        if (!rlang::is_empty(auto_json)) {
+          for (.y in names(auto_json)) {
+            initial_values[[.y]] <- 
+            if (.y == "Low") {
+              unlist(auto_json[[.y]][2])
+            } else if (.y == "Medium") {
+              unlist(auto_json[[.y]])
+            } else if (.y == "High") {
+              unlist(auto_json[[.y]][1])
+            }
+          }
+          initial_selection <- names(auto_json)
+        }
+        
         output$auto_settings <-
           renderUI({
             div(
-              style = "float: right",
-                shinyWidgets::dropdownButton(
-                  checkboxGroupInput(ns("auto_include"), "Auto-Assign Risk Decisions For...", c("Low", "Medium", "High"), inline = TRUE),
-                  div(
-                    risk = "low",
-                    class = "shinyjs-hide",
-                    style = "width: 100%",
-                    sliderInput(ns("low_risk"), "Low Risk", 0, 1, .2,
-                                width = '100%', step = .01)
-                  ),
-                  div(
-                    risk = "medium",
-                    class = "shinyjs-hide",
-                    style = "width: 100%",
-                    sliderInput(ns("med_risk"), "Medium Risk", 0, 1, c(.2,.5),
-                                width = '100%', step = .01)
-                  ),
-                  div(
-                    risk = "high",
-                    class = "shinyjs-hide",
-                    style = "width: 100%",
-                    sliderInput(ns("high_risk"), "High Risk", 0, 1, .5,
-                                width = '100%', step = .01)
-                  ),
-                  br(),
-                  actionButton(ns("submit_auto"), "Apply Decision Rules", width = "100%"),
-                  tags$style(HTML("[risk=low] .irs-bar {
+              style = "float: right;",
+              shinyWidgets::dropdownButton(
+                checkboxGroupInput(ns("auto_include"), "Auto-Assign Risk Decisions For...", c("Low", "Medium", "High"), selected = initial_selection, inline = TRUE),
+                div(
+                  risk = "low",
+                  class = "shinyjs-hide",
+                  style = "width: 100%",
+                  sliderInput(ns("low_risk"), "Low Risk", 0, 1, initial_values$Low,
+                              width = '100%', step = .01)
+                ),
+                div(
+                  risk = "medium",
+                  class = "shinyjs-hide",
+                  style = "width: 100%",
+                  sliderInput(ns("med_risk"), "Medium Risk", 0, 1, initial_values$Medium,
+                              width = '100%', step = .01)
+                ),
+                div(
+                  risk = "high",
+                  class = "shinyjs-hide",
+                  style = "width: 100%",
+                  sliderInput(ns("high_risk"), "High Risk", 0, 1, initial_values$High,
+                              width = '100%', step = .01)
+                ),
+                br(),
+                actionButton(ns("submit_auto"), "Apply Decision Rules", width = "100%"),
+                tags$style(HTML("[risk=low] .irs-bar {
                                     border-top: 1px solid #06B756FF;
                                     border-bottom: 1px solid #06B756FF;
                                     background: #06B756FF;
@@ -114,23 +168,16 @@ mod_decision_automation_server <- function(id, user){
                                   [risk=high] .irs-single {
                                     background-color: #A63E24FF;
                                   }")),
-                  circle = TRUE,
-                  icon = icon("gear"),
-                  right = TRUE,
-                  width = '21vw'
-                )
+                tags$style(HTML(glue::glue('#{ns("auto_dropdown")}:after {{content: none;}}'))),
+                circle = TRUE,
+                icon = icon("gear"),
+                right = TRUE,
+                width = '350px',
+                inputId  = ns("auto_dropdown")
+              )
             )
           })
         
-        purrr::iwalk(auto_json, ~ 
-                       if (.y == "Low") {
-                         updateSliderInput(session, "low_risk", value = .x[2])
-                       } else if (.y == "Medium") {
-                         updateSliderInput(session, "med_risk", value = .x)
-                       } else if (.y == "High") {
-                         updateSliderInput(session, "high_risk", value = .x[1])
-                       })
-        updateCheckboxGroupInput(session, "auto_include", selected = names(auto_json))
         auto_decision <- reactiveValues()
         auto_current <- reactiveVal(names(auto_json))
         
