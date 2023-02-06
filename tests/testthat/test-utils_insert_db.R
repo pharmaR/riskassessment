@@ -34,11 +34,11 @@ test_that("utils_insert_db functions other than dbUpdate", {
     expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", "score", "weighted_score", "decision", "date_added"))
   })
   
-  insert_maintenance_metrics_to_db(pkg_name, file.path(base_path, db_temp))
+  insert_riskmetric_to_db(pkg_name, file.path(base_path, db_temp))
   
   pkg_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"), file.path(base_path, db_temp))
 
-  test_that("insert_maintenance_metrics_to_db", {
+  test_that("insert_riskmetric_to_db", {
     mmdata <-   dbSelect(glue::glue(
       "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
                     metric.is_url, package_metrics.value

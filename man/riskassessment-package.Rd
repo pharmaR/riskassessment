@@ -6,7 +6,7 @@
 \alias{riskassessment-package}
 \title{The \code{riskassessment} package}
 \description{
-The Risk Assessment App is an interactive web application serving as a front
+The \code{riskassessment} App is an interactive web application serving as a front
 end application for the \code{riskmetric} R package. \code{riskmetric} is a framework
 to quantify risk by assessing a number of metrics meant to evaluate
 development best practices, code documentation, community engagement, and
