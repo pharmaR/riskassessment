@@ -9,6 +9,7 @@ bs
 bslib's
 CMD
 cmd
+communityMetrics
 Cytel
 databaseView
 databse
@@ -41,6 +42,7 @@ Keyring
 keyring
 labelled
 Lifecycle
+maintenanceMetrics
 MetricBox
 Munshi
 nonadmin
