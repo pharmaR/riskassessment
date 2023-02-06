@@ -40,6 +40,7 @@
 * Added tests using `shinytest2` to test the communityMetrics module(#295)
 * Added tests using `shinytest2` to test the maintenanceMetrics module(#295)
 * Rename internal modules to follow golem standard. I.E. 'mod_...'
+* Fixed bug where the logging file was not being set
 
 
 # riskassessment 0.0.1
