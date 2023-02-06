@@ -33,6 +33,7 @@ Keyring
 keyring
 labelled
 Lifecycle
+maintenanceMetrics
 MetricBox
 Munshi
 nonadmin
