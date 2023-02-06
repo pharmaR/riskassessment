@@ -35,10 +35,10 @@
 * Implemented the usage of a download handler module
 * Added a package delete option
 * updated function get_latest_pkg_info to prevent warning message
-* Added an "Administrative Tools and Options" vignette
 * Added tests using `shinytest2` to test the reportPreview module(#295)
 * Added tests using `shinytest2` to test the communityMetrics module(#295)
 * Added tests using `shinytest2` to test the maintenanceMetrics module(#295)
+* Added an "Administrative Tools and Options" vignette
 
 
 # riskassessment 0.0.1
