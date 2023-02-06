@@ -33,10 +33,10 @@ For more information, see [What is SQLite](https://www.sqlitetutorial.net/what-i
 
 ### Why SQLite?
 
-For one obvious reason -- all the Risk Assessment App data is stored in a SQLite database.
+For one obvious reason -- all the `riskassessment` App data is stored in a SQLite database.
 Also, one of SQLite's advantages is that it can run nearly anywhere. 
 This vignette will provide you with the means of accessing the database outside of 
-the Risk Assessment App.
+the `riskassessment` App.
 </br></br>
 
 ### Download SQLite tools

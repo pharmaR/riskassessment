@@ -151,9 +151,9 @@ create_credentials_dev_db <- function(db_name){
   invisible(db_name)
 }
 
-#' Initialize the Risk Assessment Application
+#' Initialize the `riskassessment` Application
 #'
-#' @description This sets up the environment when running the Risk Assessment
+#' @description This sets up the environment when running the `riskassessment`
 #'   Application. It sets the log file, initializes the package database if
 #'   missing, and initializes the credentials database if missing.
 #' 
@@ -291,7 +291,7 @@ add_shinymanager_auth <- function(app_ui, app_ver, login_note) {
 
 #' Application Theme
 #'
-#' @description This sets the Risk Assessment Application theme object using
+#' @description This sets the `riskassessment` Application theme object using
 #'   bslib's bs_theme() function. The app_theme object gets used in run_app.R,
 #'   in addition to app_ui.R
 #'

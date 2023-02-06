@@ -198,7 +198,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       req(selected_pkg$name())
       
       tagList(
-        h5('Risk Assessment App Version:'), app_version,
+        h5('{riskassessment} App Version:'), app_version,
         h5('riskmetric Version:'), paste0(packageVersion("riskmetric")),
         h5('Generated on:'), format(Sys.time(), usetz = TRUE)
       )
