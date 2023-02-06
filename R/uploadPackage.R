@@ -182,6 +182,8 @@ uploadPackageServer <- function(id, user) {
           version = rep('0.0.0', np),
           status = rep('', np)
         )
+      if (!rlang::is_empty(auto_list()))
+        uploaded_packages$decision <- NA_character_
       
       updateSelectizeInput(session, "pkg_lst", selected = "")
       
@@ -305,9 +307,8 @@ uploadPackageServer <- function(id, user) {
               incProgress(1, detail = deets)
               insert_community_metrics_to_db(uploaded_packages$package[i])
               if (!rlang::is_empty(auto_list())) {
-                score <- get_pkg_info(uploaded_packages$package[i])$score
-                decision <- paste0(names(auto_list())[purrr::map_lgl(auto_list(), ~ .x[1] <= score && score < .x[2])], "")
-                dbUpdate(glue::glue("UPDATE package SET decision = '{decision}' WHERE name = '{uploaded_packages$package[i]}'"))
+                uploaded_packages$decision[i] <-
+                  assign_decisions(auto_list(), uploaded_packages$package[i])
               }
             }
           }
