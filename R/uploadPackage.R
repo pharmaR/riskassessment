@@ -297,7 +297,7 @@ uploadPackageServer <- function(id, user) {
               insert_pkg_info_to_db(uploaded_packages$package[i])
               # Get and upload maintenance metrics to db.
               incProgress(1, detail = deets)
-              insert_maintenance_metrics_to_db(uploaded_packages$package[i])
+              insert_riskmetric_to_db(uploaded_packages$package[i])
               # Get and upload community metrics to db.
               incProgress(1, detail = deets)
               insert_community_metrics_to_db(uploaded_packages$package[i])
