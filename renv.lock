@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.1.2",
+    "Version": "4.2.2",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -337,7 +337,7 @@
       "RemoteUsername": "thinkr-open",
       "RemoteRef": "HEAD",
       "RemoteSha": "d2e4fcada1b094d7af06324f6c54301c7586ffee",
-      "Hash": "694eebe322e5cbdf101c152ad0a67d28",
+      "Hash": "8d87a3819d6169dbcbcf236c16a84c89",
       "Requirements": [
         "cli",
         "desc",
@@ -470,7 +470,7 @@
       "RemoteUsername": "r-lib",
       "RemoteRef": "HEAD",
       "RemoteSha": "7ea4e479bdf780adadd1bd421a5ca23e5f951697",
-      "Hash": "795b8389734f11481fdcdf9cdde3002f",
+      "Hash": "9d300343b59a7fa8803429f575874f64",
       "Requirements": [
         "callr",
         "cranlike",
@@ -487,7 +487,7 @@
       "Package": "cranlike",
       "Version": "1.0.2",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Hash": "2a531c8d1d45799fe2e880708dfc1097",
       "Requirements": [
         "DBI",
@@ -586,7 +586,7 @@
       "Package": "debugme",
       "Version": "1.1.0",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Hash": "2d8a9e4f08f3dd669cb8ddd1eb575959",
       "Requirements": [
         "crayon"
@@ -888,7 +888,7 @@
       "Package": "gmailr",
       "Version": "1.0.1",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Hash": "185e047cb2392acf320b8bc657a55c92",
       "Requirements": [
         "base64enc",
@@ -1652,14 +1652,14 @@
       "Package": "revdepcheck",
       "Version": "1.0.0.9001",
       "Source": "GitHub",
-      "Remotes": "r-lib/crancache",
       "RemoteType": "github",
+      "Remotes": "r-lib/crancache",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "revdepcheck",
       "RemoteUsername": "r-lib",
       "RemoteRef": "HEAD",
       "RemoteSha": "73933982d9bb34244902b80fa95d8a5fd965470e",
-      "Hash": "0840f4cc4619466fe424153d8426c0be",
+      "Hash": "3c7a98adfcec2ae0b10515a76bbc01dd",
       "Requirements": [
         "DBI",
         "RSQLite",
@@ -2458,10 +2458,10 @@
     },
     "xfun": {
       "Package": "xfun",
-      "Version": "0.31",
+      "Version": "0.37",
       "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "a318c6f752b8dcfe9fb74d897418ab2b",
+      "Repository": "RSPM",
+      "Hash": "a6860e1400a8fd1ddb6d9b4230cc34ab",
       "Requirements": []
     },
     "xml2": {
