@@ -1,6 +1,6 @@
 
 ### Create tests for generate_comm_data
-
+library(dplyr)
 dat <- generate_comm_data("ggplot2")
 test_that("func should return one row per month and year", {
   expect_equal(dat %>%
