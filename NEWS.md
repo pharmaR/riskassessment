@@ -35,6 +35,7 @@
 * Implemented the usage of a download handler module
 * Added a package delete option
 * updated function get_latest_pkg_info to prevent warning message
+* Fixed bug where the logging file was not being set
 
 # riskassessment 0.0.1
 * Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/riskassessment/archive/master.zip")` and `shiny::runGitHub('riskassessment', 'pharmaR')`
