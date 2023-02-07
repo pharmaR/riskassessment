@@ -437,7 +437,8 @@ uploadPackageServer <- function(id, user) {
     })
     
     list(
-      names = uploaded_pkgs
+      names = uploaded_pkgs,
+      auto_decision = auto_list
     )
   })
 }
