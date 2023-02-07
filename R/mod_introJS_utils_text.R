@@ -33,7 +33,7 @@ apptab_steps <- data.frame(
 apptab_admn <- data.frame(
   element = c(
     "[data-value=admin-mode-tab]"),
-  intro = c("Administer user credentials and assessment reweighting here"),
+  intro = c("Manage user credentials and apply assessment reweighting here"),
   position = "bottom"
 )
 
