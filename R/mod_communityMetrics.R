@@ -57,8 +57,16 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
       }
     })
     
+    cum_text <- reactive({
+      if(user$role == "admin") {
+        apptab_steps <- bind_rows(apptab_admn, apptab_steps)
+      }
+      cum_steps %>% 
+        bind_rows(apptab_steps)
+    })
+    
     # IntroJS.
-    introJSServer(id = "introJS", text = cum_steps)
+    introJSServer(id = "introJS", text = cum_text())
 
     # Community cards (saved to share with report preview): the 
     # time since first release, the time since latest release, 
