@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.1.2",
+    "Version": "4.2.2",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -327,6 +327,34 @@
         "tibble"
       ]
     },
+    "checkhelper": {
+      "Package": "checkhelper",
+      "Version": "0.0.1.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "checkhelper",
+      "RemoteUsername": "thinkr-open",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "d2e4fcada1b094d7af06324f6c54301c7586ffee",
+      "Hash": "8d87a3819d6169dbcbcf236c16a84c89",
+      "Requirements": [
+        "cli",
+        "desc",
+        "devtools",
+        "dplyr",
+        "glue",
+        "lifecycle",
+        "magrittr",
+        "pkgbuild",
+        "purrr",
+        "rcmdcheck",
+        "roxygen2",
+        "stringr",
+        "whisker",
+        "withr"
+      ]
+    },
     "checkmate": {
       "Package": "checkmate",
       "Version": "2.1.0",
@@ -440,7 +468,7 @@
       "RemoteUsername": "r-lib",
       "RemoteRef": "HEAD",
       "RemoteSha": "7ea4e479bdf780adadd1bd421a5ca23e5f951697",
-      "Hash": "795b8389734f11481fdcdf9cdde3002f",
+      "Hash": "9d300343b59a7fa8803429f575874f64",
       "Requirements": [
         "callr",
         "cranlike",
@@ -457,7 +485,7 @@
       "Package": "cranlike",
       "Version": "1.0.2",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Hash": "2a531c8d1d45799fe2e880708dfc1097",
       "Requirements": [
         "DBI",
@@ -556,7 +584,7 @@
       "Package": "debugme",
       "Version": "1.1.0",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Hash": "2d8a9e4f08f3dd669cb8ddd1eb575959",
       "Requirements": [
         "crayon"
@@ -860,7 +888,7 @@
       "Package": "gmailr",
       "Version": "1.0.1",
       "Source": "Repository",
-      "Repository": "CRAN",
+      "Repository": "RSPM",
       "Hash": "185e047cb2392acf320b8bc657a55c92",
       "Requirements": [
         "base64enc",
@@ -1623,14 +1651,14 @@
       "Package": "revdepcheck",
       "Version": "1.0.0.9001",
       "Source": "GitHub",
-      "Remotes": "r-lib/crancache",
       "RemoteType": "github",
+      "Remotes": "r-lib/crancache",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "revdepcheck",
       "RemoteUsername": "r-lib",
       "RemoteRef": "HEAD",
       "RemoteSha": "73933982d9bb34244902b80fa95d8a5fd965470e",
-      "Hash": "0840f4cc4619466fe424153d8426c0be",
+      "Hash": "3c7a98adfcec2ae0b10515a76bbc01dd",
       "Requirements": [
         "DBI",
         "RSQLite",
