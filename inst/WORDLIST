@@ -18,10 +18,13 @@ dbUpdate
 dev
 DOCX
 docx
+env
+eproducible
 favicon
 fontawesome
 funder
 getTimeStamp
+github
 Github
 golem
 gui
@@ -29,6 +32,11 @@ Imran
 ing
 introJS
 io
+ironments
+keyring
+labelled
+lockfile
+macOS
 JSON
 Keyring
 keyring
@@ -46,6 +54,9 @@ pharmar
 plotly
 pre
 px
+renv
+repo
+reproducable
 README
 Reddy
 repo

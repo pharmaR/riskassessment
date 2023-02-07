@@ -228,7 +228,7 @@ tagList(
 h5('About the Report')
 
 tagList(
-  h6('Risk Assessment App Version:'), params$app_version,
+  h6('{riskassessment} App Version:'), params$app_version,
   h6('riskmetric Version:'), params$riskmetric_version,
   h6('Generated on:'), format(Sys.time(), usetz = TRUE),
   h6('Metric Weights:')
