@@ -138,6 +138,20 @@ generate_comm_data <- function(pkg_name){
         dplyr::pull(date) %>%
         min()
       
+      # Summarize versions as a range when there was
+      # more than one release in a month
+      one_v_per_month <- versions_with_dates %>%
+        dplyr::arrange(year, month, date) %>%
+        dplyr::select(month, year, ea_v = version) %>%
+        dplyr::group_by(year, month) %>%
+        dplyr::mutate(version = dplyr::case_when(
+                 n() > 1 ~ paste(ea_v[1], ea_v[n()], sep = " - "),
+                 TRUE ~ as.character(ea_v))
+        ) %>%
+        select(-ea_v) %>%
+        distinct(year, month, .keep_all = TRUE)
+      
+      
       # Get the number of downloads by month, year.
       pkgs_cum_metrics <- 
         cranlogs::cran_downloads(
@@ -151,9 +165,8 @@ generate_comm_data <- function(pkg_name){
         group_by(id = package, month, year) %>%
         summarise(downloads = sum(count)) %>%
         ungroup() %>%
-        left_join(versions_with_dates, by = c('month', 'year')) %>%
-        dplyr::arrange(year, month) %>%
-        dplyr::select(-date)
+        left_join(one_v_per_month, by = c('month', 'year')) %>%
+        dplyr::arrange(year, month) 
       
     },
     error = function(e) {
@@ -394,15 +407,12 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
   
   pkg_name <- unique(data$id)
   
-  community_data <- data %>%
+  downloads_data <- data %>%
     dplyr::mutate(day_month_year = glue::glue('1-{month}-{year}')) %>%
     dplyr::mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
     dplyr::mutate(month_year = glue::glue('{months(day_month_year)} {year}')) %>%
     dplyr::mutate(month = month.name[month]) %>%
     dplyr::arrange(day_month_year)
-  
-  downloads_data <- community_data %>%
-    dplyr::distinct(month, year, .keep_all = TRUE)
   
   # Last day that appears on the community metrics.
   latest_date <- downloads_data %>%
