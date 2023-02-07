@@ -68,7 +68,6 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
             my_tempdir <- tempdir()
             if (input$report_format == "html") {
               
-              # TODO: Remove temporary warning once bug in fa v0.4.0 is fixed.
               # https://github.com/rstudio/fontawesome/issues/99
               # Here, we make sure user has a functional version of fontawesome
               fa_v <- packageVersion("fontawesome")
