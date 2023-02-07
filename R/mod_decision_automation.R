@@ -232,12 +232,69 @@ mod_decision_automation_server <- function(id, user){
             updateSliderInput(session, "low_risk", value = min(input$low_risk, input$high_risk))
         })
         
+        output$modal_table <- 
+          DT::renderDataTable({
+            out_lst <- purrr::compact(reactiveValuesToList(auto_decision))
+            
+            DT::datatable({
+              out_lst %>%
+                purrr::imap_dfr(~ dplyr::tibble(decision = .y, ll = .x[[1]], ul = .x[[2]])) %>%
+                dplyr::arrange(ll,)
+            },
+            escape = FALSE,
+            class = "cell-border",
+            selection = 'none',
+            colnames = c("Decision Category", "Lower Limit", "Upper Limit"),
+            rownames = FALSE,
+            options = list(
+              dom = "t",
+              searching = FALSE,
+              sScrollX = "100%",
+              iDisplayLength = -1,
+              ordering = FALSE
+            ))
+          })
+        
         observeEvent(input$submit_auto, {
+          req(user$role == "admin")
+          
+          showModal(modalDialog(
+            size = "l",
+            easyClose = TRUE,
+            h5("Apply Decision Rules", style = 'text-align: center !important'),
+            hr(),
+            br(),
+            fluidRow(
+              column(
+                width = 12,
+                'Please confirm your chosen decision classification rules: ',
+                br(),
+                if (!rlang::is_empty(purrr::compact(reactiveValuesToList(auto_decision)))) DT::DTOutput(ns("modal_table")) else h2("Disable Decision Automation"),
+                br(),
+                br(),
+                em('Note: Once submitted, these rules will be applied to any new packages uploaded or if reweighting.')
+              )
+            ),
+            br(),
+            footer = tagList(
+              actionButton(ns('confirm_submit_auto'), 'Submit'),
+              actionButton(ns('cancel'), 'Cancel')
+            )))
+        })
+        
+        # Close modal if user cancels decision submission.
+        observeEvent(input$cancel, {
+          removeModal()
+        })
+        
+        observeEvent(input$confirm_submit_auto, {
           req(user$role == "admin")
           
           out_lst <- purrr::compact(reactiveValuesToList(auto_decision))
           jsonlite::write_json(out_lst, "auto_decisions.json")
           auto_list(out_lst)
+          
+          removeModal()
         })
       }
     })
