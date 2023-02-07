@@ -63,6 +63,20 @@ upload_pkg_comp <-  data.frame(
       ),
       position = c("bottom", "top")
 )
+      
+upload_pkg_complete <- union(upload_pkg,
+                             data.frame(
+                               element = c("#upload_summary_div", "#upload_package-upload_pkgs_table"),
+                               intro = c(
+                                 "Text description of packages uploaded. Counts by type: 'Total', 'New', 'Undiscovered', 'Duplicate'.",
+                                 "Confirm uploaded packages list, filter by type"
+                               ),
+                               position = c("bottom", "top")
+                             )
+                             #     # } else {
+                             #     #   data.frame(element = character(0) , intro = character(0), position = character(0))
+                             #     # }
+)
 
 
 # Maintenance metrics.
