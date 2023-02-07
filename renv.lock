@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.2.2",
+    "Version": "4.1.2",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -327,34 +327,6 @@
         "tibble"
       ]
     },
-    "checkhelper": {
-      "Package": "checkhelper",
-      "Version": "0.0.1.9000",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "checkhelper",
-      "RemoteUsername": "thinkr-open",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "d2e4fcada1b094d7af06324f6c54301c7586ffee",
-      "Hash": "8d87a3819d6169dbcbcf236c16a84c89",
-      "Requirements": [
-        "cli",
-        "desc",
-        "devtools",
-        "dplyr",
-        "glue",
-        "lifecycle",
-        "magrittr",
-        "pkgbuild",
-        "purrr",
-        "rcmdcheck",
-        "roxygen2",
-        "stringr",
-        "whisker",
-        "withr"
-      ]
-    },
     "checkmate": {
       "Package": "checkmate",
       "Version": "2.1.0",
@@ -468,7 +440,7 @@
       "RemoteUsername": "r-lib",
       "RemoteRef": "HEAD",
       "RemoteSha": "7ea4e479bdf780adadd1bd421a5ca23e5f951697",
-      "Hash": "9d300343b59a7fa8803429f575874f64",
+      "Hash": "795b8389734f11481fdcdf9cdde3002f",
       "Requirements": [
         "callr",
         "cranlike",
@@ -485,7 +457,7 @@
       "Package": "cranlike",
       "Version": "1.0.2",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "CRAN",
       "Hash": "2a531c8d1d45799fe2e880708dfc1097",
       "Requirements": [
         "DBI",
@@ -584,7 +556,7 @@
       "Package": "debugme",
       "Version": "1.1.0",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "CRAN",
       "Hash": "2d8a9e4f08f3dd669cb8ddd1eb575959",
       "Requirements": [
         "crayon"
@@ -749,10 +721,10 @@
     },
     "fontawesome": {
       "Package": "fontawesome",
-      "Version": "0.3.0",
+      "Version": "0.5.0",
       "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "a36c4a3eade472039a3ec8cb824e6dc4",
+      "Repository": "RSPM",
+      "Hash": "e80750aec5717dedc019ad7ee40e4a7c",
       "Requirements": [
         "htmltools",
         "rlang"
@@ -888,7 +860,7 @@
       "Package": "gmailr",
       "Version": "1.0.1",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "CRAN",
       "Hash": "185e047cb2392acf320b8bc657a55c92",
       "Requirements": [
         "base64enc",
@@ -1651,14 +1623,14 @@
       "Package": "revdepcheck",
       "Version": "1.0.0.9001",
       "Source": "GitHub",
-      "RemoteType": "github",
       "Remotes": "r-lib/crancache",
+      "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "revdepcheck",
       "RemoteUsername": "r-lib",
       "RemoteRef": "HEAD",
       "RemoteSha": "73933982d9bb34244902b80fa95d8a5fd965470e",
-      "Hash": "3c7a98adfcec2ae0b10515a76bbc01dd",
+      "Hash": "0840f4cc4619466fe424153d8426c0be",
       "Requirements": [
         "DBI",
         "RSQLite",
@@ -1733,10 +1705,10 @@
     },
     "rintrojs": {
       "Package": "rintrojs",
-      "Version": "0.3.0",
+      "Version": "0.3.2",
       "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "c93b7efc3f34a5888d9a919f86e77414",
+      "Repository": "RSPM",
+      "Hash": "c7542d0e29c0cf0a04eb9dc898be5a15",
       "Requirements": [
         "jsonlite",
         "shiny"
@@ -1744,9 +1716,9 @@
     },
     "riskassessment": {
       "Package": "riskassessment",
-      "Version": "0.0.1.9030",
+      "Version": "0.0.1.9031",
       "Source": "unknown",
-      "Hash": "cf8e650e11108ea0e7bcb43807cf3723",
+      "Hash": "f2a1399062d7d195bded8f49e5935580",
       "Requirements": [
         "DBI",
         "DT",
