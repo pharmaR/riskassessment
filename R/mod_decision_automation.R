@@ -133,42 +133,6 @@ mod_decision_automation_server <- function(id, user){
                 ),
                 br(),
                 actionButton(ns("submit_auto"), "Apply Decision Rules", width = "100%"),
-                tags$style(HTML("[risk=low] .irs-bar {
-                                    border-top: 1px solid #06B756FF;
-                                    border-bottom: 1px solid #06B756FF;
-                                    background: #06B756FF;
-                                  }
-                                  
-                                  [risk=low] .irs-single {
-                                    background-color: #06B756FF;
-                                  }
-                                  
-                                  [risk=medium] .irs-bar {
-                                    border-top: 1px solid #A99D04FF;
-                                    border-bottom: 1px solid #A99D04FF;
-                                    background: #A99D04FF;
-                                  }
-                                  
-                                  [risk=medium] .irs-from,
-                                  [risk=medium] .irs-to {
-                                    background-color: #A99D04FF;
-                                  }
-                                  
-                                  [risk=high] .irs-line {
-                                    background: #A63E24FF;
-                                    border: 1px solid #A63E24FF;
-                                  }
-                                  
-                                  [risk=high] .irs-bar {
-                                    border-top: 1px solid #ddd;
-                                    border-bottom: 1px solid #ddd;
-                                    background: linear-gradient(to bottom, #DDD -50%, #FFF 150%);
-                                  }
-                                  
-                                  [risk=high] .irs-single {
-                                    background-color: #A63E24FF;
-                                  }")),
-                tags$style(HTML(glue::glue('#{ns("auto_dropdown")}:after {{content: none;}}'))),
                 circle = TRUE,
                 icon = icon("gear"),
                 right = TRUE,
