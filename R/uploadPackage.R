@@ -72,10 +72,16 @@ uploadPackageServer <- function(id, user) {
     upload_pkg_txt <- reactive({
       req(uploaded_pkgs())
       
+      if(user$role == "admin") {
+        upload_pkg <- bind_rows(upload_pkg, upload_adm)
+        apptab_steps <- bind_rows(apptab_admn, apptab_steps)
+      }
       if(nrow(uploaded_pkgs()) > 0) 
-        upload_pkg_complete 
+        upload_pkg_complete <- bind_rows(upload_pkg, upload_pkg_comp) %>% 
+          bind_rows(apptab_steps)
       else 
-        upload_pkg
+        upload_pkg %>% 
+          bind_rows(apptab_steps)
     })
     
     cran_pkgs <- reactiveVal()
@@ -120,7 +126,7 @@ uploadPackageServer <- function(id, user) {
                           "nextLabel" = "Next",
                           "prevLabel" = "Previous"
                         )
-      )
+      ),
     )
     
     uploaded_pkgs00 <- reactiveVal()

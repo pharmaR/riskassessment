@@ -6,14 +6,11 @@
 sidebar_steps <-
   data.frame(
     element = c(
-      "#assessment-criteria-tab","#database-tab",
       "#sidebar-select_pkg_ui", # "#sidebar-select_ver", # not working
       "#sidebar-status-wp", "#sidebar-score-wp",
       "#sidebar-decision-grp",
       "#sidebar-overall-comment-grp"),
     intro = c(
-      "Discover the package assessment process & criteria",
-      "Review the R packages that already exist in the database",
       "Expand this dropdown list to select a specific package to assess that was previously uploaded.",
       # "The latest version will autopopulate here.", # can't peg ui object name, even with a div!
       "The status can be either 'Under Review' or 'Reviewed'.",
@@ -21,35 +18,51 @@ sidebar_steps <-
       "After reviewing your package, you can leave an overall comment.",
       "Provide your input on the overall risk of the selected package."
     ),
-    position = c(rep("bottom", 7))
+    position = c(rep("bottom", 5))
   )
+
+# appui tab widgets
+apptab_steps <- data.frame(
+  element = c(
+  "[data-value=assessment-criteria-tab]", "[data-value=database-tab]"),
+  intro = c("Discover the package assessment process & criteria",
+            "Review the R packages that already exist in the database"),
+  position = c(rep("bottom", 2))
+)
+
+apptab_admn <- data.frame(
+  element = c(
+    "[data-value=admin-mode-tab]"),
+  intro = c("Administer user credentials and assessment reweighting here"),
+  position = "bottom"
+)
 
 # upload package tab.
 upload_pkg <- data.frame(
-  element = c("#upload_package-introJS-help", "#type-package-group", "#upload-file-grp", "#upload_package-upload_format", "#rem-package-group"),
+  element = c("#upload_package-introJS-help", "#type-package-group", "#upload-file-grp", "#upload_package-upload_format"),
   intro = c(
     "Click here anytime you need help.",
     "Type in the name of the package(s) you would like to assess.",
     "Or you can Upload a CSV file with the package(s) if you have a lot.",
-    "Follow format of this sample data when creating your csv. Or you can even download it to use as a template.",
-    "If you are an admin, you can also remove packages here."
+    "Follow format of this sample data when creating your csv. Or you can even download it to use as a template."
   ),
-  position = c("right", rep("top", 4))
+  position = c("right", rep("top", 3))
 )
 
-upload_pkg_complete <- union(upload_pkg,
-    data.frame(
+upload_adm <- data.frame(
+  element = "#rem-package-group",
+  intro = "If you are an admin, you can also remove packages here.",
+  position = "top"
+)
+
+upload_pkg_comp <-  data.frame(
       element = c("#upload_summary_div", "#upload_package-upload_pkgs_table"),
       intro = c(
         "Text description of packages uploaded. Counts by type: 'Total', 'New', 'Undiscovered', 'Duplicate'.",
         "Confirm uploaded packages list, filter by type"
       ),
       position = c("bottom", "top")
-    )
-#     # } else {
-#     #   data.frame(element = character(0) , intro = character(0), position = character(0))
-#     # }
-  )
+)
 
 
 # Maintenance metrics.
