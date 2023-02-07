@@ -19,6 +19,7 @@ mod_decision_automation_ui <- function(id){
 #' 
 #' @importFrom jsonlite read_json write_json
 #' @importFrom purrr compact
+#' @importFrom shinyWidgets tooltipOptions
 mod_decision_automation_server <- function(id, user){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
@@ -137,7 +138,8 @@ mod_decision_automation_server <- function(id, user){
                 icon = icon("gear"),
                 right = TRUE,
                 width = '350px',
-                inputId  = ns("auto_dropdown")
+                inputId  = ns("auto_dropdown"),
+                tooltip = shinyWidgets::tooltipOptions(title = "Click here to add/adjust decision automation rules.", placement = "left")
               )
             )
           })
