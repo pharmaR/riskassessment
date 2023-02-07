@@ -96,7 +96,7 @@ usethis::use_mit_license()
 # ## Add helper functions ---- not run, function helper files already exist
 # ## Creates fct_* and utils_*
 # 
-# golem::add_utils( "strObjs" ) # ran
+golem::add_utils( "text", module = "introJS" ) # ran
 # golem::add_utils( "helpers" ) # ran, but Maya still has to uncomment and document her funtions
 # golem::add_utils( "initialize" )
 # 
@@ -181,6 +181,7 @@ usethis::use_data_raw( name = "adsl", open = FALSE ) # not run.
 ## Add one line by test you want to create
 usethis::use_test( "app" )
 usethis::use_test( "auto_font" )
+usethis::use_test( "generate_comm_data" )
 
 # Documentation
 ## Vignettes 
