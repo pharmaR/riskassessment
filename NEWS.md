@@ -43,6 +43,7 @@
 * Regarding community usage data, if there was more than one version release in the same month, the first and last version numbers from each month were concatenated together to summarize. 
 * Rename internal modules to follow golem standard. I.E. 'mod_...'
 * Fixed bug where the logging file was not being set
+* fix package delete button shadow, fix introjs for admin/non-admin
 
 
 # riskassessment 0.0.1
