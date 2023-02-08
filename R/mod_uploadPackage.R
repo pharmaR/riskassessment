@@ -366,7 +366,7 @@ uploadPackageServer <- function(id, user) {
         dec_lst <- uploaded_pkgs()$decision %>% 
           unique() %>% 
           `[`(. != "") %>%
-          purrr::map_chr(~ glue::glue("{.x} - {sum(uploaded_pkgs()$decision == .x)}")) %>%
+          purrr::map_chr(~ glue::glue("{.x}: {sum(uploaded_pkgs()$decision == .x)}")) %>%
           purrr::map(tags$code)
       }
       as.character(tagList(
