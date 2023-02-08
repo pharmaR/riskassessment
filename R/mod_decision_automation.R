@@ -303,6 +303,7 @@ mod_decision_automation_server <- function(id, user){
         # Close modal if user cancels decision submission.
         observeEvent(input$cancel, {
           removeModal()
+          shinyjs::click("auto_dropdown")
         })
         
         observeEvent(input$confirm_submit_auto, {
@@ -313,6 +314,7 @@ mod_decision_automation_server <- function(id, user){
           auto_list(out_lst)
           
           removeModal()
+          shinyjs::click("auto_dropdown")
         })
       }
     })
