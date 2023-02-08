@@ -62,6 +62,7 @@ Imports:
     shinyWidgets,
     stringr
 Suggests: 
+    fontawesome,
     knitr,
     rstudioapi,
     shinytest2,
