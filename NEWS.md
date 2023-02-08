@@ -40,11 +40,11 @@
 * Added tests using `shinytest2` to test the reportPreview module(#295)
 * Added tests using `shinytest2` to test the communityMetrics module(#295)
 * Added tests using `shinytest2` to test the maintenanceMetrics module(#295)
-* Added an "Administrative Tools and Options" vignette
 * Regarding community usage data, if there was more than one version release in the same month, the first and last version numbers from each month were concatenated together to summarize. 
 * Rename internal modules to follow golem standard. I.E. 'mod_...'
 * Fixed bug where the logging file was not being set
-* fix package delete button shadow, fix introjs for admin/non-admin
+* Added an "Administrative Tools and Options" vignette
+* fix package delete button shadow; fix introjs for admin/non-admin roles
 
 
 # riskassessment 0.0.1
