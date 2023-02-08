@@ -42,3 +42,7 @@
   font-size: x-large;
   font-weight: bold;
 }
+
+.btn-dropdown-input ul {
+  border: 1px solid;
+}
