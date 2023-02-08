@@ -35,15 +35,14 @@ run_app <- function(
   if(is.null(assessment_db_name)) assessment_db_name <- "database.sqlite"
   if(is.null(credentials_db_name)) credentials_db_name <- "credentials.sqlite"
   if(is.null(login_note)) {
-    # TODO: Remove temporary warning once bug in fa v0.4.0 is fixed.
     # https://github.com/rstudio/fontawesome/issues/99
     # Here, we make sure user has a functional version of fontawesome
     fa_v <- packageVersion("fontawesome") #TODO: Remove once bug is fixed
     if(!file.exists(credentials_db_name)) {
       login_note <- HTML('<em>Note:</em> To log in for the first time, use the admin user:
                           <u>admin</u> with password <u>QWERTY1</u>.')
-    } else if(fa_v != '0.3.0') { #TODO: Remove once bug is fixed
-      login_note <- HTML(glue::glue("<em>Note:</em> HTML reports may require fontawesome v0.3.0 to render. You currently have v{fa_v} installed. If the report download fails, please run: `remotes::install_version('fontawesome', version = '0.3.0', repos = 'http://cran.us.r-project.org')`"))
+    } else if(fa_v == '0.4.0') { #TODO: Remove once bug is fixed
+      login_note <- HTML(glue::glue("<em>Note:</em> HTML reports will not render with {fontawesome} v0.4.0. You currently have v{fa_v} installed. If the report download fails, please install a more stable version. We recommend v.0.5.0 or higher."))
     }
   }
   
