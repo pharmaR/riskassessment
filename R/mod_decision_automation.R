@@ -141,7 +141,7 @@ mod_decision_automation_server <- function(id, user){
                 circle = TRUE,
                 icon = icon("gear"),
                 right = TRUE,
-                width = '500px',
+                width = '600px',
                 inputId  = ns("auto_dropdown"),
                 tooltip = shinyWidgets::tooltipOptions(title = "Click here to add/adjust decision automation rules.", placement = "left")
               )

@@ -37,3 +37,8 @@
 .btn-dropdown-input .btn.dropdown-toggle:after {
   content: none;
 }
+
+.btn-dropdown-input .shiny-input-checkboxgroup .control-label {
+  font-size: x-large;
+  font-weight: bold;
+}
