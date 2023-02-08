@@ -17,3 +17,5 @@ $run_dev.*
 ^((?!/).)*sqlite$
 
 _\.new\.png$
+^_pkgdown\.yml$
+^pkgdown$

@@ -19,3 +19,4 @@ This sets up the environment when running the \code{riskassessment}
 Application. It sets the log file, initializes the package database if
 missing, and initializes the credentials database if missing.
 }
+\keyword{internal}

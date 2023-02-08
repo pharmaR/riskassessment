@@ -91,6 +91,7 @@ get_latest_pkg_info <- function(pkg_name) {
 #' ggplot_comm_df <- generate_comm_data("ggplot2")
 #' head(ggplot_comm_df)
 #' }
+#' @keywords reproduce
 #' @export
 generate_comm_data <- function(pkg_name){
   
@@ -186,7 +187,7 @@ generate_comm_data <- function(pkg_name){
 #' @param pkg_name string name of the package
 #' @param comments data.frame comments table entry
 #' 
-#' 
+#' @keywords internal
 #' @export
 showComments <- function(pkg_name, comments){
   if (length(pkg_name) == 0)
@@ -391,6 +392,8 @@ auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
 #' @importFrom lubridate NA_Date_ interval
 #' @importFrom glue glue
 #' @importFrom plotly plot_ly layout add_segments add_annotations config
+#' 
+#' @keywords reproduce
 #' @export
 build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
   

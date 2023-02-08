@@ -1,10 +1,10 @@
 ---
-title: "Getting Started with riskassessment"
+title: "Get Started with {riskassessment}"
 output: 
   rmarkdown::html_vignette:
     toc: false
 vignette: >
-  %\VignetteIndexEntry{Getting Started with riskassessment}
+  %\VignetteIndexEntry{Get Started with {riskassessment}}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

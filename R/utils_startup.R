@@ -163,6 +163,7 @@ create_credentials_dev_db <- function(db_name){
 #' @return There is no return value. The function is run for its side effects.
 #' @importFrom loggit set_logfile
 #'
+#' @keywords internal
 #' @export
 initialize_raa <- function(assess_db, cred_db) {
   
@@ -297,6 +298,7 @@ add_shinymanager_auth <- function(app_ui, app_ver, login_note) {
 #' @return an bs_theme object of several classes
 #' @importFrom bslib bs_theme
 #'
+#' @keywords internal
 #' @export
 app_theme <- function() {
   bslib::bs_theme(
