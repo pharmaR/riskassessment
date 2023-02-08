@@ -327,6 +327,34 @@
         "tibble"
       ]
     },
+    "checkhelper": {
+      "Package": "checkhelper",
+      "Version": "0.0.1.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "checkhelper",
+      "RemoteUsername": "thinkr-open",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "d2e4fcada1b094d7af06324f6c54301c7586ffee",
+      "Hash": "694eebe322e5cbdf101c152ad0a67d28",
+      "Requirements": [
+        "cli",
+        "desc",
+        "devtools",
+        "dplyr",
+        "glue",
+        "lifecycle",
+        "magrittr",
+        "pkgbuild",
+        "purrr",
+        "rcmdcheck",
+        "roxygen2",
+        "stringr",
+        "whisker",
+        "withr"
+      ]
+    },
     "checkmate": {
       "Package": "checkmate",
       "Version": "2.1.0",
