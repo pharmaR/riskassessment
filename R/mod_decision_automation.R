@@ -110,7 +110,11 @@ mod_decision_automation_server <- function(id, user){
             div(
               style = "float: right;",
               shinyWidgets::dropdownButton(
+                div(
+                  style = "display: flex;",
                 checkboxGroupInput(ns("auto_include"), "Auto-Assign Risk Decisions For...", c("Low", "Medium", "High"), selected = initial_selection, inline = TRUE),
+                actionButton(ns("auto_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
+                ),
                 div(
                   risk = "low",
                   class = "shinyjs-hide",
@@ -231,6 +235,20 @@ mod_decision_automation_server <- function(id, user){
           else if ("Low" %in% input$auto_include) 
             updateSliderInput(session, "low_risk", value = min(input$low_risk, input$high_risk))
         })
+        
+        observeEvent(input$auto_reset, {
+          req(user$role == "admin")
+          
+          purrr::iwalk(auto_list(), ~
+                        if (.y == "Low") {
+                          updateSliderInput(session, "low_risk", value = .x[2])
+                        } else if (.y == "Medium") {
+                          updateSliderInput(session, "med_risk", value = .x)
+                        } else if (.y == "High") {
+                          updateSliderInput(session, "high_risk", value = .x[1])
+                        })
+          updateCheckboxGroupInput(session, "auto_include", selected = names(auto_list()))
+          })
         
         output$modal_table <- 
           DT::renderDataTable({
