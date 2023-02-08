@@ -183,7 +183,7 @@ uploadPackageServer <- function(id, user) {
           status = rep('', np)
         )
       if (!rlang::is_empty(auto_list()))
-        uploaded_packages$decision <- NA_character_
+        uploaded_packages$decision <- ""
       
       updateSelectizeInput(session, "pkg_lst", selected = "")
       
