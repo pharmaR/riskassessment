@@ -362,7 +362,13 @@ uploadPackageServer <- function(id, user) {
                            "Undiscovered Packages:", sum(grepl('not found', uploaded_pkgs()$status)),
                            "Duplicate Packages:", sum(uploaded_pkgs()$status == 'duplicate')),
                      echo = FALSE)
-      
+      if (!is.null(uploaded_pkgs()$decision)) {
+        dec_lst <- uploaded_pkgs()$decision %>% 
+          unique() %>% 
+          `[`(. != "") %>%
+          purrr::map_chr(~ glue::glue("{.x} - {sum(uploaded_pkgs()$decision == .x)}")) %>%
+          purrr::map(tags$code)
+      }
       as.character(tagList(
         br(), br(),
         hr(),
@@ -371,6 +377,7 @@ uploadPackageServer <- function(id, user) {
             br(),
             p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
             p(tags$b("New Packages: "), sum(uploaded_pkgs()$status == 'new')),
+            if (!is.null(uploaded_pkgs()$decision)) p(tags$b("Decisions Made: ", sum(uploaded_pkgs()$decision != ""), "  ", dec_lst)),
             p(tags$b("Undiscovered Packages: "), sum(grepl('not found', uploaded_pkgs()$status))),
             p(tags$b("Duplicate Packages: "), sum(uploaded_pkgs()$status == 'duplicate')),
             p("Note: The assessment will be performed on the latest version of each
