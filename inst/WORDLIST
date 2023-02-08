@@ -13,6 +13,7 @@ PeterParker
 README
 RStudio
 Reddy
+Reweighting
 Rstudio
 SQLiteStudio
 ShinyProxy
@@ -34,6 +35,7 @@ dbSelect
 dbUpdate
 dev
 docx
+dropdown
 env
 eproducible
 favicon
@@ -65,6 +67,7 @@ px
 renv
 repo
 reportPreview
+reproducable
 reweightView
 riskmetric
 serverless
@@ -77,6 +80,7 @@ tibble
 transactional
 ui
 un
+userid
 viewComment
 www
 ’s
