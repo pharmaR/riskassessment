@@ -182,8 +182,6 @@ uploadPackageServer <- function(id, user) {
           version = rep('0.0.0', np),
           status = rep('', np)
         )
-      if (!rlang::is_empty(auto_list()))
-        uploaded_packages$decision <- ""
       
       updateSelectizeInput(session, "pkg_lst", selected = "")
       
@@ -227,6 +225,9 @@ uploadPackageServer <- function(id, user) {
     observeEvent(uploaded_pkgs00(), {
 
       uploaded_packages <- uploaded_pkgs00()
+      uploaded_packages$score <- NA_real_
+      if (!rlang::is_empty(auto_list()))
+        uploaded_packages$decision <- ""
       np <- nrow(uploaded_packages)
       
       if (!isTruthy(cran_pkgs())) {
@@ -306,6 +307,7 @@ uploadPackageServer <- function(id, user) {
               # Get and upload community metrics to db.
               incProgress(1, detail = deets)
               insert_community_metrics_to_db(uploaded_packages$package[i])
+              uploaded_packages$score[i] <- get_pkg_info(uploaded_packages$package[i])$score
               if (!rlang::is_empty(auto_list())) {
                 uploaded_packages$decision[i] <-
                   assign_decisions(auto_list(), uploaded_packages$package[i])
