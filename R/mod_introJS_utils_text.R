@@ -15,8 +15,8 @@ sidebar_steps <-
       # "The latest version will autopopulate here.", # can't peg ui object name, even with a div!
       "The status can be either 'Under Review' or 'Reviewed'.",
       "The score can take any value between 0 (no risk) and 1 (highest risk).",
-      "(admin only) Provide your input on the overall risk of the selected package.",
-      "(admin only) After reviewing your package, you can leave an overall comment."
+      "Provide your input on the overall risk of the selected package.",
+      "After reviewing your package, you can leave an overall comment."
     ),
     position = c(rep("bottom", 5))
   )
