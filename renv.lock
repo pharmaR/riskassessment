@@ -1744,9 +1744,9 @@
     },
     "riskassessment": {
       "Package": "riskassessment",
-      "Version": "0.0.1.9031",
+      "Version": "0.0.1.9032",
       "Source": "unknown",
-      "Hash": "f2a1399062d7d195bded8f49e5935580",
+      "Hash": "49b33529788befaf5e9dcca010d6f00d",
       "Requirements": [
         "DBI",
         "DT",
