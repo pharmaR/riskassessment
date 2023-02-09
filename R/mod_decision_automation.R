@@ -290,7 +290,7 @@ mod_decision_automation_server <- function(id, user){
                 if (!rlang::is_empty(purrr::compact(reactiveValuesToList(auto_decision)))) DT::DTOutput(ns("modal_table")) else h2("Disable Decision Automation"),
                 br(),
                 br(),
-                em('Note: Once submitted, these rules will be applied to any new packages uploaded or if reweighting.')
+                em('Note: Once submitted, these rules will be applied to all new packages loaded into the app or when any metric re-weighting is performed.')
               )
             ),
             br(),
