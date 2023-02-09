@@ -285,7 +285,7 @@ mod_decision_automation_server <- function(id, user){
             fluidRow(
               column(
                 width = 12,
-                'Please confirm your chosen decision classification rules: ',
+                'Please confirm your chosen decision rules: ',
                 br(),
                 if (!rlang::is_empty(purrr::compact(reactiveValuesToList(auto_decision)))) DT::DTOutput(ns("modal_table")) else h2("Disable Decision Automation"),
                 br(),
