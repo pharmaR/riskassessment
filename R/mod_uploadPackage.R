@@ -379,7 +379,7 @@ uploadPackageServer <- function(id, user) {
             br(),
             p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
             p(tags$b("New Packages: "), sum(uploaded_pkgs()$status == 'new')),
-            if (!is.null(uploaded_pkgs()$decision)) p(tags$b("Decisions Made: ", sum(uploaded_pkgs()$decision != ""), "  ", dec_lst)),
+            if (!is.null(uploaded_pkgs()$decision)) list(p(tags$b("Decisions Made: "), sum(uploaded_pkgs()$decision != "")), p(style = "margin-left: 25px", dec_lst)),
             p(tags$b("Undiscovered Packages: "), sum(grepl('not found', uploaded_pkgs()$status))),
             p(tags$b("Duplicate Packages: "), sum(uploaded_pkgs()$status == 'duplicate')),
             p("Note: The assessment will be performed on the latest version of each
