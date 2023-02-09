@@ -31,9 +31,16 @@ Each developer working within the repo for the first time will need sync up with
 
 Work in the project as usual and as new dependencies are justified, save the current state of the project library with `renv::snapshot()`. This result will be saved into a lockfile - `renv.lock`. If you are just testing a new package out and want to revert back to the pkgs line up stored in the lock file, run `renv::restore()`. Similarly, anytime your fellow developer submits a PR requesting a change in the lock file, you'll need to run `renv::restore()` to sync up your development with the rest of the team.
 
-## How to ignore files in the lock file
+If at any time your out of sync the `renv.lock` file, you can run `renv::status()` to see which packages are ahead or behind the lock file.
+
+
+## How to ignore files & pkgs in the lock file
 
 By default `renv` ignores all files stated in the `.gitignore` file. If you want to extend that further, you can use a `.renvignore` file - which is specified similar to the `.gitignore` file.
+
+In addition, you can ignore package that `renv` thinks you need to add to the lock file using the following command:
+
+`renv::settings$ignored.packages("<<package name>>")`
 
 
 ## Cache Location on different Operating Systems
