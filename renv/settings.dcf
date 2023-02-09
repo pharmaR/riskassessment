@@ -1,6 +1,6 @@
 bioconductor.version:
 external.libraries:
-ignored.packages: riskassessment
+ignored.packages: rsconnect
 package.dependency.fields: Imports, Depends, LinkingTo
 r.version:
 snapshot.type: implicit
