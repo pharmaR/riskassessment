@@ -3,7 +3,7 @@
 #' @noRd
 assign_decisions <- function(decision_list, package) {
   score <- get_pkg_info(package)$score
-  decision <- paste0(names(decision_list)[purrr::map_lgl(decision_list, ~ .x[1] <= score && score < .x[2])], "")
+  decision <- paste0(names(decision_list)[purrr::map_lgl(decision_list, ~ .x[1] < score && score <= .x[2])], "")
   if (decision != "") {
     dbUpdate(glue::glue("UPDATE package SET decision = '{decision}' WHERE name = '{package}'"))
     loggit::loggit("INFO",

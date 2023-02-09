@@ -317,7 +317,7 @@ mod_decision_automation_server <- function(id, user){
             loggit::loggit("INFO", glue::glue("Decision automation rules have been disabled by {user$name} ({user$role})."))
           } else {
             rules <- out_lst %>%
-              purrr::imap_chr(~ glue::glue("{.y} = [{.x[[1]]}, {.x[[2]]})"))
+              purrr::imap_chr(~ glue::glue("{.y} = ({.x[[1]]}, {.x[[2]]}]"))
             loggit::loggit("INFO", glue::glue("The following decision rules were implemented by {user$name} ({user$role}): {paste(rules, collapse = '; ')}."))
           }
           
