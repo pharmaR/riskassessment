@@ -1,7 +1,7 @@
 #' UI for 'Report Preview' module
 #' 
 #' @param id a module id name
-#' 
+#' @keywords internal
 #' 
 reportPreviewUI <- function(id) {
   uiOutput(NS(id, "reportPreview_ui"))
@@ -27,6 +27,7 @@ reportPreviewUI <- function(id) {
 #' @importFrom plotly plotlyOutput renderPlotly
 #' @importFrom DT dataTableOutput renderDataTable
 #' @importFrom glue glue
+#' @keywords internal
 #' 
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                                 com_metrics_raw, mm_comments, cm_comments,

@@ -12,3 +12,4 @@ get_latest_pkg_info(pkg_name)
 \description{
 Get the package general information from CRAN/local
 }
+\keyword{internal}

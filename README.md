@@ -59,6 +59,11 @@ The validation approach we followed is based on the philosophy of the
 white paper set forth by the R Validation Hub: [White
 Paper](https://www.pharmar.org/white-paper/).
 
+*Note:* Development of both `riskassessment` and `riskmetric` were made
+possible thanks to the [R Validation
+Hub](https://www.pharmar.org/about/), a collaboration to support the
+adoption of R within a biopharmaceutical regulatory setting.
+
 ### Usage
 
 If you are new to using the `riskassessment` app, welcome! We’d highly
@@ -147,29 +152,5 @@ We are currently working on improving the app and it’s documentation.
 Since they are are currently in-progress, please explore the user guides
 that have been developed so far, available on the [documentation
 site](https://pharmar.github.io/riskassessment/).
-
-### Contributors/Authors
-
-We would like to thank all the contributors! Specifically, we would like
-to thank:
-
-- [R Validation Hub](https://www.pharmar.org)
-- [Aaron Clark](https://www.linkedin.com/in/dataaaronclark/), Biogen,
-  *Maintainer*
-- [Marly Gotti](https://www.marlygotti.com), Previously Biogen
-- Robert Krajcik, Cytel
-- Jeff Thompson, Cytel
-- Maya Gans, Cytel
-- Aravind Reddy Kallem
-- Fission Labs India Pvt Ltd
-
-*Note:* This app was made possible thanks to the [R Validation
-Hub](https://www.pharmar.org/about/), a collaboration to support the
-adoption of R within a biopharmaceutical regulatory setting.
-
-### License
-
-Please see the [License](LICENSE.md) file that lives alongside this
-repo.
 
 <br>

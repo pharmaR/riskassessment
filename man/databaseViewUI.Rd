@@ -12,3 +12,4 @@ databaseViewUI(id)
 \description{
 UI for 'Database View' module
 }
+\keyword{internal}

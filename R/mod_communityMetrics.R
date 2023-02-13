@@ -3,6 +3,7 @@
 #' 
 #' @param id a module id name
 #' 
+#' @keywords internal
 #' 
 communityMetricsUI <- function(id) {
   uiOutput(NS(id, 'communityMetrics_ui'))
@@ -19,6 +20,8 @@ communityMetricsUI <- function(id) {
 #' @import dplyr
 #' @importFrom glue glue
 #' @importFrom plotly plotlyOutput renderPlotly
+#' 
+#' @keywords internal
 #' 
 communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
   moduleServer(id, function(input, output, session) {

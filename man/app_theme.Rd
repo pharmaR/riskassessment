@@ -14,3 +14,4 @@ This sets the \code{riskassessment} Application theme object using
 bslib's bs_theme() function. The app_theme object gets used in run_app.R,
 in addition to app_ui.R
 }
+\keyword{internal}

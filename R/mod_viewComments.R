@@ -4,7 +4,7 @@
 #' as the user inserts more comments.
 #' 
 #' @param id a module id name
-#' 
+#' @keywords internal
 #' 
 #' 
 viewCommentsUI <- function(id) {
@@ -25,7 +25,7 @@ viewCommentsUI <- function(id) {
 #' @param comments data.frame comments table entry
 #' @param label string default: Current Comments 
 #' 
-#' 
+#' @keywords internal
 #' 
 viewCommentsServer <- function(id, pkg_name, comments, label = 'Current Comments') {
   moduleServer(id, function(input, output, session) {

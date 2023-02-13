@@ -12,3 +12,4 @@ reweightViewUI(id)
 \description{
 UI for the 'Re-weight View' module
 }
+\keyword{internal}
