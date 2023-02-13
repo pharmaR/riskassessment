@@ -86,6 +86,7 @@ For those who are ready to run/deploy this application in their own environment,
 
 ```{r, eval=FALSE}
 # install.packages("remotes") # if needed
+remotes::install_github("pharmaR/riskmetric")
 remotes::install_github("pharmaR/riskassessment")
 ```
 
