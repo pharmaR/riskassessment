@@ -26,7 +26,11 @@ jobs:
       - uses: r-lib/actions/setup-renv@v2
         with:
           extra-packages: covr
-          
+      
+      - name: Install riskassessment
+        shell: bash
+        run: R CMD INSTALL --preclean .
+        
       - name: Test coverage
         run: covr::codecov()
         shell: Rscript {0}
