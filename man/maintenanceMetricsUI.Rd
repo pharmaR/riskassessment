@@ -12,3 +12,4 @@ maintenanceMetricsUI(id)
 \description{
 Maintenance Metrics module's UI.
 }
+\keyword{internal}

@@ -14,3 +14,4 @@ get_date_span(start, end = Sys.Date())
 \description{
 Function accepts a start date and optional end date and will
 }
+\keyword{internal}

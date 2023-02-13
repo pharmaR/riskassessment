@@ -12,3 +12,4 @@ uploadPackageUI(id)
 \description{
 'Upload Package' UI
 }
+\keyword{internal}

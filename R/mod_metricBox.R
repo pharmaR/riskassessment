@@ -1,7 +1,7 @@
 #' The UI for the 'Metric Box' module
 #' 
 #' @param id a module id name
-#' 
+#' @keywords internal
 #' 
 metricBoxUI <- function(id) {
   uiOutput(NS(id, "metricBox_ui"))
@@ -23,6 +23,7 @@ metricBoxUI <- function(id) {
 #' @import dplyr
 #' @importFrom stringr str_sub
 #' @importFrom glue glue
+#' @keywords internal
 #'   
 metricBoxServer <- function(id, title, desc, value,
                             is_perc = FALSE, is_url = FALSE,

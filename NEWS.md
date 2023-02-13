@@ -44,8 +44,8 @@
 * Rename internal modules to follow golem standard. I.E. 'mod_...'
 * Fixed bug where the logging file was not being set
 * Added an "Administrative Tools and Options" vignette
+* Source riskmetric from GitHub
 * fix package delete button shadow; fix introjs for admin/non-admin roles
-
 
 # riskassessment 0.0.1
 * Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/riskassessment/archive/master.zip")` and `shiny::runGitHub('riskassessment', 'pharmaR')`

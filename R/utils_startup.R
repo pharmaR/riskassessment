@@ -8,7 +8,7 @@
 #' @importFrom DBI dbConnect dbDisconnect dbSendStatement dbClearResult
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
-#' 
+#' @keywords internal
 create_db <- function(db_name){
   
   if (missing(db_name) || is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
@@ -66,6 +66,7 @@ create_db <- function(db_name){
 #' @importFrom DBI dbConnect dbDisconnect
 #' @importFrom RSQLite SQLite
 #' @importFrom shinymanager read_db_decrypt write_db_encrypt
+#' @keywords internal
 #' 
 create_credentials_db <- function(db_name){
   
@@ -126,6 +127,7 @@ create_credentials_db <- function(db_name){
 #' @param db_name A string denoting the name of the database
 #' 
 #' @importFrom shinymanager create_db
+#' @keywords internal
 #' 
 create_credentials_dev_db <- function(db_name){
   
@@ -151,7 +153,7 @@ create_credentials_dev_db <- function(db_name){
   invisible(db_name)
 }
 
-#' Initialize the `riskassessment` Application
+#' Initialize `riskassessment` Application Settings
 #'
 #' @description This sets up the environment when running the `riskassessment`
 #'   Application. It sets the log file, initializes the package database if
@@ -201,6 +203,7 @@ initialize_raa <- function(assess_db, cred_db) {
 #' 
 #' @importFrom shinymanager fab_button
 #' @importFrom shinyjs useShinyjs
+#' @keywords internal
 add_tags <- function(ui, ...) {
   ui <- force(ui)
   
@@ -259,6 +262,7 @@ add_tags <- function(ui, ...) {
 #' @importFrom golem get_golem_options
 #' 
 #' @md
+#' @keywords internal
 add_shinymanager_auth <- function(app_ui, app_ver, login_note) {
   if (!isTRUE(getOption("shiny.testmode"))) {
   add_tags(shinymanager::secure_app(app_ui,
@@ -297,6 +301,7 @@ add_shinymanager_auth <- function(app_ui, app_ver, login_note) {
 #' @return an bs_theme object of several classes
 #' @importFrom bslib bs_theme
 #'
+#' @keywords internal
 #' @export
 app_theme <- function() {
   bslib::bs_theme(

@@ -21,3 +21,4 @@ ggplot_comm_df <- generate_comm_data("ggplot2")
 head(ggplot_comm_df)
 }
 }
+\keyword{reproduce}

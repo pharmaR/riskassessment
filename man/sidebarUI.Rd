@@ -13,3 +13,4 @@ sidebarUI(id)
 Also known as the 'Control Panel', and rightfully so, as it controls
 most components of the app, central to it's function
 }
+\keyword{internal}

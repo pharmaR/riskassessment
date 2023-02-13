@@ -1,8 +1,7 @@
 #' UI for the 'Re-weight View' module
 #' 
 #' @param id the module id
-#' 
-#' 
+#' @keywords internal
 #' 
 reweightViewUI <- function(id) {
   tagList(
@@ -24,6 +23,7 @@ reweightViewUI <- function(id) {
 #' @importFrom DBI dbConnect dbDisconnect
 #' @importFrom RSQLite SQLite sqliteCopyDatabase
 #' 
+#' @keywords internal
 reweightViewServer <- function(id, user) {
   moduleServer(id, function(input, output, session) {
     

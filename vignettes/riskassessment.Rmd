@@ -1,10 +1,10 @@
 ---
-title: "Getting Started with riskassessment"
+title: "Get Started with {riskassessment}"
 output: 
   rmarkdown::html_vignette:
     toc: false
 vignette: >
-  %\VignetteIndexEntry{Getting Started with riskassessment}
+  %\VignetteIndexEntry{Get Started with {riskassessment}}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,9 +15,12 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
 ## Introduction
 
 Welcome! This guide will help users get started with the `riskassessment` application for the first time. For more information about how to deploy the application, please reference the `Deployments` [INSERT LINK] guide. And note: this guide assumes you have already downloaded the `riskassessment` package & all of it's dependencies following the [installation instructions](../index.html#installation).
+
+<br>
 
 ## Create app.R
 
@@ -29,6 +32,9 @@ riskassessment::run_app()
 ```
 
 Running this code will launch the application and if it doesn't already exist, it will create an initial database for authentication.
+
+<br>
+
 
 ## First time log in
 
@@ -44,10 +50,16 @@ This `ADMIN` user will be asked to change their password immediately. After supp
 ![](images/change_pwd2.png){style="margin: 10px 0 10px 0"}
 </center>
 
+<br>
+
+
 ## Subsequent logins
 
 The designated `ADMIN` user(s) will have special privileges and duties in the application, including but not limited to creating new users, with both `ADMIN` and `NONADMIN` roles. For `ADMIN`s, please see the article titled [Managing Userids and Passwords](../articles/Managing_Userids_and_Passwords.html) on how to create these new users. For `NONADMIN`s, you will receive a temporary password for your initial log in, which you'll be prompted to change with immediately upon your first visit to the app. For subsequent visits, you won't have to worry about all these first-time log in procedures!
 
+
+
+<br>
 
 
 ## Welcome to the app!
@@ -55,14 +67,20 @@ The designated `ADMIN` user(s) will have special privileges and duties in the ap
 Upon successful log in, you'll notice many tabs and panels. 
 ![](images/welcome_landing.png){style="margin: 10px 0 10px 0"}
 
+<br>
+
+
 ### Self-guided tours
 
 Throughout the app, there are small help buttons strategically placed in the upper right-hand corners of each page. When clicked, they empower users to walk through all the UI elements visible on-screen at their desired pace. Consider it your personal tour guide when you need a quick reminder on "what does what?".
 
 <center>
-![](images/help_button.png){style="margin: 10px 0 10px 0"}
+![](images/help_button.png)
 
 ![](images/click_help.png){style="margin: 10px 0 10px 0"}
+
+<br>
+
 </center>
 
 ## Upload a package
@@ -97,6 +115,9 @@ Upon completion, a “Summary of Uploaded Packages” section will display.  Thi
 ![](images/uploaded_pkgs.png){style="margin: 10px 0 10px 0"}
 </center>
 
+<br>
+
+
 ## Sidebar 
 
 Now that the database has been populated with package data, direct your attention to the `PACKAGE CONTROL PANEL` at left and select a package (such as `glue`) from the list. Once a package is selected, the `VERSION`, `STATUS` and `RISK` boxes are populated with information. For now, the latest version of the package is displayed. Since a decision to endorse or reject the package hasn't been made yet, the `STATUS` is "Under Review". Third, the `RISK` box contains the `riskmetric` score, represented as a number between 0 (low risk) and 1 (high risk).
@@ -107,9 +128,15 @@ Now that the database has been populated with package data, direct your attentio
 
 There are also two submission buttons above: `SUBMIT DECISION` and `SUBMIT OVERALL COMMENT`. The goal is that after a thorough review of other info contain in the application, the user would be well informed enough to categorize the package's risk as either "low", "medium", or "high" risk using the slider. Clicking submit here completes the review of this package for the organization and can only be undone by an `ADMIN` user. If you're looking submit something less formal, before submitting a decision, consider submitting an "overall comment" summarizing your high level thoughts on the package. Though it's not required, it's recommended to always submit an "overall comment" when submitting a final decision.
 
+<br>
+
+
 ## Package Review Tabs
 
 The `Maintenance Metrics`, `Community Usage Metrics` and `Report Preview` tabs are now available for browsing and include data collected from `riskmetric`. It's on these tabs that the bulk of the review occurs because they each provide the context that determines the final `riskmetric` score. We highly encourage users to become very familiar with these metrics and decide which are most important to you and your organization. As is available in `riskmetric`, `riskassessment` allows `ADMIN` users to set organization-wide metric weights so that the risk score is based on the most meaningful metrics, and reduces the influence of less important metrics. To learn more about these options, please read through our `User Roles and Priviledges`[Insert link here] guide.
+
+<br>
+
 
 ### Maintenance Metrics
 
@@ -127,6 +154,9 @@ Note that you can add or replace comments to the Maintenance Metrics for this pa
 <center>
 ![](images/maint_metric2.png){style="margin: 10px 0 10px 0"}
 <center>
+
+<br>
+
 
 ### Community Usage Metrics
 Here is a first look at the Community Usage Metrics for the "glue" package:
@@ -146,6 +176,9 @@ Again, you can add or replace comments to the Community Usage metrics for this p
 ![](images/community_usage2.png){style="margin: 10px 0 10px 0"}
 </center>
 
+<br>
+
+
 ### Report Preview
 
 Below is the top portion of the `Report Preview` tab for the `glue` package. This tab contains all the information viewed on the previous tabs, plus vital metadata about the app to include in the downloaded report. Note that the report can be downloaded as either a .html, .docx, or .pdf file.
@@ -159,6 +192,9 @@ Below is a quick view of the metadata referenced above. It's vital to understand
 <center>
 ![](images/report_preview2.png){style="margin: 10px 0 10px 0"}
 </center>
+
+<br>
+
 
 ## Make a decision
 
@@ -190,6 +226,9 @@ After clicking 'Submit', you'll notice the `STATUS` was updated to "REVIEWED" an
 
 Congratulations! You've reviewed your first package! That was your goal, you accomplished it. Now keep going, what are you waiting for? At the time this guide was authored, there was 19,038 packages on CRAN and your organization may want to use them!
 
+<br>
+
+
 ## Other Tabs
 
 You may have noticed the navigation tabs at the top of the app contain the following four tabs.
@@ -200,6 +239,9 @@ You may have noticed the navigation tabs at the top of the app contain the follo
 
 All that work was performed on the first tab: `Risk Assessment`. We'll be painfully brief as we touch on what the other tabs do, but just know there are more in-depth guides that exist for each.
 
+<br>
+
+
 ### Database
 
 The second tab, `Database` shows, for each package loaded, the package name and version, it’s `riskmetric` score, whether a decision has been made, the decision, and timestamp for the last comment provided. Reports (in either .html, .docx, or .pdf format) can be downloaded for any selected package(s). If multiple packages are selected, this  This is really helpful 
@@ -208,6 +250,9 @@ The second tab, `Database` shows, for each package loaded, the package name and 
 ![](images/database_view.png){style="margin: 10px 0 10px 0"}
 </center>
 
+<br>
+
+
 ### Assessment Criteria
 
 The third tab, `Assessment Criteria` provides a detailed description of the assessment criteria used for Risk Calculation, Maintenance Metrics, Community Usage Metrics, and Testing metrics (not currently used in this version of the app). Each metric even has a short description on why it was included in `riskmetric`. The `Risk Calculation` tab is shown below. Browse this tab for more information.
@@ -215,6 +260,9 @@ The third tab, `Assessment Criteria` provides a detailed description of the asse
 <center>
 ![](images/assessment_criteria.png){style="margin: 10px 0 10px 0"}
 </center>
+
+<br>
+
 
 ### Administrative Tools
 
@@ -229,6 +277,9 @@ The `Assessment Reweighting` tab is for `ADMIN` users to fine tune the package r
 <center>
 ![](images/admin_tools.png){style="margin: 10px 0 10px 0"}
 </center>
+
+<br>
+
 
 ## Where to go from here?
 
