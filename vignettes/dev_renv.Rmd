@@ -33,8 +33,13 @@ Each developer working within the repo for the first time will need sync up with
 
 ## If new packages installations are needed
 
-As new dependencies are needed, you can save the current state of the project library with `renv::snapshot()`. However, any pkg changes must be expressly documented and justified in the PR's comments section to be considered ready for review. This dev team's philosophy is that the `renv.lock` file should (and will) only be upgraded if there is a need for an important new feature/functionality that relies on a different version of a new or existing pkg.
+As new dependencies are needed, you can save the current state of the project library with `renv::snapshot()`. However, any pkg changes must be expressly documented and justified in the PR's comments section to be considered ready for review. Without them, the reviewer should reject & request changes to the PR immediately. This dev team's philosophy is that the `renv.lock` file should (and will) only be upgraded if there is a need for an important new feature/functionality that relies on a different version of a new or existing pkg. Even when updating a pkg, R will sometimes ask if you want to upgrade other packages, as seen below. You should always say "3: None" where possible.
 
+<br>
+
+![](images/renv-install-none.png)
+
+<br>
 
 If you just want to test a new package out before committing it to the lockfile, you can do that too. Go ahead and install the package of interest and if you want to revert back to the pkg line up stored in the lock file at anytime, just run `renv::restore()`. Similarly, anytime your fellow developer(s) submit a PR with a change in the lock file, you'll need to run `renv::restore()` to sync up your development with the rest of the team.
 
