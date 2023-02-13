@@ -49,4 +49,8 @@ jobs:
           use-public-rspm: true
           extra-packages: rcmdcheck
           
+      - name: Install riskassessment
+        shell: bash
+        run: R CMD INSTALL --preclean .
+        
       - uses: r-lib/actions/check-r-package@v2

@@ -14,3 +14,4 @@ uploadPackageServer(id, user)
 \description{
 Server logic for the 'Upload Package' module
 }
+\keyword{internal}

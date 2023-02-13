@@ -9,3 +9,4 @@ getTimeStamp()
 \description{
 Retrieves Sys.time(), but transforms slightly
 }
+\keyword{internal}

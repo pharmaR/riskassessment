@@ -2,7 +2,6 @@
 options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
 options(shiny.fullstacktrace = FALSE)
 options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
-options(shiny.fullstacktrace=FALSE)
 # options(shiny.autoload.r=FALSE)
 
 #Detach all loaded packages and clean your environment

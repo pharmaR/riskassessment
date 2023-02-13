@@ -18,3 +18,5 @@ $run_dev.*
 ^auto_decisions\.json$
 
 _\.new\.png$
+^_pkgdown\.yml$
+^pkgdown$

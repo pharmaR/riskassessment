@@ -20,3 +20,4 @@ Responsible for building an interactive \code{{plotly}} graphic containing the t
 \examples{
 metricGraph <- build_comm_plotly(pkg_name = "ggplot2")
 }
+\keyword{reproduce}

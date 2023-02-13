@@ -38,3 +38,4 @@ metricBoxServer(
 \description{
 Server logic for the 'Metric Box' module
 }
+\keyword{internal}

@@ -16,3 +16,4 @@ reweightViewServer(id, user, decision_list)
 \description{
 Server logic for the 'Re-weight View' module
 }
+\keyword{internal}

@@ -13,3 +13,4 @@ showHelperMessage(message = "Please select a package")
 Displays a helper message. By default, it informs the user that he should
 select a package.
 }
+\keyword{internal}

@@ -16,3 +16,4 @@ add_shinymanager_auth(app_ui, app_ver, login_note)
 \description{
 Adds an authentication screen via \code{\link[shinymanager:secure-app]{shinymanager::secure_app()}}.
 }
+\keyword{internal}
