@@ -17,6 +17,7 @@ setColorPalette <- colorRampPalette(
 #' @importFrom shinydashboard box
 #' @importFrom DT dataTableOutput
 #' 
+#' @keywords internal
 databaseViewUI <- function(id) {
   fluidPage(
     fluidRow(
@@ -63,7 +64,7 @@ databaseViewUI <- function(id) {
 #' @importFrom DT renderDataTable formatStyle
 #' @importFrom formattable formattable as.datatable formatter style csscolor
 #'   icontext
-#'   
+#' @keywords internal
 databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes) {
   moduleServer(id, function(input, output, session) {
     

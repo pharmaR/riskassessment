@@ -12,3 +12,4 @@ introJSUI(id)
 \description{
 UI for Module to display introJS button and functionality.
 }
+\keyword{internal}

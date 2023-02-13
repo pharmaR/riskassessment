@@ -20,3 +20,4 @@ databaseViewServer(id, user, uploaded_pkgs, metric_weights, changes)
 \description{
 Server logic for 'Database View' module
 }
+\keyword{internal}

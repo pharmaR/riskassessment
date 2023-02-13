@@ -12,3 +12,4 @@ create_db(db_name)
 \description{
 Note: the database_name object is assigned by deployment users in R/run_app.R
 }
+\keyword{internal}

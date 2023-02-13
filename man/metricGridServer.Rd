@@ -14,3 +14,4 @@ metricGridServer(id, metrics)
 \description{
 Metric Grid module's server logic
 }
+\keyword{internal}

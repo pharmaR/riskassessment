@@ -208,7 +208,7 @@ pkgdown::build_articles() #
 pkgdown::build_articles_index() #TRUE
 pkgdown::build_home()
 pkgdown::build_reference_index() # WAS missing topics
-pkgdown::build_reference(preview = TRUE)
+pkgdown::build_reference(preview = FALSE)
 pkgdown::build_news()
 pkgdown::build_site() # Run to build entire website
 

@@ -6,7 +6,7 @@
 #' @param id a module id
 #' 
 #' @importFrom shinyjs disabled
-#' 
+#' @keywords internal
 sidebarUI <- function(id) {
   tagList(
     tags$b(h4("Package Control Panel", style = "text-align: center;")),
@@ -84,6 +84,7 @@ sidebarUI <- function(id) {
 #' 
 #' 
 #' @importFrom shinyjs enable disable
+#' @keywords internal
 #' 
 sidebarServer <- function(id, user, uploaded_pkgs) {
   moduleServer(id, function(input, output, session) {

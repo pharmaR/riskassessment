@@ -5,7 +5,7 @@
 #' select a package.
 #' 
 #' @param message a string
-#' 
+#' @keywords internal
 #' 
 showHelperMessage <- function(message = "Please select a package"){
   h6(message,
@@ -24,6 +24,7 @@ showHelperMessage <- function(message = "Please select a package"){
 #' @importFrom glue glue 
 #' @importFrom rvest read_html html_node html_table html_text
 #' @importFrom stringr str_remove_all
+#' @keywords internal
 #' 
 get_latest_pkg_info <- function(pkg_name) {
   url <- glue::glue('https://cran.r-project.org/web/packages/{pkg_name}')
@@ -215,6 +216,7 @@ showComments <- function(pkg_name, comments){
 #' Retrieves Sys.time(), but transforms slightly
 #'
 #' @importFrom stringr str_replace
+#' @keywords internal
 getTimeStamp <- function(){
   initial <- stringr::str_replace(Sys.time(), " ", "; ")
   return(paste(initial, Sys.timezone()))
@@ -230,7 +232,7 @@ getTimeStamp <- function(){
 #' 
 #' @importFrom lubridate interval years
 #' @importFrom stringr str_remove
-#' 
+#' @keywords internal
 get_date_span <- function(start, end = Sys.Date()) {
   # Get approximate difference between today and latest release.
   # time_diff_latest_version <- lubridate::year(Sys.Date()) - last_ver$year
@@ -257,6 +259,7 @@ get_date_span <- function(start, end = Sys.Date()) {
 #' @import dplyr
 #' @importFrom lubridate interval make_date year
 #' @importFrom glue glue
+#' @keywords internal
 #' 
 build_comm_cards <- function(data){
   
@@ -353,6 +356,8 @@ build_comm_cards <- function(data){
 #'   the output
 #' @param num_bins when not NULL (the default), accepts an integer that bins a
 #'   continuous font size into a categorical one.
+#'  
+#' @keywords internal
 #' 
 auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
                       num_bins = NULL){

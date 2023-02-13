@@ -12,3 +12,4 @@ communityMetricsUI(id)
 \description{
 Community Usage Metrics UI function
 }
+\keyword{internal}
