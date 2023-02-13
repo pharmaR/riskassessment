@@ -369,7 +369,7 @@ uploadPackageServer <- function(id, user) {
           unique() %>% 
           `[`(. != "") %>%
           purrr::map_chr(~ glue::glue("{.x}: {sum(uploaded_pkgs()$decision == .x)}")) %>%
-          purrr::map(tags$code)
+          purrr::map(~ list(tags$code(.x), HTML("&emsp;")))
       }
       as.character(tagList(
         br(), br(),
