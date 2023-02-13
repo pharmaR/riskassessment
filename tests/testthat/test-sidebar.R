@@ -81,6 +81,7 @@ test_that("Reactivity of sidebar", {
   
   # click on submit_decision and submit_confirmed_decision
   app$click("sidebar-submit_decision")
+  app$wait_for_idle()
   app$click("sidebar-submit_confirmed_decision")
   
   # and status and risk messages should appear
@@ -91,12 +92,17 @@ test_that("Reactivity of sidebar", {
   
   ##### this section only appears with user$role = "admin"
   out_htm <- app$get_values()$output$`sidebar-reset_decision_ui`$html
+  if (!is.null(out_htm)) {
   score_txt <- rvest::read_html(out_htm) %>% rvest::html_text()
+  } else {
+    score_txt <- "Nothing here"
+  }
   
   # do this if the Reset Decision button appeared
   if (score_txt == "Reset Decision") {
     # reset decision and confirm
     app$click("sidebar-reset_decision")
+    app$wait_for_idle()
     app$click("sidebar-reset_confirmed_decision")
     # button pressed once
     expect_equal(app$get_value(input = "sidebar-reset_decision")[1], 1L)
