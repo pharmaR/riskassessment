@@ -153,7 +153,7 @@ create_credentials_dev_db <- function(db_name){
   invisible(db_name)
 }
 
-#' Initialize the `riskassessment` Application
+#' Initialize `riskassessment` Application Settings
 #'
 #' @description This sets up the environment when running the `riskassessment`
 #'   Application. It sets the log file, initializes the package database if
@@ -165,7 +165,6 @@ create_credentials_dev_db <- function(db_name){
 #' @return There is no return value. The function is run for its side effects.
 #' @importFrom loggit set_logfile
 #'
-#' @keywords internal
 #' @export
 initialize_raa <- function(assess_db, cred_db) {
   

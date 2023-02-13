@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils_startup.R
 \name{initialize_raa}
 \alias{initialize_raa}
-\title{Initialize the \code{riskassessment} Application}
+\title{Initialize \code{riskassessment} Application Settings}
 \usage{
 initialize_raa(assess_db, cred_db)
 }
@@ -19,4 +19,3 @@ This sets up the environment when running the \code{riskassessment}
 Application. It sets the log file, initializes the package database if
 missing, and initializes the credentials database if missing.
 }
-\keyword{internal}

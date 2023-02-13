@@ -21,6 +21,7 @@ reference:
   desc: Run the application locally
   contents:
   - run_app
+  - initialize_raa
 - title: Use {riskassessment} outside the app
   desc: Leverage these functions to mimic analysis performed in the app
   contents:
