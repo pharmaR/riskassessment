@@ -80,7 +80,7 @@ The first table provides tools for managing of users: adding, editing, and delet
 
 ### Add a User
 
-![](images/add_a_user_btn.png){style="algin:left; width:142px"}
+![](images/add_a_user_btn.png){style="align:left; width:142px"}
 
 
 <br>
