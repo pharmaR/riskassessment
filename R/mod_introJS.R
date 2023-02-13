@@ -2,7 +2,7 @@
 #'UI for Module to display introJS button and functionality.
 #' 
 #' @param id a module id
-#' 
+#' @keywords internal
 #' 
 introJSUI <- function(id) {
   fluidRow(
@@ -29,7 +29,7 @@ introJSUI <- function(id) {
 #'
 #' 
 #' @importFrom rintrojs introjs
-#'   
+#' @keywords internal
 introJSServer <- function(id, text) {
   moduleServer(id, function(input, output, session) {
     

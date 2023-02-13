@@ -14,3 +14,4 @@ add_tags(ui, ...)
 \description{
 The 'Add tags' function
 }
+\keyword{internal}

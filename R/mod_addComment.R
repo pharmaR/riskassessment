@@ -4,8 +4,7 @@
 #' as the user inserts more comments.
 #' 
 #' @param id a module id name
-#' 
-#' 
+#' @keywords internal
 #' 
 addCommentUI <- function(id) {
   fluidRow(
@@ -29,6 +28,7 @@ addCommentUI <- function(id) {
 #' @import dplyr
 #' @importFrom glue glue
 #' @importFrom stringr str_replace_all
+#' @keywords internal
 #' 
 addCommentServer <- function(id, metric_abrv, user_name, user_role, pkg_name) {
   moduleServer(id, function(input, output, session) {

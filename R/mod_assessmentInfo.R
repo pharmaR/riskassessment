@@ -2,8 +2,9 @@
 #' 
 #' @param id a module id name
 #' 
-#' 
 #' @importFrom DT dataTableOutput
+#' 
+#' @keywords internal
 #' 
 assessmentInfoUI <- function(id) {
   fluidPage(
@@ -52,7 +53,9 @@ assessmentInfoUI <- function(id) {
 #' 
 #' @import dplyr
 #' @importFrom DT renderDataTable formatStyle datatable
-#' @importFrom formattable as.datatable 
+#' @importFrom formattable as.datatable
+#' 
+#' @keywords internal
 #' 
 assessmentInfoServer <- function(id, metric_weights) {
   moduleServer(id, function(input, output, session) {

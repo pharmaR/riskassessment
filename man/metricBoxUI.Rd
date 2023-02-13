@@ -12,3 +12,4 @@ metricBoxUI(id)
 \description{
 The UI for the 'Metric Box' module
 }
+\keyword{internal}

@@ -26,3 +26,4 @@ A function that adjusts the number (to be used as font size) that is
 proportional to the length of a text string. So the longer the text string,
 the smaller the font. Used in MetricBox.R.
 }
+\keyword{internal}
