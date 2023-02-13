@@ -106,6 +106,7 @@ easily install the latest version from GitHub using:
 
 ``` r
 # install.packages("remotes") # if needed
+remotes::install_github("pharmaR/riskmetric")
 remotes::install_github("pharmaR/riskassessment")
 ```
 
