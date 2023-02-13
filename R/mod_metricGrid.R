@@ -2,7 +2,7 @@
 #' Metric Grid module's UI.
 #' 
 #' @param id a module id name
-#' 
+#' @keywords internal
 #' 
 metricGridUI <- function(id) {
   fluidPage(uiOutput(NS(id, 'grid')))
@@ -14,6 +14,7 @@ metricGridUI <- function(id) {
 #' @param id a module id name
 #' @param metrics placeholder
 #' 
+#' @keywords internal
 #' 
 #' @import dplyr
 metricGridServer <- function(id, metrics) {

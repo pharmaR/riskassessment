@@ -18,3 +18,4 @@ viewCommentsServer(id, pkg_name, comments, label = "Current Comments")
 \description{
 viewComment module's server logic
 }
+\keyword{internal}

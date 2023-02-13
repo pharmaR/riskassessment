@@ -13,3 +13,4 @@ addCommentUI(id)
 Module to display comments for the specified metric. The comments will update
 as the user inserts more comments.
 }
+\keyword{internal}

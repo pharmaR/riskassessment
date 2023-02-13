@@ -12,3 +12,4 @@ metricGridUI(id)
 \description{
 Metric Grid module's UI.
 }
+\keyword{internal}

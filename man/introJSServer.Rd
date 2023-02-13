@@ -17,3 +17,4 @@ that populate this argument for the app}
 \description{
 Server logic for introJS module
 }
+\keyword{internal}

@@ -14,3 +14,4 @@ reweightViewServer(id, user)
 \description{
 Server logic for the 'Re-weight View' module
 }
+\keyword{internal}

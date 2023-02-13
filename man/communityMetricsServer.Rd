@@ -18,3 +18,4 @@ communityMetricsServer(id, selected_pkg, community_metrics, user)
 \description{
 Community Usage Metrics server logic
 }
+\keyword{internal}

@@ -18,3 +18,4 @@ maintenanceMetricsServer(id, selected_pkg, maint_metrics, user)
 \description{
 Maintenance Metrics module's server logic
 }
+\keyword{internal}

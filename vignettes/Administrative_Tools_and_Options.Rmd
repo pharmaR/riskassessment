@@ -25,22 +25,33 @@ This guide is to assist `ADMIN` users to manage credentials (aka, user IDs and p
 
 It's no secret that only users with administrator privileges have access to certain features of the application. To verify if you have `ADMIN` access, first check that you can see all THE navigation tabs within the app, especially the rightmost "Administrative Tools" tab. If you do not see this tab, you have not been granted access! To gain access, you'll have to request access from a known `ADMIN` user within your organization.
 
+<br>
+
 <center>
 ![](images/top_left_tabs.png){style="margin: 10px 0 10px 0"}
 </center>
 
-![](images/admin_mode_button.png){style="float:right; width:60px"}
-</br> You can also hover your cursor over the `r fa("plus")` symbol in the bottom-right corner of the page. Upon hovering, two additional buttons should appear. The middle one is the log out `r fa("right-from-bracket")` button,  while the Administrator mode `r fa("gears")` button will appear on top, as shown.  This button will not appear from non-`ADMIN` users.
+![](images/admin_mode_button.png){style="float:right; width:60px; margin-left: 20px;"}
 
-</br></br></br></br></br>
+<br>
+
+You can also hover your cursor over the `r fa("plus")` symbol in the bottom-right corner of the page. Upon hovering, two additional buttons should appear. The middle one is the log out `r fa("right-from-bracket")` button,  while the Administrator mode `r fa("gears")` button will appear on top, as shown.  This button will not appear from non-`ADMIN` users.
+
+
+<br>
+
 
 Once you have selected the `Administrative Tools` tab, there are currently two areas available for review: the first is `Credential Manager` and the second is `Assessment Reweighting`, as seen below.
+
+<br>
 
 <center>
 ![](images/admin_tools_tabs.png)
 </center>
 
 </br>
+
+<br>
 
 # Credential Manager
 
@@ -52,25 +63,37 @@ The Credential Manager tab is shown by default which contains two tables:
 
 There is also a button at the bottom to download a copy of the current sqlite database.
 
+<br>
+
 ![](images/admin_mode_tables1.png){style="position:center; width:790px"}
+<br>
+
 ![](images/admin_mode_tables2.png){style="position:center; width:790px"}
+
+<br>
 
 ## Managing Users
 
 The first table provides tools for managing of users: adding, editing, and deleting.
 
+<br>
+
 ### Add a User
 
-![](images/add_a_user_btn.png){style="float:left; width:142px"}
+![](images/add_a_user_btn.png){style="align:left; width:142px"}
 
-</br></br></br></br>
+
+<br>
+
 
 To add a new user, click the dark blue button labelled: "Add a user".
  
-</br></br></br></br></br>
 
-![](images/add_user.png){style="float:right; width:411px"}
+<br>
+
+![](images/add_user.png){style="float:right; width:411px; margin-left: 20px;"}
 </br></br>
+
 A prompt will appear where you can specify a user name, as well as **optional** start & expire date for that new member. By default set to today's date (more on that later). 
 
 </br></br></br>
@@ -81,20 +104,31 @@ Here, we'll type "PeterParker" into the User Name field.
 
 Notice the checkbox to grant the new user administrator privileges is also checked by default. A unique password is generated which the user will be prompted to change the first time he/she logs on, as long as the "Ask to change password" box remains checked. 
 
+<br>
 
-</br></br></br></br></br></br></br></br></br></br></br>
+<br>
+
+<br>
+
+<br>
+
+Upon clicking "Confirm New User", a confirmation modal will appear. Now would be a good time to notify the user by sending them their userid and temporary password.
 
 
-![](images/new_user_modal.png){style="float:right; width:410px"}
+<br>
 
-</br>Upon clicking "Confirm New User", a confirmation modal will appear. Now would be a good time to notify the user by sending them their userid and temporary password.
+<center>
+![](images/new_user_modal.png){style="width:410px"}
+</center>
 
-</br></br></br></br></br></br></br>
+<br>
 
 ### User `start` and `expire` dates
 
-</br>
-![](images/account_expired_msg.png){style="float:right; width:312px"}
+
+<br>
+
+![](images/account_expired_msg.png){style="float:right; width:312px; margin-left: 20px;"}
 
 If either the **start** date is set to a future date or the **expire** date is set to **before** today's date, an "account expired" message will appear, and the log-on attempt will fail.  
 
@@ -104,9 +138,15 @@ Feel free to set either or both of these dates as needed, or just leave them bla
 
 </br>
 
+<br>
+
 ### Edit a user
 
+<br>
+
 ![](images/users_table.png){style="position:center; width:780px"}
+
+<br>
 
 Edit user information by clicking on the dark blue `r fa(name = "pen-to-square", fill = "darkblue", height = "1em")` <a style="color:darkblue">Edit</a> button, found on the right-hand side of the table.</br></br>
 
@@ -133,7 +173,9 @@ Make your changes, and then click on "Confirm Change".</br>
 
 A small modal dialog box will appear (briefly) indicating the user has been successfully updated.
 
-</br>
+
+<br>
+
 
 ### More Edit options
 
@@ -154,7 +196,7 @@ to select multiple users followed by an `r fa(name = "pen-to-square", fill = "da
 <br>
 
 <center>
-![](images/edit_select_users.png){style="float:left; width:406px"}
+![](images/edit_select_users.png){style="float:left; width:406px; margin-right: 20px;"}
 </center>
 
 Note the "Edit Selected Users" button only allows you to modify the `start` and `expire` dates for that selected group of users.
@@ -165,17 +207,27 @@ After you've made your changes, click "Confirm Change".
 
 <br>
 
-Again, A small modal dialog box will briefly appear indicating the users have been updated.
+<br>
 
 <br>
 
-![](images/user_updated_modal.png){style="float:right; width:257px"}
+Again, a small modal dialog box will briefly appear indicating the users have been updated.
 
-</br></br></br></br></br></br></br></br></br></br>
+<br>
+
+<center>
+![](images/user_updated_modal.png){style="width:257px"}
+</center>
+
+<br>
 
 ### Delete a user
 
+<br>
+
 ![](images/users_table.png){style="position:center; width:780px"}
+
+<br>
 
 </br>Delete any user by clicking on the red `r fa(name = "trash-can", fill = "red", height = "1em")` 
 <a style="color:red">Remove</a> button on the right-hand side of the table. You will see a confirmatory modal dialog box.  Click on "Delete User(s)."
@@ -186,7 +238,9 @@ Again, A small modal dialog box will briefly appear indicating the users have be
 ![](images/delete_user_modal.png){style="position:center; width:410px"}
 </center>
 
-</br>You can also delete multiple users like you did with editing multiple users. Just click on the `r fa(name = "trash-can", fill = "red", height = "1em")` "Remove Selected Users" button at the bottom of the table.
+<br>
+
+You can also delete multiple users like you did with editing multiple users. Just click on the `r fa(name = "trash-can", fill = "red", height = "1em")` "Remove Selected Users" button at the bottom of the table.
 
 <br>
 
@@ -204,11 +258,15 @@ The same confirmatory modal dialog box will appear.  Click on "Delete User(s)."
 ![](images/confirm_delete_users.png){style="position:center; width:410px"}
 </center>
 
+<br>
+
 
 ### Replace initial `Admin` user
 
-![](images/create_new_admin.png){style="float:right; width:410px"} 
-</br>As an administrator, it's recommended you replace the initial `ADMIN` user ID created the first time the app is launched. Note that there must always be **at least** one admin user, and **you cannot delete yourself!**  If you want to delete the initial `admin` user you will first need to create another user ID with administrative privileges, as described below.
+![](images/create_new_admin.png){style="float:right; width:410px; margin-left: 20px;"} 
+
+
+As an administrator, it's recommended you replace the initial `ADMIN` user ID created the first time the app is launched. Note that there must always be **at least** one admin user, and **you cannot delete yourself!**  If you want to delete the initial `admin` user you will first need to create another user ID with administrative privileges, as described below.
 
 </br>
 
@@ -220,6 +278,8 @@ After completing the form, sign in using your new credentials and delete the ori
 
 </br></br></br></br></br></br></br></br></br>
 
+
+<br>
 
 ## Managing Passwords
 
@@ -284,7 +344,9 @@ next log-in.
 - Have changed column: Indicates the user has already changed his/her password.
 - Date Last changed column: Indicates the date the password was updated.
 
-</br>
+
+<br>
+
 
 # Assessment Reweighting
 
@@ -293,6 +355,8 @@ Head over to the other tab available to `ADMIN` users called `Assessment Reweigh
 ![](images/assessment_reweighting_tab.png){style="position:center; width:800px"}
 
 </br></br>There are three buttons on this page: "Update Weight" on the top right, "Download" on the middle left, and "Re-Calculate" on the bottom left. 
+
+<br>
 
 ## Download Database
 
@@ -307,6 +371,8 @@ First, the simplest: the "Download Database" button.
 <br>
 
 When clicked, this button will download a copy of the current database (by default, called "database.sqlite"). The app developers recommend doing this anytime you plan to make integral changes to the database (like changing metric weights), before anything else.
+
+<br>
 
 ## Updating Weights
 

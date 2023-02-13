@@ -20,3 +20,4 @@ addCommentServer(id, metric_abrv, user_name, user_role, pkg_name)
 \description{
 addComment module's server logic
 }
+\keyword{internal}

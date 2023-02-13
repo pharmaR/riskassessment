@@ -12,3 +12,4 @@ create_credentials_dev_db(db_name)
 \description{
 Create credentials dev database
 }
+\keyword{internal}

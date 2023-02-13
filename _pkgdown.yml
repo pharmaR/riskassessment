@@ -1,0 +1,28 @@
+url: https://pharmar.github.io/riskassessment/
+template:
+  bootstrap: 5
+  
+articles:
+- title: Getting Started
+  contents:
+  - riskassessment
+- title: User Guides
+  navbar: User Guides
+  desc: Step-by-step tutorials for modules in the application
+  contents:
+  - Administrative_Tools_and_Options
+- title: Developer Guides
+  desc: Reference material for those who plan to contribute to the application's code base
+  contents:
+  - starts_with("dev")
+
+reference:
+- title: Run app
+  desc: Run the application locally
+  contents:
+  - run_app
+  - initialize_raa
+- title: Use {riskassessment} outside the app
+  desc: Leverage these functions to mimic analysis performed in the app
+  contents:
+  - has_keyword("reproduce")

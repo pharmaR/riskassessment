@@ -14,3 +14,4 @@ showComments(pkg_name, comments)
 \description{
 Displays formatted comments
 }
+\keyword{internal}

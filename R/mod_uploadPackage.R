@@ -4,6 +4,7 @@
 #' 
 #' 
 #' @importFrom DT dataTableOutput
+#' @keywords internal
 #' 
 uploadPackageUI <- function(id) {
   fluidPage(
@@ -64,6 +65,7 @@ uploadPackageUI <- function(id) {
 #' @importFrom rintrojs introjs
 #' @importFrom utils read.csv available.packages
 #' @importFrom rvest read_html html_nodes html_text
+#' @keywords internal
 #' 
 uploadPackageServer <- function(id, user) {
   moduleServer(id, function(input, output, session) {
