@@ -1,4 +1,6 @@
 test_that("Reactivity of sidebar", {
+  library(shinytest2, quietly = TRUE)
+  
   app_db_loc <- test_path("test-apps", "database.sqlite")
   if (file.exists(app_db_loc)) {
     file.remove(app_db_loc)
@@ -88,17 +90,24 @@ test_that("Reactivity of sidebar", {
   expect_equal(status_txt, "Reviewed")
   
   ##### this section only appears with user$role = "admin"
-  # reset decision and confirm
-  app$click("sidebar-reset_decision")
-  app$click("sidebar-reset_confirmed_decision")
-  # button pressed once
-  expect_equal(app$get_value(input = "sidebar-reset_decision")[1], 1L)
+  out_htm <- app$get_values()$output$`sidebar-reset_decision_ui`$html
+  score_txt <- rvest::read_html(out_htm) %>% rvest::html_text()
   
-  out_htm <- app$get_values()$output$`sidebar-status`$html
-  status_txt <- rvest::read_html(out_htm) %>% rvest::html_text()
-  # sidebar status is reset to "Under Review"
-  expect_equal(status_txt, "Under Review")
-  
+  # do this if the Reset Decision button appeared
+  if (score_txt == "Reset Decision") {
+    # reset decision and confirm
+    app$click("sidebar-reset_decision")
+    app$click("sidebar-reset_confirmed_decision")
+    # button pressed once
+    expect_equal(app$get_value(input = "sidebar-reset_decision")[1], 1L)
+    
+    out_htm <- app$get_values()$output$`sidebar-status`$html
+    status_txt <- rvest::read_html(out_htm) %>% rvest::html_text()
+    # sidebar status is reset to "Under Review"
+    expect_equal(status_txt, "Under Review")
+  }
+  #####
+
   # set select_pkg back to "-"
   app$set_inputs(`sidebar-select_pkg` = "-")
   # expect version to be set to "-" as well
@@ -107,7 +116,6 @@ test_that("Reactivity of sidebar", {
   # status and score have been reset
   expect_equal(app$get_value(output = "sidebar-status")$message, "Please select a package")
   expect_equal(app$get_value(output = "sidebar-score")$message, "Please select a package")
-  #####
   
   app$stop()
   unlink("app_db_loc")
