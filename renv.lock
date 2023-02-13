@@ -1522,6 +1522,18 @@
         "rlang"
       ]
     },
+    "qpdf": {
+      "Package": "qpdf",
+      "Version": "1.3.0",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "c483a5cbb08463128f1bd714e6e9e914",
+      "Requirements": [
+        "Rcpp",
+        "askpass",
+        "curl"
+      ]
+    },
     "ragg": {
       "Package": "ragg",
       "Version": "1.2.2",
@@ -1746,9 +1758,14 @@
     "riskmetric": {
       "Package": "riskmetric",
       "Version": "0.1.2",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Hash": "08b7d18d9d7c4541519917b27bc53172",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "riskmetric",
+      "RemoteUsername": "pharmaR",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "527c07a5fbd696e92feacb80c8e438a01c79a922",
+      "Hash": "1afc10147e2f6db6754ba4203a47d0db",
       "Requirements": [
         "BiocManager",
         "backports",
@@ -1760,6 +1777,7 @@
         "memoise",
         "pillar",
         "pkgload",
+        "qpdf",
         "tibble",
         "urltools",
         "vctrs",
