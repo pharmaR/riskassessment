@@ -45,7 +45,6 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
             introJSUI(NS(id, 'introJS')),
             h4("Community Usage Metrics", style = "text-align: center;"),
             br(), br(),
-            # TODO: change this for a grid.
             div(id = "cum_infoboxes", metricGridUI(NS(id, 'metricGrid'))),
             br(), br(),
             div(id = "cum_plot", fluidRow(
