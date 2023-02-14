@@ -39,13 +39,7 @@
 * Added `renv` and a `renv.lock` file as well as corresponding vignette for developers/contributors to align on.
 * Reduce number of package dependencies from 33 to 26
 * Changed risk-based color gradient to use colorblind-friendly color palette (#324).
-* changed repo name to 'riskassessment' instead of 'risk_assessment' for consistency with 'riskmetric'
-* Force installation of `riskmetric` from GitHub
-
-
-
-
-
+* Adopt (temporary) CRAN-first data collection method for pkg info via `riskmetric::pkg_ref()`
 
 # riskassessment 0.0.1
 * Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/riskassessment/archive/master.zip")` and `shiny::runGitHub('riskassessment', 'pharmaR')`
