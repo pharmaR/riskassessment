@@ -164,6 +164,7 @@ create_credentials_dev_db <- function(db_name){
 #'
 #' @return There is no return value. The function is run for its side effects.
 #' @importFrom loggit set_logfile
+#' @importFrom jsonlite write_json
 #'
 #' @export
 initialize_raa <- function(assess_db, cred_db) {
@@ -190,6 +191,8 @@ initialize_raa <- function(assess_db, cred_db) {
   # Create package db & credentials db if it doesn't exist yet.
   if(!file.exists(assessment_db)) create_db(assessment_db)
   if(!file.exists(credentials_db)) create_credentials_db(credentials_db)
+  
+  if(!file.exists("auto_decisions.json")) jsonlite::write_json(data.frame(decision = character(0), lower_limit = numeric(0), upper_limit = numeric(0)), "auto_decisions.json")
   
   invisible(c(assessment_db, credentials_db))
 }

@@ -114,7 +114,7 @@ app_server <- function(input, output, session) {
   })
   
   # Load server of the reweightView module.
-  metric_weights <- reweightViewServer("reweightInfo", user)
+  metric_weights <- reweightViewServer("reweightInfo", user, uploaded_pkgs$auto_decision)
   
   # Load server of the uploadPackage module.
   uploaded_pkgs <- uploadPackageServer("upload_package", user)

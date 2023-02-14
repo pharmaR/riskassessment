@@ -46,7 +46,8 @@ uploadPackageUI <- function(id) {
         actionLink(NS(id, "upload_format"), "View Sample Dataset")
       ),
      ),
-    
+    fluidRow(mod_decision_automation_ui(NS(id, "automate"))),
+
     # Display the summary information of the uploaded csv.
     fluidRow(column(width = 12, htmlOutput(NS(id, "upload_summary_text")))),
     
@@ -80,8 +81,10 @@ uploadPackageServer <- function(id, user) {
         upload_pkg
     })
     
-    cran_pkgs <- reactiveVal()
+    auto_list <- mod_decision_automation_server("automate", user)
 
+    cran_pkgs <- reactiveVal()
+    
     observeEvent(input$load_cran, {
       if (!isTruthy(cran_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
@@ -224,6 +227,9 @@ uploadPackageServer <- function(id, user) {
     observeEvent(uploaded_pkgs00(), {
 
       uploaded_packages <- uploaded_pkgs00()
+      uploaded_packages$score <- NA_real_
+      if (!rlang::is_empty(auto_list()))
+        uploaded_packages$decision <- ""
       np <- nrow(uploaded_packages)
       
       if (!isTruthy(cran_pkgs())) {
@@ -303,6 +309,11 @@ uploadPackageServer <- function(id, user) {
               # Get and upload community metrics to db.
               incProgress(1, detail = deets)
               insert_community_metrics_to_db(uploaded_packages$package[i])
+              uploaded_packages$score[i] <- get_pkg_info(uploaded_packages$package[i])$score
+              if (!rlang::is_empty(auto_list())) {
+                uploaded_packages$decision[i] <-
+                  assign_decisions(auto_list(), uploaded_packages$package[i])
+              }
             }
           }
           
@@ -355,7 +366,13 @@ uploadPackageServer <- function(id, user) {
                            "Undiscovered Packages:", sum(grepl('not found', uploaded_pkgs()$status)),
                            "Duplicate Packages:", sum(uploaded_pkgs()$status == 'duplicate')),
                      echo = FALSE)
-      
+      if (!is.null(uploaded_pkgs()$decision)) {
+        dec_lst <- uploaded_pkgs()$decision %>% 
+          unique() %>% 
+          `[`(. != "") %>%
+          purrr::map_chr(~ glue::glue("{.x}: {sum(uploaded_pkgs()$decision == .x)}")) %>%
+          purrr::map(~ list(tags$code(.x), HTML("&emsp;")))
+      }
       as.character(tagList(
         br(), br(),
         hr(),
@@ -364,6 +381,7 @@ uploadPackageServer <- function(id, user) {
             br(),
             p(tags$b("Total Packages: "), nrow(uploaded_pkgs())),
             p(tags$b("New Packages: "), sum(uploaded_pkgs()$status == 'new')),
+            if (!is.null(uploaded_pkgs()$decision)) list(p(tags$b("Decisions Made: "), sum(uploaded_pkgs()$decision != "")), p(style = "margin-left: 25px", dec_lst)),
             p(tags$b("Undiscovered Packages: "), sum(grepl('not found', uploaded_pkgs()$status))),
             p(tags$b("Duplicate Packages: "), sum(uploaded_pkgs()$status == 'duplicate')),
             p("Note: The assessment will be performed on the latest version of each
@@ -430,7 +448,8 @@ uploadPackageServer <- function(id, user) {
     })
     
     list(
-      names = uploaded_pkgs
+      names = uploaded_pkgs,
+      auto_decision = auto_list
     )
   })
 }
