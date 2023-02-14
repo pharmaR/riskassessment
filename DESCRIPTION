@@ -5,16 +5,16 @@ Authors@R: c(
     person("Aaron", "Clark", role = c("aut", "cre"), email = "aaron.clark@biogen.com"),
     person("Robert", "Krajcik", role = "aut", email = "robert.krajcik@biogen.com"),
     person("Jeff", "Thompson", role = "aut", email = "jeff.thompson51317@gmail.com"),
+    person("Lars", "Andersen", role = "aut", email = "lars.andersen@boehringer-ingelheim.com"),
+    person("Andrew", "Borgman", role = "aut", email = "andrew.borgman@biogen.com"),
+    person("Munshi Imran", "Hossain", role = "ctb"),
+    person("Scott", "Schumacker", role = "ctb", email = "scottschu97@gmail.com"),
     person("Marly", "Gotti", role = "aut", email = "marly.cormar@biogen.com"),
     person("Maya", "Gans", role = "aut", email = "maya.gans@biogen.com"),
     person("Aravind Reddy", "Kallem", role = "aut"),
     person(family = "Fission Labs India Pvt Ltd", role = "aut"),
 	  person(family = "PSI special interest group Application and Implementation of Methodologies in Statistics", role = c("cph", "fnd")),
-    person(family = "R Validation Hub", role = c("cph", "fnd")),
-    person("Munshi Imran", "Hossain", role = "ctb"),
-    person("Scott", "Schumacker", role = "ctb", email = "scottschu97@gmail.com"),
-    person("Lars", "Andersen", role = "aut", email = "lars.andersen@boehringer-ingelheim.com"),
-    person("Andrew", "Borgman", role = "aut", email = "andrew.borgman@biogen.com")
+    person(family = "R Validation Hub", role = c("cph", "fnd"))
   )
 Description: The `riskassessment` application allows users to define a list of R
     packages to assess against metrics engineered by the `riskmetric` package.
