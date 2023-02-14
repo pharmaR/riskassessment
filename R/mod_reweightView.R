@@ -14,6 +14,7 @@ reweightViewUI <- function(id) {
 #' 
 #' @param id the module id
 #' @param user the user name
+#' @param decision_list the list containing the decision automation criteria
 #' 
 #' 
 #' @import dplyr
@@ -24,7 +25,7 @@ reweightViewUI <- function(id) {
 #' @importFrom RSQLite SQLite sqliteCopyDatabase
 #' 
 #' @keywords internal
-reweightViewServer <- function(id, user) {
+reweightViewServer <- function(id, user, decision_list) {
   moduleServer(id, function(input, output, session) {
     
     exportTestValues(
@@ -326,6 +327,9 @@ reweightViewServer <- function(id, user) {
             (SELECT id FROM package WHERE name = '{pkg$pkg_name[i]}')") )
           # metric_mm_tm_Info_upload_to_DB(pkg$pkg_name[i])
           insert_riskmetric_to_db(pkg$pkg_name[i])
+          if (!rlang::is_empty(decision_list())) {
+              assign_decisions(decision_list(), pkg$pkg_name[i])
+          }
         }
       })
       

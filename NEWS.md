@@ -45,6 +45,8 @@
 * Fixed bug where the logging file was not being set
 * Added an "Administrative Tools and Options" vignette
 * Source riskmetric from GitHub
+* Added decision automation capabilities where the user can set decision rules for uploaded packages to be auto-assigned
+* Adopt (temporary) CRAN-first data collection method for pkg info via `riskmetric::pkg_ref()`
 * fix package delete button shadow; fix introjs for admin/non-admin roles
 
 # riskassessment 0.0.1

@@ -13,6 +13,8 @@ test_that("reweightView works", {
     app_db_loc
   )
   
+  if(!file.exists(test_path("test-apps", "reweightView-app", "auto_decisions.json"))) jsonlite::write_json(data.frame(decision = character(0), lower_limit = numeric(0), upper_limit = numeric(0)), test_path("test-apps", "reweightView-app", "auto_decisions.json"))
+  
   app <- AppDriver$new(test_path("test-apps", "reweightView-app"))
   
   if (interactive())

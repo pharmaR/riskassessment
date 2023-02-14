@@ -1,0 +1,47 @@
+[risk=low] .irs--shiny .irs-bar {
+  border-top: 1px solid #06B756FF;
+  border-bottom: 1px solid #06B756FF;
+  background: #06B756FF;
+}
+
+[risk=low] .irs--shiny .irs-single {
+  background-color: #06B756FF;
+}
+
+[risk=medium] .irs--shiny .irs-bar {
+  border-top: 1px solid #A99D04FF;
+  border-bottom: 1px solid #A99D04FF;
+  background: #A99D04FF;
+}
+
+[risk=medium] .irs--shiny .irs-from,
+[risk=medium] .irs--shiny .irs-to {
+  background-color: #A99D04FF;
+}
+
+[risk=high] .irs--shiny .irs-line {
+  background: #A63E24FF;
+  border: 1px solid #A63E24FF;
+}
+
+[risk=high] .irs--shiny .irs-bar {
+  background: linear-gradient(to bottom, #DDD -50%, #FFF 150%);
+  border: 1px solid #cccccc;
+}
+
+[risk=high] .irs--shiny .irs-single {
+  background-color: #A63E24FF;
+}
+
+.btn-dropdown-input .btn.dropdown-toggle:after {
+  content: none;
+}
+
+.btn-dropdown-input .shiny-input-checkboxgroup .control-label {
+  font-size: x-large;
+  font-weight: bold;
+}
+
+.btn-dropdown-input ul {
+  border: 1px solid;
+}
