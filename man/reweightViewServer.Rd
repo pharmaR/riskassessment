@@ -4,12 +4,14 @@
 \alias{reweightViewServer}
 \title{Server logic for the 'Re-weight View' module}
 \usage{
-reweightViewServer(id, user)
+reweightViewServer(id, user, decision_list)
 }
 \arguments{
 \item{id}{the module id}
 
 \item{user}{the user name}
+
+\item{decision_list}{the list containing the decision automation criteria}
 }
 \description{
 Server logic for the 'Re-weight View' module

@@ -45,6 +45,8 @@
 * Rename internal modules to follow golem standard. I.E. 'mod_...'
 * Fixed bug where the logging file was not being set
 * Source riskmetric from GitHub
+* Added decision automation capabilities where the user can set decision rules for uploaded packages to be auto-assigned
+* Adopt (temporary) CRAN-first data collection method for pkg info via `riskmetric::pkg_ref()`
 * Added tests using `shinytest2` to test the sidebar module(#295)
 
 # riskassessment 0.0.1

@@ -144,7 +144,9 @@ insert_riskmetric_to_db <- function(pkg_name,
     db_name = golem::get_golem_options('assessment_db_name')){
 
   riskmetric_assess <-
-    riskmetric::pkg_ref(pkg_name) %>%
+    riskmetric::pkg_ref(pkg_name,
+                        source = "pkg_cran_remote",
+                        repos = c("https://cran.rstudio.com")) %>%
     dplyr::as_tibble() %>%
     riskmetric::pkg_assess()
   
