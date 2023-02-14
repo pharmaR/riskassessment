@@ -251,7 +251,9 @@ uploadPackageServer <- function(id, user) {
             
             if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
               # run pkg_ref() to get pkg version and source info
-              ref <- riskmetric::pkg_ref(uploaded_packages$package[i], repos = c("https://cran.rstudio.com"))
+              ref <- riskmetric::pkg_ref(uploaded_packages$package[i],
+                                         source = "pkg_cran_remote",
+                                         repos = c("https://cran.rstudio.com"))
             } else {
               ref <- list(name = uploaded_packages$package[i],
                           source = "name_bad")
