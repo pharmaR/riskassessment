@@ -35,9 +35,17 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                                 metric_weights) {
   moduleServer(id, function(input, output, session) {
     
-    # IntroJS.
-    introJSServer(id = "introJS", text = rp_steps)
+    rp_text <- reactive({
+      if(user$role == "admin") {
+        apptab_steps <- bind_rows(apptab_admn, apptab_steps)
+      }
+      rp_steps %>% 
+        bind_rows(apptab_steps)
+    })
     
+    # IntroJS.
+    introJSServer(id = "introJS", text = rp_text())
+
     # Render Output UI for Report Preview.
     output$reportPreview_ui <- renderUI({
       
