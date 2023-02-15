@@ -140,9 +140,20 @@ createGrid <- function(metrics){
 
 <br>
 
+```{css, echo=FALSE}
+#raa-logo img {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  padding-top: .75em;
+  padding-right: 6em;
+  height: 6em;
+}
+```
+
 ```{r general_pkg_info}
 h5('General Information')
-
+div(id = "raa-logo", img(src="raa-image.png"))
 tagList(
   h6('Package:'), params$pkg$name,
   h6('Version:'), params$pkg$version,
