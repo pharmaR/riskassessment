@@ -11,6 +11,8 @@ generate_comm_data(pkg_name)
 }
 \value{
 A tibble of community usage metrics
+
+a data.frame which includes downloads per month for the given pkg
 }
 \description{
 Extracts community usage metrics for a given package.
