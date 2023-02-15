@@ -64,6 +64,7 @@ Imports:
 Suggests: 
     fontawesome,
     knitr,
+    pkgload,
     rstudioapi,
     shinytest2,
     spelling,
