@@ -47,7 +47,6 @@ Imports:
     jsonlite,
     loggit,
     lubridate,
-    pkgload,
     plotly,
     purrr,
     rintrojs,
