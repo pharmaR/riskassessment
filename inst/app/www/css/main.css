@@ -22,3 +22,15 @@
   padding-right: .2em;
   height: 2em;
 }
+
+#upload_package-rem_pkg_btn {
+  height: calc(1.5em + 1.5rem + 2px); 
+  margin-top: 32px; 
+  background-color:#3399ff; 
+  border-color:#3399ff;
+}
+
+#upload_package-rem_pkg_btn:active,
+#upload_package-rem_pkg_btn:focus {
+box-shadow: 0 0 0 0.25rem rgb(51, 153, 255, 50%);
+}

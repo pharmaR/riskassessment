@@ -4,7 +4,6 @@
 * Allowed users to type in package names to be assessed in the app, instead of uploading CSV file. Also allow point-and-click deletion of packages.
 * Added decision automation capabilities where the user can set decision rules for uploaded packages to be auto-assigned.
 
-
 ### Enhancements
 * Added "PDF report" download option (#280)
 * Added risk score to the Report Preview tab and downloaded reports (#264).
@@ -32,6 +31,8 @@
 * Added console warnings,log-in note, and modals to warn user there is a bug with {fontawesome} v0.4.0. For more info, the bug status can be tracked [here](https://github.com/rstudio/fontawesome/issues/99).
 * Fixed summary of community usage data when there was more than one pkg version release in the same month
 * Fixed bug where the logging file was not being set
+* Fixed package delete button shadow; fix introjs for admin/non-admin roles
+* Fixed display of 'Report Bugs' metric to align with current `riskmetric` presentation as 0 or 1
 
 ### For Devs
 * Some general re-organizing of the package's infrastructure to make testing and development easier.
@@ -41,7 +42,9 @@
 * Changed risk-based color gradient to use colorblind-friendly color palette (#324).
 * Adopt (temporary) CRAN-first data collection method for pkg info via `riskmetric::pkg_ref()`
 
+
 # riskassessment 0.0.1
+
 * Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/riskassessment/archive/master.zip")` and `shiny::runGitHub('riskassessment', 'pharmaR')`
 
 
