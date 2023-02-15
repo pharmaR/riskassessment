@@ -75,10 +75,16 @@ uploadPackageServer <- function(id, user) {
     upload_pkg_txt <- reactive({
       req(uploaded_pkgs())
       
+      if(user$role == "admin") {
+        upload_pkg <- bind_rows(upload_pkg, upload_adm)
+        apptab_steps <- bind_rows(apptab_admn, apptab_steps)
+      }
       if(nrow(uploaded_pkgs()) > 0) 
-        upload_pkg_complete 
+        upload_pkg_complete <- bind_rows(upload_pkg, upload_pkg_comp) %>% 
+          bind_rows(apptab_steps)
       else 
-        upload_pkg
+        upload_pkg %>% 
+          bind_rows(apptab_steps)
     })
     
     auto_list <- mod_decision_automation_server("automate", user)
@@ -125,7 +131,7 @@ uploadPackageServer <- function(id, user) {
                           "nextLabel" = "Next",
                           "prevLabel" = "Previous"
                         )
-      )
+      ),
     )
     
     uploaded_pkgs00 <- reactiveVal()
@@ -140,9 +146,8 @@ uploadPackageServer <- function(id, user) {
                        options = list(create = FALSE, showAddOptionOnCreate = FALSE, 
                                       onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "curr_pkgs"), '", "load", {priority: "event"})}')))),
         # note the action button moved out of alignment with 'selectizeInput' under 'renderUI'
-        actionButton(NS(id, "rem_pkg_btn"), shiny::icon("trash-can"),
-                     style = 'height: calc(1.5em + 1.5rem + 2px); margin-top: 32px; background-color:#3399ff; border-color:#3399ff;'),
-        tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "rem_pkg_btn"), '").css("margin-top", $("#', NS(id, "rem_pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
+        actionButton(NS(id, "rem_pkg_btn"), shiny::icon("trash-can")),
+                     tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "rem_pkg_btn"), '").css("margin-top", $("#', NS(id, "rem_pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
       )
      })
     })
