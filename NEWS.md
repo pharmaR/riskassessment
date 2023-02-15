@@ -1,4 +1,4 @@
-# riskassessment (development version)
+# riskassessment 0.1.0
 
 ### All New Features
 * Allowed users to type in package names to be assessed in the app, instead of uploading CSV file. Also allow point-and-click deletion of packages.
