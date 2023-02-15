@@ -18,7 +18,7 @@
 # avoid "no visible binding for global variable" messages from check()
 utils::globalVariables(c('.',
  'Author', 'day_month_year', 'decision', 'description', 'description', 'downloads',   
- 'have_changed', 'Last modified', 'last_comment', 'License', 'long_name', 'Maintainer',
+ 'have_changed', 'Last modified', 'last_comment', 'License', 'll', 'long_name', 'Maintainer',
  'must_change', 'name', 'Name', 'new_weight', 'package', 'Published',
  'score', 'Version', 'was_decision_made', 'weight', 'X1', 'X2', 'ea_v')
 )
