@@ -48,6 +48,7 @@
 * Added decision automation capabilities where the user can set decision rules for uploaded packages to be auto-assigned
 * Adopt (temporary) CRAN-first data collection method for pkg info via `riskmetric::pkg_ref()`
 * fix package delete button shadow; fix introjs for admin/non-admin roles
+* Fixed display of Report Bugs to align with current `riskmetric` version
 
 # riskassessment 0.0.1
 * Initiated simple `app.R` for easier deployment using `runURL("https://github.com/pharmaR/riskassessment/archive/master.zip")` and `shiny::runGitHub('riskassessment', 'pharmaR')`
