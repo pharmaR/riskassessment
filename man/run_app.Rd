@@ -52,9 +52,6 @@ Please make sure name ends with '.sqlite'. For example: 'assess_db.sqlite'.}
 
 \item{...}{arguments to pass to golem_opts. See \code{?golem::get_golem_options}
 for more details.}
-
-\item{pre_auth_user}{if \code{TRUE} or 'admin', run as admin, if 'nonadmin' run as
-non-admin}
 }
 \value{
 a shiny app object
