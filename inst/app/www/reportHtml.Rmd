@@ -105,7 +105,9 @@ createGrid <- function(metrics){
              lapply(X = 1:col_length, function(i){
                createCard(title = metrics$title[i],
                           desc = metrics$desc[i],
-                          value = metrics$value[i],
+                          value = dplyr::case_when(metrics$name[i] != 'has_bug_reports_url' ~ metrics$value[i],
+                               metrics$value[i] == "1" ~ 'TRUE',
+                               TRUE ~ 'FALSE'),
                           is_perc = metrics$is_perc[i] == 1,
                           is_url = metrics$is_url[i] == 1,
                           succ_icon = metrics$succ_icon[i],
@@ -116,7 +118,9 @@ createGrid <- function(metrics){
              lapply(X = (col_length + 1):(2*col_length), function(i){
                createCard(title = metrics$title[i],
                           desc = metrics$desc[i],
-                          value = metrics$value[i],
+                          value = dplyr::case_when(metrics$name[i] != 'has_bug_reports_url' ~ metrics$value[i],
+                               metrics$value[i] == "1" ~ 'TRUE',
+                               TRUE ~ 'FALSE'),
                           is_perc = metrics$is_perc[i] == 1,
                           is_url = metrics$is_url[i] == 1,
                           succ_icon = metrics$succ_icon[i],
@@ -127,7 +131,9 @@ createGrid <- function(metrics){
              lapply(X = (2*col_length + 1):nrow(metrics), function(i){
                createCard(title = metrics$title[i],
                           desc = metrics$desc[i],
-                          value = metrics$value[i],
+                          value = dplyr::case_when(metrics$name[i] != 'has_bug_reports_url' ~ metrics$value[i],
+                               metrics$value[i] == "1" ~ 'TRUE',
+                               TRUE ~ 'FALSE'),
                           is_perc = metrics$is_perc[i] == 1,
                           is_url = metrics$is_url[i] == 1,
                           succ_icon = metrics$succ_icon[i],
