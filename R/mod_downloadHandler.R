@@ -84,6 +84,8 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               
               Report <- file.path(my_tempdir, "reportHtml.Rmd")
               file.copy(system.file('app/www', 'reportHtml.Rmd', package = "riskassessment"), Report, overwrite = TRUE)
+              file.copy(system.file('app/www', 'raa-image.png', package = "riskassessment"),
+                        file.path(my_tempdir, 'raa-image.png'), overwrite = TRUE)
             } 
             else if (input$report_format == "docx") { 
               Report <- file.path(my_tempdir, "reportDocx.Rmd")

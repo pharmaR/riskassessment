@@ -13,7 +13,6 @@ run_app(
   login_note = NULL,
   credentials_db_name = NULL,
   assessment_db_name = NULL,
-  pre_auth_user = NULL,
   ...
 )
 }
@@ -51,11 +50,11 @@ Please make sure name ends with '.sqlite'. For example: 'cred_db.sqlite'.}
 \item{assessment_db_name}{text string that names the credentials databse.
 Please make sure name ends with '.sqlite'. For example: 'assess_db.sqlite'.}
 
-\item{pre_auth_user}{if \code{TRUE} or 'admin', run as admin, if 'nonadmin' run as
-non-admin}
-
 \item{...}{arguments to pass to golem_opts. See \code{?golem::get_golem_options}
 for more details.}
+}
+\value{
+a shiny app object
 }
 \description{
 Run the Shiny Application

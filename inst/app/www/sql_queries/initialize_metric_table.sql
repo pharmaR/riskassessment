@@ -4,7 +4,7 @@ VALUES
 ('has_vignettes',       'Vignettes',         'Number of vignettes',              0, 0, 'maintenance', 1),
 ('has_news',            'NEWS file',         'Number of NEWS files',             0, 0, 'maintenance', 1),
 ('news_current',        'NEWS current',      'NEWS contains current version',    0, 0, 'maintenance', 1),
-('has_bug_reports_url', 'Report Bugs',       'Report bugs url in repository',    0, 0, 'maintenance', 1),
+('has_bug_reports_url', 'Report Bugs',       'URL to report bugs exists',    0, 0, 'maintenance', 1),
 ('has_website',         'Website',           'Package public website',           0, 1, 'maintenance', 1),
 ('has_maintainer',      'Maintainer',        'Package maintainers',              0, 0, 'maintenance', 1),
 ('has_source_control',  'Source Control',    'Package source control url',       0, 1, 'maintenance', 1),

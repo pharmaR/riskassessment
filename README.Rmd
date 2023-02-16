@@ -82,21 +82,27 @@ If you desire a more comprehensive overview of `riskmetric`'s approach to valida
 
 #### Installation
 
-For those who are ready to run/deploy this application in their own environment, we'd recommend the below workflow to install the package. Note: the `riskassessment` package is not on CRAN yet, but you can easily install the latest version from GitHub using:
+We recommend to run/deploy this application in a controlled development environment. Of course, you can install the latest version from GitHub using the code below, but it doesn't take into consideration other environment dependencies which means we can't guarantee stability:
 
 ```{r, eval=FALSE}
 # install.packages("remotes") # if needed
 remotes::install_github("pharmaR/riskmetric")
 remotes::install_github("pharmaR/riskassessment")
-```
 
-With a simple `library(riskassessment)` you can access all the exported functions from `riskassessment` that help users reproduce analysis performed in the app. Or, you can create an `app.R` file and launch (or deploy) the application if you include the following line of code:
-
-```{r, eval=FALSE}
 # Run the application 
 riskassessment::run_app()
 ```
 
+Instead, we'd recommend that you clone the repo's R project locally and run the following code in order to take advantage of our `renv.lock` file which set's up the project dependencies:
+
+```{r, eval=FALSE}
+# First, clone the repo from Github, then...
+# Get dependcies synced using {renv}
+renv::activate()
+renv::restore()
+```
+
+After this step is complete, you can simply run the contents of `app.R` to launch and/or deploy the application!
 
 
 #### Deployments

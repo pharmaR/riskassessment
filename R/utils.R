@@ -87,6 +87,7 @@ get_latest_pkg_info <- function(pkg_name) {
 #' @importFrom rvest read_html html_node html_table html_text
 #' @importFrom loggit loggit
 #' @importFrom stringr str_remove_all
+#' @return a data.frame which includes downloads per month for the given pkg
 #' @examples 
 #' if( interactive()) {
 #' ggplot_comm_df <- generate_comm_data("ggplot2")
@@ -187,7 +188,7 @@ generate_comm_data <- function(pkg_name){
 #' 
 #' @param pkg_name string name of the package
 #' @param comments data.frame comments table entry
-#' 
+#' @return a formatted string of comments
 #' @keywords internal
 #' @export
 showComments <- function(pkg_name, comments){
@@ -397,6 +398,7 @@ auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
 #' @importFrom lubridate NA_Date_ interval
 #' @importFrom glue glue
 #' @importFrom plotly plot_ly layout add_segments add_annotations config
+#' @return an interactive plotly object
 #' 
 #' @keywords reproduce
 #' @export

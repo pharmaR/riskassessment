@@ -18,9 +18,9 @@
   position: absolute;
   top: 0px;
   right: 0px;
-  padding-top: .2em;
-  padding-right: .2em;
-  height: 2em;
+  padding-top: 2.75em;
+  padding-right: .75em;
+  height: 7em;
 }
 
 #upload_package-rem_pkg_btn {

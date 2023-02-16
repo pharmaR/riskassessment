@@ -11,6 +11,9 @@ showComments(pkg_name, comments)
 
 \item{comments}{data.frame comments table entry}
 }
+\value{
+a formatted string of comments
+}
 \description{
 Displays formatted comments
 }
