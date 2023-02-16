@@ -105,9 +105,9 @@ don’t forget to take it for a spin!
 #### Installation
 
 We recommend to run/deploy this application in a controlled development
-environment. Of course, you can can install the latest version from
-GitHub using the code below, but it doesn’t take into consideration
-other environment dependencies which means we can’t guarantee stability:
+environment. Of course, you can install the latest version from GitHub
+using the code below, but it doesn’t take into consideration other
+environment dependencies which means we can’t guarantee stability:
 
 ``` r
 # install.packages("remotes") # if needed
