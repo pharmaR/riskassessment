@@ -28,8 +28,8 @@
 * Add founders/copyright holders to `DESCRIPTION` file
 * Fixed bug where `Assessment Criteria` tables were failing to render.
 * Improved metric 'card' aesthetics in order to remove scroll bars (#198).
-* Added console warnings,log-in note, and modals to warn user there is a bug with {fontawesome} v0.4.0. For more info, the bug status can be tracked [here](https://github.com/rstudio/fontawesome/issues/99).
-* Fixed summary of community usage data when there was more than one pkg version release in the same month
+* Added console warnings, log-in note, and modals to warn user there is a bug with {fontawesome} v0.4.0. For more info, the bug status can be tracked [here](https://github.com/rstudio/fontawesome/issues/99).
+* Fixed summary of community usage data when there was more than one package version released in the same month
 * Fixed bug where the logging file was not being set
 * Fixed package delete button shadow; fix introjs for admin/non-admin roles
 * Fixed display of 'Report Bugs' metric to align with current `riskmetric` presentation as 0 or 1
