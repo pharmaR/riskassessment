@@ -82,7 +82,7 @@ If you desire a more comprehensive overview of `riskmetric`'s approach to valida
 
 #### Installation
 
-We recommend to run/deploy this application in a controlled development environment. Of course, you can can install the latest version from GitHub using the code below, but it doesn't take into consideration other environment dependencies which means we can't guarantee stability:
+We recommend to run/deploy this application in a controlled development environment. Of course, you can install the latest version from GitHub using the code below, but it doesn't take into consideration other environment dependencies which means we can't guarantee stability:
 
 ```{r, eval=FALSE}
 # install.packages("remotes") # if needed
