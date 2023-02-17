@@ -22,12 +22,12 @@ Welcome! This guide will help users get started with the `riskassessment` applic
 
 <br>
 
-## Create app.R
+## Run / Deploy `app.R`
 
-If your application is already deployed, you can skip this step! After you have [installed](../index.html#installation) the `riskassessment` package, you are now able to create the standard shiny `app.R` file, open it and insert:
+If your application is already deployed, you can skip this step! After you have [installed](../index.html#installation) the `riskassessment` package, you are now able to run the app locally using the [provided](https://github.com/pharmaR/riskassessment/blob/master/app.R) `app.R` file. If applicable, you can specify application options in this file, using either `options()` or arguments of the `run_app()` function (run `?riskassessment::run_app` to learn more). However, for the purposes of this guide, we'll run the function as-is, accepting all defaults:
 
 ```{r app.R, echo=TRUE, eval=FALSE}
-# for app.R
+# launch the application
 riskassessment::run_app()
 ```
 
