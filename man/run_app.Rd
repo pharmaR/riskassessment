@@ -57,6 +57,9 @@ non-admin}
 \item{...}{arguments to pass to golem_opts. See \code{?golem::get_golem_options}
 for more details.}
 }
+\value{
+a shiny app object
+}
 \description{
 Run the Shiny Application
 }

@@ -13,6 +13,8 @@ build_comm_plotly(data = NULL, pkg_name = NULL)
 }
 \value{
 a plotly object
+
+an interactive plotly object
 }
 \description{
 Responsible for building an interactive \code{{plotly}} graphic containing the trend line for number of CRAN pkg downloads by month.

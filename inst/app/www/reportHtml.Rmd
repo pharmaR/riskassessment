@@ -105,7 +105,9 @@ createGrid <- function(metrics){
              lapply(X = 1:col_length, function(i){
                createCard(title = metrics$title[i],
                           desc = metrics$desc[i],
-                          value = metrics$value[i],
+                          value = dplyr::case_when(metrics$name[i] != 'has_bug_reports_url' ~ metrics$value[i],
+                               metrics$value[i] == "1" ~ 'TRUE',
+                               TRUE ~ 'FALSE'),
                           is_perc = metrics$is_perc[i] == 1,
                           is_url = metrics$is_url[i] == 1,
                           succ_icon = metrics$succ_icon[i],
@@ -116,7 +118,9 @@ createGrid <- function(metrics){
              lapply(X = (col_length + 1):(2*col_length), function(i){
                createCard(title = metrics$title[i],
                           desc = metrics$desc[i],
-                          value = metrics$value[i],
+                          value = dplyr::case_when(metrics$name[i] != 'has_bug_reports_url' ~ metrics$value[i],
+                               metrics$value[i] == "1" ~ 'TRUE',
+                               TRUE ~ 'FALSE'),
                           is_perc = metrics$is_perc[i] == 1,
                           is_url = metrics$is_url[i] == 1,
                           succ_icon = metrics$succ_icon[i],
@@ -127,7 +131,9 @@ createGrid <- function(metrics){
              lapply(X = (2*col_length + 1):nrow(metrics), function(i){
                createCard(title = metrics$title[i],
                           desc = metrics$desc[i],
-                          value = metrics$value[i],
+                          value = dplyr::case_when(metrics$name[i] != 'has_bug_reports_url' ~ metrics$value[i],
+                               metrics$value[i] == "1" ~ 'TRUE',
+                               TRUE ~ 'FALSE'),
                           is_perc = metrics$is_perc[i] == 1,
                           is_url = metrics$is_url[i] == 1,
                           succ_icon = metrics$succ_icon[i],
@@ -140,9 +146,20 @@ createGrid <- function(metrics){
 
 <br>
 
+```{css, echo=FALSE}
+#raa-logo img {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  padding-top: .75em;
+  padding-right: 6em;
+  height: 6em;
+}
+```
+
 ```{r general_pkg_info}
 h5('General Information')
-
+div(id = "raa-logo", img(src="raa-image.png"))
 tagList(
   h6('Package:'), params$pkg$name,
   h6('Version:'), params$pkg$version,

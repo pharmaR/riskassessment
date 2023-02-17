@@ -48,13 +48,15 @@ metricGridServer <- function(id, metrics) {
     observeEvent(req(nrow(metrics()) > 0), {
       apply(metrics(), 1, function(metric)
         metricBoxServer(id = metric['name'],
-                        title = metric['title'],
-                        desc = metric['desc'],
-                        value = metric['value'],
-                        is_perc = metric['is_perc'] == 1,
-                        is_url = metric['is_url'] == 1,
-                        succ_icon = metric['succ_icon'],
-                        icon_class = metric['icon_class'])
+            title = metric['title'],
+            desc = metric['desc'],
+            value = dplyr::case_when(metric['name'] != 'has_bug_reports_url' ~ metric['value'],
+                                     metric['value'] == "1" ~ 'TRUE',
+                                     TRUE ~ 'FALSE'),
+            is_perc = metric['is_perc'] == 1,
+            is_url = metric['is_url'] == 1,
+            succ_icon = metric['succ_icon'],
+            icon_class = metric['icon_class'])
         )
     })
   })

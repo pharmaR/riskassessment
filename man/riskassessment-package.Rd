@@ -28,20 +28,20 @@ Authors:
 \itemize{
   \item Robert Krajcik \email{robert.krajcik@biogen.com}
   \item Jeff Thompson \email{jeff.thompson51317@gmail.com}
+  \item Lars Andersen \email{lars.andersen@boehringer-ingelheim.com}
+  \item Andrew Borgman \email{andrew.borgman@biogen.com}
   \item Marly Gotti \email{marly.cormar@biogen.com}
   \item Maya Gans \email{maya.gans@biogen.com}
   \item Aravind Reddy Kallem
   \item  Fission Labs India Pvt Ltd
-  \item Lars Andersen \email{lars.andersen@boehringer-ingelheim.com}
-  \item Andrew Borgman \email{andrew.borgman@biogen.com}
 }
 
 Other contributors:
 \itemize{
-  \item  PSI special interest group Application and Implementation of Methodologies in Statistics [copyright holder, funder]
-  \item  R Validation Hub [copyright holder, funder]
   \item Munshi Imran Hossain [contributor]
   \item Scott Schumacker \email{scottschu97@gmail.com} [contributor]
+  \item  PSI special interest group Application and Implementation of Methodologies in Statistics [copyright holder, funder]
+  \item  R Validation Hub [copyright holder, funder]
 }
 
 }
