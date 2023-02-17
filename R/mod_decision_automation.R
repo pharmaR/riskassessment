@@ -89,7 +89,7 @@ mod_decision_automation_server <- function(id, user){
       }
       
       if (user$role == "admin") {
-        initial_values <- list(Low = .2, Medium = c(.2,.5), High = .5)
+        initial_values <- list(Low = .33, Medium = c(.33,.66), High = .66)
         initial_selection <- NULL
         if (!rlang::is_empty(auto_json)) {
           for (.y in names(auto_json)) {
