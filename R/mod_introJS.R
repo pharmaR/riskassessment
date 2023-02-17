@@ -26,14 +26,24 @@ introJSUI <- function(id) {
 #'   strings guiding users, and a position of where to place the text in
 #'   relationship to the element. Please see `R/introJSText.R` for data.frames
 #'   that populate this argument for the app
+#' @param user placeholder 
 #'
 #' 
 #' @importFrom rintrojs introjs
 #' @keywords internal
-introJSServer <- function(id, text) {
+introJSServer <- function(id, text, user) {
   moduleServer(id, function(input, output, session) {
     
-    steps <- reactive(union(text(), sidebar_steps))
+    steps <- reactive({
+      if(user$role == "admin") {
+        apptab_steps <- bind_rows(apptab_admn, apptab_steps)
+      }
+      
+      purrr::reduce(
+        list(text(), apptab_steps, sidebar_steps),
+        dplyr::bind_rows
+      )
+      })
     
     exportTestValues(
       steps = {
