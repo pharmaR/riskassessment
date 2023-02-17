@@ -1,189 +1,171 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>/404.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/404.html</loc>
   </url>
   <url>
-    <loc>/LICENSE.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>/authors.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/LICENSE.html</loc>
   </url>
   <url>
-    <loc>/index.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/articles/Administrative_Tools_and_Options.html</loc>
   </url>
   <url>
-    <loc>/news/index.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/articles/dev_Using_SQLite_Command_Line.html</loc>
   </url>
   <url>
-    <loc>/reference/addCommentServer.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/articles/dev_renv.html</loc>
   </url>
   <url>
-    <loc>/reference/addCommentUI.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/articles/index.html</loc>
   </url>
   <url>
-    <loc>/reference/add_tags.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/articles/riskassessment.html</loc>
   </url>
   <url>
-    <loc>/reference/app_theme.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/authors.html</loc>
   </url>
   <url>
-    <loc>/reference/assessmentInfoServer.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/index.html</loc>
   </url>
   <url>
-    <loc>/reference/assessmentInfoUI.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/news/index.html</loc>
   </url>
   <url>
-    <loc>/reference/build_comm_cards.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/addCommentServer.html</loc>
   </url>
   <url>
-    <loc>/reference/build_comm_plotly.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/addCommentUI.html</loc>
   </url>
   <url>
-    <loc>/reference/communityMetricsServer.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/add_shinymanager_auth.html</loc>
   </url>
   <url>
-    <loc>/reference/communityMetricsUI.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/add_tags.html</loc>
   </url>
   <url>
-    <loc>/reference/create_credentials_db.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/app_theme.html</loc>
   </url>
   <url>
-    <loc>/reference/create_db.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/assessmentInfoServer.html</loc>
   </url>
   <url>
-    <loc>/reference/databaseViewServer.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/assessmentInfoUI.html</loc>
   </url>
   <url>
-    <loc>/reference/databaseViewUI.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/auto_font.html</loc>
   </url>
   <url>
-    <loc>/reference/dbSelect.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/build_comm_cards.html</loc>
   </url>
   <url>
-    <loc>/reference/dbUpdate.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/build_comm_plotly.html</loc>
   </url>
   <url>
-    <loc>/reference/getTimeStamp.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/communityMetricsServer.html</loc>
   </url>
   <url>
-    <loc>/reference/get_cm_comments.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/communityMetricsUI.html</loc>
   </url>
   <url>
-    <loc>/reference/get_comm_data.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/create_credentials_db.html</loc>
   </url>
   <url>
-    <loc>/reference/get_date_span.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/create_credentials_dev_db.html</loc>
   </url>
   <url>
-    <loc>/reference/get_latest_pkg_info.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/create_db.html</loc>
   </url>
   <url>
-    <loc>/reference/get_metric_weights.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/databaseViewServer.html</loc>
   </url>
   <url>
-    <loc>/reference/get_mm_comments.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/databaseViewUI.html</loc>
   </url>
   <url>
-    <loc>/reference/get_mm_data.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/generate_comm_data.html</loc>
   </url>
   <url>
-    <loc>/reference/get_overall_comments.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/getTimeStamp.html</loc>
   </url>
   <url>
-    <loc>/reference/get_pkg_info.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/get_date_span.html</loc>
   </url>
   <url>
-    <loc>/reference/index.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/get_latest_pkg_info.html</loc>
   </url>
   <url>
-    <loc>/reference/initialize_raa.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/index.html</loc>
   </url>
   <url>
-    <loc>/reference/insert_community_metrics_to_db.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/initialize_raa.html</loc>
   </url>
   <url>
-    <loc>/reference/insert_maintenance_metrics_to_db.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/introJSServer.html</loc>
   </url>
   <url>
-    <loc>/reference/insert_pkg_info_to_db.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/introJSUI.html</loc>
   </url>
   <url>
-    <loc>/reference/introJSServer.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/maintenanceMetricsServer.html</loc>
   </url>
   <url>
-    <loc>/reference/introJSUI.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/maintenanceMetricsUI.html</loc>
   </url>
   <url>
-    <loc>/reference/maintenanceMetricsServer.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/metricBoxServer.html</loc>
   </url>
   <url>
-    <loc>/reference/maintenanceMetricsUI.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/metricBoxUI.html</loc>
   </url>
   <url>
-    <loc>/reference/metricBoxServer.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/metricGridServer.html</loc>
   </url>
   <url>
-    <loc>/reference/metricBoxUI.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/metricGridUI.html</loc>
   </url>
   <url>
-    <loc>/reference/metricGridServer.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/reportPreviewServer.html</loc>
   </url>
   <url>
-    <loc>/reference/metricGridUI.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/reportPreviewUI.html</loc>
   </url>
   <url>
-    <loc>/reference/pipe.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/reweightViewServer.html</loc>
   </url>
   <url>
-    <loc>/reference/reportPreviewServer.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/reweightViewUI.html</loc>
   </url>
   <url>
-    <loc>/reference/reportPreviewUI.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/riskassessment-package.html</loc>
   </url>
   <url>
-    <loc>/reference/reweightViewServer.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/run_app.html</loc>
   </url>
   <url>
-    <loc>/reference/reweightViewUI.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/showComments.html</loc>
   </url>
   <url>
-    <loc>/reference/riskassessment-package.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/showHelperMessage.html</loc>
   </url>
   <url>
-    <loc>/reference/run_app.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/sidebarServer.html</loc>
   </url>
   <url>
-    <loc>/reference/showComments.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/sidebarUI.html</loc>
   </url>
   <url>
-    <loc>/reference/showHelperMessage.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/uploadPackageServer.html</loc>
   </url>
   <url>
-    <loc>/reference/sidebarServer.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/uploadPackageUI.html</loc>
   </url>
   <url>
-    <loc>/reference/sidebarUI.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/viewCommentsServer.html</loc>
   </url>
   <url>
-    <loc>/reference/update_metric_weight.html</loc>
-  </url>
-  <url>
-    <loc>/reference/uploadPackageServer.html</loc>
-  </url>
-  <url>
-    <loc>/reference/uploadPackageUI.html</loc>
-  </url>
-  <url>
-    <loc>/reference/upload_package_to_db.html</loc>
-  </url>
-  <url>
-    <loc>/reference/viewCommentsServer.html</loc>
-  </url>
-  <url>
-    <loc>/reference/viewCommentsUI.html</loc>
-  </url>
-  <url>
-    <loc>/reference/weight_risk_comment.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/reference/viewCommentsUI.html</loc>
   </url>
 </urlset>
