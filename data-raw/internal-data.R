@@ -1,26 +1,15 @@
 # Global variables used within the application
-app_version <- 'beta'
+# app_version <- 'beta'
 passphrase <- 'somepassphrase'
-database_name <- "database.sqlite"
-credentials_name <- "credentials.sqlite"
+# database_name <- "database.sqlite"
+# credentials_name <- "credentials.sqlite"
 
 
 # Overall descriptive text for community usage. Please edit text file to make changes.
-community_usage_txt <- readr::read_file(file.path("data-raw", "community.txt"))
+community_usage_txt <- readLines(file.path("data-raw", "community.txt"))
 
 # Table of community usage descriptions. Please edit the csv file to make changes.
-community_usage_tbl <-
-  DT::datatable(
-    suppressMessages(readr::read_csv(file.path("data-raw", "community.csv"))),
-    escape = FALSE,
-    class = "cell-border",
-    selection = 'none',
-    options = list(
-      sScrollX = "100%",
-      aLengthMenu = list(c(5, 10, 20, 100,-1), list('5', '10', '20', '100', 'All')),
-      iDisplayLength = 15
-    )
-  )
+community_usage_tbl <- read.csv(file.path("data-raw", "community.csv"), stringsAsFactors = FALSE)
 
 # Overall descriptive text for maintenance metrics.
 maintenance_metrics_text <- shiny::HTML("Best practices in software development and
@@ -34,35 +23,13 @@ A Risk-based Approach for Assessing R package Accuracy within a Validated
 Infrastructure</a>.")
 
 # Table of maintenance metrics descriptions. Please edit the csv file to make changes.
-maintenance_metrics_tbl <-
-  DT::datatable(
-  suppressMessages(readr::read_csv(file.path("data-raw", "maintenance.csv"))),
-  escape = FALSE,
-  class = "cell-border",
-  selection = 'none',
-  options = list(
-    sScrollX = "100%",
-    aLengthMenu = list(c(5, 10, 20, 100,-1), list('5', '10', '20', '100', 'All')),
-    iDisplayLength = 15
-  )
-)
+maintenance_metrics_tbl <- read.csv(file.path("data-raw", "maintenance.csv"), stringsAsFactors = FALSE)
 
 # Overall descriptive text for testing. Please edit text file to make changes.
-testing_text <- readr::read_file(file.path("data-raw", "testing.txt"))
+testing_text <- readLines(file.path("data-raw", "testing.txt"))
 
 # Table of testing descriptions. Please edit the csv file to make changes.
-testing_tbl <-
-  DT::datatable(
-  readr::read_csv(file.path("data-raw", "testing.csv")),
-  escape = FALSE,
-  class = "cell-border",
-  selection = 'none',
-  options = list(
-    sScrollX = "100%",
-    aLengthMenu = list(c(5, 10, 20, 100,-1), list('5', '10', '20', '100', 'All')),
-    iDisplayLength = 5
-  )
-)
+testing_tbl <- read.csv(file.path("data-raw", "testing.csv"), stringsAsFactors = FALSE)
 
 # Overall risk calculation text.
 riskcalc_text <- shiny::HTML("Per the <b>riskmetric</b> package, there 
@@ -83,12 +50,12 @@ numeric value <b>x</b> standardized weight)")
 
 
 # Upload format template.
-template <- readr::read_csv(file.path('data-raw', 'upload_format.csv'), show_col_types = FALSE)
+template <- read.csv(file.path('data-raw', 'upload_format.csv'),  stringsAsFactors = FALSE)
 
 usethis::use_data(
-  app_version,
+  # app_version, 
+  # database_name, #credentials_name,
   passphrase,
-  database_name, credentials_name,
   community_usage_txt, community_usage_tbl,
   maintenance_metrics_text, maintenance_metrics_tbl,
   testing_text, testing_tbl,

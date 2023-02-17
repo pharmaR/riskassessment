@@ -9,6 +9,10 @@ run_app(
   options = list(),
   enableBookmarking = NULL,
   uiPattern = "/",
+  app_ver = NULL,
+  login_note = NULL,
+  credentials_db_name = NULL,
+  assessment_db_name = NULL,
   ...
 )
 }
@@ -33,8 +37,24 @@ request to determine whether the \code{ui} should be used to handle the
 request. Note that the entire request path must match the regular
 expression in order for the match to be considered successful.}
 
-\item{...}{arguments to pass to golem_opts.
-See \code{?golem::get_golem_options} for more details.}
+\item{app_ver}{a "global" variable that is passed to several modules &
+reports which details the installed package version when not specified. It
+can be overwritten to include a specific version name as a text string.}
+
+\item{login_note}{a text string to display underneath the auth screen's login
+button, provided to guide users}
+
+\item{credentials_db_name}{a text string that names the credentials databse.
+Please make sure name ends with '.sqlite'. For example: 'cred_db.sqlite'.}
+
+\item{assessment_db_name}{text string that names the credentials databse.
+Please make sure name ends with '.sqlite'. For example: 'assess_db.sqlite'.}
+
+\item{...}{arguments to pass to golem_opts. See \code{?golem::get_golem_options}
+for more details.}
+}
+\value{
+a shiny app object
 }
 \description{
 Run the Shiny Application

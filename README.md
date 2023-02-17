@@ -1,23 +1,27 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# `{riskassessment}`: an extension of `{riskmetric}`
+# The `{riskassessment}` application <a href='https://pharmar.github.io/riskassessment/'><img src="man/figures/hex-riskassessment-aspconfig.png" align="right" height="172" style="float:right; height:172px;"/></a>
 
 <!-- badges: start -->
 
+[<img src="https://img.shields.io/badge/Slack-RValidationHub-blue?style=flat&logo=slack">](https://RValidationHub.slack.com)
+[![R-CMD-check](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml)
+[![Coverage
+status](https://codecov.io/gh/pharmaR/riskassessment/branch/master/graph/badge.svg)](https://codecov.io/github/pharmaR/riskassessment?branch=master)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-`riskassessment` is a handy interface that augments the utility of the
-[`riskmetric`](https://github.com/pharmaR/riskmetric) package within an
-organizational setting.
+`riskassessment` is an R package containing a shiny front-end to augment
+the utility of the [`riskmetric`](https://github.com/pharmaR/riskmetric)
+package within an organizational context.
 
 <br>
 
 <center>
 <a href="https://rinpharma.shinyapps.io/risk_assessment">
-<img src="man/figures/demo_riskassessment.png" alt="Risk Assessment app" width="25%">
+<img src="man/figures/demo_riskassessment.png" alt="{riskassessment} app" width="25%">
 </a>
 </center>
 
@@ -25,15 +29,12 @@ organizational setting.
 
 <br>
 
-More over, `riskassessment` is an R package containing an interactive
-shiny application. It serves as a front end interface to the
-[`riskmetric`](https://github.com/pharmaR/riskmetric) R package. If
-you’re unfamiliar, `riskmetric` is a framework to quantify an R
-package’s “risk” by assessing a number of meaningful metrics designed to
-evaluate package development best practices, code documentation,
-community engagement, and development sustainability. Together, the
-`riskassessment` app and the `riskmetric` package aim to provide some
-context for validation within regulated industries.
+`riskmetric` is a framework to quantify an R package’s “risk” by
+assessing a number of meaningful metrics designed to evaluate package
+development best practices, code documentation, community engagement,
+and development sustainability. Together, the `riskassessment` app and
+the `riskmetric` package aim to provide some context for validation
+within regulated industries.
 
 The app extends the functionality of `riskmetric` by allowing the
 reviewer to:
@@ -50,7 +51,7 @@ reviewer to:
 - user authentication with with admin roles to manage users and metric
   weighting
 
-### Echo-ing `{riskmetric}`’s Approach to Validation
+### Echo-ing `{riskmetric}`’s Approach to Validation <a href='https://pharmar.github.io/riskmetric/'><img src="man/figures/hex-riskmetric-aspconfig.png" align="right" height="172" style="float:right; height:172px;"/></a>
 
 Validation can serve as an umbrella for various terms, and admittedly,
 companies will diverge on what is the correct approach to validation.
@@ -58,11 +59,16 @@ The validation approach we followed is based on the philosophy of the
 white paper set forth by the R Validation Hub: [White
 Paper](https://www.pharmar.org/white-paper/).
 
+*Note:* Development of both `riskassessment` and `riskmetric` were made
+possible thanks to the [R Validation
+Hub](https://www.pharmar.org/about/), a collaboration to support the
+adoption of R within a biopharmaceutical regulatory setting.
+
 ### Usage
 
 If you are new to using the `riskassessment` app, welcome! We’d highly
 encourage you to start exploring the
-[`demo verson`](https://rinpharma.shinyapps.io/risk_assessment) of the
+[`demo version`](https://rinpharma.shinyapps.io/risk_assessment) of the
 app currently deployed on shinyapps.io. There, you’ll find a number of
 pre-loaded packages just waiting to be assessed. Hands on experience
 will help you become familiar with the general layout of the app as you
@@ -75,7 +81,7 @@ latter can add/delete users, download an entire copy of the database,
 and modify the metric weights used in calculation of risk scores.
 Initially, both share the same password: `QWERTY1`. If you log in with
 this credential, the app will immediately prompt you to change your
-password and repeat the tje process with your new credentials.
+password and repeat the the process with your new credentials.
 
 If you want a quick tour through the app (or need assistance getting
 past the authentication wall), you should watch this short walk through
@@ -98,25 +104,33 @@ don’t forget to take it for a spin!
 
 #### Installation
 
-For those who are ready to run/deploy this application in their own
-environment, we’d recommend the below workflow to install the package.
-Note: the `riskassessment` package is not on CRAN yet, but you can
-easily install the latest version from GitHub using:
+We recommend to run/deploy this application in a controlled development
+environment. Of course, you can install the latest version from GitHub
+using the code below, but it doesn’t take into consideration other
+environment dependencies which means we can’t guarantee stability:
 
 ``` r
 # install.packages("remotes") # if needed
+remotes::install_github("pharmaR/riskmetric")
 remotes::install_github("pharmaR/riskassessment")
-```
 
-With a simple `library(riskassessment)` you can access all the exported
-functions from `riskassessment` that help users reproduce analysis
-performed in the app. Or, you can create an `app.R` file and launch (or
-deploy) the application if you include the following line of code:
-
-``` r
 # Run the application 
 riskassessment::run_app()
 ```
+
+Instead, we’d recommend that you clone the repo’s R project locally and
+run the following code in order to take advantage of our `renv.lock`
+file which set’s up the project dependencies:
+
+``` r
+# First, clone the repo from Github, then...
+# Get dependcies synced using {renv}
+renv::activate()
+renv::restore()
+```
+
+After this step is complete, you can simply run the contents of `app.R`
+to launch and/or deploy the application!
 
 #### Deployments
 
@@ -145,29 +159,5 @@ We are currently working on improving the app and it’s documentation.
 Since they are are currently in-progress, please explore the user guides
 that have been developed so far, available on the [documentation
 site](https://pharmar.github.io/riskassessment/).
-
-### Contributors/Authors
-
-We would like to thank all the contributors! Specifically, we would like
-to thank:
-
-- [R Validation Hub](https://www.pharmar.org)
-- [Aaron Clark](https://www.linkedin.com/in/dataaaronclark/), Biogen,
-  *Maintainer*
-- [Marly Gotti](https://www.marlygotti.com), Previously Biogen
-- Robert Krajcik, Cytel
-- Jeff Thompson, Cytel
-- Maya Gans, Cytel
-- Aravind Reddy Kallem
-- Fission Labs India Pvt Ltd
-
-*Note:* This app was made possible thanks to the [R Validation
-Hub](https://www.pharmar.org/about/), a collaboration to support the
-adoption of R within a biopharmaceutical regulatory setting.
-
-### License
-
-Please see the [License](LICENSE.md) file that lives alongside this
-repo.
 
 <br>

@@ -6,7 +6,7 @@
 \alias{riskassessment-package}
 \title{The \code{riskassessment} package}
 \description{
-The Risk Assessment App is an interactive web application serving as a front
+The \code{riskassessment} App is an interactive web application serving as a front
 end application for the \code{riskmetric} R package. \code{riskmetric} is a framework
 to quantify risk by assessing a number of metrics meant to evaluate
 development best practices, code documentation, community engagement, and
@@ -16,8 +16,8 @@ context for validation within regulated industries.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/pharmaR/risk_assessment}
-  \item Report bugs at \url{https://github.com/pharmaR/risk_assessment/issues}
+  \item \url{https://github.com/pharmaR/riskassessment}
+  \item Report bugs at \url{https://github.com/pharmaR/riskassessment/issues}
 }
 
 }
@@ -28,10 +28,20 @@ Authors:
 \itemize{
   \item Robert Krajcik \email{robert.krajcik@biogen.com}
   \item Jeff Thompson \email{jeff.thompson51317@gmail.com}
+  \item Lars Andersen \email{lars.andersen@boehringer-ingelheim.com}
+  \item Andrew Borgman \email{andrew.borgman@biogen.com}
   \item Marly Gotti \email{marly.cormar@biogen.com}
   \item Maya Gans \email{maya.gans@biogen.com}
   \item Aravind Reddy Kallem
-  \item Fission Labs India Pvt Ltd
+  \item  Fission Labs India Pvt Ltd
+}
+
+Other contributors:
+\itemize{
+  \item Munshi Imran Hossain [contributor]
+  \item Scott Schumacker \email{scottschu97@gmail.com} [contributor]
+  \item  PSI special interest group Application and Implementation of Methodologies in Statistics [copyright holder, funder]
+  \item  R Validation Hub [copyright holder, funder]
 }
 
 }

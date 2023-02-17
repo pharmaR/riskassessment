@@ -50,8 +50,9 @@ test_that(
   }
 )
 
-# # Configure this test to fit your need.
-# # testServer() function makes it possible to test code in server functions and modules, without needing to run the full Shiny application
+
+# Configure this test to fit your need.
+# testServer() function makes it possible to test code in server functions and modules, without needing to run the full Shiny application
 # testServer(app_server, {
 # 
 #   # Set and test an input

@@ -11,6 +11,9 @@
 #### CURRENT FILE: DEV SCRIPT #####
 ###################################
 
+# Specify license
+usethis::use_mit_license()
+
 # Engineering
 
 # ## Dependencies ---- not run
@@ -36,7 +39,9 @@
 # # usethis::use_package("data.table")
 # usethis::use_package("gt")
 # # usethis::use_package("shinyBS")
+usethis::use_package("fontawesome", type = "Suggests")
 # usethis::use_package("knitr", type = "Suggests")
+# usethis::use_package("tinytex", type = "Suggests")
 # usethis::use_package("pkgdown", type = "Suggests")#, min_version = "1.6.1")
 # usethis::use_package("rlang")
 # # usethis::use_package("stringi")
@@ -54,9 +59,6 @@
 # usethis::use_package("dplyr")
 # usethis::use_package("stringr")
 # usethis::use_package("purrr")
-# usethis::use_package("tidyr")
-# # usethis::use_package("tibble")
-# # usethis::use_package("magrittr")
 # usethis::use_package("cicerone")
 # usethis::use_package("glue")
 # usethis::use_package("lazyeval",type="Suggests")
@@ -65,8 +67,6 @@
 # usethis::use_package("survival")
 # usethis::use_package("ggcorrplot")
 # usethis::use_pipe()
-
-
 
 # ## Add modules ---- not run. Modules already exist
 # ## Create a module infrastructure in R/
@@ -97,7 +97,7 @@
 # ## Add helper functions ---- not run, function helper files already exist
 # ## Creates fct_* and utils_*
 # 
-# golem::add_utils( "strObjs" ) # ran
+golem::add_utils( "text", module = "introJS" ) # ran
 # golem::add_utils( "helpers" ) # ran, but Maya still has to uncomment and document her funtions
 # golem::add_utils( "initialize" )
 # 
@@ -114,11 +114,12 @@ golem::add_fct( "helpers" )
 # golem::add_fct( "anova", module = "tableGen" ) 
 # 
 # golem::add_utils("helpers", module = "indvExp" )
-# golem::add_fct( "buildEvents", module = "indvExp" ) # ran: used in modules: indvExpPatEvents & indvExpPatVisits
-# golem::add_fct( "organizeEvent", module = "indvExp" ) # ran
-# golem::add_fct( "plot", module = "indvExpPatVisits" ) # ran
+# golem::add_fct( "buildEvents", module = "indvExp" ) 
+# golem::add_fct( "organizeEvent", module = "indvExp" )
+# golem::add_fct( "plot", module = "indvExpPatVisits" ) 
 # 
-# golem::add_utils( "helpers" ) # ran
+golem::add_utils( "get_db" ) # ran
+golem::add_utils( "insert_db" ) # ran
 # 
 # # golem::add_fct( "scttr", module = "popExp") #ran
 # # golem::add_fct( "bxplt", module = "popExp") #ran
@@ -142,6 +143,33 @@ golem::add_js_file( "test2" )
 golem::add_css_file( "yeti" )
 golem::add_css_file( "styles" )
 
+
+
+rd_dir_files <- stringr::str_remove(list.files("./man/", pattern = "\\.Rd$"), ".Rd")
+Table <- dplyr::as_tibble(data.frame(group = "", fun = rd_dir_files, developer = "", complete = "")) %>%
+  filter(fun != "riskassessment-package") %>%
+  mutate(group = dplyr::case_when(
+    (stringr::str_detect(fun,"UI") | stringr::str_detect(fun,"Server")) & 
+      (stringr::str_detect(tolower(fun),"metric") |
+         stringr::str_detect(tolower(fun),"comment"))~ "metric modules",
+    stringr::str_detect(fun,"UI") | stringr::str_detect(fun,"Server") ~ "other modules",
+    fun %in% c("pipe", "getTimeStamp", "get_date_span", "auto_font", "get_latest_pkg_info",
+               "build_comm_cards", "build_comm_plotly", "showHelperMessage", "showComments") ~ "util helpers",
+    stringr::str_detect(fun,"get_") | fun %in% c("dbSelect", "weight_risk_comment") ~ "get db",
+    stringr::str_detect(fun,"insert_") | stringr::str_detect(tolower(fun),"update") |
+                                                               fun == "upload_package_to_db"  ~ "insert db",
+    stringr::str_detect(fun,"create_") |
+    fun %in% c("add_tags", "app_theme", "initialize_raa") ~ "startup",
+    fun ==  "run_app" ~ "app",
+    TRUE ~ group
+  )) %>%
+  arrange(group, fun)
+
+# View(Table)
+
+knitr::kable(Table)
+
+
 ###################################################################
 # ac golem: Aaron stopped here and pushed code to team on 6/3/2020
 ###################################################################
@@ -153,14 +181,16 @@ usethis::use_data_raw( name = "adsl", open = FALSE ) # not run.
 ## Tests ---- not run
 ## Add one line by test you want to create
 usethis::use_test( "app" )
+usethis::use_test( "auto_font" )
+usethis::use_test( "generate_comm_data" )
 
 # Documentation
-## Vignette ---- notrun
-usethis::use_vignette("riskmetric")
+## Vignettes 
+usethis::use_vignette("getting_started")
 
 
 # Before submitting a PR, run this code & update NEWS.md
-usethis::use_version("patch") #choices: "dev", "patch", "minor", "major"
+usethis::use_version("dev") #choices: "dev", "patch", "minor", "major"
 
 # Build pkg, including vignettes. Do this before updating documentation.
 devtools::build() # calls pkgbuld::build()     # X.X MB

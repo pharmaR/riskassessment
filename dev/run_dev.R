@@ -10,11 +10,9 @@ golem::detach_all_attached()
 # Document and reload your package, which runs these three functions...
 golem::document_and_reload()
 
-# Run the application 
-run_app()
+# Run the application  
+run_app(pre_auth_user = TRUE)
 
 # # turn off any options
 # options(shiny.autoload.r=NULL)
-
-
 

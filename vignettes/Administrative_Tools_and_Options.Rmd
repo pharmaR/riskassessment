@@ -1,0 +1,445 @@
+---
+title: "Administrative Tools and Options"
+output: 
+  rmarkdown::html_vignette:
+    toc: false
+vignette: >
+  %\VignetteIndexEntry{Administrative Tools and Options}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+# Load packages.
+library(fontawesome)
+
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+</br></br></br>
+
+# Introduction
+
+This guide is to assist `ADMIN` users to manage credentials (aka, user IDs and passwords) and other `ADMIN`-only privileges, such as assessment re-weighting on metrics leveraged by `riskassessment` app. 
+
+
+It's no secret that only users with administrator privileges have access to certain features of the application. To verify if you have `ADMIN` access, first check that you can see all THE navigation tabs within the app, especially the rightmost "Administrative Tools" tab. If you do not see this tab, you have not been granted access! To gain access, you'll have to request access from a known `ADMIN` user within your organization.
+
+<br>
+
+<center>
+![](images/top_left_tabs.png){style="margin: 10px 0 10px 0"}
+</center>
+
+![](images/admin_mode_button.png){style="float:right; width:60px; margin-left: 20px;"}
+
+<br>
+
+You can also hover your cursor over the `r fa("plus")` symbol in the bottom-right corner of the page. Upon hovering, two additional buttons should appear. The middle one is the log out `r fa("right-from-bracket")` button,  while the Administrator mode `r fa("gears")` button will appear on top, as shown.  This button will not appear from non-`ADMIN` users.
+
+
+<br>
+
+
+Once you have selected the `Administrative Tools` tab, there are currently two areas available for review: the first is `Credential Manager` and the second is `Assessment Reweighting`, as seen below.
+
+<br>
+
+<center>
+![](images/admin_tools_tabs.png)
+</center>
+
+</br>
+
+<br>
+
+# Credential Manager
+
+The Credential Manager tab is shown by default which contains two tables: 
+
+* The first one, indicated by the `r fa("users")` Users icon, is used to manage users.
+
+* The the second one, indicated by the `r fa("key")` key icon, is used to manage passwords.
+
+There is also a button at the bottom to download a copy of the current sqlite database.
+
+<br>
+
+![](images/admin_mode_tables1.png){style="position:center; width:790px"}
+<br>
+
+![](images/admin_mode_tables2.png){style="position:center; width:790px"}
+
+<br>
+
+## Managing Users
+
+The first table provides tools for managing of users: adding, editing, and deleting.
+
+<br>
+
+### Add a User
+
+![](images/add_a_user_btn.png){style="align:left; width:142px"}
+
+
+<br>
+
+
+To add a new user, click the dark blue button labelled: "Add a user".
+ 
+
+<br>
+
+![](images/add_user.png){style="float:right; width:411px; margin-left: 20px;"}
+</br></br>
+
+A prompt will appear where you can specify a user name, as well as **optional** start & expire date for that new member. By default set to today's date (more on that later). 
+
+</br></br></br>
+
+Here, we'll type "PeterParker" into the User Name field.
+
+</br></br></br></br></br></br></br></br>
+
+Notice the checkbox to grant the new user administrator privileges is also checked by default. A unique password is generated which the user will be prompted to change the first time he/she logs on, as long as the "Ask to change password" box remains checked. 
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+Upon clicking "Confirm New User", a confirmation modal will appear. Now would be a good time to notify the user by sending them their userid and temporary password.
+
+
+<br>
+
+<center>
+![](images/new_user_modal.png){style="width:410px"}
+</center>
+
+<br>
+
+### User `start` and `expire` dates
+
+
+<br>
+
+![](images/account_expired_msg.png){style="float:right; width:312px; margin-left: 20px;"}
+
+If either the **start** date is set to a future date or the **expire** date is set to **before** today's date, an "account expired" message will appear, and the log-on attempt will fail.  
+
+</br>
+
+Feel free to set either or both of these dates as needed, or just leave them blank to ignore/avoid time-based access for a particular user.
+
+</br>
+
+<br>
+
+### Edit a user
+
+<br>
+
+![](images/users_table.png){style="position:center; width:780px"}
+
+<br>
+
+Edit user information by clicking on the dark blue `r fa(name = "pen-to-square", fill = "darkblue", height = "1em")` <a style="color:darkblue">Edit</a> button, found on the right-hand side of the table.</br></br>
+
+
+An Edit User window will appear:
+
+<br>
+
+<center>
+![](images/edit_user_popup.png){style="position:center; width:416px"}
+</center>
+
+<br>
+
+Make your changes, and then click on "Confirm Change".</br>
+
+<br>
+
+<center>
+![](images/user_updated_modal.png){style="position:center; width:343px"}
+</center>
+
+<br>
+
+A small modal dialog box will appear (briefly) indicating the user has been successfully updated.
+
+
+<br>
+
+
+### More Edit options
+
+At the bottom of this table is a bar with three buttons:
+
+<br>
+
+<center>
+![](images/edit_remove_select_users.png){style="position:left; width:456px"}
+</center>
+
+<br>
+
+
+The first one is a checkbox `r fa(name = "square-check", fill = "red", height = "1em")`
+to select multiple users followed by an `r fa(name = "pen-to-square", fill = "darkblue", height = "1em")` "Edit Selected Users" and a `r fa(name = "trash-can", fill = "red", height = "1em")` "Remove Selected Users" button. These buttons are enabled when you select **two or more** users.
+
+<br>
+
+<center>
+![](images/edit_select_users.png){style="float:left; width:406px; margin-right: 20px;"}
+</center>
+
+Note the "Edit Selected Users" button only allows you to modify the `start` and `expire` dates for that selected group of users.
+
+<br>
+
+After you've made your changes, click "Confirm Change".
+
+<br>
+
+<br>
+
+<br>
+
+Again, a small modal dialog box will briefly appear indicating the users have been updated.
+
+<br>
+
+<center>
+![](images/user_updated_modal.png){style="width:257px"}
+</center>
+
+<br>
+
+### Delete a user
+
+<br>
+
+![](images/users_table.png){style="position:center; width:780px"}
+
+<br>
+
+</br>Delete any user by clicking on the red `r fa(name = "trash-can", fill = "red", height = "1em")` 
+<a style="color:red">Remove</a> button on the right-hand side of the table. You will see a confirmatory modal dialog box.  Click on "Delete User(s)."
+
+<br>
+
+<center>
+![](images/delete_user_modal.png){style="position:center; width:410px"}
+</center>
+
+<br>
+
+You can also delete multiple users like you did with editing multiple users. Just click on the `r fa(name = "trash-can", fill = "red", height = "1em")` "Remove Selected Users" button at the bottom of the table.
+
+<br>
+
+<center>
+![](images/edit_remove_select_users.png){style="position:left; width:456px"}
+</center>
+
+<br>
+
+The same confirmatory modal dialog box will appear.  Click on "Delete User(s)."
+
+<br>
+
+<center>
+![](images/confirm_delete_users.png){style="position:center; width:410px"}
+</center>
+
+<br>
+
+
+### Replace initial `Admin` user
+
+![](images/create_new_admin.png){style="float:right; width:410px; margin-left: 20px;"} 
+
+
+As an administrator, it's recommended you replace the initial `ADMIN` user ID created the first time the app is launched. Note that there must always be **at least** one admin user, and **you cannot delete yourself!**  If you want to delete the initial `admin` user you will first need to create another user ID with administrative privileges, as described below.
+
+</br>
+
+Just as before, click the blue "Add a user" button and make sure to check the `Admin` box. The temporary password can be overridden by un-checking the "ask to change password" box and setting the password to whatever you want.
+
+</br>
+
+After completing the form, sign in using your new credentials and delete the original `ADMIN` user by clicking on the red `r fa(name = "trash-can", fill = "red", height = "1em")` <a style="color:red">Remove</a> button on that row of the table.
+
+</br></br></br></br></br></br></br></br></br>
+
+
+<br>
+
+## Managing Passwords
+
+The second table allows for password management.
+
+<br>
+
+![](images/password_table.png){style="position:center; width:780px"} 
+
+<br>
+
+Click on the dark blue `r fa(name = "key", fill = "darkblue", height = "1em")`<a style="color:darkblue">*Change password*</a> button to force the corresponding user to change his/her password on the next log-in.
+
+A confirmatory modal dialog box will appear, like this:
+
+<br>
+
+<center>
+![](images/confirm_change_password.png){style="position:center; width:416px"} 
+</center>
+
+<br>
+
+If you click on the orange `r fa(name = "arrow-rotate-left", fill = "orange", height = "1em")` <a style="color:orange">*Reset password*</a> button to generate a temporary password. 
+
+Again, a confirmatory modal dialog box will appear, like this:
+
+<br>
+
+<center>
+![](images/confirm_reset_password.png){style="position:center; width:416px"}
+</center>
+
+</br>
+
+Click on "Confirm" and you will see another modal dialog box with the new temporary password in it.
+
+<br>
+
+<center>
+![](images/password_reset.png){style="position:center; width:415px"}
+</center>
+
+<br>
+
+You are responsible for delivering the new temporary password to the user.
+
+</br>As on the bottom of the User table, There is also a checkbox `r fa(name = "square-check", fill = "red", height = "1em")` to select multiple users followed by</br> a "Force Selected Users to Change Password" button. This button is enabled when you select two or more users.
+
+<br>
+
+<center>
+![](images/force_change_password.png){style="position:center; width=395px"}
+</center>
+
+<br>
+
+### Additional columns in Passwords table
+
+- Must change column: Indicates whether the user has to change his/her password
+next log-in.
+- Have changed column: Indicates the user has already changed his/her password.
+- Date Last changed column: Indicates the date the password was updated.
+
+
+<br>
+
+
+# Assessment Reweighting
+
+Head over to the other tab available to `ADMIN` users called `Assessment Reweighting`. Here is a high level view:
+
+![](images/assessment_reweighting_tab.png){style="position:center; width:800px"}
+
+</br></br>There are three buttons on this page: "Update Weight" on the top right, "Download" on the middle left, and "Re-Calculate" on the bottom left. 
+
+<br>
+
+## Download Database
+
+First, the simplest: the "Download Database" button.
+
+<br>
+
+<center>
+![](images/download_db_btn.png){style="position:center; width:392px"}
+</center>
+
+<br>
+
+When clicked, this button will download a copy of the current database (by default, called "database.sqlite"). The app developers recommend doing this anytime you plan to make integral changes to the database (like changing metric weights), before anything else.
+
+<br>
+
+## Updating Weights
+
+As the name suggests, this modules allows to us view existing and change metric weights used to calculate a risk score using `riskmemtric`.
+
+<br>
+
+<center>
+![](images/set_update_weights.png){style="position:center; width:812px"}
+</center>
+
+<br>
+
+</br>Here you can either select a metric from the "Select metric" dropdown box or select a row </br>in the "CURRENT RISK SCORE WEIGHTS BY METRIC" table.
+
+Once the metric is selected, enter a new (numeric) weight in the "Choose new weight" box and select the <a style="color:red">"Update Weight"</a> button. You'll notice the row with the change will appear highlighted, showing you the old weight value and the new weight value:
+
+<br>
+
+<center>
+![](images/weight_updated.png){style="position:center; width:540px"}
+</center>
+
+<br>
+
+After you have updated **at least one** metric weight, the "Re-Calculate" button is enabled, allowing you to apply new weights and re-calculated the risk for each package.</br>
+
+After you've made all final re-weighting changes, you can click the "Re-calculate" button pictured here. Note that these weight changes will take effect on all packages in the database, updating the risk score for each.
+
+<br>
+
+<center>
+![](images/apply_new_weights.png){style="position:center; width:481px"}
+</center>
+
+<br>
+
+</br></br>Once you click on "Re-Calculate" you will get a confirmation modal, reminding you that "updating the risk metrics cannot be reverted", and strongly recommending you download a copy of the current database first before clicking on "Submit". The modal also details all the actions that will take effect in the app if you submit these changes.
+
+<br>
+
+<center>
+![](images/confirm_update_weights.png){style="position:center; width:654px"}
+</center>
+
+<br>
+
+Once you click on "Submit" a modal dialog box will appear indicating
+that it is applying weights and updating risk scores to each package you have uploaded. This will be followed by a brief "updates completed" message.
+
+<br>
+
+<center>
+![](images/reweighting_modal.png){style="position:center; width:373px"}
+</center>
+
+<br>
+
+Now go to the database overview tab to confirm that the risk scores have been updated. You can also view the new weights, including the standardized weight on the `Assessment Criteria` tab.
+
+ 
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+
