@@ -268,13 +268,6 @@ add_shinymanager_auth <- function(app_ui, app_ver, login_note) {
   add_tags(shinymanager::secure_app(app_ui,
     tags_top = tags$div(
       tags$head(tags$style(HTML(readLines(system.file("app", "www", "css", "login_screen.css", package = "riskassessment"))))),
-      tags$head(if (!get_golem_config("app_prod") && !is.null(golem::get_golem_options("pre_auth_user"))) {
-        tags$script(HTML(glue::glue("$(document).on('shiny:connected', function () {{
-          Shiny.setInputValue('auth-user_id', '{golem::get_golem_options('login_creds')$user_id}');
-          Shiny.setInputValue('auth-user_pwd', '{golem::get_golem_options('login_creds')$user_pwd}');
-          $('#auth-go_auth').trigger('click');
-        }});")))
-      }),
       id = "login_screen",
       tags$h2("Risk Assessment Application", style = "align:center"),
       tags$h3(glue::glue("**Version {app_ver}**"),
