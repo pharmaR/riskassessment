@@ -166,7 +166,7 @@ Make your changes, and then click on "Confirm Change".</br>
 <br>
 
 <center>
-![](images/user_updated_modal.png){style="position:center; width:343px"}
+![](images/user_succ_updated_modal.png){style="position:center; width:343px"}
 </center>
 
 <br>
