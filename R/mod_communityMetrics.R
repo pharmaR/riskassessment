@@ -68,7 +68,7 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
     })
     
     # IntroJS.
-    introJSServer(id = "introJS", text = cum_text())
+    introJSServer(id = "introJS", text = cum_text)
 
     # Community cards (saved to share with report preview): the 
     # time since first release, the time since latest release, 

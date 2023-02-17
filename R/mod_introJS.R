@@ -33,14 +33,20 @@ introJSUI <- function(id) {
 introJSServer <- function(id, text) {
   moduleServer(id, function(input, output, session) {
     
+    steps <- reactive(union(text(), sidebar_steps))
+    
+    exportTestValues(
+      steps = {
+        steps()
+      }
+    )
+    
     # Start introjs when help button is pressed.
     observeEvent(
       input$help,
       rintrojs::introjs(session,
               options = list(
-                steps = 
-                  text %>%
-                  union(sidebar_steps),
+                steps = steps(),
                 "nextLabel" = "Next",
                 "prevLabel" = "Previous"
               )

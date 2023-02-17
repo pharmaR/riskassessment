@@ -54,7 +54,7 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user) {
     })
     
     # IntroJS.
-    introJSServer(id = "introJS", text = mm_text())
+    introJSServer(id = "introJS", text = mm_text)
 
     # Call module that creates section to add comments.
     comment_added <- addCommentServer(id = "add_comment",

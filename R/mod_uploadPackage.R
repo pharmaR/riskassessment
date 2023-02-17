@@ -121,19 +121,8 @@ uploadPackageServer <- function(id, user) {
     
     # Start introjs when help button is pressed. Had to do this outside of
     # a module in order to take a reactive data frame of steps
-    observeEvent(
-      input[["introJS-help"]], # notice input contains "id-help"
-      rintrojs::introjs(session,
-                        options = list(
-                          steps = 
-                            upload_pkg_txt() %>%
-                            union(sidebar_steps),
-                          "nextLabel" = "Next",
-                          "prevLabel" = "Previous"
-                        )
-      ),
-    )
-    
+    introJSServer("introJS", text = upload_pkg_txt)
+
     uploaded_pkgs00 <- reactiveVal()
 
     observeEvent(user$role, {

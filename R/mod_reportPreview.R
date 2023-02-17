@@ -44,7 +44,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     })
     
     # IntroJS.
-    introJSServer(id = "introJS", text = rp_text())
+    introJSServer(id = "introJS", text = rp_text)
 
     # Render Output UI for Report Preview.
     output$reportPreview_ui <- renderUI({
