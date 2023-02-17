@@ -98,14 +98,20 @@ package &amp; all of it’s dependencies following the <a href="../index.html#in
 <p><br></p>
 </div>
 <div class="section level2">
-<h2 id="create-app-r">Create app.R<a class="anchor" aria-label="anchor" href="#create-app-r"></a>
+<h2 id="run-deploy-app-r">Run / Deploy <code>app.R</code><a class="anchor" aria-label="anchor" href="#run-deploy-app-r"></a>
 </h2>
 <p>If your application is already deployed, you can skip this step!
 After you have <a href="../index.html#installation">installed</a> the
-<code>riskassessment</code> package, you are now able to create the
-standard shiny <code>app.R</code> file, open it and insert:</p>
+<code>riskassessment</code> package, you are now able to run the app
+locally using the <a href="https://github.com/pharmaR/riskassessment/blob/master/app.R" class="external-link">provided</a>
+<code>app.R</code> file. If applicable, you can specify application
+options in this file, using either <code><a href="https://rdrr.io/r/base/options.html" class="external-link">options()</a></code> or arguments
+of the <code><a href="../reference/run_app.html">run_app()</a></code> function (run
+<code><a href="../reference/run_app.html">?riskassessment::run_app</a></code> to learn more). However, for the
+purposes of this guide, we’ll run the function as-is, accepting all
+defaults:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># for app.R</span>
+<code class="sourceCode R"><span class="co"># launch the application</span>
 <span class="fu">riskassessment</span><span class="fu">::</span><span class="fu"><a href="../reference/run_app.html">run_app</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p>Running this code will launch the application and if it doesn’t
 already exist, it will create an initial database for
@@ -122,13 +128,16 @@ recall, the application acts as a central hub for an organization to
 review and assess the risk of R packages, thus establishing users with
 specific roles is vital. To start, the application needs an
 <code>ADMIN</code> user.</p>
+<p><br></p>
 <center>
 <img src="images/initial_login.png" style="margin: 10px 0 10px 0">
 </center>
+<p><br></p>
 <p>This <code>ADMIN</code> user will be asked to change their password
 immediately. After supplying a new secure password, click “UPDATE NEW
 PASSWORD”. When the password was successfully updated, you’ll be
 prompted to “LOGIN” again with your new credentials.</p>
+<p><br></p>
 <center>
 <img src="images/change_pwd2.png" style="margin: 10px 0 10px 0">
 </center>
@@ -152,7 +161,8 @@ worry about all these first-time log in procedures!</p>
 <div class="section level2">
 <h2 id="welcome-to-the-app">Welcome to the app!<a class="anchor" aria-label="anchor" href="#welcome-to-the-app"></a>
 </h2>
-<p>Upon successful log in, you’ll notice many tabs and panels. <img src="images/welcome_landing.png" style="margin: 10px 0 10px 0"></p>
+<p>Upon successful log in, you’ll notice many tabs and panels. <br></p>
+<p><img src="images/welcome_landing.png" style="margin: 10px 0 10px 0"></p>
 <p><br></p>
 <div class="section level3">
 <h3 id="self-guided-tours">Self-guided tours<a class="anchor" aria-label="anchor" href="#self-guided-tours"></a>
@@ -294,9 +304,11 @@ evaluation.</p>
 </h3>
 <p>Here is a first look at the Community Usage Metrics for the “glue”
 package:</p>
+<p><br></p>
 <center>
 <img src="images/community_usage1.png" style="margin: 10px 0 10px 0">
 </center>
+<p><br></p>
 <p>Each metric on this tab measures something related to the package’s
 usage by the community. The user community plays an important role in
 open source software development. In other words, the more exposure a
@@ -327,14 +339,17 @@ the <code>glue</code> package. This tab contains all the information
 viewed on the previous tabs, plus vital metadata about the app to
 include in the downloaded report. Note that the report can be downloaded
 as either a .html, .docx, or .pdf file.</p>
+<p><br></p>
 <center>
 <img src="images/report_preview.png" style="margin: 10px 0 10px 0">
 </center>
+<p><br></p>
 <p>Below is a quick view of the metadata referenced above. It’s vital to
 understand the context in which the report &amp; score was calculated.
 Users are encouraged to send these information rich reports to whom they
 so choose, especially if they are not savvy with the
 <code>riskassessment</code> app… yet.</p>
+<p><br></p>
 <center>
 <img src="images/report_preview2.png" style="margin: 10px 0 10px 0">
 </center>
@@ -352,9 +367,11 @@ decision. So what are you waiting for! Let’s do it!</p>
 start off with an “Overall Comment”. Write a few words about what you’ve
 learned during your evaluation We recommend being brief and succinct
 here.</p>
+<p><br></p>
 <center>
 <img src="images/overall_comment.png" style="margin: 10px 0 10px 0">
 </center>
+<p><br></p>
 <p>After clicking submit, you’ll receive a prompt that just confirms
 what you wrote. Click dismiss and now turn your attention to the
 decision slider, with options “Low”, “Medium”, and “High”. Consider how
@@ -362,23 +379,29 @@ your organization may treat each category? For example, “Low” might mean
 it’s permitted for use in regulatory environments, “Medium” may mean the
 package isn’t fully endorsed yet, so it needs to stay in a holding
 patter. “High” of course means rejection.</p>
+<p><br></p>
 <center>
 <img src="images/decision_slider.png" style="margin: 10px 0 10px 0">
 </center>
+<p><br></p>
 <p>For the purposes of this guide, we submitted a decision with
 selection “Low” and received the following dialogue box asking us to
 confirm our decision:</p>
+<p><br></p>
 <center>
 <img src="images/submit_decision.png" style="margin: 10px 0 10px 0">
 </center>
+<p><br></p>
 <p>After clicking ‘Submit’, you’ll notice the <code>STATUS</code> was
 updated to “REVIEWED” and the decision slider is now disabled &amp;
 grayed out. We are logged in as an <code>ADMIN</code> user, so the
 button now displays “RESET DECISION” but non-<code>ADMIN</code> users
 will not have that option.</p>
+<p><br></p>
 <center>
 <img src="images/reset_decision.png" style="margin: 10px 0 10px 0">
 </center>
+<p><br></p>
 <p>Congratulations! You’ve reviewed your first package! That was your
 goal, you accomplished it. Now keep going, what are you waiting for? At
 the time this guide was authored, there was 19,038 packages on CRAN and
@@ -390,9 +413,11 @@ your organization may want to use them!</p>
 </h2>
 <p>You may have noticed the navigation tabs at the top of the app
 contain the following four tabs.</p>
+<p><br></p>
 <center>
 <img src="images/top_left_tabs.png" style="margin: 10px 0 10px 0">
 </center>
+<p><br></p>
 <p>All that work was performed on the first tab:
 <code>Risk Assessment</code>. We’ll be painfully brief as we touch on
 what the other tabs do, but just know there are more in-depth guides
@@ -407,6 +432,7 @@ whether a decision has been made, the decision, and timestamp for the
 last comment provided. Reports (in either .html, .docx, or .pdf format)
 can be downloaded for any selected package(s). If multiple packages are
 selected, this This is really helpful</p>
+<p><br></p>
 <center>
 <img src="images/database_view.png" style="margin: 10px 0 10px 0">
 </center>
@@ -430,15 +456,19 @@ more information.</p>
 <div class="section level3">
 <h3 id="administrative-tools">Administrative Tools<a class="anchor" aria-label="anchor" href="#administrative-tools"></a>
 </h3>
+<p><br></p>
 <p>The fourth tab, <code>Administrative tools</code>, contains two
 sub-tabs: the <code>Credential Manager</code> and the
 <code>Assessment Reweighting</code>. The former allows
 <code>ADMIN</code> users to add or delete users as well as change
-passwords for themselves or other users. Further details on both tabs
-are provided in a “administrative tools”[insert link] guide.</p>
+passwords for themselves or others. Further details on both tabs are
+provided in a <a href="../articles/Administrative_Tools_and_Options.html">“Administrative
+Tools and Options” guide</a></p>
+<p><br></p>
 <center>
 <img src="images/admin_tools_creds.png" style="margin: 10px 0 10px 0">
 </center>
+<p><br></p>
 <p>The <code>Assessment Reweighting</code> tab is for <code>ADMIN</code>
 users to fine tune the package risk score generated by
 <code>riskmetric</code> by manipulating the value placed on each of the
