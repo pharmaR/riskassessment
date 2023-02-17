@@ -40,11 +40,17 @@ Running this code will launch the application and if it doesn't already exist, i
 
 The first page you'll see is an authentication screen with a default note on the bottom: </br><b> NOTE: TO LOG IN FOR THE FIRST TIME, USE THE ADMIN USER: <u>ADMIN</u> WITH PASSWORD <u>QWERTY1</u>.</b> If you recall, the application acts as a central hub for an organization to review and assess the risk of R packages, thus establishing users with specific roles is vital. To start, the application needs an `ADMIN` user.
 
+<br>
+
 <center>
 ![](images/initial_login.png){style="margin: 10px 0 10px 0"}
 </center>
 
+<br>
+
 This `ADMIN` user will be asked to change their password immediately. After supplying a new secure password, click "UPDATE NEW PASSWORD". When the password was successfully updated, you'll be prompted to "LOGIN" again with your new credentials.
+
+<br>
 
 <center>
 ![](images/change_pwd2.png){style="margin: 10px 0 10px 0"}
@@ -65,6 +71,8 @@ The designated `ADMIN` user(s) will have special privileges and duties in the ap
 ## Welcome to the app!
 
 Upon successful log in, you'll notice many tabs and panels. 
+<br>
+
 ![](images/welcome_landing.png){style="margin: 10px 0 10px 0"}
 
 <br>
@@ -161,9 +169,13 @@ Note that you can add or replace comments to the Maintenance Metrics for this pa
 ### Community Usage Metrics
 Here is a first look at the Community Usage Metrics for the "glue" package:
 
+<br>
+
 <center>
 ![](images/community_usage1.png){style="margin: 10px 0 10px 0"}
 </center>
+
+<br>
 
 Each metric on this tab measures something related to the package's usage by the community. The user community plays an important role in open source software development. In other words, the more exposure a package has had to the community, the more ad-hoc testing it has been exposed to. Over time the "better packages" tend to rise to the top, leading to more downloads and increased exposure. Note that `riskmetric` only considers the metric called `Number of download in the last year` for its risk score calculation. All the other data presented on this tab are accessories to help the user further explore the idea of community usage.
 
@@ -183,11 +195,17 @@ Again, you can add or replace comments to the Community Usage metrics for this p
 
 Below is the top portion of the `Report Preview` tab for the `glue` package. This tab contains all the information viewed on the previous tabs, plus vital metadata about the app to include in the downloaded report. Note that the report can be downloaded as either a .html, .docx, or .pdf file.
 
+<br>
+
 <center>
 ![](images/report_preview.png){style="margin: 10px 0 10px 0"}
 </center>
 
+<br>
+
 Below is a quick view of the metadata referenced above. It's vital to understand the context in which the report & score was calculated. Users are encouraged to send these information rich reports to whom they so choose, especially if they are not savvy with the `riskassessment` app... yet.
+
+<br>
 
 <center>
 ![](images/report_preview2.png){style="margin: 10px 0 10px 0"}
@@ -202,27 +220,43 @@ So, you've uploaded a package, reviewed all it's metrics, the package score, dou
 
 Head over to the `Package Control Panel`. First we'll start off with an "Overall Comment". Write a few words about what you've learned during your evaluation We recommend being brief and succinct here.
 
+<br>
+
 <center>
 ![](images/overall_comment.png){style="margin: 10px 0 10px 0"}
 </center>
 
+<br>
+
 After clicking submit, you'll receive a prompt that just confirms what you wrote. Click dismiss and now turn your attention to the decision slider, with options "Low", "Medium", and "High". Consider how your organization may treat each category? For example, "Low" might mean it's permitted for use in regulatory environments, "Medium" may mean the package isn't fully endorsed yet, so it needs to stay in a holding patter. "High" of course means rejection.
+
+<br>
 
 <center>
 ![](images/decision_slider.png){style="margin: 10px 0 10px 0"}
 </center>
 
+<br>
+
 For the purposes of this guide, we submitted a decision with selection "Low" and received the following dialogue box asking us to confirm our decision:
+
+<br>
 
 <center>
 ![](images/submit_decision.png){style="margin: 10px 0 10px 0"}
 </center>
 
+<br>
+
 After clicking 'Submit', you'll notice the `STATUS` was updated to "REVIEWED" and the decision slider is now disabled & grayed out. We are logged in as an `ADMIN` user, so the button now displays "RESET DECISION" but non-`ADMIN` users will not have that option.
+
+<br>
 
 <center>
 ![](images/reset_decision.png){style="margin: 10px 0 10px 0"}
 </center>
+
+<br>
 
 Congratulations! You've reviewed your first package! That was your goal, you accomplished it. Now keep going, what are you waiting for? At the time this guide was authored, there was 19,038 packages on CRAN and your organization may want to use them!
 
@@ -233,9 +267,13 @@ Congratulations! You've reviewed your first package! That was your goal, you acc
 
 You may have noticed the navigation tabs at the top of the app contain the following four tabs.
 
+<br>
+
 <center>
 ![](images/top_left_tabs.png){style="margin: 10px 0 10px 0"}
 </center>
+
+<br>
 
 All that work was performed on the first tab: `Risk Assessment`. We'll be painfully brief as we touch on what the other tabs do, but just know there are more in-depth guides that exist for each.
 
@@ -245,6 +283,8 @@ All that work was performed on the first tab: `Risk Assessment`. We'll be painfu
 ### Database
 
 The second tab, `Database` shows, for each package loaded, the package name and version, it’s `riskmetric` score, whether a decision has been made, the decision, and timestamp for the last comment provided. Reports (in either .html, .docx, or .pdf format) can be downloaded for any selected package(s). If multiple packages are selected, this  This is really helpful 
+
+<br>
 
 <center>
 ![](images/database_view.png){style="margin: 10px 0 10px 0"}
@@ -266,11 +306,17 @@ The third tab, `Assessment Criteria` provides a detailed description of the asse
 
 ### Administrative Tools
 
-The fourth tab, `Administrative tools`, contains two sub-tabs: the `Credential Manager` and the `Assessment Reweighting`. The former allows `ADMIN` users to add or delete users as well as change passwords for themselves or other users. Further details on both tabs are provided in a “administrative tools”[insert link] guide.
+<br>
+
+The fourth tab, `Administrative tools`, contains two sub-tabs: the `Credential Manager` and the `Assessment Reweighting`. The former allows `ADMIN` users to add or delete users as well as change passwords for themselves or others. Further details on both tabs are provided in a ["Administrative Tools and Options" guide](../articles/Administrative_Tools_and_Options.html)
+
+<br>
 
 <center>
 ![](images/admin_tools_creds.png){style="margin: 10px 0 10px 0"}
 </center>
+
+<br>
 
 The `Assessment Reweighting` tab is for `ADMIN` users to fine tune the package risk score generated by `riskmetric` by manipulating the value placed on each of the metrics assessed in the app. Changes made here apply to all packages in the database, plus all packages uploaded in the future. Further details on both tabs are provided in a “administrative tools”[insert link] guide.
 
