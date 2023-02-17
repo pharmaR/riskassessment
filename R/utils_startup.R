@@ -185,6 +185,9 @@ initialize_raa <- function(assess_db, cred_db) {
   fa_v <- packageVersion("fontawesome")
   if(fa_v == '0.3.0') warning(glue::glue("HTML reports will not render with {fontawesome} v0.4.0. You currently have v{fa_v} installed. If the report download failed, please install a stable version. We recommend v0.5.0 or higher."))
   
+  # TODO: Erase when pushing to master
+  if (!get_golem_config("app_prod") && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(credentials_db)) create_credentials_dev_db(credentials_db)
+  
   # Create package db & credentials db if it doesn't exist yet.
   if(!file.exists(assessment_db)) create_db(assessment_db)
   if(!file.exists(credentials_db)) create_credentials_db(credentials_db)
