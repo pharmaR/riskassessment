@@ -9,8 +9,6 @@
 #'   Please make sure name ends with '.sqlite'. For example: 'cred_db.sqlite'.
 #' @param assessment_db_name text string that names the credentials databse.
 #'   Please make sure name ends with '.sqlite'. For example: 'assess_db.sqlite'.
-#' @param pre_auth_user if `TRUE` or 'admin', run as admin, if 'nonadmin' run as
-#'   non-admin
 #' @param ... arguments to pass to golem_opts. See `?golem::get_golem_options`
 #'   for more details.
 #' @inheritParams shiny::shinyApp
@@ -28,7 +26,6 @@ run_app <- function(
   login_note = NULL,
   credentials_db_name = NULL,
   assessment_db_name = NULL,
-  pre_auth_user = NULL, # TODO: Erase when pushing to master
   ...
 ) {
   # Pre-process some run-app inputs
@@ -47,10 +44,14 @@ run_app <- function(
     }
   }
   
-  # TODO: Erase when pushing to master
   # Note that this overrides other credential set up
   login_creds <- NULL
-  if (!is.null(pre_auth_user)) {
+  pre_auth_user <- NULL
+  if (!get_golem_config("app_prod")) {
+    arg_lst <- as.list(match.call())
+  
+  if (!is.null(arg_lst$pre_auth_user)) {
+    pre_auth_user <- arg_lst$pre_auth_user
     if (isTRUE(pre_auth_user) || pre_auth_user == "admin") {
       credentials_db_name <- "credentials_dev.sqlite"
       login_creds <- list(user_id = "admin",
@@ -60,6 +61,7 @@ run_app <- function(
       login_creds <- list(user_id = "nonadmin",
                           user_pwd = "Bt0dHK383lLP1NM")
     }
+  }
   }
   
   # Run the app
@@ -75,8 +77,8 @@ run_app <- function(
     golem_opts = list(app_version = app_ver,
                       credentials_db_name = credentials_db_name,
                       assessment_db_name = assessment_db_name,
-                      pre_auth_user = pre_auth_user, # TODO: Erase when pushing to master
-                      login_creds = login_creds, # TODO: Erase when pushing to master
+                      pre_auth_user = pre_auth_user,
+                      login_creds = login_creds,
                       ...)
   )
 }
