@@ -94,7 +94,7 @@ uploadPackageServer <- function(id, user) {
     observeEvent(input$load_cran, {
       if (!isTruthy(cran_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
-          cran_pkgs(c("dplyr", "tidyr", "readr", "purrr", "tibble", "stringr", "forcats"))
+          cran_pkgs(test_pkg_lst)
         } else {
           cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
         }
@@ -238,7 +238,11 @@ uploadPackageServer <- function(id, user) {
       np <- nrow(uploaded_packages)
       
       if (!isTruthy(cran_pkgs())) {
-        cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+        if (isTRUE(getOption("shiny.testmode"))) {
+          cran_pkgs(test_pkg_lst)
+        } else {
+          cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+        }
       }
       
       # Start progress bar. Need to establish a maximum increment
@@ -256,9 +260,12 @@ uploadPackageServer <- function(id, user) {
             
             if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
               # run pkg_ref() to get pkg version and source info
-              ref <- riskmetric::pkg_ref(uploaded_packages$package[i],
-                                         source = "pkg_cran_remote",
-                                         repos = c("https://cran.rstudio.com"))
+              if (!isTRUE(getOption("shiny.testmode")))
+                ref <- riskmetric::pkg_ref(uploaded_packages$package[i],
+                                           source = "pkg_cran_remote",
+                                           repos = c("https://cran.rstudio.com"))
+              else
+                ref <- test_pkg_refs[[uploaded_packages$package[i]]]
             } else {
               ref <- list(name = uploaded_packages$package[i],
                           source = "name_bad")
