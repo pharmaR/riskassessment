@@ -40,7 +40,7 @@ run_app <- function(
       login_note <- HTML('<em>Note:</em> To log in for the first time, use the admin user:
                           <u>admin</u> with password <u>QWERTY1</u>.')
     } else if(fa_v == '0.4.0') {
-      login_note <- HTML(glue::glue("<em>Note:</em> HTML reports will not render with {fontawesome} v0.4.0. You currently have v{fa_v} installed. If the report download fails, please install a more stable version. We recommend v.0.5.0 or higher."))
+      login_note <- HTML(glue::glue("<em>Note:</em> HTML reports will not render with {{fontawesome}} v0.4.0. You currently have v{fa_v} installed. If the report download fails, please install a more stable version. We recommend v.0.5.0 or higher."))
     }
   }
   
