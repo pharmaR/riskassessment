@@ -1,4 +1,5 @@
 # riskassessment (development version)
+* Remove {golem} testing option `pre_auth_user` from the arguments of `run_app()`
 
 # riskassessment 0.1.0
 
