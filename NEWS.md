@@ -1,4 +1,5 @@
 # riskassessment (development version)
+* Pre-load information for a select list of packages to improve tests utilizing `shinytest2`
 
 # riskassessment 0.1.0
 
