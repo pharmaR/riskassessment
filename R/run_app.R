@@ -47,7 +47,7 @@ run_app <- function(
   # Note that this overrides other credential set up
   login_creds <- NULL
   pre_auth_user <- NULL
-  if (!get_golem_config("app_prod")) {
+  if (isFALSE(getOption("golem.app.prod"))) {
     arg_lst <- as.list(match.call())
   
   if (!is.null(arg_lst$pre_auth_user)) {
