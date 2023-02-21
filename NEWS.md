@@ -1,5 +1,6 @@
 # riskassessment (development version)
 * Remove {golem} testing option `pre_auth_user` from the arguments of `run_app()`
+* Improve module testing for introJS to be more stable for testing and app development
 
 # riskassessment 0.1.0
 
