@@ -55,19 +55,26 @@ dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_
 insert_pkg_info_to_db <- function(pkg_name, 
                                   lib_loc,
                                   db_name = golem::get_golem_options('assessment_db_name')) {
-    
+  
+  # find package description  
   pkg_loc <- file.path(lib_loc, pkg_name)
   d <- desc::description$new(pkg_loc)
-  title <- d$get("Title")
-  ver <- d$get("Version")
-  desc <- d$get("Description")
-  main <- d$get("Maintainer")
-  auth <- d$get("Author")
-  lis <- d$get("License")
-  pub <- d$get("Packaged")
   
-  upload_package_to_db(pkg_name, ver, title, desc, auth, main, lis, pub, db_name)
+  # parse fields
+  desc_fields <- c(
+    "name" = "Package",
+    "version" = "Title",
+    "title" = "Version",
+    "description" = "Description",
+    "maintainers" = "Maintainer",
+    "authors" = "Author",
+    "license" = "License",
+    "published_on" = "Packaged"
+  )
+  desc_vals <- lapply(desc_fields, function(x) unname(d$get(x)))
   
+  # upload to DB
+  do.call(upload_package_to_db, c(desc_vals, list("db_name" = db_name)))
 }
 
 
@@ -91,13 +98,13 @@ upload_package_to_db <- function(name, version, title, description,
                                  authors, maintainers, license, published_on, db_name) {
   tryCatch(
     expr = {
-      dbUpdate(glue::glue(
+      dbUpdate(glue::glue_sql(
         "INSERT or REPLACE INTO package
         (name, version, title, description, maintainer, author,
         license, published_on, decision, date_added)
-        VALUES('{name}', '{version}', '{title}', '{description}',
-        '{maintainers}', '{authors}', '{license}', '{published_on}',
-        '', '{Sys.Date()}')"), db_name)
+        VALUES({name}, {version}, {title}, {description},
+        {maintainers}, {authors}, {license}, {published_on},
+        '', {Sys.Date()})", .con = DBI::dbConnect(RSQLite::SQLite())), db_name)
     },
     error = function(e) {
       loggit::loggit("ERROR", paste("Error in uploading the general info of the package", name, "info", e),
