@@ -57,7 +57,10 @@ insert_pkg_info_to_db <- function(pkg_name,
     expr = {
       # get latest high-level package info
       # pkg_name <- "dplyr" # testing
-      pkg_info <- get_latest_pkg_info(pkg_name)
+      if (!isTRUE(getOption("shiny.testmode")))
+        pkg_info <- get_latest_pkg_info(pkg_name)
+      else
+        pkg_info <- test_pkg_info[[pkg_name]]
       
       # store it in the database
       upload_package_to_db(pkg_name, pkg_info$Version, pkg_info$Title,
@@ -143,12 +146,16 @@ upload_package_to_db <- function(name, version, title, description,
 insert_riskmetric_to_db <- function(pkg_name, 
     db_name = golem::get_golem_options('assessment_db_name')){
 
-  riskmetric_assess <-
-    riskmetric::pkg_ref(pkg_name,
-                        source = "pkg_cran_remote",
-                        repos = c("https://cran.rstudio.com")) %>%
-    dplyr::as_tibble() %>%
-    riskmetric::pkg_assess()
+  if (!isTRUE(getOption("shiny.testmode")))
+    riskmetric_assess <-
+      riskmetric::pkg_ref(pkg_name,
+                          source = "pkg_cran_remote",
+                          repos = c("https://cran.rstudio.com")) %>%
+      dplyr::as_tibble() %>%
+      riskmetric::pkg_assess()
+  else
+    riskmetric_assess <-
+      test_pkg_assess[[pkg_name]]
   
   # Get the metrics weights to be used during pkg_score.
   metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric", db_name)
@@ -222,7 +229,10 @@ insert_riskmetric_to_db <- function(pkg_name,
 insert_community_metrics_to_db <- function(pkg_name, 
                                            db_name = golem::get_golem_options('assessment_db_name')) {
   
-  pkgs_cum_metrics <- generate_comm_data(pkg_name)
+  if (!isTRUE(getOption("shiny.testmode")))
+    pkgs_cum_metrics <- generate_comm_data(pkg_name)
+  else
+    pkgs_cum_metrics <- test_pkg_cum[[pkg_name]]
   
   if(nrow(pkgs_cum_metrics) != 0){
     for (i in 1:nrow(pkgs_cum_metrics)) {

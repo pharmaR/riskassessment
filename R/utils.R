@@ -64,8 +64,8 @@ get_latest_pkg_info <- function(pkg_name) {
     dplyr::filter(X1 %in% c("Version", "Maintainer", "Author", "License", "Published"))
   
   table_infy <- t(table_infx$X2) %>% dplyr::as_tibble(.name_repair = "minimal")
-  colnames(table_infy) <- t(table_infx$X1) %>% dplyr::as_tibble(.name_repair = "minimal") 
-  
+  colnames(table_infy) <- t(table_infx$X1) %>% as.vector()
+
   table_info <- table_infy %>% 
     dplyr::select(Version, Maintainer, Author, License, Published) %>%
     dplyr::mutate(Title = title, Description = description)
