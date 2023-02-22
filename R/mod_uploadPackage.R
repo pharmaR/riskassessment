@@ -260,8 +260,6 @@ uploadPackageServer <- function(id, user) {
                                          source = "pkg_cran_remote",
                                          repos = c("https://cran.rstudio.com"))
             } else {
-              ref <- list(name = uploaded_packages$package[i],
-                          source = "name_bad")
             }
             
             if (ref$source %in% c("pkg_missing", "name_bad")) {
@@ -285,18 +283,7 @@ uploadPackageServer <- function(id, user) {
               
               next
             }
-            
-            ref_ver <- as.character(ref$version)
-            
-            if(user_ver == ref_ver) ver_msg <- ref_ver
-            else ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
-            
-            as.character(ref$version)
-            deets <- glue::glue("{uploaded_packages$package[i]} {ver_msg}")
-            
-            # Save version.
-            incProgress(1, detail = deets)
-            uploaded_packages$version[i] <- as.character(ref$version)
+    
             
             found <- nrow(dbSelect(glue::glue(
               "SELECT name
@@ -304,17 +291,55 @@ uploadPackageServer <- function(id, user) {
               WHERE name = '{uploaded_packages$package[i]}'")))
             
             uploaded_packages$status[i] <- ifelse(found == 0, 'new', 'duplicate')
+            message(1)
 
             # Add package and metrics to the db if package is not in the db.
-            if(!found) {
-              # Get and upload pkg general info to db.
-              incProgress(1, detail = deets)
-              insert_pkg_info_to_db(uploaded_packages$package[i])
-              # Get and upload maintenance metrics to db.
-              incProgress(1, detail = deets)
-              insert_riskmetric_to_db(uploaded_packages$package[i])
+            if (!found) {
+              incProgress(1)
+
+              # step 1: install package to temporary library. if a package
+              #         version was not provided (either typed in or omitted in
+              #         CSV),  the latest version from CRAN will be used
+              tmp_lib_loc <- get_assessment_lib_path()
+              message(2)
+
+              # TODO: need to handle all cases where version is not provided
+              if (uploaded_packages$version[i] == "0.0.0") {
+                uploaded_packages$version[i] <- NA
+              }
+              
+              message(3)
+
+              install_to_tmp_lib(
+                pkg_name = uploaded_packages$package[i], 
+                pkg_version = uploaded_packages$version[i], 
+                lib_loc = tmp_lib_loc
+              )
+              
+              message(4)
+
+              # step 2: use installed package to populate basic info from the
+              #         DESCRIPTION file
+              insert_pkg_info_to_db(
+                pkg_name = uploaded_packages$package[i],
+                lib_loc = tmp_lib_loc
+              )
+              
+              message(5)
+              
+              # step 3: use installed package to create pkg_ref, run pkg_assess,
+              #         and upload results to DB
+              incProgress(1)
+              insert_riskmetric_to_db(
+                pkg_name = uploaded_packages$package[i],
+                lib_loc = tmp_lib_loc
+              )
+              
+              
+              message(6)
+              
               # Get and upload community metrics to db.
-              incProgress(1, detail = deets)
+              incProgress(1)
               insert_community_metrics_to_db(uploaded_packages$package[i])
               uploaded_packages$score[i] <- get_pkg_info(uploaded_packages$package[i])$score
               if (!rlang::is_empty(auto_list())) {

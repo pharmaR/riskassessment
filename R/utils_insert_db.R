@@ -48,46 +48,26 @@ dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_
 #' @param db_name character name (and file path) of the database
 #' 
 #' @importFrom loggit loggit
+#' @importFrom desc description
 #' 
 #' @returns nothing
 #' @noRd
 insert_pkg_info_to_db <- function(pkg_name, 
+                                  lib_loc,
                                   db_name = golem::get_golem_options('assessment_db_name')) {
-  tryCatch(
-    expr = {
-      # get latest high-level package info
-      # pkg_name <- "dplyr" # testing
-      pkg_info <- get_latest_pkg_info(pkg_name)
-      
-      # store it in the database
-      upload_package_to_db(pkg_name, pkg_info$Version, pkg_info$Title,
-                           pkg_info$Description, pkg_info$Author,
-                           pkg_info$Maintainer, pkg_info$License,
-                           pkg_info$Published, db_name)
-      
-    },
-    error = function(e) {
-      if (pkg_name %in% rownames(installed.packages()) == TRUE) {
-        for (i in .libPaths()) {
-          if(file.exists(file.path(i, pkg_name)) == TRUE) {
-            i <- file.path(i, pkg_name)
-            d <- description$new(i)
-            title <- d$get("Title")
-            ver <- d$get("Version")
-            desc <- d$get("Description")
-            main <- d$get("Maintainer")
-            auth <- d$get("Author")
-            lis <- d$get("License")
-            pub <- d$get("Packaged")
-            
-            upload_package_to_db(pkg_name, ver, title, desc, auth, main, lis, pub, db_name)
-          }}
-      } else{
-        loggit::loggit("ERROR", paste("Error in extracting general info of the package",
-                                      pkg_name, "info", e), app = "fileupload-webscraping")
-      }
-    }
-  )
+    
+  pkg_loc <- file.path(lib_loc, pkg_name)
+  d <- desc::description$new(pkg_loc)
+  title <- d$get("Title")
+  ver <- d$get("Version")
+  desc <- d$get("Description")
+  main <- d$get("Maintainer")
+  auth <- d$get("Author")
+  lis <- d$get("License")
+  pub <- d$get("Packaged")
+  
+  upload_package_to_db(pkg_name, ver, title, desc, auth, main, lis, pub, db_name)
+  
 }
 
 
@@ -141,14 +121,11 @@ upload_package_to_db <- function(name, version, title, description,
 #' @returns nothing
 #' @noRd
 insert_riskmetric_to_db <- function(pkg_name, 
+                                    lib_loc,
     db_name = golem::get_golem_options('assessment_db_name')){
 
-  riskmetric_assess <-
-    riskmetric::pkg_ref(pkg_name,
-                        source = "pkg_cran_remote",
-                        repos = c("https://cran.rstudio.com")) %>%
-    dplyr::as_tibble() %>%
-    riskmetric::pkg_assess()
+  # run pkg_assess on the package installed in the temporary library
+  riskmetric_assess <- assess_pkg_install(pkg_name, lib_loc)
   
   # Get the metrics weights to be used during pkg_score.
   metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric", db_name)

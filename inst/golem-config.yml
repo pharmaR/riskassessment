@@ -2,7 +2,10 @@ default:
   golem_name: riskassessment
   golem_version: 0.0.0.9000
   app_prod: no
+  assessment_lib: !expr tempfile("temp_libpath")
 production:
   app_prod: yes
+  assessment_lib: ./assessment_lib
 dev:
   golem_wd: !expr here::here()
+  
