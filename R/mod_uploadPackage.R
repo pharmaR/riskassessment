@@ -77,14 +77,11 @@ uploadPackageServer <- function(id, user) {
       
       if(user$role == "admin") {
         upload_pkg <- bind_rows(upload_pkg, upload_adm)
-        apptab_steps <- bind_rows(apptab_admn, apptab_steps)
       }
       if(nrow(uploaded_pkgs()) > 0) 
-        upload_pkg_complete <- bind_rows(upload_pkg, upload_pkg_comp) %>% 
-          bind_rows(apptab_steps)
+        upload_pkg_complete <- bind_rows(upload_pkg, upload_pkg_comp)
       else 
-        upload_pkg %>% 
-          bind_rows(apptab_steps)
+        upload_pkg
     })
     
     auto_list <- mod_decision_automation_server("automate", user)
@@ -121,19 +118,8 @@ uploadPackageServer <- function(id, user) {
     
     # Start introjs when help button is pressed. Had to do this outside of
     # a module in order to take a reactive data frame of steps
-    observeEvent(
-      input[["introJS-help"]], # notice input contains "id-help"
-      rintrojs::introjs(session,
-                        options = list(
-                          steps = 
-                            upload_pkg_txt() %>%
-                            union(sidebar_steps),
-                          "nextLabel" = "Next",
-                          "prevLabel" = "Previous"
-                        )
-      ),
-    )
-    
+    introJSServer("introJS", text = upload_pkg_txt, user)
+
     uploaded_pkgs00 <- reactiveVal()
 
     observeEvent(user$role, {

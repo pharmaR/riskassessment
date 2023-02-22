@@ -45,16 +45,8 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user) {
       }
     })
     
-    mm_text <- reactive({
-      if(user$role == "admin") {
-        apptab_steps <- bind_rows(apptab_admn, apptab_steps)
-      }
-      mm_steps %>% 
-        bind_rows(apptab_steps)
-    })
-    
     # IntroJS.
-    introJSServer(id = "introJS", text = mm_text())
+    introJSServer(id = "introJS", text = reactive(mm_steps), user)
 
     # Call module that creates section to add comments.
     comment_added <- addCommentServer(id = "add_comment",
