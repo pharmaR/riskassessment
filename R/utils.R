@@ -326,13 +326,14 @@ build_comm_cards <- function(data){
             is_url = 0)
   
   downloads_last_year <- data %>%
-    dplyr::filter(year == lubridate::year(Sys.Date()) - 1) %>%
+    dplyr::arrange(year, month) %>% # insurance
+    dplyr::filter(row_number() >= (n() - 11)) %>%
     dplyr::distinct(year, month, downloads)
   
   cards <- cards %>%
     dplyr::add_row(name = 'downloads_last_year',
             title = 'Package Downloads',
-            desc = 'Number of downloads since last year',
+            desc = 'Number of downloads in last 12 months',
             value = format(sum(downloads_last_year$downloads), big.mark = ","),
             succ_icon = 'box-open',
             icon_class = "text-info",
