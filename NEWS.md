@@ -4,6 +4,7 @@
 * Pre-load information for a select list of packages to improve tests utilizing `shinytest2`
 * Upgrade {riskmetric} to v0.2.0
 * Fixed bug where card displaying "Number of downloads in last 12 months" was faulty, summing all months from previous year and none from current year.
+* Report headings in (asis) sentence case; Don't alter case on package names.
 
 # riskassessment 0.1.0
 
