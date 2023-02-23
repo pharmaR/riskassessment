@@ -244,14 +244,13 @@ tagList(
 <hr>
 <br>
 
-```{r report_info, warning=FALSE, message=FALSE}
-h5('About the Report')
-
+```{r report_info, warning=FALSE, message=FALSE, results='asis'}
 tagList(
-  h6('{riskassessment} App Version:'), params$app_version,
-  h6('riskmetric Version:'), params$riskmetric_version,
-  h6('Generated on:'), format(Sys.time(), usetz = TRUE),
-  h6('Metric Weights:')
+  h5(div(class = 'txtasis', 'About The Report')),br(),
+  strong('{riskassessment} App Version:'), br(), getElement(params, 'app_version'), br(), br(),
+  strong('{riskmetric} Version:'), br(), getElement(params, 'riskmetric_version'), br(), br(),
+  strong('Generated on:'), br(), format(Sys.time(), usetz = TRUE), br(), br(),
+  strong('Metric Weights:')
 )
 
 DT::datatable(params$metric_weights,
