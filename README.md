@@ -132,6 +132,38 @@ renv::restore()
 After this step is complete, you can simply run the contents of `app.R`
 to launch and/or deploy the application!
 
+### User Guides and User Feedback
+
+We’re constantly improving the app and it’s documentation. Please
+explore the user guides that have been developed to date, available on
+the `riskassessment` [documentation
+site](https://pharmar.github.io/riskassessment/). Be sure to read the
+[‘Get
+Started’](https://pharmar.github.io/riskassessment/articles/riskassessment.html)
+tab and perhaps [an article or
+two](https://pharmar.github.io/riskassessment/articles/index.html)!
+
+Of course, if you ever have specific feedback for the developers, or if
+you encounter a problem / bug within the app, we recommend [opening a
+new issue](https://github.com/pharmaR/riskassessment/issues/new) on
+Github and we’ll address it promptly.
+
+<a href='https://bit.ly/raa_survey'><img src="man/figures/google_forms_logo.png" align="right" height="72" style="float:right; height:172px;"/></a>
+
+We also want align with our users on big picture, strategic topics.
+Specifically, we want to hear from groups who’ve built (or are currently
+building) their R-package validation process, whether you use
+`riskmetric` / `riskassessment` or not! Ideally, our goal is to form a
+consensus from companies regarding their validation approach so we can
+make `riskmetric` and `riskassessment` better. For example, we’d love to
+understand how users are currently weighting the metrics used to
+calculate a package’s risk score. We’d also love to learn if companies
+leverage certain risk score thresholds to make GxP environment inclusion
+decisions for a set of packages. To facilitate the gathering of this
+information, we’ve created an [incredibly brief
+questionnaire](https://bit.ly/raa_survey) to let us know where you’re
+at.
+
 #### Deployments
 
 As you might expect, certain deployment environments offer persistent
@@ -151,13 +183,6 @@ allow persistent storage):
 - ShinyProxy
 
 For more information on each of these, we highly recommend reading our
-deployments article.
-
-### User Guides
-
-We are currently working on improving the app and it’s documentation.
-Since they are are currently in-progress, please explore the user guides
-that have been developed so far, available on the [documentation
-site](https://pharmar.github.io/riskassessment/).
+‘deployments’ article.
 
 <br>

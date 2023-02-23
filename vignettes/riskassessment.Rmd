@@ -125,6 +125,30 @@ Upon completion, a “Summary of Uploaded Packages” section will display.  Thi
 
 <br>
 
+## Decision Automation
+
+If your organization has black and white rules about package risk decisions based solely on  `riskmetric` scores, then decision automation is for you. When leveraged, it will help you automatically classify packages into the "Low", "Medium", or "High" risk decision categories upon upload. This automation saves your review team time and mental capacity when reviewing large groups of packages. The current automation rules are always displayed on the 'Upload Package' tab. Please note that only `ADMIN` users have the necessary privileges to edit. To get started, click on the small gear button in the upper left hand corner
+
+
+<br>
+
+<center>
+![](images/start_decision_automation.png){style="margin: 10px 0 10px 0"}
+</center>
+
+
+<br>
+
+In a fictitious example below, let's say an `ADMIN` user adopts automated decision rules for packages with risk scores less than 0.33 and greater than .66. Perhaps this organization has a policy that mandates any package whose risk score falls between 0.33 and 0.66 will need to be reviewed manually. After uploading a new CSV of packages, you can see the 'Summary of Uploaded Package(s)' displays the number of decisions made overall and by each risk category. Here, you can see that 10 packages were uploaded, and 5 automatic decisions were made: four received the "low" designation and one was labeled as "high" risk. In the summary table, the decisions are displayed with their respective risk scores on the right-hand side. You can also observe that a few packages weren't found because they don't exist on CRAN.
+
+<br>
+
+<center>
+![](images/decision_automation_applied.png){style="margin: 10px 0 10px 0"}
+</center>
+
+
+<br>
 
 ## Sidebar 
 

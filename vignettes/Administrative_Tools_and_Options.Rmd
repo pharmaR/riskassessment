@@ -434,6 +434,87 @@ that it is applying weights and updating risk scores to each package you have up
 Now go to the database overview tab to confirm that the risk scores have been updated. You can also view the new weights, including the standardized weight on the `Assessment Criteria` tab.
 
  
+ 
+<br>
+
+<br>
+
+ 
+# Decision Automation
+
+If your organization has black and white rules about package risk decisions based solely on  `riskmetric` scores, then decision automation is for you. When leveraged, it will help you automatically classify packages into the "Low", "Medium", or "High" risk decision categories upon upload. The current automation rules are always displayed on the 'Upload Package' tab. Please note that only `ADMIN` users have the necessary privileges to edit. To get started, click on the small gear button in the upper left hand corner
+
+
+<br>
+
+<center>
+![](images/start_decision_automation.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+If there are no decision rules applied, you'll see the following risk decision categories next to empty check boxes. When setting up these rules for your organization, you can choose as much or as little automation as needed. 
+
+<br>
+
+<center>
+![](images/decision_automation_gear.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+For example, if you only want to set up an automatic decision for "High" risk scores, you only need to select that check box and make your risk score designation / cut off value. Every time a package is uploaded with a risk score > 0.66, it will automatically receive the decision label: "High" which saves your review team time and mental capacity when reviewing large groups of packages.
+
+<br>
+
+<center>
+![](images/decision_automation_high.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+Similarly, if you have package risk thresholds mapped out for each decision category, then apply them here! The user interface won't allow the slider ranges to overlap, but it will allow gaps between each range. In the example below, we adopt automatic decisions for packages with risk scores less than 0.33 and greater than .66. In this fictitious example, let's say our organization has a policy that any package whose risk score falls between 0.33 and 0.66 will need to be reviewed manually. 
+
+<br>
+
+<center>
+![](images/decision_automation_allcat.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+To apply these changes, your `ADMIN` will need to select 'APPLY DECISION RULES'. A pop-up will ask the user to review and confirm the selected automation rules:
+
+<br>
+
+<center>
+![](images/decision_automation_confirm.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+Upon clicking submit, the automation rules will be stored for all users to see on the 'Upload Package' tab. After uploading a new CSV of packages, you can see the 'Summary of Uploaded Package(s)' that now includes a summary of decisions made, and in each category. In the example below, you can see that 10 packages were uploaded, and 5 automatic decisions were made: four received the "low" designation and one was labeled as "high" risk. In the summary table, the risk score and decision on the right-hand side. You can also observe that a few packages weren't found because they don't exist on CRAN.
+
+<br>
+
+<center>
+![](images/decision_automation_applied.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+Consulting the 'PACKAGE CONTROL PANEL', if we select one of the packages where a decision was made, you can see that the 'Status' has been changed to "Reviewed" and the risk decision slider has been adjusted accordingly and disabled. In addition, an 'Overall Comment' was submitted, stating that the decision made was driven via the automation rules.
+
+
+<br>
+
+<center>
+![](images/decision_automation_control_panel.png){style="margin: 10px 0 10px 0"}
+</center>
+
+
+<br>
+
 <br>
 <br>
 <br>
