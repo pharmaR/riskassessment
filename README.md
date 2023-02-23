@@ -123,7 +123,7 @@ run the following code in order to take advantage of our `renv.lock`
 file which set’s up the project dependencies:
 
 ``` r
-# First, clone the repo from Github, then...
+# First, clone the repo from GitHub, then...
 # Get dependcies synced using {renv}
 renv::activate()
 renv::restore()
@@ -146,7 +146,7 @@ two](https://pharmar.github.io/riskassessment/articles/index.html)!
 Of course, if you ever have specific feedback for the developers, or if
 you encounter a problem / bug within the app, we recommend [opening a
 new issue](https://github.com/pharmaR/riskassessment/issues/new) on
-Github and we’ll address it promptly.
+GitHub and we’ll address it promptly.
 
 <a href='https://bit.ly/raa_survey'><img src="man/figures/google_forms_logo.png" align="right" height="72" style="float:right; height:172px;"/></a>
 
