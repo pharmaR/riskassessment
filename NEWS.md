@@ -3,6 +3,7 @@
 * Improve module testing for introJS to be more stable for testing and app development
 * Pre-load information for a select list of packages to improve tests utilizing `shinytest2`
 * Upgrade {riskmetric} to v0.2.0
+* Fixed bug where card displaying "Number of downloads in last 12 months" was faulty, summing all months from previous year and none from current year.
 
 # riskassessment 0.1.0
 
