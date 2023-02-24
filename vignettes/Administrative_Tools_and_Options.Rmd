@@ -20,10 +20,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-This guide is to assist `ADMIN` users to manage credentials (aka, user IDs and passwords) and other `ADMIN`-only privileges, such as assessment re-weighting on metrics leveraged by `riskassessment` app. 
+It's no secret that users with administrator privileges have access to certain features of the application. This guide assists `ADMIN` users to manage these privileges, which (at a minimum) include:
+
+* govern user credentials
+* re-weight metrics that determine how risk scores are calculated
+* define automated decision rules based on those risk scores
 
 
-It's no secret that only users with administrator privileges have access to certain features of the application. To verify if you have `ADMIN` access, first check that you can see all THE navigation tabs within the app, especially the rightmost "Administrative Tools" tab. If you do not see this tab, you have not been granted access! To gain access, you'll have to request access from a known `ADMIN` user within your organization.
+To verify if you have `ADMIN` access, first check that you can see all THE navigation tabs within the app, especially the rightmost "Administrative Tools" tab. If you do not see this tab, you have not been granted access! To gain access, you'll have to request access from a known `ADMIN` user within your organization.
 
 <br>
 

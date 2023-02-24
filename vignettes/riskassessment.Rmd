@@ -165,7 +165,7 @@ There are also two submission buttons above: `SUBMIT DECISION` and `SUBMIT OVERA
 
 ## Package Review Tabs
 
-The `Maintenance Metrics`, `Community Usage Metrics` and `Report Preview` tabs are now available for browsing and include data collected from `riskmetric`. It's on these tabs that the bulk of the review occurs because they each provide the context that determines the final `riskmetric` score. We highly encourage users to become very familiar with these metrics and decide which are most important to you and your organization. As is available in `riskmetric`, `riskassessment` allows `ADMIN` users to set organization-wide metric weights so that the risk score is based on the most meaningful metrics, and reduces the influence of less important metrics. To learn more about these options, please read through our `User Roles and Priviledges`[Insert link here] guide.
+The `Maintenance Metrics`, `Community Usage Metrics` and `Report Preview` tabs are now available for browsing and include data collected from `riskmetric`. It's on these tabs that the bulk of the review occurs because they each provide the context that determines the final `riskmetric` score. We highly encourage users to become very familiar with these metrics and decide which are most important to you and your organization. As is available in `riskmetric`, `riskassessment` allows `ADMIN` users to set organization-wide metric weights so that the risk score is based on the most meaningful metrics, and reduces the influence of less important metrics. To learn more about these options, please read through our ["Administrative Tools and Options" guide](../articles/Administrative_Tools_and_Options.html).
 
 <br>
 
