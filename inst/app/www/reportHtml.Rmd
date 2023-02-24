@@ -1,8 +1,8 @@
 ---
-title:    "R Package Risk Assessment"
-subtitle: "Report for `r params$pkg$name`"
-author:   "Author (Role): `r params$user_name` (`r params$user_role `)"
-date:     "Report Date: `r format(Sys.time(), '%B %d, %Y')`"
+title:    "<span class='txtasis'>R Package Risk Assessment</span>"
+subtitle: "<span class='txtasis'>Report for Package: `r params$pkg[['name']]`</span>"
+author:   "<span class='txtasis'>Author (Role): `r params$user_name` (`r params$user_role `)</span>"
+date:     "<span class='txtasis'>Report Date: `r format(Sys.time(), '%B %d, %Y')`</span>"
 always_allow_html: true
 output: 
   html_document:
@@ -30,6 +30,9 @@ params:
   max-width: min(1200px, 80%);
   margin-left: auto;
   margin-right: auto;
+}
+.txtasis {
+  text-transform:none;
 }
 </style>
 
@@ -241,14 +244,13 @@ tagList(
 <hr>
 <br>
 
-```{r report_info, warning=FALSE, message=FALSE}
-h5('About the Report')
-
+```{r report_info, warning=FALSE, message=FALSE, results='asis'}
 tagList(
-  h6('{riskassessment} App Version:'), params$app_version,
-  h6('riskmetric Version:'), params$riskmetric_version,
-  h6('Generated on:'), format(Sys.time(), usetz = TRUE),
-  h6('Metric Weights:')
+  h5(div(class = 'txtasis', 'About The Report')),br(),
+  strong('{riskassessment} App Version:'), br(), getElement(params, 'app_version'), br(), br(),
+  strong('{riskmetric} Version:'), br(), getElement(params, 'riskmetric_version'), br(), br(),
+  strong('Generated on:'), br(), format(Sys.time(), usetz = TRUE), br(), br(),
+  strong('Metric Weights:')
 )
 
 DT::datatable(params$metric_weights,
