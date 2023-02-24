@@ -194,8 +194,7 @@ At the bottom of this table is a bar with three buttons:
 <br>
 
 
-The first one is a checkbox `r fa(name = "square-check", fill = "red", height = "1em")`
-to select multiple users followed by an `r fa(name = "pen-to-square", fill = "darkblue", height = "1em")` "Edit Selected Users" and a `r fa(name = "trash-can", fill = "red", height = "1em")` "Remove Selected Users" button. These buttons are enabled when you select **two or more** users.
+The first one is a `r fa(name = "square-check", fill = "red", height = "1em")` checkbox to select multiple users followed by an `r fa(name = "pen-to-square", fill = "darkblue", height = "1em")` "Edit Selected Users" and a `r fa(name = "trash-can", fill = "red", height = "1em")` "Remove Selected Users" button. These buttons are enabled when you select **two or more** users.
 
 <br>
 
@@ -220,7 +219,7 @@ Again, a small modal dialog box will briefly appear indicating the users have be
 <br>
 
 <center>
-![](images/user_updated_modal.png){style="width:257px"}
+![](images/new_user_msg.png){style="width:257px"}
 </center>
 
 <br>
