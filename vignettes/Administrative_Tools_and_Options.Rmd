@@ -219,7 +219,7 @@ Again, a small modal dialog box will briefly appear indicating the users have be
 <br>
 
 <center>
-![](images/new_user_msg.png){style="width:257px"}
+![](images/user_succ_updated_modal.png){style="width:257px"}
 </center>
 
 <br>
