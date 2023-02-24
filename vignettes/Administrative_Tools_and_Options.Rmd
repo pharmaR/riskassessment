@@ -90,7 +90,7 @@ The first table provides tools for managing of users: adding, editing, and delet
 <br>
 
 
-To add a new user, click the dark blue button labelled: "Add a user".
+To add a new user, click the button labelled: "Add a user".
  
 
 <br>
@@ -106,7 +106,7 @@ Here, we'll type "PeterParker" into the User Name field.
 
 </br></br></br></br></br></br></br></br>
 
-Notice the checkbox to grant the new user administrator privileges is also checked by default. A unique password is generated which the user will be prompted to change the first time he/she logs on, as long as the "Ask to change password" box remains checked. 
+Notice the `r fa(name = "square-check", fill = "darkblue", height = "1em")` checkbox to grant the new user administrator privileges is also checked by default. A unique password is generated which the user will be prompted to change the first time he/she logs on, as long as the "Ask to change password" box remains checked. 
 
 <br>
 
@@ -152,7 +152,7 @@ Feel free to set either or both of these dates as needed, or just leave them bla
 
 <br>
 
-Edit user information by clicking on the dark blue `r fa(name = "pen-to-square", fill = "darkblue", height = "1em")` <a style="color:darkblue">Edit</a> button, found on the right-hand side of the table.</br></br>
+Edit user information by clicking on the `r fa(name = "pen-to-square", fill = "darkblue", height = "1em")` <a style="color:darkblue">Edit</a> button, found on the right-hand side of the table.</br></br>
 
 
 An Edit User window will appear:
@@ -232,7 +232,7 @@ Again, a small modal dialog box will briefly appear indicating the users have be
 
 <br>
 
-</br>Delete any user by clicking on the red `r fa(name = "trash-can", fill = "red", height = "1em")` 
+</br>Delete any user by clicking on the `r fa(name = "trash-can", fill = "red", height = "1em")` 
 <a style="color:red">Remove</a> button on the right-hand side of the table. You will see a confirmatory modal dialog box.  Click on "Delete User(s)."
 
 <br>
@@ -273,11 +273,11 @@ As an administrator, it's recommended you replace the initial `ADMIN` user ID cr
 
 </br>
 
-Just as before, click the blue "Add a user" button and make sure to check the `Admin` box. The temporary password can be overridden by un-checking the "ask to change password" box and setting the password to whatever you want.
+Just as before, click the "Add a user" button and make sure to check the `Admin` box. The temporary password can be overridden by un-checking the "ask to change password" box and setting the password to whatever you want.
 
 </br>
 
-After completing the form, sign in using your new credentials and delete the original `ADMIN` user by clicking on the red `r fa(name = "trash-can", fill = "red", height = "1em")` <a style="color:red">Remove</a> button on that row of the table.
+After completing the form, sign in using your new credentials and delete the original `ADMIN` user by clicking on the `r fa(name = "trash-can", fill = "red", height = "1em")` <a style="color:red">Remove</a> button on that row of the table.
 
 </br></br></br></br></br></br></br></br></br>
 
@@ -294,7 +294,7 @@ The second table allows for password management.
 
 <br>
 
-Click on the dark blue `r fa(name = "key", fill = "darkblue", height = "1em")`<a style="color:darkblue">*Change password*</a> button to force the corresponding user to change his/her password on the next log-in.
+Click on the `r fa(name = "key", fill = "darkblue", height = "1em")`<a style="color:darkblue">*Change password*</a> button to force the corresponding user to change his/her password on the next log-in.
 
 A confirmatory modal dialog box will appear, like this:
 
@@ -330,7 +330,7 @@ Click on "Confirm" and you will see another modal dialog box with the new tempor
 
 You are responsible for delivering the new temporary password to the user.
 
-</br>As on the bottom of the User table, There is also a checkbox `r fa(name = "square-check", fill = "red", height = "1em")` to select multiple users followed by</br> a "Force Selected Users to Change Password" button. This button is enabled when you select two or more users.
+</br>As on the bottom of the User table, There is also a `r fa(name = "square-check", fill = "red", height = "1em")` checkbox to select multiple users followed by</br> a "Force Selected Users to Change Password" button. This button is enabled when you select two or more users.
 
 <br>
 
