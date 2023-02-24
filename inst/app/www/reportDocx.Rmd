@@ -1,5 +1,5 @@
 ---
-title:    "<span class='txtasis'>R Package Risk Assessment</span>"
+title:    "<span class='txtasis'>R Package Risk Assessment  </span>![](raa-image.png){height=52px width=63px}</br>"
 subtitle: "<span class='txtasis'>Report for Package: `r params$pkg[['name']]`</span>"
 author:   "<span class='txtasis'>Author (Role): `r params$user_name` (`r params$user_role `)</span>"
 date:     "<span class='txtasis'>Report Date: `r format(Sys.time(), '%B %d, %Y')`</span>"
@@ -24,6 +24,8 @@ params:
   downloads_plot_data: NA
 ---
 
+<!-- ![](raa-image.png){style="position:float-right; width:63px; height:52px;"} -->
+
 <style type="text/css">
 .txtasis {
   text-transform:none;
@@ -39,7 +41,6 @@ library(plotly)
 knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 cm_ind <- nrow(params$com_metrics) != 0
 ```
-
 
 ```{r functions, include=FALSE, message=FALSE, warning=FALSE}
 outputComments <- function(pkg_name, comments){
