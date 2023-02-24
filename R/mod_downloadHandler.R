@@ -105,6 +105,8 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               file.copy(system.file('app/www', 'images', 'calendar-alt.png', package = "riskassessment"),
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
+              file.copy(system.file('app/www', 'raa-image.png', package = "riskassessment"),
+                        file.path(my_tempdir, 'raa-image.png'), overwrite = TRUE)
             } 
             else { 
               Report <- file.path(my_tempdir, "reportPdf.Rmd")
@@ -124,6 +126,8 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               file.copy(system.file('app/www', 'images', 'calendar-alt.png', package = "riskassessment"),
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
+              file.copy(system.file('app/www', 'raa-image.png', package = "riskassessment"),
+                        file.path(my_tempdir, 'raa-image.png'), overwrite = TRUE)
             }
             
             fs <- c()
