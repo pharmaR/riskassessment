@@ -404,9 +404,9 @@ uploadPackageServer <- function(id, user) {
         options = list(
           searching = FALSE,
           sScrollX = "100%",
-          lengthChange = FALSE,
+          lengthChange = TRUE,
           aLengthMenu = list(c(5, 10, 20, 100, -1), list('5', '10', '20', '100', 'All')),
-          iDisplayLength = 5
+          iDisplayLength = 10
         )
       )
     })
