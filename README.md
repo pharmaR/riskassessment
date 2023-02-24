@@ -134,6 +134,8 @@ to launch and/or deploy the application!
 
 ### User Guides and User Feedback
 
+<a href='https://pharmar.github.io/riskassessment/'><img src="man/figures/raa-image-ug.png" align="right" height="120" style="float:right; padding-right: 30px; height:120px;"/></a>
+
 We’re constantly improving the app and it’s documentation. Please
 explore the user guides that have been developed to date, available on
 the `riskassessment` [documentation
