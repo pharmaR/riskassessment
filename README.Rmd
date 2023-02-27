@@ -107,6 +107,8 @@ After this step is complete, you can simply run the contents of `app.R` to launc
 
 ### User Guides and User Feedback
 
+<a href='https://pharmar.github.io/riskassessment/'><img src="man/figures/raa-image-ug.png" align="right" height="120" style="float:right; padding-right: 30px; height:120px;"/></a>
+
 We're constantly improving the app and it's documentation. Please explore the user guides that have been developed to date, available on the `riskassessment` [documentation site](https://pharmar.github.io/riskassessment/). Be sure to read the ['Get Started'](https://pharmar.github.io/riskassessment/articles/riskassessment.html) tab and perhaps [an article or two](https://pharmar.github.io/riskassessment/articles/index.html)!
 
 Of course, if you ever have specific feedback for the developers, or if you encounter a problem / bug within the app, we recommend [opening a new issue](https://github.com/pharmaR/riskassessment/issues/new) on GitHub and we'll address it promptly.
