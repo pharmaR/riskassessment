@@ -1,11 +1,12 @@
 ---
-title:    "<span class='txtasis'>R Package Risk Assessment  </span>![](raa-image.png){height=52px width=63px}</br>"
+title:    "<span class='txtasis'>R Package Risk Assessment  </span>"
 subtitle: "<span class='txtasis'>Report for Package: `r params$pkg[['name']]`</span>"
 author:   "<span class='txtasis'>Author (Role): `r params$user_name` (`r params$user_role `)</span>"
 date:     "<span class='txtasis'>Report Date: `r format(Sys.time(), '%B %d, %Y')`</span>"
 always_allow_html: true
 output:
   word_document:
+    reference_docx: template-01.docx
     md_extensions: +raw_html-markdown_in_html_blocks
     pandoc_args: ['--lua-filter', 'read_html.lua']
 params:
@@ -63,6 +64,7 @@ outputComments <- function(pkg_name, comments){
 <br>
 
 ```{r general_pkg_info}
+h5('General Information')
 tagList(
   strong('Package:'),      br(), getElement(params$pkg, 'name'),         br(), br(),
   strong('Version:'),      br(), getElement(params$pkg, 'version'),      br(), br(),
