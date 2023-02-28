@@ -8,7 +8,7 @@
 * Added User Feedback survey to README (#411)
 * Updated a few vignettes to describe new 'Decision Automation' feature
 * Added hyperlink to the documentation site / user guide within the application
-* Added Riskassessment logo to reports
+* Added Riskassessment logo for docx and pdf reports
 
 
 # riskassessment 0.1.0
