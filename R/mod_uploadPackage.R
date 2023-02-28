@@ -227,7 +227,7 @@ uploadPackageServer <- function(id, user) {
         url_lst <- list(
           "https://cran.rstudio.com/src/contrib",
           "https://cran.r-project.org/web/packages",
-          "https://cranlogs.r-pk.org/"
+          "https://cranlogs.r-pkg.org/"
         )
         
         good_urls <- purrr::map_lgl(url_lst, 
