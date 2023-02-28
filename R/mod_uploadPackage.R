@@ -247,6 +247,7 @@ uploadPackageServer <- function(id, user) {
     observeEvent(uploaded_pkgs00(), {
 
       uploaded_packages <- uploaded_pkgs00()
+      uploaded_pkgs00(NULL)
       uploaded_packages$score <- NA_real_
       if (!rlang::is_empty(auto_list()))
         uploaded_packages$decision <- ""
