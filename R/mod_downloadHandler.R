@@ -94,6 +94,9 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               file.copy(system.file('app/www', 'ReportDocx.Rmd', package = "riskassessment"),
                         Report,
                         overwrite = TRUE)
+              file.copy(system.file('app/www', 'template-01.docx', package = 'riskassessment'),
+                        file.path(my_tempdir, 'template-01.docx'),
+                        overwrite = TRUE)
               file.copy(system.file('app/www', 'read_html.lua', package = "riskassessment"),
                         file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
               file.copy(system.file('app/www', 'images', 'user-tie.png', package = "riskassessment"),
