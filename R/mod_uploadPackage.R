@@ -223,9 +223,12 @@ uploadPackageServer <- function(id, user) {
       req(input$check_urls, !isTRUE(checking_urls$finished))
       invalidateLater(60*1000)
       
-      good_urls <- purrr::map_lgl(checking_urls$url_lst, 
-                                  ~ try(curlGetHeaders(.x, verify = FALSE), silent = TRUE) %>%
-                                    {class(.) != "try-error" && attr(., "status") != 404})
+      withProgress({
+        good_urls <- purrr::map_lgl(checking_urls$url_lst, 
+                                    ~ try(curlGetHeaders(.x, verify = FALSE), silent = TRUE) %>%
+                                      {class(.) != "try-error" && attr(., "status") != 404})
+        Sys.sleep(.5)
+      }, message = "Checking URLs")
       
       checking_urls$finished <- all(good_urls)
     })
