@@ -223,6 +223,27 @@ uploadPackageServer <- function(id, user) {
         uploaded_packages$decision <- ""
       np <- nrow(uploaded_packages)
       
+      if (!isTRUE(getOption("shiny.testmode"))) {
+        url_lst <- list(
+          "https://cran.rstudio.com/src/contrib",
+          "https://cran.r-project.org/web/packages",
+          "https://cranlogs.r-pk.org/"
+        )
+        
+        good_urls <- purrr::map_lgl(url_lst, 
+                                    ~ try(curlGetHeaders(.x, verify = FALSE), silent = TRUE) %>%
+                                      {class(.) != "try-error" && attr(., "status") != 404})
+        
+        if (!all(good_urls)) {
+          showModal(modalDialog(
+            title = h2("Data Connection Issues"),
+            h5("The process has been cancelled because at least one of the URLs used to populate the metrics is unreachable at this time.")
+          ))
+        }
+        
+      req(all(good_urls))
+      }
+      
       if (!isTruthy(cran_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
           cran_pkgs(test_pkg_lst)
