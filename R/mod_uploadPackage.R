@@ -225,9 +225,9 @@ uploadPackageServer <- function(id, user) {
       
       if (!isTRUE(getOption("shiny.testmode"))) {
         url_lst <- list(
-          "https://cran.rstudio.com/src/contrib",
-          "https://cran.r-project.org/web/packages",
-          "https://cranlogs.r-pkg.org/"
+          "https://cran.rstudio.com",
+          "https://cran.r-project.org",
+          "https://cranlogs.r-pkg.org"
         )
         
         good_urls <- purrr::map_lgl(url_lst, 
