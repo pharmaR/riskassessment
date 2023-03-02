@@ -1,5 +1,5 @@
 ---
-title:    "<span class='txtasis'>R Package Risk Assessment  </span>![](raa-image.png){height=52px width=63px}</br>"
+title:    "<span class='txtasis'>R Package Risk Assessment  </span>"
 subtitle: "<span class='txtasis'>Report for Package: `r params$pkg[['name']]`</span>"
 author:   "<span class='txtasis'>Author (Role): `r params$user_name` (`r params$user_role `)</span>"
 date:     "<span class='txtasis'>Report Date: `r format(Sys.time(), '%B %d, %Y')`</span>"
@@ -8,6 +8,8 @@ output:
   html_document:
     theme:
       bootswatch: lux
+    includes:
+       in_header: header.html
 runtime: shiny
 params:
   pkg: NA
@@ -148,17 +150,6 @@ createGrid <- function(metrics){
 ```
 
 <br>
-
-```{css, echo=FALSE}
-#raa-logo img {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  padding-top: .75em;
-  padding-right: 6em;
-  height: 6em;
-}
-```
 
 ```{r general_pkg_info}
 h5('General Information')

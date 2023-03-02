@@ -1,13 +1,14 @@
 ---
-title:    "<span class='txtasis'>R Package Risk Assessment  </span>![](raa-image.png){height=52px width=63px}</br>"
+title:    "<span class='txtasis'>R Package Risk Assessment</span>"
 subtitle: "<span class='txtasis'>Report for Package: `r params$pkg[['name']]`</span>"
 author:   "<span class='txtasis'>Author (Role): `r params$user_name` (`r params$user_role `)</span>"
 date:     "<span class='txtasis'>Report Date: `r format(Sys.time(), '%B %d, %Y')`</span>"
-always_allow_html: true
 output:
   pdf_document:
+    latex_engine: xelatex
     md_extensions: +raw_html-markdown_in_html_blocks
     pandoc_args: ['--lua-filter', 'read_html.lua']
+    extra_dependencies: ['graphicx', 'fancyhdr']
 params:
   pkg: NA
   riskmetric_version: NA
@@ -22,6 +23,14 @@ params:
   com_metrics: NA
   com_metrics_raw: NA
   downloads_plot_data: NA
+header-includes: 
+  - \usepackage{graphicx}
+  - \usepackage{fancyhdr}
+  - \fancypagestyle{plain}{\pagestyle{fancy}}
+  - \fancyhf{}% Clear header/footer
+  - \setlength{\headheight}{53.61403pt}
+  - \fancyhead[R]{\includegraphics[width=6em]{raa-image.png}}
+  - \renewcommand{\headrulewidth}{0.0pt}
 ---
 
 <style type="text/css">

@@ -86,6 +86,8 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               file.copy(system.file('app/www', 'reportHtml.Rmd', package = "riskassessment"), Report, overwrite = TRUE)
               file.copy(system.file('app/www', 'raa-image.png', package = "riskassessment"),
                         file.path(my_tempdir, 'raa-image.png'), overwrite = TRUE)
+              file.copy(system.file('app/www', 'header.html', package = "riskassessment"),
+                        file.path(my_tempdir, 'header.html'), overwrite = TRUE)
             } 
             else if (input$report_format == "docx") { 
               Report <- file.path(my_tempdir, "reportDocx.Rmd")
@@ -94,8 +96,8 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               file.copy(system.file('app/www', 'ReportDocx.Rmd', package = "riskassessment"),
                         Report,
                         overwrite = TRUE)
-              file.copy(system.file('app/www', 'template-01.docx', package = 'riskassessment'),
-                        file.path(my_tempdir, 'template-01.docx'),
+              file.copy(system.file('app/www', 'header.docx', package = 'riskassessment'),
+                        file.path(my_tempdir, 'header.docx'),
                         overwrite = TRUE)
               file.copy(system.file('app/www', 'read_html.lua', package = "riskassessment"),
                         file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
@@ -117,6 +119,9 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                 dir.create(file.path(my_tempdir, "images"))
               file.copy(system.file('app/www', 'ReportPdf.Rmd', package = "riskassessment"),
                         Report,
+                        overwrite = TRUE)
+              file.copy(system.file('app/www', 'header.tex', package = 'riskassessment'),
+                        file.path(my_tempdir, 'header.tex'),
                         overwrite = TRUE)
               file.copy(system.file('app/www', 'read_html.lua', package = "riskassessment"),
                         file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
