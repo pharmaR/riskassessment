@@ -8,6 +8,7 @@
 * Added User Feedback survey to README (#411)
 * Updated a few vignettes to describe new 'Decision Automation' feature
 * Added hyperlink to the documentation site / user guide within the application
+* Added check that URLs needed to upload packages are reachable
 * Added Riskassessment logo for docx and pdf reports
 
 
