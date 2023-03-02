@@ -1,0 +1,63 @@
+---
+title:    "<span class='txtasis'>R Package Risk Assessment</span>"
+subtitle: "<span class='txtasis'>Report for Package: `r params$pkg_name`</span>"
+author:   "<span class='txtasis'>Author (Role): `r params$user_name` (`r params$user_role `)</span>"
+date:     "<span class='txtasis'>Report Date: `r format(Sys.time(), '%B %d, %Y')`</span>"
+always_allow_html: yes
+output:
+  pdf_document:
+    latex_engine: xelatex
+    md_extensions: +raw_html-markdown_in_html_blocks
+    pandoc_args: ['--lua-filter', 'read_html.lua']
+    extra_dependencies: ['graphicx', 'fancyhdr']
+    includes:
+      in_header: header.tex
+params:
+  pkg_name: "stringr"
+  user_name: "PeterParker"
+  user_role: "user"
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(shiny)
+
+knitr::opts_chunk$set(echo = F, fig.width = 1.5, fig.height = 1.4)
+
+#pkg <- list(name = "stringr")
+#params <- list(user_name = "PeterParker", user_role = "user", pkg_name = "stringr")
+```
+
+using knitr::include_graphics() to add the logo
+```{r, echo=FALSE, out.width= '10%', out.height='10%', fig.align= 'right', fig.pos= 't'}
+knitr::include_graphics('raa-image.png')
+```
+
+```{r, include=FALSE}
+options(tinytex.verbose = TRUE)
+```
+
+using latex commands to add the logo
+```{=latex}
+  \begin{flushright}
+  \scalebox{.1}{\includegraphics{raa-image.png}}
+  \end{flushright}
+```
+
+Here is an equation.
+
+$$
+f(x) = a^2 + bx + c \\
+$$
+That was an equation.
+Here is a table.
+
+```{=latex}
+\begin{tabular}{ll}
+A & B \\
+A & B \\
+\end{tabular}
+```
+
+
+

@@ -1,0 +1,25 @@
+---
+title: "Title"
+author: "Author"
+always_allow_html: true
+output:
+  word_document:
+    md_extensions: +raw_html-markdown_in_html_blocks
+    pandoc_args: ['--lua-filter', 'read_html.lua']
+    reference_docx: header.docx
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(shiny)
+library(shinyjs)
+library(htmltools)
+
+knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
+```
+
+---
+  
+  # 1. Header
+  
+  Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.

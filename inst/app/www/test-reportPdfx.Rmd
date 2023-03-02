@@ -1,0 +1,43 @@
+---
+title: "Test Report" 
+author: "Your Name Here"
+date: "February 28, 2023"
+always_allow_html: yes
+output:
+  pdf_document: 
+    latex_engine: xelatex
+    md_extensions: +raw_html-markdown_in_html_blocks
+    pandoc_args: ['--lua-filter', 'read_html.lua']
+header-includes: 
+  - \usepackage{graphicx}
+  - \usepackage{fancyhdr}
+  - \fancypagestyle{plain}{\pagestyle{fancy}}
+  - \fancyhf{}% Clear header/footer
+  - \setlength{\headheight}{53.61403pt}
+  - \fancyhead[R]{\includegraphics[width=6em]{raa-image.png}}
+  - \renewcommand{\headrulewidth}{0.0pt}
+---
+
+
+```{r setup, include=FALSE}
+library(knitr)
+library(shiny)
+
+knitr::opts_chunk$set(echo = F, fig.width = 1.5, fig.height = 1.4)
+```
+
+using htmltools() -- not going to see anything in pdf output
+
+This equation will display inline $\hat{y} = \hat{\beta_0} + \hat{\beta_1} x_1$.
+
+using include_graphics()
+```{r, echo=FALSE, out.width= '6em', out.height='6em', fig.align= 'right', fig.pos= 't'}
+#knitr::include_graphics('raa-image.png')
+cat("used knitr::include_graphics() here.","\n")
+```
+
+
+
+
+
+
