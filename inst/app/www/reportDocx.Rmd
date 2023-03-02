@@ -6,7 +6,7 @@ date:     "<span class='txtasis'>Report Date: `r format(Sys.time(), '%B %d, %Y')
 always_allow_html: true
 output:
   word_document:
-    reference_docx: template-01.docx
+    reference_docx: header.docx
     md_extensions: +raw_html-markdown_in_html_blocks
     pandoc_args: ['--lua-filter', 'read_html.lua']
 params:

@@ -4,6 +4,7 @@ subtitle: "<span class='txtasis'>Report for Package: `r params$pkg[['name']]`</s
 author:   "<span class='txtasis'>Author (Role): `r params$user_name` (`r params$user_role `)</span>"
 date:     "<span class='txtasis'>Report Date: `r format(Sys.time(), '%B %d, %Y')`</span>"
 always_allow_html: true
+classoption: portrait
 output: 
   html_document:
     theme:
@@ -150,6 +151,17 @@ createGrid <- function(metrics){
 ```
 
 <br>
+
+```{css, echo=FALSE}
+#raa-logo img {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  padding-top: .75em;
+  padding-right: 6em;
+  height: 6em;
+}
+```
 
 ```{r general_pkg_info}
 h5('General Information')
