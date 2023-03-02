@@ -5,9 +5,10 @@ author:   "<span class='txtasis'>Author (Role): `r params$user_name` (`r params$
 date:     "<span class='txtasis'>Report Date: `r format(Sys.time(), '%B %d, %Y')`</span>"
 output:
   pdf_document:
+    latex_engine: xelatex
     md_extensions: +raw_html-markdown_in_html_blocks
     pandoc_args: ['--lua-filter', 'read_html.lua']
-    extra_dependencies: ['graphicx', 'fancyhdr']
+    extra_dependencies: ['graphicx', 'fancyhdr', 'unicode-math']
     includes:
       in_header: header.tex
 params:
