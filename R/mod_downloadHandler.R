@@ -123,6 +123,9 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               file.copy(system.file('app/www', 'header.tex', package = 'riskassessment'),
                         file.path(my_tempdir, 'header.tex'),
                         overwrite = TRUE)
+              file.copy(system.file('app/www', 'fancyhdr.sty', package = 'riskassessment'),
+                        file.path(my_tempdir, 'fancyhdr.sty'),
+                        overwrite = TRUE)              
               file.copy(system.file('app/www', 'read_html.lua', package = "riskassessment"),
                         file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
               file.copy(system.file('app/www', 'images', 'user-tie.png', package = "riskassessment"),
