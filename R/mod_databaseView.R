@@ -176,6 +176,8 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       # grab the package name
       pkg_name <- table_data()[selectedRow, 1]
 
+      parent$userData$flag <- "DB"
+      
       # update sidebar-select_pkg
       updateSelectizeInput(
         session = parent,

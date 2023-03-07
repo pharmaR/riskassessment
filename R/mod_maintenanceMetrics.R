@@ -20,8 +20,10 @@ maintenanceMetricsUI <- function(id) {
 #' 
 maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, parent) {
   moduleServer(id, function(input, output, session) {
-    # Render Output UI for Maintenance Metrics.
+       ns <- NS(id)
+   # Render Output UI for Maintenance Metrics.
     output$maintenance_metrics_ui <- renderUI({
+      
       
       # Lets the user know that a package needs to be selected.
       if(identical(selected_pkg$name(), character(0)))
@@ -32,6 +34,9 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, pare
           
           tagList(
             br(),
+            if (!is.null(parent$userData$flag) && parent$userData$flag == "DB") {
+              actionButton(ns("retn2dbview"), icon("database"))
+            },
             introJSUI(NS(id, 'introJS')),
             h4("Maintenance Metrics", style = "text-align: center;"),
             br(), br(),
@@ -42,10 +47,21 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, pare
                          viewCommentsUI(NS(id, 'view_comments')))
             )
           )
-        )
+         )
       }
     })
-    
+
+    observeEvent(input$retn2dbview, {
+      req(parent$userData$flag == "DB")
+      
+      # select maintenance metrics panel
+      updateTabsetPanel(session = parent, 
+                        inputId = 'apptabs', 
+                        selected = "database-tab"
+      )
+      parent$userData$flag <- "MM"
+    }, ignoreInit = TRUE)
+
     # IntroJS.
     introJSServer(id = "introJS", text = reactive(mm_steps), user)
 
