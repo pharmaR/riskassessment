@@ -53,6 +53,7 @@ databaseViewUI <- function(id) {
 #' @param uploaded_pkgs a vector of uploaded package names
 #' @param metric_weights a reactive data.frame holding metric weights
 #' @param changes a reactive value integer count
+#' @param parent the parent (calling module) session information
 #'
 #' 
 #' @import dplyr
@@ -65,8 +66,19 @@ databaseViewUI <- function(id) {
 #' @importFrom formattable formattable as.datatable formatter style csscolor
 #'   icontext
 #' @keywords internal
-databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes) {
+databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes, parent) {
   moduleServer(id, function(input, output, session) {
+    
+    ns = session$ns
+    
+    # used for adding action buttons to table_data
+    shinyInput <- function(FUN, len, id, ...) {
+      inputs <- character(len)
+      for (i in seq_len(len)) {
+        inputs[i] <- as.character(FUN(paste0(id, i), ...))
+      }
+      inputs
+    }
     
     # Update table_data if a package has been uploaded
     table_data <- eventReactive({uploaded_pkgs(); changes()}, {
@@ -100,9 +112,21 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
     # Create table for the db dashboard.
     output$packages_table <- DT::renderDataTable({
       
+      my_data_table <- reactive({
+        cbind(table_data(), 
+        tibble::tibble(
+          Actions = shinyInput(actionButton, nrow(table_data()),
+                               'button_',
+                               label = icon("microscope", class="fa-regular", lib = "font-awesome"),
+                               onclick = paste0('Shiny.onInputChange(\"' , ns("select_button"), '\", this.id)')
+          )
+        )
+        )
+      })
+      
       formattable::as.datatable(
         formattable::formattable(
-          table_data(),
+          my_data_table(),
           list(
             score = formattable::formatter(
               "span",
@@ -130,7 +154,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
                                           x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))
           )),
         selection = list(mode = 'multiple'),
-        colnames = c("Package", "Version", "Score", "Decision Made?", "Decision", "Last Comment"),
+        colnames = c("Package", "Version", "Score", "Decision Made?", "Decision", "Last Comment", "Explore Metric"),
         rownames = FALSE,
         options = list(
           searching = FALSE,
@@ -142,6 +166,35 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
         )
       ) %>%
         DT::formatStyle(names(table_data()), textAlign = 'center')
+    })
+    
+    observeEvent(input$select_button, {
+      req(table_data())
+      
+      selectedRow <- as.numeric(strsplit(input$select_button, "_")[[1]][2])
+      
+      # grab the package name
+      pkg_name <- table_data()[selectedRow, 1]
+
+      # update sidebar-select_pkg
+      updateSelectizeInput(
+        session = parent,
+        inputId = "sidebar-select_pkg",
+        choices = c("-", dbSelect('SELECT name FROM package')$name),
+        selected = pkg_name
+      )
+      
+      # select maintenance metrics panel
+      updateTabsetPanel(session = parent, 
+                        inputId = 'tabs', 
+                        selected = "Maintenance Metrics"
+      )
+      
+      # jump over to risk-assessment-tab so we can see the maintenance metrics
+      updateTabsetPanel(session = parent, 
+                        inputId = 'apptabs', 
+                        selected = "risk-assessment-tab"
+      )
     })
     
     pkgs <- reactive({
