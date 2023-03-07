@@ -114,7 +114,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       
       my_data_table <- reactive({
         cbind(table_data(), 
-        tibble::tibble(
+        data.frame(
           Actions = shinyInput(actionButton, nrow(table_data()),
                                'button_',
                                label = icon("microscope", class="fa-regular", lib = "font-awesome"),
