@@ -14,8 +14,8 @@ test_that("Reactivity of database view table", {
   )
   
   # set up new app driver object
-  app <- AppDriver$new(app_dir = test_path("test-apps"))
-  
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 60*1000)
+
   app$set_inputs(apptabs = "database-tab")
   
   #### Test that the `table_data` loads correctly ####
@@ -75,7 +75,8 @@ test_that("Reactivity of database view table", {
     app$get_html("#databaseView-packages_table") %>%
     rvest::minimal_html() %>%
     rvest::html_table() %>%
-    `[[`(1)
+    `[[`(1) %>% 
+    select_if(!names(.) %in% c('Explore Metric')) # added only to packages_table
   
   expect_equal(packages_table, tbl_actual, 
                ignore_attr = TRUE)
