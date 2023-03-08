@@ -3,11 +3,14 @@ title:    "<span class='txtasis'>R Package Risk Assessment</span>"
 subtitle: "<span class='txtasis'>Report for Package: `r params$pkg[['name']]`</span>"
 author:   "<span class='txtasis'>Author (Role): `r params$user_name` (`r params$user_role `)</span>"
 date:     "<span class='txtasis'>Report Date: `r format(Sys.time(), '%B %d, %Y')`</span>"
-always_allow_html: true
 output:
   pdf_document:
+    latex_engine: xelatex
     md_extensions: +raw_html-markdown_in_html_blocks
     pandoc_args: ['--lua-filter', 'read_html.lua']
+    extra_dependencies: ['graphicx', 'fancyhdr', 'unicode-math']
+    includes:
+      in_header: header.tex
 params:
   pkg: NA
   riskmetric_version: NA
@@ -131,14 +134,16 @@ if (!cm_ind) {
     h6(glue::glue("Community Usage Metrics not avaiable for {params$pkg$name}"),
        style = "text-align: center; color: gray; padding-top: 50px;")
 } else {
-params$com_metrics %>%
+comm_out_tab <- params$com_metrics %>%
   dplyr::mutate(
     `Metric Name` = title,
     `Metric Description` = desc,
     `Metric Value` = value
   ) %>%
   dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
-  knitr::kable(format = 'pandoc')
+  knitr::kable(format = 'latex', booktabs = TRUE)
+
+if (!requireNamespace("kableExtra", quietly = TRUE)) comm_out_tab else comm_out_tab %>% kableExtra::kable_styling(position = "left")
 }
 ```
 
@@ -188,7 +193,6 @@ tagList(
 tagList(br(), h2('About The Report'))
 ```
 
-
 ```{r about_report}
 
 tagList(
@@ -198,6 +202,10 @@ tagList(
   strong('Metric Weights:')
 )
 
-params$metric_weights %>%
-  knitr::kable(format = 'pandoc')
+tab_out <-
+  params$metric_weights %>%
+  knitr::kable(align = c('l','c'), format = 'latex', booktabs = TRUE) 
+
+if (!requireNamespace("kableExtra", quietly = TRUE)) tab_out else tab_out %>% kableExtra::kable_styling(position = "left")
 ```
+
