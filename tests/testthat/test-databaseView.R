@@ -76,7 +76,7 @@ test_that("Reactivity of database view table", {
     rvest::minimal_html() %>%
     rvest::html_table() %>%
     `[[`(1) %>% 
-    select_if(!names(.) %in% c('Explore Metric')) # added only to packages_table
+    select_if(!names(.) %in% c('Explore Metrics')) # added only to packages_table
   
   expect_equal(packages_table, tbl_actual, 
                ignore_attr = TRUE)
