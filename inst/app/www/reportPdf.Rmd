@@ -191,7 +191,6 @@ tagList(
 tagList(br(), h2('About The Report'))
 ```
 
-
 ```{r about_report}
 
 tagList(
@@ -201,6 +200,10 @@ tagList(
   strong('Metric Weights:')
 )
 
-params$metric_weights %>%
-  knitr::kable(format = 'pandoc')
+tab_out <-
+  params$metric_weights %>%
+  knitr::kable(align = c('l','c'), format = 'latex') 
+
+if (!requireNamespace("kableExtra", quietly = TRUE)) tab_out else tab_out %>% kableExtra::kable_styling(position = "left")
 ```
+
