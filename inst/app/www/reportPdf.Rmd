@@ -134,14 +134,16 @@ if (!cm_ind) {
     h6(glue::glue("Community Usage Metrics not avaiable for {params$pkg$name}"),
        style = "text-align: center; color: gray; padding-top: 50px;")
 } else {
-params$com_metrics %>%
+comm_out_tab <- params$com_metrics %>%
   dplyr::mutate(
     `Metric Name` = title,
     `Metric Description` = desc,
     `Metric Value` = value
   ) %>%
   dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
-  knitr::kable(format = 'pandoc')
+  knitr::kable(format = 'latex', booktabs = TRUE)
+
+if (!requireNamespace("kableExtra", quietly = TRUE)) comm_out_tab else comm_out_tab %>% kableExtra::kable_styling(position = "left")
 }
 ```
 
@@ -202,7 +204,7 @@ tagList(
 
 tab_out <-
   params$metric_weights %>%
-  knitr::kable(align = c('l','c'), format = 'latex') 
+  knitr::kable(align = c('l','c'), format = 'latex', booktabs = TRUE) 
 
 if (!requireNamespace("kableExtra", quietly = TRUE)) tab_out else tab_out %>% kableExtra::kable_styling(position = "left")
 ```
