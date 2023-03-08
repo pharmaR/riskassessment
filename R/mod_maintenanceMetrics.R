@@ -34,9 +34,6 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, pare
           
           tagList(
             br(),
-            if (!is.null(parent$userData$flag) && parent$userData$flag == "DB") {
-              actionButton(ns("retn2dbview"), icon("database"))
-            },
             introJSUI(NS(id, 'introJS')),
             h4("Maintenance Metrics", style = "text-align: center;"),
             br(), br(),
@@ -50,17 +47,6 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, pare
          )
       }
     })
-
-    observeEvent(input$retn2dbview, {
-      req(parent$userData$flag == "DB")
-      
-      # select maintenance metrics panel
-      updateTabsetPanel(session = parent, 
-                        inputId = 'apptabs', 
-                        selected = "database-tab"
-      )
-      parent$userData$flag <- "MM"
-    }, ignoreInit = TRUE)
 
     # IntroJS.
     introJSServer(id = "introJS", text = reactive(mm_steps), user)

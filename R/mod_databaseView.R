@@ -117,7 +117,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
         data.frame(
           Actions = shinyInput(actionButton, nrow(table_data()),
                                'button_',
-                               label = icon("microscope", class="fa-regular", lib = "font-awesome"),
+                               label = icon("arrow-right", class="fa-regular", lib = "font-awesome"),
                                onclick = paste0('Shiny.onInputChange(\"' , ns("select_button"), '\", this.id)')
           )
         )
@@ -154,7 +154,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                                           x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))
           )),
         selection = list(mode = 'multiple'),
-        colnames = c("Package", "Version", "Score", "Decision Made?", "Decision", "Last Comment", "Explore Metric"),
+        colnames = c("Package", "Version", "Score", "Decision Made?", "Decision", "Last Comment", "Explore Metrics"),
         rownames = FALSE,
         options = list(
           searching = FALSE,
@@ -176,8 +176,6 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       # grab the package name
       pkg_name <- table_data()[selectedRow, 1]
 
-      parent$userData$flag <- "DB"
-      
       # update sidebar-select_pkg
       updateSelectizeInput(
         session = parent,
