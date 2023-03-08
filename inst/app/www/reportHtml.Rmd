@@ -1,13 +1,16 @@
 ---
-title:    "<span class='txtasis'>R Package Risk Assessment</span>"
+title:    "<span class='txtasis'>R Package Risk Assessment  </span>"
 subtitle: "<span class='txtasis'>Report for Package: `r params$pkg[['name']]`</span>"
 author:   "<span class='txtasis'>Author (Role): `r params$user_name` (`r params$user_role `)</span>"
 date:     "<span class='txtasis'>Report Date: `r format(Sys.time(), '%B %d, %Y')`</span>"
 always_allow_html: true
+classoption: portrait
 output: 
   html_document:
     theme:
       bootswatch: lux
+    includes:
+       in_header: header.html
 runtime: shiny
 params:
   pkg: NA

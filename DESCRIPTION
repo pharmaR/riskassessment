@@ -63,6 +63,7 @@ Imports:
     stringr
 Suggests: 
     fontawesome,
+    kableExtra,
     knitr,
     pkgload,
     rstudioapi,
