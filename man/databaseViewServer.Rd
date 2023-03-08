@@ -4,7 +4,7 @@
 \alias{databaseViewServer}
 \title{Server logic for 'Database View' module}
 \usage{
-databaseViewServer(id, user, uploaded_pkgs, metric_weights, changes)
+databaseViewServer(id, user, uploaded_pkgs, metric_weights, changes, parent)
 }
 \arguments{
 \item{id}{a module id name}
@@ -16,6 +16,8 @@ databaseViewServer(id, user, uploaded_pkgs, metric_weights, changes)
 \item{metric_weights}{a reactive data.frame holding metric weights}
 
 \item{changes}{a reactive value integer count}
+
+\item{parent}{the parent (calling module) session information}
 }
 \description{
 Server logic for 'Database View' module

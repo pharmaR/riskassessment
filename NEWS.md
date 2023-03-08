@@ -10,6 +10,7 @@
 * Added hyperlink to the documentation site / user guide within the application
 * Added check that URLs needed to upload packages are reachable
 * Added Riskassessment logo for docx and pdf reports
+* Add button that redirects to pkg metrics
 
 
 # riskassessment 0.1.0

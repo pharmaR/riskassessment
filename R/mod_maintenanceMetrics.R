@@ -13,14 +13,17 @@ maintenanceMetricsUI <- function(id) {
 #' @param selected_pkg placeholder
 #' @param maint_metrics placeholder
 #' @param user placeholder
+#' @param parent the parent (calling module) session information
 #' 
 #' @import dplyr
 #' @keywords internal
 #' 
-maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user) {
+maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, parent) {
   moduleServer(id, function(input, output, session) {
-    # Render Output UI for Maintenance Metrics.
+       ns <- NS(id)
+   # Render Output UI for Maintenance Metrics.
     output$maintenance_metrics_ui <- renderUI({
+      
       
       # Lets the user know that a package needs to be selected.
       if(identical(selected_pkg$name(), character(0)))
@@ -41,10 +44,10 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user) {
                          viewCommentsUI(NS(id, 'view_comments')))
             )
           )
-        )
+         )
       }
     })
-    
+
     # IntroJS.
     introJSServer(id = "introJS", text = reactive(mm_steps), user)
 
