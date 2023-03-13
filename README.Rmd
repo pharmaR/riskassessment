@@ -125,11 +125,11 @@ As you might expect, certain deployment environments offer persistent storage an
 
 * Shiny Server
 
-* RStudio Connect
+* Posit Connect
 
 * ShinyProxy
 
-For more information on each of these, we highly recommend reading our 'deployments' article.
+For more information on each of these, we highly recommend reading our ['Deployment' article](https://pharmar.github.io/riskassessment/articles/Deployment.html).
 
 
 <br>

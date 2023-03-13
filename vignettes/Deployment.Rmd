@@ -1,8 +1,8 @@
 ---
-title: "Deployments"
+title: "Deployment"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Deployments}
+  %\VignetteIndexEntry{Deployment}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -14,9 +14,6 @@ library(fontawesome)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-</br></br></br>
-
-# Introduction
 
 To reap all the advantages of the `riskassessment` application, an organization needs to frequently execute and store results derived from within the app, including but not limited to:
 
@@ -38,12 +35,15 @@ To accomplish this, the app automatically creates and populates a `SQLite` datab
 
 Note! In the future, we'll consider adding utilities that would allow users to connect to an externa, or remote storage method, like a database. 
 
-# Deployment Options
+
+<br>
 
 ## shinyapps.io
 
 Beware: shinyapps.io **does not** offer persistent storage of `riskassessment`'s `SQLite` database or logs. Thus, it **is not** likely a viable deployment option for your organization or group. For example, our [demo application](https://rinpharma.shinyapps.io/riskassessment) (hosted on shinyapps.io) contains a pre-prepared database of packages that can't be permanently altered. It CAN be altered within a session, but any changes **will not** persist outside the session.
 
+
+<br>
 
 ## Posit Connect & Shiny Server
 
@@ -51,6 +51,7 @@ On a server, if you want to save files on disk, you'll need to set write permiss
 
 On Posit Connect, you need to use an absolute path to specify the directory where to save logs. You can find more information here: [Persistent Storage on Posit Connect](https://support.rstudio.com/hc/en-us/articles/360007981134-Persistent-Storage-on-RStudio-Connect).
 
+<br>
 
 ## ShinyProxy
 
@@ -61,6 +62,18 @@ With [ShinyProxy](https://www.shinyproxy.io/), you can use a Docker volume to wr
 `/var/log/shinylogs` is a directory on the server where you deploy your applications with ShinyProxy. `/root/logs` is a directory inside your Docker image.
 
 
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
 
 
 
