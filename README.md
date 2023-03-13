@@ -20,7 +20,7 @@ package within an organizational context.
 <br>
 
 <center>
-<a href="https://rinpharma.shinyapps.io/risk_assessment">
+<a href="https://rinpharma.shinyapps.io/riskassessment">
 <img src="man/figures/demo_riskassessment.png" alt="{riskassessment} app" width="25%">
 </a>
 </center>
@@ -68,7 +68,7 @@ adoption of R within a biopharmaceutical regulatory setting.
 
 If you are new to using the `riskassessment` app, welcome! We’d highly
 encourage you to start exploring the
-[`demo version`](https://rinpharma.shinyapps.io/risk_assessment) of the
+[`demo version`](https://rinpharma.shinyapps.io/riskassessment) of the
 app currently deployed on shinyapps.io. There, you’ll find a number of
 pre-loaded packages just waiting to be assessed. Hands on experience
 will help you become familiar with the general layout of the app as you
@@ -171,8 +171,8 @@ at.
 As you might expect, certain deployment environments offer persistent
 storage and others do not. For example, shinyapps.io does not. That
 means that even our [demo
-app](https://rinpharma.shinyapps.io/risk_assessment) that’s hosted on
-shinyapps.io contains a a package database that can’t be permanently
+app](https://rinpharma.shinyapps.io/riskassessment) that’s hosted on
+shinyapps.io contains a package database that can’t be permanently
 altered. That’s not advantageous since an organization needs to
 continually add new packages, publish comments, and make decisions about
 packages. Thus, we’d recommend exploring these deployment options (which
