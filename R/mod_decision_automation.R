@@ -112,10 +112,10 @@ mod_decision_automation_server <- function(id, user, decision_lst = c("Low", "Me
         output$auto_settings <-
           renderUI({
             dec_divs <- purrr::map(decision_lst, ~ div(
-              risk = .x %>% tolower() %>% stringr::str_replace_all(" +", "_"),
+              risk = risk_lbl(.x, input = FALSE),
               class = "shinyjs-hide",
               style = "width: 100%",
-              sliderInput(ns(glue::glue("{.x %>% tolower() %>% stringr::str_replace_all(' +', '_')}_risk")), 
+              sliderInput(ns(risk_lbl(.x)), 
                           paste(.x, "Risk"), 0, 1, initial_values[[.x]],
                           width = "100%", sep = .01)
             ))

@@ -17,3 +17,12 @@ assign_decisions <- function(decision_list, package) {
   
   return(decision)
 }
+
+risk_lbl <- function(x, input = TRUE) {
+  lbl <- x %>% tolower() %>% stringr::str_replace_all(" +", "_")
+  
+  if (input)
+    paste(lbl, "risk", sep = "_")
+  else
+    lbl
+}
