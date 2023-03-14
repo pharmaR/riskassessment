@@ -92,7 +92,6 @@ mod_decision_automation_server <- function(id, user, decision_lst = c("Low", "Me
         num_dec <- length(decision_lst)
         initial_values <- purrr::imap(decision_lst, ~ c((.y - 1)/num_dec, .y/num_dec) %>% `[`(!. %in% c(0,1)) %>% round(2)) %>% 
           purrr::set_names(decision_lst)
-        # initial_values <- list(Low = .33, Medium = c(.33,.66), High = .66)
         initial_selection <- NULL
         if (!rlang::is_empty(auto_json)) {
           for (.y in names(auto_json)) {
@@ -112,35 +111,23 @@ mod_decision_automation_server <- function(id, user, decision_lst = c("Low", "Me
         
         output$auto_settings <-
           renderUI({
+            dec_divs <- purrr::map(decision_lst, ~ div(
+              risk = .x %>% tolower() %>% stringr::str_replace_all(" +", "_"),
+              class = "shinyjs-hide",
+              style = "width: 100%",
+              sliderInput(ns(glue::glue("{.x %>% tolower() %>% stringr::str_replace_all(' +', '_')}_risk")), 
+                          paste(.x, "Risk"), 0, 1, initial_values[[.x]],
+                          width = "100%", sep = .01)
+            ))
             div(
               style = "float: right;",
               shinyWidgets::dropdownButton(
                 div(
                   style = "display: flex;",
-                checkboxGroupInput(ns("auto_include"), "Auto-Assign Risk Decisions For...", c("Low", "Medium", "High"), selected = initial_selection, inline = TRUE),
+                checkboxGroupInput(ns("auto_include"), "Auto-Assign Risk Decisions For...", decision_lst, selected = intersect(initial_selection, decision_lst), inline = TRUE),
                 actionButton(ns("auto_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
                 ),
-                div(
-                  risk = "low",
-                  class = "shinyjs-hide",
-                  style = "width: 100%",
-                  sliderInput(ns("low_risk"), "Low Risk", 0, 1, initial_values$Low,
-                              width = '100%', step = .01)
-                ),
-                div(
-                  risk = "medium",
-                  class = "shinyjs-hide",
-                  style = "width: 100%",
-                  sliderInput(ns("med_risk"), "Medium Risk", 0, 1, initial_values$Medium,
-                              width = '100%', step = .01)
-                ),
-                div(
-                  risk = "high",
-                  class = "shinyjs-hide",
-                  style = "width: 100%",
-                  sliderInput(ns("high_risk"), "High Risk", 0, 1, initial_values$High,
-                              width = '100%', step = .01)
-                ),
+                dec_divs,
                 br(),
                 actionButton(ns("submit_auto"), "Apply Decision Rules", width = "100%"),
                 circle = TRUE,
