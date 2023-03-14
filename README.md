@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# The `{riskassessment}` application <a href='https://pharmar.github.io/riskassessment/'><img src="man/figures/hex-riskassessment-aspconfig.png" align="right" height="172" style="float:right; height:172px;"/></a>
+# The `{riskassessment}` application <a href='https://bit.ly/raa_docs'><img src="man/figures/hex-riskassessment-aspconfig.png" align="right" height="172" style="float:right; height:172px;"/></a>
 
 <!-- badges: start -->
 
@@ -137,13 +137,12 @@ article.
 
 ### User Guides and User Feedback
 
-<a href='https://pharmar.github.io/riskassessment/'><img src="man/figures/raa-image-ug.png" align="right" height="120" style="float:right; padding-right: 30px; height:120px;"/></a>
+<a href='https://bit.ly/raa_docs'><img src="man/figures/raa-image-ug.png" align="right" height="120" style="float:right; padding-right: 30px; height:120px;"/></a>
 
 We’re constantly improving the app and it’s documentation. Please
 explore the user guides that have been developed to date, available on
-the `riskassessment` [documentation
-site](https://pharmar.github.io/riskassessment/). Be sure to read the
-[‘Get
+the `riskassessment` [documentation site](https://bit.ly/raa_docs). Be
+sure to read the [‘Get
 Started’](https://pharmar.github.io/riskassessment/articles/riskassessment.html)
 tab and perhaps [an article or
 two](https://pharmar.github.io/riskassessment/articles/index.html)!
