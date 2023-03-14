@@ -248,14 +248,18 @@ mod_decision_automation_server <- function(id, user, decision_lst = c("Low", "Me
         observeEvent(input$auto_reset, {
           req(user$role == "admin")
           
-          purrr::iwalk(auto_list(), ~
-                        if (.y == "Low") {
-                          updateSliderInput(session, "low_risk", value = .x[2])
-                        } else if (.y == "Medium") {
-                          updateSliderInput(session, "med_risk", value = .x)
-                        } else if (.y == "High") {
-                          updateSliderInput(session, "high_risk", value = .x[1])
-                        })
+          purrr::iwalk(auto_list(), function(.x, .y) {
+            reset_vals <- 
+            if (.y == decision_lst[1]) {
+              .x[2]
+            } else if (.y == decision_lst[length(decision_lst)]) {
+              .x[1]
+            } else {
+              .x
+            }
+            
+            updateSliderInput(session, risk_lbl(.y), value = reset_vals)
+          })
           updateCheckboxGroupInput(session, "auto_include", selected = names(auto_list()))
           })
         
