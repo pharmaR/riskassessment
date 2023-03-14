@@ -11,7 +11,7 @@
 * Added check that URLs needed to upload packages are reachable
 * Added Riskassessment logo for docx and pdf reports
 * Add button that redirects to pkg metrics
-
+* upgraded `renv.lock` file to R Version `v4.2.2`
 
 # riskassessment 0.1.0
 
