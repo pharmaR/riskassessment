@@ -11,9 +11,13 @@
 * Added check that URLs needed to upload packages are reachable
 * Added Riskassessment logo for docx and pdf reports
 * Add button that redirects to pkg metrics
+* upgraded `renv.lock` file to R Version `v4.2.2`
 * Added Excel & CSV export options on Database View tab
 * Added 'search' capability to database view tab
 * Some general aesthetic improvements, for example: made sure tab headers were a consistent size
+
+
+
 
 # riskassessment 0.1.0
 
