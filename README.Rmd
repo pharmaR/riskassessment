@@ -27,7 +27,7 @@ knitr::opts_chunk$set(
 <br>
 
 <center>
-<a href="https://rinpharma.shinyapps.io/risk_assessment">
+<a href="https://bit.ly/demo_raa">
 <img src="man/figures/demo_riskassessment.png" alt="{riskassessment} app" width="25%">
 </a>
 </center>
@@ -60,7 +60,7 @@ _Note:_ Development of both `riskassessment` and `riskmetric` were made possible
 
 ### Usage
 
-If you are new to using the `riskassessment` app, welcome! We'd highly encourage you to start exploring the [`demo version`](https://rinpharma.shinyapps.io/risk_assessment) of the app currently deployed on shinyapps.io. There, you'll find a number of pre-loaded packages just waiting to be assessed. Hands on experience will help you become familiar with the general layout of the app as you poke around and explore.
+If you are new to using the `riskassessment` app, welcome! We'd highly encourage you to start exploring the [`demo version`](https://bit.ly/demo_raa) of the app currently deployed on shinyapps.io. There, you'll find a number of pre-loaded packages just waiting to be assessed. Hands on experience will help you become familiar with the general layout of the app as you poke around and explore.
 
 With that said, you should immediately recognize that the app requires authentication, since it's intended use is within an organization. There are two pre-defined roles: 'nonadmin' users and 'admin' users. The latter can add/delete users, download an entire copy of the database, and modify the metric weights used in calculation of risk scores. Initially, both share the same password: `QWERTY1`. If you log in with this credential, the app will immediately prompt you to change your password and repeat the the process with your new credentials.
 
@@ -102,7 +102,7 @@ renv::activate()
 renv::restore()
 ```
 
-After this step is complete, you can simply run the contents of `app.R` to launch and/or deploy the application!
+After this step is complete, you can simply run the contents of `app.R` to launch and/or deploy the application! For more information on our dev philosophy as it pertains to package managment, please read the ["Using `renv`"](https://pharmar.github.io/riskassessment/articles/dev_renv.html) article.
 
 
 ### User Guides and User Feedback
@@ -119,9 +119,9 @@ We also want align with our users on big picture, strategic topics. Specifically
 
 
 
-#### Deployments
+#### Deployment
 
-As you might expect, certain deployment environments offer persistent storage and others do not. For example, shinyapps.io does not. That means that even our [demo app](https://rinpharma.shinyapps.io/risk_assessment) that's hosted on shinyapps.io contains a a package database that can't be permanently altered. That's not advantageous since an organization needs to continually add new packages, publish comments, and make decisions about packages. Thus, we'd recommend exploring these deployment options (which allow persistent storage):
+As you might expect, certain deployment environments offer persistent storage and others do not. For example, shinyapps.io does not. That means that even our [demo app](https://bit.ly/demo_raa) that's hosted on shinyapps.io contains a a package database that can't be permanently altered. That's not advantageous since an organization needs to continually add new packages, publish comments, and make decisions about packages. Thus, we'd recommend exploring these deployment options (which allow persistent storage):
 
 * Shiny Server
 
