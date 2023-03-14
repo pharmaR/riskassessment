@@ -23,13 +23,11 @@ databaseViewUI <- function(id) {
     fluidRow(
       column(
         width = 8, offset = 2, align = "center",
-        br(),
-        h4("Database Overview"),
-        hr(),
+        h2("Database Overview", align = "center", `padding-bottom`="20px"),
         tags$section(
           br(), br(),
           shinydashboard::box(width = 12,
-              title = h5("Uploaded Packages", style = "margin-top: 5px"),
+              title = h3("Uploaded Packages", style = "margin-top: 5px"),
               DT::dataTableOutput(NS(id, "packages_table")),
               br(),
               fluidRow(
@@ -110,13 +108,15 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     )
     
     # Create table for the db dashboard.
-    output$packages_table <- DT::renderDataTable({
+    output$packages_table <- DT::renderDataTable(server = FALSE, {  # This allows for downloading entire data set
       
       my_data_table <- reactive({
         cbind(table_data(), 
         data.frame(
           Actions = shinyInput(actionButton, nrow(table_data()),
                                'button_',
+                               size = "xs",
+                               style='height:24px; padding-top:1px;',
                                label = icon("arrow-right", class="fa-regular", lib = "font-awesome"),
                                onclick = paste0('Shiny.onInputChange(\"' , ns("select_button"), '\", this.id)')
           )
@@ -156,14 +156,23 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
         selection = list(mode = 'multiple'),
         colnames = c("Package", "Version", "Score", "Decision Made?", "Decision", "Last Comment", "Explore Metrics"),
         rownames = FALSE,
+        extensions = "Buttons",
         options = list(
-          searching = FALSE,
+          searching = TRUE,
           lengthChange = FALSE,
-          #dom = 'Blftpr',
+          dom = 'Blftpr',
           pageLength = 15,
           lengthMenu = list(c(15, 60, 120, -1), c('15', '60', '120', "All")),
-          columnDefs = list(list(className = 'dt-center', targets = "_all"))
+          columnDefs = list(list(className = 'dt-center', targets = "_all")),
+          buttons = list(
+            list(extend = "excel", text = shiny::HTML('<i class="fas fa-download"></i> Excel'),
+                 exportOptions = list(columns = c(0:5)), # which columns to download
+                 filename = paste("{riskassessment} pkgs " ,stringr::str_replace_all(paste(Sys.time()),":", "."))),
+            list(extend = "csv", text = shiny::HTML('<i class="fas fa-download"></i> CSV'),
+                 exportOptions = list(columns = c(0:5)), # which columns to download
+                 filename = paste("{riskassessment} pkgs " ,stringr::str_replace_all(paste(Sys.time()),":", "."))))
         )
+        , style="default"
       ) %>%
         DT::formatStyle(names(table_data()), textAlign = 'center')
     })
