@@ -1,6 +1,7 @@
 ’s
 addComment
 admin’
+AppDriver
 Aravind
 arg
 asis
@@ -64,6 +65,8 @@ RStudio
 Rstudio
 serverless
 shinyapps
+shinytest
+shinytest2
 ShinyProxy
 showComments
 showHelperMessage
