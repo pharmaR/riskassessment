@@ -1,6 +1,6 @@
 test_that("downloadHandler works", {
 
-  app <- AppDriver$new(test_path("test-apps", "downloadHandler-app"))
+  app <- shinytest2::AppDriver$new(test_path("test-apps", "downloadHandler-app"))
   
   expect_equal(app$get_value(input = "tabs"), "single")
   expect_equal(app$get_value(input = "downloadHandler_1-report_format"), "html")
