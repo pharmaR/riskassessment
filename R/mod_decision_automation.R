@@ -149,49 +149,20 @@ mod_decision_automation_server <- function(id, user, decision_lst = c("Low", "Me
           
           if (!rlang::is_empty(grp_added))
             purrr::walk(grp_added, ~ {
-              if ("Low" == .x) {
-                value_l <- 0
-                if ("Medium" %in% input$auto_include) {
-                  value_u <- min(input$low_risk, input$med_risk[1])
-                  updateSliderInput(session, "low_risk", value = value_u)
-                } else if ("High" %in% input$auto_include) {
-                  value_u <- min(input$low_risk, input$high_risk)
-                  updateSliderInput(session, "low_risk", value = value_u)
-                } else {
-                  value_u <- input$low_risk
-                }
-              } else if ("Medium" == .x) {
-                if ("Low" %in% input$auto_include) {
-                  value_l <- max(input$low_risk, input$med_risk[1])
-                  updateSliderInput(session, "med_risk", value = c(value_l, max(value_l, input$med_risk[2])))
-                } else {
-                  value_l <- input$med_risk[1]
-                }
-                if ("High" %in% input$auto_include) {
-                  value_u <- min(input$med_risk[2], input$high_risk)
-                  updateSliderInput(session, "med_risk", value = c(min(input$med_risk[1], value_u), value_u))
-                } else {
-                  value_u <- input$med_risk[2]
-                }
-              } else if ("High" %in% grp_added) {
-                if ("Medium" %in% input$auto_include) {
-                  value_l <- max(input$med_risk[2], input$high_risk)
-                  updateSliderInput(session, "high_risk", value = value_l)
-                } else if ("Low" %in% input$auto_include) {
-                  value_l <- max(input$low_risk, input$high_risk)
-                  updateSliderInput(session, "high_risk", value = value_l)
-                } else {
-                  value_l <- input$high_risk
-                }
-                value_u <- 1
+              value_lst <- c(0, input[[risk_lbl(.x)]], 1)
+              if (.x == decision_lst[1]) {
+                values <- value_lst[1:2]
+              } else {
+                values <- value_lst[2:3]
               }
-              shinyjs::show(selector = glue::glue("[risk={tolower(.x)}"))
-              auto_decision[[.x]] <- c(value_l, value_u)
+              
+              shinyjs::show(selector = glue::glue("[risk={risk_lbl(.x, input = FALSE)}"))
+              auto_decision[[.x]] <- values
             })
           
           if (!rlang::is_empty(grp_removed))
             purrr::walk(grp_removed, ~ {
-              shinyjs::hide(selector = glue::glue("[risk={tolower(.x)}"))
+              shinyjs::hide(selector = glue::glue("[risk={risk_lbl(.x, input = FALSE)}"))
               auto_decision[[.x]] <- NULL
             })
           
