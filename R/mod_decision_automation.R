@@ -20,7 +20,7 @@ mod_decision_automation_ui <- function(id){
 #' @importFrom jsonlite read_json write_json
 #' @importFrom purrr compact
 #' @importFrom shinyWidgets tooltipOptions
-mod_decision_automation_server <- function(id, user){
+mod_decision_automation_server <- function(id, user, decision_lst = c("Low", "Medium", "High")){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
@@ -89,18 +89,23 @@ mod_decision_automation_server <- function(id, user){
       }
       
       if (user$role == "admin") {
-        initial_values <- list(Low = .33, Medium = c(.33,.66), High = .66)
+        num_dec <- length(decision_lst)
+        initial_values <- purrr::imap(decision_lst, ~ c((.y - 1)/num_dec, .y/num_dec) %>% `[`(!. %in% c(0,1)) %>% round(2)) %>% 
+          purrr::set_names(decision_lst)
+        # initial_values <- list(Low = .33, Medium = c(.33,.66), High = .66)
         initial_selection <- NULL
         if (!rlang::is_empty(auto_json)) {
           for (.y in names(auto_json)) {
             initial_values[[.y]] <- 
-            if (.y == "Low") {
-              unlist(auto_json[[.y]][2])
-            } else if (.y == "Medium") {
-              unlist(auto_json[[.y]])
-            } else if (.y == "High") {
-              unlist(auto_json[[.y]][1])
-            }
+              if (.y == decision_lst[1]) {
+                unlist(auto_json[[.y]][2])
+              } else if (.y == decision_lst[num_dec]) { 
+                unlist(auto_json[[.y]][1])
+              } else if (.y %in% decision_lst) {
+                unlist(auto_json[[.y]])
+              } else {
+                warning(glue::glue("The decision category '{.y}' is not present in the allowed decision list!"))
+              }
           }
           initial_selection <- names(auto_json)
         }
