@@ -102,6 +102,10 @@ test_that("Comments can be added via the addComment module", {
   # close connection
   DBI::dbDisconnect(con)
   
+  if (file.exists(app_db_loc)) {
+    file.remove(app_db_loc)
+  }
+  
 })
 
 
