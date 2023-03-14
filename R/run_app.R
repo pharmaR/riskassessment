@@ -9,6 +9,7 @@
 #'   Please make sure name ends with '.sqlite'. For example: 'cred_db.sqlite'.
 #' @param assessment_db_name text string that names the credentials databse.
 #'   Please make sure name ends with '.sqlite'. For example: 'assess_db.sqlite'.
+#' @param decision_categories a character vector of the decision categories
 #' @param ... arguments to pass to golem_opts. See `?golem::get_golem_options`
 #'   for more details.
 #' @inheritParams shiny::shinyApp
@@ -26,6 +27,7 @@ run_app <- function(
   login_note = NULL,
   credentials_db_name = NULL,
   assessment_db_name = NULL,
+  decision_categories = c("Low", "Medium", "High"),
   ...
 ) {
   # Pre-process some run-app inputs
@@ -79,6 +81,7 @@ run_app <- function(
                       assessment_db_name = assessment_db_name,
                       pre_auth_user = pre_auth_user,
                       login_creds = login_creds,
+                      decision_categories = decision_categories,
                       ...)
   )
 }

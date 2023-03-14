@@ -20,12 +20,14 @@ mod_decision_automation_ui <- function(id){
 #' @importFrom jsonlite read_json write_json
 #' @importFrom purrr compact
 #' @importFrom shinyWidgets tooltipOptions
-mod_decision_automation_server <- function(id, user, decision_lst = c("Low", "Medium", "High")){
+mod_decision_automation_server <- function(id, user){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
     auto_json <- jsonlite::read_json("auto_decisions.json")
     auto_list <- reactiveVal(auto_json)
+    
+    decision_lst <- golem::get_golem_options("decision_categories")
     
     output$auto_table <-
       DT::renderDataTable({
