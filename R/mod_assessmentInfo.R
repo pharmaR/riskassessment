@@ -11,8 +11,7 @@ assessmentInfoUI <- function(id) {
     fluidRow(
       column(
         width = 8, offset = 2,
-        br(),
-        h4("Assessment Criteria Overview"),
+        h2("Assessment Criteria Overview", align = "center", `padding-bottom`="20px"),
         br(),
         tabsetPanel(
           tabPanel(
