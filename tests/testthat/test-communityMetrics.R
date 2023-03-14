@@ -21,6 +21,8 @@ test_that("Reactivity of communityMetrics", {
   # get to the Maintenance Metrics tab
   app$set_inputs(tabs = "Community Usage Metrics")
   
+  app$wait_for_idle(500)
+  
   # read the current comment
   out_cmt <- app$get_values()$output$`communityMetrics-view_comments-view_comments`$html
   
