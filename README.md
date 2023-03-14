@@ -131,7 +131,7 @@ renv::restore()
 
 After this step is complete, you can simply run the contents of `app.R`
 to launch and/or deploy the application! For more information on our dev
-philosophy as it pertains to package managment, please read the [“Using
+philosophy as it pertains to package management, please read the [“Using
 `renv`”](https://pharmar.github.io/riskassessment/articles/dev_renv.html)
 article.
 
