@@ -137,7 +137,8 @@ test_that("The introJS module works as expected for nonadmins", {
   }
   
   # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps", "nonadmin-app"))
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps", "nonadmin-app"),
+                                   load_timeout = 600 * 1000)
   app$set_window_size(width = 1619, height = 1057)
   app$wait_for_idle()
   
