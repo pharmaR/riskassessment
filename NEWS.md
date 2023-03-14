@@ -13,6 +13,7 @@
 ### Squashed Bugs
 * Fixed bug where card displaying "Number of downloads in last 12 months" was faulty, summing all months from previous year and none from current year.
 * Report headings were changed to "asis" sentence case to avoid altering case on package names in reports
+* Fix failing tests: prefix AppDriver$new with 'shinytest2::'
 
 ### Docs
 * Added User Feedback survey to `README` (#411)
