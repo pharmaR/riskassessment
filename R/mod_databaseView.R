@@ -68,7 +68,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     
     ns = session$ns
     
-    decision_lst <- golem::get_golem_options("decision_categories")
+    decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low", "Medium", "High")
     color_lst <- color_palette[[length(decision_lst) - 2]]
     
     # used for adding action buttons to table_data

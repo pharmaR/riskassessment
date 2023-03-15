@@ -21,7 +21,7 @@ color_palette <- list(
 mod_decision_automation_ui <- function(id){
   ns <- NS(id)
   
-  decision_lst <- golem::get_golem_options("decision_categories")
+  decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low", "Medium", "High")
   color_lst <- color_palette[[length(decision_lst) - 2]]
   dec_num <- length(decision_lst)
   dec_css <- purrr::imap_chr(decision_lst, function(.x, .y) {
@@ -92,7 +92,7 @@ mod_decision_automation_server <- function(id, user){
     auto_json <- jsonlite::read_json("auto_decisions.json")
     auto_list <- reactiveVal(auto_json)
     
-    decision_lst <- golem::get_golem_options("decision_categories")
+    decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low", "Medium", "High")
     
     output$auto_table <-
       DT::renderDataTable({
