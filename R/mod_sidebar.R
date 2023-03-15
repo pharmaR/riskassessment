@@ -394,7 +394,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     observeEvent(input$submit_confirmed_decision, {
       dbUpdate(glue::glue(
         "UPDATE package
-          SET decision = '{input$decision}'
+          SET decision = '{input$decision}', decision_by = '{user$name}, decision_date = '{Sys.Date()}'
           WHERE name = '{selected_pkg$name}'")
       )
       
@@ -415,7 +415,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     observeEvent(input$reset_confirmed_decision, {
       dbUpdate(glue::glue(
         "UPDATE package
-          SET decision = ''
+          SET decision = '', decsion_by = '', decision_date = '{NA_DATE_}'
           WHERE name = '{selected_pkg$name}'")
       )
       
