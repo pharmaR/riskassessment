@@ -4,7 +4,7 @@
 \alias{introJSServer}
 \title{Server logic for introJS module}
 \usage{
-introJSServer(id, text)
+introJSServer(id, text, user)
 }
 \arguments{
 \item{id}{a module id}
@@ -13,6 +13,8 @@ introJSServer(id, text)
 strings guiding users, and a position of where to place the text in
 relationship to the element. Please see \code{R/introJSText.R} for data.frames
 that populate this argument for the app}
+
+\item{user}{placeholder}
 }
 \description{
 Server logic for introJS module

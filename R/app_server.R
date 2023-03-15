@@ -132,8 +132,9 @@ app_server <- function(input, output, session) {
   assessmentInfoServer("assessmentInfo", metric_weights = metric_weights)
   
   # Load server of the database view module.
+  #parentSession <- .subset2(session, "parent")
   databaseViewServer("databaseView", user, uploaded_pkgs$names,
-                     metric_weights = metric_weights, changes)
+                     metric_weights = metric_weights, changes, parent = session)
   
   # Gather maintenance metrics information.
   maint_metrics <- reactive({
@@ -157,7 +158,8 @@ app_server <- function(input, output, session) {
   maintenance_data <- maintenanceMetricsServer('maintenanceMetrics',
                                                selected_pkg,
                                                maint_metrics,
-                                               user)
+                                               user,
+                                               parent = session)
   
   # Load server for the community metrics tab.
   community_data <- communityMetricsServer('communityMetrics',

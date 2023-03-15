@@ -25,8 +25,10 @@
 }
 
 [risk=high] .irs--shiny .irs-bar {
-  background: linear-gradient(to bottom, #DDD -50%, #FFF 150%);
+  background: linear-gradient(to bottom, #dedede -50%, #fff 150%);
+  background-color: #ededed;
   border: 1px solid #cccccc;
+  border-radius: 8px;
 }
 
 [risk=high] .irs--shiny .irs-single {

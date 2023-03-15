@@ -77,14 +77,11 @@ uploadPackageServer <- function(id, user) {
       
       if(user$role == "admin") {
         upload_pkg <- bind_rows(upload_pkg, upload_adm)
-        apptab_steps <- bind_rows(apptab_admn, apptab_steps)
       }
       if(nrow(uploaded_pkgs()) > 0) 
-        upload_pkg_complete <- bind_rows(upload_pkg, upload_pkg_comp) %>% 
-          bind_rows(apptab_steps)
+        upload_pkg_complete <- bind_rows(upload_pkg, upload_pkg_comp)
       else 
-        upload_pkg %>% 
-          bind_rows(apptab_steps)
+        upload_pkg
     })
     
     auto_list <- mod_decision_automation_server("automate", user)
@@ -94,7 +91,7 @@ uploadPackageServer <- function(id, user) {
     observeEvent(input$load_cran, {
       if (!isTruthy(cran_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
-          cran_pkgs(c("dplyr", "tidyr", "readr", "purrr", "tibble", "stringr", "forcats"))
+          cran_pkgs(test_pkg_lst)
         } else {
           cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
         }
@@ -121,19 +118,8 @@ uploadPackageServer <- function(id, user) {
     
     # Start introjs when help button is pressed. Had to do this outside of
     # a module in order to take a reactive data frame of steps
-    observeEvent(
-      input[["introJS-help"]], # notice input contains "id-help"
-      rintrojs::introjs(session,
-                        options = list(
-                          steps = 
-                            upload_pkg_txt() %>%
-                            union(sidebar_steps),
-                          "nextLabel" = "Next",
-                          "prevLabel" = "Previous"
-                        )
-      ),
-    )
-    
+    introJSServer("introJS", text = upload_pkg_txt, user)
+
     uploaded_pkgs00 <- reactiveVal()
 
     observeEvent(user$role, {
@@ -226,19 +212,81 @@ uploadPackageServer <- function(id, user) {
 
     })
     
+    checking_urls <- reactiveValues()
+    
+    observeEvent(input$check_urls, {
+      checking_urls$finished <- FALSE
+      removeModal()
+    })
+    
+    observe({
+      req(input$check_urls, !isTRUE(checking_urls$finished))
+      invalidateLater(60*1000)
+      
+      withProgress({
+        good_urls <- purrr::map_lgl(checking_urls$url_lst, 
+                                    ~ try(curlGetHeaders(.x, verify = FALSE), silent = TRUE) %>%
+                                      {class(.) != "try-error" && attr(., "status") != 404})
+        Sys.sleep(.5)
+      }, message = "Checking URLs")
+      
+      checking_urls$finished <- all(good_urls)
+    })
+    
+    observeEvent(checking_urls$finished, {
+      req(checking_urls$finished)
+      showModal(modalDialog(
+        title = h2("Data Connection Issues"),
+        h5("The needed URLs are now reachable. Please try to upload the desired packages now."),
+      ))
+    })
+    
     uploaded_pkgs <- reactiveVal(data.frame())
     # Save all the uploaded packages, marking them as 'new', 'not found', 
     # 'duplicate' or 'removed'
     observeEvent(uploaded_pkgs00(), {
 
       uploaded_packages <- uploaded_pkgs00()
+      uploaded_pkgs00(NULL)
       uploaded_packages$score <- NA_real_
       if (!rlang::is_empty(auto_list()))
         uploaded_packages$decision <- ""
       np <- nrow(uploaded_packages)
       
+      if (!isTRUE(getOption("shiny.testmode"))) {
+        url_lst <- list(
+          "https://cran.rstudio.com",
+          "https://cran.r-project.org",
+          "https://cranlogs.r-pkg.org"
+        )
+        
+        good_urls <- purrr::map_lgl(url_lst, 
+                                    ~ try(curlGetHeaders(.x, verify = FALSE), silent = TRUE) %>%
+                                      {class(.) != "try-error" && attr(., "status") != 404})
+        
+        if (!all(good_urls)) {
+          checking_urls$url_lst <- url_lst[!good_urls]
+          showModal(modalDialog(
+            title = h2("Data Connection Issues"),
+            h5("The process has been cancelled because at least one of the URLs used to populate the metrics is unreachable at this time."),
+            br(),
+            h5("Notify when  URLs are reachable?"),
+            footer = tagList(
+              actionButton(session$ns("check_urls"), "Yes"),
+              modalButton("No")
+            )
+          ))
+        }
+        
+      req(all(good_urls))
+      }
+      
       if (!isTruthy(cran_pkgs())) {
-        cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+        if (isTRUE(getOption("shiny.testmode"))) {
+          cran_pkgs(test_pkg_lst)
+        } else {
+          cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+        }
       }
       
       # Start progress bar. Need to establish a maximum increment
@@ -256,9 +304,12 @@ uploadPackageServer <- function(id, user) {
             
             if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
               # run pkg_ref() to get pkg version and source info
-              ref <- riskmetric::pkg_ref(uploaded_packages$package[i],
-                                         source = "pkg_cran_remote",
-                                         repos = c("https://cran.rstudio.com"))
+              if (!isTRUE(getOption("shiny.testmode")))
+                ref <- riskmetric::pkg_ref(uploaded_packages$package[i],
+                                           source = "pkg_cran_remote",
+                                           repos = c("https://cran.rstudio.com"))
+              else
+                ref <- test_pkg_refs[[uploaded_packages$package[i]]]
             } else {
               ref <- list(name = uploaded_packages$package[i],
                           source = "name_bad")
@@ -411,9 +462,9 @@ uploadPackageServer <- function(id, user) {
         options = list(
           searching = FALSE,
           sScrollX = "100%",
-          lengthChange = FALSE,
+          lengthChange = TRUE,
           aLengthMenu = list(c(5, 10, 20, 100, -1), list('5', '10', '20', '100', 'All')),
-          iDisplayLength = 5
+          iDisplayLength = 10
         )
       )
     })

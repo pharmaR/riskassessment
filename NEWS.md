@@ -1,3 +1,32 @@
+# riskassessment 0.1.1
+
+### Enhancements
+* Upgraded to leverage {riskmetric} to v0.2.0 which impacts risk score calculations
+* Add button that redirects to pkg metrics
+* Added 'search' capability to database view tab
+* Added Excel & CSV export options on Database View tab
+* Added hyperlink to the documentation site / user guide within the application
+* Added check that URLs needed to upload packages are reachable, just in case!
+* Added `riskassessment` logo for docx and pdf reports
+* Some general aesthetic improvements, for example: made sure tab headers were a consistent size
+
+### Squashed Bugs
+* Fixed bug where card displaying "Number of downloads in last 12 months" was faulty, summing all months from previous year and none from current year.
+* Report headings were changed to "asis" sentence case to avoid altering case on package names in reports
+* Fix failing tests: prefix AppDriver$new with 'shinytest2::'
+
+### Docs
+* Added User Feedback survey to `README` (#411)
+* Fixed broken R-CMD-CHECK badge in `README`
+* Updated a few vignettes to describe new 'Decision Automation' feature
+
+### For Devs
+* Removed {golem} testing option `pre_auth_user` from the arguments of `run_app()`
+* Improved stability and ease-of-use for testing `introJS` module
+* Preload information for a select list of packages to improve tests utilizing `shinytest2`
+* Upgraded to R Version v4.2.2
+
+
 # riskassessment 0.1.0
 
 ### All New Features

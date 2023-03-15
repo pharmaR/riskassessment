@@ -20,10 +20,14 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-This guide is to assist `ADMIN` users to manage credentials (aka, user IDs and passwords) and other `ADMIN`-only privileges, such as assessment re-weighting on metrics leveraged by `riskassessment` app. 
+It's no secret that users with administrator privileges have access to certain features of the application. This guide assists `ADMIN` users to manage these privileges, which (at a minimum) include:
+
+* govern user credentials
+* re-weight metrics that determine how risk scores are calculated
+* define automated decision rules based on those risk scores
 
 
-It's no secret that only users with administrator privileges have access to certain features of the application. To verify if you have `ADMIN` access, first check that you can see all THE navigation tabs within the app, especially the rightmost "Administrative Tools" tab. If you do not see this tab, you have not been granted access! To gain access, you'll have to request access from a known `ADMIN` user within your organization.
+To verify if you have `ADMIN` access, first check that you can see all THE navigation tabs within the app, especially the rightmost <a style="color:darkblue">**Administrative Tools**<a/> tab. If you do not see this tab, you have not been granted access! To gain access, you'll have to request access from a known `ADMIN` user within your organization.
 
 <br>
 
@@ -41,7 +45,7 @@ You can also hover your cursor over the `r fa("plus")` symbol in the bottom-righ
 <br>
 
 
-Once you have selected the `Administrative Tools` tab, there are currently two areas available for review: the first is `Credential Manager` and the second is `Assessment Reweighting`, as seen below.
+Once you have selected the <a style="color:darkblue">**Administrative Tools**<a/> tab, there are currently two areas available for review: the first is `Credential Manager` and the second is `Assessment Reweighting`, as seen below.
 
 <br>
 
@@ -86,7 +90,7 @@ The first table provides tools for managing of users: adding, editing, and delet
 <br>
 
 
-To add a new user, click the dark blue button labelled: "Add a user".
+To add a new user, click the button labelled: "Add a user".
  
 
 <br>
@@ -102,7 +106,7 @@ Here, we'll type "PeterParker" into the User Name field.
 
 </br></br></br></br></br></br></br></br>
 
-Notice the checkbox to grant the new user administrator privileges is also checked by default. A unique password is generated which the user will be prompted to change the first time he/she logs on, as long as the "Ask to change password" box remains checked. 
+Notice the `r fa(name = "square-check", fill = "darkblue", height = "1em")` checkbox to grant the new user administrator privileges is also checked by default. A unique password is generated which the user will be prompted to change the first time he/she logs on, as long as the "Ask to change password" box remains checked. 
 
 <br>
 
@@ -112,7 +116,7 @@ Notice the checkbox to grant the new user administrator privileges is also check
 
 <br>
 
-Upon clicking "Confirm New User", a confirmation modal will appear. Now would be a good time to notify the user by sending them their userid and temporary password.
+Upon clicking <a style="color:darkblue">**CONFIRM NEW USER**<a/>, a confirmation modal will appear. Now would be a good time to notify the user by sending them their userid and temporary password.
 
 
 <br>
@@ -130,7 +134,7 @@ Upon clicking "Confirm New User", a confirmation modal will appear. Now would be
 
 ![](images/account_expired_msg.png){style="float:right; width:312px; margin-left: 20px;"}
 
-If either the **start** date is set to a future date or the **expire** date is set to **before** today's date, an "account expired" message will appear, and the log-on attempt will fail.  
+If either the **start** date is set to a future date or the **expire** date is set to **before** today's date, an <a style="color:red">**account expired**<a/> message will appear, and the log-on attempt will fail.  
 
 </br>
 
@@ -148,10 +152,10 @@ Feel free to set either or both of these dates as needed, or just leave them bla
 
 <br>
 
-Edit user information by clicking on the dark blue `r fa(name = "pen-to-square", fill = "darkblue", height = "1em")` <a style="color:darkblue">Edit</a> button, found on the right-hand side of the table.</br></br>
+Edit user information by clicking on the `r fa(name = "pen-to-square", fill = "darkblue", height = "1em")` <a style="color:darkblue">**EDIT**</a> button, found on the right-hand side of the table.</br></br>
 
 
-An Edit User window will appear:
+An `Edit User` window will appear:
 
 <br>
 
@@ -161,7 +165,7 @@ An Edit User window will appear:
 
 <br>
 
-Make your changes, and then click on "Confirm Change".</br>
+Make your changes, and then click on <a style="color:darkblue">**CONFIRM CHANGE**<a/>.</br>
 
 <br>
 
@@ -190,8 +194,7 @@ At the bottom of this table is a bar with three buttons:
 <br>
 
 
-The first one is a checkbox `r fa(name = "square-check", fill = "red", height = "1em")`
-to select multiple users followed by an `r fa(name = "pen-to-square", fill = "darkblue", height = "1em")` "Edit Selected Users" and a `r fa(name = "trash-can", fill = "red", height = "1em")` "Remove Selected Users" button. These buttons are enabled when you select **two or more** users.
+The first one is a `r fa(name = "square-check", fill = "red", height = "1em")` checkbox to select multiple users followed by an `r fa(name = "pen-to-square", fill = "darkblue", height = "1em")` <a style="color:darkblue">**EDIT SELECTED USERS**<a/> and a `r fa(name = "trash-can", fill = "red", height = "1em")` <a style="color:red">**REMOVE SELECTED USERS**<a/> button. These buttons are enabled when you select **two or more** users.
 
 <br>
 
@@ -203,7 +206,7 @@ Note the "Edit Selected Users" button only allows you to modify the `start` and 
 
 <br>
 
-After you've made your changes, click "Confirm Change".
+After you've made your changes, click <a style="color:darkblue">**CONFIRM CHANGE**<a/>.
 
 <br>
 
@@ -216,7 +219,7 @@ Again, a small modal dialog box will briefly appear indicating the users have be
 <br>
 
 <center>
-![](images/user_updated_modal.png){style="width:257px"}
+![](images/user_succ_updated_modal.png){style="width:257px"}
 </center>
 
 <br>
@@ -229,8 +232,8 @@ Again, a small modal dialog box will briefly appear indicating the users have be
 
 <br>
 
-</br>Delete any user by clicking on the red `r fa(name = "trash-can", fill = "red", height = "1em")` 
-<a style="color:red">Remove</a> button on the right-hand side of the table. You will see a confirmatory modal dialog box.  Click on "Delete User(s)."
+</br>Delete any user by clicking on the `r fa(name = "trash-can", fill = "red", height = "1em")` 
+<a style="color:red">**REMOVE**</a> button on the right-hand side of the table. You will see a confirmatory modal dialog box.  Click on "Delete User(s)."
 
 <br>
 
@@ -240,7 +243,7 @@ Again, a small modal dialog box will briefly appear indicating the users have be
 
 <br>
 
-You can also delete multiple users like you did with editing multiple users. Just click on the `r fa(name = "trash-can", fill = "red", height = "1em")` "Remove Selected Users" button at the bottom of the table.
+You can also delete multiple users like you did with editing multiple users. Just click on the `r fa(name = "trash-can", fill = "red", height = "1em")` <a style="color:red">**REMOVE SELECTED USERS**</a> button at the bottom of the table.
 
 <br>
 
@@ -250,7 +253,7 @@ You can also delete multiple users like you did with editing multiple users. Jus
 
 <br>
 
-The same confirmatory modal dialog box will appear.  Click on "Delete User(s)."
+The same confirmatory modal dialog box will appear.  Click on <a style="color:red">**DELETE USER(S)**</a>.
 
 <br>
 
@@ -270,11 +273,11 @@ As an administrator, it's recommended you replace the initial `ADMIN` user ID cr
 
 </br>
 
-Just as before, click the blue "Add a user" button and make sure to check the `Admin` box. The temporary password can be overridden by un-checking the "ask to change password" box and setting the password to whatever you want.
+Just as before, click the "Add a user" button and make sure to check the `Admin` box. The temporary password can be overridden by un-checking the "ask to change password" box and setting the password to whatever you want.
 
 </br>
 
-After completing the form, sign in using your new credentials and delete the original `ADMIN` user by clicking on the red `r fa(name = "trash-can", fill = "red", height = "1em")` <a style="color:red">Remove</a> button on that row of the table.
+After completing the form, sign in using your new credentials and delete the original `ADMIN` user by clicking on the `r fa(name = "trash-can", fill = "red", height = "1em")` <a style="color:red">**REMOVE**</a> button on that row of the table.
 
 </br></br></br></br></br></br></br></br></br>
 
@@ -291,7 +294,7 @@ The second table allows for password management.
 
 <br>
 
-Click on the dark blue `r fa(name = "key", fill = "darkblue", height = "1em")`<a style="color:darkblue">*Change password*</a> button to force the corresponding user to change his/her password on the next log-in.
+Click on the `r fa(name = "key", fill = "darkblue", height = "1em")`<a style="color:darkblue">**CHANGE PASSWORD**</a> button to force the corresponding user to change his/her password on the next log-in.
 
 A confirmatory modal dialog box will appear, like this:
 
@@ -303,7 +306,7 @@ A confirmatory modal dialog box will appear, like this:
 
 <br>
 
-If you click on the orange `r fa(name = "arrow-rotate-left", fill = "orange", height = "1em")` <a style="color:orange">*Reset password*</a> button to generate a temporary password. 
+If you click on the `r fa(name = "arrow-rotate-left", fill = "orange", height = "1em")` <a style="color:orange">**RESET PASSWORD**</a> button to generate a temporary password. 
 
 Again, a confirmatory modal dialog box will appear, like this:
 
@@ -315,7 +318,7 @@ Again, a confirmatory modal dialog box will appear, like this:
 
 </br>
 
-Click on "Confirm" and you will see another modal dialog box with the new temporary password in it.
+Click on <a style="color:darkblue">**CONFIRM**<a/> and you will see another modal dialog box with the new temporary password in it.
 
 <br>
 
@@ -327,7 +330,7 @@ Click on "Confirm" and you will see another modal dialog box with the new tempor
 
 You are responsible for delivering the new temporary password to the user.
 
-</br>As on the bottom of the User table, There is also a checkbox `r fa(name = "square-check", fill = "red", height = "1em")` to select multiple users followed by</br> a "Force Selected Users to Change Password" button. This button is enabled when you select two or more users.
+</br>As on the bottom of the User table, There is also a `r fa(name = "square-check", fill = "red", height = "1em")` checkbox to select multiple users followed by a <a style="color:darkblue">**FORCE SELECTED USERS TO CHANGE PASSWORD**</a> button. This button is enabled when you select two or more users.
 
 <br>
 
@@ -354,13 +357,13 @@ Head over to the other tab available to `ADMIN` users called `Assessment Reweigh
 
 ![](images/assessment_reweighting_tab.png){style="position:center; width:800px"}
 
-</br></br>There are three buttons on this page: "Update Weight" on the top right, "Download" on the middle left, and "Re-Calculate" on the bottom left. 
+</br></br>There are three buttons on this page: <a style="color:red">**UPDATE WEIGHT**</a> on the top right, <a style="color:red">**DOWNLOAD**</a> on the middle left, and <a style="color:red">**RE-CALCULATE**</a> on the bottom left. 
 
 <br>
 
 ## Download Database
 
-First, the simplest: the "Download Database" button.
+First, the simplest: the <a style="color:red">**DOWNLOAD**</a> database button.
 
 <br>
 
@@ -386,9 +389,9 @@ As the name suggests, this modules allows to us view existing and change metric 
 
 <br>
 
-</br>Here you can either select a metric from the "Select metric" dropdown box or select a row </br>in the "CURRENT RISK SCORE WEIGHTS BY METRIC" table.
+</br>Here you can either select a metric from the `Select metric` dropdown box or select a row </br>in the "CURRENT RISK SCORE WEIGHTS BY METRIC" table.
 
-Once the metric is selected, enter a new (numeric) weight in the "Choose new weight" box and select the <a style="color:red">"Update Weight"</a> button. You'll notice the row with the change will appear highlighted, showing you the old weight value and the new weight value:
+Once the metric is selected, enter a new (numeric) weight in the "Choose new weight" box and select the <a style="color:red">**UPDATE WEIGHT**</a> button. You'll notice the row with the change will appear highlighted, showing you the old weight value and the new weight value:
 
 <br>
 
@@ -398,7 +401,7 @@ Once the metric is selected, enter a new (numeric) weight in the "Choose new wei
 
 <br>
 
-After you have updated **at least one** metric weight, the "Re-Calculate" button is enabled, allowing you to apply new weights and re-calculated the risk for each package.</br>
+After you have updated **at least one** metric weight, the <a style="color:red">**RE-CALCULATE**</a> button is enabled, allowing you to apply new weights and re-calculated the risk for each package.</br>
 
 After you've made all final re-weighting changes, you can click the "Re-calculate" button pictured here. Note that these weight changes will take effect on all packages in the database, updating the risk score for each.
 
@@ -410,7 +413,7 @@ After you've made all final re-weighting changes, you can click the "Re-calculat
 
 <br>
 
-</br></br>Once you click on "Re-Calculate" you will get a confirmation modal, reminding you that "updating the risk metrics cannot be reverted", and strongly recommending you download a copy of the current database first before clicking on "Submit". The modal also details all the actions that will take effect in the app if you submit these changes.
+</br></br>Once you click on <a style="color:red">**RE-CALCULATE**</a> you will get a confirmation modal, reminding you that "updating the risk metrics cannot be reverted", and strongly recommending you download a copy of the current database first before clicking on <a style="color:red">**SUBMIT**</a>. The modal also details all the actions that will take effect in the app if you submit these changes.
 
 <br>
 
@@ -420,7 +423,7 @@ After you've made all final re-weighting changes, you can click the "Re-calculat
 
 <br>
 
-Once you click on "Submit" a modal dialog box will appear indicating
+Once you click on <a style="color:red">**SUBMIT**</a> a modal dialog box will appear indicating
 that it is applying weights and updating risk scores to each package you have uploaded. This will be followed by a brief "updates completed" message.
 
 <br>
@@ -434,6 +437,87 @@ that it is applying weights and updating risk scores to each package you have up
 Now go to the database overview tab to confirm that the risk scores have been updated. You can also view the new weights, including the standardized weight on the `Assessment Criteria` tab.
 
  
+ 
+<br>
+
+<br>
+
+ 
+# Decision Automation
+
+If your organization has black and white rules about package risk decisions based solely on  `riskmetric` scores, then decision automation is for you. When leveraged, it will help you automatically classify packages into the "Low", "Medium", or "High" risk decision categories upon upload. The current automation rules are always displayed on the 'Upload Package' tab. Please note that only `ADMIN` users have the necessary privileges to edit. To get started, click on the small `r fa("gear", fill = "red", height = "1em")` (gear) button in the upper right hand corner of that section.
+
+
+<br>
+
+<center>
+![](images/start_decision_automation.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+If there are no decision rules applied, you'll see the following risk decision categories next to empty check boxes. When setting up these rules for your organization, you can choose as much or as little automation as needed. 
+
+<br>
+
+<center>
+![](images/decision_automation_gear.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+For example, if you only want to set up an automatic decision for "High" risk scores, you only need to select that check box and make your risk score designation / cut off value. Every time a package is uploaded with a risk score > 0.66, it will automatically receive the decision label: "High" which saves your review team time and mental capacity when reviewing large groups of packages.
+
+<br>
+
+<center>
+![](images/decision_automation_high.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+Similarly, if you have package risk thresholds mapped out for each decision category, then apply them here! The user interface won't allow the slider ranges to overlap, but it will allow gaps between each range. In the example below, we adopt automatic decisions for packages with risk scores less than 0.33 and greater than .66. In this fictitious example, let's say our organization has a policy that any package whose risk score falls between 0.33 and 0.66 will need to be reviewed manually. 
+
+<br>
+
+<center>
+![](images/decision_automation_allcat.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+To apply these changes, your `ADMIN` will need to select <a style="color:red">**APPLY DECISION RULES**</a>. A pop-up will ask the user to review and confirm the selected automation rules:
+
+<br>
+
+<center>
+![](images/decision_automation_confirm.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+Upon clicking submit, the automation rules will be stored for all users to see on the 'Upload Package' tab. After uploading a new CSV of packages, you can see the 'Summary of Uploaded Package(s)' that now includes a summary of decisions made, and in each category. In the example below, you can see that 10 packages were uploaded, and 5 automatic decisions were made: four received the "low" designation and one was labeled as "high" risk. In the summary table, the risk score and decision on the right-hand side. You can also observe that a few packages weren't found because they don't exist on CRAN.
+
+<br>
+
+<center>
+![](images/decision_automation_applied.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+Consulting the 'PACKAGE CONTROL PANEL', if we select one of the packages where a decision was made, you can see that the 'Status' has been changed to "Reviewed" and the risk decision slider has been adjusted accordingly and disabled. In addition, an 'Overall Comment' was submitted, stating that the decision made was driven via the automation rules.
+
+
+<br>
+
+<center>
+![](images/decision_automation_control_panel.png){style="margin: 10px 0 10px 0"}
+</center>
+
+
+<br>
+
 <br>
 <br>
 <br>

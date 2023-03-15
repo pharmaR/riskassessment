@@ -23,13 +23,11 @@ databaseViewUI <- function(id) {
     fluidRow(
       column(
         width = 8, offset = 2, align = "center",
-        br(),
-        h4("Database Overview"),
-        hr(),
+        h2("Database Overview", align = "center", `padding-bottom`="20px"),
         tags$section(
           br(), br(),
           shinydashboard::box(width = 12,
-              title = h5("Uploaded Packages", style = "margin-top: 5px"),
+              title = h3("Uploaded Packages", style = "margin-top: 5px"),
               DT::dataTableOutput(NS(id, "packages_table")),
               br(),
               fluidRow(
@@ -53,6 +51,7 @@ databaseViewUI <- function(id) {
 #' @param uploaded_pkgs a vector of uploaded package names
 #' @param metric_weights a reactive data.frame holding metric weights
 #' @param changes a reactive value integer count
+#' @param parent the parent (calling module) session information
 #'
 #' 
 #' @import dplyr
@@ -65,8 +64,19 @@ databaseViewUI <- function(id) {
 #' @importFrom formattable formattable as.datatable formatter style csscolor
 #'   icontext
 #' @keywords internal
-databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes) {
+databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes, parent) {
   moduleServer(id, function(input, output, session) {
+    
+    ns = session$ns
+    
+    # used for adding action buttons to table_data
+    shinyInput <- function(FUN, len, id, ...) {
+      inputs <- character(len)
+      for (i in seq_len(len)) {
+        inputs[i] <- as.character(FUN(paste0(id, i), ...))
+      }
+      inputs
+    }
     
     # Update table_data if a package has been uploaded
     table_data <- eventReactive({uploaded_pkgs(); changes()}, {
@@ -98,11 +108,25 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
     )
     
     # Create table for the db dashboard.
-    output$packages_table <- DT::renderDataTable({
+    output$packages_table <- DT::renderDataTable(server = FALSE, {  # This allows for downloading entire data set
+      
+      my_data_table <- reactive({
+        cbind(table_data(), 
+        data.frame(
+          Actions = shinyInput(actionButton, nrow(table_data()),
+                               'button_',
+                               size = "xs",
+                               style='height:24px; padding-top:1px;',
+                               label = icon("arrow-right", class="fa-regular", lib = "font-awesome"),
+                               onclick = paste0('Shiny.onInputChange(\"' , ns("select_button"), '\", this.id)')
+          )
+        )
+        )
+      })
       
       formattable::as.datatable(
         formattable::formattable(
-          table_data(),
+          my_data_table(),
           list(
             score = formattable::formatter(
               "span",
@@ -130,18 +154,56 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes)
                                           x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))
           )),
         selection = list(mode = 'multiple'),
-        colnames = c("Package", "Version", "Score", "Decision Made?", "Decision", "Last Comment"),
+        colnames = c("Package", "Version", "Score", "Decision Made?", "Decision", "Last Comment", "Explore Metrics"),
         rownames = FALSE,
+        extensions = "Buttons",
         options = list(
-          searching = FALSE,
+          searching = TRUE,
           lengthChange = FALSE,
-          #dom = 'Blftpr',
+          dom = 'Blftpr',
           pageLength = 15,
           lengthMenu = list(c(15, 60, 120, -1), c('15', '60', '120', "All")),
-          columnDefs = list(list(className = 'dt-center', targets = "_all"))
+          columnDefs = list(list(className = 'dt-center', targets = "_all")),
+          buttons = list(
+            list(extend = "excel", text = shiny::HTML('<i class="fas fa-download"></i> Excel'),
+                 exportOptions = list(columns = c(0:5)), # which columns to download
+                 filename = paste("{riskassessment} pkgs " ,stringr::str_replace_all(paste(Sys.time()),":", "."))),
+            list(extend = "csv", text = shiny::HTML('<i class="fas fa-download"></i> CSV'),
+                 exportOptions = list(columns = c(0:5)), # which columns to download
+                 filename = paste("{riskassessment} pkgs " ,stringr::str_replace_all(paste(Sys.time()),":", "."))))
         )
+        , style="default"
       ) %>%
         DT::formatStyle(names(table_data()), textAlign = 'center')
+    })
+    
+    observeEvent(input$select_button, {
+      req(table_data())
+      
+      selectedRow <- as.numeric(strsplit(input$select_button, "_")[[1]][2])
+      
+      # grab the package name
+      pkg_name <- table_data()[selectedRow, 1]
+
+      # update sidebar-select_pkg
+      updateSelectizeInput(
+        session = parent,
+        inputId = "sidebar-select_pkg",
+        choices = c("-", dbSelect('SELECT name FROM package')$name),
+        selected = pkg_name
+      )
+      
+      # select maintenance metrics panel
+      updateTabsetPanel(session = parent, 
+                        inputId = 'tabs', 
+                        selected = "Maintenance Metrics"
+      )
+      
+      # jump over to risk-assessment-tab so we can see the maintenance metrics
+      updateTabsetPanel(session = parent, 
+                        inputId = 'apptabs', 
+                        selected = "risk-assessment-tab"
+      )
     })
     
     pkgs <- reactive({
