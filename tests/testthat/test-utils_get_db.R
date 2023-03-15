@@ -93,7 +93,7 @@ test_that("utils_get_db functions other than dbSelect", {
     pkg <- get_pkg_info(pkg_name, file.path(base_path, db_temp))
     expect_s3_class(pkg, "data.frame")
     expect_equal(nrow(pkg), 1) 
-    expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", "score", "weighted_score", "decision", "date_added"))
+    expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", "score", "weighted_score", "decision", "decision_by", "decision_date", "date_added"))
   })
   
   test_that("get_metric_weights works", {
