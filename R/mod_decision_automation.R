@@ -27,7 +27,7 @@ mod_decision_automation_ui <- function(id){
   dec_css <- purrr::imap_chr(decision_lst, function(.x, .y) {
     lbl <- risk_lbl(.x, input = FALSE)
     col <- color_lst[.y]
-    
+
     if (.y == 1) {
       glue::glue("
 [risk={lbl}] .irs--shiny .irs-bar {{
