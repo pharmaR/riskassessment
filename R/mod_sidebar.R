@@ -420,7 +420,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       )
       dbUpdate(glue::glue("delete from comments 
                           where comment_type = 'o'
-                          and id in(select '{selected_pkg$name}' from package)"), 'database.sqlite')
+                          and id in(select '{selected_pkg$name}' from package)"))
       
       selected_pkg$decision <- ''
       
