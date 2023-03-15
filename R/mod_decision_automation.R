@@ -1,3 +1,16 @@
+color_palette <- list(
+  c("#06B756FF","#A99D04FF","#A63E24FF"),
+  c("#06B756FF","#81B50AFF","#BE7900FF","#A63E24FF"),
+  c("#06B756FF","#81B50AFF","#A99D04FF","#BE6200FF","#A63E24FF"),
+  c("#06B756FF","#67BA04FF","#96AB0AFF","#B78D07FF","#BE6200FF","#A63E24FF"),
+  c("#06B756FF","#2FBC06FF","#81B50AFF","#A99D04FF","#BE7900FF","#B24F22FF","#A63E24FF"),
+  c("#06B756FF","#67BA04FF","#81B50AFF","#96AB0AFF","#B78D07FF","#BE7900FF","#BE6200FF","#A63E24FF"),
+  c("#06B756FF","#2FBC06FF","#81B50AFF","#96AB0AFF","#A99D04FF","#B78D07FF","#BE7900FF","#B24F22FF","#A63E24FF"),
+  c("#06B756FF","#2FBC06FF","#67BA04FF","#81B50AFF","#96AB0AFF","#B78D07FF","#BE7900FF","#BE6200FF","#B24F22FF","#A63E24FF"),
+  c("#06B756FF","#2FBC06FF","#67BA04FF","#81B50AFF","#96AB0AFF","#A99D04FF","#B78D07FF","#BE7900FF","#BE6200FF","#B24F22FF","#A63E24FF")
+)
+               
+
 #' decision_automation UI Function
 #'
 #' @description A shiny Module.
@@ -7,7 +20,58 @@
 #' @noRd 
 mod_decision_automation_ui <- function(id){
   ns <- NS(id)
+  
+  decision_lst <- golem::get_golem_options("decision_categories")
+  dec_num <- length(decision_lst)
+  dec_css <- purrr::imap_chr(decision_lst, function(.x, .y) {
+    lbl <- risk_lbl(.x, input = FALSE)
+    col <- color_palette[[dec_num - 2]][.y]
+    
+    if (.y == 1) {
+      glue::glue("
+[risk={lbl}] .irs--shiny .irs-bar {{
+  border-top: 1px solid {col};
+  border-bottom: 1px solid {col};
+  background: {col};
+}}
+
+[risk={lbl}] .irs--shiny .irs-single {{
+  background-color: {col};
+}}")
+    } else if (.y == dec_num) {
+      glue::glue("
+[risk={lbl}] .irs--shiny .irs-line {{
+  background: {col};
+  border: 1px solid {col};
+}}
+
+[risk={lbl}] .irs--shiny .irs-bar {{
+  background: linear-gradient(to bottom, #dedede -50%, #fff 150%);
+  background-color: #ededed;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+}}
+
+[risk={lbl}] .irs--shiny .irs-single {{
+  background-color: {col};
+}}")
+    } else {
+      glue::glue("
+[risk={lbl}] .irs--shiny .irs-bar {{
+  border-top: 1px solid {col};
+  border-bottom: 1px solid {col};
+  background: {col};
+}}
+
+[risk={lbl}] .irs--shiny .irs-from,
+[risk={lbl}] .irs--shiny .irs-to {{
+  background-color: {col};
+}}")
+    }
+  })
+  
   tagList(
+    tags$head(tags$style(HTML(dec_css))),
     uiOutput(ns("auto_classify")),
     DT::dataTableOutput(ns("auto_table"))
   )
