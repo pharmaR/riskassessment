@@ -52,6 +52,33 @@ numeric value <b>x</b> standardized weight)")
 # Upload format template.
 template <- read.csv(file.path('data-raw', 'upload_format.csv'),  stringsAsFactors = FALSE)
 
+test_pkg_lst <- c("dplyr", "tidyr", "readr", "purrr", "tibble", "stringr", "forcats")
+
+test_pkg_refs_compl <-
+  test_pkg_lst %>%
+  purrr::map(riskmetric::pkg_ref, source = "pkg_cran_remote", repos = c("https://cran.rstudio.com")) %>%
+  purrr::set_names(test_pkg_lst)
+
+test_pkg_refs <-
+  test_pkg_refs_compl %>%
+  purrr::map(~ .x[c("name", "version", "source")] %>% purrr::set_names(c("name", "version", "source")))
+
+test_pkg_info <-
+  test_pkg_lst %>%
+  purrr::map(get_latest_pkg_info) %>%
+  purrr::set_names(test_pkg_lst)
+
+test_pkg_assess <-
+  test_pkg_refs_compl %>%
+  purrr::map( ~ .x %>%
+                dplyr::as_tibble() %>%
+                riskmetric::pkg_assess())
+
+test_pkg_cum <-
+  test_pkg_lst %>%
+  purrr::map(generate_comm_data) %>%
+  purrr::set_names(test_pkg_lst)
+
 usethis::use_data(
   # app_version, 
   # database_name, #credentials_name,
@@ -60,4 +87,5 @@ usethis::use_data(
   maintenance_metrics_text, maintenance_metrics_tbl,
   testing_text, testing_tbl,
   riskcalc_text, template,
+  test_pkg_lst, test_pkg_refs, test_pkg_info, test_pkg_assess, test_pkg_cum,
   internal = TRUE, overwrite = TRUE)

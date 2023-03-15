@@ -50,9 +50,9 @@ upload_pkg <- data.frame(
 )
 
 upload_adm <- data.frame(
-  element = "#rem-package-group",
-  intro = "If you are an admin, you can also remove packages here.",
-  position = "top"
+  element = c("#rem-package-group", "#upload_package-automate-auto_dropdown_state"),
+  intro = c("If you are an admin, you can also remove packages here.", "Decision automation: Automatically assign package risk decisions based on {riskmetric}-derived risk scores when uploading packages to the database."),
+  position = c("top", "left")
 )
 
 upload_pkg_comp <-  data.frame(
@@ -73,9 +73,6 @@ upload_pkg_complete <- union(upload_pkg,
                                ),
                                position = c("bottom", "top")
                              )
-                             #     # } else {
-                             #     #   data.frame(element = character(0) , intro = character(0), position = character(0))
-                             #     # }
 )
 
 

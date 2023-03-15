@@ -1,11 +1,12 @@
 ---
-title:    "R Package Risk Assessment"
-subtitle: "Report for `r params$pkg[['name']]`"
-author:   "Author (Role): `r params$user_name` (`r params$user_role `)"
-date:     "Report Date: `r format(Sys.time(), '%B %d, %Y')`"
+title:    "<span class='txtasis'>R Package Risk Assessment  </span>"
+subtitle: "<span class='txtasis'>Report for Package: `r params$pkg[['name']]`</span>"
+author:   "<span class='txtasis'>Author (Role): `r params$user_name` (`r params$user_role `)</span>"
+date:     "<span class='txtasis'>Report Date: `r format(Sys.time(), '%B %d, %Y')`</span>"
 always_allow_html: true
 output:
   word_document:
+    reference_docx: header.docx
     md_extensions: +raw_html-markdown_in_html_blocks
     pandoc_args: ['--lua-filter', 'read_html.lua']
 params:
@@ -24,6 +25,14 @@ params:
   downloads_plot_data: NA
 ---
 
+<!-- ![](raa-image.png){style="position:float-right; width:63px; height:52px;"} -->
+
+<style type="text/css">
+.txtasis {
+  text-transform:none;
+}
+</style>
+
 ```{r setup, include=FALSE}
 library(knitr)
 library(shiny)
@@ -33,7 +42,6 @@ library(plotly)
 knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 cm_ind <- nrow(params$com_metrics) != 0
 ```
-
 
 ```{r functions, include=FALSE, message=FALSE, warning=FALSE}
 outputComments <- function(pkg_name, comments){
@@ -56,6 +64,7 @@ outputComments <- function(pkg_name, comments){
 <br>
 
 ```{r general_pkg_info}
+h5('General Information')
 tagList(
   strong('Package:'),      br(), getElement(params$pkg, 'name'),         br(), br(),
   strong('Version:'),      br(), getElement(params$pkg, 'version'),      br(), br(),
@@ -179,7 +188,7 @@ tagList(
 
 \newpage
 ```{r about_report_title}
-tagList(br(), h2('About Report'))
+tagList(br(), h2('About The Report'))
 ```
 
 
@@ -187,7 +196,7 @@ tagList(br(), h2('About Report'))
 
 tagList(
   strong('{riskassessment} App Version:'), br(), getElement(params, 'app_version'), br(), br(),
-  strong('riskmetric Version:'), br(), getElement(params, 'riskmetric_version'), br(), br(),
+  strong('{riskmetric} Version:'), br(), getElement(params, 'riskmetric_version'), br(), br(),
   strong('Generated on:'), br(), format(Sys.time(), usetz = TRUE), br(), br(),
   strong('Metric Weights:')
 )

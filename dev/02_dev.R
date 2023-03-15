@@ -40,6 +40,7 @@ usethis::use_mit_license()
 # usethis::use_package("gt")
 # # usethis::use_package("shinyBS")
 usethis::use_package("fontawesome", type = "Suggests")
+usethis::use_package("kableExtra", type = "Suggests")
 # usethis::use_package("knitr", type = "Suggests")
 # usethis::use_package("tinytex", type = "Suggests")
 # usethis::use_package("pkgdown", type = "Suggests")#, min_version = "1.6.1")
@@ -286,7 +287,7 @@ spelling::spell_check_package()
 
 # Check URL are correct
 # remotes::install_github("r-lib/urlchecker")
-urlchecker::url_check()
+urlchecker::url_check() # urls that move are okay
 urlchecker::url_update()
 
 # check on other distributions
