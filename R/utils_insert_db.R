@@ -117,10 +117,10 @@ upload_package_to_db <- function(name, version, title, description,
       dbUpdate(glue::glue(
         "INSERT or REPLACE INTO package
         (name, version, title, description, maintainer, author,
-        license, published_on, decision, decison_by, decision_date, date_added)
+        license, published_on, decision, decision_by, decision_date, date_added)
         VALUES('{name}', '{version}', '{title}', '{description}',
         '{maintainers}', '{authors}', '{license}', '{published_on}',
-        '', '', {NA_DATE_} {Sys.Date()}')"), db_name)
+        '', '', NULL, '{Sys.Date()}')"), db_name)
     },
     error = function(e) {
       loggit::loggit("ERROR", paste("Error in uploading the general info of the package", name, "info", e),
