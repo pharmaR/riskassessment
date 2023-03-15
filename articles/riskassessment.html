@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">riskassessment</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -228,6 +228,42 @@ i.e. packages that already existed in the database.</p>
 <p><br></p>
 </div>
 <div class="section level2">
+<h2 id="decision-automation">Decision Automation<a class="anchor" aria-label="anchor" href="#decision-automation"></a>
+</h2>
+<p>If your organization has black and white rules about package risk
+decisions based solely on <code>riskmetric</code> scores, then decision
+automation is for you. When leveraged, it will help you automatically
+classify packages into the “Low”, “Medium”, or “High” risk decision
+categories upon upload. This automation saves your review team time and
+mental capacity when reviewing large groups of packages. The current
+automation rules are always displayed on the ‘Upload Package’ tab.
+Please note that only <code>ADMIN</code> users have the necessary
+privileges to edit. To get started, click on the small gear button in
+the upper left hand corner</p>
+<p><br></p>
+<center>
+<img src="images/start_decision_automation.png" style="margin: 10px 0 10px 0">
+</center>
+<p><br></p>
+<p>In a fictitious example below, let’s say an <code>ADMIN</code> user
+adopts automated decision rules for packages with risk scores less than
+0.33 and greater than .66. Perhaps this organization has a policy that
+mandates any package whose risk score falls between 0.33 and 0.66 will
+need to be reviewed manually. After uploading a new CSV of packages, you
+can see the ‘Summary of Uploaded Package(s)’ displays the number of
+decisions made overall and by each risk category. Here, you can see that
+10 packages were uploaded, and 5 automatic decisions were made: four
+received the “low” designation and one was labeled as “high” risk. In
+the summary table, the decisions are displayed with their respective
+risk scores on the right-hand side. You can also observe that a few
+packages weren’t found because they don’t exist on CRAN.</p>
+<p><br></p>
+<center>
+<img src="images/decision_automation_applied.png" style="margin: 10px 0 10px 0">
+</center>
+<p><br></p>
+</div>
+<div class="section level2">
 <h2 id="sidebar">Sidebar<a class="anchor" aria-label="anchor" href="#sidebar"></a>
 </h2>
 <p>Now that the database has been populated with package data, direct
@@ -271,8 +307,8 @@ and your organization. As is available in <code>riskmetric</code>,
 <code>riskassessment</code> allows <code>ADMIN</code> users to set
 organization-wide metric weights so that the risk score is based on the
 most meaningful metrics, and reduces the influence of less important
-metrics. To learn more about these options, please read through our
-<code>User Roles and Priviledges</code>[Insert link here] guide.</p>
+metrics. To learn more about these options, please read through our <a href="../articles/Administrative_Tools_and_Options.html">“Administrative
+Tools and Options” guide</a>.</p>
 <p><br></p>
 <div class="section level3">
 <h3 id="maintenance-metrics">Maintenance Metrics<a class="anchor" aria-label="anchor" href="#maintenance-metrics"></a>
