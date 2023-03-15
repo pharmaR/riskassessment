@@ -12,6 +12,6 @@ CREATE TABLE IF NOT EXISTS package (
    weighted_score REAL,
    decision       CHAR,
    decision_by    CHAR,
-   decision_date  DATE,
+   decision_date  DATE NULL,
    date_added     DATE
 );
