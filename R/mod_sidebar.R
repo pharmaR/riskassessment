@@ -46,7 +46,7 @@ sidebarUI <- function(id) {
           h5("Select Overall Risk"), 
           selected = NULL,
           grid = TRUE,
-          c("Low", "Medium", "High")
+          golem::get_golem_options("decision_categories")
         ),
         
         # Action button to reset decision for selected package.
@@ -287,8 +287,8 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
         shinyWidgets::updateSliderTextInput(
           session,
           "decision",
-          choices = c("Low", "Medium", "High"),
-          selected = 'Low'
+          choices = golem::get_golem_options("decision_categories"),
+          selected = golem::get_golem_options("decision_categories")[1]
         )
         
         validate('Please select a package and a version.')
@@ -300,7 +300,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       shinyWidgets::updateSliderTextInput(
         session,
         "decision",
-        choices = c("Low", "Medium", "High"),
+        choices = golem::get_golem_options("decision_categories"),
         selected = selected_pkg$decision
       )
     })

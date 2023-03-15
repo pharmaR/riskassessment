@@ -1,9 +1,6 @@
 # Global Risk color palettes.
 # run locally and paste hex codes
 # colorspace::darken(viridisLite::turbo(11, begin = 0.4, end = .8225), .25)
-low_risk_color  <- "#06B756FF"  # 1st
-med_risk_color  <- "#A99D04FF"  # 6th
-high_risk_color <- "#A63E24FF"  # 11th
 setColorPalette <- colorRampPalette(
   c("#06B756FF","#2FBC06FF","#67BA04FF","#81B50AFF","#96AB0AFF","#A99D04FF",
     "#B78D07FF","#BE7900FF","#BE6200FF","#B24F22FF","#A63E24FF"))
@@ -70,6 +67,9 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
   moduleServer(id, function(input, output, session) {
     
     ns = session$ns
+    
+    decision_lst <- golem::get_golem_options("decision_categories")
+    color_lst <- color_palette[[length(decision_lst) - 2]]
     
     # used for adding action buttons to table_data
     shinyInput <- function(FUN, len, id, ...) {
@@ -146,9 +146,9 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                                 "font-weight" = "bold",
                                 "color" = "white",
                                 "background-color" = 
-                                  ifelse(x == "High Risk", high_risk_color,
-                                         ifelse(x == "Medium Risk", med_risk_color,
-                                                ifelse(x == "Low Risk", low_risk_color, "transparent"))))),
+                                  ifelse(x %in% paste(decision_lst, "Risk"), 
+                                         color_lst[paste(decision_lst, "Risk") %in% x], 
+                                         "transparent"))),
             was_decision_made = formattable::formatter("span",
                                           style = x ~ formattable::style(color = ifelse(x, "#0668A3", "gray")),
                                           x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))
