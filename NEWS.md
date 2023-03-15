@@ -1,4 +1,5 @@
 # riskassessment (development version)
+* Add Decision-related columns to the database view
 
 # riskassessment 0.1.1
 
