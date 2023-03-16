@@ -168,10 +168,10 @@ create_credentials_dev_db <- function(db_name){
 #' @importFrom jsonlite write_json
 #'
 #' @export
-initialize_raa <- function(assess_db, cred_db) {
+initialize_raa <- function(assess_db, cred_db, decision_cat) {
   
-  if (missing(assess_db)) assessment_db <- golem::get_golem_options('assessment_db_name') else assessment_db <- assess_db
-  if (missing(cred_db)) credentials_db <- golem::get_golem_options('credentials_db_name') else credentials_db <- cred_db
+  assessment_db <- if (missing(assess_db)) golem::get_golem_options('assessment_db_name') else assess_db
+  credentials_db <- if (missing(cred_db)) golem::get_golem_options('credentials_db_name') else cred_db
   
   if (is.null(assessment_db) || typeof(assessment_db) != "character" || length(assessment_db) != 1 || !grepl("\\.sqlite$", assessment_db))
     stop("assess_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
@@ -192,8 +192,17 @@ initialize_raa <- function(assess_db, cred_db) {
   if(!file.exists(assessment_db)) create_db(assessment_db)
   if(!file.exists(credentials_db)) create_credentials_db(credentials_db)
   
-  if(!file.exists("auto_decisions.json")) jsonlite::write_json(data.frame(decision = character(0), lower_limit = numeric(0), upper_limit = numeric(0)), "auto_decisions.json")
-  
+  decision_categories <- if (missing(decision_cat)) golem::get_golem_options('decision_categories') else decision_cat
+  decisions <- suppressMessages(dbSelect("SELECT decision FROM decision_categories", assessment_db))
+  if (is.null(decisions)) {
+    suppressMessages(dbUpdate(paste(scan(app_sys("sql_queries", "create_decision_table.sql"), sep = "\n", what = "character"), collapse = ""), assessment_db))
+    dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', decision_categories, '\\')', collapse = ', ')}"), assessment_db)
+  } else if (nrow(decisions) == 0) {
+    dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', decision_categories, '\\')', collapse = ', ')}"), assessment_db)
+  } else if (!all.equal(decisions$decision, decision_categories)) {
+    stop("The decision categories in the configuration file do not match those in the assessment database.")
+  }
+
   invisible(c(assessment_db, credentials_db))
 }
 

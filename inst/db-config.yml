@@ -1,0 +1,15 @@
+default:
+  assessment_db: database.sqlite
+  credential_db: credentials.sqlite
+  decision_categories:
+    - Low
+    - Medium
+    - High
+example:
+  assessment_db: database_ex.sqlite
+  decision_categories:
+    - Insignificant
+    - Minor
+    - Moderate
+    - Major
+    - Severe

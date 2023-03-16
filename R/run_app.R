@@ -25,15 +25,17 @@ run_app <- function(
   uiPattern = "/",
   app_ver = NULL,
   login_note = NULL,
-  credentials_db_name = NULL,
-  assessment_db_name = NULL,
-  decision_categories = c("Low", "Medium", "High"),
   ...
 ) {
   # Pre-process some run-app inputs
   if(is.null(app_ver)) app_ver <- paste0(packageVersion("riskassessment"))
+  assessment_db_name <- get_golem_config('assessment_db', file = app_sys("db-config.yml"))
   if(is.null(assessment_db_name)) assessment_db_name <- "database.sqlite"
+  credentials_db_name <- get_golem_config('credential_db', file = app_sys("db-config.yml"))
   if(is.null(credentials_db_name)) credentials_db_name <- "credentials.sqlite"
+  decision_categories <- get_golem_config('decision_categories', file = app_sys("db-config.yml"))
+  if(is.null(decision_categories)) decision_categories <- c("Low", "Medium", "High")
+  
   if(is.null(login_note)) {
     # https://github.com/rstudio/fontawesome/issues/99
     # Here, we make sure user has a functional version of fontawesome

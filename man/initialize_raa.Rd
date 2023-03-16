@@ -4,7 +4,7 @@
 \alias{initialize_raa}
 \title{Initialize \code{riskassessment} Application Settings}
 \usage{
-initialize_raa(assess_db, cred_db)
+initialize_raa(assess_db, cred_db, decision_cat)
 }
 \arguments{
 \item{assess_db}{A string denoting the name of the assessment database.}
