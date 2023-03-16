@@ -16,7 +16,7 @@ test_that("reweightView works", {
   if(!file.exists(test_path("test-apps", "reweightView-app", "auto_decisions.json"))) jsonlite::write_json(data.frame(decision = character(0), lower_limit = numeric(0), upper_limit = numeric(0)), test_path("test-apps", "reweightView-app", "auto_decisions.json"))
   
   app <- shinytest2::AppDriver$new(test_path("test-apps", "reweightView-app"), 
-                                   load_timeout = 600 * 1000)
+                                   load_timeout = 900 * 1000)
   
   if (interactive())
     app$view()

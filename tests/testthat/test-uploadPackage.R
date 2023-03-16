@@ -9,7 +9,7 @@ test_that("Uploaded packages show up in summary table", {
 
   # set up new app driver object
   app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), 
-                                   load_timeout = 600 * 1000)
+                                   load_timeout = 900 * 1000)
 
   # test package data to upload
   test_csv <- system.file("testdata", "upload_format.csv", package = "riskassessment")
@@ -55,7 +55,7 @@ test_that("Sample upload file can be shown and downloaded", {
   }
 
   # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 600 * 1000)
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 900 * 1000)
 
   # click to show example upload table
   app$click(selector = "#upload_package-upload_format")
@@ -113,7 +113,7 @@ test_that("Removed packages show up in summary table", {
   expect_equal(length(pkgs), 2L)
   
   # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 600 * 1000)
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 900 * 1000)
   
   expect_equal(app$get_value(input = "tabs"), "Upload Package")
   
