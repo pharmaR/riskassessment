@@ -90,7 +90,8 @@ mod_decision_automation_server <- function(id, user){
     ns <- session$ns
     
     auto_json <- jsonlite::read_json("auto_decisions.json")
-    auto_list <- reactiveVal(auto_json)
+    auto_db <- process_dec_tbl()
+    auto_list <- reactiveVal(auto_db)
     
     decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low", "Medium", "High")
     
@@ -129,7 +130,7 @@ mod_decision_automation_server <- function(id, user){
     
     observe({
       req(user$role)
-      req(user$role == "admin" || !rlang::is_empty(auto_json))
+      req(user$role == "admin" || !rlang::is_empty(auto_db))
       
       if (user$role == "admin") {
         output$auto_classify <-
@@ -144,7 +145,7 @@ mod_decision_automation_server <- function(id, user){
               uiOutput(ns("empty_auto")),
             )
           })
-      } else if (!rlang::is_empty(auto_json)) {
+      } else if (!rlang::is_empty(auto_db)) {
         output$auto_classify <-
           renderUI({
             tagList(
@@ -160,20 +161,20 @@ mod_decision_automation_server <- function(id, user){
         initial_values <- purrr::imap(decision_lst, ~ c((.y - 1)/num_dec, .y/num_dec) %>% `[`(!. %in% c(0,1)) %>% round(2)) %>% 
           purrr::set_names(decision_lst)
         initial_selection <- NULL
-        if (!rlang::is_empty(auto_json)) {
-          for (.y in names(auto_json)) {
+        if (!rlang::is_empty(auto_db)) {
+          for (.y in names(auto_db)) {
             initial_values[[.y]] <- 
               if (.y == decision_lst[1]) {
-                unlist(auto_json[[.y]][2])
+                unlist(auto_db[[.y]][2])
               } else if (.y == decision_lst[num_dec]) { 
-                unlist(auto_json[[.y]][1])
+                unlist(auto_db[[.y]][1])
               } else if (.y %in% decision_lst) {
-                unlist(auto_json[[.y]])
+                unlist(auto_db[[.y]])
               } else {
                 warning(glue::glue("The decision category '{.y}' is not present in the allowed decision list!"))
               }
           }
-          initial_selection <- names(auto_json)
+          initial_selection <- names(auto_db)
         }
         
         output$auto_settings <-
@@ -208,7 +209,7 @@ mod_decision_automation_server <- function(id, user){
           })
         
         auto_decision <- reactiveValues()
-        auto_current <- reactiveVal(names(auto_json))
+        auto_current <- reactiveVal(names(auto_db))
         
         observeEvent(input$auto_include, {
           grp_added <- setdiff(input$auto_include, auto_current())
@@ -361,7 +362,8 @@ mod_decision_automation_server <- function(id, user){
           req(user$role == "admin")
           
           out_lst <- purrr::compact(reactiveValuesToList(auto_decision))
-          jsonlite::write_json(out_lst, "auto_decisions.json")
+          dbUpdate("UPDATE decision_categories SET lower_limit = NULL, upper_limit = NULL")
+          purrr::iwalk(out_lst, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[2]} WHERE decision = '{.y}'")))
           auto_list(out_lst)
           
           if (length(out_lst) == 0) {

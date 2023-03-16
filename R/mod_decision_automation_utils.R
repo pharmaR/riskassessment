@@ -26,3 +26,12 @@ risk_lbl <- function(x, input = TRUE) {
   else
     lbl
 }
+
+process_dec_tbl <- function() {
+  dec_tbl <- dbSelect("SELECT * FROM decision_categories")
+  dec_tbl %>%
+    purrr::pmap(function(lower_limit, upper_limit, ...) {list(lower_limit, upper_limit)}) %>% 
+    purrr::set_names(dec_tbl$decision) %>%
+    purrr::map(purrr::discard, is.na) %>%
+    purrr::compact()
+}
