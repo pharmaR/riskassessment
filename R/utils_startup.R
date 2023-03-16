@@ -18,7 +18,7 @@ create_db <- function(db_name){
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   # Set the path to the queries.
-  path <- app_sys("app/www/sql_queries") #file.path('sql_queries')
+  path <- app_sys("sql_queries") #file.path('sql_queries')
   
   # Queries needed to run the first time the db is created.
   queries <- c(
@@ -27,7 +27,8 @@ create_db <- function(db_name){
     "initialize_metric_table.sql",
     "create_package_metrics_table.sql",
     "create_community_usage_metrics_table.sql",
-    "create_comments_table.sql"
+    "create_comments_table.sql",
+    "create_decision_table.sql"
   )
   
   # Append path to the queries.
