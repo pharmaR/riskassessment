@@ -165,7 +165,6 @@ create_credentials_dev_db <- function(db_name){
 #'
 #' @return There is no return value. The function is run for its side effects.
 #' @importFrom loggit set_logfile
-#' @importFrom jsonlite write_json
 #'
 #' @export
 initialize_raa <- function(assess_db, cred_db, decision_cat) {

@@ -44,7 +44,6 @@ Imports:
     formattable,
     glue,
     golem (>= 0.3.2),
-    jsonlite,
     loggit,
     lubridate,
     plotly,

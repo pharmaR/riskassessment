@@ -82,14 +82,12 @@ mod_decision_automation_ui <- function(id){
 #'
 #' @noRd
 #' 
-#' @importFrom jsonlite read_json write_json
 #' @importFrom purrr compact
 #' @importFrom shinyWidgets tooltipOptions
 mod_decision_automation_server <- function(id, user){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    auto_json <- jsonlite::read_json("auto_decisions.json")
     auto_db <- process_dec_tbl()
     auto_list <- reactiveVal(auto_db)
     
