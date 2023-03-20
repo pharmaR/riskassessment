@@ -1,4 +1,6 @@
 color_palette <- list(
+  c("#06B756FF"),
+  c("#06B756FF","#A63E24FF"),
   c("#06B756FF","#A99D04FF","#A63E24FF"),
   c("#06B756FF","#81B50AFF","#BE7900FF","#A63E24FF"),
   c("#06B756FF","#81B50AFF","#A99D04FF","#BE6200FF","#A63E24FF"),
@@ -22,7 +24,7 @@ mod_decision_automation_ui <- function(id){
   ns <- NS(id)
   
   decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low", "Medium", "High")
-  color_lst <- color_palette[[length(decision_lst) - 2]]
+  color_lst <- color_palette[[length(decision_lst)]]
   dec_num <- length(decision_lst)
   dec_css <- purrr::imap_chr(decision_lst, function(.x, .y) {
     lbl <- risk_lbl(.x, input = FALSE)
