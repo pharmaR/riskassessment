@@ -2,21 +2,27 @@ default:
   assessment_db: database.sqlite
   credential_db: credentials.sqlite
   decision_categories:
-    - Low
-    - Medium
-    - High
+    - Low Risk
+    - Medium Risk
+    - High Risk
 example:
   assessment_db: database_ex.sqlite
   decision_categories:
-    - Insignificant
-    - Minor
-    - Moderate
-    - Major
-    - Severe
+    - Insignificant Risk
+    - Minor Risk
+    - Moderate Risk
+    - Major Risk
+    - Severe Risk
   decision_rules:
-    Insignificant:
+    Insignificant Risk:
       - 0
       - .1
-    Severe:
+    Severe Risk:
       - .7
       - 1
+example2:
+  assessment_db: database_ex2.sqlite
+  decision_categories:
+    - GxP Compliant
+    - Needs Review
+    - Not GxP Compliant
