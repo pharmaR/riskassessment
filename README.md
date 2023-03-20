@@ -1,14 +1,14 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# The `{riskassessment}` application <a href='https://pharmar.github.io/riskassessment/'><img src="man/figures/hex-riskassessment-aspconfig.png" align="right" height="172" style="float:right; height:172px;"/></a>
+# The `{riskassessment}` application <a href='https://bit.ly/raa_docs'><img src="man/figures/hex-riskassessment-aspconfig.png" align="right" height="172" style="float:right; height:172px;"/></a>
 
 <!-- badges: start -->
 
 [<img src="https://img.shields.io/badge/Slack-RValidationHub-blue?style=flat&logo=slack">](https://RValidationHub.slack.com)
-[![R-CMD-check](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check-master.yaml/badge.svg)](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml)
 [![Coverage
-status](https://codecov.io/gh/pharmaR/riskassessment/branch/master/graph/badge.svg)](https://codecov.io/github/pharmaR/riskassessment?branch=master)
+status](https://codecov.io/gh/pharmaR/riskassessment/branch/master/graph/badge.svg)](https://app.codecov.io/github/pharmaR/riskassessment)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
@@ -20,7 +20,7 @@ package within an organizational context.
 <br>
 
 <center>
-<a href="https://rinpharma.shinyapps.io/riskassessment">
+<a href="https://bit.ly/demo_raa">
 <img src="man/figures/demo_riskassessment.png" alt="{riskassessment} app" width="25%">
 </a>
 </center>
@@ -68,11 +68,11 @@ adoption of R within a biopharmaceutical regulatory setting.
 
 If you are new to using the `riskassessment` app, welcome! We’d highly
 encourage you to start exploring the
-[`demo version`](https://rinpharma.shinyapps.io/riskassessment) of the
-app currently deployed on shinyapps.io. There, you’ll find a number of
-pre-loaded packages just waiting to be assessed. Hands on experience
-will help you become familiar with the general layout of the app as you
-poke around and explore.
+[`demo version`](https://bit.ly/demo_raa) of the app currently deployed
+on shinyapps.io. There, you’ll find a number of pre-loaded packages just
+waiting to be assessed. Hands on experience will help you become
+familiar with the general layout of the app as you poke around and
+explore.
 
 With that said, you should immediately recognize that the app requires
 authentication, since it’s intended use is within an organization. There
@@ -130,17 +130,19 @@ renv::restore()
 ```
 
 After this step is complete, you can simply run the contents of `app.R`
-to launch and/or deploy the application!
+to launch and/or deploy the application! For more information on our dev
+philosophy as it pertains to package management, please read the [“Using
+`renv`”](https://pharmar.github.io/riskassessment/articles/dev_renv.html)
+article.
 
 ### User Guides and User Feedback
 
-<a href='https://pharmar.github.io/riskassessment/'><img src="man/figures/raa-image-ug.png" align="right" height="120" style="float:right; padding-right: 30px; height:120px;"/></a>
+<a href='https://bit.ly/raa_docs'><img src="man/figures/raa-image-ug.png" align="right" height="120" style="float:right; padding-right: 30px; height:120px;"/></a>
 
 We’re constantly improving the app and it’s documentation. Please
 explore the user guides that have been developed to date, available on
-the `riskassessment` [documentation
-site](https://pharmar.github.io/riskassessment/). Be sure to read the
-[‘Get
+the `riskassessment` [documentation site](https://bit.ly/raa_docs). Be
+sure to read the [‘Get
 Started’](https://pharmar.github.io/riskassessment/articles/riskassessment.html)
 tab and perhaps [an article or
 two](https://pharmar.github.io/riskassessment/articles/index.html)!
@@ -166,13 +168,12 @@ information, we’ve created an [incredibly brief
 questionnaire](https://bit.ly/raa_survey) to let us know where you’re
 at.
 
-#### Deployments
+#### Deployment
 
 As you might expect, certain deployment environments offer persistent
 storage and others do not. For example, shinyapps.io does not. That
-means that even our [demo
-app](https://rinpharma.shinyapps.io/riskassessment) that’s hosted on
-shinyapps.io contains a package database that can’t be permanently
+means that even our [demo app](https://bit.ly/demo_raa) that’s hosted on
+shinyapps.io contains a a package database that can’t be permanently
 altered. That’s not advantageous since an organization needs to
 continually add new packages, publish comments, and make decisions about
 packages. Thus, we’d recommend exploring these deployment options (which

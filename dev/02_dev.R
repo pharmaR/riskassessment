@@ -288,7 +288,7 @@ spelling::spell_check_package()
 
 # Check URL are correct
 # remotes::install_github("r-lib/urlchecker")
-urlchecker::url_check()
+urlchecker::url_check() # urls that move are okay
 urlchecker::url_update()
 
 # check on other distributions

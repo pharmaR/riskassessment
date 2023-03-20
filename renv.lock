@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.1.2",
+    "Version": "4.2.2",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -367,10 +367,15 @@
     },
     "chromote": {
       "Package": "chromote",
-      "Version": "0.1.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "785cfc65cd435cc7f7b0cef04e4cf77c",
+      "Version": "0.1.1",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "chromote",
+      "RemoteUsername": "rstudio",
+      "RemoteRef": "origin-testfix",
+      "RemoteSha": "725f8b73d7bb8d77a9c2d85f695b3ae92739a0d3",
+      "Hash": "d79d2634169c07fa200f8ea3fa6cd567",
       "Requirements": [
         "R6",
         "curl",
@@ -2471,7 +2476,7 @@
       "Package": "xfun",
       "Version": "0.36",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "CRAN",
       "Hash": "f5baec54606751aa53ac9c0e05848ed6",
       "Requirements": []
     },
