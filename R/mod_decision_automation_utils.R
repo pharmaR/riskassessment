@@ -18,6 +18,35 @@ assign_decisions <- function(decision_list, package) {
   return(decision)
 }
 
+check_dec_cat <- function(decision_categories) {
+  if (!(length(decision_categories) > 0 && length(decision_categories) < 12))
+    stop("The number of decision categories must be between 1 and 11")
+  
+  if (!all.equal(decision_categories, unique(decision_categories)))
+    stop("The decision categories must be unique")
+}
+
+check_dec_rules <- function(decision_categories, decisions) {
+  if (!all(names(decisions) %in% decision_categories))
+    stop("All decision rule categories should be included in the list of decisions")
+  
+  if (!all.equal(names(decisions), unique(names(decisions))))
+    stop("The decision categories must be unique for the decision rules")
+  
+  if (!all(purrr::map_lgl(decisions, ~ is.numeric(unlist(.x)))))
+    stop("The rules must be numeric values")
+  
+  if (!all(purrr::map_lgl(decisions, ~ length(unlist(.x)) <= 2)))
+    stop("At most two values can be provided for a decision rule")
+  
+  dec_lst <- unlist(decisions[decision_categories])
+  if (!all(dec_lst >= 0 & dec_lst <= 1))
+    stop("All rules must be between 0 and 1")
+  
+  if (!all.equal(dec_lst, sort(dec_lst)))
+    stop("The rules should be ascending in order of the categories")
+}
+
 risk_lbl <- function(x, input = TRUE) {
   lbl <- x %>% tolower() %>% stringr::str_replace_all(" +", "_")
   
