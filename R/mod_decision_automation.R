@@ -93,7 +93,7 @@ mod_decision_automation_server <- function(id, user){
     auto_db <- process_dec_tbl()
     auto_list <- reactiveVal(auto_db)
     
-    decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low", "Medium", "High")
+    decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
     
     output$auto_table <-
       DT::renderDataTable({
@@ -184,7 +184,7 @@ mod_decision_automation_server <- function(id, user){
               class = "shinyjs-hide",
               style = "width: 100%",
               sliderInput(ns(risk_lbl(.x)), 
-                          paste(.x, "Risk"), 0, 1, initial_values[[.x]],
+                          .x, 0, 1, initial_values[[.x]],
                           width = "100%", sep = .01)
             ))
             div(
@@ -192,7 +192,7 @@ mod_decision_automation_server <- function(id, user){
               shinyWidgets::dropdownButton(
                 div(
                   style = "display: flex;",
-                checkboxGroupInput(ns("auto_include"), "Auto-Assign Risk Decisions For...", decision_lst, selected = intersect(initial_selection, decision_lst), inline = TRUE),
+                checkboxGroupInput(ns("auto_include"), "Auto-Assign Decisions For...", decision_lst, selected = intersect(initial_selection, decision_lst), inline = TRUE),
                 actionButton(ns("auto_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
                 ),
                 dec_divs,

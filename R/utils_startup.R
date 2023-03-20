@@ -196,16 +196,16 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
   check_dec_cat(decision_categories)
   if (is.null(decisions)) {
     suppressMessages(dbUpdate(paste(scan(app_sys("sql_queries", "create_decision_table.sql"), sep = "\n", what = "character"), collapse = ""), assessment_db))
-    dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', decision_categories, '\\')', collapse = ', ')}"), assessment_db)
     dec_lst <- get_golem_config('decision_rules', file = app_sys("db-config.yml"))
     check_dec_rules(decision_categories, dec_lst)
+    dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', decision_categories, '\\')', collapse = ', ')}"), assessment_db)
     if (!is.null(dec_lst)) {
       purrr::iwalk(dec_lst, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'")))
     }
   } else if (nrow(decisions) == 0) {
-    dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', decision_categories, '\\')', collapse = ', ')}"), assessment_db)
     dec_lst <- get_golem_config('decision_rules', file = app_sys("db-config.yml"))
     check_dec_rules(decision_categories, dec_lst)
+    dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', decision_categories, '\\')', collapse = ', ')}"), assessment_db)
     if (!is.null(dec_lst)) {
       purrr::iwalk(dec_lst, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'")))
     }

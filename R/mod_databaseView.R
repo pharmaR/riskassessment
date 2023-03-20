@@ -68,8 +68,9 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     
     ns = session$ns
     
-    decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low", "Medium", "High")
-    color_lst <- color_palette[[length(decision_lst) - 2]]
+    decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
+    color_lst <- color_palette[[length(decision_lst)]]
+    browser()
     
     # used for adding action buttons to table_data
     shinyInput <- function(FUN, len, id, ...) {
@@ -95,7 +96,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       db_pkg_overview %>%
         dplyr::mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>%
         dplyr::mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
-        dplyr::mutate(decision = ifelse(decision != "", paste(decision, "Risk"), "-")) %>%
+        dplyr::mutate(decision = ifelse(decision != "", decision, "-")) %>%
         dplyr::mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
         dplyr::select(name, version, score, was_decision_made, decision, last_comment)
     })
@@ -146,8 +147,8 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                                 "font-weight" = "bold",
                                 "color" = "white",
                                 "background-color" = 
-                                  ifelse(x %in% paste(decision_lst, "Risk"), 
-                                         color_lst[paste(decision_lst, "Risk") %in% x], 
+                                  ifelse(x %in% decision_lst, 
+                                         color_lst[decision_lst %in% x], 
                                          "transparent"))),
             was_decision_made = formattable::formatter("span",
                                           style = x ~ formattable::style(color = ifelse(x, "#0668A3", "gray")),

@@ -34,7 +34,7 @@ run_app <- function(
   credentials_db_name <- get_golem_config('credential_db', file = app_sys("db-config.yml"))
   if(is.null(credentials_db_name)) credentials_db_name <- "credentials.sqlite"
   decision_categories <- get_golem_config('decision_categories', file = app_sys("db-config.yml"))
-  if(is.null(decision_categories)) decision_categories <- c("Low", "Medium", "High")
+  if(is.null(decision_categories)) decision_categories <- c("Low Risk", "Medium Risk", "High Risk")
   
   if(is.null(login_note)) {
     # https://github.com/rstudio/fontawesome/issues/99
