@@ -46,7 +46,8 @@ sidebarUI <- function(id) {
           h5("Select Overall Decision"), 
           selected = NULL,
           grid = TRUE,
-          if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low", "Medium", "High")
+          if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk"),
+          force_edges = TRUE
         ),
         
         # Action button to reset decision for selected package.
