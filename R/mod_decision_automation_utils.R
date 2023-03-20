@@ -47,6 +47,14 @@ check_dec_rules <- function(decision_categories, decisions) {
     stop("The rules should be ascending in order of the categories")
 }
 
+get_colors <- function(decision_categories) {
+  num_cat <- length(decision_categories)
+  if (num_cat == 1)
+    return(color_palette[1])
+  cat_list <- (seq_along(decision_categories) - 1) * 10/min(num_cat - 1, 11) + 1
+  color_palette[round(purrr::map_dbl(cat_list, min, 11))]
+}
+
 risk_lbl <- function(x, input = TRUE) {
   lbl <- x %>% tolower() %>% stringr::str_replace_all(" +", "_")
   

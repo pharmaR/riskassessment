@@ -1,18 +1,3 @@
-color_palette <- list(
-  c("#06B756FF"),
-  c("#06B756FF","#A63E24FF"),
-  c("#06B756FF","#A99D04FF","#A63E24FF"),
-  c("#06B756FF","#81B50AFF","#BE7900FF","#A63E24FF"),
-  c("#06B756FF","#81B50AFF","#A99D04FF","#BE6200FF","#A63E24FF"),
-  c("#06B756FF","#67BA04FF","#96AB0AFF","#B78D07FF","#BE6200FF","#A63E24FF"),
-  c("#06B756FF","#2FBC06FF","#81B50AFF","#A99D04FF","#BE7900FF","#B24F22FF","#A63E24FF"),
-  c("#06B756FF","#67BA04FF","#81B50AFF","#96AB0AFF","#B78D07FF","#BE7900FF","#BE6200FF","#A63E24FF"),
-  c("#06B756FF","#2FBC06FF","#81B50AFF","#96AB0AFF","#A99D04FF","#B78D07FF","#BE7900FF","#B24F22FF","#A63E24FF"),
-  c("#06B756FF","#2FBC06FF","#67BA04FF","#81B50AFF","#96AB0AFF","#B78D07FF","#BE7900FF","#BE6200FF","#B24F22FF","#A63E24FF"),
-  c("#06B756FF","#2FBC06FF","#67BA04FF","#81B50AFF","#96AB0AFF","#A99D04FF","#B78D07FF","#BE7900FF","#BE6200FF","#B24F22FF","#A63E24FF")
-)
-               
-
 #' decision_automation UI Function
 #'
 #' @description A shiny Module.
@@ -23,8 +8,8 @@ color_palette <- list(
 mod_decision_automation_ui <- function(id){
   ns <- NS(id)
   
-  decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low", "Medium", "High")
-  color_lst <- color_palette[[length(decision_lst)]]
+  decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
+  color_lst <- get_colors(decision_lst)
   dec_num <- length(decision_lst)
   dec_css <- purrr::imap_chr(decision_lst, function(.x, .y) {
     lbl <- risk_lbl(.x, input = FALSE)
