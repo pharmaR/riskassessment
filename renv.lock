@@ -367,10 +367,15 @@
     },
     "chromote": {
       "Package": "chromote",
-      "Version": "0.1.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "785cfc65cd435cc7f7b0cef04e4cf77c",
+      "Version": "0.1.1",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "chromote",
+      "RemoteUsername": "rstudio",
+      "RemoteRef": "origin-testfix",
+      "RemoteSha": "725f8b73d7bb8d77a9c2d85f695b3ae92739a0d3",
+      "Hash": "d79d2634169c07fa200f8ea3fa6cd567",
       "Requirements": [
         "R6",
         "curl",
@@ -408,6 +413,14 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "96c01552bfd5661b9bbdefbc762f4bcd",
+      "Requirements": []
+    },
+    "codetools": {
+      "Package": "codetools",
+      "Version": "0.2-18",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "019388fc48e48b3da0d3a76ff94608a8",
       "Requirements": []
     },
     "colorspace": {
@@ -875,6 +888,16 @@
       "Repository": "CRAN",
       "Hash": "f3aefccc1cc50de6338146b62f115de8",
       "Requirements": []
+    },
+    "globals": {
+      "Package": "globals",
+      "Version": "0.16.2",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "baa9585ab4ce47a9f4618e671778cc6f",
+      "Requirements": [
+        "codetools"
+      ]
     },
     "glue": {
       "Package": "glue",
@@ -2039,18 +2062,25 @@
     },
     "shinytest2": {
       "Package": "shinytest2",
-      "Version": "0.1.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "1f5b10b1567c31c131b98bb44ab4ea20",
+      "Version": "0.2.1.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "shinytest2",
+      "RemoteUsername": "rstudio",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "b8fdce681597e9610fc078aa6e376134c404f3bd",
+      "Hash": "a1bf53fe237169d9f2f134ed8ae1e6cb",
       "Requirements": [
         "R6",
         "callr",
         "checkmate",
         "chromote",
+        "cpp11",
         "crayon",
         "ellipsis",
         "fs",
+        "globals",
         "httr",
         "jsonlite",
         "pingr",
@@ -2471,7 +2501,7 @@
       "Package": "xfun",
       "Version": "0.36",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "CRAN",
       "Hash": "f5baec54606751aa53ac9c0e05848ed6",
       "Requirements": []
     },
