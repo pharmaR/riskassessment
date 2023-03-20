@@ -117,7 +117,7 @@ When `riskassessment::run_app()` is executed, a search is performed to see if th
 
 <br>
 
-## Deployement options
+## Deployment options
 
 <center>
 ![](images/deploy_general.png){style="height:220px"}

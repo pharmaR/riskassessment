@@ -2,6 +2,7 @@ AppDriver
 Aravind
 CMD
 Chromote
+Deployment’
 Devs
 GxP
 Imran
@@ -22,7 +23,6 @@ ShinyProxy
 Started’
 Sys
 UI
-Userids
 addComment
 admin’
 arg
@@ -33,7 +33,6 @@ bs
 bslib's
 cmd
 databse
-deployments’
 dev
 docx
 dropdown
@@ -50,8 +49,10 @@ introJS
 introjs
 io
 ironments
+json
 labelled
 lockfile
+loggit
 macOS
 nonadmin
 nonadmin’
@@ -70,9 +71,11 @@ repo’s
 riskmetric
 serverless
 shinyapps
+shinylogs
 shinytest
 showComments
 showHelperMessage
+sql
 sqlite
 tibble
 transactional
