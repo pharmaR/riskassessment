@@ -61,7 +61,7 @@ This `ADMIN` user will be asked to change their password immediately. After supp
 
 ## Subsequent logins
 
-The designated `ADMIN` user(s) will have special privileges and duties in the application, including but not limited to creating new users, with both `ADMIN` and `NONADMIN` roles. For `ADMIN`s, please see the article titled [Managing Userids and Passwords](../articles/Managing_Userids_and_Passwords.html) on how to create these new users. For `NONADMIN`s, you will receive a temporary password for your initial log in, which you'll be prompted to change with immediately upon your first visit to the app. For subsequent visits, you won't have to worry about all these first-time log in procedures!
+The designated `ADMIN` user(s) will have special privileges and duties in the application, including but not limited to creating new users, with both `ADMIN` and `NONADMIN` roles. For `ADMIN`s, please see the article titled [Administrative Tools and Options](../articles/Administrative_Tools_and_Options.html) on how to create these new users. For `NONADMIN`s, you will receive a temporary password for your initial log in, which you'll be prompted to change with immediately upon your first visit to the app. For subsequent visits, you won't have to worry about all these first-time log in procedures!
 
 
 
