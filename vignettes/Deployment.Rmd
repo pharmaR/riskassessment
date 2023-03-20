@@ -118,7 +118,7 @@ When `riskassessment::run_app()` is executed, a search is performed to see if th
 ## Deployement options
 
 <center>
-![](images/deploy_general.png){style="height:360px"}
+![](images/deploy_general.png){style="height:220px"}
 </center>
 
 ### shinyapps.io
