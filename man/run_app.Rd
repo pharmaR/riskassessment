@@ -44,14 +44,6 @@ button, provided to guide users}
 
 \item{...}{arguments to pass to golem_opts. See \code{?golem::get_golem_options}
 for more details.}
-
-\item{credentials_db_name}{a text string that names the credentials databse.
-Please make sure name ends with '.sqlite'. For example: 'cred_db.sqlite'.}
-
-\item{assessment_db_name}{text string that names the credentials databse.
-Please make sure name ends with '.sqlite'. For example: 'assess_db.sqlite'.}
-
-\item{decision_categories}{a character vector of the decision categories}
 }
 \value{
 a shiny app object

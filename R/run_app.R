@@ -5,11 +5,6 @@
 #'   can be overwritten to include a specific version name as a text string.
 #' @param login_note a text string to display underneath the auth screen's login
 #'   button, provided to guide users
-#' @param credentials_db_name a text string that names the credentials databse.
-#'   Please make sure name ends with '.sqlite'. For example: 'cred_db.sqlite'.
-#' @param assessment_db_name text string that names the credentials databse.
-#'   Please make sure name ends with '.sqlite'. For example: 'assess_db.sqlite'.
-#' @param decision_categories a character vector of the decision categories
 #' @param ... arguments to pass to golem_opts. See `?golem::get_golem_options`
 #'   for more details.
 #' @inheritParams shiny::shinyApp
