@@ -1,5 +1,6 @@
 # riskassessment (development version)
 * Add Decision-related columns to the database view
+* Apply chromote fix provided by Winston Chang 3/18/22
 
 # riskassessment 0.1.1
 
