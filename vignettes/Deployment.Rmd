@@ -1,4 +1,5 @@
 ---
+title: Deployment
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Deployment}
@@ -13,10 +14,11 @@ library(fontawesome)
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-![](images/deployment.png){style="height:160px"}
-
 
 To reap all the advantages of the `riskassessment` application, an organization needs to generate and store results frequently derived from the app, including but not limited to:
+
+
+![](images/deploy_rocket.png){style="float:right; height:140px"}
 
 1. Uploading new packages, & storing their metric info and `riskmetric` score
 1. Publishing reviewer comments
