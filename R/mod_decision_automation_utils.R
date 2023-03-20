@@ -19,8 +19,8 @@ assign_decisions <- function(decision_list, package) {
 }
 
 check_dec_cat <- function(decision_categories) {
-  if (!(length(decision_categories) > 0 && length(decision_categories) < 12))
-    stop("The number of decision categories must be between 1 and 11")
+  if (!(length(decision_categories) > 0))
+    stop("The number of decision categories must be at least 1")
   
   if (!all.equal(decision_categories, unique(decision_categories)))
     stop("The decision categories must be unique")
