@@ -1,4 +1,5 @@
 # riskassessment (development version)
+* Fix for Chromote error provided by Winston Chang
 
 # riskassessment 0.1.1
 
