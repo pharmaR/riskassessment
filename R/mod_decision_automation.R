@@ -90,17 +90,17 @@ mod_decision_automation_server <- function(id, user){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    auto_db <- process_dec_tbl()
-    auto_list <- reactiveVal(auto_db)
+    auto_decision_initial <- process_dec_tbl()
+    auto_decision_update <- reactiveVal(auto_decision_initial)
     
     decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
     
     output$auto_table <-
       DT::renderDataTable({
-        req(!rlang::is_empty(auto_list()))
+        req(!rlang::is_empty(auto_decision_update()))
         
         DT::datatable({
-          auto_list() %>%
+          auto_decision_update() %>%
             purrr::imap_dfr(~ dplyr::tibble(decision = .y, ll = .x[[1]], ul = .x[[2]])) %>%
             dplyr::arrange(ll,)
         },
@@ -120,7 +120,7 @@ mod_decision_automation_server <- function(id, user){
     
     output$empty_auto <- 
       renderUI({
-        if (rlang::is_empty(auto_list())) {
+        if (rlang::is_empty(auto_decision_update())) {
           tagList(
             br(),
             p("Decision automation is not enabled. Click on the gear to the right if you wish to add.")
@@ -130,7 +130,7 @@ mod_decision_automation_server <- function(id, user){
     
     observe({
       req(user$role)
-      req(user$role == "admin" || !rlang::is_empty(auto_db))
+      req(user$role == "admin" || !rlang::is_empty(auto_decision_initial))
       
       if (user$role == "admin") {
         output$auto_classify <-
@@ -145,7 +145,7 @@ mod_decision_automation_server <- function(id, user){
               uiOutput(ns("empty_auto")),
             )
           })
-      } else if (!rlang::is_empty(auto_db)) {
+      } else if (!rlang::is_empty(auto_decision_initial)) {
         output$auto_classify <-
           renderUI({
             tagList(
@@ -161,20 +161,20 @@ mod_decision_automation_server <- function(id, user){
         initial_values <- purrr::imap(decision_lst, ~ c((.y - 1)/num_dec, .y/num_dec) %>% `[`(!. %in% c(0,1)) %>% round(2)) %>% 
           purrr::set_names(decision_lst)
         initial_selection <- NULL
-        if (!rlang::is_empty(auto_db)) {
-          for (.y in names(auto_db)) {
+        if (!rlang::is_empty(auto_decision_initial)) {
+          for (.y in names(auto_decision_initial)) {
             initial_values[[.y]] <- 
               if (.y == decision_lst[1]) {
-                unlist(auto_db[[.y]][2])
+                unlist(auto_decision_initial[[.y]][2])
               } else if (.y == decision_lst[num_dec]) { 
-                unlist(auto_db[[.y]][1])
+                unlist(auto_decision_initial[[.y]][1])
               } else if (.y %in% decision_lst) {
-                unlist(auto_db[[.y]])
+                unlist(auto_decision_initial[[.y]])
               } else {
                 warning(glue::glue("The decision category '{.y}' is not present in the allowed decision list!"))
               }
           }
-          initial_selection <- names(auto_db)
+          initial_selection <- names(auto_decision_initial)
         }
         
         output$auto_settings <-
@@ -209,7 +209,7 @@ mod_decision_automation_server <- function(id, user){
           })
         
         auto_decision <- reactiveValues()
-        auto_current <- reactiveVal(names(auto_db))
+        auto_current <- reactiveVal(names(auto_decision_initial))
         
         observeEvent(input$auto_include, {
           grp_added <- setdiff(input$auto_include, auto_current())
@@ -287,7 +287,7 @@ mod_decision_automation_server <- function(id, user){
         observeEvent(input$auto_reset, {
           req(user$role == "admin")
           
-          purrr::iwalk(auto_list(), function(.x, .y) {
+          purrr::iwalk(auto_decision_update(), function(.x, .y) {
             reset_vals <- 
             if (.y == decision_lst[1]) {
               .x[2]
@@ -299,7 +299,7 @@ mod_decision_automation_server <- function(id, user){
             
             updateSliderInput(session, risk_lbl(.y), value = reset_vals)
           })
-          updateCheckboxGroupInput(session, "auto_include", selected = names(auto_list()))
+          updateCheckboxGroupInput(session, "auto_include", selected = names(auto_decision_update()))
           })
         
         output$modal_table <- 
@@ -364,7 +364,7 @@ mod_decision_automation_server <- function(id, user){
           out_lst <- purrr::compact(reactiveValuesToList(auto_decision))
           dbUpdate("UPDATE decision_categories SET lower_limit = NULL, upper_limit = NULL")
           purrr::iwalk(out_lst, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[2]} WHERE decision = '{.y}'")))
-          auto_list(out_lst)
+          auto_decision_update(out_lst)
           
           if (length(out_lst) == 0) {
             loggit::loggit("INFO", glue::glue("Decision automation rules have been disabled by {user$name} ({user$role})."))
@@ -380,7 +380,7 @@ mod_decision_automation_server <- function(id, user){
       }
     })
     
-    return(auto_list)
+    return(auto_decision_update)
   })
 }
 
