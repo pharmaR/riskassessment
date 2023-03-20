@@ -1,5 +1,4 @@
 ---
-title: "Deployment"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Deployment}
@@ -13,6 +12,8 @@ library(fontawesome)
 
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+![](images/deployment.png){style="height:160px"}
 
 
 To reap all the advantages of the `riskassessment` application, an organization needs to generate and store results frequently derived from the app, including but not limited to:
@@ -48,7 +49,10 @@ Note! In the future, we'll consider adding utilities that would allow users to c
 
 ## The `database.sqlite` file
 
-When the `run_app()` function is ran, the code base will check if the `database.sqlite` file exists, and if it doesn't, [several tables will be initiated](https://github.com/pharmaR/riskassessment/tree/master/inst/app/www/sql_queries) to create this database just before the app launches. Note that the user has the authority to name the database file to whatever they like using the `assessment_db_name` argument in `run_app()`. In addition, you can include a file path here preceeding the file name if you wish to move the location of the database away from the root directory.  For example, the following code would create a database called "test_database.sqlite" in the `dev/` folder:
+
+![](images/SQLite.png){style="float:right; height:80px"}
+
+When the `riskassessment::run_app()` function is ran, the code base will check if the `database.sqlite` file exists, and if it doesn't, [several tables will be initiated](https://github.com/pharmaR/riskassessment/tree/master/inst/app/www/sql_queries) to create this database just before the app launches. Note that the user has the authority to name the database file to whatever they like using the `assessment_db_name` argument in `run_app()`. In addition, you can include a file path here preceding the file name if you wish to move the location of the database away from the root directory.  For example, the following code would create a database called "test_database.sqlite" in the `dev/` folder:
 
 ```
 run_app(assessment_db_name = './dev/test_database.sqlite')
@@ -66,6 +70,7 @@ There is one exception to this: the `metric` table is populated with data via th
 
 Note: if any changes/ updates occur in these tables with a new release of `riskassessment`, you may need to delete the database file before re-running the app. Any such changes should be announced as 'breaking changes' in the app. If so, remember to save a copy of your current database file in another directory for backup purposes.
 
+
 <br>
 
 ## The `loggit.json` file
@@ -80,21 +85,41 @@ As mentioned previously, the `loggit.json` file is initiated to track general ac
 * Re-weighting pkg metrics
 * Any database issues or conflicts that may arise
 
-Each loggit "transaction" recorded contains a lot of info, but most notably, it will contain a timestamp, record type ("info", "warn", or "error"), and a message. For database transactions, the message will usually include the query that was executed. Feel free to use this information as you see fit.
+Each loggit "transaction" recorded contains a lot of info, but most notably, it will contain a timestamp, record type ("info", "warn", or "error"), and a message. For database transactions, the message will usually include the query that was executed. All log entries are always printed out in the R console for your convenience. For example:
+
+```{r, echo=TRUE, eval=FALSE}
+riskassessment::run_app()
+> [1] "Log file set to loggit.json"
+> Listening on http://127.0.0.1:4097
+> {"timestamp": "2023-03-20T11:46:23-0400", "log_lvl": "INFO", "log_msg": "User admin signed on as admin"}
+> {"timestamp": "2023-03-20T11:46:33-0400", "log_lvl": "INFO", "log_msg": "The following decision rules were implemented by admin (admin): Medium = (0.33__COMMA__ 0.66]; Low = (0__COMMA__ 0.33]; High = (0.66__COMMA__ 1]."}
+```
+
+
+Feel free to use this information as you see fit!
 
 
 <br>
 
 ## The `auto_decisions.json` file
 
-When `riskassessment::run_app()` is executed, a search is performed to see if the 
+When `riskassessment::run_app()` is executed, a search is performed to see if there exists an `auto_decisions.json` file in the root directory. Without such file, an empty one will be automatically created. This file is used to keep track of any decision automation rules. As you add & edit the rules in the app, the `json` file will update accordingly, keeping track of each categories risk score range. For example, the following json file coordinates with ranges displayed in the app:
 
+```{json, echo=TRUE, eval=FALSE}
+{"Medium":[0.33,0.66],"Low":[0,0.33],"High":[0.66,1]}
+```
 
-
+<center>
+![](images/deploy_full_auto_decision_rules.png){style="position:left; width:456px"}
+</center>
 
 <br>
 
 ## Deployement options
+
+<center>
+![](images/deploy_general.png){style="height:360px"}
+</center>
 
 ### shinyapps.io
 
@@ -105,13 +130,23 @@ Beware: shinyapps.io **does not** offer persistent storage of `riskassessment`'s
 
 ### Posit Connect & Shiny Server
 
-On a server, if you want to save files on disk, you'll need to set write permissions accordingly on the folder you want to save the database & logs.
+![](images/deploy_posit_rsconnect_logo.png){style="float:right; height:160px"}
 
-On Posit Connect, you need to use an absolute path to specify the directory where to save logs. You can find more information here: [Persistent Storage on Posit Connect](https://support.rstudio.com/hc/en-us/articles/360007981134-Persistent-Storage-on-RStudio-Connect).
+<br>
+
+On a server, if you want to save files on disk, you'll need to set write permissions accordingly on the folder you want to save the database, logs, and auto-decision json file.
+
+On Posit Connect, you need to use an absolute path to specify the directory where to save the files. You can find more information here: [Persistent Storage on Posit Connect](https://support.rstudio.com/hc/en-us/articles/360007981134-Persistent-Storage-on-RStudio-Connect).
+
+<br>
+
+Beyond that, it's important to note that we strongly encourage those deploying the app to take advantage of the `renv.lock` file used to maintain package version dependencies. For more information on how to use `renv.lock` and our general dev philosophy as it pertains to package management, please read the ["Using `renv`"](https://pharmar.github.io/riskassessment/articles/dev_renv.html) article. Highly related, we encourage the use of git-backed deployment when possible. So, immediately after you update/sync your package dependencies using `renv`, you may want to run `rsconnect::writeManifest()` before deploying from a dedicated branch. For more information on git-backed deployment & manifest files, please read the Posit article on [git-backed content](https://docs.posit.co/connect/user/git-backed/).
 
 <br>
 
 ### ShinyProxy
+
+![](images/deploy_shinyproxy.png){style="float:right; height:160px"}
 
 With [ShinyProxy](https://www.shinyproxy.io/), you can use a Docker volume to write files outside of the application container. In `application.yml`, you use can something like this in the specs describing the application:
 
