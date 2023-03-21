@@ -83,15 +83,15 @@ Initially, both share the same password: `QWERTY1`. If you log in with
 this credential, the app will immediately prompt you to change your
 password and repeat the the process with your new credentials.
 
-If you want a quick tour through the app (or need assistance getting
-past the authentication wall), you should watch this short walk through
-on the R Consortium’s website:
+If you want a quick overview of the project and demo of the application,
+you should watch this walk through on YouTube [from Shiny Conf
+2023](https://bit.ly/raa_shinyconf23):
 
 <br>
 
 <center>
-<a href="https://www.r-consortium.org/blog/2022/02/03/risk-assessment-shiny-app-update-from-r-validation-hub">
-<img src="man/figures/r_con_update.png" alt="R Validation Hub update" width="75%">
+<a href="https://bit.ly/raa_shinyconf23" target="_blank">
+<img src="man/figures/raa_shinyConf23.png" alt="riskassessment at shinyConf 2023" width="75%">
 </a>
 </center>
 
