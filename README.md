@@ -84,8 +84,10 @@ this credential, the app will immediately prompt you to change your
 password and repeat the the process with your new credentials.
 
 If you want a quick overview of the project and demo of the application,
-you should watch this walk through on YouTube [from Shiny Conf
-2023](https://bit.ly/raa_shinyconf23):
+you should watch this video walk through on YouTube [from Shiny Conf
+2023](https://bit.ly/raa_shinyconf23). At the conference,
+`riskassessment` was voted “best application” in the shiny showcase by
+conference attendees!
 
 <br>
 
