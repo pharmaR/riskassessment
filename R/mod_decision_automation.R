@@ -143,24 +143,19 @@ mod_decision_automation_server <- function(id, user){
       
       if (user$role == "admin") {
         num_dec <- length(decision_lst)
-        initial_values <- purrr::imap(decision_lst, ~ c((.y - 1)/num_dec, .y/num_dec) %>% `[`(!. %in% c(0,1)) %>% round(2)) %>% 
+        initial_values <- purrr::imap(decision_lst, ~ c((.y - 1)/num_dec, .y/num_dec)) %>% 
           purrr::set_names(decision_lst)
         initial_selection <- NULL
         if (!rlang::is_empty(auto_decision_initial)) {
           for (.y in names(auto_decision_initial)) {
-            initial_values[[.y]] <- 
-              if (.y == decision_lst[1]) {
-                unlist(auto_decision_initial[[.y]][2])
-              } else if (.y == decision_lst[num_dec]) { 
-                unlist(auto_decision_initial[[.y]][1])
-              } else if (.y %in% decision_lst) {
-                unlist(auto_decision_initial[[.y]])
-              } else {
-                warning(glue::glue("The decision category '{.y}' is not present in the allowed decision list!"))
-              }
+            if (.y %in% decision_lst)
+              initial_values[[.y]] <- unlist(auto_decision_initial[[.y]])
+            else
+              warning(glue::glue("The decision category '{.y}' is not present in the allowed decision list!")) 
           }
           initial_selection <- names(auto_decision_initial)
         }
+        initial_values <- purrr::map(initial_values, ~ .x %>% `[`(!. %in% c(0,1)) %>% round(2))
         
         output$auto_settings <-
           renderUI({
