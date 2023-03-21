@@ -188,6 +188,7 @@ usethis::use_test( "generate_comm_data" )
 # Documentation
 ## Vignettes 
 usethis::use_vignette("getting_started")
+usethis::use_vignette("Deployments")
 
 
 # Before submitting a PR, run this code & update NEWS.md

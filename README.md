@@ -181,11 +181,12 @@ allow persistent storage):
 
 - Shiny Server
 
-- RStudio Connect
+- Posit Connect
 
 - ShinyProxy
 
 For more information on each of these, we highly recommend reading our
-‘deployments’ article.
+[‘Deployment’
+article](https://pharmar.github.io/riskassessment/articles/Deployment.html).
 
 <br>
