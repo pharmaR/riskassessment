@@ -71,7 +71,7 @@ check_dec_rules <- function(decision_categories, decisions) {
   if (decision_categories[1] %in% names(decisions) & unlist(decisions[[decision_categories[1]]])[1] != 0)
     stop("Rules for the first decision category must have a lower bound of 0")
   
-  if (decision_categories[length(decision_categories)] %in% names(decisions) & unlist(decisions[[decision_categories[length(decision_categories)]]])[1] != 0)
+  if (decision_categories[length(decision_categories)] %in% names(decisions) & unlist(decisions[[decision_categories[length(decision_categories)]]])[2] != 1)
     stop("Rules for the last decision category must have an upper bound of 1")
 }
 
