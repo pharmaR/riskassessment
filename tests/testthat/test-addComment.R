@@ -23,7 +23,7 @@ test_that("Comments can be added via the addComment module", {
   )
   
   # set up new app driver object
-  app <- AppDriver$new(app_dir = test_path("test-apps"))
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 600*1000)
 
   # select dplyr package
   app$set_inputs(`sidebar-select_pkg` = "dplyr")
@@ -102,6 +102,10 @@ test_that("Comments can be added via the addComment module", {
   # close connection
   DBI::dbDisconnect(con)
   
+  if (file.exists(app_db_loc)) {
+    file.remove(app_db_loc)
+  }
+  
 })
 
 
@@ -121,8 +125,8 @@ test_that("Comment input box is rendered according to the tab and user state", {
   )
 
   # set up new app driver object
-  app <- AppDriver$new(app_dir = test_path("test-apps"))
-
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 600*1000)
+  
   # select dplyr package
   app$set_inputs(`sidebar-select_pkg` = "dplyr")
 
