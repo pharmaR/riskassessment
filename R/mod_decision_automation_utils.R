@@ -36,7 +36,7 @@ check_dec_cat <- function(decision_categories) {
   if (!(length(decision_categories) > 0))
     stop("The number of decision categories must be at least 1")
   
-  if (!all.equal(decision_categories, unique(decision_categories)))
+  if (length(decision_categories) != length(unique(decision_categories)))
     stop("The decision categories must be unique")
 }
 
@@ -65,7 +65,7 @@ check_dec_rules <- function(decision_categories, decisions) {
   if (!all(dec_lst >= 0 & dec_lst <= 1))
     stop("All rules must be between 0 and 1")
   
-  if (!all.equal(dec_lst, sort(dec_lst)))
+  if (!all(dec_lst == sort(dec_lst)))
     stop("The rules should be ascending in order of the categories")
 }
 
