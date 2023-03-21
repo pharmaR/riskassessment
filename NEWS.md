@@ -1,6 +1,3 @@
-# riskassessment (development version)
-* Fix for Chromote error provided by Winston Chang
-
 # riskassessment 0.1.1
 
 ### Enhancements
@@ -17,6 +14,7 @@
 * Fixed bug where card displaying "Number of downloads in last 12 months" was faulty, summing all months from previous year and none from current year.
 * Report headings were changed to "asis" sentence case to avoid altering case on package names in reports
 * Fix failing tests: prefix AppDriver$new with 'shinytest2::'
+* Fix for Chromote error provided by Winston Chang
 
 ### Docs
 * Added User Feedback survey to `README` (#411)
