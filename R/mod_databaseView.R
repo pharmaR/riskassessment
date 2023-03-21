@@ -82,7 +82,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     table_data <- eventReactive({uploaded_pkgs(); changes()}, {
       
       db_pkg_overview <- dbSelect(
-        'SELECT pi.name, pi.version, pi.score, pi.decision, c.last_comment
+        'SELECT pi.name, pi.version, pi.score, pi.decision, pi.decsion_by, pi.decision_date, c.last_comment
         FROM package as pi
         LEFT JOIN (
             SELECT id, max(added_on) as last_comment FROM comments GROUP BY id)
@@ -94,8 +94,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
         dplyr::mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>%
         dplyr::mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
         dplyr::mutate(decision = ifelse(decision != "", paste(decision, "Risk"), "-")) %>%
-        dplyr::mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
-        dplyr::select(name, version, score, was_decision_made, decision, last_comment)
+        dplyr::select(name, version, score, decision, decision_by, decision_date, last_comment)
     })
     
     exportTestValues(
@@ -154,7 +153,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                                           x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))
           )),
         selection = list(mode = 'multiple'),
-        colnames = c("Package", "Version", "Score", "Decision Made?", "Decision", "Last Comment", "Explore Metrics"),
+        colnames = c("Package", "Version", "Score", "Decision", "Decision by", "Decision Date", "Last Comment", "Explore Metrics"),
         rownames = FALSE,
         extensions = "Buttons",
         options = list(
@@ -166,10 +165,10 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
           columnDefs = list(list(className = 'dt-center', targets = "_all")),
           buttons = list(
             list(extend = "excel", text = shiny::HTML('<i class="fas fa-download"></i> Excel'),
-                 exportOptions = list(columns = c(0:5)), # which columns to download
+                 exportOptions = list(columns = c(0:6)), # which columns to download
                  filename = paste("{riskassessment} pkgs " ,stringr::str_replace_all(paste(Sys.time()),":", "."))),
             list(extend = "csv", text = shiny::HTML('<i class="fas fa-download"></i> CSV'),
-                 exportOptions = list(columns = c(0:5)), # which columns to download
+                 exportOptions = list(columns = c(0:6)), # which columns to download
                  filename = paste("{riskassessment} pkgs " ,stringr::str_replace_all(paste(Sys.time()),":", "."))))
         )
         , style="default"
