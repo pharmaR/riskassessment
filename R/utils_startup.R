@@ -162,6 +162,7 @@ create_credentials_dev_db <- function(db_name){
 #' 
 #' @param assess_db A string denoting the name of the assessment database.
 #' @param cred_db A string denoting the name of the credentials database.
+#' @param decision_cat A character vector denoting the decision categories in ascending order of risk
 #'
 #' @return There is no return value. The function is run for its side effects.
 #' @importFrom loggit set_logfile

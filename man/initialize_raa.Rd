@@ -10,6 +10,8 @@ initialize_raa(assess_db, cred_db, decision_cat)
 \item{assess_db}{A string denoting the name of the assessment database.}
 
 \item{cred_db}{A string denoting the name of the credentials database.}
+
+\item{decision_cat}{A character vector denoting the decision categories in ascending order of risk}
 }
 \value{
 There is no return value. The function is run for its side effects.
