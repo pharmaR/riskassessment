@@ -12,7 +12,7 @@ test_that("both dbUpdate and dbSelect work", {
     app_db_loc
   )
   
-  con <- dbConnect(RSQLite::SQLite(), app_db_loc)
+  con <- DBI::dbConnect(RSQLite::SQLite(), app_db_loc)
   
   # 1. table 'package' exists?
   testthat::expect_true(DBI::dbExistsTable(con, "package"))
