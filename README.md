@@ -15,17 +15,15 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 
 `riskassessment` is an R package containing a shiny front-end to augment
 the utility of the [`riskmetric`](https://github.com/pharmaR/riskmetric)
-package within an organizational context.
+package within an organizational context. Recently awarded the title for
+“Best App” at [Shiny Conf 2023](https://bit.ly/raa_shinyconf23) (see
+[Recognition](#recognition) section below).
 
 <br>
 
 <center>
-<a href="https://bit.ly/demo_raa">
-<img src="man/figures/demo_riskassessment.png" alt="{riskassessment} app" width="25%">
-</a>
+<a href="https://bit.ly/demo_raa"><img src="man/figures/demo_riskassessment.png" alt="{riskassessment} app" width="25%"></a>
 </center>
-
-<br>
 
 <br>
 
@@ -190,5 +188,22 @@ allow persistent storage):
 For more information on each of these, we highly recommend reading our
 [‘Deployment’
 article](https://pharmar.github.io/riskassessment/articles/Deployment.html).
+
+#### Recognition
+
+In March 2023, Appsilon hosted the 2nd annual [Shiny
+Conf](https://shinyconf.appsilon.com/) which was fully virtual, boasting
+approximately 4k registrants. Aaron Clark, package maintainer and R
+Validation Hub Executive member,
+[presented](https://bit.ly/raa_shinyconf23) the `{riskassessment}` app
+work in the “Shiny Showcase” among 20+ other app submissions. At the end
+of the conference, `{riskassessment}` was awarded the title of “Best
+App” by popular vote.
+
+<br>
+
+<center>
+<a href="https://bit.ly/demo_raa"><img src="man/figures/best_app_banner.png" alt="Shiny Conf 2023 winner" width="75%"></a>
+</center>
 
 <br>
