@@ -65,6 +65,9 @@ test_that("Reactivity of database view table", {
   tbl_actual <-
     app$get_value(export = "databaseView-table_data")
   
+  cat("tbl_expect:","\n",unlist(tbl_expect),"\n")
+  cat("tbl_actual:","\n",unlist(tbl_actual),"\n")
+  
   expect_equal(tbl_actual %>% dplyr::select(1,4,5,6,7) %>% dplyr::arrange(1), tbl_expect)
   
   #### Test that `packages_table` is loaded correctly ####
