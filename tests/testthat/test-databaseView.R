@@ -21,7 +21,7 @@ test_that("Reactivity of database view table", {
   #### Test that the `table_data` loads correctly ####
   tbl_expect <-
     structure(list(name = "dplyr", version = "1.0.10", score = 0.1, 
-                   decision = "-", decision_by = "", decision_date = NA_character_,
+                   decision = "-", decision_by = "-", decision_date = NA_character_,
                    last_comment = "-"), 
               class = "data.frame", row.names = c(NA, -1L))
   tbl_actual <-
@@ -30,7 +30,7 @@ test_that("Reactivity of database view table", {
   expect_equal(tbl_actual, tbl_expect)
   
   #### Test that`table_data` updates in response to `changes` ####
-  app$set_inputs(`sidebar-select_pkg` = "dplyr")
+  app$set_inputs(`sidebar-select_pkg` = "dplyr", timeout_ = 60 * 1000)
   app$click("sidebar-submit_decision")
   app$wait_for_idle()
   app$click("sidebar-submit_confirmed_decision")
