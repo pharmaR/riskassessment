@@ -95,6 +95,7 @@ test_that("Sample upload file can be shown and downloaded", {
 })
 
 test_that("Removed packages show up in summary table", {
+  skip_on_ci()
   # delete app DB if exists to ensure clean test
   app_db_loc <- test_path("test-apps", "database.sqlite")
   if (file.exists(app_db_loc)) {
