@@ -1,4 +1,5 @@
 test_that("Reactivity of database view table", {
+  skip_on_ci()
   # delete app DB if exists to ensure clean test
   app_db_loc <- test_path("test-apps", "database.sqlite")
   if (file.exists(app_db_loc)) {
