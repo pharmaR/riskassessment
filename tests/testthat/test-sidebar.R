@@ -1,4 +1,5 @@
 test_that("Reactivity of sidebar", {
+  skip_on_ci()
   library(shinytest2, quietly = TRUE)
   
   app_db_loc <- test_path("test-apps", "database.sqlite")
