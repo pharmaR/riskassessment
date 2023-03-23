@@ -120,7 +120,7 @@ upload_package_to_db <- function(name, version, title, description,
         license, published_on, decision, decision_by, decision_date, date_added)
         VALUES('{name}', '{version}', '{title}', '{description}',
         '{maintainers}', '{authors}', '{license}', '{published_on}',
-        '', '', {as.Date(NA)}','{Sys.Date()}')"), db_name)
+        '', '', '{as.Date(NA)}','{Sys.Date()}')"), db_name)
     },
     error = function(e) {
       loggit::loggit("ERROR", paste("Error in uploading the general info of the package", name, "info", e),
