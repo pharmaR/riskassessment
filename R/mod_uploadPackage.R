@@ -212,39 +212,39 @@ uploadPackageServer <- function(id, user) {
 
     })
     
-    checking_urls <- reactiveValues()
-    
-    observeEvent(input$check_urls, {
-      checking_urls$finished <- FALSE
-      removeModal()
-    })
-    
-    observe({
-      req(input$check_urls, !isTRUE(checking_urls$finished))
-      invalidateLater(60*1000)
-      
-      withProgress({
-        good_urls <- purrr::map_lgl(checking_urls$url_lst, 
-                                    function(.x) {
-                                      print("\nobserve: ")
-                                      print("checking_urls$url_lst: ")
-                                      print(.x)
-                                      try(curlGetHeaders(.x, verify = FALSE), silent = FALSE) %>%
-                                        {class(.) != "try-error" && attr(., "status") != 404}
-                                      })
-        Sys.sleep(.5)
-      }, message = "Checking URLs")
-      
-      checking_urls$finished <- all(good_urls)
-    })
-    
-    observeEvent(checking_urls$finished, {
-      req(checking_urls$finished)
-      showModal(modalDialog(
-        title = h2("Data Connection Issues"),
-        h5("The needed URLs are now reachable. Please try to upload the desired packages now."),
-      ))
-    })
+    # checking_urls <- reactiveValues()
+    # 
+    # observeEvent(input$check_urls, {
+    #   checking_urls$finished <- FALSE
+    #   removeModal()
+    # })
+    # 
+    # observe({
+    #   req(input$check_urls, !isTRUE(checking_urls$finished))
+    #   invalidateLater(60*1000)
+    #   
+    #   withProgress({
+    #     good_urls <- purrr::map_lgl(checking_urls$url_lst, 
+    #                                 function(.x) {
+    #                                   print("\nobserve: ")
+    #                                   print("checking_urls$url_lst: ")
+    #                                   print(.x)
+    #                                   try(curlGetHeaders(.x, timeout = 10), silent = FALSE) %>%
+    #                                     {class(.) != "try-error" && attr(., "status") != 404}
+    #                                   })
+    #     Sys.sleep(.5)
+    #   }, message = "Checking URLs")
+    #   
+    #   checking_urls$finished <- all(good_urls)
+    # })
+    # 
+    # observeEvent(checking_urls$finished, {
+    #   req(checking_urls$finished)
+    #   showModal(modalDialog(
+    #     title = h2("Data Connection Issues"),
+    #     h5("The needed URLs are now reachable. Please try to upload the desired packages now."),
+    #   ))
+    # })
     
     uploaded_pkgs <- reactiveVal(data.frame())
     # Save all the uploaded packages, marking them as 'new', 'not found', 
@@ -252,44 +252,44 @@ uploadPackageServer <- function(id, user) {
     observeEvent(uploaded_pkgs00(), {
 
       uploaded_packages <- uploaded_pkgs00()
-      uploaded_pkgs00(NULL)
+      # uploaded_pkgs00(NULL)
       uploaded_packages$score <- NA_real_
       if (!rlang::is_empty(auto_list()))
         uploaded_packages$decision <- ""
       np <- nrow(uploaded_packages)
       
-      if (!isTRUE(getOption("shiny.testmode"))) {
-        url_lst <- list(
-          "https://cran.rstudio.com",
-          "https://cran.r-project.org",
-          "https://cranlogs.r-pkg.org"
-        )
-        
-        good_urls <- purrr::map_lgl(url_lst, 
-                                    function(.x) {
-                                      print("\nobserveEvent: uploaded_pkgs00(), ")
-                                      print("url_lst: ")
-                                      print(.x)
-                                      try(curlGetHeaders(.x, verify = FALSE), silent = FALSE) %>%
-                                        {class(.) != "try-error" && attr(., "status") != 404}
-                                      })
-        
-        if (!all(good_urls)) {
-          checking_urls$url_lst <- url_lst[!good_urls]
-          showModal(modalDialog(
-            title = h2("Data Connection Issues"),
-            h5("The process has been cancelled because at least one of the URLs used to populate the metrics is unreachable at this time."),
-            br(),
-            h5("Notify when  URLs are reachable?"),
-            footer = tagList(
-              actionButton(session$ns("check_urls"), "Yes"),
-              modalButton("No")
-            )
-          ))
-        }
-        
-      req(all(good_urls))
-      }
+      # if (!isTRUE(getOption("shiny.testmode"))) {
+      #   url_lst <- list(
+      #     "https://cran.rstudio.com",
+      #     "https://cran.r-project.org",
+      #     "https://cranlogs.r-pkg.org"
+      #   )
+      #   
+      #   good_urls <- purrr::map_lgl(url_lst, 
+      #                               function(.x) {
+      #                                 print("\nobserveEvent: uploaded_pkgs00(), ")
+      #                                 print("url_lst: ")
+      #                                 print(.x)
+      #                                 try(curlGetHeaders(.x, timeout = 10), silent = FALSE) %>%
+      #                                   {class(.) != "try-error" && attr(., "status") != 404}
+      #                                 })
+      #   
+      #   if (!all(good_urls)) {
+      #     checking_urls$url_lst <- url_lst[!good_urls]
+      #     showModal(modalDialog(
+      #       title = h2("Data Connection Issues"),
+      #       h5("The process has been cancelled because at least one of the URLs used to populate the metrics is unreachable at this time."),
+      #       br(),
+      #       h5("Notify when  URLs are reachable?"),
+      #       footer = tagList(
+      #         actionButton(session$ns("check_urls"), "Yes"),
+      #         modalButton("No")
+      #       )
+      #     ))
+      #   }
+      #   
+      # req(all(good_urls))
+      # }
       
       if (!isTruthy(cran_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
