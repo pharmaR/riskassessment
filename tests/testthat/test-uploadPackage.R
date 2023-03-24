@@ -16,7 +16,8 @@ test_that("Uploaded packages show up in summary table", {
     app_db_loc
   )
   
-  # set up new app driver object
+
+    # set up new app driver object
   app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
 
   # test package data to upload
@@ -71,6 +72,7 @@ test_that("Sample upload file can be shown and downloaded", {
     app_db_loc
   )
   
+
   # set up new app driver object
   app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 600 * 1000)
 
