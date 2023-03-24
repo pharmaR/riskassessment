@@ -1,7 +1,5 @@
 test_that("Reactivity of sidebar", {
-  skip_on_ci()
-  library(shinytest2, quietly = TRUE)
-  
+
   app_db_loc <- test_path("test-apps", "database.sqlite")
   if (file.exists(app_db_loc)) {
     file.remove(app_db_loc)
@@ -16,6 +14,9 @@ test_that("Reactivity of sidebar", {
     app_db_loc
   )
   
+  db <- dbSelect("select * from package;", app_db_loc)
+  cat("\n", "in test-sidebar. ncols(db) should = 15 and is:", ncol(db), "\n")
+                 
   # set up new app driver object
   app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 600*1000)
   
