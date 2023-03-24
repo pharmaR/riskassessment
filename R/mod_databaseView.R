@@ -145,7 +145,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                                 "color" = "white",
                                 "background-color" = 
                                   ifelse(x %in% decision_lst, 
-                                         color_lst[decision_lst %in% x], 
+                                         color_lst[x], 
                                          "transparent"))),
             was_decision_made = formattable::formatter("span",
                                           style = x ~ formattable::style(color = ifelse(x, "#0668A3", "gray")),

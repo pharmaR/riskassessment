@@ -89,7 +89,7 @@ get_colors <- function(decision_categories) {
   if (num_cat == 1)
     return(color_palette[1])
   cat_list <- (seq_along(decision_categories) - 1) * 10/min(num_cat - 1, 11) + 1
-  color_palette[round(purrr::map_dbl(cat_list, min, 11))]
+  color_palette[round(purrr::map_dbl(cat_list, min, 11))] %>% purrr::set_names(decision_categories)
 }
 
 
