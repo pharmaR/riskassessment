@@ -27,8 +27,6 @@ test_that("utils_insert_db functions other than dbUpdate", {
      FROM package
      WHERE name = '{pkg_name}'"), app_db_loc
     )
-    cat("db is:","\n", app_db_loc, "\n")
-    cat("pkg is:","\n",unlist(pkg),"\n")
     expect_s3_class(pkg, "data.frame")
     expect_equal(nrow(pkg), 1) 
     expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", 
