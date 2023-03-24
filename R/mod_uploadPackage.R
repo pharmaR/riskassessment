@@ -225,7 +225,11 @@ uploadPackageServer <- function(id, user) {
       
       withProgress({
         good_urls <- purrr::map_lgl(checking_urls$url_lst, 
-                                    ~ try(curlGetHeaders(.x, verify = FALSE), silent = TRUE) %>%
+                                    ~ try(
+                                        print("\nobserve: ")
+                                        print("checking_urls$url_lst: ")
+                                        print(.x)
+                                        curlGetHeaders(.x, verify = FALSE), silent = FALSE) %>%
                                       {class(.) != "try-error" && attr(., "status") != 404})
         Sys.sleep(.5)
       }, message = "Checking URLs")
@@ -261,7 +265,10 @@ uploadPackageServer <- function(id, user) {
         )
         
         good_urls <- purrr::map_lgl(url_lst, 
-                                    ~ try(curlGetHeaders(.x, verify = FALSE), silent = TRUE) %>%
+                                    ~ try(print("\nobserveEvent: uploaded_pkgs00(), ")
+                                          print("url_lst: ")
+                                          print(.x)
+                                          curlGetHeaders(.x, verify = FALSE), silent = FALSE) %>%
                                       {class(.) != "try-error" && attr(., "status") != 404})
         
         if (!all(good_urls)) {
