@@ -93,9 +93,9 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       db_pkg_overview %>%
         dplyr::mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>%
         dplyr::mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
-        dplyr::mutate(decision_date = ifelse(decision_date == "NA", "-", decision_date)) %>%
         dplyr::mutate(decision    = if_else(is.na(decision)    | decision    == "", "-", paste(decision, "Risk"))) %>%
         dplyr::mutate(decision_by = if_else(is.na(decision_by) | decision_by == "", "-", decision_by)) %>% 
+        dplyr::mutate(decision_date = ifelse(decision_date == "NA", "-", decision_date)) %>% 
         dplyr::select(name, version, score, decision, decision_by, decision_date, last_comment)
     })
     
