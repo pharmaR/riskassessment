@@ -176,7 +176,7 @@ tagList(
   h6('License:'), params$pkg$license,
   h6('Published:'), params$pkg$published,
   h6('Risk Score:'), params$pkg$score,
-  h6('Overall Risk:'), ifelse(params$pkg$decision == '', 'Pending', params$pkg$decision)
+  h6('Overall Decision:'), ifelse(params$pkg$decision == '', 'Pending', params$pkg$decision)
 )
 ```
 
