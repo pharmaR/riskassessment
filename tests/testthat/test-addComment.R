@@ -19,7 +19,7 @@ test_that("Comments can be added via the addComment module", {
   
   on.exit({
     DBI::dbDisconnect(con)
-    unlink(db)
+    unlink(app_db_loc)
   })
 
   comments <- DBI::dbGetQuery(con, "select * from comments")
