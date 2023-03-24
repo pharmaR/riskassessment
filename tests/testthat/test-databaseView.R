@@ -1,5 +1,4 @@
 test_that("Reactivity of database view table", {
-  skip_on_ci()
   # delete app DB if exists to ensure clean test
   app_db_loc <- test_path("test-apps", "database.sqlite")
   if (file.exists(app_db_loc)) {
@@ -59,15 +58,15 @@ test_that("Reactivity of database view table", {
   
   tbl_expect <- structure(list(name = c("tidyr", "dplyr"), 
                                decision = c("-", "Low Risk"),
-                               decision_by = c('', "test_user"),
+                               decision_by = c('-', "test_user"),
                                decision_date = c(NA_character_, as.character(Sys.Date())),
                                last_comment = c("-", "-")), 
                           class = "data.frame", row.names = c(NA, -2L))
   tbl_actual <-
     app$get_value(export = "databaseView-table_data")
   
-  cat("tbl_expect:","\n",unlist(tbl_expect),"\n")
-  cat("tbl_actual:","\n",unlist(tbl_actual),"\n")
+  # cat("tbl_expect:","\n",unlist(tbl_expect),"\n")
+  # cat("tbl_actual:","\n",unlist(tbl_actual),"\n")
   
   expect_equal(tbl_actual %>% dplyr::select(1,4,5,6,7) %>% dplyr::arrange(1), tbl_expect)
   
