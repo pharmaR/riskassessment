@@ -218,50 +218,32 @@ mod_decision_automation_server <- function(id, user){
         }, ignoreNULL = FALSE)
         
         purrr::iwalk(decision_lst, function(.x, .y) {
-          if (.y == 1) {
-            this_lbl <- risk_lbl(.x)
-            next_lbl <- risk_lbl(decision_lst[.y + 1])
-            observeEvent(input[[this_lbl]], {
-              if (req(.x %in% input$auto_include))
-                auto_decision[[.x]] <- c(0, input[[this_lbl]])
-              
-              updateSliderInput(session, next_lbl, value = c(max(input[[this_lbl]], input[[next_lbl]][1]), max(input[[this_lbl]], input[[next_lbl]][2])))
-            })
-          } else if (.y == length(decision_lst)) {
-            this_lbl <- risk_lbl(.x)
-            prev_lbl <- risk_lbl(decision_lst[.y - 1])
+          this_lbl <- risk_lbl(.x)
+          next_lbl <- risk_lbl(decision_lst[.y + 1])
+          prev_lbl <- risk_lbl(decision_lst[.y - 1])
+          
+          observeEvent(input[[this_lbl]], {
+            if (req(.x %in% input$auto_include))
+              auto_decision[[.x]] <- input[[this_lbl]]
             
-            observeEvent(input[[this_lbl]], {
-              if (req(.x %in% input$auto_include))
-                auto_decision[[.x]] <- c(input[[this_lbl]], 1)
-              
-              updateSliderInput(session, prev_lbl, value = c(min(input[[prev_lbl]][1], input[[this_lbl]]), min(input[[prev_lbl]][2], input[[this_lbl]])))
-            })
-          } else {
-            this_lbl <- risk_lbl(.x)
-            next_lbl <- risk_lbl(decision_lst[.y + 1])
-            prev_lbl <- risk_lbl(decision_lst[.y - 1])
+            prev_value <- 
+              if (.y - 1 == 1) 
+                min(input[[prev_lbl]], input[[this_lbl]]) 
+            else 
+              c(min(input[[prev_lbl]][1], input[[this_lbl]]), min(input[[prev_lbl]][2], input[[this_lbl]]))
             
-            observeEvent(input[[this_lbl]], {
-              if (req(.x %in% input$auto_include))
-                auto_decision[[.x]] <- input[[this_lbl]]
-              
-              prev_value <- 
-                if (.y - 1 == 1) 
-                min(input[[prev_lbl]], input[[this_lbl]][1]) 
-              else 
-                c(min(input[[prev_lbl]][1], input[[this_lbl]][1]), min(input[[prev_lbl]][2], input[[this_lbl]][1]))
-              
-              next_value <-
-                if (.y == length(decision_lst) - 1)
-                  max(input[[this_lbl]][2], input[[next_lbl]])
-              else
-                c(max(input[[this_lbl]][2], input[[next_lbl]][1]), max(input[[this_lbl]][2], input[[next_lbl]][2]))
-
+            next_value <-
+              if (.y == length(decision_lst) - 1)
+                max(input[[this_lbl]], input[[next_lbl]])
+            else
+              c(max(input[[this_lbl]], input[[next_lbl]][1]), max(input[[this_lbl]], input[[next_lbl]][2]))
+            
+            
+            if (.y != 1)
               updateSliderInput(session, prev_lbl, value = prev_value)
+            if (.y != length(decision_lst))
               updateSliderInput(session, next_lbl, value = next_value)
-            })
-          }
+          })
         })
         
         observeEvent(input$auto_reset, {
