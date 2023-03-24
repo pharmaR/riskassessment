@@ -17,7 +17,7 @@ test_that("Uploaded packages show up in summary table", {
   )
   
   db <- dbSelect("select * from package;", app_db_loc)
-  cat("\n", "in test-uploadPackage (1). ncols(db) should = 15 and is:", ncol(db), "\n")
+  # cat("\n", "in test-uploadPackage (1). ncols(db) should = 15 and is:", ncol(db), "\n")
   
   # set up new app driver object
   app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
@@ -75,7 +75,7 @@ test_that("Sample upload file can be shown and downloaded", {
   )
   
   db <- dbSelect("select * from package;", app_db_loc)
-  cat("\n", "in test-uploadPackage (2). ncols(db) should = 15 and is:", ncol(db), "\n")
+  # cat("\n", "in test-uploadPackage (2). ncols(db) should = 15 and is:", ncol(db), "\n")
   
   # set up new app driver object
   app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 600 * 1000)
@@ -134,7 +134,7 @@ test_that("Removed packages show up in summary table", {
   )
 
   db <- dbSelect("select * from package;", app_db_loc)
-  cat("\n", "in test-uploadPackage (3). ncols(db) should = 15 and is:", ncol(db), "\n")
+  # cat("\n", "in test-uploadPackage (3). ncols(db) should = 15 and is:", ncol(db), "\n")
   
   pkgs <- dbSelect("select name from package", app_db_loc)[,1]
   expect_equal(length(pkgs), 2L)

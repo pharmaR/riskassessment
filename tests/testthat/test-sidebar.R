@@ -15,7 +15,7 @@ test_that("Reactivity of sidebar", {
   )
   
   db <- dbSelect("select * from package;", app_db_loc)
-  cat("\n", "in test-sidebar. ncols(db) should = 15 and is:", ncol(db), "\n")
+  # cat("\n", "in test-sidebar. ncols(db) should = 15 and is:", ncol(db), "\n")
                  
   # set up new app driver object
   app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 600*1000)
