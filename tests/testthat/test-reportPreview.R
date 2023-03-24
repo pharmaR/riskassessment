@@ -13,7 +13,7 @@ test_that("Reactivity of reportPreview", {
   )
   
   # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 6e+05)
   
   # set pkg_name to dplyr
   app$set_inputs(`sidebar-select_pkg` = "dplyr")
