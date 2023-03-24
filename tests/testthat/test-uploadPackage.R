@@ -1,13 +1,24 @@
 
 
 test_that("Uploaded packages show up in summary table", {
-  skip_on_ci()
+  
   # delete app DB if exists to ensure clean test
-  db_loc <- test_path("test-apps", "database.sqlite")
-  if (file.exists(db_loc)) {
-    file.remove(db_loc)
+  app_db_loc <- test_path("test-apps", "database.sqlite")
+  if (file.exists(app_db_loc)) {
+    file.remove(app_db_loc)
   }
 
+  # copy in already instantiated database to avoid need to rebuild
+  # this is a database that has been built via inst/testdata/upload_format.csv
+  test_db_loc <- system.file("testdata", "skeleton.sqlite", package = "riskassessment")
+  file.copy(
+    test_db_loc,
+    app_db_loc
+  )
+  
+  db <- dbSelect("select * from package;", app_db_loc)
+  cat("\n", "in test-uploadPackage (1). ncols(db) should = 15 and is:", ncol(db), "\n")
+  
   # set up new app driver object
   app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
 
@@ -48,13 +59,24 @@ test_that("Uploaded packages show up in summary table", {
 
 
 test_that("Sample upload file can be shown and downloaded", {
-  skip_on_ci()
+  
   # delete app DB if exists to ensure clean test
-  db_loc <- test_path("test-apps", "database.sqlite")
-  if (file.exists(db_loc)) {
-    file.remove(db_loc)
+  app_db_loc <- test_path("test-apps", "database.sqlite")
+  if (file.exists(app_db_loc)) {
+    file.remove(app_db_loc)
   }
 
+  # copy in already instantiated database to avoid need to rebuild
+  # this is a database that has been built via inst/testdata/upload_format.csv
+  test_db_loc <- system.file("testdata", "skeleton.sqlite", package = "riskassessment")
+  file.copy(
+    test_db_loc,
+    app_db_loc
+  )
+  
+  db <- dbSelect("select * from package;", app_db_loc)
+  cat("\n", "in test-uploadPackage (2). ncols(db) should = 15 and is:", ncol(db), "\n")
+  
   # set up new app driver object
   app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 600 * 1000)
 
@@ -95,7 +117,7 @@ test_that("Sample upload file can be shown and downloaded", {
 })
 
 test_that("Removed packages show up in summary table", {
-  skip_on_ci()
+  
   # delete app DB if exists to ensure clean test
   app_db_loc <- test_path("test-apps", "database.sqlite")
   if (file.exists(app_db_loc)) {
@@ -111,6 +133,9 @@ test_that("Removed packages show up in summary table", {
     app_db_loc
   )
 
+  db <- dbSelect("select * from package;", app_db_loc)
+  cat("\n", "in test-uploadPackage (3). ncols(db) should = 15 and is:", ncol(db), "\n")
+  
   pkgs <- dbSelect("select name from package", app_db_loc)[,1]
   expect_equal(length(pkgs), 2L)
   
