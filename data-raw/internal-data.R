@@ -79,6 +79,8 @@ test_pkg_cum <-
   purrr::map(generate_comm_data) %>%
   purrr::set_names(test_pkg_lst)
 
+color_palette <- c("#06B756FF","#2FBC06FF","#67BA04FF","#81B50AFF","#96AB0AFF","#A99D04FF","#B78D07FF","#BE7900FF","#BE6200FF","#B24F22FF","#A63E24FF")
+
 usethis::use_data(
   # app_version, 
   # database_name, #credentials_name,
@@ -88,4 +90,5 @@ usethis::use_data(
   testing_text, testing_tbl,
   riskcalc_text, template,
   test_pkg_lst, test_pkg_refs, test_pkg_info, test_pkg_assess, test_pkg_cum,
+  color_palette,
   internal = TRUE, overwrite = TRUE)

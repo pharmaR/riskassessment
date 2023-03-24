@@ -18,7 +18,7 @@ create_db <- function(db_name){
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   # Set the path to the queries.
-  path <- app_sys("app/www/sql_queries") #file.path('sql_queries')
+  path <- app_sys("sql_queries") #file.path('sql_queries')
   
   # Queries needed to run the first time the db is created.
   queries <- c(
@@ -27,7 +27,8 @@ create_db <- function(db_name){
     "initialize_metric_table.sql",
     "create_package_metrics_table.sql",
     "create_community_usage_metrics_table.sql",
-    "create_comments_table.sql"
+    "create_comments_table.sql",
+    "create_decision_table.sql"
   )
   
   # Append path to the queries.
@@ -161,16 +162,16 @@ create_credentials_dev_db <- function(db_name){
 #' 
 #' @param assess_db A string denoting the name of the assessment database.
 #' @param cred_db A string denoting the name of the credentials database.
+#' @param decision_cat A character vector denoting the decision categories in ascending order of risk
 #'
 #' @return There is no return value. The function is run for its side effects.
 #' @importFrom loggit set_logfile
-#' @importFrom jsonlite write_json
 #'
 #' @export
-initialize_raa <- function(assess_db, cred_db) {
+initialize_raa <- function(assess_db, cred_db, decision_cat) {
   
-  if (missing(assess_db)) assessment_db <- golem::get_golem_options('assessment_db_name') else assessment_db <- assess_db
-  if (missing(cred_db)) credentials_db <- golem::get_golem_options('credentials_db_name') else credentials_db <- cred_db
+  assessment_db <- if (missing(assess_db)) golem::get_golem_options('assessment_db_name') else assess_db
+  credentials_db <- if (missing(cred_db)) golem::get_golem_options('credentials_db_name') else cred_db
   
   if (is.null(assessment_db) || typeof(assessment_db) != "character" || length(assessment_db) != 1 || !grepl("\\.sqlite$", assessment_db))
     stop("assess_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
@@ -191,8 +192,28 @@ initialize_raa <- function(assess_db, cred_db) {
   if(!file.exists(assessment_db)) create_db(assessment_db)
   if(!file.exists(credentials_db)) create_credentials_db(credentials_db)
   
-  if(!file.exists("auto_decisions.json")) jsonlite::write_json(data.frame(decision = character(0), lower_limit = numeric(0), upper_limit = numeric(0)), "auto_decisions.json")
-  
+  decision_categories <- if (missing(decision_cat)) golem::get_golem_options('decision_categories') else decision_cat
+  decisions <- suppressMessages(dbSelect("SELECT decision FROM decision_categories", assessment_db))
+  check_dec_cat(decision_categories)
+  if (is.null(decisions)) {
+    suppressMessages(dbUpdate(paste(scan(app_sys("sql_queries", "create_decision_table.sql"), sep = "\n", what = "character"), collapse = ""), assessment_db))
+    dec_lst <- get_golem_config('decision_rules', file = app_sys("db-config.yml"))
+    if (!is.null(dec_lst)) check_dec_rules(decision_categories, dec_lst)
+    dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', decision_categories, '\\')', collapse = ', ')}"), assessment_db)
+    if (!is.null(dec_lst)) {
+      purrr::iwalk(dec_lst, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'")))
+    }
+  } else if (nrow(decisions) == 0) {
+    dec_lst <- get_golem_config('decision_rules', file = app_sys("db-config.yml"))
+    if (!is.null(dec_lst)) check_dec_rules(decision_categories, dec_lst)
+    dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', decision_categories, '\\')', collapse = ', ')}"), assessment_db)
+    if (!is.null(dec_lst)) {
+      purrr::iwalk(dec_lst, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'")))
+    }
+  } else if (!all.equal(decisions$decision, decision_categories)) {
+    stop("The decision categories in the configuration file do not match those in the assessment database.")
+  }
+
   invisible(c(assessment_db, credentials_db))
 }
 

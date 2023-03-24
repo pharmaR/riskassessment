@@ -20,7 +20,7 @@ test_that("database creation", {
     })
   
   expect_equal(DBI::dbListTables(con),
-               c("comments", "community_usage_metrics", "metric", "package", "package_metrics", "sqlite_sequence"))
+               c("comments", "community_usage_metrics", "decision_categories", "metric", "package", "package_metrics", "sqlite_sequence"))
   pkg <- DBI::dbGetQuery(con, "SELECT * FROM package")
   expect_equal(nrow(pkg), 0)
   expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", "score", "weighted_score", "decision", "date_added"))
@@ -36,6 +36,9 @@ test_that("database creation", {
   comments <- DBI::dbGetQuery(con, "SELECT * FROM comments")
   expect_equal(nrow(comments), 0)
   expect_equal(names(comments), c("id", "user_name", "user_role", "comment", "comment_type", "added_on"))
+  decisions <- DBI::dbGetQuery(con, "SELECT * FROM decision_categories")
+  expect_equal(nrow(decisions), 0)
+  expect_equal(names(decisions), c("id", "decision", "lower_limit", "upper_limit"))
 })
 
 #### create_credentials_db  tests ####
@@ -109,7 +112,7 @@ test_that("database initialization", {
   expect_error(initialize_raa(cred_db = "tmp_cred.sqlite"),
                "assess_db must follow SQLite naming conventions.*")
   
-  db_lst <- initialize_raa("tmp_assess.sqlite", "tmp_cred.sqlite")
+  db_lst <- initialize_raa("tmp_assess.sqlite", "tmp_cred.sqlite", c("Low Risk", "Medium Risk", "High Risk"))
   on.exit(unlink(db_lst))
   expect_true(file.exists(db_lst[1]))
   expect_true(file.exists(db_lst[2]))

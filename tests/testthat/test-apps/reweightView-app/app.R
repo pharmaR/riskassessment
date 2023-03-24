@@ -13,7 +13,7 @@ server <- function(input, output, session) {
     role = "admin"
   )
   
-  auto_json <- jsonlite::read_json("auto_decisions.json")
+  auto_json <- list()
   auto_list <- reactiveVal(auto_json)
   
   exportTestValues(

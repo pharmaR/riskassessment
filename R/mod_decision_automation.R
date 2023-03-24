@@ -7,7 +7,59 @@
 #' @noRd 
 mod_decision_automation_ui <- function(id){
   ns <- NS(id)
+  
+  decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
+  color_lst <- get_colors(decision_lst)
+  dec_num <- length(decision_lst)
+  dec_css <- purrr::imap_chr(decision_lst, function(.x, .y) {
+    lbl <- risk_lbl(.x, input = FALSE)
+    col <- color_lst[.y]
+
+    if (.y == 1) {
+      glue::glue("
+[risk={lbl}] .irs--shiny .irs-bar {{
+  border-top: 1px solid {col};
+  border-bottom: 1px solid {col};
+  background: {col};
+}}
+
+[risk={lbl}] .irs--shiny .irs-single {{
+  background-color: {col};
+}}")
+    } else if (.y == dec_num) {
+      glue::glue("
+[risk={lbl}] .irs--shiny .irs-line {{
+  background: {col};
+  border: 1px solid {col};
+}}
+
+[risk={lbl}] .irs--shiny .irs-bar {{
+  background: linear-gradient(to bottom, #dedede -50%, #fff 150%);
+  background-color: #ededed;
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+}}
+
+[risk={lbl}] .irs--shiny .irs-single {{
+  background-color: {col};
+}}")
+    } else {
+      glue::glue("
+[risk={lbl}] .irs--shiny .irs-bar {{
+  border-top: 1px solid {col};
+  border-bottom: 1px solid {col};
+  background: {col};
+}}
+
+[risk={lbl}] .irs--shiny .irs-from,
+[risk={lbl}] .irs--shiny .irs-to {{
+  background-color: {col};
+}}")
+    }
+  })
+  
   tagList(
+    tags$head(tags$style(HTML(dec_css))),
     uiOutput(ns("auto_classify")),
     DT::dataTableOutput(ns("auto_table"))
   )
@@ -17,22 +69,23 @@ mod_decision_automation_ui <- function(id){
 #'
 #' @noRd
 #' 
-#' @importFrom jsonlite read_json write_json
 #' @importFrom purrr compact
 #' @importFrom shinyWidgets tooltipOptions
 mod_decision_automation_server <- function(id, user){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    auto_json <- jsonlite::read_json("auto_decisions.json")
-    auto_list <- reactiveVal(auto_json)
+    auto_decision_initial <- process_dec_tbl()
+    auto_decision_update <- reactiveVal(auto_decision_initial)
+    
+    decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
     
     output$auto_table <-
       DT::renderDataTable({
-        req(!rlang::is_empty(auto_list()))
+        req(!rlang::is_empty(auto_decision_update()))
         
         DT::datatable({
-          auto_list() %>%
+          auto_decision_update() %>%
             purrr::imap_dfr(~ dplyr::tibble(decision = .y, ll = .x[[1]], ul = .x[[2]])) %>%
             dplyr::arrange(ll,)
         },
@@ -52,7 +105,7 @@ mod_decision_automation_server <- function(id, user){
     
     output$empty_auto <- 
       renderUI({
-        if (rlang::is_empty(auto_list())) {
+        if (rlang::is_empty(auto_decision_update())) {
           tagList(
             br(),
             p("Decision automation is not enabled. Click on the gear to the right if you wish to add.")
@@ -62,7 +115,7 @@ mod_decision_automation_server <- function(id, user){
     
     observe({
       req(user$role)
-      req(user$role == "admin" || !rlang::is_empty(auto_json))
+      req(user$role == "admin" || !rlang::is_empty(auto_decision_initial))
       
       if (user$role == "admin") {
         output$auto_classify <-
@@ -77,7 +130,7 @@ mod_decision_automation_server <- function(id, user){
               uiOutput(ns("empty_auto")),
             )
           })
-      } else if (!rlang::is_empty(auto_json)) {
+      } else if (!rlang::is_empty(auto_decision_initial)) {
         output$auto_classify <-
           renderUI({
             tagList(
@@ -89,53 +142,40 @@ mod_decision_automation_server <- function(id, user){
       }
       
       if (user$role == "admin") {
-        initial_values <- list(Low = .33, Medium = c(.33,.66), High = .66)
+        num_dec <- length(decision_lst)
+        initial_values <- purrr::imap(decision_lst, ~ c((.y - 1)/num_dec, .y/num_dec)) %>% 
+          purrr::set_names(decision_lst)
         initial_selection <- NULL
-        if (!rlang::is_empty(auto_json)) {
-          for (.y in names(auto_json)) {
-            initial_values[[.y]] <- 
-            if (.y == "Low") {
-              unlist(auto_json[[.y]][2])
-            } else if (.y == "Medium") {
-              unlist(auto_json[[.y]])
-            } else if (.y == "High") {
-              unlist(auto_json[[.y]][1])
-            }
+        if (!rlang::is_empty(auto_decision_initial)) {
+          for (.y in names(auto_decision_initial)) {
+            if (.y %in% decision_lst)
+              initial_values[[.y]] <- unlist(auto_decision_initial[[.y]])
+            else
+              warning(glue::glue("The decision category '{.y}' is not present in the allowed decision list!")) 
           }
-          initial_selection <- names(auto_json)
+          initial_selection <- names(auto_decision_initial)
         }
+        initial_values <- purrr::map(initial_values, ~ .x %>% `[`(!. %in% c(0,1)) %>% round(2))
         
         output$auto_settings <-
           renderUI({
+            dec_divs <- purrr::map(decision_lst, ~ div(
+              risk = risk_lbl(.x, input = FALSE),
+              class = "shinyjs-hide",
+              style = "width: 100%",
+              sliderInput(ns(risk_lbl(.x)), 
+                          .x, 0, 1, initial_values[[.x]],
+                          width = "100%", sep = .01)
+            ))
             div(
               style = "float: right;",
               shinyWidgets::dropdownButton(
                 div(
                   style = "display: flex;",
-                checkboxGroupInput(ns("auto_include"), "Auto-Assign Risk Decisions For...", c("Low", "Medium", "High"), selected = initial_selection, inline = TRUE),
+                checkboxGroupInput(ns("auto_include"), "Auto-Assign Decisions For...", decision_lst, selected = intersect(initial_selection, decision_lst), inline = TRUE),
                 actionButton(ns("auto_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
                 ),
-                div(
-                  risk = "low",
-                  class = "shinyjs-hide",
-                  style = "width: 100%",
-                  sliderInput(ns("low_risk"), "Low Risk", 0, 1, initial_values$Low,
-                              width = '100%', step = .01)
-                ),
-                div(
-                  risk = "medium",
-                  class = "shinyjs-hide",
-                  style = "width: 100%",
-                  sliderInput(ns("med_risk"), "Medium Risk", 0, 1, initial_values$Medium,
-                              width = '100%', step = .01)
-                ),
-                div(
-                  risk = "high",
-                  class = "shinyjs-hide",
-                  style = "width: 100%",
-                  sliderInput(ns("high_risk"), "High Risk", 0, 1, initial_values$High,
-                              width = '100%', step = .01)
-                ),
+                dec_divs,
                 br(),
                 actionButton(ns("submit_auto"), "Apply Decision Rules", width = "100%"),
                 circle = TRUE,
@@ -149,7 +189,7 @@ mod_decision_automation_server <- function(id, user){
           })
         
         auto_decision <- reactiveValues()
-        auto_current <- reactiveVal(names(auto_json))
+        auto_current <- reactiveVal(names(auto_decision_initial))
         
         observeEvent(input$auto_include, {
           grp_added <- setdiff(input$auto_include, auto_current())
@@ -157,97 +197,71 @@ mod_decision_automation_server <- function(id, user){
           
           if (!rlang::is_empty(grp_added))
             purrr::walk(grp_added, ~ {
-              if ("Low" == .x) {
-                value_l <- 0
-                if ("Medium" %in% input$auto_include) {
-                  value_u <- min(input$low_risk, input$med_risk[1])
-                  updateSliderInput(session, "low_risk", value = value_u)
-                } else if ("High" %in% input$auto_include) {
-                  value_u <- min(input$low_risk, input$high_risk)
-                  updateSliderInput(session, "low_risk", value = value_u)
-                } else {
-                  value_u <- input$low_risk
-                }
-              } else if ("Medium" == .x) {
-                if ("Low" %in% input$auto_include) {
-                  value_l <- max(input$low_risk, input$med_risk[1])
-                  updateSliderInput(session, "med_risk", value = c(value_l, max(value_l, input$med_risk[2])))
-                } else {
-                  value_l <- input$med_risk[1]
-                }
-                if ("High" %in% input$auto_include) {
-                  value_u <- min(input$med_risk[2], input$high_risk)
-                  updateSliderInput(session, "med_risk", value = c(min(input$med_risk[1], value_u), value_u))
-                } else {
-                  value_u <- input$med_risk[2]
-                }
-              } else if ("High" %in% grp_added) {
-                if ("Medium" %in% input$auto_include) {
-                  value_l <- max(input$med_risk[2], input$high_risk)
-                  updateSliderInput(session, "high_risk", value = value_l)
-                } else if ("Low" %in% input$auto_include) {
-                  value_l <- max(input$low_risk, input$high_risk)
-                  updateSliderInput(session, "high_risk", value = value_l)
-                } else {
-                  value_l <- input$high_risk
-                }
-                value_u <- 1
+              value_lst <- c(0, input[[risk_lbl(.x)]], 1)
+              if (.x == decision_lst[1]) {
+                values <- value_lst[1:2]
+              } else {
+                values <- value_lst[2:3]
               }
-              shinyjs::show(selector = glue::glue("[risk={tolower(.x)}"))
-              auto_decision[[.x]] <- c(value_l, value_u)
+              
+              shinyjs::show(selector = glue::glue("[risk={risk_lbl(.x, input = FALSE)}"))
+              auto_decision[[.x]] <- values
             })
           
           if (!rlang::is_empty(grp_removed))
             purrr::walk(grp_removed, ~ {
-              shinyjs::hide(selector = glue::glue("[risk={tolower(.x)}"))
+              shinyjs::hide(selector = glue::glue("[risk={risk_lbl(.x, input = FALSE)}"))
               auto_decision[[.x]] <- NULL
             })
           
           auto_current(input$auto_include)
         }, ignoreNULL = FALSE)
         
-        observeEvent(input$low_risk, {
-          req("Low" %in% input$auto_include)
+        purrr::iwalk(decision_lst, function(.x, .y) {
+          this_lbl <- risk_lbl(.x)
+          next_lbl <- risk_lbl(decision_lst[.y + 1])
+          prev_lbl <- risk_lbl(decision_lst[.y - 1])
           
-          auto_decision$Low <- c(0, input$low_risk)
-          if ("Medium" %in% input$auto_include)
-            updateSliderInput(session, "med_risk", value = c(max(input$low_risk, input$med_risk[1]), max(input$low_risk, input$med_risk[2])))
-          else if ("High" %in% input$auto_include)
-            updateSliderInput(session, "high_risk", value = max(input$low_risk, input$high_risk))
-        })
-        
-        observeEvent(input$med_risk, {
-          req("Medium" %in% input$auto_include)
-          
-          auto_decision$Medium <- input$med_risk
-          if ("Low" %in% input$auto_include)
-            updateSliderInput(session, "low_risk", value = min(input$low_risk, input$med_risk[1]))
-          if ("High" %in% input$auto_include)
-            updateSliderInput(session, "high_risk", value = max(input$med_risk[2], input$high_risk))
-        })
-        
-        observeEvent(input$high_risk, {
-          req("High" %in% input$auto_include)
-          
-          auto_decision$High <- c(input$high_risk, 1)
-          if ("Medium" %in% input$auto_include)
-            updateSliderInput(session, "med_risk", value = c(min(input$med_risk[1], input$high_risk), min(input$med_risk[2], input$high_risk)))
-          else if ("Low" %in% input$auto_include) 
-            updateSliderInput(session, "low_risk", value = min(input$low_risk, input$high_risk))
+          observeEvent(input[[this_lbl]], {
+            if (req(.x %in% input$auto_include))
+              auto_decision[[.x]] <- input[[this_lbl]]
+            
+            prev_value <- 
+              if (.y - 1 == 1) 
+                min(input[[prev_lbl]], input[[this_lbl]]) 
+            else 
+              c(min(input[[prev_lbl]][1], input[[this_lbl]]), min(input[[prev_lbl]][2], input[[this_lbl]]))
+            
+            next_value <-
+              if (.y == length(decision_lst) - 1)
+                max(input[[this_lbl]], input[[next_lbl]])
+            else
+              c(max(input[[this_lbl]], input[[next_lbl]][1]), max(input[[this_lbl]], input[[next_lbl]][2]))
+            
+            
+            if (.y != 1)
+              updateSliderInput(session, prev_lbl, value = prev_value)
+            if (.y != length(decision_lst))
+              updateSliderInput(session, next_lbl, value = next_value)
+          })
         })
         
         observeEvent(input$auto_reset, {
           req(user$role == "admin")
           
-          purrr::iwalk(auto_list(), ~
-                        if (.y == "Low") {
-                          updateSliderInput(session, "low_risk", value = .x[2])
-                        } else if (.y == "Medium") {
-                          updateSliderInput(session, "med_risk", value = .x)
-                        } else if (.y == "High") {
-                          updateSliderInput(session, "high_risk", value = .x[1])
-                        })
-          updateCheckboxGroupInput(session, "auto_include", selected = names(auto_list()))
+          purrr::iwalk(auto_decision_update(), function(.x, .y) {
+            reset_vals <- 
+            if (.y == decision_lst[1]) {
+              .x[2]
+            } else if (.y == decision_lst[length(decision_lst)]) {
+              .x[1]
+            } else {
+              .x
+            }
+            
+            updateSliderInput(session, risk_lbl(.y), value = reset_vals)
+          })
+          updateCheckboxGroupInput(session, "auto_include", selected = names(auto_decision_update()))
           })
         
         output$modal_table <- 
@@ -310,8 +324,9 @@ mod_decision_automation_server <- function(id, user){
           req(user$role == "admin")
           
           out_lst <- purrr::compact(reactiveValuesToList(auto_decision))
-          jsonlite::write_json(out_lst, "auto_decisions.json")
-          auto_list(out_lst)
+          dbUpdate("UPDATE decision_categories SET lower_limit = NULL, upper_limit = NULL")
+          purrr::iwalk(out_lst, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[2]} WHERE decision = '{.y}'")))
+          auto_decision_update(out_lst)
           
           if (length(out_lst) == 0) {
             loggit::loggit("INFO", glue::glue("Decision automation rules have been disabled by {user$name} ({user$role})."))
@@ -327,7 +342,7 @@ mod_decision_automation_server <- function(id, user){
       }
     })
     
-    return(auto_list)
+    return(auto_decision_update)
   })
 }
 

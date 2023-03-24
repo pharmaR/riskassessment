@@ -41,13 +41,13 @@ test_that("Reactivity of sidebar", {
   
   # test slider...
   app$set_inputs(`sidebar-decision` = "1") # 0 = Low, 1 = Medium, 2 = High
-  expect_equal(app$get_values()$input$`sidebar-decision`, "Medium")
+  expect_equal(app$get_values()$input$`sidebar-decision`, "Medium Risk")
   
   app$set_inputs(`sidebar-decision` = "2") # 0 = Low, 1 = Medium, 2 = High
-  expect_equal(app$get_values()$input$`sidebar-decision`, "High")
+  expect_equal(app$get_values()$input$`sidebar-decision`, "High Risk")
   
   app$set_inputs(`sidebar-decision` = "0") # 0 = Low, 1 = Medium, 2 = High
-  expect_equal(app$get_values()$input$`sidebar-decision`, "Low")
+  expect_equal(app$get_values()$input$`sidebar-decision`, "Low Risk")
   
   # add a comment
   add_comment <- "This is a really useful package."

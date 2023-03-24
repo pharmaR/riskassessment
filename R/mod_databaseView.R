@@ -1,12 +1,7 @@
 # Global Risk color palettes.
 # run locally and paste hex codes
 # colorspace::darken(viridisLite::turbo(11, begin = 0.4, end = .8225), .25)
-low_risk_color  <- "#06B756FF"  # 1st
-med_risk_color  <- "#A99D04FF"  # 6th
-high_risk_color <- "#A63E24FF"  # 11th
-setColorPalette <- colorRampPalette(
-  c("#06B756FF","#2FBC06FF","#67BA04FF","#81B50AFF","#96AB0AFF","#A99D04FF",
-    "#B78D07FF","#BE7900FF","#BE6200FF","#B24F22FF","#A63E24FF"))
+setColorPalette <- colorRampPalette(c("#06B756FF","#2FBC06FF","#67BA04FF","#81B50AFF","#96AB0AFF","#A99D04FF","#B78D07FF","#BE7900FF","#BE6200FF","#B24F22FF","#A63E24FF"))
 
 
 #' UI for 'Database View' module
@@ -69,6 +64,9 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     
     ns = session$ns
     
+    decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
+    color_lst <- get_colors(decision_lst)
+    
     # used for adding action buttons to table_data
     shinyInput <- function(FUN, len, id, ...) {
       inputs <- character(len)
@@ -93,7 +91,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       db_pkg_overview %>%
         dplyr::mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>%
         dplyr::mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
-        dplyr::mutate(decision = ifelse(decision != "", paste(decision, "Risk"), "-")) %>%
+        dplyr::mutate(decision = ifelse(decision != "", decision, "-")) %>%
         dplyr::mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
         dplyr::select(name, version, score, was_decision_made, decision, last_comment)
     })
@@ -146,9 +144,9 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                                 "font-weight" = "bold",
                                 "color" = "white",
                                 "background-color" = 
-                                  ifelse(x == "High Risk", high_risk_color,
-                                         ifelse(x == "Medium Risk", med_risk_color,
-                                                ifelse(x == "Low Risk", low_risk_color, "transparent"))))),
+                                  ifelse(x %in% decision_lst, 
+                                         color_lst[x], 
+                                         "transparent"))),
             was_decision_made = formattable::formatter("span",
                                           style = x ~ formattable::style(color = ifelse(x, "#0668A3", "gray")),
                                           x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))
