@@ -112,9 +112,9 @@ test_that("Comments can be added via the addComment module", {
 test_that("Comment input box is rendered according to the tab and user state", {
   # delete app DB if exists to ensure clean test
   app_db_loc <- test_path("test-apps", "database.sqlite")
-  if (file.exists(app_db_loc)) {
-    file.remove(app_db_loc)
-  }
+  # if (file.exists(app_db_loc)) {
+  #   file.remove(app_db_loc)
+  # }
 
   # copy in already instantiated database to avoid need to rebuild
   # this is a database that has been built via inst/testdata/upload_format.csv

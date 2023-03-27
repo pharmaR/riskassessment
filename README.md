@@ -15,17 +15,15 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 
 `riskassessment` is an R package containing a shiny front-end to augment
 the utility of the [`riskmetric`](https://github.com/pharmaR/riskmetric)
-package within an organizational context.
+package within an organizational context. Recently awarded the title for
+“Best App” at [Shiny Conf 2023](https://bit.ly/raa_shinyconf23) (see
+[Recognition](#recognition) section below).
 
 <br>
 
 <center>
-<a href="https://bit.ly/demo_raa">
-<img src="man/figures/demo_riskassessment.png" alt="{riskassessment} app" width="25%">
-</a>
+<a href="https://bit.ly/demo_raa"><img src="man/figures/demo_riskassessment.png" alt="{riskassessment} app" width="25%"></a>
 </center>
-
-<br>
 
 <br>
 
@@ -83,15 +81,17 @@ Initially, both share the same password: `QWERTY1`. If you log in with
 this credential, the app will immediately prompt you to change your
 password and repeat the the process with your new credentials.
 
-If you want a quick tour through the app (or need assistance getting
-past the authentication wall), you should watch this short walk through
-on the R Consortium’s website:
+If you want a quick overview of the project and demo of the application,
+you should watch this video walk through on YouTube [from Shiny Conf
+2023](https://bit.ly/raa_shinyconf23). At the conference,
+`riskassessment` was voted “best application” in the shiny showcase by
+conference attendees!
 
 <br>
 
 <center>
-<a href="https://www.r-consortium.org/blog/2022/02/03/risk-assessment-shiny-app-update-from-r-validation-hub">
-<img src="man/figures/r_con_update.png" alt="R Validation Hub update" width="75%">
+<a href="https://bit.ly/raa_shinyconf23" target="_blank">
+<img src="man/figures/raa_shinyConf23.png" alt="riskassessment at shinyConf 2023" width="75%">
 </a>
 </center>
 
@@ -188,5 +188,22 @@ allow persistent storage):
 For more information on each of these, we highly recommend reading our
 [‘Deployment’
 article](https://pharmar.github.io/riskassessment/articles/Deployment.html).
+
+#### Recognition
+
+In March 2023, Appsilon hosted the 2nd annual [Shiny
+Conf](https://shinyconf.appsilon.com/) which was fully virtual, boasting
+approximately 4k registrants. Aaron Clark, package maintainer and R
+Validation Hub Executive member,
+[presented](https://bit.ly/raa_shinyconf23) the `{riskassessment}` app
+work in the “Shiny Showcase” among 20+ other app submissions. At the end
+of the conference, `{riskassessment}` was awarded the title of “Best
+App” by popular vote.
+
+<br>
+
+<center>
+<a href="https://bit.ly/demo_raa"><img src="man/figures/best_app_banner.png" alt="Shiny Conf 2023 winner" width="75%"></a>
+</center>
 
 <br>
