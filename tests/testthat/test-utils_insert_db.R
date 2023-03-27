@@ -1,42 +1,41 @@
 test_that("utils_insert_db functions other than dbUpdate", {
   
-  base_path <- app_sys("testdata")
-  # this is a copy of the empty database.sqlite db which is in ./inst/testdata
-  db_name <- "skeleton.sqlite"
-  # and this is a temporary datbase
-  db_temp <- "datatest.sqlite"
+  app_db_loc <- test_path("test-apps", "database.sqlite")
+  if (file.exists(app_db_loc)) {
+    file.remove(app_db_loc)
+  }
   
-  confr <- dbConnect(RSQLite::SQLite(), file.path(base_path, db_name))
-  conto <- dbConnect(RSQLite::SQLite(), file.path(base_path, db_temp))
-  
-  # copy into temp db
-  RSQLite::sqliteCopyDatabase(confr, conto)
-  
-  DBI::dbDisconnect(confr)
-  DBI::dbDisconnect(conto)
+  # copy in already instantiated database to avoid need to rebuild
+  # this is a database that has been built via inst/testdata/upload_format.csv
+  test_db_loc <- system.file("testdata", "skeleton.sqlite", package = "riskassessment")
+  file.copy(
+    test_db_loc,
+    app_db_loc
+  )
   
   # valid db? test this is a valid sqlite database
-  testthat::expect_equal(readLines(file.path(base_path, db_temp), n =1, warn = FALSE), "SQLite format 3")
+  testthat::expect_equal(readLines(app_db_loc, n =1, warn = FALSE), "SQLite format 3")
   
   # load pkg info for stringr into the database
   pkg_name <- "stringr"
   
-  insert_pkg_info_to_db(pkg_name, file.path(base_path, db_temp))
+  insert_pkg_info_to_db(pkg_name, app_db_loc)
 
   test_that("insert_pkg_info_to_db works", {
     pkg <- dbSelect(glue::glue(
       "SELECT *
      FROM package
-     WHERE name = '{pkg_name}'"), file.path(base_path, db_temp)
+     WHERE name = '{pkg_name}'"), app_db_loc
     )
     expect_s3_class(pkg, "data.frame")
     expect_equal(nrow(pkg), 1) 
-    expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", "score", "weighted_score", "decision", "date_added"))
+    expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", 
+                               "score", "weighted_score", "decision", "decision_by", "decision_date", "date_added"))
   })
   
-  insert_riskmetric_to_db(pkg_name, file.path(base_path, db_temp))
+  insert_riskmetric_to_db(pkg_name, app_db_loc)
   
-  pkg_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"), file.path(base_path, db_temp))
+  pkg_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"), app_db_loc)
 
   test_that("insert_riskmetric_to_db", {
     mmdata <-   dbSelect(glue::glue(
@@ -45,31 +44,31 @@ test_that("utils_insert_db functions other than dbUpdate", {
                     FROM metric
                     INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
                     WHERE package_metrics.package_id = '{pkg_id}' AND 
-                    metric.class = 'maintenance' ;"), file.path(base_path, db_temp))
+                    metric.class = 'maintenance' ;"), app_db_loc)
     expect_s3_class(mmdata, "data.frame")
     expect_equal(names(mmdata), c("name", "long_name", "description", "is_perc", "is_url", "value"))
     expect_equal(mmdata$name[1], "has_vignettes")
   })
 
-  insert_community_metrics_to_db(pkg_name, file.path(base_path, db_temp))
+  insert_community_metrics_to_db(pkg_name, app_db_loc)
   
   test_that("insert_community_metrics_to_db works", {
     cmdata <- dbSelect(glue::glue(
       "SELECT *
      FROM community_usage_metrics
-     WHERE id = '{pkg_name}'"), file.path(base_path, db_temp)
+     WHERE id = '{pkg_name}'"), app_db_loc
     )
     expect_s3_class(cmdata, "data.frame")
     expect_equal(colnames(cmdata), c("id", "month", "year", "downloads", "version"))
     expect_equal(cmdata$id[1], pkg_name)
   })
   
-  update_metric_weight(metric_name = 'has_vignettes', metric_weight = 2, file.path(base_path, db_temp))
+  update_metric_weight(metric_name = 'has_vignettes', metric_weight = 2, app_db_loc)
                                    
   test_that("update_metric_weight works", {
   mtwt <-  dbSelect(
       "SELECT name, weight 
-     FROM metric where name = 'has_vignettes'", db_name = file.path(base_path, db_temp)
+     FROM metric where name = 'has_vignettes'", db_name = app_db_loc
     )
   testthat::expect_equal(mtwt$weight, 2)
   })
@@ -78,21 +77,21 @@ test_that("utils_insert_db functions other than dbUpdate", {
     cmdata1 <- dbSelect(glue::glue(
       "SELECT *
      FROM community_usage_metrics
-     WHERE id = '{pkg_name}'"), file.path(base_path, db_temp)
+     WHERE id = '{pkg_name}'"), app_db_loc
     )
-    dbUpdate(glue::glue("delete from package where name = '{pkg_name}'"), db_name = file.path(base_path, db_temp))
-    db_trash_collection(db_name = file.path(base_path, db_temp))
+    dbUpdate(glue::glue("delete from package where name = '{pkg_name}'"), db_name = app_db_loc)
+    db_trash_collection(db_name = app_db_loc)
     cmdata2 <- dbSelect(glue::glue(
       "SELECT *
      FROM community_usage_metrics
-     WHERE id = '{pkg_name}'"), file.path(base_path, db_temp)
+     WHERE id = '{pkg_name}'"), app_db_loc
     )
     testthat::expect_true(nrow(cmdata2) == 0)
     testthat::expect_lt(nrow(cmdata2), nrow(cmdata1))
   })
   
-  unlink(file.path(base_path, db_temp))
-  rm(base_path, db_temp, pkg_name, pkg_id)
+  unlink(app_db_loc)
+  rm(app_db_loc, pkg_name, pkg_id)
   
 })
   

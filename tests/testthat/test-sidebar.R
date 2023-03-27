@@ -1,6 +1,5 @@
 test_that("Reactivity of sidebar", {
-  library(shinytest2, quietly = TRUE)
-  
+
   app_db_loc <- test_path("test-apps", "database.sqlite")
   if (file.exists(app_db_loc)) {
     file.remove(app_db_loc)

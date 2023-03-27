@@ -1,13 +1,23 @@
 
 
 test_that("Uploaded packages show up in summary table", {
+  
   # delete app DB if exists to ensure clean test
-  db_loc <- test_path("test-apps", "database.sqlite")
-  if (file.exists(db_loc)) {
-    file.remove(db_loc)
+  app_db_loc <- test_path("test-apps", "database.sqlite")
+  if (file.exists(app_db_loc)) {
+    file.remove(app_db_loc)
   }
 
-  # set up new app driver object
+  # copy in already instantiated database to avoid need to rebuild
+  # this is a database that has been built via inst/testdata/upload_format.csv
+  test_db_loc <- system.file("testdata", "skeleton.sqlite", package = "riskassessment")
+  file.copy(
+    test_db_loc,
+    app_db_loc
+  )
+  
+
+    # set up new app driver object
   app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
 
   # test package data to upload
@@ -47,11 +57,21 @@ test_that("Uploaded packages show up in summary table", {
 
 
 test_that("Sample upload file can be shown and downloaded", {
+  
   # delete app DB if exists to ensure clean test
-  db_loc <- test_path("test-apps", "database.sqlite")
-  if (file.exists(db_loc)) {
-    file.remove(db_loc)
+  app_db_loc <- test_path("test-apps", "database.sqlite")
+  if (file.exists(app_db_loc)) {
+    file.remove(app_db_loc)
   }
+
+  # copy in already instantiated database to avoid need to rebuild
+  # this is a database that has been built via inst/testdata/upload_format.csv
+  test_db_loc <- system.file("testdata", "skeleton.sqlite", package = "riskassessment")
+  file.copy(
+    test_db_loc,
+    app_db_loc
+  )
+  
 
   # set up new app driver object
   app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 600 * 1000)
@@ -93,6 +113,7 @@ test_that("Sample upload file can be shown and downloaded", {
 })
 
 test_that("Removed packages show up in summary table", {
+  
   # delete app DB if exists to ensure clean test
   app_db_loc <- test_path("test-apps", "database.sqlite")
   if (file.exists(app_db_loc)) {

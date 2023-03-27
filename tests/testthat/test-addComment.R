@@ -16,6 +16,12 @@ test_that("Comments can be added via the addComment module", {
 
   # confirm no comments exist in the database
   con <- DBI::dbConnect(RSQLite::SQLite(), app_db_loc)
+  
+  on.exit({
+    DBI::dbDisconnect(con)
+    unlink(app_db_loc)
+  })
+
   comments <- DBI::dbGetQuery(con, "select * from comments")
   expect_equal(
     nrow(comments),
@@ -99,13 +105,7 @@ test_that("Comments can be added via the addComment module", {
     maintenance_comment
   )
   
-  # close connection
-  DBI::dbDisconnect(con)
-  
-  if (file.exists(app_db_loc)) {
-    file.remove(app_db_loc)
-  }
-  
+
 })
 
 
