@@ -54,7 +54,7 @@ check_dec_rules <- function(decision_categories, decisions) {
   if (!all(names(decisions) %in% decision_categories))
     stop("All decision rule categories should be included in the list of decisions")
   
-  if (!all.equal(names(decisions), unique(names(decisions))))
+  if (length(names(decisions)) != length(unique(names(decisions))))
     stop("The decision categories must be unique for the decision rules")
   
   if (!all(purrr::map_lgl(decisions, ~ is.numeric(unlist(.x)))))
