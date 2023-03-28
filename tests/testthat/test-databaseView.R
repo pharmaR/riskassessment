@@ -1,5 +1,4 @@
 test_that("Reactivity of database view table", {
-  skip_on_ci()
   # delete app DB if exists to ensure clean test
   app_db_loc <- test_path("test-apps", "database.sqlite")
   if (file.exists(app_db_loc)) {
@@ -22,7 +21,7 @@ test_that("Reactivity of database view table", {
   #### Test that the `table_data` loads correctly ####
   tbl_expect <-
     structure(list(name = "dplyr", version = "1.0.10", score = 0.1, 
-                   decision = "-", decision_by = "-", decision_date = NA_character_,
+                   decision = "-", decision_by = "-", decision_date = "-",
                    last_comment = "-"), 
               class = "data.frame", row.names = c(NA, -1L))
   tbl_actual <-
