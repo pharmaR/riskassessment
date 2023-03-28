@@ -66,6 +66,7 @@ uploadPackageUI <- function(id) {
 #' @importFrom rintrojs introjs
 #' @importFrom utils read.csv available.packages
 #' @importFrom rvest read_html html_nodes html_text
+#' @importFrom httr http_status GET
 #' @keywords internal
 #' 
 uploadPackageServer <- function(id, user) {
@@ -265,14 +266,10 @@ uploadPackageServer <- function(id, user) {
           "https://cranlogs.r-pkg.org"
         )
         
-        good_urls <- purrr::map_lgl(url_lst, 
-                                    function(.x) {
-                                      print("\nobserveEvent: uploaded_pkgs00(), ")
-                                      print("url_lst: ")
-                                      print(.x)
-                                      try(curlGetHeaders(.x, verify = FALSE), silent = FALSE) %>%
-                                        {class(.) != "try-error" && attr(., "status") != 404}
-                                      })
+        good_urls <- purrr::map_lgl(url_lst, function(.x) {
+          status <- try(httr::http_status(httr::GET(.x)), silent = TRUE)
+          class(status) != "try-error" && status$category == "Success"
+        })
         
         if (!all(good_urls)) {
           checking_urls$url_lst <- url_lst[!good_urls]
