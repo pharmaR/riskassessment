@@ -39,14 +39,14 @@ test_that("utils_insert_db functions other than dbUpdate", {
 
   test_that("insert_riskmetric_to_db", {
     mmdata <-   dbSelect(glue::glue(
-      "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
-                    metric.is_url, package_metrics.value
+      "SELECT metric.name, metric.long_name, metric.description, 
+                    metric.is_url, metric.is_perc, metric.is_score, package_metrics.value
                     FROM metric
                     INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
                     WHERE package_metrics.package_id = '{pkg_id}' AND 
                     metric.class = 'maintenance' ;"), app_db_loc)
     expect_s3_class(mmdata, "data.frame")
-    expect_equal(names(mmdata), c("name", "long_name", "description", "is_perc", "is_url", "value"))
+    expect_equal(names(mmdata), c("name", "long_name", "description", "is_url", "is_perc", "is_score", "value"))
     expect_equal(mmdata$name[1], "has_vignettes")
   })
 
