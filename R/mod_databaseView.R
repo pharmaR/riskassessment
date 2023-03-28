@@ -91,7 +91,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       db_pkg_overview %>%
         dplyr::mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>%
         dplyr::mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
-        dplyr::mutate(decision    = if_else(is.na(decision)    | decision    == "", "-", paste(decision, "Risk"))) %>%
+        dplyr::mutate(decision    = if_else(is.na(decision)    | decision    == "", "-", decision)) %>%
         dplyr::mutate(decision_by = if_else(is.na(decision_by) | decision_by == "", "-", decision_by)) %>% 
         dplyr::mutate(decision_date = ifelse(decision_date == "NA", "-", decision_date)) %>% 
         dplyr::select(name, version, score, decision, decision_by, decision_date, last_comment)
@@ -143,14 +143,11 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                                 "border-radius" = "4px",
                                 "padding-right" = "4px",
                                 "font-weight" = "bold",
-                                "color" = "white",
+                                "color" = ifelse(x %in% decision_lst, "white", "inherit"),
                                 "background-color" = 
                                   ifelse(x %in% decision_lst, 
                                          color_lst[x], 
-                                         "transparent"))),
-            was_decision_made = formattable::formatter("span",
-                                          style = x ~ formattable::style(color = ifelse(x, "#0668A3", "gray")),
-                                          x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))
+                                         "transparent")))
           )),
         selection = list(mode = 'multiple'),
         colnames = c("Package", "Version", "Score", "Decision", "Decision by", "Decision Date", "Last Comment", "Explore Metrics"),
