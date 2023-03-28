@@ -99,5 +99,13 @@ test_that("risk_lbl works", {
 })
 
 test_that("process_dec_tbl works", {
+  expect_equal(
+    process_dec_tbl(app_sys("testdata", "skeleton.sqlite")),
+    structure(list(), names = character(0))
+  )
   
+  expect_equal(
+    process_dec_tbl(app_sys("testdata", "decision_automation_ex1.sqlite")),
+    list(`Insignificant Risk` = list(0, 0.1), `Severe Risk` = list(0.7, 1))
+  )
 })
