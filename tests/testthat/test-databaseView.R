@@ -59,7 +59,7 @@ test_that("Reactivity of database view table", {
   tbl_expect <- structure(list(name = c("tidyr", "dplyr"), 
                                decision = c("-", "Low Risk"),
                                decision_by = c('-', "test_user"),
-                               decision_date = c(NA_character_, as.character(Sys.Date())),
+                               decision_date = c("-", as.character(Sys.Date())),
                                last_comment = c("-", "-")), 
                           class = "data.frame", row.names = c(NA, -2L))
   tbl_actual <-
