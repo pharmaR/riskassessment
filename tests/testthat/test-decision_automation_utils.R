@@ -100,6 +100,11 @@ test_that("risk_lbl works", {
 
 test_that("process_dec_tbl works", {
   expect_equal(
+    process_dec_tbl(),
+    list()
+  )
+  
+  expect_equal(
     process_dec_tbl(app_sys("testdata", "skeleton.sqlite")),
     structure(list(), names = character(0))
   )

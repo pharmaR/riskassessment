@@ -124,6 +124,9 @@ risk_lbl <- function(x, input = TRUE) {
 #' 
 #' @noRd
 process_dec_tbl <- function(db_name = golem::get_golem_options('assessment_db_name')) {
+  if (is.null(db_name))
+    return(list())
+  
   dec_tbl <- dbSelect("SELECT * FROM decision_categories", db_name)
   dec_tbl %>%
     purrr::pmap(function(lower_limit, upper_limit, ...) {list(lower_limit, upper_limit)}) %>% 
