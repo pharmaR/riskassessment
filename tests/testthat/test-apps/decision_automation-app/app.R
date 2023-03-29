@@ -10,6 +10,12 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   
+  exportTestValues(
+    auto_decision_output = {
+      auto_decision()
+    }
+  )
+  
   user <- reactiveValues(
     name = "tester",
     role = "admin"
