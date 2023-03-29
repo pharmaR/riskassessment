@@ -129,7 +129,7 @@ process_dec_tbl <- function(db_name = golem::get_golem_options('assessment_db_na
   
   dec_tbl <- dbSelect("SELECT * FROM decision_categories", db_name)
   dec_tbl %>%
-    purrr::pmap(function(lower_limit, upper_limit, ...) {list(lower_limit, upper_limit)}) %>% 
+    purrr::pmap(function(lower_limit, upper_limit, ...) {c(lower_limit, upper_limit)}) %>% 
     purrr::set_names(dec_tbl$decision) %>%
     purrr::map(purrr::discard, is.na) %>%
     purrr::compact()
