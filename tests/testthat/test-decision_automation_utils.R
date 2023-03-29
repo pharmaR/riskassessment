@@ -1,5 +1,5 @@
 test_that("assign_decisions works", {
-  
+  "Placeholder"
 })
 
 test_that("check_dec_cat works", {
