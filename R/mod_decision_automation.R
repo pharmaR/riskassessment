@@ -234,7 +234,7 @@ mod_decision_automation_server <- function(id, user){
           prev_lbl <- risk_lbl(decision_lst[.y - 1])
           
           observeEvent(input[[this_lbl]], {
-            if (req(.x %in% input$auto_include)) {
+            if (.x %in% input$auto_include) {
               auto_decision[[.x]] <- if (.y == 1) c(0, input[[this_lbl]]) else if (.y == length(decision_lst)) c(input[[this_lbl]], 1) else input[[this_lbl]]
             }
             
