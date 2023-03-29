@@ -158,7 +158,7 @@ insert_riskmetric_to_db <- function(pkg_name,
       test_pkg_assess[[pkg_name]]
   
   # Get the metrics weights to be used during pkg_score.
-  metric_weights_df <- dbSelect("SELECT id, name, weight, is_perc, is_score FROM metric", db_name)
+  metric_weights_df <- dbSelect("SELECT id, name, weight, is_perc FROM metric", db_name)
   metric_weights <- metric_weights_df$weight
   names(metric_weights) <- metric_weights_df$name
   
@@ -190,9 +190,9 @@ insert_riskmetric_to_db <- function(pkg_name,
     #   (note: has_website for instance may have multiple values).
     metric_value <- ifelse(
       "pkg_metric_error" %in% class(riskmetric_assess[[metric$name]][[1]]), "pkg_metric_error",
-      ifelse(metric$is_perc == 1L, as.character(round(riskmetric_score[[metric$name]]*100, 2)[[1]]),
       ifelse(metric$name == "dependencies", as.character(nrow(riskmetric_assess[[metric$name]][[1]])),
-      ifelse(metric$is_score == 1L, as.character(length(as.vector(riskmetric_assess[[metric$name]][[1]]))),
+      ifelse(metric$name == "reverse_dependencies", as.character(length(as.vector(riskmetric_assess[[metric$name]][[1]]))),
+      ifelse(metric$is_perc == 1L, as.character(round(riskmetric_score[[metric$name]]*100, 2)[[1]]),
       as.character(riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])])
      ))))
     
