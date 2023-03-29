@@ -175,7 +175,6 @@ insert_riskmetric_to_db <- function(pkg_name,
     return()
   }
   
-  browser()
   # Insert all the metrics (columns of class "pkg_score") into the db.
   # TODO: Are pkg_score and pkg_metric_error mutually exclusive?
   for(row in 1:nrow(metric_weights_df)){
@@ -191,10 +190,11 @@ insert_riskmetric_to_db <- function(pkg_name,
     #   (note: has_website for instance may have multiple values).
     metric_value <- ifelse(
       "pkg_metric_error" %in% class(riskmetric_assess[[metric$name]][[1]]), "pkg_metric_error",
-      ifelse(metric$is_perc == 1L, round(riskmetric_score[[metric$name]]*100, 2)[[1]],
-      ifelse(metric$is_score == 1L, nrow(riskmetric_assess[[metric$name]][[1]]),
-      riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])])
-    ))
+      ifelse(metric$is_perc == 1L, as.character(round(riskmetric_score[[metric$name]]*100, 2)[[1]]),
+      ifelse(metric$name == "dependencies", as.character(nrow(riskmetric_assess[[metric$name]][[1]])),
+      ifelse(metric$is_score == 1L, as.character(length(as.vector(riskmetric_assess[[metric$name]][[1]]))),
+      as.character(riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])])
+     ))))
     
     dbUpdate(glue::glue(
       "INSERT INTO package_metrics (package_id, metric_id, weight, value) 
