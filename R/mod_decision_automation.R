@@ -75,8 +75,20 @@ mod_decision_automation_server <- function(id, user){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
+    exportTestValues(
+      datatable = {
+        auto_decision_update() %>%
+          purrr::imap_dfr(~ dplyr::tibble(decision = .y, ll = .x[[1]], ul = .x[[2]])) %>%
+          dplyr::arrange(ll,)
+      },
+      auto_decision = {
+        reactiveValuesToList(auto_decision)
+      }
+    )
+    
     auto_decision_initial <- process_dec_tbl(golem::get_golem_options('assessment_db_name'))
     auto_decision_update <- reactiveVal(auto_decision_initial)
+    auto_decision <- reactiveValues()
     
     decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
     
@@ -188,7 +200,6 @@ mod_decision_automation_server <- function(id, user){
             )
           })
         
-        auto_decision <- reactiveValues()
         auto_current <- reactiveVal(names(auto_decision_initial))
         
         observeEvent(input$auto_include, {
