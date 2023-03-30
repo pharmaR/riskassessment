@@ -234,11 +234,11 @@ insert_riskmetric_to_db <- function(pkg_name,
 insert_community_metrics_to_db <- function(pkg_name, 
                                            db_name = golem::get_golem_options('assessment_db_name')) {
   
-  if (!isTRUE(getOption("shiny.testmode")))
+  if (!isTRUE(getOption("shiny.testmode"))) {
     pkgs_cum_metrics <- generate_comm_data(pkg_name)
-  else
+ } else {
     pkgs_cum_metrics <- test_pkg_cum[[pkg_name]]
-  
+ }
   if(nrow(pkgs_cum_metrics) != 0){
     for (i in 1:nrow(pkgs_cum_metrics)) {
       dbUpdate(glue::glue(
