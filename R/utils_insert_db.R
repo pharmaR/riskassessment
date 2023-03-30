@@ -146,17 +146,17 @@ upload_package_to_db <- function(name, version, title, description,
 insert_riskmetric_to_db <- function(pkg_name, 
     db_name = golem::get_golem_options('assessment_db_name')){
 
-  if (!isTRUE(getOption("shiny.testmode")))
+  if (!isTRUE(getOption("shiny.testmode"))) {
     riskmetric_assess <-
       riskmetric::pkg_ref(pkg_name,
                           source = "pkg_cran_remote",
                           repos = c("https://cran.rstudio.com")) %>%
       dplyr::as_tibble() %>%
       riskmetric::pkg_assess()
-  else
+  } else {
     riskmetric_assess <-
       test_pkg_assess[[pkg_name]]
-  
+  }
   # Get the metrics weights to be used during pkg_score.
   metric_weights_df <- dbSelect("SELECT id, name, weight, is_perc FROM metric", db_name)
   metric_weights <- metric_weights_df$weight
@@ -182,18 +182,23 @@ insert_riskmetric_to_db <- function(pkg_name,
     # If the metric is not part of the assessment, then skip iteration.
     if(!(metric$name %in% colnames(riskmetric_score))) next
     
+    # attempt to get export_help data from pkg_install
+    exp_help <- function(pkg_name) {
+      if (is.na(riskmetric_assess$export_help[[1]][1])) {
+      valu <- riskmetric::assess_export_help(riskmetric::pkg_ref(pkg_name)) %>% 
+        riskmetric::metric_score()
+      as.character(round(valu*100, 2))
+      } else {
+        return(riskmetric_assess$export_help[[1]][1])
+      }
+    }
+
     # If the metric errors out,
     #   then save "pkg_metric_error" as the value of the metric.
     # If the metric has NA or 0,
     #   then save such value as the metric value.
     # Otherwise, save all the possible values of the metric
     #   (note: has_website for instance may have multiple values).
-    exp_help <- function(pkg_name) {
-      valu <- riskmetric::assess_export_help(riskmetric::pkg_ref(pkg_name)) %>% 
-        riskmetric::metric_score()
-      as.character(round(valu*100, 2))
-    }
-
     metric_value <- ifelse(
       "pkg_metric_error" %in% class(riskmetric_assess[[metric$name]][[1]]), "pkg_metric_error",
       ifelse (metric$name == "export_help", exp_help(pkg_name),
