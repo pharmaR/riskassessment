@@ -87,7 +87,7 @@ test_that("utils_insert_db functions other than dbUpdate", {
      WHERE id = '{pkg_name}'"), app_db_loc
     )
     testthat::expect_true(nrow(cmdata2) == 0)
-    #testthat::expect_lt(nrow(cmdata2), nrow(cmdata1))
+    testthat::expect_lt(nrow(cmdata2), nrow(cmdata1))
   })
   
   unlink(app_db_loc)

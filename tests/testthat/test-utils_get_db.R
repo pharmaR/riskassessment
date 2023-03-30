@@ -84,7 +84,7 @@ test_that("utils_get_db functions other than dbSelect", {
     cmdata <- get_comm_data(pkg_name, app_db_loc)
     expect_s3_class(cmdata, "data.frame")
     expect_equal(colnames(cmdata), c("id", "month", "year", "downloads", "version"))
-   # expect_equal(cmdata$id[1], pkg_name) # look at insert_community_metrics_to_db()
+    expect_equal(cmdata$id[1], pkg_name) # look at insert_community_metrics_to_db()
   })
   
   test_that("get_pkg_info works", {
