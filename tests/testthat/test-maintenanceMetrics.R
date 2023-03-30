@@ -43,19 +43,19 @@ test_that("Reactivity of maintenanceMetrics", {
   pkg_url <- rvest::read_html(out_val) %>% 
     rvest::html_elements(.,".card-footer") %>% 
     rvest::html_text() 
-  expect_equal(pkg_url, "Package source control url")
+  expect_equal(trimws(pkg_url), "Package source control url")
   
   out_val <- app$get_values()$output$`maintenanceMetrics-metricGrid-has_vignettes-metricBox_ui`$html
   vignettes <- rvest::read_html(out_val) %>% 
     rvest::html_elements(.,".card-footer") %>% 
     rvest::html_text() 
-  expect_equal(vignettes, "Number of vignettes")
+  expect_equal(trimws(vignettes), "Number of vignettes")
   
   out_val <- app$get_values()$output$`maintenanceMetrics-metricGrid-news_current-metricBox_ui`$html
   news_curr <- rvest::read_html(out_val) %>% 
     rvest::html_elements(.,".card-footer") %>% 
     rvest::html_text() 
-  expect_equal(news_curr, "NEWS contains current version")
+  expect_equal(trimws(news_curr), "NEWS contains current version")
   
   # read the comment back in
   out_cmt <- app$get_values()$output$`maintenanceMetrics-view_comments-view_comments`$html
