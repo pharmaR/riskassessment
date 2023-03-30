@@ -44,14 +44,14 @@ metricBoxServer <- function(id, title, desc, value,
         value <- "Not found"
       else if(is_perc)
         value <- glue::glue('{round(as.numeric(value), 1)}%')
+      else if(value %in% c('TRUE', 'FALSE'))
+        value <- ifelse(value == 'TRUE', 'Yes', 'No')
       else if(is_url)
         value <- a(ifelse(nchar(value) <= val_max_nchar, value,
                     glue::glue('{stringr::str_sub(value, 1, (val_max_nchar - 3))}...')
                  ), href = value)
         # unfortunately, adding the href can sometimes force the footer to fall
         # outside the card when val_max_nchar is too large.
-      else if(value %in% c('TRUE', 'FALSE'))
-        value <- ifelse(value == 'TRUE', 'Yes', 'No')
 
       icon_name <- succ_icon
 
@@ -75,13 +75,13 @@ metricBoxServer <- function(id, title, desc, value,
           div(class ="row no-gutters;",
               div(class="col-md-4 text-center border-info",
                   icon(icon_name, class=icon_class, verify_fa = FALSE,
-                       style="padding-top: 40%; font-size:60px; padding-left: 20%;")),
+                       style="padding-top: 20%; font-size:1vw; padding-left: 0%;")),
               div(class="col-md-8",
-                  h5(class="card-header bg-transparent", style="font-size: 1vw",
+                  tags$small(class="card-title bg-transparent", style="font-size: 0.75vw",
                      title),
                   div(class="card-body text-info",
-                      p(class="card-title", style= body_p_style, value))),
-              div(class="card-footer bg-transparent", desc)
+                      tags$small(class="card-title", style="font-size: 0.75vw", value))),
+              div(class="card-footer bg-transparent", tags$em(desc))
           )
       )
     })
