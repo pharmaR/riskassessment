@@ -24,7 +24,7 @@ test_that("Reactivity of communityMetrics", {
   app$wait_for_idle(500)
   
   # read the current comment
-  out_cmt <- app$get_values()$output$`communityMetrics-view_comments-view_comments`$html
+  out_cmt <- app$get_value(output = "communityMetrics-view_comments-view_comments")$html
   
   cmt_txt <- rvest::read_html(out_cmt) %>%  
     rvest::html_nodes(xpath = '//div[@class="well"]/text()') %>% 
@@ -40,7 +40,7 @@ test_that("Reactivity of communityMetrics", {
   app$wait_for_idle()
   
   # read the comment back in
-  out_cmt <- app$get_values()$output$`communityMetrics-view_comments-view_comments`$html
+  out_cmt <- app$get_value(output = "communityMetrics-view_comments-view_comments")$html
   
   cmt_txt <- rvest::read_html(out_cmt) %>%  
     rvest::html_nodes(xpath = '//div[@class="well"]/text()') %>% 

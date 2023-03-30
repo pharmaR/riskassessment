@@ -54,7 +54,7 @@ check_dec_rules <- function(decision_categories, decisions) {
   if (!all(names(decisions) %in% decision_categories))
     stop("All decision rule categories should be included in the list of decisions")
   
-  if (!all.equal(names(decisions), unique(names(decisions))))
+  if (length(names(decisions)) != length(unique(names(decisions))))
     stop("The decision categories must be unique for the decision rules")
   
   if (!all(purrr::map_lgl(decisions, ~ is.numeric(unlist(.x)))))
@@ -124,9 +124,12 @@ risk_lbl <- function(x, input = TRUE) {
 #' 
 #' @noRd
 process_dec_tbl <- function(db_name = golem::get_golem_options('assessment_db_name')) {
+  if (is.null(db_name))
+    return(list())
+  
   dec_tbl <- dbSelect("SELECT * FROM decision_categories", db_name)
   dec_tbl %>%
-    purrr::pmap(function(lower_limit, upper_limit, ...) {list(lower_limit, upper_limit)}) %>% 
+    purrr::pmap(function(lower_limit, upper_limit, ...) {c(lower_limit, upper_limit)}) %>% 
     purrr::set_names(dec_tbl$decision) %>%
     purrr::map(purrr::discard, is.na) %>%
     purrr::compact()
