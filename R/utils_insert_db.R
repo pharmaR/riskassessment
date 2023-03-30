@@ -188,14 +188,21 @@ insert_riskmetric_to_db <- function(pkg_name,
     #   then save such value as the metric value.
     # Otherwise, save all the possible values of the metric
     #   (note: has_website for instance may have multiple values).
+    exp_help <- function(pkg_name) {
+      valu <- riskmetric::assess_export_help(riskmetric::pkg_ref(pkg_name)) %>% 
+        riskmetric::metric_score()
+      as.character(round(valu*100, 2))
+    }
+
     metric_value <- ifelse(
       "pkg_metric_error" %in% class(riskmetric_assess[[metric$name]][[1]]), "pkg_metric_error",
+      ifelse (metric$name == "export_help", exp_help(pkg_name),
       ifelse(metric$name == "dependencies", as.character(nrow(riskmetric_assess[[metric$name]][[1]])),
       ifelse(metric$name == "reverse_dependencies", as.character(length(as.vector(riskmetric_assess[[metric$name]][[1]]))),
       ifelse(metric$is_perc == 1L, as.character(round(riskmetric_score[[metric$name]]*100, 2)[[1]]),
       as.character(riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])])
-     ))))
-    
+     )))))
+   
     dbUpdate(glue::glue(
       "INSERT INTO package_metrics (package_id, metric_id, weight, value) 
       VALUES ({package_id}, {metric$id}, {metric$weight}, '{metric_value}')"), db_name
