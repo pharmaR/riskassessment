@@ -23,7 +23,7 @@ test_that("Reactivity of maintenanceMetrics", {
   app$wait_for_idle()
   
   # read the current comment -- set to "No comments"
-  out_cmt <- app$get_values()$output$`maintenanceMetrics-view_comments-view_comments`$html
+  out_cmt <- app$get_value(output = "maintenanceMetrics-view_comments-view_comments")$html
   
   cmt_txt <- rvest::read_html(out_cmt) %>%  
     rvest::html_nodes(xpath = '//div[@class="well"]/text()') %>% 
@@ -39,26 +39,26 @@ test_that("Reactivity of maintenanceMetrics", {
   app$wait_for_idle()
   
   # check some of the card footers
-  out_val <- app$get_values()$output$`maintenanceMetrics-metricGrid-has_source_control-metricBox_ui`$html
+  out_val <- app$get_value(output = "maintenanceMetrics-metricGrid-has_source_control-metricBox_ui")$html
   pkg_url <- rvest::read_html(out_val) %>% 
     rvest::html_elements(.,".card-footer") %>% 
     rvest::html_text() 
   expect_equal(trimws(pkg_url), "Package source control url")
   
-  out_val <- app$get_values()$output$`maintenanceMetrics-metricGrid-has_vignettes-metricBox_ui`$html
+  out_val <- app$get_value(output = "maintenanceMetrics-metricGrid-has_vignettes-metricBox_ui")$html
   vignettes <- rvest::read_html(out_val) %>% 
     rvest::html_elements(.,".card-footer") %>% 
     rvest::html_text() 
   expect_equal(trimws(vignettes), "Number of vignettes")
   
-  out_val <- app$get_values()$output$`maintenanceMetrics-metricGrid-news_current-metricBox_ui`$html
+  out_val <- app$get_value(output = "maintenanceMetrics-metricGrid-news_current-metricBox_ui")$html
   news_curr <- rvest::read_html(out_val) %>% 
     rvest::html_elements(.,".card-footer") %>% 
     rvest::html_text() 
   expect_equal(trimws(news_curr), "NEWS contains current version")
   
   # read the comment back in
-  out_cmt <- app$get_values()$output$`maintenanceMetrics-view_comments-view_comments`$html
+  out_cmt <- app$get_value(output = "maintenanceMetrics-view_comments-view_comments")$html
   
   cmt_txt <- rvest::read_html(out_cmt) %>%  
     rvest::html_nodes(xpath = '//div[@class="well"]/text()') %>% 

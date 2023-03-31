@@ -75,8 +75,20 @@ mod_decision_automation_server <- function(id, user){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    auto_decision_initial <- process_dec_tbl()
+    exportTestValues(
+      datatable = {
+        auto_decision_update() %>%
+          purrr::imap_dfr(~ dplyr::tibble(decision = .y, ll = .x[[1]], ul = .x[[2]])) %>%
+          dplyr::arrange(ll,)
+      },
+      auto_decision = {
+        reactiveValuesToList(auto_decision)
+      }
+    )
+    
+    auto_decision_initial <- process_dec_tbl(golem::get_golem_options('assessment_db_name'))
     auto_decision_update <- reactiveVal(auto_decision_initial)
+    auto_decision <- reactiveValues()
     
     decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
     
@@ -142,21 +154,35 @@ mod_decision_automation_server <- function(id, user){
       }
       
       if (user$role == "admin") {
-        num_dec <- length(decision_lst)
-        initial_values <- purrr::imap(decision_lst, ~ c((.y - 1)/num_dec, .y/num_dec)) %>% 
-          purrr::set_names(decision_lst)
-        initial_selection <- NULL
         if (!rlang::is_empty(auto_decision_initial)) {
-          for (.y in names(auto_decision_initial)) {
-            if (.y %in% decision_lst)
-              initial_values[[.y]] <- unlist(auto_decision_initial[[.y]])
-            else
-              warning(glue::glue("The decision category '{.y}' is not present in the allowed decision list!")) 
+          valid_names <- names(auto_decision_initial) %in% decision_lst
+          if (any(!valid_names))
+            warning(glue::glue("The decision category(ies) {paste(names(auto_decision_initial)[!valid_names], collapse = ', ')} is(are) note present in the allowed decision list!"))
+          initial_values <- purrr::map(auto_decision_initial[valid_names], unlist)
+          ranges <- c(0, unlist(initial_values, use.names = FALSE), 1)
+          grp_len <- cumsum(decision_lst %in% names(auto_decision_initial)) %>% table()
+          iter <- 0
+          grp_iter <- 0
+          for (.y in decision_lst) {
+            if (.y %in% names(initial_values)) {
+              ranges <- ranges[as.logical(cumsum(ranges == initial_values[[.y]][2]))]
+              iter <- 0
+              grp_iter <- grp_iter + 1
+            } else {
+              initial_values[[.y]] <- ranges[1] + (ranges[2] - ranges[1])*c(iter, iter + 1)/(grp_len[as.character(grp_iter)] - (grp_iter != 0))
+              iter <- iter + 1
+            }
           }
           initial_selection <- names(auto_decision_initial)
+        } else {
+          num_dec <- length(decision_lst)
+          initial_values <- purrr::imap(decision_lst, ~ c((.y - 1)/num_dec, .y/num_dec)) %>% 
+            purrr::set_names(decision_lst)
+          initial_selection <- NULL
         }
         initial_values <- purrr::map(initial_values, ~ .x %>% `[`(!. %in% c(0,1)) %>% round(2))
         
+
         output$auto_settings <-
           renderUI({
             dec_divs <- purrr::map(decision_lst, ~ div(
@@ -188,7 +214,6 @@ mod_decision_automation_server <- function(id, user){
             )
           })
         
-        auto_decision <- reactiveValues()
         auto_current <- reactiveVal(names(auto_decision_initial))
         
         observeEvent(input$auto_include, {
@@ -223,7 +248,7 @@ mod_decision_automation_server <- function(id, user){
           prev_lbl <- risk_lbl(decision_lst[.y - 1])
           
           observeEvent(input[[this_lbl]], {
-            if (req(.x %in% input$auto_include)) {
+            if (.x %in% input$auto_include) {
               auto_decision[[.x]] <- if (.y == 1) c(0, input[[this_lbl]]) else if (.y == length(decision_lst)) c(input[[this_lbl]], 1) else input[[this_lbl]]
             }
             

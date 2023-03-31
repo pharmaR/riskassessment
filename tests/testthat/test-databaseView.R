@@ -22,7 +22,7 @@ test_that("Reactivity of database view table", {
   #### Test that the `table_data` loads correctly ####
   tbl_expect <-
     structure(list(name = "dplyr", version = "1.0.10", score = 0.1, 
-                   decision = "-", decision_by = "-", decision_date = NA_character_,
+                   decision = "-", decision_by = "-", decision_date = "-",
                    last_comment = "-"), 
               class = "data.frame", row.names = c(NA, -1L))
   tbl_actual <-
@@ -60,7 +60,7 @@ test_that("Reactivity of database view table", {
   tbl_expect <- structure(list(name = c("tidyr", "dplyr"), 
                                decision = c("-", "Low Risk"),
                                decision_by = c('-', "test_user"),
-                               decision_date = c(NA_character_, as.character(Sys.Date())),
+                               decision_date = c("-", as.character(Sys.Date())),
                                last_comment = c("-", "-")), 
                           class = "data.frame", row.names = c(NA, -2L))
   tbl_actual <-
