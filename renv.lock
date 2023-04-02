@@ -1423,6 +1423,23 @@
         "yaml"
       ]
     },
+    "pkggraph": {
+      "Package": "pkggraph",
+      "Version": "0.2.3",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "ddbb5a87dcb5891f6734675eb6df0a54",
+      "Requirements": [
+        "Matrix",
+        "RColorBrewer",
+        "curl",
+        "data.table",
+        "dplyr",
+        "ggplot2",
+        "htmltools",
+        "tibble"
+      ]
+    },
     "pkgload": {
       "Package": "pkgload",
       "Version": "1.2.4",
