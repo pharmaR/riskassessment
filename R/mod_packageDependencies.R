@@ -12,10 +12,13 @@ packageDependenciesUI <- function(id) {
 #' @param id a module id name
 #' @param selected_pkg placeholder
 #' @param maint_metrics placeholder
-#' @param user placeholder
+#' @param user placeholder 
 #' @param parent the parent (calling module) session information
 #' 
 #' @import dplyr
+#' @importFrom riskmetric pkg_ref assess_dependencies
+#' @importFrom purrr is_empty
+#' @importFrom pkggraph get_all_dependencies get_all_reverse_dependencies make_neighborhood_graph
 #' @keywords internal
 #' 
 packageDependenciesServer <- function(id, selected_pkg, maint_metrics, user, parent) {
