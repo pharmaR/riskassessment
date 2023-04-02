@@ -180,6 +180,13 @@ app_server <- function(input, output, session) {
                       app_version = golem::get_golem_options('app_version'),
                       metric_weights = metric_weights)
   
+  # Load server for the package dependencies tab.
+  dependencies_data <- packageDependenciesServer('packageDependencies',
+                                               selected_pkg,
+                                               maint_metrics,
+                                               user,
+                                               parent = session)
+  
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)
   })

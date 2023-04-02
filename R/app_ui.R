@@ -56,7 +56,12 @@ app_ui <- function(request) {
                 id = "reportPreview_tab_id",
                 title = "Report Preview",
                 reportPreviewUI("reportPreview")
-              )
+              ),
+              tabPanel(
+                id = "dep_tab_id",
+                title = "Package Dependencies",
+                packageDependenciesUI("packageDependencies")
+              )             
             )
           )
         )
