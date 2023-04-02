@@ -46,6 +46,7 @@ Imports:
     golem (>= 0.3.2),
     loggit,
     lubridate,
+    pkggraph,
     plotly,
     purrr,
     rintrojs,
