@@ -183,7 +183,6 @@ app_server <- function(input, output, session) {
   # Load server for the package dependencies tab.
   dependencies_data <- packageDependenciesServer('packageDependencies',
                                                selected_pkg,
-                                               maint_metrics,
                                                user,
                                                parent = session)
   

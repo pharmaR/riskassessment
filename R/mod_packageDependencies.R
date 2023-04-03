@@ -21,7 +21,7 @@ packageDependenciesUI <- function(id) {
 #' @importFrom deepdep plot_dependencies
 #' @keywords internal
 #' 
-packageDependenciesServer <- function(id, selected_pkg, maint_metrics, user, parent) {
+packageDependenciesServer <- function(id, selected_pkg, user, parent) {
   moduleServer(id, function(input, output, session) {
        ns <- NS(id)
        
