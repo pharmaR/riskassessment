@@ -18,7 +18,7 @@ packageDependenciesUI <- function(id) {
 #' @import dplyr
 #' @importFrom riskmetric pkg_ref assess_dependencies
 #' @importFrom purrr is_empty
-#' @importFrom pkggraph get_all_dependencies get_all_reverse_dependencies make_neighborhood_graph
+#' @importFrom deepdep plot_dependencies
 #' @keywords internal
 #' 
 packageDependenciesServer <- function(id, selected_pkg, maint_metrics, user, parent) {

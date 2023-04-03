@@ -607,6 +607,18 @@
         "crayon"
       ]
     },
+    "deepdep": {
+      "Package": "deepdep",
+      "Version": "0.4.1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "3f757a1bd11132693014fc275f9c61b5",
+      "Requirements": [
+        "cranlogs",
+        "httr",
+        "jsonlite"
+      ]
+    },
     "desc": {
       "Package": "desc",
       "Version": "1.4.1",
