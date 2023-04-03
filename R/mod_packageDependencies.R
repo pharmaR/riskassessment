@@ -61,20 +61,15 @@ packageDependenciesServer <- function(id, selected_pkg, maint_metrics, user, par
             ),
             column(width = 6,
             renderPlot(
-            pkggraph::get_all_dependencies(selected_pkg$name(), relation = c("Imports", "Depends")) %>% 
-              pkggraph::make_neighborhood_graph() %>% 
-              plot())
+              deepdep::plot_dependencies(pkg_name, show_version = TRUE)
+             )
             )
            ),
            br(),
            h4("Reverse Dependencies", style = "text-align: left;"),
            br(), br(),
            fluidRow(column(width = 8,
-             renderPlot(
-             pkggraph::get_all_reverse_dependencies(selected_pkg$name(), relation = "Imports") %>% 
-               pkggraph::make_neighborhood_graph() %>% 
-               plot()
-             ))
+           )
           )
          )
         )
