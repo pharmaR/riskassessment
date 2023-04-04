@@ -22,12 +22,18 @@ test_that("decision_automation works", {
                                   class = c("tbl_df", "tbl", "data.frame"), 
                                   row.names = c(NA, -2L))
   actual <- app$get_value(export = "automate-datatable")
-  expect_equal(actual, expected)
+  cat("test-decision_automation","\n")
+  cat("actual:", unlist(actual), "\n")
+  cat("expected:", unlist(expected), "\n")
   
+  expect_equal(actual, expected)
+
   # Check module automate decision reactive
   expected <- list(`Insignificant Risk` = c(0, 0.1), 
                    `Severe Risk` = c(0.7, 1))
   actual <- app$get_value(export = "automate-auto_decision")
+  cat("actual:", unlist(actual), "\n")
+  cat("expected:", unlist(expected), "\n")
   expect_equal(actual, expected)
   
   # Check automate decision module output matches as well
