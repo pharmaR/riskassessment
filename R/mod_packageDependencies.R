@@ -19,6 +19,7 @@ packageDependenciesUI <- function(id) {
 #' @importFrom riskmetric pkg_ref assess_dependencies
 #' @importFrom purrr is_empty
 #' @importFrom deepdep plot_dependencies
+#' @importFrom tibble enframe
 #' 
 #' @keywords internal
 #' 
