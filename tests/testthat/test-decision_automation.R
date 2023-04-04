@@ -29,17 +29,26 @@ test_that("decision_automation works", {
   expected <- list(`Insignificant Risk` = c(0, 0.1), 
                    `Severe Risk` = c(0.7, 1))
   actual <- app$get_value(export = "automate-auto_decision")
- 
+  app$wait_for_idle()
+  
+  cat("\n", "test-decision_automation","\n")
+  cat("actual:", unlist(actual), "\n")
+  cat("expected:", unlist(expected), "\n")
+  
   expect_equal(actual, expected)
   
   # Check automate decision module output matches as well
   actual <- app$get_value(export = "auto_decision_output")
+  app$wait_for_idle()
+  
   expect_equal(actual, expected)
   
   # Check that inputs got set correctly on initialization
   # Check group checkbox
   expected <- c("Insignificant Risk", "Severe Risk")
   actual <- app$get_value(input = "automate-auto_include")
+  app$wait_for_idle()
+  
   expect_equal(actual, expected)
   
   # Check "Insignificant Risk" input
