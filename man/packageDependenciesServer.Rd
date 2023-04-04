@@ -4,18 +4,18 @@
 \alias{packageDependenciesServer}
 \title{Package Dependencies module's server logic}
 \usage{
-packageDependenciesServer(id, selected_pkg, maint_metrics, user, parent)
+packageDependenciesServer(id, selected_pkg, user, parent)
 }
 \arguments{
 \item{id}{a module id name}
 
 \item{selected_pkg}{placeholder}
 
-\item{maint_metrics}{placeholder}
-
 \item{user}{placeholder}
 
 \item{parent}{the parent (calling module) session information}
+
+\item{maint_metrics}{placeholder}
 }
 \description{
 Package Dependencies module's server logic
