@@ -19,7 +19,6 @@ packageDependenciesUI <- function(id) {
 #' @importFrom riskmetric pkg_ref assess_dependencies
 #' @importFrom purrr is_empty
 #' @importFrom deepdep plot_dependencies
-#' @importFrom tibble enframe
 #' 
 #' @keywords internal
 #' 
@@ -44,9 +43,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
        } 
        
        revDependencyData <- function(pkg_name) {
-         data <- riskmetric::pkg_ref(pkg_name) %>%  
-           riskmetric::assess_reverse_dependencies() %>% 
-           tibble::enframe(., name = "num", value = "name") %>% 
+         data <- data.frame("name" = riskmetric::pkg_ref(pkg_name) %>%  
+                              riskmetric::assess_reverse_dependencies()) %>% 
            mutate(version = NA_character_, type = "Suggests",
                   origin = pkg_name, origin_level = 0L, dest_level = 1L
            ) %>% 
