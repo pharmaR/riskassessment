@@ -52,10 +52,14 @@ reviewer to:
 ### Echo-ing `{riskmetric}`’s Approach to Validation <a href='https://pharmar.github.io/riskmetric/'><img src="man/figures/hex-riskmetric-aspconfig.png" align="right" height="172" style="float:right; height:172px;"/></a>
 
 Validation can serve as an umbrella for various terms, and admittedly,
-companies will diverge on what is the correct approach to validation.
-The validation approach we followed is based on the philosophy of the
-white paper set forth by the R Validation Hub: [White
-Paper](https://www.pharmar.org/white-paper/).
+companies will diverge on what may be the “correct approach”. The
+`riskassessment` app is built on a `rismetric`-foundation, whose
+deverlopers follow the validation philosophy proposed in [this white
+paper](https://www.pharmar.org/white-paper/) published by the R
+Validation Hub. As such, the scope of `riskassessment` and `riskmetric`
+are only designed to support decision making from that view point. The
+full robustness and reliability of any software may (and likely will)
+require deeper inspection by the reviewing party.
 
 *Note:* Development of both `riskassessment` and `riskmetric` were made
 possible thanks to the [R Validation
