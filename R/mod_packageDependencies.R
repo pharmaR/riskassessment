@@ -26,10 +26,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
   moduleServer(id, function(input, output, session) {
        ns <- NS(id)
        
-       getDependencyTree <- function(pack, i = -1) {
-         if(i == -1) cat(pack, "\n")
+       getDependencyTree <- function(pkg_name, packages, i = -1) {
+         if(i == -1) cat(pkg_name, "\n")
          i <- i + 1
-         packages <- riskmetric::pkg_ref(pack) %>%  riskmetric::assess_dependencies()  
+         #packages <- riskmetric::pkg_ref(pack) %>%  riskmetric::assess_dependencies()  
          if (purrr::is_empty(packages)) {
            return() }
          else {packages <- pull(packages, package)
@@ -56,8 +56,15 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
          return(data)
        }
        
-       revdata <- reactive(revDependencyData(selected_pkg$name()))
-       
+       depends <- reactive({
+         riskmetric::pkg_ref(selected_pkg$name()) %>% 
+           riskmetric::assess_dependencies() 
+       })
+       revdeps <- reactive({
+         riskmetric::pkg_ref(selected_pkg$name()) %>% 
+           riskmetric::assess_reverse_dependencies() 
+       })
+
    # Render Output UI for Package Dependencies.
     output$package_dependencies_ui <- renderUI({
 
@@ -70,26 +77,36 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
           
           tagList(
             br(),
-            h4("Package Dependencies", style = "text-align: left;"),
+            h4(glue::glue("Package Dependencies: {nrow(depends())}"), style = "text-align: left;"),
             br(), br(),
             fluidRow(
             column(width = 2,
-            renderPrint(getDependencyTree(selected_pkg$name())),
+            renderPrint(getDependencyTree(selected_pkg$name(), depends())),
             ),
-            column(width = 6,
+            column(width = 4,
             renderPlot(
               deepdep::plot_dependencies(selected_pkg$name(), show_version = TRUE)
              )
+            ),
+            column(width = 4,
+                   renderPlot(
+                     renv:::graph(selected_pkg$name())
+                   )
             )
            ),
            br(),
-           h4("Reverse Dependencies", style = "text-align: left;"),
+           h4(glue::glue("Reverse Dependencies: {length(revdeps())}"), style = "text-align: left;"),
            br(), br(),
            fluidRow(column(width = 8,
-           renderPlot(
-             deepdep::plot_dependencies(revdata())
+           renderPrint(
+               revdeps() %>% sort()
             )
-           )
+           ),
+           column(width = 4,
+                  # renderPrint(
+                  #   pak::pkg_deps_tree(selected_pkg$name())
+                  # )
+                  )
           )
          )
         )
