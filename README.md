@@ -53,7 +53,7 @@ reviewer to:
 
 Validation can serve as an umbrella for various terms, and admittedly,
 companies will diverge on what may be the “correct approach”. The
-`riskassessment` app is built on a `rismetric`-foundation, whose
+`riskassessment` app is built on a `riskmetric`-foundation, whose
 developers follow the validation philosophy proposed in [this white
 paper](https://www.pharmar.org/white-paper/) published by the R
 Validation Hub. As such, the scope of `riskassessment` and `riskmetric`
