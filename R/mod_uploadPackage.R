@@ -225,14 +225,10 @@ uploadPackageServer <- function(id, user) {
       invalidateLater(60*1000)
       
       withProgress({
-        good_urls <- purrr::map_lgl(checking_urls$url_lst, 
-                                    function(.x) {
-                                      print("\nobserve: ")
-                                      print("checking_urls$url_lst: ")
-                                      print(.x)
-                                      try(curlGetHeaders(.x, verify = FALSE), silent = FALSE) %>%
-                                        {class(.) != "try-error" && attr(., "status") != 404}
-                                      })
+        good_urls <- purrr::map_lgl(checking_urls$url_lst, function(.x) {
+            status <- try(httr::http_status(httr::GET(.x)), silent = TRUE)
+            class(status) != "try-error" && status$category == "Success"
+          })
         Sys.sleep(.5)
       }, message = "Checking URLs")
       
