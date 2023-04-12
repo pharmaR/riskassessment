@@ -16,7 +16,7 @@ $run_dev.*
 ^rsconnect$
 ^((?!/).)*sqlite$
 ^auto_decisions\.json$
-
+^library*$
 _\.new\.png$
 ^_pkgdown\.yml$
 ^pkgdown$
