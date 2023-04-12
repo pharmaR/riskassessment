@@ -22,7 +22,7 @@ uploadPackageUI <- function(id) {
           id = "type-package-group",
           style = "display: flex;",
           selectizeInput(NS(id, "pkg_lst"), "Type Package Name(s)", choices = NULL, multiple = TRUE, 
-                         options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
+                         options = list(showAddOptionOnCreate = FALSE, 
                                         onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_cran"), '", "load", {priority: "event"})}')))),
           actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
                        style = 'height: calc(1.5em + 1.5rem + 2px)'),
@@ -71,6 +71,12 @@ uploadPackageUI <- function(id) {
 uploadPackageServer <- function(id, user) {
   moduleServer(id, function(input, output, session) {
     
+    assessment_lib <- do.call(reactiveValues, get_golem_config("assessment_lib", file = app_sys("db-config.yml")))
+    
+    observeEvent(assessment_lib$location, {
+      assessment_lib$packages <- list.files(assessment_lib$location)
+    })
+    
     # Determine which guide to use for IntroJS.
     upload_pkg_txt <- reactive({
       req(uploaded_pkgs())
@@ -85,6 +91,12 @@ uploadPackageServer <- function(id, user) {
     })
     
     auto_list <- mod_decision_automation_server("automate", user)
+    pkg_lst <- reactiveValues()
+    
+    observeEvent(assessment_lib$packages, {
+      req(assessment_lib$packages)
+      pkg_lst[["Library"]] <- assessment_lib$packages
+    })
 
     cran_pkgs <- reactiveVal()
     
@@ -93,11 +105,16 @@ uploadPackageServer <- function(id, user) {
         if (isTRUE(getOption("shiny.testmode"))) {
           cran_pkgs(test_pkg_lst)
         } else {
-          cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+          cran_pkgs(as.data.frame(available.packages("https://cran.rstudio.com/src/contrib")[,c("Package", "Version")]))
         }
       }
     },
     once = TRUE)
+    
+    observeEvent(cran_pkgs(), {
+      if (isTRUE(assessment_lib$packages))
+        pkg_lst[["CRAN"]] <- cran_pkgs()[,"Package"]
+    })
     
     pkgs_have <- reactiveVal()
     
@@ -105,9 +122,11 @@ uploadPackageServer <- function(id, user) {
       pkgs_have(dbSelect("select name from package")[,1])
     })
     
-    observeEvent(cran_pkgs(), {
-      req(cran_pkgs())
-      updateSelectizeInput(session, "pkg_lst", choices = cran_pkgs(), server = TRUE)
+    observeEvent(reactiveValuesToList(pkg_lst), {
+      choice_lst <- reactiveValuesToList(pkg_lst) %>%
+        purrr::imap(~ setNames(paste(.y, .x, sep = " - "), .x))
+      choice_lst <- choice_lst[sort(names(choice_lst), decreasing = TRUE)]
+      updateSelectizeInput(session, "pkg_lst", choices = choice_lst, server = TRUE)
     })
     
     observeEvent(pkgs_have(), {
@@ -168,12 +187,20 @@ uploadPackageServer <- function(id, user) {
     observeEvent(input$add_pkgs, {
       req(input$pkg_lst)
       
-      np <- length(input$pkg_lst)
       uploaded_packages <-
-        dplyr::tibble(
-          package = input$pkg_lst,
-          version = rep('0.0.0', np),
-          status = rep('', np)
+        purrr::map_dfr(
+          input$pkg_lst,
+          function(.x) {
+            pkg_info <- stringr::str_split(.x, " - ", simplify = TRUE)
+            dplyr::tibble(
+              package = pkg_info[2],
+              version = switch(pkg_info[1], 
+                               CRAN = with(cran_pkgs(), Version[Package == pkg_info[2]]),
+                               Library = as.character(packageVersion(pkg_info[2], lib.loc = assessment_lib$location)),
+                               NA_character_),
+              status = ''
+            )
+          }
         )
       
       updateSelectizeInput(session, "pkg_lst", selected = "")
@@ -285,7 +312,7 @@ uploadPackageServer <- function(id, user) {
         if (isTRUE(getOption("shiny.testmode"))) {
           cran_pkgs(test_pkg_lst)
         } else {
-          cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+          cran_pkgs(as.data.frame(available.packages("https://cran.rstudio.com/src/contrib")[,c("Package", "Version")]))
         }
       }
       
