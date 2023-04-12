@@ -1,6 +1,10 @@
 default:
   assessment_db: database.sqlite
   credential_db: credentials.sqlite
+  assessment_lib:
+    location: ./library
+    editable: true
+    required: false
   decision_categories:
     - Low Risk
     - Medium Risk
