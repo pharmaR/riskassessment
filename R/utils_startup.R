@@ -168,7 +168,7 @@ create_credentials_dev_db <- function(db_name){
 #' @importFrom loggit set_logfile
 #'
 #' @export
-initialize_raa <- function(assess_db, cred_db, decision_cat) {
+initialize_raa <- function(assess_db, cred_db, assess_lib, decision_cat) {
   
   assessment_db <- if (missing(assess_db)) golem::get_golem_options('assessment_db_name') else assess_db
   credentials_db <- if (missing(cred_db)) golem::get_golem_options('credentials_db_name') else cred_db
@@ -177,6 +177,9 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
     stop("assess_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
   if (is.null(credentials_db) || typeof(credentials_db) != "character" || length(credentials_db) != 1 || !grepl("\\.sqlite$", credentials_db))
     stop("cred_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
+  
+  assessment_lib <- if (missing(assess_lib)) get_golem_config("assessment_lib", file = app_sys("db-config.yml"))$location else assess_lib
+  if (!dir.exists(assessment_lib)) dir.create(assessment_lib)
   
   # Start logging info.
   if (isRunning()) loggit::set_logfile("loggit.json")
