@@ -15,6 +15,38 @@ showHelperMessage <- function(message = "Please select a package"){
         padding-top: 50px;")
 }
 
+check_for_package <- function(package, version, lib.loc, quiet = FALSE) {
+  if (missing(package) || missing(version))
+    stop("You must provide a package and version to check for in R package library.")
+
+  if (missing(lib.loc))
+    lib.loc <- .libPaths()[1L]
+
+  pkg_check <- find.package(package = package, lib.loc = lib.loc, quiet = quiet)
+  if (length(pkg_check) == 0) {
+    if (!quiet) stop(glue::glue("The package {package} is not present in '{lib.loc}'"))
+    return(FALSE)
+  }
+
+  ver_check <- as.character(packageVersion(pkg = package, lib.loc = lib.loc))
+  if (ver_check != version) {
+    if (!quiet) stop(glue::glue("Provided version does not match library version '{ver_check}'"))
+    return(FALSE)
+  }
+
+  TRUE
+}
+
+install_package <- function(package, version, lib.loc) {
+  if (missing(lib.loc))
+    lib.loc <- .libPaths()[1L]
+
+  if (missing(version) || is.null(version)) {
+    utils::install.packages(pkgs = package, lib = lib.loc, dependencies = FALSE)
+  } else {
+    devtools::install_version(package = package, version = version, dependencies = FALSE, lib = lib.loc)
+  }
+}
 
 #' Get the package general information from CRAN/local
 #' 
