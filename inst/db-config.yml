@@ -6,6 +6,13 @@ default:
       - admin
       - lead
       - reviewer
+    privileges:
+      admin: admin
+      reweighting: lead
+      final_decision: lead
+      revert_decision: lead
+      add_package: [lead, reviewer]
+      delete_package: lead
   decision_categories:
     - Low Risk
     - Medium Risk
