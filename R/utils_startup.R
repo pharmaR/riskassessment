@@ -81,6 +81,7 @@ create_credentials_db <- function(db_name){
     # password will automatically be hashed
     admin = TRUE,
     expire = as.character(Sys.Date()),
+    role = '',
     stringsAsFactors = FALSE
   )
   
@@ -141,6 +142,7 @@ create_credentials_dev_db <- function(db_name){
     password = c("cxk1QEMYSpYcrNB", "Bt0dHK383lLP1NM"),
     # password will automatically be hashed
     admin = c(TRUE, FALSE),
+    role = c("admin", "reviewer"),
     stringsAsFactors = FALSE
   )
   
