@@ -1,6 +1,7 @@
 default:
   assessment_db: database.sqlite
   credential_db: credentials.sqlite
+  loggit_json: loggit.json
   decision_categories:
     - Low Risk
     - Medium Risk
