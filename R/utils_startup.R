@@ -179,7 +179,8 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
     stop("cred_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
   
   # Start logging info.
-  if (isRunning()) loggit::set_logfile("loggit.json")
+  loggit_file <- get_golem_config("loggit_json", file = app_sys("db-config.yml"))
+  if (isRunning()) loggit::set_logfile(loggit_file)
   
   # https://github.com/rstudio/fontawesome/issues/99
   # Here, we make sure user has a functional version of fontawesome
