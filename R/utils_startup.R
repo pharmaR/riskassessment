@@ -170,6 +170,14 @@ create_credentials_dev_db <- function(db_name){
 #' @export
 initialize_raa <- function(assess_db, cred_db, decision_cat) {
   
+  db_config <- get_golem_config(NULL, file = app_sys("db-config.yml"))
+  used_configs <- c("assessment_db", "credential_db", "decisions")
+  if (any(!names(db_config) %in% used_configs)) {
+    names(db_config) %>%
+      `[`(!. %in% used_configs) %>%
+      purrr::walk(~ warning(glue::glue("Unknown database configuration '{.x}' found in db-config.yml")))
+  }
+  
   assessment_db <- if (missing(assess_db)) golem::get_golem_options('assessment_db_name') else assess_db
   credentials_db <- if (missing(cred_db)) golem::get_golem_options('credentials_db_name') else cred_db
   
@@ -198,18 +206,22 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
   check_dec_cat(decision_categories)
   if (is.null(decisions)) {
     suppressMessages(dbUpdate(paste(scan(app_sys("sql_queries", "create_decision_table.sql"), sep = "\n", what = "character"), collapse = ""), assessment_db))
-    dec_lst <- get_golem_config('decision_rules', file = app_sys("db-config.yml"))
-    if (!is.null(dec_lst)) check_dec_rules(decision_categories, dec_lst)
+    dec_lst <- get_golem_config('decisions', file = app_sys("db-config.yml"))
+    if (!is.null(dec_lst) && !is.null(dec_lst$rules)) check_dec_rules(decision_categories, dec_lst$rules)
     dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', decision_categories, '\\')', collapse = ', ')}"), assessment_db)
-    if (!is.null(dec_lst)) {
-      purrr::iwalk(dec_lst, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'")))
+    if (!is.null(dec_lst) && !is.null(dec_lst$rules)) {
+      purrr::iwalk(dec_lst$rules, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'")))
+    } else {
+      message("No decision rules applied from db-config.yml")
     }
   } else if (nrow(decisions) == 0) {
-    dec_lst <- get_golem_config('decision_rules', file = app_sys("db-config.yml"))
-    if (!is.null(dec_lst)) check_dec_rules(decision_categories, dec_lst)
+    dec_lst <- get_golem_config('decisions', file = app_sys("db-config.yml"))
+    if (!is.null(dec_lst) && !is.null(dec_lst$rules)) check_dec_rules(decision_categories, dec_lst$rules)
     dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', decision_categories, '\\')', collapse = ', ')}"), assessment_db)
-    if (!is.null(dec_lst)) {
-      purrr::iwalk(dec_lst, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'")))
+    if (!is.null(dec_lst) && !is.null(dec_lst$rules)) {
+      purrr::iwalk(dec_lst$rules, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'")))
+    } else {
+      message("No decision rules applied from db-config.yml")
     }
   } else if (!all.equal(decisions$decision, decision_categories)) {
     stop("The decision categories in the configuration file do not match those in the assessment database.")
