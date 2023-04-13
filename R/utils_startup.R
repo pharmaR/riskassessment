@@ -240,6 +240,7 @@ add_tags <- function(ui, ...) {
     
     if (identical(admin, "true")) {
       ui <- tagList(ui, 
+                    tags$head(favicon(), bundle_resources(app_sys("app/www"), "riskassessment", "shinymanager_resources")),
                     tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';")),
                     tags$script(HTML("var oldfab = Array.prototype.slice.call(document.getElementsByClassName('mfb-component--br'), 0);
                              for (var i = 0; i < oldfab.length; ++i) {
@@ -290,7 +291,7 @@ add_shinymanager_auth <- function(app_ui, app_ver, login_note) {
   if (!isTRUE(getOption("shiny.testmode"))) {
   add_tags(shinymanager::secure_app(app_ui,
     tags_top = tags$div(
-      tags$head(tags$style(HTML(readLines(system.file("app", "www", "css", "login_screen.css", package = "riskassessment"))))),
+      tags$head(favicon(), bundle_resources(app_sys("app/www"), "riskassessment", "shinymanager_resources")),
       tags$head(if (isFALSE(getOption("golem.app.prod")) && !is.null(golem::get_golem_options("pre_auth_user"))) {
         tags$script(HTML(glue::glue("$(document).on('shiny:connected', function () {{
           Shiny.setInputValue('auth-user_id', '{golem::get_golem_options('login_creds')$user_id}');
