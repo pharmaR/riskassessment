@@ -82,7 +82,10 @@ app_server <- function(input, output, session) {
                                  let roleValue = roleEl.val();
                                  roleEl.replaceWith('<select id=\"{.x}-role\" class=\"' + roleClass + '\">{role_opts}</select>')
                                  if (roleValue != '')
-                                 $('#{.x}-role').val(roleValue);
+                                   $('#{.x}-role').val(roleValue);
+                                 document.getElementById('{.x}-role').addEventListener('change', function() {{
+                                   Shiny.setInputValue('{.x}-role', $(this).val());
+                                 }})
                                  }})"))
                 }, priority = -1)
               })
