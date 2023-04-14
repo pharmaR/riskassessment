@@ -29,11 +29,11 @@ test_that("decision_automation works", {
   expected <- list(`Insignificant Risk` = c(0, 0.1), 
                    `Severe Risk` = c(0.7, 1))
   actual <- app$get_value(export = "automate-auto_decision")
-  expect_equal(actual, expected)
+  expect_equal(actual[sort(names(actual))], expected[sort(names(expected))])
   
   # Check automate decision module output matches as well
   actual <- app$get_value(export = "auto_decision_output")
-  expect_equal(actual, expected)
+  expect_equal(actual[sort(names(actual))], expected[sort(names(expected))])
   
   # Check that inputs got set correctly on initialization
   # Check group checkbox
@@ -74,7 +74,7 @@ test_that("decision_automation works", {
   expected <- list(`Insignificant Risk` = c(0, 0.1), 
                    `Moderate Risk` = c(0.3, 0.45))
   actual <- app$get_value(export = "auto_decision_output")
-  expect_equal(actual, expected)
+  expect_equal(actual[sort(names(actual))], expected[sort(names(expected))])
   
   # Check that sliders are working correctly
   app$set_inputs(`automate-auto_include` = c("Insignificant Risk", "Moderate Risk", "Severe Risk"),
@@ -84,14 +84,13 @@ test_that("decision_automation works", {
   # Check that Moderate Risk got adjusted
   expected <- list(`Insignificant Risk` = c(0, 0.1), `Severe Risk` = c(0.4, 1), `Moderate Risk` = c(0.3, 0.4))
   actual <- app$get_value(export = "automate-auto_decision")
-  expect_equal(actual, expected)
+  expect_equal(actual[sort(names(actual))], expected[sort(names(expected))])
   
   # Check that reset works correctly
   app$click(input = "automate-auto_reset")
   app$wait_for_idle()
   expected <- list(`Insignificant Risk` = c(0, 0.1), `Severe Risk` = NULL, `Moderate Risk` = c(0.3, 0.45))
   actual <- app$get_value(export = "automate-auto_decision")
-  expect_equal(sort(names(actual)), sort(names(expected)))
   expect_equal(actual[sort(names(actual))], expected[sort(names(expected))])
   
 })
