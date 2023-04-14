@@ -91,6 +91,7 @@ test_that("decision_automation works", {
   app$wait_for_idle()
   expected <- list(`Insignificant Risk` = c(0, 0.1), `Severe Risk` = NULL, `Moderate Risk` = c(0.3, 0.45))
   actual <- app$get_value(export = "automate-auto_decision")
-  expect_equal(sort(actual), sort(expected))
+  expect_equal(sort(names(actual)), sort(names(expected)))
+  expect_equal(actual[names(actual)], expected[names(expected)])
   
 })
