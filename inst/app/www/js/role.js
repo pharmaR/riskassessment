@@ -8,7 +8,7 @@ $(document).on('shiny:connected', function() {
     let roleEl = $(`#${role_lst.id}-role`);
     let roleClass = roleEl.attr('class');
     let roleValue = roleEl.val();
-    let role_opts = `${role_lst.role_opts.map(createOption).join("")}`
+    let role_opts = ($(`#${role_lst.id}-admin`).is(':checked')) ? `${role_lst.role_opts.admin.map(createOption).join("")}` : `${role_lst.role_opts.nonadmin.map(createOption).join("")}`;
     roleEl.replaceWith(`<select id="${role_lst.id}-role" class="${roleClass}">${role_opts}</select>`)
     if (roleValue != '')
      $(`#${role_lst.id}-role`).val(roleValue);
@@ -17,9 +17,9 @@ $(document).on('shiny:connected', function() {
     }})
     $(`#${role_lst.id}-admin`).change(function() {{
     if ($(this).is(':checked')) {{
-    console.log('TRUE')
+      $(`#${role_lst.id}-role`).html(`${role_lst.role_opts.admin.map(createOption).join("")}`);
     }} else {{
-    console.log('FALSE')
+      $(`#${role_lst.id}-role`).html(`${role_lst.role_opts.nonadmin.map(createOption).join("")}`);
     }}
     }})
   })

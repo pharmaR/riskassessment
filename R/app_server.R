@@ -74,7 +74,7 @@ app_server <- function(input, output, session) {
                 y <- ifelse(.x == "admin-edit_mult_user", "admin-edit_selected_users", .x)
                 observeEvent(input[[y]], {
                   shinyjs::runjs(paste0("document.getElementById('", .x, c("-start-", "-expire-", "-user-"), "label').innerHTML = ", c("'Start Date'", "'Expiration Date'", "'User Name'"), collapse = ";\n"))
-                  role_lst <- list(id = .x, role_opts = as.list(unlist(role_opts, use.names = FALSE)))
+                  role_lst <- list(id = .x, role_opts = role_opts)
                   session$sendCustomMessage("roles", role_lst)
                 }, priority = -1)
               })
