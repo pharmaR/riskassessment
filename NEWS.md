@@ -4,6 +4,7 @@
 * Added decision categories as an option in the database configuration file (#459)
 * Added decision automation rules as an option in the database configuration file (#459)
 * Added Decision-related columns to the database view
+* Moved log file designation to configuration file (#463)
 
 # riskassessment 0.1.1
 
