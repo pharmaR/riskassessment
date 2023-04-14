@@ -50,6 +50,13 @@ check_dec_rules <- function(decision_categories, decisions) {
     stop("Rules for the last decision category must have an upper bound of 1")
 }
 
+#' Check credential configuration file
+#' 
+#' Checks that the credentials design supplied by the configuration file are valid
+#' 
+#' @param credentials_lst A list containing the design of the credentials database and privileges
+#' 
+#' @noRd
 check_credentials <- function(credentials_lst) {
   if (is.null(credentials_lst) )
     stop("No credentials configuration found in db-config.yml")  
