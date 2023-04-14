@@ -138,11 +138,11 @@ create_credentials_dev_db <- function(db_name){
   
   # Init the credentials table for credentials database
   credentials <- data.frame(
-    user = c("admin", "nonadmin"),
-    password = c("cxk1QEMYSpYcrNB", "Bt0dHK383lLP1NM"),
+    user = c("admin", "lead", "reviewer"),
+    password = c("cxk1QEMYSpYcrNB", "Bt0dHK383lLP1NM", "tgh29f8SH0UllXJ"),
     # password will automatically be hashed
-    admin = c(TRUE, FALSE),
-    role = c("admin", "reviewer"),
+    admin = c(TRUE, FALSE, FALSE),
+    role = c("admin", "lead", "reviewer"),
     stringsAsFactors = FALSE
   )
   
