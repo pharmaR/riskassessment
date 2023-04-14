@@ -73,20 +73,9 @@ app_server <- function(input, output, session) {
                   shinyjs::runjs(paste0("document.getElementById('", .x, c("-start-", "-expire-", "-user-"), "label').innerHTML = ", c("'Start Date'", "'Expiration Date'", "'User Name'"), collapse = ";\n"))
                   role_opts <- 
                     get_golem_config("credentials", file = app_sys("db-config.yml")) %>%
-                    `[[`("roles") %>%
-                    purrr::map_chr(~ tags$option(.x) |> as.character()) %>% 
-                    paste(collapse = "")
-                  shinyjs::runjs(glue::glue("$(function() {{
-                                 let roleEl = $('#{.x}-role');
-                                 let roleClass = roleEl.attr('class');
-                                 let roleValue = roleEl.val();
-                                 roleEl.replaceWith('<select id=\"{.x}-role\" class=\"' + roleClass + '\">{role_opts}</select>')
-                                 if (roleValue != '')
-                                   $('#{.x}-role').val(roleValue);
-                                 document.getElementById('{.x}-role').addEventListener('change', function() {{
-                                   Shiny.setInputValue('{.x}-role', $(this).val());
-                                 }})
-                                 }})"))
+                    `[[`("roles")
+                  role_lst <- list(id = .x, role_opts = as.list(role_opts))
+                  session$sendCustomMessage("roles", role_lst)
                 }, priority = -1)
               })
   
