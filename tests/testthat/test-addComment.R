@@ -13,23 +13,18 @@ test_that("Comments can be added via the addComment module", {
     test_db_loc,
     app_db_loc
   )
+  
+  # set up new app driver object
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 600*1000)
 
   # confirm no comments exist in the database
   con <- DBI::dbConnect(RSQLite::SQLite(), app_db_loc)
-  
-  on.exit({
-    DBI::dbDisconnect(con)
-    unlink(app_db_loc)
-  })
 
   comments <- DBI::dbGetQuery(con, "select * from comments")
   expect_equal(
     nrow(comments),
     0
   )
-  
-  # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 600*1000)
 
   # select dplyr package
   app$set_inputs(`sidebar-select_pkg` = "dplyr")
