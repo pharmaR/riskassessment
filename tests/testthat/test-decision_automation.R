@@ -23,6 +23,7 @@ test_that("decision_automation works", {
                                   row.names = c(NA, -2L))
   actual <- app$get_value(export = "automate-datatable")
   expect_equal(actual, expected)
+  app$wait_for_idle()
   
   # Check module automate decision reactive
   expected <- list(`Insignificant Risk` = c(0, 0.1), 
