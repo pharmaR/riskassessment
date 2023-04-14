@@ -61,7 +61,7 @@ check_credentials <- function(credentials_lst) {
   if (is.null(credentials_lst) )
     stop("No credentials configuration found in db-config.yml")  
   
-  if (all(!names(credentials_lst) %in% c("roles", "privileges")))
+  if (!all(c("roles", "privileges") %in% names(credentials_lst)))
     stop("Both 'roles' and 'privileges' must be present in credentials configuration")
   
   if(length(credentials_lst$roles) != length(unique(credentials_lst$roles)))
