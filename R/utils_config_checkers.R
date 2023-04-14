@@ -49,3 +49,21 @@ check_dec_rules <- function(decision_categories, decisions) {
   if (decision_categories[length(decision_categories)] %in% names(decisions) & unlist(decisions[[decision_categories[length(decision_categories)]]])[2] != 1)
     stop("Rules for the last decision category must have an upper bound of 1")
 }
+
+check_credentials <- function(credentials_lst) {
+  if (is.null(credentials_lst) )
+    stop("No credentials configuration found in db-config.yml")  
+  
+  if (all(!names(credentials_lst) %in% c("roles", "privileges")))
+    stop("Both 'roles' and 'privileges' must be present in credentials configuration")
+  
+  if(length(credentials_lst$roles) != length(unique(credentials_lst$roles)))
+    stop("The roles must be unique")
+  
+  if (is.null(credentials_lst$privileges[["admin"]]))
+    stop("The roles corresponding to 'admin' privileges must be specified")
+  
+  privileges_roles <- unique(unlist(credentials_lst$privileges, use.names = FALSE))
+  if (!all(privileges_roles %in% credentials_lst$roles))
+    stop(glue::glue("The following role(s) designated under privileges is(are) not present in the 'roles' configuration: {paste(privileges_roles[!privileges_roles %in% credentials_lst$roles], collapse = ', ')}"))
+}
