@@ -3,6 +3,7 @@
 * Implemented usage of database configuration file instead of passing arguments in `run_app()` (#459)
 * Added decision categories as an option in the database configuration file (#459)
 * Added decision automation rules as an option in the database configuration file (#459)
+* Fix bug preventing icons from displaying on admin tab (#427)
 * Added Decision-related columns to the database view
 * Moved log file designation to configuration file (#463)
 
