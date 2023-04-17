@@ -179,11 +179,13 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
   }
   
   assessment_db <- if (missing(assess_db)) golem::get_golem_options('assessment_db_name') else assess_db
-  credentials_db <- if (missing(cred_db)) golem::get_golem_options('credentials_db_name') else cred_db
+  credentials_db <- NA_character_
+  if (!isTRUE(getOption("shiny.testmode")))
+    credentials_db <- if (missing(cred_db)) golem::get_golem_options('credentials_db_name') else cred_db
   
   if (is.null(assessment_db) || typeof(assessment_db) != "character" || length(assessment_db) != 1 || !grepl("\\.sqlite$", assessment_db))
     stop("assess_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
-  if (is.null(credentials_db) || typeof(credentials_db) != "character" || length(credentials_db) != 1 || !grepl("\\.sqlite$", credentials_db))
+  if (!isTRUE(getOption("shiny.testmode")) && (is.null(credentials_db) || typeof(credentials_db) != "character" || length(credentials_db) != 1 || !grepl("\\.sqlite$", credentials_db)))
     stop("cred_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
   
   # Start logging info.
@@ -194,11 +196,11 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
   fa_v <- packageVersion("fontawesome")
   if(fa_v == '0.4.0') warning(glue::glue("HTML reports will not render with {{fontawesome}} v0.4.0. You currently have v{fa_v} installed. If the report download failed, please install a stable version. We recommend v0.5.0 or higher."))
   
-  if (isFALSE(getOption("golem.app.prod")) && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(credentials_db)) create_credentials_dev_db(credentials_db)
+  if (!isTRUE(getOption("shiny.testmode")) && isFALSE(getOption("golem.app.prod")) && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(credentials_db)) create_credentials_dev_db(credentials_db)
   
   # Create package db & credentials db if it doesn't exist yet.
   if(!file.exists(assessment_db)) create_db(assessment_db)
-  if(!file.exists(credentials_db)) create_credentials_db(credentials_db)
+  if(!isTRUE(getOption("shiny.testmode")) && !file.exists(credentials_db)) create_credentials_db(credentials_db)
   
   decision_categories <- if (missing(decision_cat)) golem::get_golem_options('decision_categories') else decision_cat
   decisions <- suppressMessages(dbSelect("SELECT decision FROM decision_categories", assessment_db))
