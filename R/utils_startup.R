@@ -189,7 +189,7 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
     stop("cred_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
   
   # Start logging info.
-  if (isRunning()) loggit::set_logfile("loggit.json")
+  if (!isTRUE(getOption("shiny.testmode")) && isRunning()) loggit::set_logfile("loggit.json")
   
   # https://github.com/rstudio/fontawesome/issues/99
   # Here, we make sure user has a functional version of fontawesome
