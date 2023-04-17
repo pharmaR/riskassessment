@@ -61,6 +61,7 @@ Imports:
     shinyWidgets,
     stringr
 Suggests: 
+    chromote,
     fontawesome,
     kableExtra,
     knitr,
