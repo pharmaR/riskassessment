@@ -6,13 +6,4 @@ library(shinytest2)
 options(shinytest2.load_timeout = 30*1000)
 options(shinytest2.timeout = 30*1000)
 
-chromote::set_chrome_args(
-  c(
-    chromote::default_chrome_args(),
-    "--no-sandbox",
-    "--no--proxy-server",
-    "--remote-debugging-port=9222"
-  )
-)
-
 test_check("riskassessment")
