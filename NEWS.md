@@ -4,6 +4,7 @@
 * Added decision categories as an option in the database configuration file (#459)
 * Added decision automation rules as an option in the database configuration file (#459)
 * Added Decision-related columns to the database view
+* Fix bug preventing icons from displaying on admin tab (#427)
 * Added Package Dependencies tab, and two new cards to Maintenance Metrics (#261)
 
 # riskassessment 0.1.1
