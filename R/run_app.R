@@ -52,14 +52,16 @@ run_app <- function(
   if (!is.null(arg_lst$pre_auth_user)) {
     pre_auth_user <- arg_lst$pre_auth_user
     if (isTRUE(pre_auth_user) || pre_auth_user == "admin") {
-      credentials_db_name <- "credentials_dev.sqlite"
       login_creds <- list(user_id = "admin",
                           user_pwd = "cxk1QEMYSpYcrNB")
-    } else if (pre_auth_user == "nonadmin") {
-      credentials_db_name <- "credentials_dev.sqlite"
-      login_creds <- list(user_id = "nonadmin",
+    } else if (pre_auth_user == "lead") {
+      login_creds <- list(user_id = "lead",
                           user_pwd = "Bt0dHK383lLP1NM")
+    } else if (pre_auth_user == "reviewer") {
+      login_creds <- list(user_id = "reviewer",
+                          user_pwd = "tgh29f8SH0UllXJ")
     }
+    credentials_db_name <- "credentials_dev.sqlite"
   }
   }
   

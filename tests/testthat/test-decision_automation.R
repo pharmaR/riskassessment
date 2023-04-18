@@ -22,7 +22,7 @@ test_that("decision_automation works", {
                                   class = c("tbl_df", "tbl", "data.frame"), 
                                   row.names = c(NA, -2L))
   actual <- app$get_value(export = "automate-datatable")
-  
+
   expect_equal(actual, expected)
 
   # Check module automate decision reactive

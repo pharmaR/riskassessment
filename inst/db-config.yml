@@ -1,6 +1,19 @@
 default:
   assessment_db: database.sqlite
   credential_db: credentials.sqlite
+  loggit_json: loggit.json
+  credentials:
+    roles:
+      - admin
+      - lead
+      - reviewer
+    privileges:
+      admin: admin
+      reweighting: lead
+      final_decision: lead
+      revert_decision: lead
+      add_package: [lead, reviewer]
+      delete_package: lead
   decisions:
     categories:
       - Low Risk
