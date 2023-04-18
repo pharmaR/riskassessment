@@ -173,7 +173,7 @@ create_credentials_dev_db <- function(db_name){
 initialize_raa <- function(assess_db, cred_db, decision_cat) {
   
   db_config <- get_golem_config(NULL, file = app_sys("db-config.yml"))
-  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials")
+  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json")
   if (any(!names(db_config) %in% used_configs)) {
     names(db_config) %>%
       `[`(!. %in% used_configs) %>%
