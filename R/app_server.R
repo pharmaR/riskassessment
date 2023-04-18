@@ -12,8 +12,8 @@ app_server <- function(input, output, session) {
   user <- reactiveValues()
   user$metrics_reweighted <- 0
   credential_config <- get_golem_config("credentials", file = app_sys("db-config.yml"))
-  role_opts <- list(admin = as.list(credential_config $privileges$admin), 
-                    nonadmin = as.list(setdiff(credential_config$roles, credential_config $privileges$admin)))
+  role_opts <- list(admin = as.list(credential_config$privileges$admin), 
+                    nonadmin = as.list(setdiff(credential_config$roles, credential_config$privileges$admin)))
   
   
   # this skips authentication if the application is running in test mode
