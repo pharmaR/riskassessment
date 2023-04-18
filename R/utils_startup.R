@@ -81,6 +81,7 @@ create_credentials_db <- function(db_name){
     # password will automatically be hashed
     admin = TRUE,
     expire = as.character(Sys.Date()),
+    role = '',
     stringsAsFactors = FALSE
   )
   
@@ -137,10 +138,11 @@ create_credentials_dev_db <- function(db_name){
   
   # Init the credentials table for credentials database
   credentials <- data.frame(
-    user = c("admin", "nonadmin"),
-    password = c("cxk1QEMYSpYcrNB", "Bt0dHK383lLP1NM"),
+    user = c("admin", "lead", "reviewer"),
+    password = c("cxk1QEMYSpYcrNB", "Bt0dHK383lLP1NM", "tgh29f8SH0UllXJ"),
     # password will automatically be hashed
-    admin = c(TRUE, FALSE),
+    admin = c(TRUE, FALSE, FALSE),
+    role = c("admin", "lead", "reviewer"),
     stringsAsFactors = FALSE
   )
   
@@ -171,7 +173,7 @@ create_credentials_dev_db <- function(db_name){
 initialize_raa <- function(assess_db, cred_db, decision_cat) {
   
   db_config <- get_golem_config(NULL, file = app_sys("db-config.yml"))
-  used_configs <- c("assessment_db", "credential_db", "decisions")
+  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json")
   if (any(!names(db_config) %in% used_configs)) {
     names(db_config) %>%
       `[`(!. %in% used_configs) %>%
@@ -189,15 +191,18 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
     stop("cred_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
   
   # Start logging info.
-  if (!isTRUE(getOption("shiny.testmode")) && isRunning()) loggit::set_logfile("loggit.json")
-  
+  loggit_file <- get_golem_config("loggit_json", file = app_sys("db-config.yml"))
+  if (!isTRUE(getOption("shiny.testmode")) && isRunning()) loggit::set_logfile(loggit_file)
+
   # https://github.com/rstudio/fontawesome/issues/99
   # Here, we make sure user has a functional version of fontawesome
   fa_v <- packageVersion("fontawesome")
   if(fa_v == '0.4.0') warning(glue::glue("HTML reports will not render with {{fontawesome}} v0.4.0. You currently have v{fa_v} installed. If the report download failed, please install a stable version. We recommend v0.5.0 or higher."))
   
+  check_credentials(db_config[["credentials"]])
+
   if (!isTRUE(getOption("shiny.testmode")) && isFALSE(getOption("golem.app.prod")) && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(credentials_db)) create_credentials_dev_db(credentials_db)
-  
+
   # Create package db & credentials db if it doesn't exist yet.
   if(!file.exists(assessment_db)) create_db(assessment_db)
   if(!isTRUE(getOption("shiny.testmode")) && !file.exists(credentials_db)) create_credentials_db(credentials_db)
@@ -224,7 +229,7 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
     } else {
       message("No decision rules applied from db-config.yml")
     }
-  } else if (!all.equal(decisions$decision, decision_categories)) {
+  } else if (!identical(decisions$decision, decision_categories)) {
     stop("The decision categories in the configuration file do not match those in the assessment database.")
   }
 
@@ -305,7 +310,7 @@ add_shinymanager_auth <- function(app_ui, app_ver, login_note) {
   if (!isTRUE(getOption("shiny.testmode"))) {
   add_tags(shinymanager::secure_app(app_ui,
     tags_top = tags$div(
-      tags$head(favicon(), bundle_resources(app_sys("app/www"), "riskassessment", "shinymanager_resources")),
+      tags$head(favicon(), tags$style(HTML(readLines(app_sys("app/www/css", "login_screen.css"))))),
       tags$head(if (isFALSE(getOption("golem.app.prod")) && !is.null(golem::get_golem_options("pre_auth_user"))) {
         tags$script(HTML(glue::glue("$(document).on('shiny:connected', function () {{
           Shiny.setInputValue('auth-user_id', '{golem::get_golem_options('login_creds')$user_id}');
