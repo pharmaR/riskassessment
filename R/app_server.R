@@ -75,6 +75,7 @@ app_server <- function(input, output, session) {
                 observeEvent(input[[y]], {
                   shinyjs::runjs(paste0("document.getElementById('", .x, c("-start-", "-expire-", "-user-"), "label').innerHTML = ", c("'Start Date'", "'Expiration Date'", "'User Name'"), collapse = ";\n"))
                   role_lst <- list(id = .x, role_opts = role_opts)
+                  # Send the roles to Javascript side for processing
                   session$sendCustomMessage("roles", role_lst)
                 }, priority = -1)
               })
