@@ -6,6 +6,7 @@
 * Fix bug preventing icons from displaying on admin tab (#427)
 * Added Decision-related columns to the database view
 * Moved log file designation to configuration file (#463)
+* Add configuration options for different user roles
 
 # riskassessment 0.1.1
 
