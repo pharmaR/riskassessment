@@ -227,7 +227,7 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
     } else {
       message("No decision rules applied from db-config.yml")
     }
-  } else if (!all.equal(decisions$decision, decision_categories)) {
+  } else if (!identical(decisions$decision, decision_categories)) {
     stop("The decision categories in the configuration file do not match those in the assessment database.")
   }
 
