@@ -16,15 +16,26 @@ packageDependenciesUI <- function(id) {
 #' @param parent the parent (calling module) session information
 #' 
 #' @import dplyr
-#' @importFrom riskmetric pkg_ref assess_dependencies
-#' @importFrom purrr is_empty
-#' @importFrom deepdep plot_dependencies
+#' @importFrom riskmetric pkg_ref pkg_assess pkg_score assess_dependencies assess_reverse_dependencies
+#' @importFrom purrr map_df
+#' @importFrom rlang is_empty
+#' @importFrom glue glue
+#' @importFrom DT renderDataTable formatStyle
+#' @importFrom stringr str_replace word
+#' @importFrom shiny tagList showModal removeModal
+#' @importFrom shinyjs click
+#' @importFrom deepdep deepdep plot_dependencies
+#' @importFrom formattable as.datatable formattable formatter style
 #' 
 #' @keywords internal
 #' 
 packageDependenciesServer <- function(id, selected_pkg, user, parent) {
   moduleServer(id, function(input, output, session) {
-       ns <- NS(id)
+       ns <- session$ns
+    
+       metric_wts_df <- dbSelect("SELECT id, name, weight FROM metric")
+       metric_weights <- metric_wts_df$weight
+       names(metric_weights) <- metric_wts_df$name
        
        get_versnScore <- function(pkg_name) {
          
@@ -37,18 +48,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
          
          riskmetric_score <-
            riskmetric_assess %>%
-           riskmetric::pkg_score(weights = metric_weights())
+           riskmetric::pkg_score(weights = metric_weights)
          
          return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = round(riskmetric_score$pkg_score,2) ))
        }
-       
-       metric_weights <- reactive({
-         db_name <- "database.sqlite"
-         metric_wts_df <- dbSelect("SELECT id, name, weight, is_perc FROM metric", db_name)
-         metric_wts <- metric_wts_df$weight
-         names(metric_wts) <- metric_wts_df$name
-         return(metric_wts)
-       })
        
        depends <- reactive({
          req(selected_pkg$name() != "-")
@@ -62,20 +65,32 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
            riskmetric::assess_reverse_dependencies() 
        })
        
-       ready <- reactiveVal()
+       dd <- reactive({
+         req(pkg_df())
+         x <- deepdep::deepdep(selected_pkg$name(), depth = 2, dependency_type = c("Depends", "Imports", "LinkingTo"))
+         if (nrow(x) == 0) {
+           x <- data.frame(origin = selected_pkg$name(),
+                           name = pull(pkg_df()[1, 3]), version = NA_character_, type = "Imports",
+                           origin_level = 0L, dest_level = 1L)
+           attributes(x)$class <- c("deepdep", "data.frame")
+           attributes(x)$package_name <- selected_pkg$name()
+           }
+         return(x)
+       })
+       
+       tabready <- reactiveVal()
        observeEvent(parent$input$tabs, {
-         cat("parent input$tabs is", parent$input$tabs, "\n")
-         ready(0L)
+         tabready(0L)
          if(parent$input$tabs == "Package Dependencies") {
-         ready(1L)
+         tabready(1L)
          }
          
        })
        
-       pkg_df <- eventReactive(list(selected_pkg$name(),ready()), {
+       pkg_df <- eventReactive(list(selected_pkg$name(),tabready()), {
          req(!rlang::is_empty(selected_pkg$name()))
          req(selected_pkg$name() != "-")
-         req(ready() == 1L)
+         req(tabready() == 1L)
 
          shiny::showModal(modalDialog(
            title = h3("Update in Progress"),
@@ -83,18 +98,14 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
            easyClose = FALSE
          ))
          
-         # check remotes first to make sure the packages are available on CRAN
-         pkgrem <- remotes::package_deps(selected_pkg$name(), 
-                                         dependencies = c("Depends", "Imports", "LinkingTo"))  
-         
        pkginfo <- riskmetric::pkg_ref(selected_pkg$name()) %>% 
          riskmetric::assess_dependencies() %>%  
          as_tibble() %>% 
          mutate(package = stringr::str_replace(package, "\n", "")) %>% 
-         mutate(name = stringr::word(.data$package, 1, sep = stringr::regex("[\\s|\\(]"))) %>%
-         left_join(pkgrem %>% select(package, available), by = c("name" = "package")) %>% 
-         filter(!is.na(available))
-       
+         mutate(name = stringr::word(.data$package, 1, sep = stringr::regex("[\\s|\\(]"))) 
+         # drop any Base R packages from list
+         # filter(!name %in% c(rownames(installed.packages(priority="base")))) 
+
        purrr::map_df(pkginfo$name, ~bind_rows(unlist(get_versnScore(.x)))) %>% 
          right_join(pkginfo, by = "name") %>% 
          select(package, type, name, version, score)
@@ -114,6 +125,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
       print("in observeEvent for pkg_df()")
       shiny::removeModal()
     })
+    
    # Render Output UI for Package Dependencies.
     output$package_dependencies_ui <- renderUI({
 
@@ -143,7 +155,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
                                                     size = "xs",
                                                     style='height:24px; padding-top:1px;',
                                                     label = icon("arrow-right", class="fa-regular", lib = "font-awesome"),
-                                                    onclick = paste0('Shiny.onInputChange(' , ns("select_button"), ', this.id)')
+                                                    onclick = paste0('Shiny.onInputChange(\"' , ns("select_button"), '\", this.id)')
                                )
                              )
                        )
@@ -178,23 +190,16 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
                        selection = list(mode = 'multiple'),
                        colnames = c("Package", "Type", "Name", "Version", "Score", "Explore Metrics"),
                        rownames = FALSE,
-                       # extensions = "Buttons",
-                       # options = list(
-                       #   searching = TRUE,
-                       #   lengthChange = FALSE,
-                       #   dom = 'Blftpr',
-                       #   pageLength = 15,
-                       #   lengthMenu = list(c(15, 60, 120, -1), c('15', '60', '120', "All")),
-                       #   columnDefs = list(list(className = 'dt-center', targets = "_all"))
-                       # )
                        style="default"
                      ) %>%
                        DT::formatStyle(names(my_data_table()), textAlign = 'center')
                    })
             ),
             column(width = 4,
-                   renderPlot(
-                     deepdep::plot_dependencies(selected_pkg$name(), show_version = TRUE)
+                   renderPlot({
+                     # dd <- deepdep::deepdep(selected_pkg$name(), depth = 2, dependency_type = c("Depends", "Imports", "LinkingTo"))
+                     deepdep::plot_dependencies(dd(), "circular", same_level = TRUE, show_version = TRUE, reverse = TRUE, show_stamp = FALSE)
+                   }, width = 900, height = 900, execOnResize = TRUE)
                    )
             )
            ),
@@ -205,35 +210,45 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
            renderPrint(
                revdeps() %>% sort()
             )
-           ),
-           column(width = 4,
-                  # renderPrint(
-                  #   pak::pkg_deps_tree(selected_pkg$name())
-                  # )
-                  )
+           )
           )
          )
-        )
       }
     }) # renderUI
     
     observeEvent(input$select_button, {
-      cat("in observeEvent for input$select_button", input$select_button, "\n")
       req(pkg_df())
       
       selectedRow <- as.numeric(strsplit(input$select_button, "_")[[1]][2])
       
       # grab the package name
-      pkg_name <- pkg_df()[selectedRow, 1]
+      pkg_name <- pkg_df()[selectedRow, 3] %>% pull() 
       print(pkg_name)
       
-      # update sidebar-select_pkg
-      updateSelectizeInput(
-        session = parent,
-        inputId = "sidebar-select_pkg",
-        choices = c("-", dbSelect('SELECT name FROM package')$name),
-        selected = pkg_name
-      )
+      if(pkg_name %in% dbSelect('SELECT name FROM package')$name) {
+
+        # update sidebar-select_pkg
+        updateSelectizeInput(
+          session = parent,
+          inputId = "sidebar-select_pkg",
+          choices = c("-", dbSelect('SELECT name FROM package')$name),
+          selected = pkg_name
+        )
+      } else {
+        # select maintenance metrics panel
+        updateTabsetPanel(session = parent, 
+                          inputId = 'tabs', 
+                          selected = "Upload Package"
+        )
+        updateSelectizeInput(session = parent, "upload_package-pkg_lst", 
+                             choices = c(pkg_name), selected = pkg_name)
+        shinyjs::click(id = "upload_pkg-add_pkgs", asis = TRUE)
+        shinyjs::click(id = parent$ns("add_pkgs"), asis = TRUE)
+        shinyjs::click(id = "parent$input$add_pkgs")
+        shinyjs::click(id = "add_pkgs")
+
+      }
+      
     })
   }) # moduleServer
 
