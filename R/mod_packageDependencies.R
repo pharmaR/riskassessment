@@ -11,7 +11,6 @@ packageDependenciesUI <- function(id) {
 #' 
 #' @param id a module id name
 #' @param selected_pkg placeholder
-#' @param maint_metrics placeholder
 #' @param user placeholder 
 #' @param parent the parent (calling module) session information
 #' 
@@ -103,8 +102,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
          as_tibble() %>% 
          mutate(package = stringr::str_replace(package, "\n", "")) %>% 
          mutate(name = stringr::word(.data$package, 1, sep = stringr::regex("[\\s|\\(]"))) 
-         # drop any Base R packages from list
-         # filter(!name %in% c(rownames(installed.packages(priority="base")))) 
+       
+         # drop any Base R packages from list, unless we ony have 1 row
+         pkginf2 <- pkginfo %>% 
+         filter(!name %in% c(rownames(installed.packages(priority="base")))) 
 
        purrr::map_df(pkginfo$name, ~bind_rows(unlist(get_versnScore(.x)))) %>% 
          right_join(pkginfo, by = "name") %>% 
@@ -195,11 +196,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
                        DT::formatStyle(names(my_data_table()), textAlign = 'center')
                    })
             ),
-            column(width = 4,
+            column(width = 4, 
+                   style="position:relative; top: 0px; right 0px; left: 250px;",
                    renderPlot({
-                     # dd <- deepdep::deepdep(selected_pkg$name(), depth = 2, dependency_type = c("Depends", "Imports", "LinkingTo"))
-                     deepdep::plot_dependencies(dd(), "circular", same_level = TRUE, show_version = TRUE, reverse = TRUE, show_stamp = FALSE)
-                   }, width = 900, height = 900, execOnResize = TRUE)
+                     deepdep::plot_dependencies(dd(), type = "circular", same_level = TRUE, show_version = TRUE, reverse = TRUE, show_stamp = FALSE)
+                   }, height = 900, width = 900)
                    )
             )
            ),
