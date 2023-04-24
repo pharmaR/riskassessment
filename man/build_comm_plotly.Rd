@@ -19,6 +19,11 @@ an interactive plotly object
 \description{
 Responsible for building an interactive \code{{plotly}} graphic containing the trend line for number of CRAN pkg downloads by month.
 }
+\section{Example output}{
+
+\if{html}{\figure{plot_example.png}{options: width=95\%}}
+}
+
 \examples{
 metricGraph <- build_comm_plotly(pkg_name = "ggplot2")
 }

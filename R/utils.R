@@ -400,6 +400,8 @@ auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
 #' @importFrom glue glue
 #' @importFrom plotly plot_ly layout add_segments add_annotations config
 #' @return an interactive plotly object
+#' @section Example output: 
+#' \if{html}{\figure{plot_example.png}{options: width=95\%}}
 #' 
 #' @keywords reproduce
 #' @export
