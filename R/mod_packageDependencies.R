@@ -25,6 +25,7 @@ packageDependenciesUI <- function(id) {
 #' @importFrom shinyjs click
 #' @importFrom deepdep deepdep plot_dependencies
 #' @importFrom formattable as.datatable formattable formatter style
+#' @importFrom cli cli_progress_bar cli_progress_update cli_progress_done
 #' 
 #' @keywords internal
 #' 
@@ -36,7 +37,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
        metric_weights <- metric_wts_df$weight
        names(metric_weights) <- metric_wts_df$name
        
-       get_versnScore <- function(pkg_name) {
+       get_versnScore <- function(pkg_name, cl_id) {
          
          riskmetric_assess <-
            riskmetric::pkg_ref(pkg_name,
@@ -49,6 +50,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
            riskmetric_assess %>%
            riskmetric::pkg_score(weights = metric_weights)
          
+         cli::cli_progress_update(id = cl_id)
          return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = round(riskmetric_score$pkg_score,2) ))
        }
        
@@ -91,12 +93,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
          req(selected_pkg$name() != "-")
          req(tabready() == 1L)
 
-         shiny::showModal(modalDialog(
-           title = h3("Update in Progress"),
-           tags$strong("Creating data table. Please wait."),
-           easyClose = FALSE
-         ))
-         
        pkginfo <- riskmetric::pkg_ref(selected_pkg$name()) %>% 
          riskmetric::assess_dependencies() %>%  
          as_tibble() %>% 
@@ -106,8 +102,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
          # drop any Base R packages from list, unless we ony have 1 row
          pkginf2 <- pkginfo %>% 
          filter(!name %in% c(rownames(installed.packages(priority="base")))) 
+         if (nrow(pkginf2) > 0) pkginfo <- pkginf2
 
-       purrr::map_df(pkginfo$name, ~bind_rows(unlist(get_versnScore(.x)))) %>% 
+         cl_id <- cli::cli_progress_bar("Creating Data Table...", type = "iterator", total = nrow(pkginfo))
+
+         purrr::map_df(pkginfo$name, ~get_versnScore(.x, cl_id), .progress = TRUE) %>% 
          right_join(pkginfo, by = "name") %>% 
          select(package, type, name, version, score)
 
@@ -123,8 +122,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
        }
        
     observeEvent(pkg_df(), {
-      print("in observeEvent for pkg_df()")
-      shiny::removeModal()
+      cli::cli_progress_done()
     })
     
    # Render Output UI for Package Dependencies.
