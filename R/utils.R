@@ -400,7 +400,7 @@ auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
 #' }
 #' 
 #' @section Example Output: 
-#' \if{html}{\figure{plot_example.png}{options: width=95\%}}
+#' \if{html}{\figure{build_comm_plotly_ex2.png}{options: width=95\%}}
 #' 
 #' @import dplyr
 #' @importFrom lubridate NA_Date_ interval

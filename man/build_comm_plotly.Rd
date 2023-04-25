@@ -29,7 +29,7 @@ Responsible for building an interactive \code{{plotly}} graphic containing the t
 
 \section{Example Output}{
 
-\if{html}{\figure{plot_example.png}{options: width=95\%}}
+\if{html}{\figure{build_comm_plotly_ex2.png}{options: width=95\%}}
 }
 
 \keyword{reproduce}
