@@ -12,6 +12,10 @@ chromote::set_chrome_args(
     "--no-sandbox"
   )
 )
-chromote::set_default_chromote_object(chromote::Chromote$new())
+
+tmpt <- Sys.time()
+while (!chromote::has_default_chromote_object() && Sys.time() - tmpt < 1) {
+  try(chromote::set_default_chromote_object(chromote::Chromote$new()), silent = TRUE)
+}
 
 test_check("riskassessment")
