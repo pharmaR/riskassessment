@@ -12,5 +12,6 @@ chromote::set_chrome_args(
     "--no-sandbox"
   )
 )
+chromote::set_default_chromote_object(chromote::Chromote$new())
 
 test_check("riskassessment")
