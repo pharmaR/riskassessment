@@ -7,6 +7,7 @@
 * Added Decision-related columns to the database view
 * Moved log file designation to configuration file (#463)
 * Add configuration options for different user roles
+* Updated utils.R roxygen section to include example output figure (#409).
 
 # riskassessment 0.1.1
 
