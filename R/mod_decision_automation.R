@@ -11,26 +11,30 @@ mod_decision_automation_ui <- function(id){
   decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
   color_lst <- get_colors(golem::get_golem_options("assessment_db_name"))
   dec_num <- length(decision_lst)
+  dec_root <- glue::glue("--{risk_lbl(decision_lst, input = FALSE)}-color: {color_lst};") %>%
+    glue::glue_collapse(sep = "\n") %>%
+    {glue::glue(":root {{
+                {.}
+                }}")}
   dec_css <- purrr::imap_chr(decision_lst, function(.x, .y) {
     lbl <- risk_lbl(.x, input = FALSE)
-    col <- color_lst[.y]
 
     if (.y == 1) {
       glue::glue("
 [risk={lbl}] .irs--shiny .irs-bar {{
-  border-top: 1px solid {col};
-  border-bottom: 1px solid {col};
-  background: {col};
+  border-top: 1px solid var(--{lbl}-color);
+  border-bottom: 1px solid var(--{lbl}-color);
+  background: var(--{lbl}-color);
 }}
 
 [risk={lbl}] .irs--shiny .irs-single {{
-  background-color: {col};
+  background-color: var(--{lbl}-color);
 }}")
     } else if (.y == dec_num) {
       glue::glue("
 [risk={lbl}] .irs--shiny .irs-line {{
-  background: {col};
-  border: 1px solid {col};
+  background: var(--{lbl}-color);
+  border: 1px solid var(--{lbl}-color);
 }}
 
 [risk={lbl}] .irs--shiny .irs-bar {{
@@ -41,25 +45,25 @@ mod_decision_automation_ui <- function(id){
 }}
 
 [risk={lbl}] .irs--shiny .irs-single {{
-  background-color: {col};
+  background-color: var(--{lbl}-color);
 }}")
     } else {
       glue::glue("
 [risk={lbl}] .irs--shiny .irs-bar {{
-  border-top: 1px solid {col};
-  border-bottom: 1px solid {col};
-  background: {col};
+  border-top: 1px solid var(--{lbl}-color);
+  border-bottom: 1px solid var(--{lbl}-color);
+  background: var(--{lbl}-color);
 }}
 
 [risk={lbl}] .irs--shiny .irs-from,
 [risk={lbl}] .irs--shiny .irs-to {{
-  background-color: {col};
+  background-color: var(--{lbl}-color);
 }}")
     }
-  })
+  }) 
   
   tagList(
-    tags$head(tags$style(HTML(dec_css))),
+    tags$head(tags$style(HTML(c(dec_root, dec_css)))),
     uiOutput(ns("auto_classify")),
     DT::dataTableOutput(ns("auto_table"))
   )
