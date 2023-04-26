@@ -5,12 +5,13 @@
 
 <!-- badges: start -->
 
+[![pharmaverse](http://pharmaverse.org/shields/riskassessment.svg)](https://pharmaverse.org/e2eclinical/validation/)
 [<img src="https://img.shields.io/badge/Slack-RValidationHub-blue?style=flat&logo=slack">](https://RValidationHub.slack.com)
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![R-CMD-check](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check-master.yaml/badge.svg)](https://github.com/pharmaR/riskassessment/actions/workflows/R-CMD-check.yaml)
 [![Coverage
 status](https://codecov.io/gh/pharmaR/riskassessment/branch/master/graph/badge.svg)](https://app.codecov.io/github/pharmaR/riskassessment)
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
 `riskassessment` is an R package containing a shiny front-end to augment
@@ -52,10 +53,14 @@ reviewer to:
 ### Echo-ing `{riskmetric}`’s Approach to Validation <a href='https://pharmar.github.io/riskmetric/'><img src="man/figures/hex-riskmetric-aspconfig.png" align="right" height="172" style="float:right; height:172px;"/></a>
 
 Validation can serve as an umbrella for various terms, and admittedly,
-companies will diverge on what is the correct approach to validation.
-The validation approach we followed is based on the philosophy of the
-white paper set forth by the R Validation Hub: [White
-Paper](https://www.pharmar.org/white-paper/).
+companies will diverge on what may be the “correct approach”. The
+`riskassessment` app is built on a `rismetric`-foundation, whose
+developers follow the validation philosophy proposed in [this white
+paper](https://www.pharmar.org/white-paper/) published by the R
+Validation Hub. As such, the scope of `riskassessment` and `riskmetric`
+are only designed to support decision making from that view point. The
+full robustness and reliability of any software may (and likely will)
+require deeper inspection by the reviewing party.
 
 *Note:* Development of both `riskassessment` and `riskmetric` were made
 possible thanks to the [R Validation
