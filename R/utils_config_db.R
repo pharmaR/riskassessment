@@ -28,7 +28,7 @@ configure_db <- function(dbname, config) {
   else
     message("No decision rules applied from configuration")
   col_lst <- set_colors(dec_config$categories)
-  purrr::iwalk(dec_config$colors, ~ {col_lst[.y] <- .x})
+  purrr::iwalk(dec_config$colors, ~ {col_lst[.y] <<- .x})
   purrr::iwalk(col_lst, ~ dbUpdate(glue::glue("UPDATE decision_categories SET color = '{.x}' WHERE decision = '{.y}'"), dbname))
 }
 
