@@ -9,7 +9,7 @@ mod_decision_automation_ui <- function(id){
   ns <- NS(id)
   
   decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
-  color_lst <- get_colors(decision_lst)
+  color_lst <- get_colors(golem::get_golem_options("assessment_db_name"))
   dec_num <- length(decision_lst)
   dec_css <- purrr::imap_chr(decision_lst, function(.x, .y) {
     lbl <- risk_lbl(.x, input = FALSE)

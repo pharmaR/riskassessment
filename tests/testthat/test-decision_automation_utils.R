@@ -2,14 +2,14 @@ test_that("assign_decisions works", {
   "Placeholder"
 })
 
-test_that("get_colors works", {
+test_that("set_colors works", {
   expect_equal(
-    get_colors(1:3),
+    set_colors(1:3),
     c(`1` = "#06B756FF", `2` = "#A99D04FF", `3` = "#A63E24FF")
   )
   
   expect_equal(
-    get_colors(1:20),
+    set_colors(1:20),
     c(`1` = "#06B756FF", `2` = "#2FBC06FF", `3` = "#67BA04FF", `4` = "#81B50AFF", 
       `5` = "#96AB0AFF", `6` = "#A99D04FF", `7` = "#A99D04FF", `8` = "#B78D07FF", 
       `9` = "#BE7900FF", `10` = "#BE6200FF", `11` = "#B24F22FF", `12` = "#A63E24FF", 
