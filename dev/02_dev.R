@@ -47,7 +47,7 @@ usethis::use_package("kableExtra", type = "Suggests")
 # usethis::use_package("rlang")
 # # usethis::use_package("stringi")
 # # usethis::use_package("forcats")
-# 
+# # usethis::use_package("cli")
 # # cannot use dev!
 # # usethis::use_dev_package("tippy") #remotes::install_github("JohnCoene/tippy") #‘1.0.0’
 # usethis::use_package("tippy")
