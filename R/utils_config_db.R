@@ -1,5 +1,44 @@
 
 
+#' Set colors for decision categories
+#' 
+#' Gets the correct color palette based on the number of decision categories
+#' 
+#' @param decision_categories A vector containing the decision categories
+#' 
+#' @return A vector of colors for displaying the decision categories
+#' 
+#' @noRd
+set_colors <- function(decision_categories) {
+  num_cat <- length(decision_categories)
+  if (num_cat == 1)
+    return(color_palette[1])
+  cat_list <- (seq_along(decision_categories) - 1) * 10/min(num_cat - 1, 11) + 1
+  color_palette[round(purrr::map_dbl(cat_list, min, 11))] %>% purrr::set_names(decision_categories)
+}
+
+configure_db <- function(dbname, config) {
+  if (missing(config)) dec_config <- get_golem_config('decisions', file = app_sys("db-config.yml"))
+  
+  check_decision_config(dec_config)
+  
+  dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', dec_config$categories, '\\')', collapse = ', ')}"), dbname)
+  if (!is.null(dec_config$rules)) 
+    purrr::iwalk(dec_config$rules, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'"), dbname))
+  else
+    message("No decision rules applied from configuration")
+  col_lst <- set_colors(dec_config$categories)
+  purrr::iwalk(dec_config$colors, ~ {col_lst[.y] <- .x})
+  purrr::iwalk(col_lst, ~ dbUpdate(glue::glue("UPDATE decision_categories SET color = '{.x}' WHERE decision = '{.y}'"), dbname))
+}
+
+check_decision_config <- function(dec_config) {
+  check_dec_cat(dec_config$categories)
+  
+  if (!is.null(dec_config$rules))
+    check_dec_rules(dec_config$categories, dec_config$rules)
+}
+
 #' Check decision categories
 #' 
 #' Checks that the decision categories supplied by the configuration file are valid
@@ -20,33 +59,33 @@ check_dec_cat <- function(decision_categories) {
 #' Checks that the decision rules supplied by the configuration file are valid
 #' 
 #' @param decision_categories A vector containing the decision categories
-#' @param decisions A named list containing the decision rules
+#' @param decision_rules A named list containing the decision rules
 #' 
 #' @noRd
-check_dec_rules <- function(decision_categories, decisions) {
-  if (!all(names(decisions) %in% decision_categories))
-    stop("All decision rule categories should be included in the list of decisions")
+check_dec_rules <- function(decision_categories, decision_rules) {
+  if (!all(names(decision_rules) %in% decision_categories))
+    stop("All decision rule categories should be included in the list of decision categories")
   
-  if (length(names(decisions)) != length(unique(names(decisions))))
+  if (length(names(decision_rules)) != length(unique(names(decision_rules))))
     stop("The decision categories must be unique for the decision rules")
   
-  if (!all(purrr::map_lgl(decisions, ~ is.numeric(unlist(.x)))))
+  if (!all(purrr::map_lgl(decision_rules, ~ is.numeric(unlist(.x)))))
     stop("The rules must be numeric values")
   
-  if (!all(purrr::map_lgl(decisions, ~ length(unlist(.x)) <= 2)))
+  if (!all(purrr::map_lgl(decision_rules, ~ length(unlist(.x)) <= 2)))
     stop("At most two values can be provided for a decision rule")
   
-  dec_lst <- unlist(decisions[decision_categories])
+  dec_lst <- unlist(decision_rules[decision_categories])
   if (!all(dec_lst >= 0 & dec_lst <= 1))
     stop("All rules must be between 0 and 1")
   
   if (!all(dec_lst == sort(dec_lst)))
     stop("The rules should be ascending in order of the categories")
   
-  if (decision_categories[1] %in% names(decisions) & unlist(decisions[[decision_categories[1]]])[1] != 0)
+  if (decision_categories[1] %in% names(decision_rules) & unlist(decision_rules[[decision_categories[1]]])[1] != 0)
     stop("Rules for the first decision category must have a lower bound of 0")
   
-  if (decision_categories[length(decision_categories)] %in% names(decisions) & unlist(decisions[[decision_categories[length(decision_categories)]]])[2] != 1)
+  if (decision_categories[length(decision_categories)] %in% names(decision_rules) & unlist(decision_rules[[decision_categories[length(decision_categories)]]])[2] != 1)
     stop("Rules for the last decision category must have an upper bound of 1")
 }
 

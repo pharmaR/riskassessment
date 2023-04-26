@@ -209,25 +209,8 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
   decision_categories <- if (missing(decision_cat)) golem::get_golem_options('decision_categories') else decision_cat
   decisions <- suppressMessages(dbSelect("SELECT decision FROM decision_categories", assessment_db))
   check_dec_cat(decision_categories)
-  if (is.null(decisions)) {
-    suppressMessages(dbUpdate(paste(scan(app_sys("sql_queries", "create_decision_table.sql"), sep = "\n", what = "character"), collapse = ""), assessment_db))
-    dec_lst <- get_golem_config('decisions', file = app_sys("db-config.yml"))
-    if (!is.null(dec_lst) && !is.null(dec_lst$rules)) check_dec_rules(decision_categories, dec_lst$rules)
-    dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', decision_categories, '\\')', collapse = ', ')}"), assessment_db)
-    if (!is.null(dec_lst) && !is.null(dec_lst$rules)) {
-      purrr::iwalk(dec_lst$rules, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'")))
-    } else {
-      message("No decision rules applied from db-config.yml")
-    }
-  } else if (nrow(decisions) == 0) {
-    dec_lst <- get_golem_config('decisions', file = app_sys("db-config.yml"))
-    if (!is.null(dec_lst) && !is.null(dec_lst$rules)) check_dec_rules(decision_categories, dec_lst$rules)
-    dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', decision_categories, '\\')', collapse = ', ')}"), assessment_db)
-    if (!is.null(dec_lst) && !is.null(dec_lst$rules)) {
-      purrr::iwalk(dec_lst$rules, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'")))
-    } else {
-      message("No decision rules applied from db-config.yml")
-    }
+  if (nrow(decisions) == 0) {
+    configure_db(assessment_db, )
   } else if (!identical(decisions$decision, decision_categories)) {
     stop("The decision categories in the configuration file do not match those in the assessment database.")
   }
