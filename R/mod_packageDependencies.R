@@ -224,16 +224,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
       pkg_name <- pkg_df()[selectedRow, 3] %>% pull() 
       print(pkg_name)
       
-      if(pkg_name %in% dbSelect('SELECT name FROM package')$name) {
+      if(!pkg_name %in% dbSelect('SELECT name FROM package')$name) {
 
-        # update sidebar-select_pkg
-        updateSelectizeInput(
-          session = parent,
-          inputId = "sidebar-select_pkg",
-          choices = c("-", dbSelect('SELECT name FROM package')$name),
-          selected = pkg_name
-        )
-      } else {
         # select maintenance metrics panel
         updateTabsetPanel(session = parent, 
                           inputId = 'tabs', 
@@ -241,14 +233,26 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
         )
         updateSelectizeInput(session = parent, "upload_package-pkg_lst", 
                              choices = c(pkg_name), selected = pkg_name)
-        shinyjs::click(id = "upload_pkg-add_pkgs", asis = TRUE)
-        shinyjs::click(id = parent$ns("add_pkgs"), asis = TRUE)
-        shinyjs::click(id = "parent$input$add_pkgs")
-        shinyjs::click(id = "add_pkgs")
-
+        
+        session$onFlushed(function() {
+          shinyjs::click(id = "upload_package-add_pkgs", asis = TRUE)
+        }) 
+        
+        # select maintenance metrics panel
+        updateTabsetPanel(session = parent, 
+                          inputId = 'tabs', 
+                          selected = "Package Dependencies"
+        )
       }
-      
-    })
+        # update sidebar-select_pkg
+        updateSelectizeInput(
+          session = parent,
+          inputId = "sidebar-select_pkg",
+          choices = c("-", dbSelect('SELECT name FROM package')$name),
+          selected = pkg_name
+        )
+
+    }) # observeEvent
   }) # moduleServer
 
 }
