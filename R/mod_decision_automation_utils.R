@@ -11,8 +11,9 @@
 assign_decisions <- function(decision_list, package) {
   score <- get_pkg_info(package)$score
   decision <- paste0(names(decision_list)[purrr::map_lgl(decision_list, ~ .x[1] < score && score <= .x[2])], "")
+  decision_id <- dbSelect(glue::glue("SELECT id FROM decision_categories WHERE decision = '{decision}'"))
   if (decision != "") {
-    dbUpdate(glue::glue("UPDATE package SET decision = '{decision}',
+    dbUpdate(glue::glue("UPDATE package SET decision_id = '{decision_id}',
                         decision_by = 'Auto Assigned', decision_date = '{Sys.Date()}'
                          WHERE name = '{package}'"))
     loggit::loggit("INFO",
