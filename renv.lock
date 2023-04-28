@@ -368,14 +368,9 @@
     "chromote": {
       "Package": "chromote",
       "Version": "0.1.1",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "chromote",
-      "RemoteUsername": "rstudio",
-      "RemoteRef": "origin-testfix",
-      "RemoteSha": "725f8b73d7bb8d77a9c2d85f695b3ae92739a0d3",
-      "Hash": "d79d2634169c07fa200f8ea3fa6cd567",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "bb5817af24a2d8e6e33e758eb54978be",
       "Requirements": [
         "R6",
         "curl",
