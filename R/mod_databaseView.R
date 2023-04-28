@@ -14,28 +14,41 @@ setColorPalette <- colorRampPalette(c("#06B756FF","#2FBC06FF","#67BA04FF","#81B5
 #' 
 #' @keywords internal
 databaseViewUI <- function(id) {
-  fluidPage(
-    fluidRow(
-      column(
-        width = 8, offset = 2, align = "center",
-        h2("Database Overview", align = "center", `padding-bottom`="20px"),
-        tags$section(
-          br(), br(),
-          shinydashboard::box(width = 12,
-              title = h3("Uploaded Packages", style = "margin-top: 5px"),
-              DT::dataTableOutput(NS(id, "packages_table")),
-              br(),
-              fluidRow(
-                column(
-                  width = 6,
-                  style = "margin: auto;",
-                  mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = TRUE)),
-                column(
-                  width = 6,
-                  mod_downloadHandler_filetype_ui(NS(id, "downloadHandler"))
-                )
-              )))
-      ))
+  tagList(
+    h2("Database Overview", align = "center", `padding-bottom`="20px"),
+    br(),
+    tabsetPanel(
+      tabPanel(
+        "Uploaded Packages",
+        column(
+          width = 8, offset = 2, align = "center",
+          tags$section(
+            shinydashboard::box(width = 12,
+                                title = h3("Uploaded Packages", style = "margin-top: 5px"),
+                                DT::dataTableOutput(NS(id, "packages_table")),
+                                br(),
+                                fluidRow(
+                                  column(
+                                    width = 6,
+                                    style = "margin: auto;",
+                                    mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = TRUE)),
+                                  column(
+                                    width = 6,
+                                    mod_downloadHandler_filetype_ui(NS(id, "downloadHandler"))
+                                  )
+                                )))
+        )),
+      tabPanel(
+        "Decision Categories",
+        column(
+          width = 8, offset = 2, align = "center",
+          tags$section(
+            shinydashboard::box(width = 12,
+                                title = h3("Decision Categories", style = "margin-top: 5px"),
+                                DT::dataTableOutput(NS(id, "dec_cat_table"))
+                                ))
+        ))
+    )
   )
 }
 
@@ -75,6 +88,13 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       }
       inputs
     }
+    
+    dec_table <- reactive({
+      dbSelect("SELECT decision, color, lower_limit, upper_limit FROM decision_categories") %>%
+        dplyr::mutate(lower_limit = dplyr::if_else(is.na(lower_limit), "-", as.character(lower_limit)),
+                      upper_limit = dplyr::if_else(is.na(upper_limit), "-", as.character(upper_limit)))
+      
+      })
     
     # Update table_data if a package has been uploaded
     table_data <- eventReactive({uploaded_pkgs(); changes()}, {
@@ -173,6 +193,10 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
         , style="default"
       ) %>%
         DT::formatStyle(names(table_data()), textAlign = 'center')
+    })
+    
+    output$dec_cat_table <- DT::renderDataTable(sever = FALSE, {
+      DT::datatable(dec_table())
     })
     
     observeEvent(input$select_button, {
