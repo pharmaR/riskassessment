@@ -39,7 +39,7 @@ test_that("database creation", {
   expect_equal(names(comments), c("id", "user_name", "user_role", "comment", "comment_type", "added_on"))
   decisions <- DBI::dbGetQuery(con, "SELECT * FROM decision_categories")
   expect_equal(nrow(decisions), 0)
-  expect_equal(names(decisions), c("id", "decision", "lower_limit", "upper_limit"))
+  expect_equal(names(decisions), c("id", "decision", "color", "lower_limit", "upper_limit"))
 })
 
 #### create_credentials_db  tests ####

@@ -16,7 +16,7 @@ test_that("check_dec_rules works", {
   dec_cat <- c("Low", "Medium", "High")
   expect_error(
     check_dec_rules(dec_cat, list("Low" = list(0, .1), "Very High" = list(.7, 1))),
-    "All decision rule categories should be included in the list of decisions"
+    "All decision rule categories should be included in the list of decision categories"
   )
   
   expect_error(
