@@ -27,6 +27,8 @@ reportPreviewUI <- function(id) {
 #' @importFrom plotly plotlyOutput renderPlotly
 #' @importFrom DT dataTableOutput renderDataTable
 #' @importFrom glue glue
+#' @importFrom rlang is_empty
+#' @importFrom shinyjs enable disable show hide disabled
 #' @keywords internal
 #' 
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
@@ -50,7 +52,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
           tagList(
             br(),
             introJSUI(NS(id, "introJS")),
-            h4("Report Preview", style = "text-align: center;"),
+            h4("Build Report", style = "text-align: center;"),
             br(), br(),
             
             div(id = "dwnld_rp",
@@ -60,16 +62,46 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             
             br(), br(),
             
-            div(id = "rep_prev",
+            div(id = NS(id, "pkg-summary-grp"),
+              uiOutput(NS(id, "pkg_summary_ui")),
+              # textAreaInput(
+              #   inputId = NS(id, "pkg_summary"),
+              #   h5("Write Package Summary"),
+              #   rows = 8, width = "100%",
+              #   value = ""
+              # ),
+              
+              # Submit Overall Comment for selected Package.
+              uiOutput(NS(id, "submit_edit_pkg_summary_ui")),
+              # actionButton(NS(id, "submit_pkg_summary"),"Submit Summary"),
+              # actionButton(NS(id, "edit_pkg_summary"), "Edit Summary")
+            ),
+            
+            br(), br(), 
+            
+            div(id = "rep_prev", style = "border: 3px solid; padding: 30px; box-shadow: 5px 10px 8px #888888;",
+                br(),
+                
+                HTML("<span class='h2 txtasis'>R Package Risk Assessment  </span><br>"),
+                HTML(glue::glue("<span class='h4 txtasis'>Report for Package: {selected_pkg$name()}</span><br>")),
+                HTML(glue::glue("<span class='h4 txtasis'>Author (Role): {user$name} ({user$role})</span><br>")),
+                HTML(glue::glue("<span class='h4 txtasis'>Report Date: {format(Sys.time(), '%B %d, %Y')}</span><br>")),
+                
+                br(),
+                
                 fluidRow(
                   column(
                     width = 12,
+                    h5('General Information'),
                     uiOutput(NS(id, "pkg_overview")),
                     uiOutput(NS(id, "decision_display")))
                 ),
                 
                 fluidRow(
                   column(width = 12, viewCommentsUI(NS(id, 'overall_comments')))
+                ),
+                fluidRow(
+                  column(width = 12, viewCommentsUI(NS(id, 'pkg_summary')))
                 ),
                 
                 br(), br(),
@@ -105,6 +137,126 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       }
     })
     
+    
+    observeEvent(input$edit_pkg_summary, {
+      shinyjs::enable("pkg_summary")
+      output$submit_edit_pkg_summary_ui <- renderUI(actionButton(NS(id, "submit_pkg_summary"),"Submit Summary"))
+    })
+    
+
+    # Display/update overall comments for selected package/version.
+    # observeEvent(selected_pkg$version(), {
+    observe({
+      # req(selected_pkg$name())
+      req(selected_pkg$version())
+      
+      # If no package/version is selected, then clear comments.
+      if(selected_pkg$name() == "-" || selected_pkg$version() == "-"){
+        shinyjs::disabled(updateTextAreaInput(session, "pkg_summary",
+                            placeholder = 'Please select a package and a version.'))
+      }
+      else {
+        # Display package comments if a package and version are selected.
+        summary <- get_pkg_summary(selected_pkg$name())$comment 
+
+        # If no summary, enable text box and submit button
+        if(rlang::is_empty(summary)) {
+          output$pkg_summary_ui <- renderUI({
+            textAreaInput(NS(id, "pkg_summary"),h5("Write Package Summary"),
+              rows = 8, width = "100%", value = "", placeholder = "Write review here."
+            )
+          })
+          output$submit_edit_pkg_summary_ui <- renderUI(actionButton(NS(id, "submit_pkg_summary"),"Submit Summary"))
+        } else { # summary exists, so disable text box and show edit button
+          output$pkg_summary_ui <- renderUI({
+            shinyjs::disabled(textAreaInput(NS(id, "pkg_summary"), h5("Write Package Summary"),
+              rows = 8, width = "100%", value = summary
+            ))
+          })
+          output$submit_edit_pkg_summary_ui <- renderUI(actionButton(NS(id, "edit_pkg_summary"),"Edit Summary"))
+        }
+      }
+    })
+    
+    # Update db if comment is submitted.
+    observeEvent(input$submit_pkg_summary, {
+      current_summary <- trimws(input$pkg_summary)
+      if(current_summary == "")
+        validate("Please write a package summary.")
+      
+      req(selected_pkg$name())
+
+      previous_summary <- get_pkg_summary(selected_pkg$name())
+      if (nrow(previous_summary) > 0) { # not first summary!
+        showModal(modalDialog(
+          title = h2("Update Summary"),
+          h3("Do you want to update your previous summary?"),
+          br(),
+          HTML("Yes - Overwrites the previous summary.<br>
+               Keep Editing - Go back to editing the summary."
+          ),
+          footer = tagList(
+            actionButton(NS(id, "submit_pkg_summary_yes"), "Yes"),
+            actionButton(NS(id, "submit_pkg_summary_edit"), "Keep Editing")
+          )
+        ))
+      } else { # first summary!
+        comment <- stringr::str_replace_all(current_summary, "'", "''")
+        dbUpdate(glue::glue(
+          "INSERT INTO comments
+          VALUES ('{selected_pkg$name()}', '{user$name}', '{user$role}',
+          '{comment}', 's', '{getTimeStamp()}')"))
+        # updateTextAreaInput(session, "pkg_summary", value = "",
+        #                     placeholder = glue::glue('Current Summary: \n{current_summary}'))
+        showModal(modalDialog(
+          title = h2("Summary Submitted"),
+          br(),
+          h5(strong("Current Summary:")),
+          p(current_summary),
+          easyClose = TRUE
+        ))
+        
+        shinyjs::disable("pkg_summary")
+        output$submit_edit_pkg_summary_ui <- renderUI(actionButton(NS(id, "edit_pkg_summary"),"Edit Summary"))
+
+      }
+    })
+    
+    # if yes, insert summary into comments table
+    observeEvent(input$submit_pkg_summary_yes, {
+      
+      req(selected_pkg$name())
+      
+      comment <- stringr::str_replace_all(input$pkg_summary, "'", "''")
+      
+      dbUpdate(
+        glue::glue(
+          "UPDATE comments
+          SET comment = '{comment}', added_on = '{getTimeStamp()}'
+          WHERE id = '{selected_pkg$name()}' AND
+          user_name = '{user$name}' AND
+          user_role = '{user$role}' AND
+          comment_type = 's'"
+        )
+      )
+      
+      shinyjs::disable("pkg_summary")
+      # shinyjs::hide("submit_pkg_summary")
+      # shinyjs::show("edit_pkg_summary")
+      output$submit_edit_pkg_summary_ui <- renderUI(actionButton(NS(id, "edit_pkg_summary"),"Edit Summary"))
+      
+      # current_summary <- trimws(input$pkg_summary)
+      # updateTextAreaInput(session, "pkg_summary", value = "",
+      #                     placeholder = glue::glue('Current Summary: \n{current_summary}'))
+      removeModal()
+    })
+    
+    # if edit, do nothing
+    observeEvent(input$submit_pkg_summary_edit, {
+      removeModal()
+    })
+    
+    
     output$downloads_plot <- plotly::renderPlotly({
       downloads_plot_data()
     })
@@ -115,19 +267,33 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       get_overall_comments(selected_pkg$name())
     })
     
-    # View comments.
+    pkg_summary_added <- reactive(c(input$submit_pkg_summary, input$submit_pkg_summary_yes))
+    pkg_summary <- reactive({
+      pkg_summary_added()
+      get_pkg_summary(selected_pkg$name())
+    })
+    
+    # View Overall comments.
     viewCommentsServer(id = 'overall_comments',
                        comments = overall_comments,
                        pkg_name = selected_pkg$name,
                        label = 'Overall Comments')
     
-    # View comments.
+    # View Pkg Summary
+    viewCommentsServer(id = 'pkg_summary',
+                       comments = pkg_summary,
+                       pkg_name = selected_pkg$name,
+                       label = 'Package Summary',
+                       none_txt = "No summary."
+                       )
+    
+    # View MM comments.
     viewCommentsServer(id = "mm_comments",
                        comments = mm_comments,
                        pkg_name = selected_pkg$name,
                        label = 'Maintainance Metrics Comments')
     
-    # View comments.
+    # View Comm Usage comments.
     viewCommentsServer(id = 'cm_comments',
                        comments = cm_comments,
                        pkg_name = selected_pkg$name,
@@ -163,6 +329,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       }
       
     })
+    
     
     
     # Display general information of the selected package.
@@ -211,8 +378,10 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       
       metric_weights()
       
-    }, options = list(searching = FALSE, pageLength = 15, lengthChange = FALSE,
-                      info = FALSE))
+    }, options = list(dom = "t", searching = FALSE, pageLength = -1, lengthChange = FALSE,
+                      info = FALSE,
+                      columnDefs = list(list(className = 'dt-center', targets = 2))
+                      ))
     
     mod_downloadHandler_server("downloadHandler", selected_pkg$name, user, metric_weights)
   })

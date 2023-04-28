@@ -257,8 +257,9 @@ tagList(
 )
 
 DT::datatable(params$metric_weights,
-          options = list(searching = FALSE, pageLength = 15,
-                         lengthChange = FALSE, info = FALSE))
+          options = list(dom = "t", searching = FALSE, pageLength = -1,
+                         lengthChange = FALSE, info = FALSE, 
+                         columnDefs = list(list(className = 'dt-center', targets = 2))))
 ```
 
 <style>

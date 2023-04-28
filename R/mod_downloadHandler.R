@@ -19,7 +19,9 @@ mod_downloadHandler_button_ui <- function(id, multiple = TRUE){
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
 #' @noRd 
-mod_downloadHandler_filetype_ui <- function(id){
+mod_downloadHandler_filetype_ui <- function(id){ 
+  # will want to change this to input_UI so we can include additional items
+  # such as "Include comments" checkboxes for summary, maintmetrics, comm usage, and overall comments
   ns <- NS(id)
   tagList(
     selectInput(ns("report_format"), "Select Format", c("html", "docx", "pdf"))

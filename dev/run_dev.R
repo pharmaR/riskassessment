@@ -1,6 +1,6 @@
 # Set options here
 options(golem.app.prod = FALSE) # TRUE = production mode, FALSE = development mode
-options(shiny.fullstacktrace = FALSE)
+options(shiny.fullstacktrace = T)
 options(dplyr.summarise.inform = FALSE) # suppress summarise() has grouped output by..."
 # options(shiny.autoload.r=FALSE)
 
@@ -15,4 +15,5 @@ run_app(pre_auth_user = TRUE)
 
 # # turn off any options
 # options(shiny.autoload.r=NULL)
+
 
