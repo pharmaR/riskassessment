@@ -180,8 +180,10 @@ get_comm_data <- function(pkg_name, db_name = golem::get_golem_options('assessme
 #' @noRd
 get_pkg_info <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')){
   dbSelect(glue::glue(
-    "SELECT *
-     FROM package
+    "SELECT p.*, dc.decision
+     FROM package p
+     LEFT JOIN decision_categories dc
+      ON p.decision_id = dc.id
      WHERE name = '{pkg_name}'"), db_name
   )
 }

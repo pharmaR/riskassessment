@@ -80,11 +80,13 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     table_data <- eventReactive({uploaded_pkgs(); changes()}, {
      
       db_pkg_overview <- dbSelect(
-        'SELECT pi.name, pi.version, pi.score, pi.decision, pi.decision_by, pi.decision_date, c.last_comment
+        'SELECT pi.name, pi.version, pi.score, dc.decision, pi.decision_by, pi.decision_date, c.last_comment
         FROM package as pi
         LEFT JOIN (
             SELECT id, max(added_on) as last_comment FROM comments GROUP BY id)
         AS c ON c.id = pi.name
+        LEFT JOIN decision_categories as dc
+          ON pi.decision_id = dc.id
         ORDER BY 1 DESC'
       )
       
