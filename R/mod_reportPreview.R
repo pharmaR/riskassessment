@@ -56,7 +56,8 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             br(), br(),
             
             div(id = "dwnld_rp",
-                h5("Report Configuration"),
+                h5("Report Configurations"),
+                br(),
                 mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
                 mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
             ),
@@ -356,7 +357,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       tagList(
         h5('Risk Score:'),
         selected_pkg$score(),
-        h5('Overall risk:'),
+        h5('Package Decision:'),
         ifelse(selected_pkg$decision() == '', 
                'Pending',
                selected_pkg$decision()))

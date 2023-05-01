@@ -27,6 +27,23 @@ mod_downloadHandler_filetype_ui <- function(id){
     selectInput(ns("report_format"), "Select Format", c("html", "docx", "pdf"))
   )
 }
+
+#' downloadHandler UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id,input,output,session Internal parameters for {shiny}.
+#'
+#' @noRd 
+mod_downloadHandler_include_ui <- function(id){ 
+  # will want to change this to input_UI so we can include additional items
+  # such as "Include comments" checkboxes for summary, maintmetrics, comm usage, and overall comments
+  ns <- NS(id)
+  tagList(
+    shiny::checkboxGroupInput(ns("report_includes"), choices = c("Report Author", "Report Date", "Risk Score" ))
+  )
+}
+
     
 #' downloadHandler Server Functions
 #'
