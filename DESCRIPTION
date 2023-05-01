@@ -58,6 +58,7 @@ Imports:
     shinydashboard,
     shinyjs,
     shinymanager,
+    shinymarkdown (>= 0.0.0.9000),
     shinyWidgets,
     stringr
 Suggests: 
@@ -76,3 +77,5 @@ Language: en-US
 Depends: 
     R (>= 2.10)
 VignetteBuilder: knitr
+Remotes:  
+    jdtrat/shinymarkdown

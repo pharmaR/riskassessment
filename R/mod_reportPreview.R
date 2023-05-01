@@ -37,6 +37,8 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                                 metric_weights) {
   moduleServer(id, function(input, output, session) {
     
+    ns <- session$ns
+    
     # IntroJS.
     introJSServer(id = "introJS", text = reactive(rp_steps), user)
 
@@ -61,8 +63,10 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             ),
             
             br(), br(),
-            
+            # shinymarkdown::mdInput("new_pkg_summary",  hide_mode_switch = FALSE, initial_value = "Write review here."), # height = "300px", 
+            # br(), br(),
             div(id = NS(id, "pkg-summary-grp"),
+              h5("Write Package Summary"),
               uiOutput(NS(id, "pkg_summary_ui")),
               # textAreaInput(
               #   inputId = NS(id, "pkg_summary"),
@@ -139,7 +143,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     
     
     observeEvent(input$edit_pkg_summary, {
-      shinyjs::enable("pkg_summary")
+      shinyjs::enable("pkg_summary", asis = TRUE)
       output$submit_edit_pkg_summary_ui <- renderUI(actionButton(NS(id, "submit_pkg_summary"),"Submit Summary"))
     })
     
@@ -152,8 +156,14 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       
       # If no package/version is selected, then clear comments.
       if(selected_pkg$name() == "-" || selected_pkg$version() == "-"){
-        shinyjs::disabled(updateTextAreaInput(session, "pkg_summary",
-                            placeholder = 'Please select a package and a version.'))
+        shinyjs::disabled(
+          # updateTextAreaInput(session, "pkg_summary",
+          #                   placeholder = 'Please select a package and a version.')
+          div(id = "dis1",
+            shinymarkdown::mdInput(ns("pkg_summary"),  hide_mode_switch = FALSE,
+              height = "250px", initial_value = 'Please select a package and a version.')  
+          )
+        )
       }
       else {
         # Display package comments if a package and version are selected.
@@ -162,25 +172,46 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
         # If no summary, enable text box and submit button
         if(rlang::is_empty(summary)) {
           output$pkg_summary_ui <- renderUI({
-            textAreaInput(NS(id, "pkg_summary"),h5("Write Package Summary"),
-              rows = 8, width = "100%", value = "", placeholder = "Write review here."
-            )
+            # textAreaInput(NS(id, "pkg_summary"), # h5("Write Package Summary"),
+            #   rows = 8, width = "100%", value = "", placeholder = "Write review here."
+            # )
+            shinymarkdown::mdInput("pkg_summary",  hide_mode_switch = FALSE,
+                  height = "250px", initial_value = "Write review here.")
           })
           output$submit_edit_pkg_summary_ui <- renderUI(actionButton(NS(id, "submit_pkg_summary"),"Submit Summary"))
         } else { # summary exists, so disable text box and show edit button
           output$pkg_summary_ui <- renderUI({
-            shinyjs::disabled(textAreaInput(NS(id, "pkg_summary"), h5("Write Package Summary"),
-              rows = 8, width = "100%", value = summary
-            ))
+            shinyjs::disabled(
+              # textAreaInput(NS(id, "pkg_summary"), # h5("Write Package Summary"),
+              #   rows = 8, width = "100%", value = summary
+              # )
+              div(id = "dis2",
+                  shinymarkdown::mdInput("pkg_summary",  hide_mode_switch = FALSE,
+                          height = "250px", initial_value = summary)
+              )
+            )
           })
           output$submit_edit_pkg_summary_ui <- renderUI(actionButton(NS(id, "edit_pkg_summary"),"Edit Summary"))
         }
       }
     })
     
+    observe({
+      print("names(input):")
+      print(names(input))
+    })
+    
     # Update db if comment is submitted.
     observeEvent(input$submit_pkg_summary, {
-      current_summary <- trimws(input$pkg_summary)
+      
+      print('############################')
+      print("MARKDOWN:")
+      print(input["pkg_summary_markdown"])
+      print('############################')
+      print("HTML:")
+      print(input["pkg_summary_html"])
+      
+      current_summary <- trimws(input$pkg_summary_markdown)
       if(current_summary == "")
         validate("Please write a package summary.")
       
@@ -216,7 +247,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
           easyClose = TRUE
         ))
         
-        shinyjs::disable("pkg_summary")
+        shinyjs::disable("pkg_summary", asis = TRUE)
         output$submit_edit_pkg_summary_ui <- renderUI(actionButton(NS(id, "edit_pkg_summary"),"Edit Summary"))
 
       }
@@ -227,7 +258,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       
       req(selected_pkg$name())
       
-      comment <- stringr::str_replace_all(input$pkg_summary, "'", "''")
+      comment <- stringr::str_replace_all(input$pkg_summary_markdown, "'", "''")
       
       dbUpdate(
         glue::glue(
@@ -240,12 +271,12 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
         )
       )
       
-      shinyjs::disable("pkg_summary")
+      shinyjs::disable("pkg_summary", asis = TRUE)
       # shinyjs::hide("submit_pkg_summary")
       # shinyjs::show("edit_pkg_summary")
       output$submit_edit_pkg_summary_ui <- renderUI(actionButton(NS(id, "edit_pkg_summary"),"Edit Summary"))
       
-      # current_summary <- trimws(input$pkg_summary)
+      # current_summary <- trimws(input$pkg_summary_markdown)
       # updateTextAreaInput(session, "pkg_summary", value = "",
       #                     placeholder = glue::glue('Current Summary: \n{current_summary}'))
       removeModal()

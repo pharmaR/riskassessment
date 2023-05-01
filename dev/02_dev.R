@@ -55,6 +55,8 @@ usethis::use_package("kableExtra", type = "Suggests")
 # # usethis::use_package("IDEAFilter") # install.packages("IDEAFilter") #‘0.1.0.9000’
 # usethis::use_dev_package("IDEAFilter") # devtools::install_github("Biogen-Inc/IDEAFilter")
 # 
+
+usethis::use_dev_package("shinymarkdown") # devtools::install_github("jdtrat/shinymarkdown")
 # # usethis::use_dev_package("rsconnect") 
 # usethis::use_package("ggplot2")
 # usethis::use_package("dplyr")
