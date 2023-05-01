@@ -45,7 +45,7 @@ databaseViewUI <- function(id) {
           tags$section(
             shinydashboard::box(width = 12,
                                 title = h3("Decision Categories", style = "margin-top: 5px"),
-                                DT::dataTableOutput(NS(id, "dec_cat_table"))
+                                mod_decision_automation_ui_2("automate")
                                 ))
         ))
     )
@@ -88,13 +88,6 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       }
       inputs
     }
-    
-    dec_table <- reactive({
-      dbSelect("SELECT decision, color, lower_limit, upper_limit FROM decision_categories") %>%
-        dplyr::mutate(lower_limit = dplyr::if_else(is.na(lower_limit), "-", as.character(lower_limit)),
-                      upper_limit = dplyr::if_else(is.na(upper_limit), "-", as.character(upper_limit)))
-      
-      })
     
     # Update table_data if a package has been uploaded
     table_data <- eventReactive({uploaded_pkgs(); changes()}, {
@@ -193,10 +186,6 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
         , style="default"
       ) %>%
         DT::formatStyle(names(table_data()), textAlign = 'center')
-    })
-    
-    output$dec_cat_table <- DT::renderDataTable(sever = FALSE, {
-      DT::datatable(dec_table())
     })
     
     observeEvent(input$select_button, {
