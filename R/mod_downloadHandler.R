@@ -173,6 +173,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               
               # gather comments data
               overall_comments <- get_overall_comments(this_pkg)
+              pkg_summary <- get_pkg_summary(this_pkg)
               mm_comments <- get_mm_comments(this_pkg)
               cm_comments <- get_cm_comments(this_pkg)
               
@@ -194,6 +195,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                               user_name = user$name,
                               user_role = user$role,
                               overall_comments = overall_comments,
+                              pkg_summary = pkg_summary,
                               mm_comments = mm_comments,
                               cm_comments = cm_comments,
                               maint_metrics = mm_data,

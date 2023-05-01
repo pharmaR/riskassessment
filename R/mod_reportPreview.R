@@ -56,6 +56,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             br(), br(),
             
             div(id = "dwnld_rp",
+                h5("Report Configuration"),
                 mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
                 mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
             ),

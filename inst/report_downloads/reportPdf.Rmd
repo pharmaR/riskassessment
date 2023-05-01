@@ -19,6 +19,7 @@ params:
   user_name: NA
   user_role: NA
   overall_comments: NA
+  pkg_summary: NA
   mm_comments: NA
   cm_comments: NA
   maint_metrics: NA
@@ -82,7 +83,7 @@ tagList(
 
 ```{r overall_comments}
 tagList(
-  h2('Overall Comments', style = "padding-bottom:10px;"),
+  h2('Overall Comment', style = "padding-bottom:10px;"),
   wellPanel(
     HTML(outputComments(
       pkg_name = params$pkg$name,
@@ -91,6 +92,16 @@ tagList(
 )
 ```
 
+```{r pkg_summary}
+tagList(
+  h2('Package Summary', style = "padding-bottom:10px;"),
+  wellPanel(
+    HTML(outputComments(
+      pkg_name = params$pkg$name,
+      comments = params$pkg_summary))
+  )
+)
+```
 
 \newpage
 ```{r maintenance_metrics}
