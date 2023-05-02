@@ -28,21 +28,45 @@ mod_downloadHandler_filetype_ui <- function(id){
   )
 }
 
-#' downloadHandler UI Function
+#' downloadHandler Inlcude UI Function
 #'
 #' @description A shiny Module.
 #'
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
 #' @noRd 
-mod_downloadHandler_include_ui <- function(id){ 
+mod_downloadHandler_include_ui <- function(id){
   # will want to change this to input_UI so we can include additional items
-  # such as "Include comments" checkboxes for summary, maintmetrics, comm usage, and overall comments
-  ns <- NS(id)
-  tagList(
-    shiny::checkboxGroupInput(ns("report_includes"), choices = c("Report Author", "Report Date", "Risk Score" ))
+  # such as "Include comments" check boxes for summary, maint-metrics, comm usage, and overall comments
+  my_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
+    "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments")
+  div(
+    strong(p("Elements to include:")),
+    div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
+      # checkboxGroupInput(
+      shinyWidgets::prettyCheckboxGroup(
+        NS(id, "report_includes"), label = NULL, inline = FALSE,
+        choices = my_choices, selected = my_choices
+      )
+    )
   )
 }
+
+# mod_downloadHandler_include_server <- function(id) {
+#   moduleServer(id, function(input, output, session) {
+#     observe({
+#       # print("#####################################")
+#       # print("input$report_includes:")
+#       # print(input$report_includes)
+#       # shinyWidgets::updatePrettyCheckboxGroup("report_includes",)
+#       
+#       # selected = ifelse(is.null(input$report_includes) | input$report_includes != my_choices,
+#       #                   isolate(input$report_includes), my_choices)
+#     })
+#     return(reactive(input$report_includes))
+#   })
+# }
+  
 
     
 #' downloadHandler Server Functions
@@ -206,6 +230,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                 output_file = path,
                 clean = FALSE,
                 params = list(pkg = pkg_list,
+                              report_includes = input$report_includes,
                               riskmetric_version = paste0(packageVersion("riskmetric")),
                               app_version = golem::get_golem_options('app_version'),
                               metric_weights = metric_weights(),

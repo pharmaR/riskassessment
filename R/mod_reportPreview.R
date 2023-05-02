@@ -56,27 +56,38 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             br(), br(),
             
             div(id = "dwnld_rp",
-                h5("Report Configurations"),
-                br(),
-                mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
-                mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
+              h5("Report Configurations"),
+              br(),
+              fluidRow(
+                column(5,
+                  mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
+                  mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
+                ),
+                column(7, 
+                   mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
+                   # div(
+                   #   strong(p("Elements to include:")),
+                   #   div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
+                   #       # checkboxGroupInput(
+                   #       shinyWidgets::prettyCheckboxGroup(
+                   #         NS(id, "report_includes"), label = NULL, inline = FALSE,
+                   #         choices = report_include_choices,
+                   #         selected = if(isolate(input$report_includes) != report_include_choices)
+                   #                       isolate(input$report_includes) else report_include_choices)
+                   #   )
+                   # )
+                 )
+              )
             ),
             
             br(), br(),
             
             div(id = NS(id, "pkg-summary-grp"),
+              # Compose pkg summary - either disabled, enabled, or pre-populated
               uiOutput(NS(id, "pkg_summary_ui")),
-              # textAreaInput(
-              #   inputId = NS(id, "pkg_summary"),
-              #   h5("Write Package Summary"),
-              #   rows = 8, width = "100%",
-              #   value = ""
-              # ),
               
-              # Submit Overall Comment for selected Package.
+              # Submit or Edit Summary for selected Package.
               uiOutput(NS(id, "submit_edit_pkg_summary_ui")),
-              # actionButton(NS(id, "submit_pkg_summary"),"Submit Summary"),
-              # actionButton(NS(id, "edit_pkg_summary"), "Edit Summary")
             ),
             
             br(), br(), 
@@ -86,8 +97,10 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                 
                 HTML("<span class='h2 txtasis'>R Package Risk Assessment  </span><br>"),
                 HTML(glue::glue("<span class='h4 txtasis'>Report for Package: {selected_pkg$name()}</span><br>")),
-                HTML(glue::glue("<span class='h4 txtasis'>Author (Role): {user$name} ({user$role})</span><br>")),
-                HTML(glue::glue("<span class='h4 txtasis'>Report Date: {format(Sys.time(), '%B %d, %Y')}</span><br>")),
+                # if("Report Author" %in% report_includes()) 
+                  HTML(glue::glue("<span class='h4 txtasis'>Author (Role): {user$name} ({user$role})</span><br>")),
+                # if("Report Date" %in% report_includes()) 
+                  HTML(glue::glue("<span class='h4 txtasis'>Report Date: {format(Sys.time(), '%B %d, %Y')}</span><br>")),
                 
                 br(),
                 
@@ -138,7 +151,14 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
         )
       }
     })
-    
+    # call this somewhere
+    # report_includes <- mod_downloadHandler_include_server("downloadHandler")
+    # 
+    # observe({
+    #   print("#####################################")
+    #   print("report_includes():")
+    #   print(report_includes())
+    # })
     
     observeEvent(input$edit_pkg_summary, {
       shinyjs::enable("pkg_summary")
