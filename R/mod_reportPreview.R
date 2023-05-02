@@ -59,11 +59,11 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
               h5("Report Configurations"),
               br(),
               fluidRow(
-                column(5, div(align = 'center',
+                column(4,
                   mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
                   mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
-                )),
-                column(7, 
+                ),
+                column(8, 
                    mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
                    # div(
                    #   strong(p("Elements to include:")),
