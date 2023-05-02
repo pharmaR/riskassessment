@@ -24,7 +24,9 @@ mod_downloadHandler_filetype_ui <- function(id){
   # such as "Include comments" checkboxes for summary, maintmetrics, comm usage, and overall comments
   ns <- NS(id)
   tagList(
-    selectInput(ns("report_format"), "Select Format", c("html", "docx", "pdf"))
+    div(style = 'width:230px;',
+      selectInput(ns("report_format"), "Select Format", c("html", "docx", "pdf"))
+    )
   )
 }
 

@@ -25,16 +25,28 @@ databaseViewUI <- function(id) {
               title = h3("Uploaded Packages", style = "margin-top: 5px"),
               DT::dataTableOutput(NS(id, "packages_table")),
               br(),
+              # fluidRow(
+              #   column(
+              #     width = 6,
+              #     style = "margin: auto;",
+              #     mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = TRUE)),
+              #   column(
+              #     width = 6,
+              #     mod_downloadHandler_filetype_ui(NS(id, "downloadHandler"))
+              #   )
+              # )
+              h5("Report Configurations"),
+              br(),
               fluidRow(
-                column(
-                  width = 6,
-                  style = "margin: auto;",
-                  mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = TRUE)),
-                column(
-                  width = 6,
-                  mod_downloadHandler_filetype_ui(NS(id, "downloadHandler"))
+                column(5,
+                       mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
+                       mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
+                ),
+                column(7, 
+                       mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
                 )
-              )))
+              )
+              ))
       ))
   )
 }
