@@ -24,7 +24,7 @@ test_that("database creation", {
   pkg <- DBI::dbGetQuery(con, "SELECT * FROM package")
   expect_equal(nrow(pkg), 0)
   expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", 
-                             "score", "weighted_score", "decision", "decision_by", "decision_date", "date_added"))
+                             "score", "weighted_score", "decision_id", "decision_by", "decision_date", "date_added"))
   metric <- DBI::dbGetQuery(con, "SELECT * FROM metric")
   expect_equal(nrow(metric), 12)
   expect_equal(names(metric), c("id", "name", "long_name", "is_url", "is_perc", "description", "class", "weight"))
