@@ -447,6 +447,15 @@ mod_decision_automation_server <- function(id, user){
       removeModal()
     })
     
+    observeEvent(auto_decision_update(), {
+      dec_table({
+        dbSelect("SELECT decision, color, lower_limit, upper_limit FROM decision_categories") %>%
+          dplyr::mutate(lower_limit = dplyr::if_else(is.na(lower_limit), "-", as.character(lower_limit)),
+                        upper_limit = dplyr::if_else(is.na(upper_limit), "-", as.character(upper_limit)))
+        
+      })
+    })
+    
     return(auto_decision_update)
   })
 }
