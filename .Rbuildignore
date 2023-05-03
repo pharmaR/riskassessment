@@ -17,6 +17,7 @@ $run_dev.*
 ^((?!/).)*sqlite$
 ^auto_decisions\.json$
 ^library*$
+^codecov\.yml$
 _\.new\.png$
 ^_pkgdown\.yml$
 ^pkgdown$

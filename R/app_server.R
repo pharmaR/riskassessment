@@ -11,6 +11,9 @@ app_server <- function(input, output, session) {
   # Collect user info.
   user <- reactiveValues()
   user$metrics_reweighted <- 0
+  credential_config <- get_golem_config("credentials", file = app_sys("db-config.yml"))
+  role_opts <- list(admin = as.list(credential_config$privileges$admin), 
+                    nonadmin = as.list(setdiff(credential_config$roles, credential_config$privileges$admin)))
   
   
   # this skips authentication if the application is running in test mode
@@ -71,6 +74,9 @@ app_server <- function(input, output, session) {
                 y <- ifelse(.x == "admin-edit_mult_user", "admin-edit_selected_users", .x)
                 observeEvent(input[[y]], {
                   shinyjs::runjs(paste0("document.getElementById('", .x, c("-start-", "-expire-", "-user-"), "label').innerHTML = ", c("'Start Date'", "'Expiration Date'", "'User Name'"), collapse = ";\n"))
+                  role_lst <- list(id = .x, role_opts = role_opts)
+                  # Send the roles to Javascript side for processing
+                  session$sendCustomMessage("roles", role_lst)
                 }, priority = -1)
               })
   

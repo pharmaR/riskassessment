@@ -28,8 +28,8 @@ run_app <- function(
   if(is.null(assessment_db_name)) assessment_db_name <- "database.sqlite"
   credentials_db_name <- get_golem_config('credential_db', file = app_sys("db-config.yml"))
   if(is.null(credentials_db_name)) credentials_db_name <- "credentials.sqlite"
-  decision_categories <- get_golem_config('decision_categories', file = app_sys("db-config.yml"))
-  if(is.null(decision_categories)) decision_categories <- c("Low Risk", "Medium Risk", "High Risk")
+  decisions <- get_golem_config('decisions', file = app_sys("db-config.yml"))
+  decision_categories <- if(is.null(decisions) || is.null(decisions$categories)) c("Low Risk", "Medium Risk", "High Risk") else decisions$categories
   
   if(is.null(login_note)) {
     # https://github.com/rstudio/fontawesome/issues/99
@@ -52,14 +52,16 @@ run_app <- function(
   if (!is.null(arg_lst$pre_auth_user)) {
     pre_auth_user <- arg_lst$pre_auth_user
     if (isTRUE(pre_auth_user) || pre_auth_user == "admin") {
-      credentials_db_name <- "credentials_dev.sqlite"
       login_creds <- list(user_id = "admin",
                           user_pwd = "cxk1QEMYSpYcrNB")
-    } else if (pre_auth_user == "nonadmin") {
-      credentials_db_name <- "credentials_dev.sqlite"
-      login_creds <- list(user_id = "nonadmin",
+    } else if (pre_auth_user == "lead") {
+      login_creds <- list(user_id = "lead",
                           user_pwd = "Bt0dHK383lLP1NM")
+    } else if (pre_auth_user == "reviewer") {
+      login_creds <- list(user_id = "reviewer",
+                          user_pwd = "tgh29f8SH0UllXJ")
     }
+    credentials_db_name <- "credentials_dev.sqlite"
   }
   }
   

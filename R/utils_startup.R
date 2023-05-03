@@ -81,6 +81,7 @@ create_credentials_db <- function(db_name){
     # password will automatically be hashed
     admin = TRUE,
     expire = as.character(Sys.Date()),
+    role = '',
     stringsAsFactors = FALSE
   )
   
@@ -137,10 +138,11 @@ create_credentials_dev_db <- function(db_name){
   
   # Init the credentials table for credentials database
   credentials <- data.frame(
-    user = c("admin", "nonadmin"),
-    password = c("cxk1QEMYSpYcrNB", "Bt0dHK383lLP1NM"),
+    user = c("admin", "lead", "reviewer"),
+    password = c("cxk1QEMYSpYcrNB", "Bt0dHK383lLP1NM", "tgh29f8SH0UllXJ"),
     # password will automatically be hashed
-    admin = c(TRUE, FALSE),
+    admin = c(TRUE, FALSE, FALSE),
+    role = c("admin", "lead", "reviewer"),
     stringsAsFactors = FALSE
   )
   
@@ -169,7 +171,16 @@ create_credentials_dev_db <- function(db_name){
 #'
 #' @export
 initialize_raa <- function(assess_db, cred_db, assess_lib, decision_cat) {
+  if (isTRUE(getOption("shiny.testmode"))) return(NULL)
   
+  db_config <- get_golem_config(NULL, file = app_sys("db-config.yml"))
+  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json")
+  if (any(!names(db_config) %in% used_configs)) {
+    names(db_config) %>%
+      `[`(!. %in% used_configs) %>%
+      purrr::walk(~ warning(glue::glue("Unknown database configuration '{.x}' found in db-config.yml")))
+  }
+
   assessment_db <- if (missing(assess_db)) golem::get_golem_options('assessment_db_name') else assess_db
   credentials_db <- if (missing(cred_db)) golem::get_golem_options('credentials_db_name') else cred_db
   
@@ -182,15 +193,18 @@ initialize_raa <- function(assess_db, cred_db, assess_lib, decision_cat) {
   if (!dir.exists(assessment_lib)) dir.create(assessment_lib)
   
   # Start logging info.
-  if (isRunning()) loggit::set_logfile("loggit.json")
-  
+  loggit_file <- get_golem_config("loggit_json", file = app_sys("db-config.yml"))
+  if (isRunning()) loggit::set_logfile(loggit_file)
+
   # https://github.com/rstudio/fontawesome/issues/99
   # Here, we make sure user has a functional version of fontawesome
   fa_v <- packageVersion("fontawesome")
   if(fa_v == '0.4.0') warning(glue::glue("HTML reports will not render with {{fontawesome}} v0.4.0. You currently have v{fa_v} installed. If the report download failed, please install a stable version. We recommend v0.5.0 or higher."))
   
+  check_credentials(db_config[["credentials"]])
+
   if (isFALSE(getOption("golem.app.prod")) && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(credentials_db)) create_credentials_dev_db(credentials_db)
-  
+
   # Create package db & credentials db if it doesn't exist yet.
   if(!file.exists(assessment_db)) create_db(assessment_db)
   if(!file.exists(credentials_db)) create_credentials_db(credentials_db)
@@ -200,20 +214,24 @@ initialize_raa <- function(assess_db, cred_db, assess_lib, decision_cat) {
   check_dec_cat(decision_categories)
   if (is.null(decisions)) {
     suppressMessages(dbUpdate(paste(scan(app_sys("sql_queries", "create_decision_table.sql"), sep = "\n", what = "character"), collapse = ""), assessment_db))
-    dec_lst <- get_golem_config('decision_rules', file = app_sys("db-config.yml"))
-    if (!is.null(dec_lst)) check_dec_rules(decision_categories, dec_lst)
+    dec_lst <- get_golem_config('decisions', file = app_sys("db-config.yml"))
+    if (!is.null(dec_lst) && !is.null(dec_lst$rules)) check_dec_rules(decision_categories, dec_lst$rules)
     dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', decision_categories, '\\')', collapse = ', ')}"), assessment_db)
-    if (!is.null(dec_lst)) {
-      purrr::iwalk(dec_lst, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'")))
+    if (!is.null(dec_lst) && !is.null(dec_lst$rules)) {
+      purrr::iwalk(dec_lst$rules, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'")))
+    } else {
+      message("No decision rules applied from db-config.yml")
     }
   } else if (nrow(decisions) == 0) {
-    dec_lst <- get_golem_config('decision_rules', file = app_sys("db-config.yml"))
-    if (!is.null(dec_lst)) check_dec_rules(decision_categories, dec_lst)
+    dec_lst <- get_golem_config('decisions', file = app_sys("db-config.yml"))
+    if (!is.null(dec_lst) && !is.null(dec_lst$rules)) check_dec_rules(decision_categories, dec_lst$rules)
     dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', decision_categories, '\\')', collapse = ', ')}"), assessment_db)
-    if (!is.null(dec_lst)) {
-      purrr::iwalk(dec_lst, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'")))
+    if (!is.null(dec_lst) && !is.null(dec_lst$rules)) {
+      purrr::iwalk(dec_lst$rules, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'")))
+    } else {
+      message("No decision rules applied from db-config.yml")
     }
-  } else if (!all.equal(decisions$decision, decision_categories)) {
+  } else if (!identical(decisions$decision, decision_categories)) {
     stop("The decision categories in the configuration file do not match those in the assessment database.")
   }
 
@@ -243,6 +261,7 @@ add_tags <- function(ui, ...) {
     
     if (identical(admin, "true")) {
       ui <- tagList(ui, 
+                    tags$head(favicon(), bundle_resources(app_sys("app/www"), "riskassessment", "shinymanager_resources")),
                     tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';")),
                     tags$script(HTML("var oldfab = Array.prototype.slice.call(document.getElementsByClassName('mfb-component--br'), 0);
                              for (var i = 0; i < oldfab.length; ++i) {
@@ -293,7 +312,7 @@ add_shinymanager_auth <- function(app_ui, app_ver, login_note) {
   if (!isTRUE(getOption("shiny.testmode"))) {
   add_tags(shinymanager::secure_app(app_ui,
     tags_top = tags$div(
-      tags$head(tags$style(HTML(readLines(system.file("app", "www", "css", "login_screen.css", package = "riskassessment"))))),
+      tags$head(favicon(), tags$style(HTML(readLines(app_sys("app/www/css", "login_screen.css"))))),
       tags$head(if (isFALSE(getOption("golem.app.prod")) && !is.null(golem::get_golem_options("pre_auth_user"))) {
         tags$script(HTML(glue::glue("$(document).on('shiny:connected', function () {{
           Shiny.setInputValue('auth-user_id', '{golem::get_golem_options('login_creds')$user_id}');
