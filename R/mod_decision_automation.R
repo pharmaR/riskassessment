@@ -307,7 +307,7 @@ mod_decision_automation_server <- function(id, user){
             right = TRUE,
             width = '600px',
             inputId  = ns("auto_dropdown_2"),
-            tooltip = shinyWidgets::tooltipOptions(title = "Click here to add/adjust decision automation rules.", placement = "left")
+            tooltip = shinyWidgets::tooltipOptions(title = "Click here to edit the decision category table.", placement = "left")
           )
         )
       })
