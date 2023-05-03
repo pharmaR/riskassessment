@@ -34,7 +34,7 @@ mod_downloadHandler_filetype_ui <- function(id){
 #'
 #' @description A shiny Module.
 #'
-#' @param id,input,output,session Internal parameters for {shiny}.
+#' @param id Internal parameters for {shiny}.
 #'
 #' @noRd 
 mod_downloadHandler_include_ui <- function(id){
@@ -54,20 +54,27 @@ mod_downloadHandler_include_ui <- function(id){
   )
 }
 
-# mod_downloadHandler_include_server <- function(id) {
-#   moduleServer(id, function(input, output, session) {
-#     observe({
-#       # print("#####################################")
-#       # print("input$report_includes:")
-#       # print(input$report_includes)
-#       # shinyWidgets::updatePrettyCheckboxGroup("report_includes",)
-#       
-#       # selected = ifelse(is.null(input$report_includes) | input$report_includes != my_choices,
-#       #                   isolate(input$report_includes), my_choices)
-#     })
-#     return(reactive(input$report_includes))
-#   })
-# }
+#' downloadHandler Inlcude Server Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id Internal parameters for {shiny}.
+#'
+#' @noRd 
+mod_downloadHandler_include_server <- function(id) {
+  moduleServer(id, function(input, output, session) {
+    observe({
+      # print("#####################################")
+      # print("input$report_includes:")
+      # print(input$report_includes)
+      # shinyWidgets::updatePrettyCheckboxGroup("report_includes",)
+
+      # selected = ifelse(is.null(input$report_includes) | input$report_includes != my_choices,
+      #                   isolate(input$report_includes), my_choices)
+    })
+    return(reactive(input$report_includes))
+  })
+}
   
 
     

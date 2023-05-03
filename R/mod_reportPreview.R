@@ -4,7 +4,10 @@
 #' @keywords internal
 #' 
 reportPreviewUI <- function(id) {
-  uiOutput(NS(id, "reportPreview_ui"))
+  tagList(
+    uiOutput(NS(id, "reportPreview_configs_ui")),
+    uiOutput(NS(id, "reportPreview_ui"))
+  )
 }
 
 #' Server logic for 'Report Preview' module
@@ -41,7 +44,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     introJSServer(id = "introJS", text = reactive(rp_steps), user)
 
     # Render Output UI for Report Preview.
-    output$reportPreview_ui <- renderUI({
+    output$reportPreview_configs_ui <- renderUI({
       
       # Lets the user know that a package needs to be selected.
       if(identical(selected_pkg$name(), character(0)))
@@ -65,17 +68,6 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                 ),
                 column(8, 
                    mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
-                   # div(
-                   #   strong(p("Elements to include:")),
-                   #   div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
-                   #       # checkboxGroupInput(
-                   #       shinyWidgets::prettyCheckboxGroup(
-                   #         NS(id, "report_includes"), label = NULL, inline = FALSE,
-                   #         choices = report_include_choices,
-                   #         selected = if(isolate(input$report_includes) != report_include_choices)
-                   #                       isolate(input$report_includes) else report_include_choices)
-                   #   )
-                   # )
                  )
               )
             ),
@@ -90,75 +82,111 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
               uiOutput(NS(id, "submit_edit_pkg_summary_ui")),
             ),
             
-            br(), br(), 
-            
+            br(), br()
+          )
+        )
+      }
+    })
+    
+    
+    
+    
+    
+    
+    
+    # return vector of elements to include in the report
+    report_includes <- mod_downloadHandler_include_server("downloadHandler")
+    
+    
+    
+    # Render Output UI for Report Preview.
+    output$reportPreview_ui <- renderUI({
+      
+      # The user know that a package needs to be selected from reportPreview_configs_ui
+      # above, so leave this one empty
+      if(identical(selected_pkg$name(), character(0))) ""
+      
+      else {
+        fluidPage(
+          tagList(
             div(id = "rep_prev", style = "border: 3px solid; padding: 30px; box-shadow: 5px 10px 8px #888888;",
-                br(),
-                
-                HTML("<span class='h2 txtasis'>R Package Risk Assessment  </span><br>"),
-                HTML(glue::glue("<span class='h4 txtasis'>Report for Package: {selected_pkg$name()}</span><br>")),
-                # if("Report Author" %in% report_includes()) 
-                  HTML(glue::glue("<span class='h4 txtasis'>Author (Role): {user$name} ({user$role})</span><br>")),
-                # if("Report Date" %in% report_includes()) 
-                  HTML(glue::glue("<span class='h4 txtasis'>Report Date: {format(Sys.time(), '%B %d, %Y')}</span><br>")),
-                
-                br(),
-                
-                fluidRow(
-                  column(
-                    width = 12,
-                    h5('General Information'),
-                    uiOutput(NS(id, "pkg_overview")),
-                    uiOutput(NS(id, "decision_display")))
-                ),
-                
+              br(),
+              
+              HTML("<span class='h2 txtasis'>R Package Risk Assessment  </span><br>"),
+              HTML(glue::glue("<span class='h4 txtasis'>Report for Package: {selected_pkg$name()}</span><br>")),
+              if("Report Author" %in% report_includes())
+                HTML(glue::glue("<span class='h4 txtasis'>Author (Role): {user$name} ({user$role})</span><br>")),
+              if("Report Date" %in% report_includes())
+                HTML(glue::glue("<span class='h4 txtasis'>Report Date: {format(Sys.time(), '%B %d, %Y')}</span><br>")),
+              
+              br(),
+              
+              fluidRow(
+                column(
+                  width = 12,
+                  h5('General Information'),
+                  uiOutput(NS(id, "pkg_overview")),
+                  uiOutput(NS(id, "decision_display")))
+              ),
+              
+              if('Overall Comment' %in% report_includes()){
                 fluidRow(
                   column(width = 12, viewCommentsUI(NS(id, 'overall_comments')))
-                ),
+                )
+              } else "",
+              if('Package Summary' %in% report_includes()){
                 fluidRow(
                   column(width = 12, viewCommentsUI(NS(id, 'pkg_summary')))
-                ),
-                
-                br(), br(),
-                hr(),
-                fluidRow(
-                  column(width = 12,
-                         h5("Maintenance Metrics",
-                            style = "text-align: center; padding-bottom: 50px;"),
-                         metricGridUI(session$ns('mm_metricGrid')),
-                         viewCommentsUI(NS(id, 'mm_comments')))
-                ),
-                
-                br(), br(),
-                hr(),
-                fluidRow(
-                  column(width = 12, uiOutput(NS(id, 'communityMetrics_ui')))
-                ),
-                br(), br(),
-                hr(),
-                fluidRow(
-                  column(width = 12,
-                         h5("About Report",
-                            style = "text-align: center; padding-bottom: 50px;"),
-                         fluidRow(column(width = 12,
-                                         uiOutput(NS(id, 'about_report')),
-                                         h5('Weights Table:'),
-                                         DT::dataTableOutput(NS(id, 'weights_table'))
-                         )))
                 )
+              } else "",
+              
+
+              if(any(c('Maintenance Metrics', 'Maintenance Comments') %in% report_includes())) {
+                tagList(
+                  br(), br(),
+                  hr(),
+                  fluidRow(
+                    column(width = 12,
+                           h5("Maintenance Metrics",
+                              style = "text-align: center; padding-bottom: 50px;"),
+                           if('Maintenance Metrics' %in% report_includes())
+                             metricGridUI(session$ns('mm_metricGrid')) else "",
+                           if('Maintenance Comments' %in% report_includes())
+                             viewCommentsUI(NS(id, 'mm_comments')) else ""
+                    )
+                  )
+                )
+              } else "",
+
+              if(any(c('Community Usage Metrics', 'Community Usage Comments') %in% report_includes())) {
+                tagList(
+                  br(), br(),
+                  hr(),
+                  fluidRow(
+                    column(width = 12, uiOutput(NS(id, 'communityMetrics_ui')))
+                  )
+                )
+              } else "",
+              
+              br(), br(),
+              hr(),
+              fluidRow(
+                column(width = 12,
+                       h5("About Report",
+                          style = "text-align: center; padding-bottom: 50px;"),
+                       fluidRow(column(width = 12,
+                                       uiOutput(NS(id, 'about_report')),
+                                       if('Risk Score' %in% report_includes()) h5('Weights Table:') else "",
+                                       if('Risk Score' %in% report_includes())
+                                         DT::dataTableOutput(NS(id, 'weights_table')) else ""
+                       )))
+              )
             )
           )
         )
       }
     })
-    # call this somewhere
-    # report_includes <- mod_downloadHandler_include_server("downloadHandler")
-    # 
-    # observe({
-    #   print("#####################################")
-    #   print("report_includes():")
-    #   print(report_includes())
-    # })
+    
     
     observeEvent(input$edit_pkg_summary, {
       shinyjs::enable("pkg_summary")
@@ -262,14 +290,10 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
         )
       )
       
+      # disable text editor and flip button to "edit"
       shinyjs::disable("pkg_summary")
-      # shinyjs::hide("submit_pkg_summary")
-      # shinyjs::show("edit_pkg_summary")
       output$submit_edit_pkg_summary_ui <- renderUI(actionButton(NS(id, "edit_pkg_summary"),"Edit Summary"))
-      
-      # current_summary <- trimws(input$pkg_summary)
-      # updateTextAreaInput(session, "pkg_summary", value = "",
-      #                     placeholder = glue::glue('Current Summary: \n{current_summary}'))
+
       removeModal()
     })
     
@@ -342,11 +366,16 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
         tagList(
           h5("Community Usage Metrics",
              style = "text-align: center; padding-bottom: 50px;"),
-          metricGridUI(NS(id, 'cm_metricGrid')),
-          div(id = "cum_plot", fluidRow(
-            column(width = 12, style = 'padding-left: 20px; padding-right: 20px;',
-                   plotly::plotlyOutput(NS(id, "downloads_plot"), height = "500px")))),
-          viewCommentsUI(NS(id, 'cm_comments'))
+          if('Community Usage Metrics' %in% report_includes()) {
+            tagList(
+              metricGridUI(NS(id, 'cm_metricGrid')),
+              div(id = "cum_plot", fluidRow(
+                column(width = 12, style = 'padding-left: 20px; padding-right: 20px;',
+                       plotly::plotlyOutput(NS(id, "downloads_plot"), height = "500px"))))
+            )
+          } else "",
+          if('Community Usage Comments' %in% report_includes())
+            viewCommentsUI(NS(id, 'cm_comments')) else ""
         )
       }
       
@@ -375,11 +404,8 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       req(selected_pkg$name())
       
       tagList(
-        h5('Risk Score:'),
-        selected_pkg$score(),
-        h5('Package Decision:'),
-        ifelse(selected_pkg$decision() == '', 
-               'Pending',
+        if('Risk Score' %in% report_includes()) tagList(h5('Risk Score:'), selected_pkg$score()) else "",
+        h5('Package Decision:'),ifelse(selected_pkg$decision() == '', 'Pending',
                selected_pkg$decision()))
     })
     
@@ -403,8 +429,10 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     }, options = list(dom = "t", searching = FALSE, pageLength = -1, lengthChange = FALSE,
                       info = FALSE,
                       columnDefs = list(list(className = 'dt-center', targets = 2))
-                      ))
+                      )
+    )
     
+    # Call download handler server
     mod_downloadHandler_server("downloadHandler", selected_pkg$name, user, metric_weights)
   })
 }
