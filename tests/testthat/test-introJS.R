@@ -100,7 +100,7 @@ test_that("The introJS module works as expected for admins", {
   expect_equal(community_metrics, steps)
   
   app$click(selector = ".introjs-skipbutton")
-  app$set_inputs(tabs = "Report Preview")
+  app$set_inputs(tabs = "Build Report")
   app$wait_for_idle()
   
   app$click("reportPreview-introJS-help")
