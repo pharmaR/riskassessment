@@ -103,6 +103,9 @@ mod_decision_automation_server <- function(id, user){
       }
     )
     
+    
+    color_lst <- get_colors(golem::get_golem_options("assessment_db_name"))
+    
     auto_decision_initial <- process_dec_tbl(golem::get_golem_options('assessment_db_name'))
     auto_decision_update <- reactiveVal(auto_decision_initial)
     auto_decision <- reactiveValues()
@@ -248,21 +251,23 @@ mod_decision_automation_server <- function(id, user){
                       .x, 0, 1, initial_values[[.x]],
                       width = "100%", sep = .01)
         ))
-        col_divs <- purrr::map(decision_lst, ~ div(
-          class = "shinyjs-hide",
-          style = "width: 100%",
+        col_divs <- purrr::map2(decision_lst, color_lst, ~ div(
+          style = "width: 33%",
           colourpicker::colourInput(ns(glue::glue("{risk_lbl(.x, input = FALSE)}_col_2")),
-                                    "")
+                                    .x, .y)
         ))
         div(
           style = "float: right;",
           shinyWidgets::dropdownButton(
             div(
-              style = "display: flex;",
-              selectInput(ns("dec_color"), "Select Display Color For...", decision_lst),
+              style = "display: flex",
+              span(strong("Select Display Colors For Categories"), style = "font-size: x-large"),
               actionButton(ns("auto_reset_2"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
             ),
-            col_divs,
+            br(),
+            div(col_divs, style = "display: flex; flex-wrap: wrap"),
+            actionButton(ns("submit_color"), "Apply Category Colors", width = "100%"),
+            br(),
             checkboxGroupInput(ns("auto_include_2"), "Auto-Assign Decisions For...", decision_lst, selected = intersect(initial_selection, decision_lst), inline = TRUE),
             dec_divs,
             br(),
