@@ -87,7 +87,7 @@ mod_decision_automation_ui_2 <- function(id){
 #' 
 #' @importFrom purrr compact
 #' @importFrom shinyWidgets tooltipOptions
-#' @importFrom colourpicker colourInput
+#' @importFrom colourpicker colourInput updateColourInput
 mod_decision_automation_server <- function(id, user){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
@@ -105,6 +105,7 @@ mod_decision_automation_server <- function(id, user){
     
     
     color_lst <- get_colors(golem::get_golem_options("assessment_db_name"))
+    color_current <- reactiveVal(color_lst)
     
     auto_decision_initial <- process_dec_tbl(golem::get_golem_options('assessment_db_name'))
     auto_decision_update <- reactiveVal(auto_decision_initial)
@@ -252,7 +253,7 @@ mod_decision_automation_server <- function(id, user){
                       width = "100%", sep = .01)
         ))
         col_divs <- purrr::map2(decision_lst, color_lst, ~ div(
-          style = "width: 33%",
+          style = "width: 33.3%",
           colourpicker::colourInput(ns(glue::glue("{risk_lbl(.x, input = FALSE)}_col_2")),
                                     .x, .y)
         ))
@@ -261,14 +262,18 @@ mod_decision_automation_server <- function(id, user){
           shinyWidgets::dropdownButton(
             div(
               style = "display: flex",
-              span(strong("Select Display Colors For Categories"), style = "font-size: x-large"),
-              actionButton(ns("auto_reset_2"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
+              span("Select Category Colors", style = "font-size: x-large; font-weight: bold"),
+              actionButton(ns("col_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
             ),
             br(),
             div(col_divs, style = "display: flex; flex-wrap: wrap"),
             actionButton(ns("submit_color"), "Apply Category Colors", width = "100%"),
-            br(),
+            hr(),
+            div(
+              style = "display: flex",
             checkboxGroupInput(ns("auto_include_2"), "Auto-Assign Decisions For...", decision_lst, selected = intersect(initial_selection, decision_lst), inline = TRUE),
+            actionButton(ns("auto_reset_2"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
+            ),
             dec_divs,
             br(),
             actionButton(ns("submit_auto_2"), "Apply Decision Rules", width = "100%"),
@@ -373,6 +378,12 @@ mod_decision_automation_server <- function(id, user){
       shinyjs::click("auto_reset")
     })
     
+    observeEvent(input$col_reset, {
+      purrr::walk2(decision_lst, color_current(), ~ {
+        colourpicker::updateColourInput(session, glue::glue("{risk_lbl(.x, input = FALSE)}_col_2"), value = .y)
+      })
+    })
+    
     output$modal_table <- 
       DT::renderDataTable({
         out_lst <- purrr::compact(reactiveValuesToList(auto_decision))
@@ -427,6 +438,32 @@ mod_decision_automation_server <- function(id, user){
       shinyjs::click("submit_auto")
     })
     
+    observeEvent(input$submit_color, {
+      req(user$role == "admin")
+      
+      showModal(modalDialog(
+        size = "l",
+        easyClose = TRUE,
+        h5("Change Decision Category Colors", style = 'text-align: center !important'),
+        hr(),
+        br(),
+        fluidRow(
+          column(
+            width = 12,
+            'Please confirm your chosen color palette: ',
+            br(),
+            DT::DTOutput(ns("modal_col_table")),
+            br(),
+            br()
+          )
+        ),
+        br(),
+        footer = tagList(
+          actionButton(ns('confirm_submit_col'), 'Submit'),
+          actionButton(ns('cancel'), 'Cancel')
+        )))
+    })
+    
     # Close modal if user cancels decision submission.
     observeEvent(input$cancel, {
       removeModal()
@@ -452,14 +489,33 @@ mod_decision_automation_server <- function(id, user){
       removeModal()
     })
     
-    observeEvent(auto_decision_update(), {
+    observeEvent(input$confirm_submit_col, {
+      req(user$role)
+      req(user$role == "admin")
+      
+      selected_colors <- 
+        decision_lst %>%
+        purrr::map_chr(~ input[[glue::glue("{risk_lbl(.x, input = FALSE)}_col_2")]]) %>%
+        purrr::set_names(decision_lst)
+      purrr::iwalk(selected_colors, ~ {
+        dbUpdate(glue::glue("UPDATE decision_categories SET color = '{.x}' WHERE decision = '{.y}'"))
+        shinyjs::runjs(glue::glue("document.documentElement.style.setProperty('--{risk_lbl(.y, input = FALSE)}-color', '{.x}');"))
+        })
+      loggit::loggit("INFO", glue::glue("The decision category display colors were modified by {user$name} ({user$role})"))
+      color_current(selected_colors)
+      
+      removeModal()
+    })
+    
+    observe({
       dec_table({
         dbSelect("SELECT decision, color, lower_limit, upper_limit FROM decision_categories") %>%
           dplyr::mutate(lower_limit = dplyr::if_else(is.na(lower_limit), "-", as.character(lower_limit)),
                         upper_limit = dplyr::if_else(is.na(upper_limit), "-", as.character(upper_limit)))
         
       })
-    })
+    }) %>%
+      bindEvent(auto_decision_update(), color_current())
     
     return(auto_decision_update)
   })
