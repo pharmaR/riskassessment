@@ -154,7 +154,31 @@ mod_decision_automation_server <- function(id, user){
         }
       })
     
-    output$dec_cat_table <- DT::renderDataTable(dec_table())
+    output$dec_cat_table <- DT::renderDataTable({
+      formattable::as.datatable(
+        formattable::formattable(
+          dec_table(),
+          list(
+            color = formattable::formatter(
+              "span",
+              style = x ~ formattable::style(display = "block",
+                                             "border-radius" = "4px",
+                                             "padding-right" = "4px",
+                                             "font-weight" = "bold",
+                                             "color" = "white",
+                                             "background-color" = x))
+          )),
+        colnames = c("Category", "Color", "Lower Bound", "Upper Bound"),
+        rownames = FALSE,
+        options = list(
+          pageLength = -1,
+          dom = 't',
+          columnDefs = list(list(className = 'dt-center', targets = "_all"))
+        ),
+        style = "default"
+      ) %>%
+        DT::formatStyle(names(dec_table()), textAlign = 'center')
+    })
     
     output$auto_classify <- renderUI({
       if (user$role == "admin") {
