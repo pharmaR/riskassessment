@@ -18,7 +18,7 @@ test_that("Reactivity of reportPreview", {
   # set pkg_name to dplyr
   app$set_inputs(`sidebar-select_pkg` = "dplyr")
   # get to the Report Preview tab
-  app$set_inputs(tabs = "Report Preview")
+  app$set_inputs(tabs = "Build Report")
   app$wait_for_idle()
    
  # set file type to pdf
