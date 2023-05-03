@@ -340,11 +340,11 @@ mod_decision_automation_server <- function(id, user){
         })
       
       auto_current(input$auto_include)
-    }, ignoreNULL = FALSE)
+    }, ignoreNULL = FALSE, ignoreInit = TRUE)
     
     observeEvent(input$auto_include_2, {
       updateCheckboxGroupInput(session, "auto_include", choices = decision_lst, selected = input$auto_include_2, inline = TRUE)
-    }, ignoreNULL = FALSE)
+    }, ignoreNULL = FALSE, ignoreInit = TRUE)
     
     purrr::iwalk(decision_lst, function(.x, .y) {
       this_lbl <- risk_lbl(.x)
