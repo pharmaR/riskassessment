@@ -316,7 +316,7 @@ mod_decision_automation_server <- function(id, user){
     
     observeEvent(input$auto_include, {
       
-      updateCheckboxGroupInput(session, "auto_include_2", selected = input$auto_include)
+      updateCheckboxGroupInput(session, "auto_include_2", choices = decision_lst, selected = input$auto_include, inline = TRUE)
       grp_added <- setdiff(input$auto_include, auto_current())
       grp_removed <- setdiff(auto_current(), input$auto_include)
       
@@ -343,7 +343,7 @@ mod_decision_automation_server <- function(id, user){
     }, ignoreNULL = FALSE)
     
     observeEvent(input$auto_include_2, {
-      updateCheckboxGroupInput(session, "auto_include", selected = input$auto_include_2)
+      updateCheckboxGroupInput(session, "auto_include", choices = decision_lst, selected = input$auto_include_2, inline = TRUE)
     }, ignoreNULL = FALSE)
     
     purrr::iwalk(decision_lst, function(.x, .y) {
