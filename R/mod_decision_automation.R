@@ -171,6 +171,7 @@ mod_decision_automation_server <- function(id, user){
         colnames = c("Category", "Color", "Lower Bound", "Upper Bound"),
         rownames = FALSE,
         options = list(
+          ordering = FALSE,
           pageLength = -1,
           dom = 't',
           columnDefs = list(list(className = 'dt-center', targets = "_all"))
@@ -429,6 +430,53 @@ mod_decision_automation_server <- function(id, user){
           iDisplayLength = -1,
           ordering = FALSE
         ))
+      })
+    
+    output$modal_col_table <- 
+      DT::renderDataTable({
+        selected_colors <- 
+          decision_lst %>%
+          purrr::map_chr(~ input[[glue::glue("{risk_lbl(.x, input = FALSE)}_col_2")]])
+        
+        mod_tbl <-
+          dplyr::tibble(
+            decision = decision_lst,
+            old_color = color_current(),
+            new_color = selected_colors
+          )
+        
+        formattable::as.datatable(
+          formattable::formattable(
+            mod_tbl,
+            list(
+              old_color = formattable::formatter(
+                "span",
+                style = x ~ formattable::style(display = "block",
+                                               "border-radius" = "4px",
+                                               "padding-right" = "4px",
+                                               "font-weight" = "bold",
+                                               "color" = "white",
+                                               "background-color" = x)),
+              new_color = formattable::formatter(
+                "span",
+                style = x ~ formattable::style(display = "block",
+                                               "border-radius" = "4px",
+                                               "padding-right" = "4px",
+                                               "font-weight" = "bold",
+                                               "color" = "white",
+                                               "background-color" = x))
+            )),
+          colnames = c("Category", "Old Color", "New Color"),
+          rownames = FALSE,
+          options = list(
+            ordering = FALSE,
+            pageLength = -1,
+            dom = 't',
+            columnDefs = list(list(className = 'dt-center', targets = "_all"))
+          ),
+          style = "default"
+        ) %>%
+          DT::formatStyle(names(mod_tbl), textAlign = 'center')
       })
     
     observeEvent(input$submit_auto, {
