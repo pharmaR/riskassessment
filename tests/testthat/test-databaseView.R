@@ -15,7 +15,7 @@ test_that("Reactivity of database view table", {
   )
   
   # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 60*1000)
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
   
   app$set_inputs(apptabs = "database-tab")
   
