@@ -539,6 +539,8 @@ mod_decision_automation_server <- function(id, user){
     # Close modal if user cancels decision submission.
     observeEvent(input$cancel, {
       removeModal()
+      shinyjs::runjs(glue::glue("$('#{ns(\"auto_dropdown\")}.show').dropdown('toggle');"))
+      shinyjs::runjs(glue::glue("$('#{ns(\"auto_dropdown_2\")}.show').dropdown('toggle');"))
     })
     
     observeEvent(input$confirm_submit_auto, {
@@ -559,6 +561,8 @@ mod_decision_automation_server <- function(id, user){
       }
       
       removeModal()
+      shinyjs::runjs(glue::glue("$('#{ns(\"auto_dropdown\")}.show').dropdown('toggle');"))
+      shinyjs::runjs(glue::glue("$('#{ns(\"auto_dropdown_2\")}.show').dropdown('toggle');"))
     })
     
     observeEvent(input$confirm_submit_col, {
@@ -577,6 +581,7 @@ mod_decision_automation_server <- function(id, user){
       color_current(selected_colors)
       
       removeModal()
+      shinyjs::runjs(glue::glue("$('#{ns(\"auto_dropdown\")}.show').dropdown('toggle');"))
     })
     
     observe({
