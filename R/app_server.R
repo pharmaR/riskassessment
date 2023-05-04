@@ -190,6 +190,7 @@ app_server <- function(input, output, session) {
   dependencies_data <- packageDependenciesServer('packageDependencies',
                                                selected_pkg,
                                                user,
+                                               changes,
                                                parent = session)
   
   output$auth_output <- renderPrint({
