@@ -322,13 +322,17 @@ uploadPackageServer <- function(id, user) {
             
             user_ver <- uploaded_packages$version[i]
             incProgress(1, detail = glue::glue("{uploaded_packages$package[i]} {user_ver}"))
+            if (assessment_lib$editable && length(find.package(uploaded_packages$package[i], lib.loc = assessment_lib$location, quiet = TRUE)) == 0) {
+              install.packages(uploaded_packages$package[i], lib = assessment_lib$location)
+            } else if (assessment_lib$editable && uploaded_packages$version[i] != as.character(packageVersion(uploaded_packages$package[i], lib.loc = assessment_lib$location))) {
+              install.packages(uploaded_packages$package[i], lib = assessment_lib$location)
+            }
             
             if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
               # run pkg_ref() to get pkg version and source info
               if (!isTRUE(getOption("shiny.testmode")))
                 ref <- riskmetric::pkg_ref(uploaded_packages$package[i],
-                                           source = "pkg_cran_remote",
-                                           repos = c("https://cran.rstudio.com"))
+                                           lib.loc = assessment_lib$location)
               else
                 ref <- test_pkg_refs[[uploaded_packages$package[i]]]
             } else {
@@ -381,10 +385,10 @@ uploadPackageServer <- function(id, user) {
             if(!found) {
               # Get and upload pkg general info to db.
               incProgress(1, detail = deets)
-              insert_pkg_info_to_db(uploaded_packages$package[i])
+              insert_pkg_info_to_db(uploaded_packages$package[i], assessment_lib$location)
               # Get and upload maintenance metrics to db.
               incProgress(1, detail = deets)
-              insert_riskmetric_to_db(uploaded_packages$package[i])
+              insert_riskmetric_to_db(pkg_ref = ref)
               # Get and upload community metrics to db.
               incProgress(1, detail = deets)
               insert_community_metrics_to_db(uploaded_packages$package[i])
