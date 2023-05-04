@@ -105,6 +105,12 @@ get_latest_pkg_info <- function(pkg_name) {
   return(table_info)
 }
 
+#' 
+get_install_pkg_info <- function(pkg_name, lib_loc) {
+  packageDescription(pkg_name, lib_loc, fields = c("Title", "Description", "Version", "Maintainer", "Author", "License", "Published")) %>%
+    do.call(what = dplyr::tibble)
+}
+
 #' Generate Community Usage Data
 #' 
 #' @description 
