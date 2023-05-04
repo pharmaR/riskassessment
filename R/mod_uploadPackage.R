@@ -71,12 +71,11 @@ uploadPackageUI <- function(id) {
 uploadPackageServer <- function(id, user) {
   moduleServer(id, function(input, output, session) {
     
-    assessment_lib <- do.call(reactiveValues, get_golem_config("assessment_lib", file = app_sys("db-config.yml")))
-    
-    observeEvent(assessment_lib$location, {
-      assessment_lib$packages <- list.files(assessment_lib$location)
-    })
-    
+    assessment_lib <- get_golem_config("assessment_lib", file = app_sys("db-config.yml"))
+    assessment_lib$packages <- 
+        list.files(assessment_lib$location) %>%
+        purrr::map_dfr(~ data.frame(name = .x, version = .x %>% packageVersion(assessment_lib$location) %>% as.character()))
+
     # Determine which guide to use for IntroJS.
     upload_pkg_txt <- reactive({
       req(uploaded_pkgs())
