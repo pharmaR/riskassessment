@@ -4,7 +4,6 @@ default:
   assessment_lib:
     location: ./library
     editable: true
-    required: false
   loggit_json: loggit.json
   credentials:
     roles:
