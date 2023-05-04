@@ -90,12 +90,8 @@ uploadPackageServer <- function(id, user) {
     })
     
     auto_list <- mod_decision_automation_server("automate", user)
-    pkg_lst <- reactiveValues()
+    pkg_lst <- reactiveValues(Library = purrr::pmap_chr(assessment_lib$packages, function(name, version) {paste(name, "-", version)}))
     
-    observeEvent(assessment_lib$packages, {
-      req(assessment_lib$packages)
-      pkg_lst[["Library"]] <- assessment_lib$packages
-    })
 
     cran_pkgs <- reactiveVal()
     
@@ -111,8 +107,10 @@ uploadPackageServer <- function(id, user) {
     once = TRUE)
     
     observeEvent(cran_pkgs(), {
-      if (isTRUE(assessment_lib$packages))
-        pkg_lst[["CRAN"]] <- cran_pkgs()[,"Package"]
+      req(isTRUE(assessment_lib$editable))
+      
+      pkg_lst[["CRAN"]] <- 
+        purrr::pmap_chr(cran_pkgs(), function(Package, Version) {paste(Package, "-", Version)})
     })
     
     pkgs_have <- reactiveVal()
@@ -193,10 +191,7 @@ uploadPackageServer <- function(id, user) {
             pkg_info <- stringr::str_split(.x, " - ", simplify = TRUE)
             dplyr::tibble(
               package = pkg_info[2],
-              version = switch(pkg_info[1], 
-                               CRAN = with(cran_pkgs(), Version[Package == pkg_info[2]]),
-                               Library = as.character(packageVersion(pkg_info[2], lib.loc = assessment_lib$location)),
-                               NA_character_),
+              version = pkg_info[3],
               status = ''
             )
           }
