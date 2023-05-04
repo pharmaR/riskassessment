@@ -19,6 +19,7 @@ dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_
   errFlag <- FALSE
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
+  command <- glue::glue_sql(command, .con = con)
   tryCatch({
     rs <- DBI::dbSendStatement(con, command)
   }, error = function(err) {
