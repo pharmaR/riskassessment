@@ -12,6 +12,7 @@ packageDependenciesUI <- function(id) {
 #' @param id a module id name
 #' @param selected_pkg placeholder
 #' @param user placeholder 
+#' @param changes a reactive value integer count
 #' @param parent the parent (calling module) session information
 #' 
 #' @import dplyr
@@ -29,7 +30,7 @@ packageDependenciesUI <- function(id) {
 #' 
 #' @keywords internal
 #' 
-packageDependenciesServer <- function(id, selected_pkg, user, parent) {
+packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
@@ -110,11 +111,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
       m_id(cli::cli_progress_message("About to Create Data Table...", .auto_close = FALSE))
     }, ignoreInit = TRUE)
     
-    pkg_df <- eventReactive(list(selected_pkg$name(),tabready()), {
+    pkg_df <- eventReactive({selected_pkg$name(); tabready()}, {
       req(!rlang::is_empty(selected_pkg$name()))
       req(selected_pkg$name() != "-")
-      cat("in pkg_df: selected_pkg$name is",selected_pkg$name(),"\n")
       req(tabready() == 1L)
+      cat("in pkg_df: selected_pkg$name is",selected_pkg$name(),"\n")
       
       pkginfo <- riskmetric::pkg_ref(selected_pkg$name()) %>% 
         riskmetric::assess_dependencies() %>%  
@@ -233,10 +234,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
       }
     }) # renderUI
     
-    pkgname <- reactiveVal()
-    
     observeEvent(input$select_button, {
-      req(pkg_df())
       add_pkg(0L)
       
       selectedRow <- as.numeric(strsplit(input$select_button, "_")[[1]][2])
@@ -245,31 +243,16 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
       pkg_name <- pkg_df()[selectedRow, 3] %>% pull() 
       cat("pkg_name is ",pkg_name,"\n")
       
-      pkgname(pkg_name)
-      
       if(!pkg_name %in% dbSelect('SELECT name FROM package')$name) {
-        
-        # select maintenance metrics panel
-        # updateTabsetPanel(session = parent,
-        #                   inputId = 'tabs',
-        #                   selected = "Upload Package"
-        # )
-        
+
         updateSelectizeInput(session = parent, "upload_package-pkg_lst", 
                              choices = c(pkg_name), selected = pkg_name)
         
         session$onFlushed(function() {
           shinyjs::click(id = "upload_package-add_pkgs", asis = TRUE)
           
-          add_pkg(1L)
-          
+        add_pkg(1L)
         }) 
-        
-        # select Package Dependencies panel
-        # updateTabsetPanel(session = parent, 
-        #                   inputId = 'tabs', 
-        #                   selected = "Package Dependencies"
-        # )
         
       } else {
         # update sidebar-select_pkg
@@ -280,27 +263,34 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
           selected = pkg_name
         )}
       
-    }) # observeEvent
+    }, ignoreInit = TRUE) # observeEvent
     
-    observeEvent(add_pkg(), {
+    names_vect <- eventReactive({add_pkg(); changes()}, {
       req(add_pkg() == 1L)
-      print("observeEvent for add_pkg()")
-      cat("package we wanted was", pkgname(), "\n")
+      
+      dbSelect('SELECT name FROM package')$name
+    
+    })
+    
+    observeEvent(names_vect(), {
+
+      print("observeEvent for names_vect")
+      
+      print(paste(names_vect(), collapse = ","))
       
       pkgs <- dbSelect("select name from package")[,1]
       
-      print(paste(pkgs, collapse = ","))
-      print(pkgs[length(pkgs)])
+      pkg_name <- names_vect()[length(names_vect())]
+      
+      print(pkg_name)
       
       updateSelectizeInput(
         session = parent,
         inputId = "sidebar-select_pkg",
         choices = c("-", dbSelect('SELECT name FROM package')$name),
-        selected = pkgname()
-      )
-      
-      print(selected_pkg$name())
-      
+        selected = pkg_name
+        )
+
     }, ignoreInit = TRUE)
     
   }) # moduleServer
