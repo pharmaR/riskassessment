@@ -51,14 +51,15 @@ dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_
 #' 
 #' @returns nothing
 #' @noRd
-insert_pkg_info_to_db <- function(pkg_name, 
+insert_pkg_info_to_db <- function(pkg_name,
+                                  lib_loc,
                                   db_name = golem::get_golem_options('assessment_db_name')) {
   tryCatch(
     expr = {
       # get latest high-level package info
       # pkg_name <- "dplyr" # testing
       if (!isTRUE(getOption("shiny.testmode")))
-        pkg_info <- get_latest_pkg_info(pkg_name)
+        pkg_info <- get_install_pkg_info(pkg_name, lib_loc)
       else
         pkg_info <- test_pkg_info[[pkg_name]]
       
@@ -143,19 +144,24 @@ upload_package_to_db <- function(name, version, title, description,
 #' 
 #' @returns nothing
 #' @noRd
-insert_riskmetric_to_db <- function(pkg_name, 
-    db_name = golem::get_golem_options('assessment_db_name')){
+insert_riskmetric_to_db <- function(pkg_name,
+                                    lib_loc,
+    db_name = golem::get_golem_options('assessment_db_name'),
+    pkg_ref){
 
-  if (!isTRUE(getOption("shiny.testmode")))
-    riskmetric_assess <-
-      riskmetric::pkg_ref(pkg_name,
-                          source = "pkg_cran_remote",
-                          repos = c("https://cran.rstudio.com")) %>%
+   
+  if (isTRUE(getOption("shiny.testmode"))) {
+    riskmetric_assess <- test_pkg_assess[[pkg_name]]
+  } else if (!missing(pkg_ref)) {
+    riskmetric_assess <- pkg_ref %>%
       dplyr::as_tibble() %>%
       riskmetric::pkg_assess()
-  else
-    riskmetric_assess <-
-      test_pkg_assess[[pkg_name]]
+    pkg_name <- pkg_ref$name
+  } else {
+    riskmetric_assess <- riskmetric::pkg_ref(pkg_name, lib.loc = lib_loc) %>%
+      dplyr::as_tibble() %>%
+      riskmetric::pkg_assess()
+  }
   
   # Get the metrics weights to be used during pkg_score.
   metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric", db_name)
