@@ -18,7 +18,7 @@ assign_decisions <- function(decision_list, package) {
                          WHERE name = {package}")
     loggit::loggit("INFO",
                    glue::glue("decision for the package {package} was assigned {decision} by decision automation rules"))
-    comment <- glue::glue("Decision was assigned ''{decision}'' by decision rules because the risk score was between {decision_list[[decision]][1]} and {decision_list[[decision]][2]}")
+    comment <- glue::glue("Decision was assigned '{decision}' by decision rules because the risk score was between {decision_list[[decision]][1]} and {decision_list[[decision]][2]}")
     dbUpdate(
       "INSERT INTO comments
           VALUES ({package}, 'Auto Assigned', 'admin',

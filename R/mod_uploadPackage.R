@@ -91,7 +91,7 @@ uploadPackageServer <- function(id, user, auto_list) {
     })
 
     auto_list <- mod_decision_automation_server("automate", user)
-    s <- reactiveValues(Library = purrr::pmap_chr(library$packages, function(name, version) {paste(name, "-", version)}))
+    pkg_lst <- reactiveValues(Library = purrr::pmap_chr(library$packages, function(name, version) {paste(name, "-", version)}))
     
     cran_pkgs <- reactiveVal()
     
@@ -394,18 +394,18 @@ uploadPackageServer <- function(id, user, auto_list) {
           for (i in 1:np) {
             
             user_ver <- uploaded_packages$version[i]
-            setProgress((i-1)*6+1, detail = glue::glue("Querying {uploaded_packages$package[i]} V{user_ver}"))
+            setProgress((i-1)*6+1, detail = glue::glue("Querying {uploaded_packages$package[i]} v{user_ver}"))
             if (!isTRUE(getOption("shiny.testmode"))) {
               if (library$editable && length(find.package(uploaded_packages$package[i], lib.loc = library$location, quiet = TRUE)) == 0) {
-                incProgress(1, detail = glue::glue("Installing {uploaded_packages$package[i]} V{user_ver}"))
+                incProgress(1, detail = glue::glue("Installing {uploaded_packages$package[i]} v{user_ver}"))
                 install.packages(uploaded_packages$package[i], lib = library$location, repos = "https://cran.rstudio.com")
               } else if (library$editable && uploaded_packages$version[i] != as.character(packageDescription(uploaded_packages$package[i], lib.loc = library$location, "Version"))) {
-                incProgress(1, detail = glue::glue("Installing {uploaded_packages$package[i]} V{user_ver}"))
+                incProgress(1, detail = glue::glue("Installing {uploaded_packages$package[i]} v{user_ver}"))
                 install.packages(uploaded_packages$package[i], lib = library$location, repos = "https://cran.rstudio.com")
               }
             }
             
-            incProgress(1, detail = glue::glue("Creating {{riskmetric}} Reference {uploaded_packages$package[i]} V{user_ver}"))
+            incProgress(1, detail = glue::glue("Creating {{riskmetric}} Reference {uploaded_packages$package[i]} v{user_ver}"))
             if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
               # run pkg_ref() to get pkg version and source info
               if (!isTRUE(getOption("shiny.testmode")))
@@ -419,7 +419,7 @@ uploadPackageServer <- function(id, user, auto_list) {
             }
             
             if (ref$source %in% c("pkg_missing", "name_bad")) {
-              incProgress(1, detail = 'Reference Error {uploaded_packages$package[i]} V{user_ver}')
+              incProgress(1, detail = 'Reference Error {uploaded_packages$package[i]} v{user_ver}')
               
               # Suggest alternative spellings using utils::adist() function
               v <- utils::adist(uploaded_packages$package[i], cran_pkgs(), ignore.case = FALSE)
@@ -442,8 +442,8 @@ uploadPackageServer <- function(id, user, auto_list) {
             
             ref_ver <- as.character(ref$version)
             
-            if(user_ver == ref_ver) ver_msg <- glue::glue('V{ref_ver}')
-            else ver_msg <- glue::glue("V{ref_ver}, not V{user_ver}")
+            if(user_ver == ref_ver) ver_msg <- glue::glue('v{ref_ver}')
+            else ver_msg <- glue::glue("v{ref_ver}, not v{user_ver}")
             
             as.character(ref$version)
             deets <- glue::glue("{uploaded_packages$package[i]} {ver_msg}")

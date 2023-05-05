@@ -228,11 +228,10 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
           )
         ))
       } else {
-        comment <- stringr::str_replace_all(current_comment, "'", "''")
         dbUpdate(
           "INSERT INTO comments
           VALUES ({selected_pkg$name}, {user$name}, {user$role},
-          {comment}, 'o', {getTimeStamp()})")
+          {current_comment}, 'o', {getTimeStamp()})")
         
         updateTextAreaInput(session, "overall_comment", value = "",
                             placeholder = glue::glue('Current Comment: {current_comment}'))
