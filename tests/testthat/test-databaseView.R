@@ -1,5 +1,5 @@
 test_that("Reactivity of database view table", {
-  skip_on_ci()
+  
   # delete app DB if exists to ensure clean test
   app_db_loc <- test_path("test-apps", "database.sqlite")
   if (file.exists(app_db_loc)) {
@@ -52,7 +52,7 @@ test_that("Reactivity of database view table", {
   
   app$run_js("Shiny.setInputValue('upload_package-load_cran', 'load')")
   app$wait_for_idle()
-  app$set_inputs(`upload_package-pkg_lst` = "tidyr")
+  app$set_inputs(`upload_package-pkg_lst` = "CRAN - tidyr - 1.3.0")
   app$click("upload_package-add_pkgs", wait_ = FALSE)
   app$wait_for_value(export = "databaseView-table_data", 
                      ignore = tbl_actual, timeout = 30 * 1000 )
