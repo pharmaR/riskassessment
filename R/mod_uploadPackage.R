@@ -123,7 +123,7 @@ uploadPackageServer <- function(id, user) {
       choice_lst <- reactiveValuesToList(pkg_lst) %>%
         purrr::imap(~ setNames(paste(.y, .x, sep = " - "), .x))
       choice_lst <- choice_lst[sort(names(choice_lst), decreasing = TRUE)]
-      updateSelectizeInput(session, "pkg_lst", choices = choice_lst, selected = input$pkg_lst, server = TRUE)
+      updateSelectizeInput(session, "pkg_lst", choices = choice_lst, server = TRUE)
     })
     
     observeEvent(pkgs_have(), {
