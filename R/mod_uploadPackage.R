@@ -319,38 +319,46 @@ uploadPackageServer <- function(id, user) {
           )
         )
       
-      showModal(modalDialog(
-        size = "l",
-        if (any(uploaded_packages$action == "install")) 
-          tagList(
-            h1("Packages to Install", style = "font-weight: bold; font-size: x-large"),
-          checkboxGroupInput(session$ns("install_pkg_lst"), "",
-                                             choices = uploaded_packages %>% dplyr::filter(action == "install") %>% dplyr::pull(label),
-                                             selected = uploaded_packages %>% dplyr::filter(action == "install") %>% dplyr::pull(label))
-          ),
-        if (any(uploaded_packages$action == "update")) 
-          tagList(
-            h1("Packages to Update", style = "font-weight: bold; font-size: x-large"),
-          checkboxGroupInput(session$ns("update_pkg_lst"), "",
-                                             choices = uploaded_packages %>% dplyr::filter(action == "update") %>% dplyr::pull(label),
-                                             selected = uploaded_packages %>% dplyr::filter(action == "update") %>% dplyr::pull(label))
-          ),
-        if (any(uploaded_packages$action == "assess")) 
-          tagList(
-            h1("Packages to Assess", style = "font-weight: bold; font-size: x-large"),
-          checkboxGroupInput(session$ns("assess_pkg_lst"), "",
-                                             choices = uploaded_packages %>% dplyr::filter(action == "assess") %>% dplyr::pull(label),
-                                             selected = uploaded_packages %>% dplyr::filter(action == "assess") %>% dplyr::pull(label))
-          ),
-        footer = tagList(
-          actionButton(session$ns("submit"), "Submit"),
-          # TODO: Implement a background upload process
-          # actionButton(session$ns("background"), "Background"),
-          actionButton(session$ns('cancel'), 'Cancel')
-        )
-      ))
-      
-      uploaded_pkgs01(uploaded_packages)
+      if (isTRUE(getOption("shiny.testmode"))) {
+        uploaded_pkgs02({
+          uploaded_packages %>%
+            dplyr::filter(label %in% c(input$install_pkg_lst, input$update_pkg_lst, input$assess_pkg_lst)) %>%
+            dplyr::select(-action, -label)
+        })
+      } else {
+        showModal(modalDialog(
+          size = "l",
+          if (any(uploaded_packages$action == "install")) 
+            tagList(
+              h1("Packages to Install", style = "font-weight: bold; font-size: x-large"),
+              checkboxGroupInput(session$ns("install_pkg_lst"), "",
+                                 choices = uploaded_packages %>% dplyr::filter(action == "install") %>% dplyr::pull(label),
+                                 selected = uploaded_packages %>% dplyr::filter(action == "install") %>% dplyr::pull(label))
+            ),
+          if (any(uploaded_packages$action == "update")) 
+            tagList(
+              h1("Packages to Update", style = "font-weight: bold; font-size: x-large"),
+              checkboxGroupInput(session$ns("update_pkg_lst"), "",
+                                 choices = uploaded_packages %>% dplyr::filter(action == "update") %>% dplyr::pull(label),
+                                 selected = uploaded_packages %>% dplyr::filter(action == "update") %>% dplyr::pull(label))
+            ),
+          if (any(uploaded_packages$action == "assess")) 
+            tagList(
+              h1("Packages to Assess", style = "font-weight: bold; font-size: x-large"),
+              checkboxGroupInput(session$ns("assess_pkg_lst"), "",
+                                 choices = uploaded_packages %>% dplyr::filter(action == "assess") %>% dplyr::pull(label),
+                                 selected = uploaded_packages %>% dplyr::filter(action == "assess") %>% dplyr::pull(label))
+            ),
+          footer = tagList(
+            actionButton(session$ns("submit"), "Submit"),
+            # TODO: Implement a background upload process
+            # actionButton(session$ns("background"), "Background"),
+            actionButton(session$ns('cancel'), 'Cancel')
+          )
+        ))
+        
+        uploaded_pkgs01(uploaded_packages)
+      }
     })
     
     observeEvent(input$cancel, {
