@@ -160,7 +160,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
           # updateTextAreaInput(session, "pkg_summary",
           #                   placeholder = 'Please select a package and a version.')
           div(id = "dis1",
-            shinymarkdown::mdInput(ns("pkg_summary"),  hide_mode_switch = FALSE,
+            shinymarkdown::mdInput("pkg_summary",  hide_mode_switch = FALSE,
               height = "250px", initial_value = 'Please select a package and a version.')  
           )
         )
