@@ -123,7 +123,7 @@ uploadPackageServer <- function(id, user) {
       choice_lst <- reactiveValuesToList(pkg_lst) %>%
         purrr::imap(~ setNames(paste(.y, .x, sep = " - "), .x))
       choice_lst <- choice_lst[sort(names(choice_lst), decreasing = TRUE)]
-      updateSelectizeInput(session, "pkg_lst", choices = choice_lst, server = TRUE)
+      updateSelectizeInput(session, "pkg_lst", choices = choice_lst, selected = input$pkg_lst, server = TRUE)
     })
     
     observeEvent(pkgs_have(), {
@@ -381,19 +381,22 @@ uploadPackageServer <- function(id, user) {
       # incProgress() function calls in the loop, plus one to show
       # the incProgress() that the process is completed.
       withProgress(
-        max = (np * 5) + 1, value = 0,
-        message = "Uploading Packages to DB:", {
+        max = (np * 6) + 1, value = 0,
+        message = "Processing Packages:", {
           
           for (i in 1:np) {
             
             user_ver <- uploaded_packages$version[i]
-            incProgress(1, detail = glue::glue("{uploaded_packages$package[i]} {user_ver}"))
+            setProgress((i-1)*6+1, detail = glue::glue("Querying {uploaded_packages$package[i]} V{user_ver}"))
             if (assessment_lib$editable && length(find.package(uploaded_packages$package[i], lib.loc = assessment_lib$location, quiet = TRUE)) == 0) {
+              incProgress(1, detail = glue::glue("Installing {uploaded_packages$package[i]} V{user_ver}"))
               install.packages(uploaded_packages$package[i], lib = assessment_lib$location, repos = "https://cran.rstudio.com")
             } else if (assessment_lib$editable && uploaded_packages$version[i] != as.character(packageDescription(uploaded_packages$package[i], lib.loc = assessment_lib$location, "Version"))) {
+              incProgress(1, detail = glue::glue("Installing {uploaded_packages$package[i]} V{user_ver}"))
               install.packages(uploaded_packages$package[i], lib = assessment_lib$location, repos = "https://cran.rstudio.com")
             }
             
+            incProgress(1, detail = glue::glue("Creating {{riskmetric}} Reference {uploaded_packages$package[i]} V{user_ver}"))
             if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
               # run pkg_ref() to get pkg version and source info
               if (!isTRUE(getOption("shiny.testmode")))
@@ -407,7 +410,7 @@ uploadPackageServer <- function(id, user) {
             }
             
             if (ref$source %in% c("pkg_missing", "name_bad")) {
-              incProgress(1, detail = 'Package {uploaded_packages$package[i]} not found')
+              incProgress(1, detail = 'Reference Error {uploaded_packages$package[i]} V{user_ver}')
               
               # Suggest alternative spellings using utils::adist() function
               v <- utils::adist(uploaded_packages$package[i], cran_pkgs(), ignore.case = FALSE)
@@ -420,7 +423,7 @@ uploadPackageServer <- function(id, user) {
               
               if (ref$source == "pkg_missing")
                 loggit::loggit('WARN',
-                               glue::glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
+                               glue::glue('Package {ref$name} was flagged by {{riskmetric}} as {ref$source}.'))
               else
                 loggit::loggit('WARN',
                                glue::glue("Riskmetric can't interpret '{ref$name}' as a package reference."))
@@ -430,14 +433,14 @@ uploadPackageServer <- function(id, user) {
             
             ref_ver <- as.character(ref$version)
             
-            if(user_ver == ref_ver) ver_msg <- ref_ver
-            else ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
+            if(user_ver == ref_ver) ver_msg <- glue::glue('V{ref_ver}')
+            else ver_msg <- glue::glue("V{ref_ver}, not V{user_ver}")
             
             as.character(ref$version)
             deets <- glue::glue("{uploaded_packages$package[i]} {ver_msg}")
             
             # Save version.
-            incProgress(1, detail = deets)
+            incProgress(1, detail = glue::glue('Uploading {deets}'))
             uploaded_packages$version[i] <- as.character(ref$version)
             
             found <- nrow(dbSelect(
@@ -450,13 +453,13 @@ uploadPackageServer <- function(id, user) {
             # Add package and metrics to the db if package is not in the db.
             if(!found) {
               # Get and upload pkg general info to db.
-              incProgress(1, detail = deets)
+              incProgress(1, detail = glue::glue('Uploading Package Information {deets}'))
               insert_pkg_info_to_db(uploaded_packages$package[i], assessment_lib$location)
               # Get and upload maintenance metrics to db.
-              incProgress(1, detail = deets)
+              incProgress(1, detail = glue::glue('Uploading {{riskmetric}} Metrics {deets}'))
               insert_riskmetric_to_db(pkg_ref = ref)
               # Get and upload community metrics to db.
-              incProgress(1, detail = deets)
+              incProgress(1, detail = glue::glue('Uploading Community Metrics {deets}'))
               insert_community_metrics_to_db(uploaded_packages$package[i])
               uploaded_packages$score[i] <- get_pkg_info(uploaded_packages$package[i])$score
               if (!rlang::is_empty(auto_list())) {
