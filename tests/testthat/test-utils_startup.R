@@ -114,7 +114,7 @@ test_that("database initialization", {
   expect_error(initialize_raa(cred_db = "tmp_cred.sqlite"),
                "assess_db must follow SQLite naming conventions.*")
   
-  db_lst <- initialize_raa("tmp_assess.sqlite", "tmp_cred.sqlite", c("Low Risk", "Medium Risk", "High Risk"))
+  db_lst <- initialize_raa("tmp_assess.sqlite", "tmp_cred.sqlite", "./library", c("Low Risk", "Medium Risk", "High Risk"))
   on.exit(unlink(db_lst))
   expect_true(file.exists(db_lst[1]))
   expect_true(file.exists(db_lst[2]))
