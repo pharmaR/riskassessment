@@ -45,7 +45,7 @@ test_that("utils_get_db functions other than dbSelect", {
     dbUpdate(command, app_db_loc)
   }
 
-  insert_riskmetric_to_db(pkg_name, app_db_loc)
+  insert_riskmetric_to_db(pkg_name, NULL, app_db_loc) #Passing lib_loc = NULL results in old behavior (i.e. a CRAN source instead of local)
   pkg_id <- dbSelect("SELECT id FROM package WHERE name = {pkg_name}", app_db_loc)
   
   insert_community_metrics_to_db(pkg_name, app_db_loc)
