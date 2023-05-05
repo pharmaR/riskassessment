@@ -236,6 +236,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       }
     }) # renderUI
     
+    pkgname <- reactiveVal()
+    
     observeEvent(input$select_button, {
       add_pkg(0L)
       
@@ -244,18 +246,29 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       # grab the package name
       pkg_name <- pkg_df()[selectedRow, 3] %>% pull() 
       cat("pkg_name is ",pkg_name,"\n")
+      pkgname("")
       
       if(!pkg_name %in% dbSelect('SELECT name FROM package')$name) {
+        pkgname(pkg_name)
+        
+        showModal(modalDialog(
+          size = "l",
+          easyClose = TRUE,
+          h5("Package not Loaded", style = 'text-align: center !important'),
+          hr(),
+          br(),
+          fluidRow(
+            column(
+              width = 12,
+              'Please confirm to load this package: ', span(class = 'text-info', input$decision),
+            )
+          ),
+          br(),
+          footer = tagList(
+            actionButton(NS(id, 'confirm'), 'Load Package'),
+            actionButton(NS(id, 'cancel'), 'Cancel')
+          )))
 
-        updateSelectizeInput(session = parent, "upload_package-pkg_lst", 
-                             choices = c(pkg_name), selected = pkg_name)
-        
-        session$onFlushed(function() {
-          shinyjs::click(id = "upload_package-add_pkgs", asis = TRUE)
-          
-        add_pkg(1L)
-        }) 
-        
       } else {
         # update sidebar-select_pkg
         updateSelectizeInput(
@@ -266,7 +279,28 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         )}
       
     }, ignoreInit = TRUE) # observeEvent
+
+    observeEvent(input$confirm, {
+      print("load package was selected")
+      
+      removeModal()
+      
+      updateSelectizeInput(session = parent, "upload_package-pkg_lst",
+                           choices = c(pkgname()), selected = pkgname())
+
+      session$onFlushed(function() {
+        shinyjs::click(id = "upload_package-add_pkgs", asis = TRUE)
+
+      add_pkg(1L)
+      })
+      
+    })
     
+  # Close modal if user cancels decision submission.
+  observeEvent(input$cancel, {
+    removeModal()
+  })
+  
     names_vect <- eventReactive({add_pkg(); changes()}, {
       req(add_pkg() == 1L)
       
