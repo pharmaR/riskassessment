@@ -52,6 +52,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         riskmetric::pkg_score(weights = metric_weights)
       
       cli::cli_progress_update(id = id)
+      
       return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = round(riskmetric_score$pkg_score,2) ))
     }
     
@@ -128,9 +129,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         filter(!name %in% c(rownames(installed.packages(priority="base")))) 
       if (nrow(pkginf2) > 0) pkginfo <- pkginf2
       
-      cl_id <- cli::cli_progress_bar("Creating Data Table...", 
+      pkg_name <- ""
+      cl_id <- cli::cli_progress_bar("Loading Package: ", 
                                      type = "iterator",
-                                     format = "{cli::pb_percent} | ETA: {cli::pb_eta}",
+                                     format = "{pkg_name} {cli::pb_percent} | ETA: {cli::pb_eta}",
                                      total = nrow(pkginfo))
       
       purrr::map_df(pkginfo$name, ~get_versnScore(.x, cl_id), .progress = TRUE) %>% 
