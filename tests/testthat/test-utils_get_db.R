@@ -24,10 +24,10 @@ test_that("utils_get_db functions other than dbSelect", {
   command <- glue::glue(
     "INSERT or REPLACE INTO package
         (name, version, title, description, maintainer, author,
-        license, published_on, decision, decision_by, decision_date, date_added)
+        license, published_on, decision_by, decision_date, date_added)
         VALUES('{pkg_name}', '{pkg_info$Version}', '{pkg_info$Title}', '{pkg_info$Description}',
         '{pkg_info$Maintainer}', '{pkg_info$Author}', '{pkg_info$License}', '{pkg_info$Published}',
-        '', '', null, '{Sys.Date()}')")
+        '', null, '{Sys.Date()}')")
   
   dbUpdate(command, app_db_loc)
   
@@ -92,7 +92,7 @@ test_that("utils_get_db functions other than dbSelect", {
     expect_s3_class(pkg, "data.frame")
     expect_equal(nrow(pkg), 1) 
     expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", 
-                               "score", "weighted_score", "decision", "decision_by", "decision_date", "date_added"))
+                               "score", "weighted_score", "decision_id", "decision_by", "decision_date", "date_added", "decision"))
   })
   
   test_that("get_metric_weights works", {

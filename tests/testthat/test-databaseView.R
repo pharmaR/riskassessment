@@ -15,13 +15,13 @@ test_that("Reactivity of database view table", {
   )
   
   # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 60*1000)
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
   
   app$set_inputs(apptabs = "database-tab")
   
   #### Test that the `table_data` loads correctly ####
   tbl_expect <-
-    structure(list(name = "dplyr", version = "1.0.10", score = 0.1, 
+    structure(list(name = "dplyr", version = "1.1.2", score = 0.29, 
                    decision = "-", decision_by = "-", decision_date = "-",
                    last_comment = "-"), 
               class = "data.frame", row.names = c(NA, -1L))
@@ -37,7 +37,7 @@ test_that("Reactivity of database view table", {
   app$click("sidebar-submit_confirmed_decision")
   
   tbl_expect <-
-    structure(list(name = "dplyr", version = "1.0.10", score = 0.1, 
+    structure(list(name = "dplyr", version = "1.1.2", score = 0.29, 
                    decision = "Low Risk", decision_by = "test_user", decision_date = as.character(Sys.Date()),
                    last_comment = "-"), 
               class = "data.frame", row.names = c(NA, -1L))

@@ -38,6 +38,7 @@ Imports:
     bslib (>= 0.3.0),
     cli,
     config (>= 0.3.1),
+    colourpicker,
     cranlogs,
     DBI,
     deepdep,

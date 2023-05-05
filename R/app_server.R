@@ -120,13 +120,14 @@ app_server <- function(input, output, session) {
   })
   
   # Load server of the reweightView module.
-  metric_weights <- reweightViewServer("reweightInfo", user, uploaded_pkgs$auto_decision)
+  metric_weights <- reweightViewServer("reweightInfo", user, auto_decision)
   
   # Load server of the uploadPackage module.
-  uploaded_pkgs <- uploadPackageServer("upload_package", user)
+  auto_decision <- mod_decision_automation_server("automate", user)
+  uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision)
   
   # Load server of the sidebar module.
-  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs$names)
+  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs)
   
   changes <- reactiveVal(0)
   observe({
@@ -139,7 +140,7 @@ app_server <- function(input, output, session) {
   
   # Load server of the database view module.
   #parentSession <- .subset2(session, "parent")
-  databaseViewServer("databaseView", user, uploaded_pkgs$names,
+  databaseViewServer("databaseView", user, uploaded_pkgs,
                      metric_weights = metric_weights, changes, parent = session)
   
   # Gather maintenance metrics information.

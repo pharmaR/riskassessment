@@ -50,7 +50,7 @@ upload_pkg <- data.frame(
 )
 
 upload_adm <- data.frame(
-  element = c("#rem-package-group", "#upload_package-automate-auto_dropdown_state"),
+  element = c("#rem-package-group", "#automate-auto_dropdown_state"),
   intro = c("If you are an admin, you can also remove packages here.", "Decision automation: Automatically assign package risk decisions based on {riskmetric}-derived risk scores when uploading packages to the database."),
   position = c("top", "left")
 )
