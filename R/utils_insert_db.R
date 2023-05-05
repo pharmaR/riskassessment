@@ -154,7 +154,8 @@ insert_riskmetric_to_db <- function(pkg_name,
 
    
   if (isTRUE(getOption("shiny.testmode"))) {
-    pkg_name <- pkg_ref$name
+    if (!missing(pkg_ref))
+      pkg_name <- pkg_ref$name
     riskmetric_assess <- test_pkg_assess[[pkg_name]]
   } else if (!missing(pkg_ref)) {
     riskmetric_assess <- pkg_ref %>%
