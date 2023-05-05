@@ -206,7 +206,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                                                                          "transparent")))
                              )),
                            selection = list(mode = 'multiple'),
-                           colnames = c("Package", "Type", "Name", "Version", "Score", "Explore Metrics"),
+                           colnames = c("Package", "Type", "Name", "Version", "Score", "Review Package"),
                            rownames = FALSE,
                            style="default"
                          ) %>%
