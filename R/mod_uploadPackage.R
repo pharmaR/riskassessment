@@ -344,14 +344,19 @@ uploadPackageServer <- function(id, user) {
           ),
         footer = tagList(
           actionButton(session$ns("submit"), "Submit"),
-          actionButton(session$ns("background"), "Background"),
-          modalButton("Cancel")
+          # TODO: Implement a background upload process
+          # actionButton(session$ns("background"), "Background"),
+          actionButton(session$ns('cancel'), 'Cancel')
         )
       ))
       
       uploaded_pkgs01(uploaded_packages)
     })
     
+    observeEvent(input$cancel, {
+      uploaded_pkgs01(NULL)
+      removeModal()
+      })
     
     uploaded_pkgs02 <- reactiveVal()
     observeEvent(input$submit, {
@@ -361,6 +366,7 @@ uploadPackageServer <- function(id, user) {
           dplyr::select(-action, -label)
       })
       uploaded_pkgs01(NULL)
+      removeModal()
     })
     uploaded_pkgs <- reactiveVal(data.frame())
     # Save all the uploaded packages, marking them as 'new', 'not found', 
