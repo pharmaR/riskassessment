@@ -48,7 +48,7 @@ install_package <- function(package, version, lib.loc) {
   }
 }
 
-#' Get the package general information from CRAN/local
+#' Get the package general information from CRAN
 #' 
 #' @param pkg_name string name of the package
 #' 
@@ -105,7 +105,12 @@ get_latest_pkg_info <- function(pkg_name) {
   return(table_info)
 }
 
+#' Get the package information from local library
 #' 
+#' @param pkg_name string name of the package
+#' @param lib_loc string name of library directory path
+#' 
+#' @keywords internal
 get_install_pkg_info <- function(pkg_name, lib_loc) {
   packageDescription(pkg_name, lib_loc, fields = c("Title", "Description", "Version", "Maintainer", "Author", "License", "Published")) %>%
     do.call(what = dplyr::tibble)

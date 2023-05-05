@@ -2,7 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{get_latest_pkg_info}
 \alias{get_latest_pkg_info}
-\title{Get the package general information from CRAN/local}
+\title{Get the package general information from CRAN}
 \usage{
 get_latest_pkg_info(pkg_name)
 }
@@ -10,6 +10,6 @@ get_latest_pkg_info(pkg_name)
 \item{pkg_name}{string name of the package}
 }
 \description{
-Get the package general information from CRAN/local
+Get the package general information from CRAN
 }
 \keyword{internal}

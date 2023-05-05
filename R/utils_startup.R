@@ -164,6 +164,7 @@ create_credentials_dev_db <- function(db_name){
 #' 
 #' @param assess_db A string denoting the name of the assessment database.
 #' @param cred_db A string denoting the name of the credentials database.
+#' @param assess_lib A string denoting the path of the project's R package library
 #' @param decision_cat A character vector denoting the decision categories in ascending order of risk
 #'
 #' @return There is no return value. The function is run for its side effects.

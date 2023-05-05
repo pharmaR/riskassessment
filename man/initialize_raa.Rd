@@ -11,6 +11,8 @@ initialize_raa(assess_db, cred_db, assess_lib, decision_cat)
 
 \item{cred_db}{A string denoting the name of the credentials database.}
 
+\item{assess_lib}{A string denoting the path of the project's R package library}
+
 \item{decision_cat}{A character vector denoting the decision categories in ascending order of risk}
 }
 \value{

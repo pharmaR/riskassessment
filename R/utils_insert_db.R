@@ -5,6 +5,7 @@
 #'
 #' @param command a string
 #' @param db_name character name (and file path) of the database
+#' @param .envir environment passed to `glue::glue_sql()` to evaluate each expression in 
 #'
 #' @import dplyr
 #' @importFrom DBI dbConnect dbSendStatement dbClearResult dbDisconnect
