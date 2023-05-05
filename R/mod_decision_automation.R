@@ -352,7 +352,7 @@ mod_decision_automation_server <- function(id, user){
           
           out_lst <- purrr::compact(reactiveValuesToList(auto_decision))
           dbUpdate("UPDATE decision_categories SET lower_limit = NULL, upper_limit = NULL")
-          purrr::iwalk(out_lst, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[2]} WHERE decision = '{.y}'")))
+          purrr::iwalk(out_lst, ~ dbUpdate("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[2]} WHERE decision = {.y}"))
           auto_decision_update(out_lst)
           
           if (length(out_lst) == 0) {

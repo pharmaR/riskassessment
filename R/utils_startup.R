@@ -218,7 +218,7 @@ initialize_raa <- function(assess_db, cred_db, assess_lib, decision_cat) {
     if (!is.null(dec_lst) && !is.null(dec_lst$rules)) check_dec_rules(decision_categories, dec_lst$rules)
     dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', decision_categories, '\\')', collapse = ', ')}"), assessment_db)
     if (!is.null(dec_lst) && !is.null(dec_lst$rules)) {
-      purrr::iwalk(dec_lst$rules, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'")))
+      purrr::iwalk(dec_lst$rules, ~ dbUpdate("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = {.y}"))
     } else {
       message("No decision rules applied from db-config.yml")
     }
@@ -227,7 +227,7 @@ initialize_raa <- function(assess_db, cred_db, assess_lib, decision_cat) {
     if (!is.null(dec_lst) && !is.null(dec_lst$rules)) check_dec_rules(decision_categories, dec_lst$rules)
     dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', decision_categories, '\\')', collapse = ', ')}"), assessment_db)
     if (!is.null(dec_lst) && !is.null(dec_lst$rules)) {
-      purrr::iwalk(dec_lst$rules, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'")))
+      purrr::iwalk(dec_lst$rules, ~ dbUpdate("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = {.y}"))
     } else {
       message("No decision rules applied from db-config.yml")
     }

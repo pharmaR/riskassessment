@@ -64,7 +64,7 @@ test_that("both dbUpdate and dbSelect work", {
   testthat::expect_equal(pkg_info$Title, tbl1$title)
   
   # clean up after ourselves
-  command <- glue::glue("DELETE from [package] WHERE ( name = '{pkg_name}')")
+  command <- "DELETE from [package] WHERE ( name = {pkg_name})"
   dbUpdate(command, app_db_loc)
   
   tbl1 <- dbSelect(query, app_db_loc)

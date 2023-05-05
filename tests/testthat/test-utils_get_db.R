@@ -21,13 +21,13 @@ test_that("utils_get_db functions other than dbSelect", {
   
   pkg_info <- get_latest_pkg_info(pkg_name)
   
-  command <- glue::glue(
+  command <- 
     "INSERT or REPLACE INTO package
         (name, version, title, description, maintainer, author,
         license, published_on, decision, decision_by, decision_date, date_added)
-        VALUES('{pkg_name}', '{pkg_info$Version}', '{pkg_info$Title}', '{pkg_info$Description}',
-        '{pkg_info$Maintainer}', '{pkg_info$Author}', '{pkg_info$License}', '{pkg_info$Published}',
-        '', '', null, '{Sys.Date()}')")
+        VALUES({pkg_name}, {pkg_info$Version}, {pkg_info$Title}, {pkg_info$Description},
+        {pkg_info$Maintainer}, {pkg_info$Author}, {pkg_info$License}, {pkg_info$Published},
+        '', '', null, {Sys.Date()})"
   
   dbUpdate(command, app_db_loc)
   
@@ -38,15 +38,15 @@ test_that("utils_get_db functions other than dbSelect", {
   
   for(i in seq_along(abrv)) { 
     metric_abrv <- abrv[i]
-    command <- glue::glue(
-      "INSERT INTO comments values('{pkg_name}', '{user_name}', 
-        '{user_role}', '{comment}', '{metric_abrv}',
-        '{getTimeStamp()}')")
+    command <- 
+      "INSERT INTO comments values({pkg_name}, {user_name}, 
+        {user_role}, {comment}, {metric_abrv},
+        {getTimeStamp()})"
     dbUpdate(command, app_db_loc)
   }
 
   insert_riskmetric_to_db(pkg_name, app_db_loc)
-  pkg_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"), app_db_loc)
+  pkg_id <- dbSelect("SELECT id FROM package WHERE name = {pkg_name}", app_db_loc)
   
   insert_community_metrics_to_db(pkg_name, app_db_loc)
   
