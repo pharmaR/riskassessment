@@ -63,6 +63,12 @@ test_pkg_refs <-
   test_pkg_refs_compl %>%
   purrr::map(~ .x[c("name", "version", "source")] %>% purrr::set_names(c("name", "version", "source")))
 
+test_pkg_df <-
+  test_pkg_refs %>%
+  map(~ .x["version"]) %>%
+  stack() %>%
+  dplyr::rename("Version"="values","Package"="ind")
+
 test_pkg_info <-
   test_pkg_lst %>%
   purrr::map(get_latest_pkg_info) %>%
@@ -89,6 +95,6 @@ usethis::use_data(
   maintenance_metrics_text, maintenance_metrics_tbl,
   testing_text, testing_tbl,
   riskcalc_text, template,
-  test_pkg_lst, test_pkg_refs, test_pkg_info, test_pkg_assess, test_pkg_cum,
+  test_pkg_df, test_pkg_refs, test_pkg_info, test_pkg_assess, test_pkg_cum,
   color_palette,
   internal = TRUE, overwrite = TRUE)

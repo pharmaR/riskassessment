@@ -98,7 +98,7 @@ uploadPackageServer <- function(id, user) {
     observeEvent(input$load_cran, {
       if (!isTruthy(cran_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
-          cran_pkgs(test_pkg_lst)
+          cran_pkgs(test_pkg_df)
         } else {
           cran_pkgs(as.data.frame(available.packages("https://cran.rstudio.com/src/contrib")[,c("Package", "Version")]))
         }
@@ -300,7 +300,7 @@ uploadPackageServer <- function(id, user) {
       
       if (!isTruthy(cran_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
-          cran_pkgs(test_pkg_lst)
+          cran_pkgs(test_pkg_df)
         } else {
           cran_pkgs(as.data.frame(available.packages("https://cran.rstudio.com/src/contrib")[,c("Package", "Version")]))
         }
