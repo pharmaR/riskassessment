@@ -322,7 +322,6 @@ uploadPackageServer <- function(id, user) {
       if (isTRUE(getOption("shiny.testmode"))) {
         uploaded_pkgs02({
           uploaded_packages %>%
-            dplyr::filter(label %in% c(input$install_pkg_lst, input$update_pkg_lst, input$assess_pkg_lst)) %>%
             dplyr::select(-action, -label)
         })
       } else {
@@ -396,12 +395,14 @@ uploadPackageServer <- function(id, user) {
             
             user_ver <- uploaded_packages$version[i]
             setProgress((i-1)*6+1, detail = glue::glue("Querying {uploaded_packages$package[i]} V{user_ver}"))
-            if (library$editable && length(find.package(uploaded_packages$package[i], lib.loc = library$location, quiet = TRUE)) == 0) {
-              incProgress(1, detail = glue::glue("Installing {uploaded_packages$package[i]} V{user_ver}"))
-              install.packages(uploaded_packages$package[i], lib = library$location, repos = "https://cran.rstudio.com")
-            } else if (library$editable && uploaded_packages$version[i] != as.character(packageDescription(uploaded_packages$package[i], lib.loc = library$location, "Version"))) {
-              incProgress(1, detail = glue::glue("Installing {uploaded_packages$package[i]} V{user_ver}"))
-              install.packages(uploaded_packages$package[i], lib = library$location, repos = "https://cran.rstudio.com")
+            if (!isTRUE(getOption("shiny.testmode"))) {
+              if (library$editable && length(find.package(uploaded_packages$package[i], lib.loc = library$location, quiet = TRUE)) == 0) {
+                incProgress(1, detail = glue::glue("Installing {uploaded_packages$package[i]} V{user_ver}"))
+                install.packages(uploaded_packages$package[i], lib = library$location, repos = "https://cran.rstudio.com")
+              } else if (library$editable && uploaded_packages$version[i] != as.character(packageDescription(uploaded_packages$package[i], lib.loc = library$location, "Version"))) {
+                incProgress(1, detail = glue::glue("Installing {uploaded_packages$package[i]} V{user_ver}"))
+                install.packages(uploaded_packages$package[i], lib = library$location, repos = "https://cran.rstudio.com")
+              }
             }
             
             incProgress(1, detail = glue::glue("Creating {{riskmetric}} Reference {uploaded_packages$package[i]} V{user_ver}"))
