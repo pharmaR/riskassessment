@@ -71,10 +71,10 @@ uploadPackageUI <- function(id) {
 uploadPackageServer <- function(id, user) {
   moduleServer(id, function(input, output, session) {
     
-    assessment_lib <- get_golem_config("assessment_lib", file = app_sys("db-config.yml"))
-    assessment_lib$packages <- 
-        list.files(assessment_lib$location) %>%
-        purrr::map_dfr(~ data.frame(name = .x, version = .x %>% packageDescription(assessment_lib$location, "Version") %>% as.character()))
+    library <- get_golem_config("library", file = app_sys("db-config.yml"))
+    library$packages <- 
+        list.files(library$location) %>%
+        purrr::map_dfr(~ data.frame(name = .x, version = .x %>% packageDescription(library$location, "Version") %>% as.character()))
 
     # Determine which guide to use for IntroJS.
     upload_pkg_txt <- reactive({
@@ -90,7 +90,7 @@ uploadPackageServer <- function(id, user) {
     })
     
     auto_list <- mod_decision_automation_server("automate", user)
-    pkg_lst <- reactiveValues(Library = purrr::pmap_chr(assessment_lib$packages, function(name, version) {paste(name, "-", version)}))
+    pkg_lst <- reactiveValues(Library = purrr::pmap_chr(library$packages, function(name, version) {paste(name, "-", version)}))
     
 
     cran_pkgs <- reactiveVal()
@@ -107,7 +107,7 @@ uploadPackageServer <- function(id, user) {
     once = TRUE)
     
     observeEvent(cran_pkgs(), {
-      req(isTRUE(assessment_lib$editable))
+      req(isTRUE(library$editable))
       
       pkg_lst[["CRAN"]] <- 
         purrr::pmap_chr(cran_pkgs(), function(Package, Version) {paste(Package, "-", Version)})
@@ -313,8 +313,8 @@ uploadPackageServer <- function(id, user) {
         dplyr::mutate(
           action = dplyr::case_when(
             isTRUE(getOption("shiny.testmode")) ~ "test",
-            assessment_lib$editable && length(find.package(package, lib.loc = assessment_lib$location, quiet = TRUE)) == 0 ~ "install",
-            assessment_lib$editable && version != as.character(packageDescription(package, lib.loc = assessment_lib$location, "Version")) ~ "update",
+            library$editable && length(find.package(package, lib.loc = library$location, quiet = TRUE)) == 0 ~ "install",
+            library$editable && version != as.character(packageDescription(package, lib.loc = library$location, "Version")) ~ "update",
             TRUE ~ "assess"
           )
         )
@@ -388,12 +388,12 @@ uploadPackageServer <- function(id, user) {
             
             user_ver <- uploaded_packages$version[i]
             setProgress((i-1)*6+1, detail = glue::glue("Querying {uploaded_packages$package[i]} V{user_ver}"))
-            if (assessment_lib$editable && length(find.package(uploaded_packages$package[i], lib.loc = assessment_lib$location, quiet = TRUE)) == 0) {
+            if (library$editable && length(find.package(uploaded_packages$package[i], lib.loc = library$location, quiet = TRUE)) == 0) {
               incProgress(1, detail = glue::glue("Installing {uploaded_packages$package[i]} V{user_ver}"))
-              install.packages(uploaded_packages$package[i], lib = assessment_lib$location, repos = "https://cran.rstudio.com")
-            } else if (assessment_lib$editable && uploaded_packages$version[i] != as.character(packageDescription(uploaded_packages$package[i], lib.loc = assessment_lib$location, "Version"))) {
+              install.packages(uploaded_packages$package[i], lib = library$location, repos = "https://cran.rstudio.com")
+            } else if (library$editable && uploaded_packages$version[i] != as.character(packageDescription(uploaded_packages$package[i], lib.loc = library$location, "Version"))) {
               incProgress(1, detail = glue::glue("Installing {uploaded_packages$package[i]} V{user_ver}"))
-              install.packages(uploaded_packages$package[i], lib = assessment_lib$location, repos = "https://cran.rstudio.com")
+              install.packages(uploaded_packages$package[i], lib = library$location, repos = "https://cran.rstudio.com")
             }
             
             incProgress(1, detail = glue::glue("Creating {{riskmetric}} Reference {uploaded_packages$package[i]} V{user_ver}"))
@@ -401,7 +401,7 @@ uploadPackageServer <- function(id, user) {
               # run pkg_ref() to get pkg version and source info
               if (!isTRUE(getOption("shiny.testmode")))
                 ref <- riskmetric::pkg_ref(uploaded_packages$package[i],
-                                           lib.loc = assessment_lib$location)
+                                           lib.loc = library$location)
               else
                 ref <- test_pkg_refs[[uploaded_packages$package[i]]]
             } else {
@@ -454,7 +454,7 @@ uploadPackageServer <- function(id, user) {
             if(!found) {
               # Get and upload pkg general info to db.
               incProgress(1, detail = glue::glue('Uploading Package Information {deets}'))
-              insert_pkg_info_to_db(uploaded_packages$package[i], assessment_lib$location)
+              insert_pkg_info_to_db(uploaded_packages$package[i], library$location)
               # Get and upload maintenance metrics to db.
               incProgress(1, detail = glue::glue('Uploading {{riskmetric}} Metrics {deets}'))
               insert_riskmetric_to_db(pkg_ref = ref)

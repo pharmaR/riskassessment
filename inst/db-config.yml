@@ -1,7 +1,7 @@
 default:
   assessment_db: database.sqlite
   credential_db: credentials.sqlite
-  assessment_lib:
+  library:
     location: ./library
     editable: true
   loggit_json: loggit.json

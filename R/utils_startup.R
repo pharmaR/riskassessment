@@ -174,7 +174,7 @@ initialize_raa <- function(assess_db, cred_db, assess_lib, decision_cat) {
   if (isTRUE(getOption("shiny.testmode"))) return(NULL)
   
   db_config <- get_golem_config(NULL, file = app_sys("db-config.yml"))
-  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json")
+  used_configs <- c("assessment_db", "library", "credential_db", "decisions", "credentials", "loggit_json")
   if (any(!names(db_config) %in% used_configs)) {
     names(db_config) %>%
       `[`(!. %in% used_configs) %>%
@@ -189,8 +189,8 @@ initialize_raa <- function(assess_db, cred_db, assess_lib, decision_cat) {
   if (is.null(credentials_db) || typeof(credentials_db) != "character" || length(credentials_db) != 1 || !grepl("\\.sqlite$", credentials_db))
     stop("cred_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
   
-  assessment_lib <- if (missing(assess_lib)) get_golem_config("assessment_lib", file = app_sys("db-config.yml"))$location else assess_lib
-  if (!dir.exists(assessment_lib)) dir.create(assessment_lib)
+  library <- if (missing(assess_lib)) get_golem_config("library", file = app_sys("db-config.yml"))$location else assess_lib
+  if (!dir.exists(library)) dir.create(library)
   
   # Start logging info.
   loggit_file <- get_golem_config("loggit_json", file = app_sys("db-config.yml"))
