@@ -74,7 +74,7 @@ uploadPackageServer <- function(id, user) {
     assessment_lib <- get_golem_config("assessment_lib", file = app_sys("db-config.yml"))
     assessment_lib$packages <- 
         list.files(assessment_lib$location) %>%
-        purrr::map_dfr(~ data.frame(name = .x, version = .x %>% packageVersion(assessment_lib$location) %>% as.character()))
+        purrr::map_dfr(~ data.frame(name = .x, version = .x %>% packageDescription(assessment_lib$location, "Version") %>% as.character()))
 
     # Determine which guide to use for IntroJS.
     upload_pkg_txt <- reactive({
@@ -262,17 +262,13 @@ uploadPackageServer <- function(id, user) {
       ))
     })
     
-    uploaded_pkgs <- reactiveVal(data.frame())
-    # Save all the uploaded packages, marking them as 'new', 'not found', 
-    # 'duplicate' or 'removed'
+    uploaded_pkgs01 <- reactiveVal()
     observeEvent(uploaded_pkgs00(), {
-
       uploaded_packages <- uploaded_pkgs00()
       uploaded_pkgs00(NULL)
       uploaded_packages$score <- NA_real_
       if (!rlang::is_empty(auto_list()))
         uploaded_packages$decision <- ""
-      np <- nrow(uploaded_packages)
       
       if (!isTRUE(getOption("shiny.testmode"))) {
         url_lst <- list(
@@ -299,7 +295,7 @@ uploadPackageServer <- function(id, user) {
           ))
         }
         
-      req(all(good_urls))
+        req(all(good_urls))
       }
       
       if (!isTruthy(cran_pkgs())) {
@@ -309,6 +305,70 @@ uploadPackageServer <- function(id, user) {
           cran_pkgs(as.data.frame(available.packages("https://cran.rstudio.com/src/contrib")[,c("Package", "Version")]))
         }
       }
+      
+      uploaded_packages <-
+        uploaded_packages %>%
+        tidyr::unite("label", package, version, sep = " - ", remove = FALSE) %>%
+        dplyr::rowwise() %>%
+        dplyr::mutate(
+          action = dplyr::case_when(
+            isTRUE(getOption("shiny.testmode")) ~ "test",
+            assessment_lib$editable && length(find.package(package, lib.loc = assessment_lib$location, quiet = TRUE)) == 0 ~ "install",
+            assessment_lib$editable && version != as.character(packageDescription(package, lib.loc = assessment_lib$location, "Version")) ~ "update",
+            TRUE ~ "assess"
+          )
+        )
+      
+      showModal(modalDialog(
+        size = "l",
+        if (any(uploaded_packages$action == "install")) 
+          tagList(
+            h1("Packages to Install", style = "font-weight: bold; font-size: x-large"),
+          checkboxGroupInput(session$ns("install_pkg_lst"), "",
+                                             choices = uploaded_packages %>% dplyr::filter(action == "install") %>% dplyr::pull(label),
+                                             selected = uploaded_packages %>% dplyr::filter(action == "install") %>% dplyr::pull(label))
+          ),
+        if (any(uploaded_packages$action == "update")) 
+          tagList(
+            h1("Packages to Update", style = "font-weight: bold; font-size: x-large"),
+          checkboxGroupInput(session$ns("update_pkg_lst"), "",
+                                             choices = uploaded_packages %>% dplyr::filter(action == "update") %>% dplyr::pull(label),
+                                             selected = uploaded_packages %>% dplyr::filter(action == "update") %>% dplyr::pull(label))
+          ),
+        if (any(uploaded_packages$action == "assess")) 
+          tagList(
+            h1("Packages to Assess", style = "font-weight: bold; font-size: x-large"),
+          checkboxGroupInput(session$ns("assess_pkg_lst"), "",
+                                             choices = uploaded_packages %>% dplyr::filter(action == "assess") %>% dplyr::pull(label),
+                                             selected = uploaded_packages %>% dplyr::filter(action == "assess") %>% dplyr::pull(label))
+          ),
+        footer = tagList(
+          actionButton(session$ns("submit"), "Submit"),
+          actionButton(session$ns("background"), "Background"),
+          modalButton("Cancel")
+        )
+      ))
+      
+      uploaded_pkgs01(uploaded_packages)
+    })
+    
+    
+    uploaded_pkgs02 <- reactiveVal()
+    observeEvent(input$submit, {
+      uploaded_pkgs02({
+        uploaded_pkgs01() %>%
+          dplyr::filter(label %in% c(input$install_pkg_lst, input$update_pkg_lst, input$assess_pkg_lst)) %>%
+          dplyr::select(-action, -label)
+      })
+      uploaded_pkgs01(NULL)
+    })
+    uploaded_pkgs <- reactiveVal(data.frame())
+    # Save all the uploaded packages, marking them as 'new', 'not found', 
+    # 'duplicate' or 'removed'
+    observeEvent(uploaded_pkgs02(), {
+      uploaded_packages <- uploaded_pkgs02()
+      uploaded_pkgs02(NULL)
+      np <- nrow(uploaded_packages)
       
       # Start progress bar. Need to establish a maximum increment
       # value based on the number of packages, np, and the number of
@@ -323,9 +383,9 @@ uploadPackageServer <- function(id, user) {
             user_ver <- uploaded_packages$version[i]
             incProgress(1, detail = glue::glue("{uploaded_packages$package[i]} {user_ver}"))
             if (assessment_lib$editable && length(find.package(uploaded_packages$package[i], lib.loc = assessment_lib$location, quiet = TRUE)) == 0) {
-              install.packages(uploaded_packages$package[i], lib = assessment_lib$location)
-            } else if (assessment_lib$editable && uploaded_packages$version[i] != as.character(packageVersion(uploaded_packages$package[i], lib.loc = assessment_lib$location))) {
-              install.packages(uploaded_packages$package[i], lib = assessment_lib$location)
+              install.packages(uploaded_packages$package[i], lib = assessment_lib$location, repos = "https://cran.rstudio.com")
+            } else if (assessment_lib$editable && uploaded_packages$version[i] != as.character(packageDescription(uploaded_packages$package[i], lib.loc = assessment_lib$location, "Version"))) {
+              install.packages(uploaded_packages$package[i], lib = assessment_lib$location, repos = "https://cran.rstudio.com")
             }
             
             if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
