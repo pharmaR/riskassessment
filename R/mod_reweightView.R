@@ -277,7 +277,7 @@ reweightViewServer <- function(id, user, decision_list) {
       all_pkgs <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")
       cmt_or_dec_pkgs <- unique(dplyr::bind_rows(
         dbSelect("SELECT DISTINCT id AS pkg_name FROM comments where comment_type = 'o'"),
-        dbSelect("SELECT DISTINCT name AS pkg_name FROM package where decision != ''")
+        dbSelect("SELECT DISTINCT name AS pkg_name FROM package where decision_id IS NOT NULL")
       ))
       
       cmt_or_dec_dropped_cmt <- " Since they may no longer be applicable, the final decision & comment have been dropped to allow for re-evaluation."
@@ -298,10 +298,10 @@ reweightViewServer <- function(id, user, decision_list) {
       }
       
       # Reset any decisions made prior to this.
-      pkg <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package WHERE decision != ''")
+      pkg <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package WHERE decision_id IS NOT NULL")
       if (nrow(pkg) > 0) {
         for (i in 1:nrow(pkg)) {
-          dbUpdate("UPDATE package SET decision = '' where name = {pkg$pkg_name[i]}")
+          dbUpdate("UPDATE package SET decision_id = NULL where name = {pkg$pkg_name[i]}")
         }
       }
       

@@ -11,8 +11,9 @@
 assign_decisions <- function(decision_list, package) {
   score <- get_pkg_info(package)$score
   decision <- paste0(names(decision_list)[purrr::map_lgl(decision_list, ~ .x[1] < score && score <= .x[2])], "")
+  decision_id <- dbSelect("SELECT id FROM decision_categories WHERE decision = {decision}")
   if (decision != "") {
-    dbUpdate("UPDATE package SET decision = {decision},
+    dbUpdate("UPDATE package SET decision_id = {decision_id},
                         decision_by = 'Auto Assigned', decision_date = {Sys.Date()}
                          WHERE name = {package}")
     loggit::loggit("INFO",
@@ -36,12 +37,11 @@ assign_decisions <- function(decision_list, package) {
 #' @return A vector of colors for displaying the decision categories
 #' 
 #' @noRd
-get_colors <- function(decision_categories) {
-  num_cat <- length(decision_categories)
-  if (num_cat == 1)
-    return(color_palette[1])
-  cat_list <- (seq_along(decision_categories) - 1) * 10/min(num_cat - 1, 11) + 1
-  color_palette[round(purrr::map_dbl(cat_list, min, 11))] %>% purrr::set_names(decision_categories)
+get_colors <- function(dbname) {
+  dbname %>%
+    dbSelect(query = "SELECT decision, color FROM decision_categories") %>%
+    purrr::pmap(function(decision, color) {setNames(color, decision)}) %>% 
+    unlist()
 }
 
 

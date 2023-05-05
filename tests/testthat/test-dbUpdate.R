@@ -48,11 +48,11 @@ test_that("both dbUpdate and dbSelect work", {
   command <-(
     "INSERT or REPLACE INTO package
         (name, version, title, description, maintainer, author,
-        license, published_on, decision, decision_by, decision_date, date_added)
+        license, published_on, decision_by, decision_date, date_added)
         VALUES({pkg_name}, {pkg_info$Version}, {pkg_info$Title}, {pkg_info$Description},
         {pkg_info$Maintainer}, {pkg_info$Author}, {pkg_info$License}, {pkg_info$Published},
-        '', '', null, {Sys.Date()})")
-  
+        '', null, {Sys.Date()})")
+
   dbUpdate(command, app_db_loc)
   
   tbl1 <- dbSelect(query, app_db_loc)

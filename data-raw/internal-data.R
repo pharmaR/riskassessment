@@ -85,7 +85,7 @@ test_pkg_cum <-
   purrr::map(generate_comm_data) %>%
   purrr::set_names(test_pkg_lst)
 
-color_palette <- c("#06B756FF","#2FBC06FF","#67BA04FF","#81B50AFF","#96AB0AFF","#A99D04FF","#B78D07FF","#BE7900FF","#BE6200FF","#B24F22FF","#A63E24FF")
+color_palette <- c("#06B756","#2FBC06","#67BA04","#81B50A","#96AB0A","#A99D04","#B78D07","#BE7900","#BE6200","#B24F22","#A63E24")
 
 usethis::use_data(
   # app_version, 

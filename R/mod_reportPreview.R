@@ -188,8 +188,8 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       tagList(
         h5('Risk Score:'),
         selected_pkg$score(),
-        h5('Overall risk:'),
-        ifelse(selected_pkg$decision() == '', 
+        h5('Overall Decision:'),
+        ifelse(is.na(selected_pkg$decision()), 
                'Pending',
                selected_pkg$decision()))
     })
