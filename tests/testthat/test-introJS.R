@@ -41,7 +41,7 @@ test_that("The introJS module works as expected for admins", {
   
   app$run_js("Shiny.setInputValue('upload_package-load_cran', 'load')")
   app$wait_for_idle()
-  app$set_inputs(`upload_package-pkg_lst` = "tidyr")
+  app$set_inputs(`upload_package-pkg_lst` = "CRAN - tidyr - 1.3.0")
   app$click("upload_package-add_pkgs", wait_ = FALSE)
   app$wait_for_value(
     output = "upload_package-upload_pkgs_table",
@@ -161,7 +161,7 @@ test_that("The introJS module works as expected for nonadmins", {
   
   app$run_js("Shiny.setInputValue('upload_package-load_cran', 'load')")
   app$wait_for_idle()
-  app$set_inputs(`upload_package-pkg_lst` = "tidyr")
+  app$set_inputs(`upload_package-pkg_lst` = "CRAN - tidyr - 1.3.0")
   app$click("upload_package-add_pkgs", wait_ = FALSE)
   app$wait_for_value(
     output = "upload_package-upload_pkgs_table",
