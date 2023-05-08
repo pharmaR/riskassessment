@@ -456,6 +456,16 @@ uploadPackageServer <- function(id, user, auto_list) {
         formattable::formattable(
           uploaded_pkgs(),
           list(
+            score = formattable::formatter(
+              "span",
+              style = x ~ formattable::style(display = "block",
+                                             "border-radius" = "4px",
+                                             "padding-right" = "4px",
+                                             "font-weight" = "bold",
+                                             "color" = "white",
+                                             "order" = x,
+                                             "background-color" = formattable::csscolor(
+                                               setColorPalette(100)[round(as.numeric(x)*100)]))),
             decision = formattable::formatter(
               "span",
               style = x ~ formattable::style(display = "block",
