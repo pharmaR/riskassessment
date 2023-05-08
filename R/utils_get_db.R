@@ -19,7 +19,7 @@ dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_na
   
   tryCatch(
     expr = {
-      rs <- DBI::dbSendQuery(con, glue::glue_sql(query, .envir = .envir))
+      rs <- DBI::dbSendQuery(con, glue::glue_sql(query, .envir = .envir, .con = con))
     },
     warning = function(warn) {
       message <- paste0("warning:\n", query, "\nresulted in\n", warn)
