@@ -130,7 +130,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       if (nrow(pkginf2) > 0) pkginfo <- pkginf2
       
       pkg_name <- ""
-      cl_id <- cli::cli_progress_bar("Loading Package: ", 
+      cl_id <- cli::cli_progress_bar("Assessing Package: ", 
                                      type = "iterator",
                                      format = "{pkg_name} {cli::pb_percent} | ETA: {cli::pb_eta}",
                                      total = nrow(pkginfo))
