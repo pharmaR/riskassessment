@@ -162,7 +162,7 @@ get_comm_data <- function(pkg_name, db_name = golem::get_golem_options('assessme
   dbSelect(
     "SELECT *
      FROM community_usage_metrics
-     WHERE id = {pkg_name}"), db_name
+     WHERE id = {pkg_name}", db_name
   )
 }
 

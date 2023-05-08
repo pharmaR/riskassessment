@@ -22,7 +22,7 @@ configure_db <- function(dbname, config) {
   
   check_decision_config(dec_config)
   
-  dbUpdate("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', dec_config$categories, '\\')', collapse = ', ')}", dbname)
+  dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', dec_config$categories, '\\')', collapse = ', ')}"), dbname)
   if (!is.null(dec_config$rules)) 
     purrr::iwalk(dec_config$rules, ~ dbUpdate("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = {.y}", dbname))
   else
