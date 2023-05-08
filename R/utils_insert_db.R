@@ -115,13 +115,13 @@ upload_package_to_db <- function(name, version, title, description,
                                  authors, maintainers, license, published_on, db_name) {
   tryCatch(
     expr = {
-      dbUpdate(glue::glue(
+      dbUpdate(
         "INSERT or REPLACE INTO package
         (name, version, title, description, maintainer, author,
         license, published_on, decision_by, decision_date, date_added)
-        VALUES('{name}', '{version}', '{title}', '{description}',
-        '{maintainers}', '{authors}', '{license}', '{published_on}',
-        '', '{as.Date(NA)}','{Sys.Date()}')"), db_name)
+        VALUES({name}, {version}, {title}, {description},
+        {maintainers}, {authors}, {license}, {published_on},
+        '', {as.Date(NA)},{Sys.Date()})", db_name)
     },
     error = function(e) {
       loggit::loggit("ERROR", paste("Error in uploading the general info of the package", name, "info", e),
@@ -199,16 +199,16 @@ insert_riskmetric_to_db <- function(pkg_name,
              round(riskmetric_score[[metric$name]]*100, 2),
              riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])]))
     
-    dbUpdate(glue::glue(
+    dbUpdate(
       "INSERT INTO package_metrics (package_id, metric_id, weight, value) 
-      VALUES ({package_id}, {metric$id}, {metric$weight}, '{metric_value}')"), db_name
+      VALUES ({package_id}, {metric$id}, {metric$weight}, {metric_value})", db_name
     )
   }
   
-  dbUpdate(glue::glue(
+  dbUpdate(
     "UPDATE package
-    SET score = '{format(round(riskmetric_score$pkg_score[1], 2))}'
-    WHERE name = '{pkg_name}'"), db_name)
+    SET score = {format(round(riskmetric_score$pkg_score[1], 2))}
+    WHERE name = {pkg_name}", db_name)
 }
 
 
@@ -237,12 +237,12 @@ insert_community_metrics_to_db <- function(pkg_name,
   
   if(nrow(pkgs_cum_metrics) != 0){
     for (i in 1:nrow(pkgs_cum_metrics)) {
-      dbUpdate(glue::glue(
+      dbUpdate(
         "INSERT INTO community_usage_metrics 
         (id, month, year, downloads, version)
-        VALUES ('{pkg_name}', {pkgs_cum_metrics$month[i]},
+        VALUES ({pkg_name}, {pkgs_cum_metrics$month[i]},
         {pkgs_cum_metrics$year[i]}, {pkgs_cum_metrics$downloads[i]},
-        '{pkgs_cum_metrics$version[i]}')"), db_name)
+        {pkgs_cum_metrics$version[i]})", db_name)
     }
   }
 }
@@ -260,11 +260,11 @@ insert_community_metrics_to_db <- function(pkg_name,
 #' @noRd
 update_metric_weight <- function(metric_name, metric_weight, 
                                  db_name = golem::get_golem_options('assessment_db_name')){
-  dbUpdate(glue::glue(
+  dbUpdate(
     "UPDATE metric
     SET weight = {metric_weight}
-    WHERE name = '{metric_name}'"
-  ), db_name)
+    WHERE name = {metric_name}"
+  , db_name)
 }
 
 #' db trash collection

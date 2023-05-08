@@ -196,7 +196,7 @@ uploadPackageServer <- function(id, user, auto_list) {
       pkg_name <- input$rem_pkg_lst[i]
       # update version with what is in the package table
       uploaded_packages$version[i] <- dbSelect(glue::glue("select version from package where name = '{pkg_name}'"), db_name = golem::get_golem_options('assessment_db_name')) 
-      dbUpdate(glue::glue("delete from package where name = '{pkg_name}'"), db_name = golem::get_golem_options('assessment_db_name'))
+      dbUpdate("DELETE FROM package WHERE name = {pkg_name}", db_name = golem::get_golem_options('assessment_db_name'))
       }
       
       # clean up other db tables
