@@ -69,6 +69,24 @@ get_overall_comments <- function(pkg_name, db_name = golem::get_golem_options('a
   )
 }
 
+#' The 'Get Package Summary' function
+#' 
+#' Retrieves the package summary "comment" for a specific package
+#' 
+#' @param pkg_name character name of the package
+#' @param db_name character name (and file path) of the database
+#' 
+#' @importFrom glue glue
+#' 
+#' @returns a data frame
+#' @noRd
+get_pkg_summary <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
+  dbSelect(glue::glue(
+    "SELECT * FROM comments 
+     WHERE comment_type = 's' AND id = '{pkg_name}'"), db_name
+  )
+}
+
 
 #' The 'Get Maintenance Metrics Comments' function
 #' 

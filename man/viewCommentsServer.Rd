@@ -4,7 +4,13 @@
 \alias{viewCommentsServer}
 \title{viewComment module's server logic}
 \usage{
-viewCommentsServer(id, pkg_name, comments, label = "Current Comments")
+viewCommentsServer(
+  id,
+  pkg_name,
+  comments,
+  none_txt = "No comments",
+  label = "Current Comments"
+)
 }
 \arguments{
 \item{id}{the module id name}
