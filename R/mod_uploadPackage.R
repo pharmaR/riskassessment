@@ -67,6 +67,7 @@ uploadPackageUI <- function(id) {
 #' @importFrom rintrojs introjs
 #' @importFrom utils read.csv available.packages
 #' @importFrom rvest read_html html_nodes html_text
+#' @importFrom cli cli_progress_message cli_progress_bar cli_progress_update
 #' @keywords internal
 #' 
 uploadPackageServer <- function(id, user, auto_list) {
@@ -252,6 +253,9 @@ uploadPackageServer <- function(id, user, auto_list) {
         uploaded_packages$decision <- ""
       np <- nrow(uploaded_packages)
       
+      cli::cli_progress_message("   **Starting Upload process**")
+      Sys.sleep(0.25)
+      
       if (!isTRUE(getOption("shiny.testmode"))) {
         url_lst <- list(
           "https://cran.rstudio.com",
@@ -292,15 +296,18 @@ uploadPackageServer <- function(id, user, auto_list) {
       # value based on the number of packages, np, and the number of
       # incProgress() function calls in the loop, plus one to show
       # the incProgress() that the process is completed.
-      withProgress(
-        max = (np * 5) + 1, value = 0,
-        message = "Uploading Packages to DB:", {
-          
+      
+      cl_id <- cli::cli_progress_bar("Uploading: ", 
+                type = "iterator",
+                format = "{deets} {cli::pb_percent} | ETA: {cli::pb_eta}",
+                total = np * 5) 
+      
           for (i in 1:np) {
-            
+
             user_ver <- uploaded_packages$version[i]
-            incProgress(1, detail = glue::glue("{uploaded_packages$package[i]} {user_ver}"))
+            cli::cli_progress_update(id = cl_id)
             
+
             if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
               # run pkg_ref() to get pkg version and source info
               if (!isTRUE(getOption("shiny.testmode")))
@@ -313,58 +320,61 @@ uploadPackageServer <- function(id, user, auto_list) {
               ref <- list(name = uploaded_packages$package[i],
                           source = "name_bad")
             }
-            
+
             if (ref$source %in% c("pkg_missing", "name_bad")) {
-              incProgress(1, detail = 'Package {uploaded_packages$package[i]} not found')
-              
+
               # Suggest alternative spellings using utils::adist() function
               v <- utils::adist(uploaded_packages$package[i], cran_pkgs(), ignore.case = FALSE)
               rlang::inform(paste("Package name",uploaded_packages$package[i],"was not found."))
-              
+
               suggested_nms <- paste("Suggested package name(s):",paste(head(cran_pkgs()[which(v == min(v))], 10),collapse = ", "))
               rlang::inform(suggested_nms)
-              
+
               uploaded_packages$status[i] <- HTML(paste0('<a href="#" title="', suggested_nms, '">not found</a>'))
-              
+
               if (ref$source == "pkg_missing")
                 loggit::loggit('WARN',
                                glue::glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
               else
                 loggit::loggit('WARN',
                                glue::glue("Riskmetric can't interpret '{ref$name}' as a package reference."))
-              
+
               next
             }
-            
+
             ref_ver <- as.character(ref$version)
-            
+
             if(user_ver == ref_ver) ver_msg <- ref_ver
-            else ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
-            
+            else ver_msg <- glue::glue("{ref_ver}")
+
             as.character(ref$version)
             deets <- glue::glue("{uploaded_packages$package[i]} {ver_msg}")
             
             # Save version.
-            incProgress(1, detail = deets)
-            uploaded_packages$version[i] <- as.character(ref$version)
+            cli::cli_progress_update(id = cl_id)
             
+            uploaded_packages$version[i] <- as.character(ref$version)
+
             found <- nrow(dbSelect(glue::glue(
               "SELECT name
               FROM package
               WHERE name = '{uploaded_packages$package[i]}'")))
-            
+
             uploaded_packages$status[i] <- ifelse(found == 0, 'new', 'duplicate')
 
             # Add package and metrics to the db if package is not in the db.
             if(!found) {
               # Get and upload pkg general info to db.
-              incProgress(1, detail = deets)
+              cli::cli_progress_update(id = cl_id)
+              
               insert_pkg_info_to_db(uploaded_packages$package[i])
               # Get and upload maintenance metrics to db.
-              incProgress(1, detail = deets)
+              cli::cli_progress_update(id = cl_id)
+              
               insert_riskmetric_to_db(uploaded_packages$package[i])
               # Get and upload community metrics to db.
-              incProgress(1, detail = deets)
+              cli::cli_progress_update(id = cl_id)
+              
               insert_community_metrics_to_db(uploaded_packages$package[i])
               uploaded_packages$score[i] <- get_pkg_info(uploaded_packages$package[i])$score
               if (!rlang::is_empty(auto_list())) {
@@ -373,12 +383,10 @@ uploadPackageServer <- function(id, user, auto_list) {
               }
             }
           }
-          
-          incProgress(1, detail = "   **Completed Pkg Uploads**")
-          Sys.sleep(0.25)
-          
-        }) #withProgress
-      
+      #     
+      cli::cli_progress_message("   **Completed Pkg Uploads**")
+           Sys.sleep(0.25)
+
       uploaded_pkgs(uploaded_packages)
     })
     
@@ -396,6 +404,7 @@ uploadPackageServer <- function(id, user, auto_list) {
     output$upload_summary_text <- renderText({
       req(uploaded_pkgs)
       req(nrow(uploaded_pkgs()) > 0)
+
       # modify the message if we are removing packages
       if(isTruthy(sum(uploaded_pkgs()$status == 'removed') >0)) {
         loggit::loggit("INFO",
