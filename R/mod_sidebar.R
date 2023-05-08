@@ -185,10 +185,10 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       }
       else {
         # Display package comments if a package and version are selected.
-        comments <- dbSelect(glue::glue(
+        comments <- dbSelect(
           "SELECT comment FROM comments
-          WHERE id = '{input$select_pkg}'
-          AND comment_type = 'o'"))$comment
+          WHERE id = {input$select_pkg}
+          AND comment_type = 'o'")$comment
         
         updateTextAreaInput(session, "overall_comment",
                             placeholder = glue::glue('Current Overall Comment: {comments}'))

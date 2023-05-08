@@ -167,7 +167,7 @@ insert_riskmetric_to_db <- function(pkg_name,
     riskmetric_assess %>%
     riskmetric::pkg_score(weights = metric_weights)
   
-  package_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"), db_name)
+  package_id <- dbSelect("SELECT id FROM package WHERE name = {pkg_name}", db_name)
   
   # Leave method if package not found.
   if(nrow(package_id) == 0){
