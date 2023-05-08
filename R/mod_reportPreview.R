@@ -280,14 +280,12 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       comment <- stringr::str_replace_all(input$pkg_summary, "'", "''")
       
       dbUpdate(
-        glue::glue(
           "UPDATE comments
-          SET comment = '{comment}', added_on = '{getTimeStamp()}'
-          WHERE id = '{selected_pkg$name()}' AND
-          user_name = '{user$name}' AND
-          user_role = '{user$role}' AND
+          SET comment = {comment}, added_on = {getTimeStamp()}
+          WHERE id = {selected_pkg$name()} AND
+          user_name = {user$name} AND
+          user_role = {user$role} AND
           comment_type = 's'"
-        )
       )
       
       # disable text editor and flip button to "edit"

@@ -81,9 +81,9 @@ get_overall_comments <- function(pkg_name, db_name = golem::get_golem_options('a
 #' @returns a data frame
 #' @noRd
 get_pkg_summary <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
-  dbSelect(glue::glue(
+  dbSelect(
     "SELECT * FROM comments 
-     WHERE comment_type = 's' AND id = '{pkg_name}'"), db_name
+     WHERE comment_type = 's' AND id = {pkg_name}", db_name
   )
 }
 

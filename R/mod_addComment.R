@@ -62,13 +62,11 @@ addCommentServer <- function(id, metric_abrv, user_name, user_role, pkg_name) {
         # if(str_count(string = comment, pattern = "'") != 0)
         #   validate("Invalid character: comments cannot contain single
         #            quotes (')")
-        
-        comment <- stringr::str_replace_all(comment, "'", "''")
 
-        dbUpdate(glue::glue(
-        "INSERT INTO comments values('{pkg_name()}', '{user_name()}', 
-        '{user_role()}', '{comment}', '{metric_abrv}',
-        '{getTimeStamp()}')")
+        dbUpdate(
+        "INSERT INTO comments values({pkg_name()}, {user_name()}, 
+        {user_role()}, {comment}, {metric_abrv},
+        {getTimeStamp()})"
         )
         
         updateTextAreaInput(session, "add_comment", value = "")
