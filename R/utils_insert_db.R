@@ -5,22 +5,23 @@
 #'
 #' @param command a string
 #' @param db_name character name (and file path) of the database
+#' @param .envir Environemtn to evaluate each expression in
 #'
 #' @import dplyr
 #' @importFrom DBI dbConnect dbSendStatement dbClearResult dbDisconnect
 #'   dbGetRowsAffected
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
-#' @importFrom glue glue
+#' @importFrom glue glue glue_sql
 #' 
 #' @returns nothing
 #' @noRd
-dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_name')){
+dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_name'), .envir = parent.frame()){
   errFlag <- FALSE
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   tryCatch({
-    rs <- DBI::dbSendStatement(con, command)
+    rs <- DBI::dbSendStatement(con, glue::glue_sql(command, .envir = .envir))
   }, error = function(err) {
     message <- glue::glue("command: {command} resulted in {err}")
     message(message, .loggit = FALSE)
