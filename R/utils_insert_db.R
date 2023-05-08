@@ -64,7 +64,7 @@ insert_pkg_info_to_db <- function(pkg_name,
         pkg_info <- test_pkg_info[[pkg_name]]
       else if (identical(Sys.getenv("TESTTHAT"), "true"))
         pkg_info <- get_latest_pkg_info(pkg_name)
-      else (!isTRUE(getOption("shiny.testmode")))
+      else
         pkg_info <- get_install_pkg_info(pkg_name, lib_loc)
       
       # store it in the database
