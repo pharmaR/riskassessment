@@ -3,6 +3,7 @@
 #' 
 #' @param query a sql query as a string
 #' @param db_name character name (and file path) of the database
+#' @param .envir Environemtn to evaluate each expression in
 #' 
 #' @import dplyr
 #' @importFrom DBI dbConnect dbSendQuery dbFetch dbClearResult dbDisconnect
@@ -12,13 +13,13 @@
 #' @returns a data frame
 #'
 #' @noRd
-dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_name')){
+dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_name'), .envir = parent.frame()){
   errFlag <- FALSE
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   tryCatch(
     expr = {
-      rs <- DBI::dbSendQuery(con, query)
+      rs <- DBI::dbSendQuery(con, glue::glue_sql(query, .envir = .envir))
     },
     warning = function(warn) {
       message <- paste0("warning:\n", query, "\nresulted in\n", warn)
