@@ -178,7 +178,7 @@ tagList(
   h6('License:'), params$pkg$license,
   h6('Published:'), params$pkg$published,
   if('Risk Score' %in% params$report_includes) tagList(h6('Risk Score:'), params$pkg$score) else "",
-  h6('Package Decision:'), ifelse(params$pkg$decision == '', 'Pending', params$pkg$decision)
+  h6('Package Decision:'), ifelse(is.na(params$pkg$decision), 'Pending', params$pkg$decision)
 )
 ```
 

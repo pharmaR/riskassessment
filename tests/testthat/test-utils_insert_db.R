@@ -30,7 +30,7 @@ test_that("utils_insert_db functions other than dbUpdate", {
     expect_s3_class(pkg, "data.frame")
     expect_equal(nrow(pkg), 1) 
     expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", 
-                               "score", "weighted_score", "decision", "decision_by", "decision_date", "date_added"))
+                               "score", "weighted_score", "decision_id", "decision_by", "decision_date", "date_added"))
   })
   
   insert_riskmetric_to_db(pkg_name, app_db_loc)

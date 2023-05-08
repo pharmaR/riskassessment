@@ -14,30 +14,42 @@ setColorPalette <- colorRampPalette(c("#06B756FF","#2FBC06FF","#67BA04FF","#81B5
 #' 
 #' @keywords internal
 databaseViewUI <- function(id) {
-  fluidPage(
-    fluidRow(
-      column(
-        width = 8, offset = 2, align = "center",
-        h2("Database Overview", align = "center", `padding-bottom`="20px"),
-        tags$section(
-          br(), br(),
-          shinydashboard::box(width = 12,
-              title = h3("Uploaded Packages", style = "margin-top: 5px"),
-              DT::dataTableOutput(NS(id, "packages_table")),
-              br(),
-              h5("Report Configurations"),
-              br(),
-              fluidRow(
-                column(5,
-                       mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
-                       mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
-                ),
-                column(7, 
-                       mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
-                )
-              )
-              ))
+  tagList(
+    h2("Database Overview", align = "center", `padding-bottom`="20px"),
+    br(),
+    tabsetPanel(
+      tabPanel(
+        "Uploaded Packages",
+        column(
+          width = 8, offset = 2, align = "center",
+          tags$section(
+            shinydashboard::box(width = 12,
+                                title = h3("Uploaded Packages", style = "margin-top: 5px"),
+                                DT::dataTableOutput(NS(id, "packages_table")),
+                                br(),
+                                h5("Report Configurations"),
+                                br(),
+                                fluidRow(
+                                  column(5,
+                                         mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
+                                         mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
+                                  ),
+                                  column(7, 
+                                         mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
+                                  )
+                                )))
+        )),
+      tabPanel(
+        "Decision Categories",
+        column(
+          width = 8, offset = 2, align = "center",
+          tags$section(
+            shinydashboard::box(width = 12,
+                                title = h3("Decision Categories", style = "margin-top: 5px"),
+                                mod_decision_automation_ui_2("automate")
+                                ))
       ))
+    )
   )
 }
 
@@ -67,7 +79,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     ns = session$ns
     
     decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
-    color_lst <- get_colors(decision_lst)
+    color_lst <- get_colors(golem::get_golem_options("assessment_db_name"))
     
     # used for adding action buttons to table_data
     shinyInput <- function(FUN, len, id, ...) {
@@ -82,11 +94,13 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     table_data <- eventReactive({uploaded_pkgs(); changes()}, {
      
       db_pkg_overview <- dbSelect(
-        'SELECT pi.name, pi.version, pi.score, pi.decision, pi.decision_by, pi.decision_date, c.last_comment
+        'SELECT pi.name, pi.version, pi.score, dc.decision, pi.decision_by, pi.decision_date, c.last_comment
         FROM package as pi
         LEFT JOIN (
             SELECT id, max(added_on) as last_comment FROM comments GROUP BY id)
         AS c ON c.id = pi.name
+        LEFT JOIN decision_categories as dc
+          ON pi.decision_id = dc.id
         ORDER BY 1 DESC'
       )
       
@@ -148,7 +162,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                                 "color" = ifelse(x %in% decision_lst, "white", "inherit"),
                                 "background-color" = 
                                   ifelse(x %in% decision_lst, 
-                                         color_lst[x], 
+                                         glue::glue("var(--{risk_lbl(x, input = FALSE)}-color)"), 
                                          "transparent")))
           )),
         selection = list(mode = 'multiple'),

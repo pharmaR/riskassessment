@@ -24,7 +24,7 @@ test_that("database creation", {
   pkg <- DBI::dbGetQuery(con, "SELECT * FROM package")
   expect_equal(nrow(pkg), 0)
   expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", 
-                             "score", "weighted_score", "decision", "decision_by", "decision_date", "date_added"))
+                             "score", "weighted_score", "decision_id", "decision_by", "decision_date", "date_added"))
   metric <- DBI::dbGetQuery(con, "SELECT * FROM metric")
   expect_equal(nrow(metric), 12)
   expect_equal(names(metric), c("id", "name", "long_name", "is_url", "is_perc", "description", "class", "weight"))
@@ -39,7 +39,7 @@ test_that("database creation", {
   expect_equal(names(comments), c("id", "user_name", "user_role", "comment", "comment_type", "added_on"))
   decisions <- DBI::dbGetQuery(con, "SELECT * FROM decision_categories")
   expect_equal(nrow(decisions), 0)
-  expect_equal(names(decisions), c("id", "decision", "lower_limit", "upper_limit"))
+  expect_equal(names(decisions), c("id", "decision", "color", "lower_limit", "upper_limit"))
 })
 
 #### create_credentials_db  tests ####
