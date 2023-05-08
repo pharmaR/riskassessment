@@ -39,7 +39,7 @@ test_that("both dbUpdate and dbSelect work", {
   # 5. expect zero rows were affected, referring to existing table 
   testthat::expect_message(dbUpdate(command, app_db_loc), regexp = "zero rows were affected by the command:" )
   
-  command <- "DELETE from [thispkg] WHERE (name = '{pkg_name}')"
+  command <- "DELETE from [thispkg] WHERE (name = {pkg_name})"
   # 6. expect message about "no such table"
   testthat::expect_message(dbUpdate(command, app_db_loc), regexp = "Error: no such table:" )
   
