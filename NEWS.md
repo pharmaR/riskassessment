@@ -12,6 +12,7 @@
 * Enhanced (what was formerly known as) the "Report Preview" tab to include more holistic Report Builder. This allows users to define what content shows up in the report (#348).
 * Improved speed of inserting community metrics into database (#516)
 * Fix button alignment issues (#514)
+* Re-position filter to be at the bottom of the visible page (#518)
 
 # riskassessment 0.1.1
 
