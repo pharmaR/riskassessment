@@ -95,7 +95,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     
     observeEvent(parent$input$tabs, {
       tabready(0L)
-      cat("in panel:", parent$input$tabs, "\n")
       if(parent$input$tabs == "Package Dependencies") {
         tabready(1L)
       }
@@ -107,7 +106,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     observeEvent(list(selected_pkg$name(),tabready()), {
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
-      print("observeEvent for tabready()")
       # this is really where the progress bar should start
       m_id(cli::cli_progress_message("About to Create Data Table...", .auto_close = FALSE))
     }, ignoreInit = TRUE)
@@ -116,8 +114,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       req(!rlang::is_empty(selected_pkg$name()))
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
-      cat("in pkg_df: selected_pkg$name is",selected_pkg$name(),"\n")
-      
+
       pkginfo <- riskmetric::pkg_ref(selected_pkg$name()) %>% 
         riskmetric::assess_dependencies() %>%  
         as_tibble() %>% 
@@ -245,7 +242,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       
       # grab the package name
       pkg_name <- pkg_df()[selectedRow, 3] %>% pull() 
-      cat("pkg_name is ",pkg_name,"\n")
       pkgname("")
       
       if(!pkg_name %in% dbSelect('SELECT name FROM package')$name) {
@@ -281,8 +277,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     }, ignoreInit = TRUE) # observeEvent
 
     observeEvent(input$confirm, {
-      print("load package was selected")
-      
+
       removeModal()
       
       updateSelectizeInput(session = parent, "upload_package-pkg_lst",
@@ -310,15 +305,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     
     observeEvent(names_vect(), {
 
-      print("observeEvent for names_vect")
-      
-      print(paste(names_vect(), collapse = ","))
-      
       pkgs <- dbSelect("select name from package")[,1]
       
       pkg_name <- names_vect()[length(names_vect())]
-      
-      print(pkg_name)
       
       updateSelectizeInput(
         session = parent,
