@@ -13,6 +13,7 @@
 * Improved speed of inserting community metrics into database (#516)
 * Fix button alignment issues (#514)
 * Re-position filter to be at the bottom of the visible page (#518)
+* Utilized `glue::glue_sql()` inside of update and select functions (#520)
 
 # riskassessment 0.1.1
 
