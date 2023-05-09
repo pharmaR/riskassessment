@@ -4,12 +4,15 @@
 \alias{showComments}
 \title{showComments}
 \usage{
-showComments(pkg_name, comments)
+showComments(pkg_name, comments, none_txt = "No comments")
 }
 \arguments{
 \item{pkg_name}{string name of the package}
 
 \item{comments}{data.frame comments table entry}
+
+\item{none_txt}{if there is no text to show in \code{comments} object, then
+display this text string. Default: "No comments"}
 }
 \value{
 a formatted string of comments

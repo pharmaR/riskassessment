@@ -27,7 +27,7 @@ viewCommentsUI <- function(id) {
 #' 
 #' @keywords internal
 #' 
-viewCommentsServer <- function(id, pkg_name, comments, label = 'Current Comments') {
+viewCommentsServer <- function(id, pkg_name, comments, none_txt = "No comments", label = 'Current Comments') {
   moduleServer(id, function(input, output, session) {
     # Show the comments on the package.
     output$view_comments <- renderUI({
@@ -36,7 +36,7 @@ viewCommentsServer <- function(id, pkg_name, comments, label = 'Current Comments
       tagList(
         h5(label, style = "padding-bottom:10px;"),
         wellPanel(
-          HTML(showComments(pkg_name = pkg_name(), comments = comments()))
+          HTML(showComments(pkg_name = pkg_name(), comments = comments(), none_txt = none_txt))
         )
       )
     })

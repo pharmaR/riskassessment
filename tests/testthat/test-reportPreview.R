@@ -13,12 +13,12 @@ test_that("Reactivity of reportPreview", {
   )
   
   # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 6e+05)
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
   
   # set pkg_name to dplyr
   app$set_inputs(`sidebar-select_pkg` = "dplyr")
   # get to the Report Preview tab
-  app$set_inputs(tabs = "Report Preview")
+  app$set_inputs(tabs = "Build Report")
   app$wait_for_idle()
    
  # set file type to pdf

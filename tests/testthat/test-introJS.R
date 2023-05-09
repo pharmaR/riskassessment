@@ -17,8 +17,7 @@ test_that("The introJS module works as expected for admins", {
   }
   
   # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"),
-                                   load_timeout = 600 * 1000)
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
   app$set_window_size(width = 1619, height = 1057)
   app$wait_for_idle()
   
@@ -100,7 +99,7 @@ test_that("The introJS module works as expected for admins", {
   expect_equal(community_metrics, steps)
   
   app$click(selector = ".introjs-skipbutton")
-  app$set_inputs(tabs = "Report Preview")
+  app$set_inputs(tabs = "Build Report")
   app$wait_for_idle()
   
   app$click("reportPreview-introJS-help")
@@ -138,8 +137,7 @@ test_that("The introJS module works as expected for nonadmins", {
   }
   
   # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps", "nonadmin-app"),
-                                   load_timeout = 600 * 1000)
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps", "nonadmin-app"))
   app$set_window_size(width = 1619, height = 1057)
   app$wait_for_idle()
   

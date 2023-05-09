@@ -51,7 +51,7 @@ uploadPackageUI <- function(id) {
         actionLink(NS(id, "upload_format"), "View Sample Dataset")
       ),
      ),
-    fluidRow(mod_decision_automation_ui(NS(id, "automate"))),
+    fluidRow(mod_decision_automation_ui("automate")),
 
     # Display the summary information of the uploaded csv.
     fluidRow(column(width = 12, htmlOutput(NS(id, "upload_summary_text")))),
@@ -66,6 +66,7 @@ uploadPackageUI <- function(id) {
 #'
 #' @param id a module id
 #' @param user a username
+#' @param auto_list a list of decision automation rules
 #' 
 #' @importFrom riskmetric pkg_ref
 #' @importFrom rintrojs introjs
@@ -73,7 +74,7 @@ uploadPackageUI <- function(id) {
 #' @importFrom rvest read_html html_nodes html_text
 #' @keywords internal
 #' 
-uploadPackageServer <- function(id, user) {
+uploadPackageServer <- function(id, user, auto_list) {
   moduleServer(id, function(input, output, session) {
     
     # Determine which guide to use for IntroJS.
@@ -88,8 +89,6 @@ uploadPackageServer <- function(id, user) {
       else 
         upload_pkg
     })
-    
-    auto_list <- mod_decision_automation_server("automate", user)
 
     cran_pkgs <- reactiveVal()
     
@@ -519,9 +518,6 @@ uploadPackageServer <- function(id, user) {
       ))
     })
     
-    list(
-      names = uploaded_pkgs,
-      auto_decision = auto_list
-    )
+    uploaded_pkgs
   })
 }

@@ -1,6 +1,6 @@
 Package: riskassessment
 Title: A web app designed to interface with the `riskmetric` package
-Version: 0.1.1.9009
+Version: 0.1.1.9010
 Authors@R: c( 
     person("Aaron", "Clark", role = c("aut", "cre"), email = "aaron.clark@biogen.com"),
     person("Robert", "Krajcik", role = "aut", email = "robert.krajcik@biogen.com"),
@@ -37,6 +37,7 @@ RoxygenNote: 7.2.0
 Imports: 
     bslib (>= 0.3.0),
     config (>= 0.3.1),
+    colourpicker,
     cranlogs,
     DBI,
     dplyr,

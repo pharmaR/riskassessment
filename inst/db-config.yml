@@ -35,6 +35,8 @@ example:
       Severe Risk:
         - .7
         - 1
+    colors:
+      Moderate Risk: !expr grDevices::rgb(52, 235, 229, maxColorValue = 255)
 example2:
   assessment_db: database_ex2.sqlite
   decisions:

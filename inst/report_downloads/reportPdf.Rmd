@@ -1,8 +1,8 @@
 ---
 title:    "<span class='txtasis'>R Package Risk Assessment</span>"
 subtitle: "<span class='txtasis'>Report for Package: `r params$pkg[['name']]`</span>"
-author:   "<span class='txtasis'>Author (Role): `r params$user_name` (`r params$user_role `)</span>"
-date:     "<span class='txtasis'>Report Date: `r format(Sys.time(), '%B %d, %Y')`</span>"
+author:   "<span class='txtasis'> `r if('Report Author' %in% params$report_includes) paste0('Author (Role): ', params$user_name, ' (', params$user_role, ')') else ''`</span>"
+date:     "<span class='txtasis'> `r if('Report Date' %in% params$report_includes) paste0('Report Date: ', format(Sys.time(), '%B %d, %Y')) else ''`</span>"
 output:
   pdf_document:
     latex_engine: xelatex
@@ -13,12 +13,14 @@ output:
       in_header: header.tex
 params:
   pkg: NA
+  report_includes: NA
   riskmetric_version: NA
   app_version: NA
   metric_weights: NA
   user_name: NA
   user_role: NA
   overall_comments: NA
+  pkg_summary: NA
   mm_comments: NA
   cm_comments: NA
   maint_metrics: NA
@@ -45,10 +47,10 @@ cm_ind <- nrow(params$com_metrics) != 0
 
 
 ```{r functions, include=FALSE, message=FALSE, warning=FALSE}
-outputComments <- function(pkg_name, comments){
+outputComments <- function(pkg_name, comments, none_txt = "No comments"){
   ifelse(
     length(comments$user_name) == 0, 
-    "No comments",
+    none_txt,
     paste0(
       "<div class='well'>",
       "<img src='images/user-tie.png' width='16' height='16'>", " ", "user: ", comments$user_name, ", ", 
@@ -74,58 +76,85 @@ tagList(
   strong('Maintainer:'),   br(), getElement(params$pkg, 'maintainer'),   br(), br(),
   strong('License:'),      br(), getElement(params$pkg, 'license'),      br(), br(),
   strong('Published:'),    br(), getElement(params$pkg, 'published'),    br(), br(),
-  strong('Risk Score:'),   br(), getElement(params$pkg, 'score'),        br(), br(),
-  strong('Overall Decision:'), br(), ifelse(params$pkg[['decision']] == '', 'Pending', params$pkg[['decision']])
+  if('Risk Score' %in% params$report_includes) tagList(strong('Risk Score:'),   br(), getElement(params$pkg, 'score'),        br(), br()) else "",
+  strong('Package Decision:'), br(), ifelse(is.na(params$pkg[['decision']]), 'Pending', params$pkg[['decision']])
 )
 ```
 
 
 ```{r overall_comments}
-tagList(
-  h2('Overall Comments', style = "padding-bottom:10px;"),
-  wellPanel(
-    HTML(outputComments(
-      pkg_name = params$pkg$name,
-      comments = params$overall_comments))
+if('Overall Comment' %in% params$report_includes){
+  tagList(
+    br(),
+    h2('Overall Comment', style = "padding-bottom:10px;"),
+    wellPanel(
+      HTML(outputComments(
+        pkg_name = params$pkg$name,
+        comments = params$overall_comments))
+    )
   )
-)
+}
 ```
 
+```{r pkg_summary}
+if('Package Summary' %in% params$report_includes){
+  tagList(
+    br(),
+    h2('Package Summary', style = "padding-bottom:10px;"),
+    wellPanel(
+      HTML(outputComments(
+        pkg_name = params$pkg$name,
+        comments = params$pkg_summary,
+        none_txt = "No summary"))
+    )
+  )
+}
+```
 
-\newpage
+`r if(any(c('Maintenance Metrics', 'Maintenance Comments') %in% params$report_includes)) {"\\newpage"}`
+
 ```{r maintenance_metrics}
-tagList(br(), h2('Maintenance Metrics'))
+if(any(c('Maintenance Metrics', 'Maintenance Comments') %in% params$report_includes)) {
+  tagList(br(), h2('Maintenance Metrics'))
+}
 ```
 
 
 ```{r maintenance_metrics_table}
-params$maint_metrics %>%
-  dplyr::mutate(
-    `Metric Name` = title,
-    `Metric Description` = desc,
-    `Metric Value` = dplyr::case_when(!(name %in% c('has_bug_reports_url', 'news_current')) ~ value,
-                               value %in% c("TRUE","1") ~ 'Yes',
-                               TRUE ~ 'No')
-  ) %>%
-  dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
-  knitr::kable(format = 'pandoc')
+if('Maintenance Metrics' %in% params$report_includes){
+  params$maint_metrics %>%
+    dplyr::mutate(
+      `Metric Name` = title,
+      `Metric Description` = desc,
+      `Metric Value` = dplyr::case_when(!(name %in% c('has_bug_reports_url', 'news_current')) ~ value,
+                                 value %in% c("TRUE","1") ~ 'Yes',
+                                 TRUE ~ 'No')
+    ) %>%
+    dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
+    knitr::kable(format = 'pandoc')
+}
 ```
 
 
 ```{r maintenance_metrics_comments}
-tagList(
-  br(),
-  h2('Comments'),
-  HTML(outputComments(
-    pkg_name = params$pkg$name,
-    comments = params$mm_comments))
-)
+if('Maintenance Comments' %in% params$report_includes){
+  tagList(
+    br(),
+    h2('Comments'),
+    HTML(outputComments(
+      pkg_name = params$pkg$name,
+      comments = params$mm_comments))
+  )
+}
 ```
 
 
-\newpage
+`r if(any(c('Community Usage Metrics', 'Community Usage Comments') %in% params$report_includes)) {"\\newpage"}`
+
 ```{r community_metrics, warning=FALSE, message=FALSE}
-tagList(br(), h2("Community Usage Metrics"))
+if(any(c('Community Usage Metrics', 'Community Usage Comments') %in% params$report_includes)) {
+  tagList(br(), h2("Community Usage Metrics"))
+}
 ```
 
 
@@ -134,61 +163,70 @@ if (!cm_ind) {
     h6(glue::glue("Community Usage Metrics not avaiable for {params$pkg$name}"),
        style = "text-align: center; color: gray; padding-top: 50px;")
 } else {
-comm_out_tab <- params$com_metrics %>%
-  dplyr::mutate(
-    `Metric Name` = title,
-    `Metric Description` = desc,
-    `Metric Value` = value
-  ) %>%
-  dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
-  knitr::kable(format = 'latex', booktabs = TRUE)
-
-if (!requireNamespace("kableExtra", quietly = TRUE)) comm_out_tab else comm_out_tab %>% kableExtra::kable_styling(position = "left")
+  if('Community Usage Metrics' %in% params$report_includes){
+    comm_out_tab <- params$com_metrics %>%
+      dplyr::mutate(
+        `Metric Name` = title,
+        `Metric Description` = desc,
+        `Metric Value` = value
+      ) %>%
+      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
+      knitr::kable(format = 'latex', booktabs = TRUE)
+    
+    if (!requireNamespace("kableExtra", quietly = TRUE)) comm_out_tab else comm_out_tab %>% kableExtra::kable_styling(position = "left")
+  }
 }
 ```
 
 
 ```{r community_metrics_plot_title, eval=cm_ind}
-tagList(
-  br(),
-  h2('Number of Downloads by Month/Year')
-)
+if('Community Usage Metrics' %in% params$report_includes){
+  tagList(
+    br(),
+    h2('Number of Downloads by Month/Year')
+  )
+}
 ```
 
 
 ```{r community_metrics_plot, fig.width=10, fig.height=5, eval=cm_ind}
-d <- params$com_metrics_raw %>%
-  dplyr::mutate(day_month_year = glue::glue('1-{month}-{year}')) %>%
-  dplyr::mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
-  dplyr::mutate(month = month.name[month]) %>%
-  dplyr::arrange(day_month_year) %>%
-  dplyr::distinct(month, year, .keep_all = TRUE)
-
-mo <- ceiling(nrow(d) / 9)
-
-ggplot(data = d, aes(x = day_month_year, y = downloads)) +
-  geom_point() +
-  geom_line() +
-  scale_x_date(date_breaks = glue::glue("{mo} months"), date_labels = "%m-%Y") +
-  labs(
-    x = 'Month/Year',
-    y = 'Downloads'
-  ) +
-  theme(text = element_text(size = 16), axis.text = element_text(size=16))# angle = 30, vjust = 0.5, hjust=1))
+if('Community Usage Metrics' %in% params$report_includes){
+  d <- params$com_metrics_raw %>%
+    dplyr::mutate(day_month_year = glue::glue('1-{month}-{year}')) %>%
+    dplyr::mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
+    dplyr::mutate(month = month.name[month]) %>%
+    dplyr::arrange(day_month_year) %>%
+    dplyr::distinct(month, year, .keep_all = TRUE)
+  
+  mo <- ceiling(nrow(d) / 9)
+  
+  ggplot(data = d, aes(x = day_month_year, y = downloads)) +
+    geom_point() +
+    geom_line() +
+    scale_x_date(date_breaks = glue::glue("{mo} months"), date_labels = "%m-%Y") +
+    labs(
+      x = 'Month/Year',
+      y = 'Downloads'
+    ) +
+    theme(text = element_text(size = 16), axis.text = element_text(size=16))# angle = 30, vjust = 0.5, hjust=1))
+}
 ```
 
 
 ```{r community_metrics_comments, eval=cm_ind}
-tagList(
-  br(),
-  h2('Comments'),
-  HTML(outputComments(
-    pkg_name = params$pkg$name,
-    comments = params$cm_comments))
-)
+if('Community Usage Comments' %in% params$report_includes){
+  tagList(
+    br(),
+    h2('Comments'),
+    HTML(outputComments(
+      pkg_name = params$pkg$name,
+      comments = params$cm_comments))
+  )
+}
 ```
 
 \newpage
+
 ```{r about_report_title}
 tagList(br(), h2('About The Report'))
 ```
@@ -199,13 +237,15 @@ tagList(
   strong('{riskassessment} App Version:'), br(), getElement(params, 'app_version'), br(), br(),
   strong('{riskmetric} Version:'), br(), getElement(params, 'riskmetric_version'), br(), br(),
   strong('Generated on:'), br(), format(Sys.time(), usetz = TRUE), br(), br(),
-  strong('Metric Weights:')
+  if('Risk Score' %in% params$report_includes) strong('Metric Weights:') else ""
 )
 
-tab_out <-
-  params$metric_weights %>%
-  knitr::kable(align = c('l','c'), format = 'latex', booktabs = TRUE) 
-
-if (!requireNamespace("kableExtra", quietly = TRUE)) tab_out else tab_out %>% kableExtra::kable_styling(position = "left")
+if('Risk Score' %in% params$report_includes) {
+  tab_out <-
+    params$metric_weights %>%
+    knitr::kable(align = c('l','c'), format = 'latex', booktabs = TRUE) 
+  
+  if (!requireNamespace("kableExtra", quietly = TRUE)) tab_out else tab_out %>% kableExtra::kable_styling(position = "left")
+}
 ```
 
