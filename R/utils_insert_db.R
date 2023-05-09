@@ -254,6 +254,7 @@ insert_community_metrics_to_db <- function(pkg_name,
         (id, month, year, downloads, version)
         VALUES {pkgs_cum_values}"), db_name)
   }
+ }
 }
 
 
