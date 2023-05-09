@@ -229,37 +229,72 @@ mod_decision_automation_server <- function(id, user){
     }
     initial_values <- purrr::map(initial_values, ~ .x %>% `[`(!. %in% c(0,1)) %>% round(2))
     
+    dec_divs <- purrr::map(decision_lst, ~ div(
+      risk = risk_lbl(.x, input = FALSE),
+      class = if (!.x %in% initial_selection) "shinyjs-hide",
+      style = "width: 100%",
+      sliderInput(ns(risk_lbl(.x)), 
+                  .x, 0, 1, initial_values[[.x]],
+                  width = "100%", sep = .01)
+    ))
+    
+    col_divs <- purrr::map2(decision_lst, color_lst, ~ div(
+      style = "width: 33.3%",
+      colourpicker::colourInput(ns(glue::glue("{risk_lbl(.x, input = FALSE)}_col_2")),
+                                .x, .y)
+    ))
+    
+    observeEvent(input$auto_dropdown, {
+      req(user$role == "admin")
+      
+      #####
+      showModal(modalDialog(
+        size = "l",
+        uiOutput(ns("decision_rule_div"))
+      ))
+      
+    })
+    
+    output$decision_rule_div <- renderUI({
+      req(user$role == "admin")
+      
+      tagList(
+        div(
+          style = "display: flex;",
+          checkboxGroupInput(ns("auto_include"), "Auto-Assign Decisions For...", decision_lst, selected = auto_current(), inline = TRUE),
+          actionButton(ns("auto_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
+        ),
+        dec_divs,
+        br(),
+        actionButton(ns("submit_auto"), "Apply Decision Rules", width = "100%"),
+      )
+    }) %>%
+      bindEvent(input$auto_dropdown)
+    
     output$auto_settings <-
       renderUI({
         req(user$role)
         req(user$role == "admin")
         
-        dec_divs <- purrr::map(decision_lst, ~ div(
-          risk = risk_lbl(.x, input = FALSE),
-          class = if (!.x %in% initial_selection) "shinyjs-hide",
-          style = "width: 100%",
-          sliderInput(ns(risk_lbl(.x)), 
-                      .x, 0, 1, initial_values[[.x]],
-                      width = "100%", sep = .01)
-        ))
         div(
           style = "float: right;",
-          shinyWidgets::dropdownButton(
-            div(
-              style = "display: flex;",
-              checkboxGroupInput(ns("auto_include"), "Auto-Assign Decisions For...", decision_lst, selected = intersect(initial_selection, decision_lst), inline = TRUE),
-              actionButton(ns("auto_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
-            ),
-            dec_divs,
-            br(),
-            actionButton(ns("submit_auto"), "Apply Decision Rules", width = "100%"),
-            circle = TRUE,
-            icon = icon("gear"),
-            right = TRUE,
-            width = '600px',
-            inputId  = ns("auto_dropdown"),
-            tooltip = shinyWidgets::tooltipOptions(title = "Click here to add/adjust decision automation rules.", placement = "left")
-          )
+          actionButton(ns("auto_dropdown"), label = icon("gear"), class = "btn-circle", style = "margin-left: auto;"),
+          # shinyWidgets::dropdownButton(
+          #   # div(
+          #   #   style = "display: flex;",
+          #   #   checkboxGroupInput(ns("auto_include"), "Auto-Assign Decisions For...", decision_lst, selected = intersect(initial_selection, decision_lst), inline = TRUE),
+          #   #   actionButton(ns("auto_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
+          #   # ),
+          #   # dec_divs,
+          #   # br(),
+          #   # actionButton(ns("submit_auto"), "Apply Decision Rules", width = "100%"),
+          #   circle = TRUE,
+          #   icon = icon("gear"),
+          #   right = TRUE,
+          #   width = '600px',
+          #   inputId  = ns("auto_dropdown"),
+          #   tooltip = shinyWidgets::tooltipOptions(title = "Click here to add/adjust decision automation rules.", placement = "left")
+          # )
         )
       })
     
@@ -268,20 +303,7 @@ mod_decision_automation_server <- function(id, user){
       renderUI({
         req(user$role)
         req(user$role == "admin")
-
-        dec_divs <- purrr::map(decision_lst, ~ div(
-          risk = risk_lbl(.x, input = FALSE),
-          class = if (!.x %in% initial_selection) "shinyjs-hide",
-          style = "width: 100%",
-          sliderInput(ns(glue::glue("{risk_lbl(.x)}_2")), 
-                      .x, 0, 1, initial_values[[.x]],
-                      width = "100%", sep = .01)
-        ))
-        col_divs <- purrr::map2(decision_lst, color_lst, ~ div(
-          style = "width: 33.3%",
-          colourpicker::colourInput(ns(glue::glue("{risk_lbl(.x, input = FALSE)}_col_2")),
-                                    .x, .y)
-        ))
+        
         div(
           style = "float: right;",
           shinyWidgets::dropdownButton(
