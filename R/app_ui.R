@@ -54,7 +54,7 @@ app_ui <- function(request) {
               ),
               tabPanel(
                 id = "reportPreview_tab_id",
-                title = "Report Preview",
+                title = "Build Report",
                 reportPreviewUI("reportPreview")
               ),
               tabPanel(

@@ -22,3 +22,7 @@ utils::globalVariables(c('.',
  'must_change', 'name', 'Name', 'new_weight', 'package', 'Published',
  'score', 'Version', 'was_decision_made', 'weight', 'X1', 'X2', 'ea_v', 'type')
 )
+
+# report_include_choices <- c("Report Author", "Report Date", "Risk Score", 
+#   "Overall Comment", "Package Summary", "Maintenance Metrics",
+#   "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments")
