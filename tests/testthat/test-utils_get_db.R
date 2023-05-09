@@ -48,7 +48,19 @@ test_that("utils_get_db functions other than dbSelect", {
   insert_riskmetric_to_db(pkg_name, app_db_loc)
   pkg_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"), app_db_loc)
   
-  insert_community_metrics_to_db(pkg_name, app_db_loc)
+  pkgs_cum_metrics <- generate_comm_data(pkg_name)
+  
+  pkgs_cum_values <- glue::glue(
+    "('{pkg_name}', {pkgs_cum_metrics$month}, {pkgs_cum_metrics$year}, 
+  {pkgs_cum_metrics$downloads}, '{pkgs_cum_metrics$version}')") %>%
+    glue::glue_collapse(sep = ", ")
+  
+  if(nrow(pkgs_cum_metrics) != 0){
+    dbUpdate(glue::glue(
+      "INSERT INTO community_usage_metrics 
+        (id, month, year, downloads, version)
+        VALUES {pkgs_cum_values}"), app_db_loc)
+  }
   
   test_that("get_overall_comments works", {
     ocmt <- get_overall_comments(pkg_name, db_name = app_db_loc)
