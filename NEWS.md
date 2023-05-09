@@ -10,6 +10,7 @@
 * Updated help files for `build_comm_plotly()` to include example output (#409).
 * Created an open 'forum' for org's to compose a "Package Summary" so they can keep track of all pertinent items central to a full fledged package review (#348).
 * Enhanced (what was formerly known as) the "Report Preview" tab to include more holistic Report Builder. This allows users to define what content shows up in the report (#348).
+* Improved speed of inserting community metrics into database (#516)
 * Fix button alignment issues (#514)
 
 # riskassessment 0.1.1
