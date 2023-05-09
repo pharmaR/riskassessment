@@ -16,6 +16,7 @@ test_that("Comments can be added via the addComment module", {
   
   # set up new app driver object
   app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
+  app$wait_for_idle()
 
   comments <- dbSelect("select * from comments", app_db_loc)
   expect_equal(
@@ -118,6 +119,7 @@ test_that("Comment input box is rendered according to the tab and user state", {
 
   # set up new app driver object
   app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
+  app$wait_for_idle()
   
   # select dplyr package
   app$set_inputs(`sidebar-select_pkg` = "dplyr")

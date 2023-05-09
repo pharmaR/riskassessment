@@ -26,7 +26,12 @@ uploadPackageUI <- function(id) {
                                         onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_cran"), '", "load", {priority: "event"})}')))),
           actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
                        style = 'height: calc(1.5em + 1.5rem + 2px)'),
-          tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "add_pkgs"), '").css("margin-top", $("#', NS(id, "pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
+          tags$script(I(glue::glue('$(window).on("load resize", function() {{
+                                             $("#{NS(id, "add_pkgs")}").css("margin-top", $("#{NS(id, "pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
+                                             }})
+                                             $("a[data-toggle=\'tab\']").on("shown.bs.tab", function(e) {{
+                                             $("#{NS(id, "add_pkgs")}").css("margin-top", $("#{NS(id, "pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
+                                             }})')))
         ),
         
         uiOutput(NS(id, "rem_pkg_div"))
@@ -124,6 +129,10 @@ uploadPackageServer <- function(id, user, auto_list) {
     observeEvent(user$role, {
     req(user$role == "admin")  
     output$rem_pkg_div <- renderUI({
+      session$onFlushed(function() {
+        shinyjs::runjs(glue::glue('$("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))'))
+      })
+      
       div(
         id = "rem-package-group",
         style = "display: flex;",
@@ -132,7 +141,12 @@ uploadPackageServer <- function(id, user, auto_list) {
                                       onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "curr_pkgs"), '", "load", {priority: "event"})}')))),
         # note the action button moved out of alignment with 'selectizeInput' under 'renderUI'
         actionButton(NS(id, "rem_pkg_btn"), shiny::icon("trash-can")),
-                     tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "rem_pkg_btn"), '").css("margin-top", $("#', NS(id, "rem_pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
+        tags$script(I(glue::glue('$(window).on("load resize", function() {{
+                                             $("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
+                                             }})
+                                             $("a[data-toggle=\'tab\']").on("shown.bs.tab", function(e) {{
+                                             $("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
+                                             }})')))
       )
      })
     })
