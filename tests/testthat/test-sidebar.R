@@ -16,6 +16,7 @@ test_that("Reactivity of sidebar", {
   
   # set up new app driver object
   app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
+  app$wait_for_idle()
   
   # select_pkg is "-"
   expect_equal(app$get_value(input = "sidebar-select_pkg"), "-")

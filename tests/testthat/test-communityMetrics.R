@@ -14,6 +14,7 @@ test_that("Reactivity of communityMetrics", {
   
   # set up new app driver object
   app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
+  app$wait_for_idle()
   
   # set pkg_name to dplyr
   app$set_inputs(`sidebar-select_pkg` = "dplyr")

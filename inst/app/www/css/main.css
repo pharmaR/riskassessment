@@ -3,15 +3,24 @@
   padding-bottom: 20px;
 }
 
+.container-fluid > .tabbable {
+  padding-bottom: 55px;
+}
+
 #footer a {
   text-decoration: none; 
   padding-left: 5px;
 }
 
 #footer {
+  position: fixed;
+  bottom: 0;
+  left: .75em;
+  right: .75em;
   text-align: center;
   padding-bottom: 10px;
   margin-top: 70px;
+  background: #f7f7f7;
 }
 
 #raa-logo img {
