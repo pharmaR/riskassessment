@@ -289,16 +289,11 @@ reweightViewServer <- function(id, user, decision_list) {
         # insert comment for both mm and cum tabs
         for (typ in c("mm","cum")) {
           dbUpdate(
-            paste0(
-              "INSERT INTO comments values('", all_pkgs$pkg_name[i], "',",
-              "'", user$name, "'," ,
-              "'", user$role, "',",
-              "'", paste0(weight_risk_comment(all_pkgs$pkg_name[i]), 
-                          ifelse(all_pkgs$pkg_name[i] %in% cmt_or_dec_pkgs$pkg_name, cmt_or_dec_dropped_cmt, "")), "',",
-              "'", typ, "',",
-              "'", getTimeStamp(), "'" ,
-              ")"
-            )
+            'INSERT INTO comments
+            VALUES({all_pkgs$pkg_name[i]}, {user$name}, {user$role},
+            {paste0(weight_risk_comment(all_pkgs$pkg_name[i]), 
+                          ifelse(all_pkgs$pkg_name[i] %in% cmt_or_dec_pkgs$pkg_name, cmt_or_dec_dropped_cmt, ""))},
+            {typ}, {getTimeStamp()})'
           )
         }
       }
@@ -307,7 +302,7 @@ reweightViewServer <- function(id, user, decision_list) {
       pkg <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package WHERE decision_id IS NOT NULL")
       if (nrow(pkg) > 0) {
         for (i in 1:nrow(pkg)) {
-          dbUpdate(glue::glue("UPDATE package SET decision_id = NULL where name = '{pkg$pkg_name[i]}'"))
+          dbUpdate("UPDATE package SET decision_id = NULL where name = {pkg$pkg_name[i]}")
         }
       }
       
@@ -322,9 +317,9 @@ reweightViewServer <- function(id, user, decision_list) {
         shinyjs::runjs("$('<br>').insertAfter('.progress-message');")
         for (i in 1:nrow(pkg)) {
           incProgress(1 / (nrow(pkg) + 1), detail = pkg$pkg_name[i])
-          dbUpdate(glue::glue(
+          dbUpdate(
             "DELETE FROM package_metrics WHERE package_id = 
-            (SELECT id FROM package WHERE name = '{pkg$pkg_name[i]}')") )
+            (SELECT id FROM package WHERE name = {pkg$pkg_name[i]})")
           # metric_mm_tm_Info_upload_to_DB(pkg$pkg_name[i])
           insert_riskmetric_to_db(pkg$pkg_name[i])
           if (!rlang::is_empty(decision_list())) {

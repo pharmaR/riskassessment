@@ -251,13 +251,10 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
           )
         ))
       } else { # first summary!
-        comment <- stringr::str_replace_all(current_summary, "'", "''")
-        dbUpdate(glue::glue(
+        dbUpdate(
           "INSERT INTO comments
-          VALUES ('{selected_pkg$name()}', '{user$name}', '{user$role}',
-          '{comment}', 's', '{getTimeStamp()}')"))
-        # updateTextAreaInput(session, "pkg_summary", value = "",
-        #                     placeholder = glue::glue('Current Summary: \n{current_summary}'))
+          VALUES ({selected_pkg$name()}, {user$name}, {user$role},
+          {current_summary}, 's', {getTimeStamp()})")
         showModal(modalDialog(
           title = h2("Summary Submitted"),
           br(),
@@ -277,17 +274,13 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       
       req(selected_pkg$name())
       
-      comment <- stringr::str_replace_all(input$pkg_summary, "'", "''")
-      
       dbUpdate(
-        glue::glue(
           "UPDATE comments
-          SET comment = '{comment}', added_on = '{getTimeStamp()}'
-          WHERE id = '{selected_pkg$name()}' AND
-          user_name = '{user$name}' AND
-          user_role = '{user$role}' AND
+          SET comment = {input$pkg_summary}, added_on = {getTimeStamp()}
+          WHERE id = {selected_pkg$name()} AND
+          user_name = {user$name} AND
+          user_role = {user$role} AND
           comment_type = 's'"
-        )
       )
       
       # disable text editor and flip button to "edit"

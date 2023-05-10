@@ -209,8 +209,8 @@ uploadPackageServer <- function(id, user, auto_list) {
       for (i in 1:np) {
       pkg_name <- input$rem_pkg_lst[i]
       # update version with what is in the package table
-      uploaded_packages$version[i] <- dbSelect(glue::glue("select version from package where name = '{pkg_name}'"), db_name = golem::get_golem_options('assessment_db_name')) 
-      dbUpdate(glue::glue("delete from package where name = '{pkg_name}'"), db_name = golem::get_golem_options('assessment_db_name'))
+      uploaded_packages$version[i] <- dbSelect("select version from package where name = {pkg_name}", db_name = golem::get_golem_options('assessment_db_name')) 
+      dbUpdate("DELETE FROM package WHERE name = {pkg_name}", db_name = golem::get_golem_options('assessment_db_name'))
       }
       
       # clean up other db tables
@@ -362,10 +362,10 @@ uploadPackageServer <- function(id, user, auto_list) {
             incProgress(1, detail = deets)
             uploaded_packages$version[i] <- as.character(ref$version)
             
-            found <- nrow(dbSelect(glue::glue(
+            found <- nrow(dbSelect(
               "SELECT name
               FROM package
-              WHERE name = '{uploaded_packages$package[i]}'")))
+              WHERE name = {uploaded_packages$package[i]}"))
             
             uploaded_packages$status[i] <- ifelse(found == 0, 'new', 'duplicate')
 

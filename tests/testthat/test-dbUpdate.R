@@ -34,24 +34,24 @@ test_that("both dbUpdate and dbSelect work", {
   
   pkg_name <- "stringr"
   
-  command <- glue::glue("DELETE from [package] WHERE ( name = '{pkg_name}')")
+  command <- "DELETE from [package] WHERE ( name = {pkg_name})"
   
   # 5. expect zero rows were affected, referring to existing table 
   testthat::expect_message(dbUpdate(command, app_db_loc), regexp = "zero rows were affected by the command:" )
   
-  command <- glue::glue("DELETE from [thispkg] WHERE (name = '{pkg_name}')")
+  command <- "DELETE from [thispkg] WHERE (name = {pkg_name})"
   # 6. expect message about "no such table"
   testthat::expect_message(dbUpdate(command, app_db_loc), regexp = "Error: no such table:" )
   
   pkg_info <- get_latest_pkg_info(pkg_name)
   
-  command <-(glue::glue(
+  command <-(
     "INSERT or REPLACE INTO package
         (name, version, title, description, maintainer, author,
         license, published_on, decision_by, decision_date, date_added)
-        VALUES('{pkg_name}', '{pkg_info$Version}', '{pkg_info$Title}', '{pkg_info$Description}',
-        '{pkg_info$Maintainer}', '{pkg_info$Author}', '{pkg_info$License}', '{pkg_info$Published}',
-        '', null, '{Sys.Date()}')"))
+        VALUES({pkg_name}, {pkg_info$Version}, {pkg_info$Title}, {pkg_info$Description},
+        {pkg_info$Maintainer}, {pkg_info$Author}, {pkg_info$License}, {pkg_info$Published},
+        '', null, {Sys.Date()})")
   
   dbUpdate(command, app_db_loc)
   
@@ -64,7 +64,7 @@ test_that("both dbUpdate and dbSelect work", {
   testthat::expect_equal(pkg_info$Title, tbl1$title)
   
   # clean up after ourselves
-  command <- glue::glue("DELETE from [package] WHERE ( name = '{pkg_name}')")
+  command <- "DELETE from [package] WHERE ( name = {pkg_name})"
   dbUpdate(command, app_db_loc)
   
   tbl1 <- dbSelect(query, app_db_loc)
