@@ -15,7 +15,8 @@ test_that("decision_automation works", {
   
 
   process_dec_tbl(app_sys("testdata", "decision_automation_ex1.sqlite"))
-  dbSelect("select * from decision_categories", test_db_loc)
+  deccat <- dbSelect("select * from decision_categories", test_db_loc)
+  cat(paste(deccat, collapse = "\n"))
   
   
   app <- shinytest2::AppDriver$new(test_path("test-apps", "decision_automation-app"),
