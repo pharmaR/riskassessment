@@ -13,12 +13,6 @@ test_that("decision_automation works", {
     app_db_loc
   )
   
-
-  process_dec_tbl(app_sys("testdata", "decision_automation_ex1.sqlite"))
-  deccat <- dbSelect("select * from decision_categories", test_db_loc)
-  cat(paste(deccat, collapse = "\n"))
-  
-  
   app <- shinytest2::AppDriver$new(test_path("test-apps", "decision_automation-app"),
                                    load_timeout = 60*1000)
   
