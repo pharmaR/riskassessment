@@ -3,12 +3,13 @@
 #' 
 #' @param query a sql query as a string
 #' @param db_name character name (and file path) of the database
-#' @param .envir Environemtn to evaluate each expression in
+#' @param .envir Environment to evaluate each expression in
 #' 
 #' @import dplyr
 #' @importFrom DBI dbConnect dbSendQuery dbFetch dbClearResult dbDisconnect
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
+#' @importFrom glue glue glue_sql
 #' 
 #' @returns a data frame
 #'
@@ -22,13 +23,13 @@ dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_na
       rs <- DBI::dbSendQuery(con, glue::glue_sql(query, .envir = .envir, .con = con))
     },
     warning = function(warn) {
-      message <- paste0("warning:\n", query, "\nresulted in\n", warn)
+      message <- glue::glue("warning:\n", query, "\nresulted in\n", warn)
       message(message, .loggit = FALSE)
       loggit::loggit("WARN", message, echo = FALSE)
       errFlag <<- TRUE
     },
     error = function(err) {
-      message <- paste0("error:\n", query, "\nresulted in\n",err)
+      message <- glue::glue("error:\n", query, "\nresulted in\n",err)
       message(message, .loggit = FALSE)
       loggit::loggit("ERROR", message, echo = FALSE)
       DBI::dbDisconnect(con)
