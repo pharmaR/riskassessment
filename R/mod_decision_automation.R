@@ -106,6 +106,7 @@ mod_decision_automation_server <- function(id, user){
     
     color_lst <- get_colors(golem::get_golem_options("assessment_db_name"))
     color_current <- reactiveVal(color_lst)
+    color_updated <- reactiveVal(color_lst)
     
     auto_decision_initial <- process_dec_tbl(golem::get_golem_options('assessment_db_name'))
     auto_decision_update <- reactiveVal(auto_decision_initial)
@@ -241,30 +242,40 @@ mod_decision_automation_server <- function(id, user){
       ))
     })
     
-    observeEvent(dec_divs(), {
+    col_divs <- reactive({
+      purrr::map2(decision_lst, color_updated(), ~ div(
+        style = "width: 33.3%",
+        colourpicker::colourInput(ns(glue::glue("{risk_lbl(.x, input = FALSE)}_col")),
+                                  .x, .y)
+      ))
     })
-    
-    col_divs <- purrr::map2(decision_lst, color_lst, ~ div(
-      style = "width: 33.3%",
-      colourpicker::colourInput(ns(glue::glue("{risk_lbl(.x, input = FALSE)}_col_2")),
-                                .x, .y)
-    ))
     
     observeEvent(input$auto_dropdown, {
       req(user$role == "admin")
       
-      #####
       showModal(modalDialog(
         size = "l",
         uiOutput(ns("decision_rule_div"))
       ))
-      
+    })
+    
+    observeEvent(input$auto_dropdown2, {
+      shinyjs::click("auto_dropdown")
     })
     
     output$decision_rule_div <- renderUI({
       req(user$role == "admin")
       
       tagList(
+        div(
+          style = "display: flex",
+          span("Select Category Colors", style = "font-size: x-large; font-weight: bold"),
+          actionButton(ns("col_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
+        ),
+        br(),
+        div(col_divs(), style = "display: flex; flex-wrap: wrap"),
+        actionButton(ns("submit_color"), "Apply Category Colors", width = "100%"),
+        hr(),
         div(
           style = "display: flex;",
           checkboxGroupInput(ns("auto_include"), "Auto-Assign Decisions For...", decision_lst, selected = auto_current(), inline = TRUE),
@@ -283,23 +294,7 @@ mod_decision_automation_server <- function(id, user){
         
         div(
           style = "float: right;",
-          actionButton(ns("auto_dropdown"), label = icon("gear"), class = "btn-circle", style = "margin-left: auto;"),
-          # shinyWidgets::dropdownButton(
-          #   # div(
-          #   #   style = "display: flex;",
-          #   #   checkboxGroupInput(ns("auto_include"), "Auto-Assign Decisions For...", decision_lst, selected = intersect(initial_selection, decision_lst), inline = TRUE),
-          #   #   actionButton(ns("auto_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
-          #   # ),
-          #   # dec_divs,
-          #   # br(),
-          #   # actionButton(ns("submit_auto"), "Apply Decision Rules", width = "100%"),
-          #   circle = TRUE,
-          #   icon = icon("gear"),
-          #   right = TRUE,
-          #   width = '600px',
-          #   inputId  = ns("auto_dropdown"),
-          #   tooltip = shinyWidgets::tooltipOptions(title = "Click here to add/adjust decision automation rules.", placement = "left")
-          # )
+          actionButton(ns("auto_dropdown"), label = icon("gear"), class = "btn-circle", style = "margin-left: auto;")
         )
       })
     
@@ -309,49 +304,13 @@ mod_decision_automation_server <- function(id, user){
         req(user$role)
         req(user$role == "admin")
         
-        dec_divs <- purrr::map(decision_lst, ~ div(
-          risk = risk_lbl(.x, input = FALSE),
-          class = if (!.x %in% initial_selection) "shinyjs-hide",
-          style = "width: 100%",
-          sliderInput(ns(glue::glue("{risk_lbl(.x)}_2")), 
-                      .x, 0, 1, updated_values[[.x]],
-                      width = "100%", sep = .01)
-        ))
-        
         div(
           style = "float: right;",
-          shinyWidgets::dropdownButton(
-            div(
-              style = "display: flex",
-              span("Select Category Colors", style = "font-size: x-large; font-weight: bold"),
-              actionButton(ns("col_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
-            ),
-            br(),
-            div(col_divs, style = "display: flex; flex-wrap: wrap"),
-            actionButton(ns("submit_color"), "Apply Category Colors", width = "100%"),
-            hr(),
-            div(
-              style = "display: flex",
-            checkboxGroupInput(ns("auto_include_2"), "Auto-Assign Decisions For...", decision_lst, selected = intersect(initial_selection, decision_lst), inline = TRUE),
-            actionButton(ns("auto_reset_2"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
-            ),
-            dec_divs,
-            br(),
-            actionButton(ns("submit_auto_2"), "Apply Decision Rules", width = "100%"),
-            circle = TRUE,
-            icon = icon("gear"),
-            right = TRUE,
-            width = '600px',
-            inputId  = ns("auto_dropdown_2"),
-            tooltip = shinyWidgets::tooltipOptions(title = "Click here to edit the decision category table.", placement = "left")
-          )
+          actionButton(ns("auto_dropdown2"), label = icon("gear"), class = "btn-circle", style = "margin-left: auto;")
         )
       })
     
-    outputOptions(output, "auto_settings2", suspendWhenHidden = FALSE)
-    
     observeEvent(input$auto_include, {
-      updateCheckboxGroupInput(session, "auto_include_2", choices = decision_lst, selected = input$auto_include, inline = TRUE)
       grp_added <- setdiff(input$auto_include, auto_current())
       grp_removed <- setdiff(auto_current(), input$auto_include)
       
@@ -377,17 +336,10 @@ mod_decision_automation_server <- function(id, user){
       auto_current(input$auto_include)
     }, ignoreNULL = FALSE, ignoreInit = TRUE)
     
-    # observeEvent(input$auto_include_2, {
-    #   updateCheckboxGroupInput(session, "auto_include", choices = decision_lst, selected = input$auto_include_2, inline = TRUE)
-    # }, ignoreNULL = FALSE, ignoreInit = TRUE)
-    
     purrr::iwalk(decision_lst, function(.x, .y) {
       this_lbl <- risk_lbl(.x)
       next_lbl <- risk_lbl(decision_lst[.y + 1])
       prev_lbl <- risk_lbl(decision_lst[.y - 1])
-      # observeEvent(input[[paste(this_lbl, 2, sep = "_")]], {
-      #   updateSliderInput(session, this_lbl, value = input[[paste(this_lbl, 2, sep = "_")]])
-      # })
       
       observeEvent(input[[this_lbl]], {
         updateSliderInput(session, paste(this_lbl, 2, sep = "_"), value = input[[this_lbl]])
@@ -434,13 +386,9 @@ mod_decision_automation_server <- function(id, user){
       updateCheckboxGroupInput(session, "auto_include", selected = names(auto_decision_update()))
     })
     
-    # observeEvent(input$auto_reset_2, {
-    #   shinyjs::click("auto_reset")
-    # })
-    
     observeEvent(input$col_reset, {
       purrr::walk2(decision_lst, color_current(), ~ {
-        colourpicker::updateColourInput(session, glue::glue("{risk_lbl(.x, input = FALSE)}_col_2"), value = .y)
+        colourpicker::updateColourInput(session, glue::glue("{risk_lbl(.x, input = FALSE)}_col"), value = .y)
       })
     })
     
@@ -469,15 +417,12 @@ mod_decision_automation_server <- function(id, user){
     
     output$modal_col_table <- 
       DT::renderDataTable({
-        selected_colors <- 
-          decision_lst %>%
-          purrr::map_chr(~ input[[glue::glue("{risk_lbl(.x, input = FALSE)}_col_2")]])
         
         mod_tbl <-
           dplyr::tibble(
             decision = decision_lst,
             old_color = color_current(),
-            new_color = selected_colors
+            new_color = color_updated()
           )
         
         formattable::as.datatable(
@@ -541,10 +486,6 @@ mod_decision_automation_server <- function(id, user){
         )))
     })
     
-    observeEvent(input$submit_auto_2, {
-      shinyjs::click("submit_auto")
-    })
-    
     observeEvent(input$submit_color, {
       req(user$role == "admin")
       
@@ -598,13 +539,22 @@ mod_decision_automation_server <- function(id, user){
       shinyjs::click("auto_dropdown")
     })
     
+    observeEvent(purrr::walk(decision_lst, ~input[[glue::glue("{risk_lbl(.x, input = FALSE)}_col")]]), {
+      color_updated({
+        decision_lst %>%
+          purrr::map_chr(~ input[[glue::glue("{risk_lbl(.x, input = FALSE)}_col")]]) %>%
+          purrr::set_names(decision_lst)
+      })
+    }, ignoreInit = TRUE)
+      
+    
     observeEvent(input$confirm_submit_col, {
       req(user$role)
       req(user$role == "admin")
       
       selected_colors <- 
         decision_lst %>%
-        purrr::map_chr(~ input[[glue::glue("{risk_lbl(.x, input = FALSE)}_col_2")]]) %>%
+        purrr::map_chr(~ input[[glue::glue("{risk_lbl(.x, input = FALSE)}_col")]]) %>%
         purrr::set_names(decision_lst)
       purrr::iwalk(selected_colors, ~ {
         dbUpdate("UPDATE decision_categories SET color = {.x} WHERE decision = {.y}")
@@ -614,7 +564,7 @@ mod_decision_automation_server <- function(id, user){
       color_current(selected_colors)
       
       removeModal()
-      shinyjs::runjs(glue::glue("$('#{ns(\"auto_dropdown\")}.show').dropdown('toggle');"))
+      shinyjs::click("auto_dropdown")
     })
     
     observe({
