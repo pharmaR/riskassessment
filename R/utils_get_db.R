@@ -23,13 +23,13 @@ dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_na
       rs <- DBI::dbSendQuery(con, glue::glue_sql(query, .envir = .envir, .con = con))
     },
     warning = function(warn) {
-      message <- glue::glue("warning:\n" {query} "\nresulted in\n" {warn})
+      message <- glue::glue("warning:\n {query} \nresulted in\n {warn}")
       message(message, .loggit = FALSE)
       loggit::loggit("WARN", message, echo = FALSE)
       errFlag <<- TRUE
     },
     error = function(err) {
-      message <- glue::glue("error:\n" {query} "\nresulted in\n" {err})
+      message <- glue::glue("error:\n {query} \nresulted in\n {err}")
       message(message, .loggit = FALSE)
       loggit::loggit("ERROR", message, echo = FALSE)
       DBI::dbDisconnect(con)
