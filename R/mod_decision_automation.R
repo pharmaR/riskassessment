@@ -228,15 +228,21 @@ mod_decision_automation_server <- function(id, user){
       initial_selection <- NULL
     }
     initial_values <- purrr::map(initial_values, ~ .x %>% `[`(!. %in% c(0,1)) %>% round(2))
+    updated_values <- do.call(reactiveValues, initial_values)
     
-    dec_divs <- purrr::map(decision_lst, ~ div(
-      risk = risk_lbl(.x, input = FALSE),
-      class = if (!.x %in% initial_selection) "shinyjs-hide",
-      style = "width: 100%",
-      sliderInput(ns(risk_lbl(.x)), 
-                  .x, 0, 1, initial_values[[.x]],
-                  width = "100%", sep = .01)
-    ))
+    dec_divs <- reactive({
+      purrr::map(decision_lst, ~ div(
+        risk = risk_lbl(.x, input = FALSE),
+        class = if (!.x %in% auto_current()) "shinyjs-hide",
+        style = "width: 100%",
+        sliderInput(ns(risk_lbl(.x)), 
+                    .x, 0, 1, updated_values[[.x]],
+                    width = "100%", sep = .01)
+      ))
+    })
+    
+    observeEvent(dec_divs(), {
+    })
     
     col_divs <- purrr::map2(decision_lst, color_lst, ~ div(
       style = "width: 33.3%",
@@ -264,12 +270,11 @@ mod_decision_automation_server <- function(id, user){
           checkboxGroupInput(ns("auto_include"), "Auto-Assign Decisions For...", decision_lst, selected = auto_current(), inline = TRUE),
           actionButton(ns("auto_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
         ),
-        dec_divs,
+        dec_divs(),
         br(),
         actionButton(ns("submit_auto"), "Apply Decision Rules", width = "100%"),
       )
-    }) %>%
-      bindEvent(input$auto_dropdown)
+    })
     
     output$auto_settings <-
       renderUI({
@@ -304,6 +309,15 @@ mod_decision_automation_server <- function(id, user){
         req(user$role)
         req(user$role == "admin")
         
+        dec_divs <- purrr::map(decision_lst, ~ div(
+          risk = risk_lbl(.x, input = FALSE),
+          class = if (!.x %in% initial_selection) "shinyjs-hide",
+          style = "width: 100%",
+          sliderInput(ns(glue::glue("{risk_lbl(.x)}_2")), 
+                      .x, 0, 1, updated_values[[.x]],
+                      width = "100%", sep = .01)
+        ))
+        
         div(
           style = "float: right;",
           shinyWidgets::dropdownButton(
@@ -337,7 +351,6 @@ mod_decision_automation_server <- function(id, user){
     outputOptions(output, "auto_settings2", suspendWhenHidden = FALSE)
     
     observeEvent(input$auto_include, {
-      
       updateCheckboxGroupInput(session, "auto_include_2", choices = decision_lst, selected = input$auto_include, inline = TRUE)
       grp_added <- setdiff(input$auto_include, auto_current())
       grp_removed <- setdiff(auto_current(), input$auto_include)
@@ -364,21 +377,21 @@ mod_decision_automation_server <- function(id, user){
       auto_current(input$auto_include)
     }, ignoreNULL = FALSE, ignoreInit = TRUE)
     
-    observeEvent(input$auto_include_2, {
-      updateCheckboxGroupInput(session, "auto_include", choices = decision_lst, selected = input$auto_include_2, inline = TRUE)
-    }, ignoreNULL = FALSE, ignoreInit = TRUE)
+    # observeEvent(input$auto_include_2, {
+    #   updateCheckboxGroupInput(session, "auto_include", choices = decision_lst, selected = input$auto_include_2, inline = TRUE)
+    # }, ignoreNULL = FALSE, ignoreInit = TRUE)
     
     purrr::iwalk(decision_lst, function(.x, .y) {
       this_lbl <- risk_lbl(.x)
       next_lbl <- risk_lbl(decision_lst[.y + 1])
       prev_lbl <- risk_lbl(decision_lst[.y - 1])
-      
-      observeEvent(input[[paste(this_lbl, 2, sep = "_")]], {
-        updateSliderInput(session, this_lbl, value = input[[paste(this_lbl, 2, sep = "_")]])
-      })
+      # observeEvent(input[[paste(this_lbl, 2, sep = "_")]], {
+      #   updateSliderInput(session, this_lbl, value = input[[paste(this_lbl, 2, sep = "_")]])
+      # })
       
       observeEvent(input[[this_lbl]], {
         updateSliderInput(session, paste(this_lbl, 2, sep = "_"), value = input[[this_lbl]])
+        updated_values[[.x]] <- input[[this_lbl]]
         if (.x %in% input$auto_include) {
           auto_decision[[.x]] <- if (.y == 1) c(0, input[[this_lbl]]) else if (.y == length(decision_lst)) c(input[[this_lbl]], 1) else input[[this_lbl]]
         }
@@ -421,9 +434,9 @@ mod_decision_automation_server <- function(id, user){
       updateCheckboxGroupInput(session, "auto_include", selected = names(auto_decision_update()))
     })
     
-    observeEvent(input$auto_reset_2, {
-      shinyjs::click("auto_reset")
-    })
+    # observeEvent(input$auto_reset_2, {
+    #   shinyjs::click("auto_reset")
+    # })
     
     observeEvent(input$col_reset, {
       purrr::walk2(decision_lst, color_current(), ~ {
@@ -561,8 +574,7 @@ mod_decision_automation_server <- function(id, user){
     # Close modal if user cancels decision submission.
     observeEvent(input$cancel, {
       removeModal()
-      shinyjs::runjs(glue::glue("$('#{ns(\"auto_dropdown\")}.show').dropdown('toggle');"))
-      shinyjs::runjs(glue::glue("$('#{ns(\"auto_dropdown_2\")}.show').dropdown('toggle');"))
+      shinyjs::click("auto_dropdown")
     })
     
     observeEvent(input$confirm_submit_auto, {
@@ -583,8 +595,7 @@ mod_decision_automation_server <- function(id, user){
       }
       
       removeModal()
-      shinyjs::runjs(glue::glue("$('#{ns(\"auto_dropdown\")}.show').dropdown('toggle');"))
-      shinyjs::runjs(glue::glue("$('#{ns(\"auto_dropdown_2\")}.show').dropdown('toggle');"))
+      shinyjs::click("auto_dropdown")
     })
     
     observeEvent(input$confirm_submit_col, {
