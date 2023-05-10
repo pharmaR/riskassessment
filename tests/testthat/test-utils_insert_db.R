@@ -22,10 +22,10 @@ test_that("utils_insert_db functions other than dbUpdate", {
   insert_pkg_info_to_db(pkg_name, app_db_loc)
 
   test_that("insert_pkg_info_to_db works", {
-    pkg <- dbSelect(glue::glue(
+    pkg <- dbSelect(
       "SELECT *
      FROM package
-     WHERE name = '{pkg_name}'"), app_db_loc
+     WHERE name = {pkg_name}", app_db_loc
     )
     expect_s3_class(pkg, "data.frame")
     expect_equal(nrow(pkg), 1) 
@@ -35,16 +35,16 @@ test_that("utils_insert_db functions other than dbUpdate", {
   
   insert_riskmetric_to_db(pkg_name, app_db_loc)
   
-  pkg_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"), app_db_loc)
+  pkg_id <- dbSelect("SELECT id FROM package WHERE name = {pkg_name}", app_db_loc)
 
   test_that("insert_riskmetric_to_db", {
-    mmdata <-   dbSelect(glue::glue(
+    mmdata <-   dbSelect(
       "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
                     metric.is_url, package_metrics.value
                     FROM metric
                     INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
-                    WHERE package_metrics.package_id = '{pkg_id}' AND 
-                    metric.class = 'maintenance' ;"), app_db_loc)
+                    WHERE package_metrics.package_id = {pkg_id} AND 
+                    metric.class = 'maintenance' ;", app_db_loc)
     expect_s3_class(mmdata, "data.frame")
     expect_equal(names(mmdata), c("name", "long_name", "description", "is_perc", "is_url", "value"))
     expect_equal(mmdata$name[1], "has_vignettes")
@@ -53,10 +53,10 @@ test_that("utils_insert_db functions other than dbUpdate", {
   insert_community_metrics_to_db(pkg_name, app_db_loc)
   
   test_that("insert_community_metrics_to_db works", {
-    cmdata <- dbSelect(glue::glue(
+    cmdata <- dbSelect(
       "SELECT *
      FROM community_usage_metrics
-     WHERE id = '{pkg_name}'"), app_db_loc
+     WHERE id = {pkg_name}", app_db_loc
     )
     expect_s3_class(cmdata, "data.frame")
     expect_equal(colnames(cmdata), c("id", "month", "year", "downloads", "version"))
@@ -74,17 +74,17 @@ test_that("utils_insert_db functions other than dbUpdate", {
   })
   
   test_that("db_trash_collection works", {
-    cmdata1 <- dbSelect(glue::glue(
+    cmdata1 <- dbSelect(
       "SELECT *
      FROM community_usage_metrics
-     WHERE id = '{pkg_name}'"), app_db_loc
+     WHERE id = {pkg_name}", app_db_loc
     )
-    dbUpdate(glue::glue("delete from package where name = '{pkg_name}'"), db_name = app_db_loc)
+    dbUpdate("delete from package where name = {pkg_name}", db_name = app_db_loc)
     db_trash_collection(db_name = app_db_loc)
-    cmdata2 <- dbSelect(glue::glue(
+    cmdata2 <- dbSelect(
       "SELECT *
      FROM community_usage_metrics
-     WHERE id = '{pkg_name}'"), app_db_loc
+     WHERE id = {pkg_name}", app_db_loc
     )
     testthat::expect_true(nrow(cmdata2) == 0)
     testthat::expect_lt(nrow(cmdata2), nrow(cmdata1))

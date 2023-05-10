@@ -101,7 +101,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
           report_datetime <- stringr::str_replace_all(stringr::str_replace(Sys.time(), " ", "_"), ":", "-")
           glue::glue('RiskAssessment-Report-{report_datetime}.zip')
         } else {
-          pkg_ver <- dbSelect(glue::glue("SELECT version FROM package WHERE name = '{pkgs()}'"))
+          pkg_ver <- dbSelect("SELECT version FROM package WHERE name = {pkgs()}")
           glue::glue('{pkgs()}_{pkg_ver}_Risk_Assessment.{input$report_format}')
         }
       },

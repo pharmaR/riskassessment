@@ -24,12 +24,12 @@ configure_db <- function(dbname, config) {
   
   dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', dec_config$categories, '\\')', collapse = ', ')}"), dbname)
   if (!is.null(dec_config$rules)) 
-    purrr::iwalk(dec_config$rules, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'"), dbname))
+    purrr::iwalk(dec_config$rules, ~ dbUpdate("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = {.y}", dbname))
   else
     message("No decision rules applied from configuration")
   col_lst <- set_colors(dec_config$categories)
   purrr::iwalk(dec_config$colors, ~ {col_lst[.y] <<- .x})
-  purrr::iwalk(col_lst, ~ dbUpdate(glue::glue("UPDATE decision_categories SET color = '{.x}' WHERE decision = '{.y}'"), dbname))
+  purrr::iwalk(col_lst, ~ dbUpdate("UPDATE decision_categories SET color = {.x} WHERE decision = {.y}", dbname))
 }
 
 check_decision_config <- function(dec_config) {
