@@ -255,8 +255,14 @@ mod_decision_automation_server <- function(id, user){
       
       showModal(modalDialog(
         size = "l",
+        footer = actionButton(ns("close_decision_modal"), "Close"),
         uiOutput(ns("decision_rule_div"))
       ))
+    })
+    
+    observeEvent(input$close_decision_modal, {
+      removeModal()
+      shinyjs::runjs("document.body.setAttribute('data-bs-overflow', 'auto');")
     })
     
     observeEvent(input$auto_dropdown2, {
