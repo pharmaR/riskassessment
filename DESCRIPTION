@@ -62,7 +62,8 @@ Imports:
     shinyjs,
     shinymanager,
     shinyWidgets,
-    stringr
+    stringr,
+    rjson
 Suggests: 
     chromote,
     fontawesome,

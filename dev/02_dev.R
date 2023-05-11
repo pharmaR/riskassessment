@@ -51,6 +51,7 @@ usethis::use_package("kableExtra", type = "Suggests")
 # # cannot use dev!
 # # usethis::use_dev_package("tippy") #remotes::install_github("JohnCoene/tippy") #‘1.0.0’
 # usethis::use_package("tippy")
+# usethis::use_package("rjson")
 # 
 # # usethis::use_package("IDEAFilter") # install.packages("IDEAFilter") #‘0.1.0.9000’
 # usethis::use_dev_package("IDEAFilter") # devtools::install_github("Biogen-Inc/IDEAFilter")
