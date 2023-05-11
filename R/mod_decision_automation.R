@@ -294,7 +294,8 @@ mod_decision_automation_server <- function(id, user){
         
         div(
           style = "float: right;",
-          actionButton(ns("auto_dropdown"), label = icon("gear"), class = "btn-circle", style = "margin-left: auto;")
+          actionButton(ns("auto_dropdown"), label = icon("gear"), class = "btn-circle", style = "margin-left: auto;"),
+          tags$script(glue::glue("$('#{ns(\"auto_dropdown\")}').tooltip({{placement: 'left', title: 'Click here to add/adjust decision automation rules.', html: false, trigger: 'hover'}});"))
         )
       })
     
@@ -306,7 +307,8 @@ mod_decision_automation_server <- function(id, user){
         
         div(
           style = "float: right;",
-          actionButton(ns("auto_dropdown2"), label = icon("gear"), class = "btn-circle", style = "margin-left: auto;")
+          actionButton(ns("auto_dropdown2"), label = icon("gear"), class = "btn-circle", style = "margin-left: auto;"),
+          tags$script(glue::glue("$('#{ns(\"auto_dropdown2\")}').tooltip({{placement: 'left', title: 'Click here to edit the decision category table.', html: false, trigger: 'hover'}});"))
         )
       })
     
