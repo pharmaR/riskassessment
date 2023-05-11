@@ -30,6 +30,8 @@ test_that("decision_automation works", {
   expected <- list(`Insignificant Risk` = c(0, 0.1), 
                    `Severe Risk` = c(0.7, 1))
   actual <- app$get_value(export = "automate-auto_decision")
+  app$wait_for_idle()
+  
   expect_equal(actual[sort(names(actual))], expected[sort(names(expected))])
   
   # Check automate decision module output matches as well
