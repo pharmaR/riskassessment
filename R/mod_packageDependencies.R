@@ -172,7 +172,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                                                         size = "xs",
                                                         style='height:24px; padding-top:1px;',
                                                         label = icon("arrow-right", class="fa-regular", lib = "font-awesome"),
-                                                        onclick = paste0('Shiny.onInputChange(\"' , ns("select_button"), '\", this.id)')
+                                                        onclick = paste0('Shiny.setInputValue(\"' , ns("select_button"), '\", this.id)')
                                    )
                                  )
                            )
