@@ -16,9 +16,9 @@ default:
       delete_package: lead
   decisions:
     categories:
-      - Low Risk
-      - Medium Risk
-      - High Risk
+      - Low risk
+      - Medium risk
+      - High risk
 example:
   assessment_db: database_ex.sqlite
   decisions:

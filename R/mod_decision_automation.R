@@ -244,7 +244,7 @@ mod_decision_automation_server <- function(id, user){
     
     col_divs <- reactive({
       purrr::map2(decision_lst, color_updated(), ~ div(
-        style = "width: 33.3%",
+        style = "width: 25%",
         colourpicker::colourInput(ns(glue::glue("{risk_lbl(.x, input = FALSE)}_col")),
                                   .x, .y)
       ))
@@ -280,16 +280,29 @@ mod_decision_automation_server <- function(id, user){
         ),
         br(),
         div(col_divs(), style = "display: flex; flex-wrap: wrap"),
-        actionButton(ns("submit_color"), "Apply Category Colors", width = "100%"),
+        actionButton(ns("submit_color"), width = "100%",
+          div(style="font-family:'Arial Black'; text-shadow: -1px 1px 2px #707070,
+				    1px 1px 2px #707070,
+				    1px -1px 0 #707070,
+				    -1px -1px 0 #707070;","Apply Colors")),
+        br(), br(),
         hr(),
         div(
           style = "display: flex;",
-          checkboxGroupInput(ns("auto_include"), "Auto-Assign Decisions For...", decision_lst, selected = auto_current(), inline = TRUE),
+          div(
+            span("Automate Decisions by Risk Score", style = "font-size: x-large; font-weight: bold"),
+            br(),br(),
+            checkboxGroupInput(ns("auto_include"), label = NULL, decision_lst, selected = auto_current(), inline = TRUE)
+          ),
           actionButton(ns("auto_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
         ),
-        dec_divs(),
+        div(style = "margin-left: 30px; margin-right: 10px", dec_divs()),
         br(),
-        actionButton(ns("submit_auto"), "Apply Decision Rules", width = "100%"),
+        actionButton(ns("submit_auto"), width = "100%",
+          div(style="font-family:'Arial Black'; text-shadow: -1px 1px 2px #606060,
+  				  1px 1px 2px #707070,
+  				  1px -1px 0 #707070,
+  				  -1px -1px 0 #707070;","Apply Decision Rules")),
       )
     })
     
