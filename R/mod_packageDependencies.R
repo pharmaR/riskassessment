@@ -178,9 +178,18 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                            )
                          })
                          
+                         # change icon if not loaded into db yet
+                         data_table <- my_data_table()
+                         loaded2_db <- dbSelect('SELECT name FROM package')$name
+                         for (i in 1:nrow(data_table)) {
+                           if (!data_table$name[i] %in% loaded2_db) {
+                             data_table$Actions[i] <- gsub("fas fa-arrow-right fa-regular", "fas fa-upload fa-solid", data_table$Actions[i])
+                           }
+                         }
+
                          formattable::as.datatable(
                            formattable::formattable(
-                             my_data_table(),
+                             data_table,
                              list(
                                score = formattable::formatter(
                                  "span",
