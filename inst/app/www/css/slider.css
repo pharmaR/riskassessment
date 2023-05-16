@@ -1,12 +1,4 @@
-.btn-dropdown-input .btn.dropdown-toggle:after {
-  content: none;
-}
-
-.modal-body .shiny-input-checkboxgroup .control-label {
-  font-size: x-large;
-  font-weight: bold;
-}
-
-.btn-dropdown-input ul {
-  border: 1px solid;
+.modal-body .btn.action-button:not(.btn-circle-sm) {
+  font-family: 'Arial Black';
+  font-size: medium;
 }

@@ -244,7 +244,7 @@ mod_decision_automation_server <- function(id, user){
     
     col_divs <- reactive({
       purrr::map2(decision_lst, color_updated(), ~ div(
-        style = "width: 25%",
+        style = "width: 33.3%",
         colourpicker::colourInput(ns(glue::glue("{risk_lbl(.x, input = FALSE)}_col")),
                                   .x, .y)
       ))
@@ -279,30 +279,21 @@ mod_decision_automation_server <- function(id, user){
           actionButton(ns("col_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
         ),
         br(),
-        div(col_divs(), style = "display: flex; flex-wrap: wrap"),
-        actionButton(ns("submit_color"), width = "100%",
-          div(style="font-family:'Arial Black'; text-shadow: -1px 1px 2px #707070,
-				    1px 1px 2px #707070,
-				    1px -1px 0 #707070,
-				    -1px -1px 0 #707070;","Apply Colors")),
-        br(), br(),
+        div(col_divs(), style = "display: flex; flex-wrap: wrap; margin-left: 1.5%; margin-right: 1.5%"),
+        actionButton(ns("submit_color"), width = "100%", "Apply Colors"),
         hr(),
+        br(),
         div(
           style = "display: flex;",
-          div(
-            span("Automate Decisions by Risk Score", style = "font-size: x-large; font-weight: bold"),
-            br(),br(),
-            checkboxGroupInput(ns("auto_include"), label = NULL, decision_lst, selected = auto_current(), inline = TRUE)
-          ),
+          span("Automate Decisions by Risk Score", style = "font-size: x-large; font-weight: bold"),
           actionButton(ns("auto_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
         ),
-        div(style = "margin-left: 30px; margin-right: 10px", dec_divs()),
         br(),
-        actionButton(ns("submit_auto"), width = "100%",
-          div(style="font-family:'Arial Black'; text-shadow: -1px 1px 2px #606060,
-  				  1px 1px 2px #707070,
-  				  1px -1px 0 #707070,
-  				  -1px -1px 0 #707070;","Apply Decision Rules")),
+        div(style = "margin-left: 2.5%; margin-right: 2.5%",
+            checkboxGroupInput(ns("auto_include"), label = NULL, decision_lst, selected = auto_current(), inline = TRUE),
+            dec_divs()
+          ),
+        actionButton(ns("submit_auto"), width = "100%", "Apply Decision Rules"),
       )
     })
     
@@ -557,7 +548,7 @@ mod_decision_automation_server <- function(id, user){
       }
       
       removeModal()
-      shinyjs::click("auto_dropdown")
+      shinyjs::runjs("document.body.setAttribute('data-bs-overflow', 'auto');")
     })
     
     observeEvent(purrr::walk(decision_lst, ~input[[glue::glue("{risk_lbl(.x, input = FALSE)}_col")]]), {
@@ -585,7 +576,7 @@ mod_decision_automation_server <- function(id, user){
       color_current(selected_colors)
       
       removeModal()
-      shinyjs::click("auto_dropdown")
+      shinyjs::runjs("document.body.setAttribute('data-bs-overflow', 'auto');")
     })
     
     observe({
