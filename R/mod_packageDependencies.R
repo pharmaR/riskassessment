@@ -222,10 +222,14 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                 ),
                 column(width = 4, 
                        style="position:relative; top: 0px; right 0px; left: 250px;",
-                       renderCachedPlot({
+                       # renderCachedPlot({
+                       #   deepdep::plot_dependencies(dd(), type = "circular", same_level = TRUE, show_version = TRUE, reverse = TRUE, show_stamp = FALSE)
+                       # }, cacheKeyExpr = { list(dd()) },
+                       # sizePolicy = sizeGrowthRatio(width = 900, height = 900) )
+                       renderPlot(width = 900, height = 900, {
                          deepdep::plot_dependencies(dd(), type = "circular", same_level = TRUE, show_version = TRUE, reverse = TRUE, show_stamp = FALSE)
-                       }, cacheKeyExpr = { list(dd()) },
-                       sizePolicy = sizeGrowthRatio(width = 900, height = 900) )
+                       }) %>% 
+                         bindEvent(dd())
                 )
               )
             ),
