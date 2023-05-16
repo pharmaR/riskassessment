@@ -62,14 +62,14 @@ Imports:
     shinyjs,
     shinymanager,
     shinyWidgets,
-    stringr,
-    rjson
+    stringr
 Suggests: 
     chromote,
     fontawesome,
     kableExtra,
     knitr,
     pkgload,
+    rjson,
     rstudioapi,
     shinytest2,
     spelling,
