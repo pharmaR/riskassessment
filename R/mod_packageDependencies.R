@@ -77,8 +77,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         riskmetric::assess_reverse_dependencies() 
     })
     
-    dd <- reactive({
-      req(pkg_df())
+    dd <- eventReactive(pkg_df(), {
       x <- deepdep::deepdep(selected_pkg$name(), depth = 2, dependency_type = c("Depends", "Imports", "LinkingTo"))
       if (nrow(x) == 0) {
         x <- data.frame(origin = selected_pkg$name(),
@@ -139,6 +138,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     }, ignoreInit = TRUE)
     
     observeEvent(pkg_df(), {
+      bindCache(pkg_df())
       cli::cli_progress_done(id = m_id())
       cli::cli_progress_done()
     })
@@ -223,9 +223,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                 ),
                 column(width = 4, 
                        style="position:relative; top: 0px; right 0px; left: 250px;",
-                       renderPlot({
+                       renderCachedPlot({
                          deepdep::plot_dependencies(dd(), type = "circular", same_level = TRUE, show_version = TRUE, reverse = TRUE, show_stamp = FALSE)
-                       }, height = 900, width = 900)
+                       }, cacheKeyExpr = { list(dd()) },
+                       sizePolicy = sizeGrowthRatio(width = 900, height = 900) )
                 )
               )
             ),
