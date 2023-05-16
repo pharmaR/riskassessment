@@ -61,6 +61,8 @@ test_that("decision_automation works", {
   app$wait_for_idle()
   app$click(input = "automate-confirm_submit_auto")
   app$wait_for_idle()
+  app$click("automate-auto_dropdown")
+  app$wait_for_idle()
   
   # Verify that module output has updated
   # Check datatable table
