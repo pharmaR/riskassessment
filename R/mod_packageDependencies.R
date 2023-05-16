@@ -38,6 +38,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     metric_weights <- metric_wts_df$weight
     names(metric_weights) <- metric_wts_df$name
     
+    loaded2_db <- reactive({
+      dbSelect('SELECT name FROM package')$name
+    })
+    
     get_versnScore <- function(pkg_name, id) {
       
       riskmetric_assess <-
@@ -61,6 +65,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       inputs <- character(len)
       for (i in seq_len(len)) {
         inputs[i] <- as.character(FUN(paste0(id, i), ...))
+        # change icon from arrow to upload if not loaded into db yet
+        pkg_name <- pkg_df()[i, 3] %>% pull()
+        if (!pkg_name %in% loaded2_db()) {
+          inputs[i] <- gsub("fas fa-arrow-right fa-regular", "fas fa-upload fa-solid", inputs[i])
+        }
       }
       inputs
     }
@@ -138,7 +147,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     }, ignoreInit = TRUE)
     
     observeEvent(pkg_df(), {
-      bindCache(pkg_df())
       cli::cli_progress_done(id = m_id())
       cli::cli_progress_done()
     })
@@ -178,18 +186,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                            )
                          })
                          
-                         # change icon if not loaded into db yet
-                         data_table <- my_data_table()
-                         loaded2_db <- dbSelect('SELECT name FROM package')$name
-                         for (i in 1:nrow(data_table)) {
-                           if (!data_table$name[i] %in% loaded2_db) {
-                             data_table$Actions[i] <- gsub("fas fa-arrow-right fa-regular", "fas fa-upload fa-solid", data_table$Actions[i])
-                           }
-                         }
-
                          formattable::as.datatable(
                            formattable::formattable(
-                             data_table,
+                             my_data_table(),
                              list(
                                score = formattable::formatter(
                                  "span",
