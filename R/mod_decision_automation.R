@@ -243,8 +243,9 @@ mod_decision_automation_server <- function(id, user){
     })
     
     col_divs <- reactive({
+      col_width <- (100/length(decision_lst)) %>% min(50) %>% max(25)
       purrr::map2(decision_lst, color_updated(), ~ div(
-        style = "width: 33.3%",
+        style = glue::glue("width: {col_width}%"),
         colourpicker::colourInput(ns(glue::glue("{risk_lbl(.x, input = FALSE)}_col")),
                                   .x, .y)
       ))
