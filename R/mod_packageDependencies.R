@@ -16,17 +16,18 @@ packageDependenciesUI <- function(id) {
 #' @param parent the parent (calling module) session information
 #' 
 #' @import dplyr
-#' @importFrom riskmetric pkg_ref pkg_assess pkg_score assess_dependencies assess_reverse_dependencies
-#' @importFrom purrr map_df
-#' @importFrom rlang is_empty
+#' @importFrom cli cli_progress_bar cli_progress_done cli_progress_message 
+#'             cli_progress_update pb_eta pb_percent
+#' @importFrom deepdep deepdep plot_dependencies
+#' @importFrom DT formatStyle renderDataTable
+#' @importFrom formattable as.datatable csscolor formattable formatter style
 #' @importFrom glue glue
-#' @importFrom DT renderDataTable formatStyle
-#' @importFrom stringr str_replace word
+#' @importFrom purrr map_df
+#' @importFrom riskmetric assess_dependencies assess_reverse_dependencies pkg_assess pkg_score
+#' @importFrom rlang is_empty
 #' @importFrom shiny tagList showModal removeModal
 #' @importFrom shinyjs click
-#' @importFrom deepdep deepdep plot_dependencies
-#' @importFrom formattable as.datatable formattable formatter style
-#' @importFrom cli cli_progress_message cli_progress_bar cli_progress_update cli_progress_done
+#' @importFrom stringr regex str_replace word
 #' 
 #' @keywords internal
 #' 
@@ -144,12 +145,12 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         right_join(pkginfo, by = "name") %>% 
         select(package, type, name, version, score)
       
-    }, ignoreInit = TRUE)
+    }, ignoreInit = TRUE) 
     
     observeEvent(pkg_df(), {
       cli::cli_progress_done(id = m_id())
       cli::cli_progress_done()
-    })
+    }) 
     
     # Render Output UI for Package Dependencies.
     output$package_dependencies_ui <- renderUI({
@@ -260,7 +261,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       if(!pkg_name %in% dbSelect('SELECT name FROM package')$name) {
         pkgname(pkg_name)
         
-        showModal(modalDialog(
+        shiny::showModal(modalDialog(
           size = "l",
           easyClose = TRUE,
           h5("Package not Loaded", style = 'text-align: center !important'),
@@ -291,7 +292,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
 
     observeEvent(input$confirm, {
 
-      removeModal()
+      shiny::removeModal()
       
       updateSelectizeInput(session = parent, "upload_package-pkg_lst",
                            choices = c(pkgname()), selected = pkgname())
@@ -306,7 +307,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     
   # Close modal if user cancels decision submission.
   observeEvent(input$cancel, {
-    removeModal()
+    shiny::removeModal()
   })
   
     names_vect <- eventReactive({add_pkg(); changes()}, {
