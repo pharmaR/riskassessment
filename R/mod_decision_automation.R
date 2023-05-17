@@ -279,8 +279,10 @@ mod_decision_automation_server <- function(id, user){
           actionButton(ns("col_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
         ),
         br(),
-        div(col_divs(), style = "display: flex; flex-wrap: wrap; margin-left: 1.5%; margin-right: 1.5%"),
-        actionButton(ns("submit_color"), width = "100%", "Apply Colors"),
+        div(style = "display: flex; flex-wrap: wrap; margin-left: 1.5%; margin-right: 1.5%",
+          col_divs(), 
+          actionButton(ns("submit_color"), width = "100%", "Apply Colors")
+        ),
         hr(),
         br(),
         div(
@@ -289,11 +291,16 @@ mod_decision_automation_server <- function(id, user){
           actionButton(ns("auto_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
         ),
         br(),
-        div(style = "margin-left: 2.5%; margin-right: 2.5%",
-            checkboxGroupInput(ns("auto_include"), label = NULL, decision_lst, selected = auto_current(), inline = TRUE),
-            dec_divs()
-          ),
-        actionButton(ns("submit_auto"), width = "100%", "Apply Decision Rules"),
+        div(style = "margin-left: 1.5%; margin-right: 1.5%",
+          checkboxGroupInput(ns("auto_include"), label = NULL, decision_lst,
+                           selected = auto_current(), inline = TRUE)
+        ),
+        div(style = "margin-left: 5%; margin-right: 2.5%",
+          dec_divs()
+        ),
+        div(style = "margin-left: 1.5%; margin-right: 1.5%", 
+          actionButton(ns("submit_auto"), width = "100%", "Apply Decision Rules")
+        ),
       )
     })
     
