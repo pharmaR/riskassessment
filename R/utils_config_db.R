@@ -82,10 +82,10 @@ check_dec_rules <- function(decision_categories, decision_rules) {
   if (!all(dec_lst == sort(dec_lst)))
     stop("The rules should be ascending in order of the categories")
   
-  if (decision_categories[1] %in% names(decision_rules) & unlist(decision_rules[[decision_categories[1]]])[1] != 0)
+  if (decision_categories[1] %in% names(decision_rules) && unlist(decision_rules[[decision_categories[1]]])[1] != 0)
     stop("Rules for the first decision category must have a lower bound of 0")
   
-  if (decision_categories[length(decision_categories)] %in% names(decision_rules) & unlist(decision_rules[[decision_categories[length(decision_categories)]]])[2] != 1)
+  if (decision_categories[length(decision_categories)] %in% names(decision_rules) && unlist(decision_rules[[decision_categories[length(decision_categories)]]])[2] != 1)
     stop("Rules for the last decision category must have an upper bound of 1")
 }
 

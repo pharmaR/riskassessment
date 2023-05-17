@@ -120,11 +120,11 @@ app_server <- function(input, output, session) {
   })
   
   # Load server of the reweightView module.
-  metric_weights <- reweightViewServer("reweightInfo", user, auto_decision)
+  metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules)
   
   # Load server of the uploadPackage module.
   auto_decision <- mod_decision_automation_server("automate", user)
-  uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision)
+  uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules)
   
   # Load server of the sidebar module.
   selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs)

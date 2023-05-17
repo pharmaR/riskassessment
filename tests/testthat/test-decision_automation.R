@@ -23,6 +23,7 @@ test_that("decision_automation works", {
                                   row.names = c(NA, -2L))
   actual <- app$get_value(export = "automate-datatable")
   expect_equal(actual, expected)
+  app$click("automate-auto_dropdown")
   app$wait_for_idle()
   
   # Check module automate decision reactive
@@ -59,6 +60,8 @@ test_that("decision_automation works", {
   app$click(input = "automate-submit_auto")
   app$wait_for_idle()
   app$click(input = "automate-confirm_submit_auto")
+  app$wait_for_idle()
+  app$click("automate-auto_dropdown")
   app$wait_for_idle()
   
   # Verify that module output has updated
