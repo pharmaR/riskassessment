@@ -75,15 +75,21 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       inputs
     }
     
-    depends <- reactive({
+    pkgref <- reactive({
       req(selected_pkg$name() != "-")
-      riskmetric::pkg_ref(selected_pkg$name()) %>% 
+      riskmetric::pkg_ref(selected_pkg$name())
+    }) %>% 
+      bindEvent(selected_pkg$name())
+    
+    depends <- reactive({
+      req(pkgref())
+      pkgref() %>% 
         riskmetric::assess_dependencies() 
     })
     
     revdeps <- reactive({
-      req(selected_pkg$name() != "-")
-      riskmetric::pkg_ref(selected_pkg$name()) %>% 
+      req(pkgref())
+      pkgref() %>% 
         riskmetric::assess_reverse_dependencies() 
     })
     
