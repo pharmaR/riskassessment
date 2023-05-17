@@ -14,6 +14,8 @@
 * Fix button alignment issues (#514)
 * Re-position filter to be at the bottom of the visible page (#518)
 * Utilized `glue::glue_sql()` inside of update and select functions (#520)
+* Enhanced the "Database View" tab to include the decision category table
+* Allowed the user to set a custom color for decision categories (#465)
 * Added Package Dependencies tab, and two new cards to Maintenance Metrics (#261)
 
 # riskassessment 0.1.1

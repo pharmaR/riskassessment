@@ -12,7 +12,7 @@ server <- function(input, output, session) {
   
   exportTestValues(
     auto_decision_output = {
-      auto_decision()
+      auto_decision$rules()
     }
   )
   
