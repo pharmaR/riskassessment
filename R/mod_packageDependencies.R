@@ -130,8 +130,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
 
-      pkginfo <- riskmetric::pkg_ref(selected_pkg$name()) %>% 
-        riskmetric::assess_dependencies() %>%  
+      pkginfo <- depends() %>%  
         as_tibble() %>% 
         mutate(package = stringr::str_replace(package, "\n", "")) %>% 
         mutate(name = stringr::word(.data$package, 1, sep = stringr::regex("[\\s|\\(]"))) 
