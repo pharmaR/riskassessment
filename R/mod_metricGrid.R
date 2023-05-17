@@ -24,10 +24,7 @@ metricGridServer <- function(id, metrics) {
     output$grid <- renderUI({
       req(nrow(metrics()) > 0)
       
-      ncols <- 3
-
-      col_depth <- nrow(metrics())%/%ncols + as.integer(nrow(metrics()) %% ncols > 0)
-      col_width <- ncols # This is how many columns are defined below.
+      col_width <- 3 # This is how many columns are defined below.
 
       # cards are presented across in row-major order instead of down by column
       fluidRow(style = "padding-right: 10px", class = "card-group",
