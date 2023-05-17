@@ -210,7 +210,7 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
   decisions <- suppressMessages(dbSelect("SELECT decision FROM decision_categories", assessment_db))
   check_dec_cat(decision_categories)
   if (nrow(decisions) == 0) {
-    configure_db(assessment_db, )
+    configure_db(assessment_db)
   } else if (!identical(decisions$decision, decision_categories)) {
     stop("The decision categories in the configuration file do not match those in the assessment database.")
   }
