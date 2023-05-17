@@ -466,20 +466,44 @@ uploadPackageServer <- function(id, user, auto_list) {
     output$upload_pkgs_table <- DT::renderDataTable({
       req(nrow(uploaded_pkgs()) > 0)
       
-      DT::datatable(
-        uploaded_pkgs(),
+      formattable::as.datatable(
+        formattable::formattable(
+          uploaded_pkgs(),
+          list(
+            score = formattable::formatter(
+              "span",
+              style = x ~ formattable::style(display = "block",
+                                             "border-radius" = "4px",
+                                             "padding-right" = "4px",
+                                             "font-weight" = "bold",
+                                             "color" = "white",
+                                             "order" = x,
+                                             "background-color" = formattable::csscolor(
+                                               setColorPalette(100)[round(as.numeric(x)*100)]))),
+            decision = formattable::formatter(
+              "span",
+              style = x ~ formattable::style(display = "block",
+                                             "border-radius" = "4px",
+                                             "padding-right" = "4px",
+                                             "font-weight" = "bold",
+                                             "color" = "white",
+                                             "background-color" = glue::glue("var(--{risk_lbl(x, input = FALSE)}-color)")))
+          )
+        ),
         escape = FALSE,
         class = "cell-border",
         selection = 'none',
-        extensions = 'Buttons',
+        rownames = FALSE,
         options = list(
           searching = FALSE,
+          columnDefs = list(list(className = 'dt-center', targets = "_all")),
           sScrollX = "100%",
           lengthChange = TRUE,
           aLengthMenu = list(c(5, 10, 20, 100, -1), list('5', '10', '20', '100', 'All')),
           iDisplayLength = 10
         )
-      )
+      ) %>%
+        DT::formatStyle(names(uploaded_pkgs()), textAlign = 'center')
     })
     
     # View sample dataset.
