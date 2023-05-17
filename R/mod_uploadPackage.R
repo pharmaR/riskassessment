@@ -361,8 +361,8 @@ uploadPackageServer <- function(id, user, auto_list) {
             if(user_ver == ref_ver) ver_msg <- ref_ver
             else ver_msg <- glue::glue("{ref_ver}")
 
-            as.character(ref$version)
             deets <- glue::glue("{uploaded_packages$package[i]} {ver_msg}")
+            uploaded_packages$version[i] <- ref_ver
             
             # Save version.
             cli::cli_progress_update(id = cl_id)
