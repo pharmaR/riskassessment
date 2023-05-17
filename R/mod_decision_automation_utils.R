@@ -80,7 +80,7 @@ get_text_color <- function(hex) {
 #' @noRd
 risk_lbl <- function(x, input = TRUE) {
   lbl <- x %>% tolower() %>% 
-    paste("risk", .) %>%
+    paste("cat", .) %>%
     stringr::str_replace_all(" +", "_") %>%
     stringr::str_replace_all(stringr::regex("[^a-zA-Z0-9_-]"), "")
   
