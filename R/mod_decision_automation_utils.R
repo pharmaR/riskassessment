@@ -75,9 +75,14 @@ get_text_color <- function(hex) {
 #' 
 #' @return A character string containing the generated label
 #' 
+#' @importFrom stringr str_replace_all regex
+#' 
 #' @noRd
 risk_lbl <- function(x, input = TRUE) {
-  lbl <- x %>% tolower() %>% stringr::str_replace_all(" +", "_")
+  lbl <- x %>% tolower() %>% 
+    paste("cat", .) %>%
+    stringr::str_replace_all(" +", "_") %>%
+    stringr::str_replace_all(stringr::regex("[^a-zA-Z0-9_-]"), "")
   
   if (input)
     paste(lbl, "attr", sep = "_")
