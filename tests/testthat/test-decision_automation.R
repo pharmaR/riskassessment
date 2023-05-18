@@ -13,8 +13,7 @@ test_that("decision_automation works", {
     app_db_loc
   )
   
-  app <- shinytest2::AppDriver$new(test_path("test-apps", "decision_automation-app"),
-                                   load_timeout = 60*1000)
+  app <- shinytest2::AppDriver$new(test_path("test-apps", "decision_automation-app"))
   
   # Check that reactive values are loaded correctly
   # Check datatable table
