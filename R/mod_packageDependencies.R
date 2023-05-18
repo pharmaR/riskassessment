@@ -243,7 +243,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
           h4(glue::glue("Reverse Dependencies: {length(revdeps())}"), style = "text-align: left;"),
           br(), br(),
           fluidRow(column(width = 8,
-                          renderPrint(
+                          renderText(
                             revdeps() %>% sort()
                           )
           )
