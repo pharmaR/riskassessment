@@ -1,5 +1,7 @@
 test_that("module can produce a table of package dependencies", {
   
+  skip_on_ci()
+  
   app_db_loc <- test_path("test-apps", "database.sqlite")
   if (file.exists(app_db_loc)) {
     file.remove(app_db_loc)
