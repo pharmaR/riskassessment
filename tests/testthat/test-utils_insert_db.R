@@ -20,7 +20,7 @@ test_that("utils_insert_db functions other than dbUpdate", {
   pkg_name <- "stringr"
   
   insert_pkg_info_to_db(pkg_name, app_db_loc)
-
+  
   test_that("insert_pkg_info_to_db works", {
     pkg <- dbSelect(
       "SELECT *
@@ -36,7 +36,7 @@ test_that("utils_insert_db functions other than dbUpdate", {
   insert_riskmetric_to_db(pkg_name, app_db_loc)
   
   pkg_id <- dbSelect("SELECT id FROM package WHERE name = {pkg_name}", app_db_loc)
-
+  
   test_that("insert_riskmetric_to_db", {
     mmdata <-   dbSelect(
       "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
@@ -49,21 +49,8 @@ test_that("utils_insert_db functions other than dbUpdate", {
     expect_equal(names(mmdata), c("name", "long_name", "description", "is_perc", "is_url", "value"))
     expect_equal(mmdata$name[1], "has_vignettes")
   })
-
-  #insert_community_metrics_to_db(pkg_name, app_db_loc)
-  pkgs_cum_metrics <- generate_comm_data(pkg_name)
   
-  pkgs_cum_values <- glue::glue(
-    "('{pkg_name}', {pkgs_cum_metrics$month}, {pkgs_cum_metrics$year}, 
-  {pkgs_cum_metrics$downloads}, '{pkgs_cum_metrics$version}')") %>%
-    glue::glue_collapse(sep = ", ")
-  
-  if(nrow(pkgs_cum_metrics) != 0){
-    dbUpdate(glue::glue(
-      "INSERT INTO community_usage_metrics 
-        (id, month, year, downloads, version)
-        VALUES {pkgs_cum_values}"), app_db_loc)
-  }
+  insert_community_metrics_to_db(pkg_name, app_db_loc)
   
   test_that("insert_community_metrics_to_db works", {
     cmdata <- dbSelect(
@@ -77,13 +64,13 @@ test_that("utils_insert_db functions other than dbUpdate", {
   })
   
   update_metric_weight(metric_name = 'has_vignettes', metric_weight = 2, app_db_loc)
-                                   
+  
   test_that("update_metric_weight works", {
-  mtwt <-  dbSelect(
+    mtwt <-  dbSelect(
       "SELECT name, weight 
      FROM metric where name = 'has_vignettes'", db_name = app_db_loc
     )
-  testthat::expect_equal(mtwt$weight, 2)
+    testthat::expect_equal(mtwt$weight, 2)
   })
   
   test_that("db_trash_collection works", {
@@ -107,4 +94,3 @@ test_that("utils_insert_db functions other than dbUpdate", {
   rm(app_db_loc, pkg_name, pkg_id)
   
 })
-  
