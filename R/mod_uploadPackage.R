@@ -266,9 +266,16 @@ uploadPackageServer <- function(id, user, auto_list) {
       if (!rlang::is_empty(auto_list()))
         uploaded_packages$decision <- ""
       np <- nrow(uploaded_packages)
-      
-      cli::cli_progress_message("   **Starting Upload process**")
-      Sys.sleep(0.25)
+
+      # Start progress bar. Need to establish a maximum increment
+      # value based on the number of packages, np, and the number of
+      # incProgress() function calls in the loop, plus one to show
+      # the incProgress() that the process is completed.
+      deets <- "... "
+      cl_id <- cli::cli_progress_bar("Uploading ", 
+                    type = "iterator",
+                    format = "{deets} {cli::pb_percent} | ETA: {cli::pb_eta}",
+                    total = (np * 5) + 1)
       
       if (!isTRUE(getOption("shiny.testmode"))) {
         url_lst <- list(
@@ -277,10 +284,12 @@ uploadPackageServer <- function(id, user, auto_list) {
           "https://cranlogs.r-pkg.org"
         )
         
+        system.time({
         good_urls <- purrr::map_lgl(url_lst, 
                                     ~ try(curlGetHeaders(.x, verify = FALSE), silent = TRUE) %>%
                                       {class(.) != "try-error" && attr(., "status") != 404})
-        
+        })
+
         if (!all(good_urls)) {
           checking_urls$url_lst <- url_lst[!good_urls]
           showModal(modalDialog(
@@ -305,16 +314,6 @@ uploadPackageServer <- function(id, user, auto_list) {
           cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
         }
       }
-      
-      # Start progress bar. Need to establish a maximum increment
-      # value based on the number of packages, np, and the number of
-      # incProgress() function calls in the loop, plus one to show
-      # the incProgress() that the process is completed.
-      
-      cl_id <- cli::cli_progress_bar("Uploading: ", 
-                type = "iterator",
-                format = "{deets} {cli::pb_percent} | ETA: {cli::pb_eta}",
-                total = np * 5) 
       
           for (i in 1:np) {
 
@@ -396,10 +395,9 @@ uploadPackageServer <- function(id, user, auto_list) {
             }
           }
       #     
-      cli::cli_progress_message("   **Completed Pkg Uploads**")
-           Sys.sleep(0.25)
-
       uploaded_pkgs(uploaded_packages)
+      
+      cli::cli_progress_message(msg = "   **Completed Pkg Uploads**")
     })
     
     # Download the sample dataset.
