@@ -136,15 +136,26 @@ create_credentials_dev_db <- function(db_name){
   if (missing(db_name) || is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
     stop("db_name must follow SQLite naming conventions (e.g. 'credentials.sqlite')")
   
+  credential_config <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   # Init the credentials table for credentials database
-  credentials <- data.frame(
-    user = c("admin", "lead", "reviewer"),
-    password = c("cxk1QEMYSpYcrNB", "Bt0dHK383lLP1NM", "tgh29f8SH0UllXJ"),
-    # password will automatically be hashed
-    admin = c(TRUE, FALSE, FALSE),
-    role = c("admin", "lead", "reviewer"),
-    stringsAsFactors = FALSE
-  )
+  if (is.null(credential_config)) {
+    credentials <- data.frame(
+      user = c("admin", "lead", "reviewer"),
+      password = rep("cxk1QEMYSpYcrNB", 3),
+      # password will automatically be hashed
+      admin = c(TRUE, FALSE, FALSE),
+      role = c("admin", "lead", "reviewer"),
+      stringsAsFactors = FALSE
+    )
+  } else {
+    credentials <- data.frame(
+      user = credential_config[["roles"]],
+      password = rep("cxk1QEMYSpYcrNB", length(credential_config[["roles"]])),
+      admin = credential_config[["roles"]] %in% credential_config[["privileges"]][["admin"]],
+      role = credential_config[["roles"]],
+      stringsAsFactors = FALSE
+    )
+  }
   
   # Init the credentials database
   shinymanager::create_db(
