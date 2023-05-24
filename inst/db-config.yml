@@ -9,11 +9,8 @@ default:
       - reviewer
     privileges:
       admin: admin
-      reweighting: lead
-      final_decision: lead
-      revert_decision: lead
-      add_package: [lead, reviewer]
-      delete_package: lead
+      tier1: lead
+      tier2: reviewer
   decisions:
     categories:
       - Low Risk
@@ -32,7 +29,10 @@ example:
       - deleter
     privileges:
       admin: admin
-      reweighting: reweighter
+      tier1:
+      tier2:
+      weight_adjust: reweighter
+      decision_adjust: reweighter
       final_decision: [decider, reverter]
       revert_decision: reverter
       add_package: [adder, deleter]
