@@ -9,7 +9,7 @@ default:
       - reviewer
     privileges:
       admin: admin
-      tier1: lead
+      tier1: [admin, lead]
       tier2: reviewer
   decisions:
     categories:

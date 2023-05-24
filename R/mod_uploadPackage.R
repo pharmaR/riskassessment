@@ -76,12 +76,13 @@ uploadPackageUI <- function(id) {
 #' 
 uploadPackageServer <- function(id, user, auto_list) {
   moduleServer(id, function(input, output, session) {
+    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
     
     # Determine which guide to use for IntroJS.
     upload_pkg_txt <- reactive({
       req(uploaded_pkgs())
       
-      if(user$role == "admin") {
+      if(user$admin) {
         upload_pkg <- bind_rows(upload_pkg, upload_adm)
       }
       if(nrow(uploaded_pkgs()) > 0) 
@@ -116,7 +117,7 @@ uploadPackageServer <- function(id, user, auto_list) {
     
     observeEvent(pkgs_have(), {
       req(pkgs_have())
-      req(user$role == "admin")
+      req(user$admin)
       updateSelectizeInput(session, "rem_pkg_lst", choices = pkgs_have(), server = TRUE)
     })
     
@@ -127,7 +128,7 @@ uploadPackageServer <- function(id, user, auto_list) {
     uploaded_pkgs00 <- reactiveVal()
 
     observeEvent(user$role, {
-    req(user$role == "admin")  
+    req(user$role %in% c(approved_roles[["privileges"]][["tier1"]], approved_roles[["privileges"]][["delete_package"]]))  
     output$rem_pkg_div <- renderUI({
       session$onFlushed(function() {
         shinyjs::runjs(glue::glue('$("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))'))
@@ -195,9 +196,8 @@ uploadPackageServer <- function(id, user, auto_list) {
     })
     
     observeEvent(input$rem_pkg_btn, {
-      req(input$rem_pkg_lst)
-      req(user$role == "admin")
-
+      req(user$role %in% c(approved_roles[["privileges"]][["tier1"]], approved_roles[["privileges"]][["delete_package"]]))  
+      
       np <- length(input$rem_pkg_lst)
       uploaded_packages <-
         dplyr::tibble(
