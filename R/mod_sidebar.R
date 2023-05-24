@@ -89,6 +89,7 @@ sidebarUI <- function(id) {
 #' 
 sidebarServer <- function(id, user, uploaded_pkgs) {
   moduleServer(id, function(input, output, session) {
+    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
     
     # Required for shinyhelper to work.
     # shinyhelper::observe_helpers()
@@ -305,22 +306,32 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     observeEvent(req(input$select_ver, user$metrics_reweighted), {
       if (input$select_pkg != "-" && input$select_ver != "-" &&
           (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) {
-        shinyjs::enable("decision")
-        shinyjs::enable("submit_decision")
         shinyjs::enable("overall_comment")
         shinyjs::enable("submit_overall_comment")
         
       } else{
-        shinyjs::disable("decision")
-        shinyjs::disable("submit_decision")
         shinyjs::disable("overall_comment")
         shinyjs::disable("submit_overall_comment")
       }
     }, ignoreInit = TRUE)
     
+    observeEvent(req(input$select_ver, user$metrics_reweighted), {
+      req(user$role %in% c(approved_roles[["final_decision"]], approved_roles[["tier1"]]))
+      
+      if (input$select_pkg != "-" && input$select_ver != "-" &&
+          (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) {
+        shinyjs::enable("decision")
+        shinyjs::enable("submit_decision")
+
+      } else{
+        shinyjs::disable("decision")
+        shinyjs::disable("submit_decision")
+      }
+    }, ignoreInit = TRUE)
+    
     # Show reset final decision link if user is admin the a final decision has been made.
     observeEvent(selected_pkg$decision, {
-      req(user$role == "admin")
+      req(user$role %in% c(approved_roles[["revert_decision"]], approved_roles[["tier1"]]))
       
       if (input$select_pkg == "-" && input$select_ver == "-" ||
           (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) {
@@ -335,6 +346,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     # Show a confirmation modal when submitting a decision.
     observeEvent(input$submit_decision, {
       req(input$decision)
+      req(user$role %in% c(approved_roles[["final_decision"]], approved_roles[["tier1"]]))
       
       showModal(modalDialog(
         size = "l",
@@ -361,6 +373,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     # Show a confirmation modal when resetting a decision
     observeEvent(input$reset_decision, {
       req(input$decision)
+      req(user$role %in% c(approved_roles[["revert_decision"]], approved_roles[["tier1"]]))
       
       showModal(modalDialog(
         size = "l",
@@ -388,6 +401,8 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     
     # Update database info after decision is submitted.
     observeEvent(input$submit_confirmed_decision, {
+      req(user$role %in% c(approved_roles[["final_decision"]], approved_roles[["tier1"]]))
+      
       dbUpdate("UPDATE package
           SET decision_id = {match(input$decision, golem::get_golem_options(\"decision_categories\"))}, decision_by = {user$name}, decision_date = {Sys.Date()}
           WHERE name = {selected_pkg$name}"
@@ -408,6 +423,8 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     })
     
     observeEvent(input$reset_confirmed_decision, {
+      req(user$role %in% c(approved_roles[["revert_decision"]], approved_roles[["tier1"]]))
+      
       dbUpdate("UPDATE package
           SET decision_id = NULL, decision_by = '', decision_date = NULL
           WHERE name = {selected_pkg$name}"
