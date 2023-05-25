@@ -39,22 +39,31 @@ apptab_admn <- data.frame(
 
 # upload package tab.
 upload_pkg <- data.frame(
-  element = c("#upload_package-introJS-help", "#type-package-group", "#upload-file-grp", "#upload_package-upload_format"),
+  element = c("#upload_package-introJS-help", "#type-package-group", "#upload-file-grp"),
   intro = c(
     "Click here anytime you need help.",
-    "Type in the name of the package(s) you would like to assess.",
-    "Or you can Upload a CSV file with the package(s) if you have a lot.",
-    "Follow format of this sample data when creating your csv. Or you can even download it to use as a template."
+    "Type in the name of the package(s) you would like to assess (PRIVILEGES REQUIRED).",
+    "Or you can Upload a CSV file with the package(s) if you have a lot (PRIVILEGES REQUIRED)."
   ),
-  position = c("right", rep("top", 3))
+  position = c("right", rep("top", 2))
+)
+upload_pkg_add <- data.frame(
+  element = "#upload_package-upload_format",
+  intro = "Follow format of this sample data when creating your csv. Or you can even download it to use as a template.",
+  position = "top"
 )
 
-upload_adm <- data.frame(
-  element = c("#rem-package-group", "#automate-auto_dropdown"),
-  intro = c("If you are an admin, you can also remove packages here.", "Decision automation: Automatically assign package risk decisions based on {riskmetric}-derived risk scores when uploading packages to the database."),
-  position = c("top", "left")
+upload_pkg_delete <- data.frame(
+  element = "#rem-package-group",
+  intro = "You can remove packages from the database here (PRIVILEGES REQUIRED).",
+  position = "top"
 )
 
+upload_pkg_dec_adj <- data.frame(
+  element = "#automate-auto_dropdown",
+  intro = "Decision automation: Automatically assign package risk decisions based on {riskmetric}-derived risk scores when uploading packages to the database. (PRIVILEGES REQUIRED)",
+  position = "left"
+)
 upload_pkg_comp <-  data.frame(
       element = c("#upload_summary_div", "#upload_package-upload_pkgs_table"),
       intro = c(
@@ -62,17 +71,6 @@ upload_pkg_comp <-  data.frame(
         "Confirm uploaded packages list, filter by type"
       ),
       position = c("bottom", "top")
-)
-      
-upload_pkg_complete <- union(upload_pkg,
-                             data.frame(
-                               element = c("#upload_summary_div", "#upload_package-upload_pkgs_table"),
-                               intro = c(
-                                 "Text description of packages uploaded. Counts by type: 'Total', 'New', 'Undiscovered', 'Duplicate'.",
-                                 "Confirm uploaded packages list, filter by type"
-                               ),
-                               position = c("bottom", "top")
-                             )
 )
 
 
