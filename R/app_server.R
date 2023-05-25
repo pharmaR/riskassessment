@@ -14,6 +14,7 @@ app_server <- function(input, output, session) {
   credential_config <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   role_opts <- list(admin = as.list(credential_config$privileges$admin), 
                     nonadmin = as.list(setdiff(credential_config$roles, credential_config$privileges$admin)))
+  approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
   
   
   # this skips authentication if the application is running in test mode
@@ -22,7 +23,7 @@ app_server <- function(input, output, session) {
     res_auth <- reactiveValues()
     res_auth[["admin"]] <- !isTRUE(golem::get_golem_options('nonadmin'))
     res_auth[["user"]] <- "test_user"
-    
+    res_auth[["role"]] <- ifelse(!isTRUE(golem::get_golem_options('nonadmin')), "admin", "reviewer")
   } else {
     # check_credentials directly on sqlite db
     res_auth <- shinymanager::secure_server(
@@ -35,7 +36,8 @@ app_server <- function(input, output, session) {
 
   
   observeEvent(res_auth$user, {
-    if (res_auth$admin == TRUE) {
+    req(res_auth$admin == TRUE | res_auth$role %in% c(approved_roles[["tier1"]], approved_roles[["weight_adjust"]]))
+    
       appendTab("apptabs",
                 tabPanel(
                   title = "Administrative Tools",
@@ -45,22 +47,21 @@ app_server <- function(input, output, session) {
                   br(),
                   tabsetPanel(
                     id = "credentials",
-                    tabPanel(
-                      id = "credentials_id",
-                      title = "Credential Manager",
-                      shinymanager:::admin_ui("admin")
-                    ),
-                    tabPanel(
-                      id = "reweight_id",
-                      title = "Assessment Reweighting",
-                      reweightViewUI("reweightInfo")
-                    )
+                    if (res_auth$admin == TRUE)
+                      tabPanel(
+                        id = "credentials_id",
+                        title = "Credential Manager",
+                        shinymanager:::admin_ui("admin")
+                      ),
+                    if (res_auth$role %in% c(approved_roles[["tier1"]], approved_roles[["weight_adjust"]]))
+                      tabPanel(
+                        id = "reweight_id",
+                        title = "Assessment Reweighting",
+                        reweightViewUI("reweightInfo")
+                      )
                   ),
                   tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';"))
                 ))
-    } else {
-      removeTab(inputId = "apptabs", target = "admin-mode-tab")
-    }
   }, priority = 1)
   
   purrr::walk(paste("admin", c("edited_user", "edited_mult_user", "delete_selected_users", "delete_user", "changed_password", "changed_password_users"), sep = "-"),
@@ -116,7 +117,8 @@ app_server <- function(input, output, session) {
       loggit::loggit("INFO", glue::glue("User {res_auth$user} signed on as admin"))
     
     user$name <- trimws(res_auth$user)
-    user$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
+    user$admin <- res_auth$admin
+    user$role <- trimws(res_auth$role)
   })
   
   # Load server of the reweightView module.
