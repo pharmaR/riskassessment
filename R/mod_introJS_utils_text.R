@@ -6,17 +6,16 @@
 sidebar_steps <-
   data.frame(
     element = c(
-      "#sidebar-select_pkg_ui", # "#sidebar-select_ver", # not working
+      "#sidebar-select_pkg_ui",
       "#sidebar-status-wp", "#sidebar-score-wp",
       "#sidebar-decision-grp",
       "#sidebar-overall-comment-grp"),
     intro = c(
       "Expand this dropdown list to select a specific package to assess that was previously uploaded.",
-      # "The latest version will autopopulate here.", # can't peg ui object name, even with a div!
       "The status can be either 'Under Review' or 'Reviewed'.",
       "The score can take any value between 0 (no risk) and 1 (highest risk).",
-      "Provide your input on the overall risk of the selected package.",
-      "After reviewing your package, you can leave an overall comment."
+      "Provide your input on the overall risk of the selected package (PRIVILEGES REQUIRED).",
+      "After reviewing your package, you can leave an overall comment (PRIVILEGES REQUIRED)."
     ),
     position = c(rep("bottom", 5))
   )
@@ -33,7 +32,7 @@ apptab_steps <- data.frame(
 apptab_admn <- data.frame(
   element = c(
     "[data-value=admin-mode-tab]"),
-  intro = c("Manage user credentials and apply assessment reweighting here"),
+  intro = c("Manage user credentials and apply assessment reweighting here (PRIVILEGES REQUIRED)."),
   position = "bottom"
 )
 

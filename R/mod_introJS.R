@@ -33,9 +33,10 @@ introJSUI <- function(id) {
 #' @keywords internal
 introJSServer <- function(id, text, user) {
   moduleServer(id, function(input, output, session) {
+    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
     
     steps <- reactive({
-      if(user$role == "admin") {
+      if(user$admin || user$role %in% c(approved_roles[["tier1"]], approved_roles[["weight_adjust"]])) {
         apptab_steps <- bind_rows(apptab_admn, apptab_steps)
       }
       
