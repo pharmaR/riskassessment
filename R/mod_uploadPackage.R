@@ -116,8 +116,6 @@ uploadPackageServer <- function(id, user, auto_list) {
     })
     
     observeEvent(pkgs_have(), {
-      req(pkgs_have())
-      req(user$admin)
       updateSelectizeInput(session, "rem_pkg_lst", choices = pkgs_have(), server = TRUE)
     })
     
@@ -128,7 +126,7 @@ uploadPackageServer <- function(id, user, auto_list) {
     uploaded_pkgs00 <- reactiveVal()
 
     observeEvent(user$role, {
-    req(user$role %in% c(approved_roles[["privileges"]][["tier1"]], approved_roles[["privileges"]][["delete_package"]]))  
+    req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["delete_package"]]))  
     output$rem_pkg_div <- renderUI({
       session$onFlushed(function() {
         shinyjs::runjs(glue::glue('$("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))'))
@@ -196,7 +194,7 @@ uploadPackageServer <- function(id, user, auto_list) {
     })
     
     observeEvent(input$rem_pkg_btn, {
-      req(user$role %in% c(approved_roles[["privileges"]][["tier1"]], approved_roles[["privileges"]][["delete_package"]]))  
+      req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["delete_package"]]))  
       
       np <- length(input$rem_pkg_lst)
       uploaded_packages <-
