@@ -117,7 +117,7 @@ app_server <- function(input, output, session) {
       loggit::loggit("INFO", glue::glue("User {res_auth$user} signed on as admin"))
     
     user$name <- trimws(res_auth$user)
-    user$admin <- res_auth$admin == "TRUE"
+    user$admin <- isTRUE(res_auth$admin) || res_auth$admin == "TRUE"
     user$role <- trimws(res_auth$role)
   })
   
