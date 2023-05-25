@@ -18,37 +18,14 @@ uploadPackageUI <- function(id) {
       
       column(
         width = 4,
-        div(
-          id = "type-package-group",
-          style = "display: flex;",
-          selectizeInput(NS(id, "pkg_lst"), "Type Package Name(s)", choices = NULL, multiple = TRUE, 
-                         options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
-                                        onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_cran"), '", "load", {priority: "event"})}')))),
-          actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
-                       style = 'height: calc(1.5em + 1.5rem + 2px)'),
-          tags$script(I(glue::glue('$(window).on("load resize", function() {{
-                                             $("#{NS(id, "add_pkgs")}").css("margin-top", $("#{NS(id, "pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
-                                             }})
-                                             $("a[data-toggle=\'tab\']").on("shown.bs.tab", function(e) {{
-                                             $("#{NS(id, "add_pkgs")}").css("margin-top", $("#{NS(id, "pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
-                                             }})')))
-        ),
-        
+        uiOutput(NS(id, "type_pkg_div")),
         uiOutput(NS(id, "rem_pkg_div"))
       ),
       column(width = 1),
       
       column(
         width = 4,
-        div(id = "upload-file-grp",
-            fileInput(
-              inputId = NS(id, "uploaded_file"),
-              label = "Or Upload a CSV file",
-              accept = ".csv",
-              placeholder = "No file selected"
-            )
-        ),
-        actionLink(NS(id, "upload_format"), "View Sample Dataset")
+        uiOutput(NS(id, "upld_file_div")),
       ),
      ),
     fluidRow(mod_decision_automation_ui("automate")),
@@ -77,6 +54,46 @@ uploadPackageUI <- function(id) {
 uploadPackageServer <- function(id, user, auto_list) {
   moduleServer(id, function(input, output, session) {
     approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+    
+    output$type_pkg_div <- renderUI({
+      req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["tier2"]], approved_roles[["add_package"]]))
+      
+      session$onFlushed(function() {
+        shinyjs::runjs(glue::glue('$("#{NS(id, "add_pkgs")}").css("margin-top", $("#{NS(id, "pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))'))
+      })
+      
+      div(
+        id = "type-package-group",
+        style = "display: flex;",
+        selectizeInput(NS(id, "pkg_lst"), "Type Package Name(s)", choices = NULL, multiple = TRUE, 
+                       options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
+                                      onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_cran"), '", "load", {priority: "event"})}')))),
+        actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
+                     style = 'height: calc(1.5em + 1.5rem + 2px)'),
+        tags$script(I(glue::glue('$(window).on("load resize", function() {{
+                                             $("#{NS(id, "add_pkgs")}").css("margin-top", $("#{NS(id, "pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
+                                             }})
+                                             $("a[data-toggle=\'tab\']").on("shown.bs.tab", function(e) {{
+                                             $("#{NS(id, "add_pkgs")}").css("margin-top", $("#{NS(id, "pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
+                                             }})')))
+      )
+    })
+    
+    output$upld_file_div <- renderUI({
+      req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["tier2"]], approved_roles[["add_package"]]))
+      
+      tagList(
+        div(id = "upload-file-grp",
+            fileInput(
+              inputId = NS(id, "uploaded_file"),
+              label = "Or Upload a CSV file",
+              accept = ".csv",
+              placeholder = "No file selected"
+            )
+        ),
+        actionLink(NS(id, "upload_format"), "View Sample Dataset")
+      )
+    })
     
     # Determine which guide to use for IntroJS.
     upload_pkg_txt <- reactive({
