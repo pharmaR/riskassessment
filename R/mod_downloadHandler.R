@@ -19,12 +19,64 @@ mod_downloadHandler_button_ui <- function(id, multiple = TRUE){
 #' @param id,input,output,session Internal parameters for {shiny}.
 #'
 #' @noRd 
-mod_downloadHandler_filetype_ui <- function(id){
+mod_downloadHandler_filetype_ui <- function(id){ 
+  # will want to change this to input_UI so we can include additional items
+  # such as "Include comments" checkboxes for summary, maintmetrics, comm usage, and overall comments
   ns <- NS(id)
   tagList(
-    selectInput(ns("report_format"), "Select Format", c("html", "docx", "pdf"))
+    div(style = 'width:230px;',
+      selectInput(ns("report_format"), "Select Format", c("html", "docx", "pdf"))
+    )
   )
 }
+
+#' downloadHandler Inlcude UI Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id Internal parameters for {shiny}.
+#'
+#' @noRd 
+mod_downloadHandler_include_ui <- function(id){
+  # will want to change this to input_UI so we can include additional items
+  # such as "Include comments" check boxes for summary, maint-metrics, comm usage, and overall comments
+  my_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
+    "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments")
+  div(
+    strong(p("Elements to include:")),
+    div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
+      # checkboxGroupInput(
+      shinyWidgets::prettyCheckboxGroup(
+        NS(id, "report_includes"), label = NULL, inline = FALSE,
+        choices = my_choices, selected = my_choices
+      )
+    )
+  )
+}
+
+#' downloadHandler Inlcude Server Function
+#'
+#' @description A shiny Module.
+#'
+#' @param id Internal parameters for {shiny}.
+#'
+#' @noRd 
+mod_downloadHandler_include_server <- function(id) {
+  moduleServer(id, function(input, output, session) {
+    observe({
+      # print("#####################################")
+      # print("input$report_includes:")
+      # print(input$report_includes)
+      # shinyWidgets::updatePrettyCheckboxGroup("report_includes",)
+
+      # selected = ifelse(is.null(input$report_includes) | input$report_includes != my_choices,
+      #                   isolate(input$report_includes), my_choices)
+    })
+    return(reactive(input$report_includes))
+  })
+}
+  
+
     
 #' downloadHandler Server Functions
 #'
@@ -171,6 +223,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               
               # gather comments data
               overall_comments <- get_overall_comments(this_pkg)
+              pkg_summary <- get_pkg_summary(this_pkg)
               mm_comments <- get_mm_comments(this_pkg)
               cm_comments <- get_cm_comments(this_pkg)
               
@@ -186,12 +239,14 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                 output_file = path,
                 clean = FALSE,
                 params = list(pkg = pkg_list,
+                              report_includes = input$report_includes,
                               riskmetric_version = paste0(packageVersion("riskmetric")),
                               app_version = golem::get_golem_options('app_version'),
                               metric_weights = metric_weights(),
                               user_name = user$name,
                               user_role = user$role,
                               overall_comments = overall_comments,
+                              pkg_summary = pkg_summary,
                               mm_comments = mm_comments,
                               cm_comments = cm_comments,
                               maint_metrics = mm_data,

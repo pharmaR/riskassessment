@@ -22,7 +22,7 @@ dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_
   
   command <- glue::glue_sql(command, .con = con, .envir = .envir)
   tryCatch({
-    rs <- DBI::dbSendStatement(con, command)
+    rs <- DBI::dbSendStatement(con, glue::glue_sql(command, .envir = .envir, .con = con))
   }, error = function(err) {
     message <- glue::glue("command: {command} resulted in {err}")
     message(message, .loggit = FALSE)
@@ -245,15 +245,16 @@ insert_community_metrics_to_db <- function(pkg_name,
   else
     pkgs_cum_metrics <- test_pkg_cum[[pkg_name]]
   
+  pkgs_cum_values <- glue::glue(
+  "('{pkg_name}', {pkgs_cum_metrics$month}, {pkgs_cum_metrics$year}, 
+  {pkgs_cum_metrics$downloads}, '{pkgs_cum_metrics$version}')") %>%
+    glue::glue_collapse(sep = ", ")
+  
   if(nrow(pkgs_cum_metrics) != 0){
-    for (i in 1:nrow(pkgs_cum_metrics)) {
-      dbUpdate(
+      dbUpdate(glue::glue(
         "INSERT INTO community_usage_metrics 
         (id, month, year, downloads, version)
-        VALUES ({pkg_name}, {pkgs_cum_metrics$month[i]},
-        {pkgs_cum_metrics$year[i]}, {pkgs_cum_metrics$downloads[i]},
-        {pkgs_cum_metrics$version[i]})", db_name)
-    }
+        VALUES {pkgs_cum_values}"), db_name)
   }
 }
 

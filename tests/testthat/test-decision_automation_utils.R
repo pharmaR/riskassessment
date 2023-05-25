@@ -22,22 +22,22 @@ test_that("set_colors works", {
 test_that("risk_lbl works", {
   expect_equal(
     risk_lbl("Low"),
-    "low_attr"
+    "cat_low_attr"
   )
   
   expect_equal(
     risk_lbl("Low Risk"),
-    "low_risk_attr"
+    "cat_low_risk_attr"
   )
   
   expect_equal(
-    risk_lbl("Low     Risk"),
-    "low_risk_attr"
+    risk_lbl("It's Low     Risk"),
+    "cat_its_low_risk_attr"
   )
   
   expect_equal(
     risk_lbl("Low Risk", FALSE),
-    "low_risk"
+    "cat_low_risk"
   )
 })
 

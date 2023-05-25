@@ -226,21 +226,23 @@ generate_comm_data <- function(pkg_name){
 }
 
 #' showComments
-#' 
+#'
 #' Displays formatted comments
-#' 
+#'
 #' @param pkg_name string name of the package
 #' @param comments data.frame comments table entry
+#' @param none_txt if there is no text to show in `comments` object, then
+#'   display this text string. Default: "No comments"
 #' @return a formatted string of comments
 #' @keywords internal
 #' @export
-showComments <- function(pkg_name, comments){
+showComments <- function(pkg_name, comments, none_txt = "No comments"){
   if (length(pkg_name) == 0)
     return("")
   
   ifelse(
     length(comments$user_name) == 0, 
-    "No comments",
+    none_txt,
     paste0(
       "<div class='well'>",
       icon("user-tie"), " ", "user: ", comments$user_name, ", ", 

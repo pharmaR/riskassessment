@@ -415,11 +415,10 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
           WHERE name = {selected_pkg$name}"
       )
       # remove overall comment for this package 
-      dbUpdate(
-        "delete from comments 
-           where comment_type = 'o'
-           and id in(select {selected_pkg$name} from package)")
-      
+      dbUpdate("DELETE FROM comments 
+           WHERE comment_type = 'o'
+           AND id IN (SELECT {selected_pkg$name} FROM package)")
+
       selected_pkg$decision <- NA_character_
       
       shinyjs::enable("decision")

@@ -26,7 +26,12 @@ uploadPackageUI <- function(id) {
                                         onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_cran"), '", "load", {priority: "event"})}')))),
           actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
                        style = 'height: calc(1.5em + 1.5rem + 2px)'),
-          tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "add_pkgs"), '").css("margin-top", $("#', NS(id, "pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
+          tags$script(I(glue::glue('$(window).on("load resize", function() {{
+                                             $("#{NS(id, "add_pkgs")}").css("margin-top", $("#{NS(id, "pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
+                                             }})
+                                             $("a[data-toggle=\'tab\']").on("shown.bs.tab", function(e) {{
+                                             $("#{NS(id, "add_pkgs")}").css("margin-top", $("#{NS(id, "pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
+                                             }})')))
         ),
         
         uiOutput(NS(id, "rem_pkg_div"))
@@ -141,6 +146,10 @@ uploadPackageServer <- function(id, user, auto_list) {
     observeEvent(user$role, {
     req(user$role == "admin")  
     output$rem_pkg_div <- renderUI({
+      session$onFlushed(function() {
+        shinyjs::runjs(glue::glue('$("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))'))
+      })
+      
       div(
         id = "rem-package-group",
         style = "display: flex;",
@@ -149,7 +158,12 @@ uploadPackageServer <- function(id, user, auto_list) {
                                       onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "curr_pkgs"), '", "load", {priority: "event"})}')))),
         # note the action button moved out of alignment with 'selectizeInput' under 'renderUI'
         actionButton(NS(id, "rem_pkg_btn"), shiny::icon("trash-can")),
-                     tags$head(tags$script(I(paste0('$(window).on("load resize", function() {$("#', NS(id, "rem_pkg_btn"), '").css("margin-top", $("#', NS(id, "rem_pkg_lst"), '-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize));});'))))
+        tags$script(I(glue::glue('$(window).on("load resize", function() {{
+                                             $("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
+                                             }})
+                                             $("a[data-toggle=\'tab\']").on("shown.bs.tab", function(e) {{
+                                             $("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
+                                             }})')))
       )
      })
     })
@@ -218,7 +232,7 @@ uploadPackageServer <- function(id, user, auto_list) {
       pkg_name <- input$rem_pkg_lst[i]
       # update version with what is in the package table
       uploaded_packages$version[i] <- dbSelect("select version from package where name = {pkg_name}", db_name = golem::get_golem_options('assessment_db_name')) 
-      dbUpdate("delete from package where name = {pkg_name}", db_name = golem::get_golem_options('assessment_db_name'))
+      dbUpdate("DELETE FROM package WHERE name = {pkg_name}", db_name = golem::get_golem_options('assessment_db_name'))
       }
       
       # clean up other db tables
@@ -556,20 +570,44 @@ uploadPackageServer <- function(id, user, auto_list) {
     output$upload_pkgs_table <- DT::renderDataTable({
       req(nrow(uploaded_pkgs()) > 0)
       
-      DT::datatable(
-        uploaded_pkgs(),
+      formattable::as.datatable(
+        formattable::formattable(
+          uploaded_pkgs(),
+          list(
+            score = formattable::formatter(
+              "span",
+              style = x ~ formattable::style(display = "block",
+                                             "border-radius" = "4px",
+                                             "padding-right" = "4px",
+                                             "font-weight" = "bold",
+                                             "color" = "white",
+                                             "order" = x,
+                                             "background-color" = formattable::csscolor(
+                                               setColorPalette(100)[round(as.numeric(x)*100)]))),
+            decision = formattable::formatter(
+              "span",
+              style = x ~ formattable::style(display = "block",
+                                             "border-radius" = "4px",
+                                             "padding-right" = "4px",
+                                             "font-weight" = "bold",
+                                             "color" = "white",
+                                             "background-color" = glue::glue("var(--{risk_lbl(x, input = FALSE)}-color)")))
+          )
+        ),
         escape = FALSE,
         class = "cell-border",
         selection = 'none',
-        extensions = 'Buttons',
+        rownames = FALSE,
         options = list(
           searching = FALSE,
+          columnDefs = list(list(className = 'dt-center', targets = "_all")),
           sScrollX = "100%",
           lengthChange = TRUE,
           aLengthMenu = list(c(5, 10, 20, 100, -1), list('5', '10', '20', '100', 'All')),
           iDisplayLength = 10
         )
-      )
+      ) %>%
+        DT::formatStyle(names(uploaded_pkgs()), textAlign = 'center')
     })
     
     # View sample dataset.

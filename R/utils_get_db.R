@@ -9,7 +9,7 @@
 #' @importFrom DBI dbConnect dbSendQuery dbFetch dbClearResult dbDisconnect
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
-#' @importFrom glue glue_sql
+#' @importFrom glue glue glue_sql
 #' 
 #' @returns a data frame
 #'
@@ -21,16 +21,16 @@ dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_na
   query <- glue::glue_sql(query, .con = con, .envir = .envir)
   tryCatch(
     expr = {
-      rs <- DBI::dbSendQuery(con, query)
+      rs <- DBI::dbSendQuery(con, glue::glue_sql(query, .envir = .envir, .con = con))
     },
     warning = function(warn) {
-      message <- paste0("warning:\n", query, "\nresulted in\n", warn)
+      message <- glue::glue("warning:\n {query} \nresulted in\n {warn}")
       message(message, .loggit = FALSE)
       loggit::loggit("WARN", message, echo = FALSE)
       errFlag <<- TRUE
     },
     error = function(err) {
-      message <- paste0("error:\n", query, "\nresulted in\n",err)
+      message <- glue::glue("error:\n {query} \nresulted in\n {err}")
       message(message, .loggit = FALSE)
       loggit::loggit("ERROR", message, echo = FALSE)
       DBI::dbDisconnect(con)
@@ -68,6 +68,24 @@ get_overall_comments <- function(pkg_name, db_name = golem::get_golem_options('a
   dbSelect(
     "SELECT * FROM comments 
      WHERE comment_type = 'o' AND id = {pkg_name}", db_name
+  )
+}
+
+#' The 'Get Package Summary' function
+#' 
+#' Retrieves the package summary "comment" for a specific package
+#' 
+#' @param pkg_name character name of the package
+#' @param db_name character name (and file path) of the database
+#' 
+#' @importFrom glue glue
+#' 
+#' @returns a data frame
+#' @noRd
+get_pkg_summary <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
+  dbSelect(
+    "SELECT * FROM comments 
+     WHERE comment_type = 's' AND id = {pkg_name}", db_name
   )
 }
 

@@ -22,14 +22,14 @@ configure_db <- function(dbname, config) {
   
   check_decision_config(dec_config)
   
-  dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', dec_config$categories, '\\')', collapse = ', ')}"), dbname)
+  purrr::walk(dec_config$categories, ~ dbUpdate("INSERT INTO decision_categories (decision) VALUES ({.x})", dbname))
   if (!is.null(dec_config$rules)) 
-    purrr::iwalk(dec_config$rules, ~ dbUpdate(glue::glue("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = '{.y}'"), dbname))
+    purrr::iwalk(dec_config$rules, ~ dbUpdate("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = {.y}", dbname))
   else
     message("No decision rules applied from configuration")
   col_lst <- set_colors(dec_config$categories)
   purrr::iwalk(dec_config$colors, ~ {col_lst[.y] <<- .x})
-  purrr::iwalk(col_lst, ~ dbUpdate(glue::glue("UPDATE decision_categories SET color = '{.x}' WHERE decision = '{.y}'"), dbname))
+  purrr::iwalk(col_lst, ~ dbUpdate("UPDATE decision_categories SET color = {.x} WHERE decision = {.y}", dbname))
 }
 
 check_decision_config <- function(dec_config) {
@@ -82,10 +82,10 @@ check_dec_rules <- function(decision_categories, decision_rules) {
   if (!all(dec_lst == sort(dec_lst)))
     stop("The rules should be ascending in order of the categories")
   
-  if (decision_categories[1] %in% names(decision_rules) & unlist(decision_rules[[decision_categories[1]]])[1] != 0)
+  if (decision_categories[1] %in% names(decision_rules) && unlist(decision_rules[[decision_categories[1]]])[1] != 0)
     stop("Rules for the first decision category must have a lower bound of 0")
   
-  if (decision_categories[length(decision_categories)] %in% names(decision_rules) & unlist(decision_rules[[decision_categories[length(decision_categories)]]])[2] != 1)
+  if (decision_categories[length(decision_categories)] %in% names(decision_rules) && unlist(decision_rules[[decision_categories[length(decision_categories)]]])[2] != 1)
     stop("Rules for the last decision category must have an upper bound of 1")
 }
 

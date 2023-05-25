@@ -4,7 +4,10 @@
 #' @keywords internal
 #' 
 reportPreviewUI <- function(id) {
-  uiOutput(NS(id, "reportPreview_ui"))
+  tagList(
+    uiOutput(NS(id, "reportPreview_configs_ui")),
+    uiOutput(NS(id, "reportPreview_ui"))
+  )
 }
 
 #' Server logic for 'Report Preview' module
@@ -27,6 +30,8 @@ reportPreviewUI <- function(id) {
 #' @importFrom plotly plotlyOutput renderPlotly
 #' @importFrom DT dataTableOutput renderDataTable
 #' @importFrom glue glue
+#' @importFrom rlang is_empty
+#' @importFrom shinyjs enable disable show hide disabled
 #' @keywords internal
 #' 
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
@@ -39,7 +44,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     introJSServer(id = "introJS", text = reactive(rp_steps), user)
 
     # Render Output UI for Report Preview.
-    output$reportPreview_ui <- renderUI({
+    output$reportPreview_configs_ui <- renderUI({
       
       # Lets the user know that a package needs to be selected.
       if(identical(selected_pkg$name(), character(0)))
@@ -50,60 +55,246 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
           tagList(
             br(),
             introJSUI(NS(id, "introJS")),
-            h4("Report Preview", style = "text-align: center;"),
+            h4("Build Report", style = "text-align: center;"),
             br(), br(),
             
             div(id = "dwnld_rp",
-                mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
-                mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
+              h5("Report Configurations"),
+              br(),
+              fluidRow(
+                column(4,
+                  mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
+                  mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
+                ),
+                column(8, 
+                   mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
+                 )
+              )
             ),
             
             br(), br(),
             
-            div(id = "rep_prev",
-                fluidRow(
-                  column(
-                    width = 12,
-                    uiOutput(NS(id, "pkg_overview")),
-                    uiOutput(NS(id, "decision_display")))
-                ),
-                
+            div(id = NS(id, "pkg-summary-grp"),
+              # Compose pkg summary - either disabled, enabled, or pre-populated
+              uiOutput(NS(id, "pkg_summary_ui")),
+              
+              # Submit or Edit Summary for selected Package.
+              uiOutput(NS(id, "submit_edit_pkg_summary_ui")),
+            ),
+            
+            br(), br()
+          )
+        )
+      }
+    })
+    
+    
+    
+    
+    
+    
+    
+    # return vector of elements to include in the report
+    report_includes <- mod_downloadHandler_include_server("downloadHandler")
+    
+    
+    
+    # Render Output UI for Report Preview.
+    output$reportPreview_ui <- renderUI({
+      
+      # The user know that a package needs to be selected from reportPreview_configs_ui
+      # above, so leave this one empty
+      if(identical(selected_pkg$name(), character(0))) ""
+      
+      else {
+        fluidPage(
+          tagList(
+            div(id = "rep_prev", style = "border: 3px solid; padding: 30px; box-shadow: 5px 10px 8px #888888;",
+              br(),
+              
+              HTML("<span class='h2 txtasis'>R Package Risk Assessment  </span><br>"),
+              HTML(glue::glue("<span class='h4 txtasis'>Report for Package: {selected_pkg$name()}</span><br>")),
+              if("Report Author" %in% report_includes())
+                HTML(glue::glue("<span class='h4 txtasis'>Author (Role): {user$name} ({user$role})</span><br>")),
+              if("Report Date" %in% report_includes())
+                HTML(glue::glue("<span class='h4 txtasis'>Report Date: {format(Sys.time(), '%B %d, %Y')}</span><br>")),
+              
+              br(),
+              
+              fluidRow(
+                column(
+                  width = 12,
+                  h5('General Information'),
+                  uiOutput(NS(id, "pkg_overview")),
+                  uiOutput(NS(id, "decision_display")))
+              ),
+              
+              if('Overall Comment' %in% report_includes()){
                 fluidRow(
                   column(width = 12, viewCommentsUI(NS(id, 'overall_comments')))
-                ),
-                
-                br(), br(),
-                hr(),
-                fluidRow(
-                  column(width = 12,
-                         h5("Maintenance Metrics",
-                            style = "text-align: center; padding-bottom: 50px;"),
-                         metricGridUI(session$ns('mm_metricGrid')),
-                         viewCommentsUI(NS(id, 'mm_comments')))
-                ),
-                
-                br(), br(),
-                hr(),
-                fluidRow(
-                  column(width = 12, uiOutput(NS(id, 'communityMetrics_ui')))
-                ),
-                br(), br(),
-                hr(),
-                fluidRow(
-                  column(width = 12,
-                         h5("About Report",
-                            style = "text-align: center; padding-bottom: 50px;"),
-                         fluidRow(column(width = 12,
-                                         uiOutput(NS(id, 'about_report')),
-                                         h5('Weights Table:'),
-                                         DT::dataTableOutput(NS(id, 'weights_table'))
-                         )))
                 )
+              } else "",
+              if('Package Summary' %in% report_includes()){
+                fluidRow(
+                  column(width = 12, viewCommentsUI(NS(id, 'pkg_summary')))
+                )
+              } else "",
+              
+
+              if(any(c('Maintenance Metrics', 'Maintenance Comments') %in% report_includes())) {
+                tagList(
+                  br(), br(),
+                  hr(),
+                  fluidRow(
+                    column(width = 12,
+                           h5("Maintenance Metrics",
+                              style = "text-align: center; padding-bottom: 50px;"),
+                           if('Maintenance Metrics' %in% report_includes())
+                             metricGridUI(session$ns('mm_metricGrid')) else "",
+                           if('Maintenance Comments' %in% report_includes())
+                             viewCommentsUI(NS(id, 'mm_comments')) else ""
+                    )
+                  )
+                )
+              } else "",
+
+              if(any(c('Community Usage Metrics', 'Community Usage Comments') %in% report_includes())) {
+                tagList(
+                  br(), br(),
+                  hr(),
+                  fluidRow(
+                    column(width = 12, uiOutput(NS(id, 'communityMetrics_ui')))
+                  )
+                )
+              } else "",
+              
+              br(), br(),
+              hr(),
+              fluidRow(
+                column(width = 12,
+                       h5("About Report",
+                          style = "text-align: center; padding-bottom: 50px;"),
+                       fluidRow(column(width = 12,
+                                       uiOutput(NS(id, 'about_report')),
+                                       if('Risk Score' %in% report_includes()) h5('Weights Table:') else "",
+                                       if('Risk Score' %in% report_includes())
+                                         DT::dataTableOutput(NS(id, 'weights_table')) else ""
+                       )))
+              )
             )
           )
         )
       }
     })
+    
+    
+    observeEvent(input$edit_pkg_summary, {
+      shinyjs::enable("pkg_summary")
+      output$submit_edit_pkg_summary_ui <- renderUI(actionButton(NS(id, "submit_pkg_summary"),"Submit Summary"))
+    })
+    
+
+    # Display/update overall comments for selected package/version.
+    # observeEvent(selected_pkg$version(), {
+    observe({
+      # req(selected_pkg$name())
+      req(selected_pkg$version())
+      
+      # If no package/version is selected, then clear comments.
+      if(selected_pkg$name() == "-" || selected_pkg$version() == "-"){
+        shinyjs::disabled(updateTextAreaInput(session, "pkg_summary",
+                            placeholder = 'Please select a package and a version.'))
+      }
+      else {
+        # Display package comments if a package and version are selected.
+        summary <- get_pkg_summary(selected_pkg$name())$comment 
+
+        # If no summary, enable text box and submit button
+        if(rlang::is_empty(summary)) {
+          output$pkg_summary_ui <- renderUI({
+            textAreaInput(NS(id, "pkg_summary"),h5("Write Package Summary"),
+              rows = 8, width = "100%", value = "", placeholder = "Write review here."
+            )
+          })
+          output$submit_edit_pkg_summary_ui <- renderUI(actionButton(NS(id, "submit_pkg_summary"),"Submit Summary"))
+        } else { # summary exists, so disable text box and show edit button
+          output$pkg_summary_ui <- renderUI({
+            shinyjs::disabled(textAreaInput(NS(id, "pkg_summary"), h5("Write Package Summary"),
+              rows = 8, width = "100%", value = summary
+            ))
+          })
+          output$submit_edit_pkg_summary_ui <- renderUI(actionButton(NS(id, "edit_pkg_summary"),"Edit Summary"))
+        }
+      }
+    })
+    
+    # Update db if comment is submitted.
+    observeEvent(input$submit_pkg_summary, {
+      current_summary <- trimws(input$pkg_summary)
+      if(current_summary == "")
+        validate("Please write a package summary.")
+      
+      req(selected_pkg$name())
+
+      previous_summary <- get_pkg_summary(selected_pkg$name())
+      if (nrow(previous_summary) > 0) { # not first summary!
+        showModal(modalDialog(
+          title = h2("Update Summary"),
+          h3("Do you want to update your previous summary?"),
+          br(),
+          HTML("Yes - Overwrites the previous summary.<br>
+               Keep Editing - Go back to editing the summary."
+          ),
+          footer = tagList(
+            actionButton(NS(id, "submit_pkg_summary_yes"), "Yes"),
+            actionButton(NS(id, "submit_pkg_summary_edit"), "Keep Editing")
+          )
+        ))
+      } else { # first summary!
+        dbUpdate(
+          "INSERT INTO comments
+          VALUES ({selected_pkg$name()}, {user$name}, {user$role},
+          {current_summary}, 's', {getTimeStamp()})")
+        showModal(modalDialog(
+          title = h2("Summary Submitted"),
+          br(),
+          h5(strong("Current Summary:")),
+          p(current_summary),
+          easyClose = TRUE
+        ))
+        
+        shinyjs::disable("pkg_summary")
+        output$submit_edit_pkg_summary_ui <- renderUI(actionButton(NS(id, "edit_pkg_summary"),"Edit Summary"))
+
+      }
+    })
+    
+    # if yes, insert summary into comments table
+    observeEvent(input$submit_pkg_summary_yes, {
+      
+      req(selected_pkg$name())
+      
+      dbUpdate(
+          "UPDATE comments
+          SET comment = {input$pkg_summary}, added_on = {getTimeStamp()}
+          WHERE id = {selected_pkg$name()} AND
+          user_name = {user$name} AND
+          user_role = {user$role} AND
+          comment_type = 's'"
+      )
+      
+      # disable text editor and flip button to "edit"
+      shinyjs::disable("pkg_summary")
+      output$submit_edit_pkg_summary_ui <- renderUI(actionButton(NS(id, "edit_pkg_summary"),"Edit Summary"))
+
+      removeModal()
+    })
+    
+    # if edit, do nothing
+    observeEvent(input$submit_pkg_summary_edit, {
+      removeModal()
+    })
+    
     
     output$downloads_plot <- plotly::renderPlotly({
       downloads_plot_data()
@@ -115,19 +306,33 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       get_overall_comments(selected_pkg$name())
     })
     
-    # View comments.
+    pkg_summary_added <- reactive(c(input$submit_pkg_summary, input$submit_pkg_summary_yes))
+    pkg_summary <- reactive({
+      pkg_summary_added()
+      get_pkg_summary(selected_pkg$name())
+    })
+    
+    # View Overall comments.
     viewCommentsServer(id = 'overall_comments',
                        comments = overall_comments,
                        pkg_name = selected_pkg$name,
                        label = 'Overall Comments')
     
-    # View comments.
+    # View Pkg Summary
+    viewCommentsServer(id = 'pkg_summary',
+                       comments = pkg_summary,
+                       pkg_name = selected_pkg$name,
+                       label = 'Package Summary',
+                       none_txt = "No summary."
+                       )
+    
+    # View MM comments.
     viewCommentsServer(id = "mm_comments",
                        comments = mm_comments,
                        pkg_name = selected_pkg$name,
                        label = 'Maintainance Metrics Comments')
     
-    # View comments.
+    # View Comm Usage comments.
     viewCommentsServer(id = 'cm_comments',
                        comments = cm_comments,
                        pkg_name = selected_pkg$name,
@@ -154,15 +359,21 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
         tagList(
           h5("Community Usage Metrics",
              style = "text-align: center; padding-bottom: 50px;"),
-          metricGridUI(NS(id, 'cm_metricGrid')),
-          div(id = "cum_plot", fluidRow(
-            column(width = 12, style = 'padding-left: 20px; padding-right: 20px;',
-                   plotly::plotlyOutput(NS(id, "downloads_plot"), height = "500px")))),
-          viewCommentsUI(NS(id, 'cm_comments'))
+          if('Community Usage Metrics' %in% report_includes()) {
+            tagList(
+              metricGridUI(NS(id, 'cm_metricGrid')),
+              div(id = "cum_plot", fluidRow(
+                column(width = 12, style = 'padding-left: 20px; padding-right: 20px;',
+                       plotly::plotlyOutput(NS(id, "downloads_plot"), height = "500px"))))
+            )
+          } else "",
+          if('Community Usage Comments' %in% report_includes())
+            viewCommentsUI(NS(id, 'cm_comments')) else ""
         )
       }
       
     })
+    
     
     
     # Display general information of the selected package.
@@ -186,12 +397,9 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       req(selected_pkg$name())
       
       tagList(
-        h5('Risk Score:'),
-        selected_pkg$score(),
-        h5('Overall Decision:'),
-        ifelse(is.na(selected_pkg$decision()), 
-               'Pending',
-               selected_pkg$decision()))
+        if('Risk Score' %in% report_includes()) tagList(h5('Risk Score:'), selected_pkg$score()) else "",
+        h5('Package Decision:'),ifelse(is.na(selected_pkg$decision()), 'Pending',selected_pkg$decision())
+      )
     })
     
     # Display general information about report.
@@ -211,9 +419,13 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       
       metric_weights()
       
-    }, options = list(searching = FALSE, pageLength = 15, lengthChange = FALSE,
-                      info = FALSE))
+    }, options = list(dom = "t", searching = FALSE, pageLength = -1, lengthChange = FALSE,
+                      info = FALSE,
+                      columnDefs = list(list(className = 'dt-center', targets = 2))
+                      )
+    )
     
+    # Call download handler server
     mod_downloadHandler_server("downloadHandler", selected_pkg$name, user, metric_weights)
   })
 }
