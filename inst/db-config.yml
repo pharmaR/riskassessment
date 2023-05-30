@@ -8,9 +8,9 @@ default:
       - lead
       - reviewer
     privileges:
-      admin: admin
-      tier1: [admin, lead]
-      tier2: reviewer
+      admin: [admin, weight_adjust, decision_adjust, final_decision, revert_decision, add_package, delete_package]
+      lead: [weight_adjust, decision_adjust, final_decision, revert_decision, add_package, delete_package]
+      reviewer: add_package
   decisions:
     categories:
       - Low Risk
@@ -29,14 +29,11 @@ example:
       - deleter
     privileges:
       admin: admin
-      tier1:
-      tier2:
-      weight_adjust: reweighter
-      decision_adjust: reweighter
-      final_decision: [decider, reverter]
-      revert_decision: reverter
-      add_package: [adder, deleter]
-      delete_package: deleter
+      reweight: [weight_adjust, decision_adjust]
+      decider: final_decision
+      reverter: [final_decision, revert_decision]
+      adder: [add_package]
+      deleter: [add_package, delete_package]
   decisions:
     categories:
       - Insignificant Risk
