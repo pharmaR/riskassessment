@@ -47,11 +47,17 @@ app_server <- function(input, output, session) {
                   br(),
                   tabsetPanel(
                     id = "credentials",
-                    if (res_auth$admin == TRUE)
+                    if (res_auth$admin)
                       tabPanel(
                         id = "credentials_id",
                         title = "Credential Manager",
                         shinymanager:::admin_ui("admin")
+                      ),
+                    if (res_auth$admin)
+                      tabPanel(
+                        id = "privilege_id",
+                        title = "Roles & Privileges",
+                        mod_user_roles_ui("userRoles")
                       ),
                     if ("weight_adjust" %in% approved_roles[[res_auth$role]])
                       tabPanel(
@@ -120,6 +126,8 @@ app_server <- function(input, output, session) {
     user$admin <- isTRUE(res_auth$admin) || res_auth$admin == "TRUE"
     user$role <- trimws(res_auth$role)
   })
+  
+  mod_user_roles_server("userRoles")
   
   # Load server of the reweightView module.
   metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules)
