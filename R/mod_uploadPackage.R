@@ -352,8 +352,14 @@ uploadPackageServer <- function(id, user, auto_list) {
             
             ref_ver <- as.character(ref$version)
             
-            if(user_ver == ref_ver) ver_msg <- ref_ver
-            else ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
+            # The message about different versions is only given if the package 
+            # name is uploaded from CSV file and not if it is selected from drop-down.
+            if(isTruthy(input$load_cran)) {
+              ver_msg <- ref_ver
+            } else {
+              if(user_ver == ref_ver) ver_msg <- ref_ver
+              else ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
+            }
             
             as.character(ref$version)
             deets <- glue::glue("{uploaded_packages$package[i]} {ver_msg}")
