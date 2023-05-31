@@ -316,8 +316,8 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     }, ignoreInit = TRUE)
     
     observeEvent(req(input$select_ver, user$metrics_reweighted), {
-      req(user$role %in% c(approved_roles[["final_decision"]], approved_roles[["tier1"]]))
-      
+      req("final_decision" %in% approved_roles[[user$role]])
+
       if (input$select_pkg != "-" && input$select_ver != "-" &&
           (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) {
         shinyjs::enable("decision")
@@ -331,8 +331,8 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     
     # Show reset final decision link if user is admin the a final decision has been made.
     observeEvent(selected_pkg$decision, {
-      req(user$role %in% c(approved_roles[["revert_decision"]], approved_roles[["tier1"]]))
-      
+      req("revert_decision" %in% approved_roles[[user$role]])
+
       if (input$select_pkg == "-" && input$select_ver == "-" ||
           (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) {
         shinyjs::show("submit_decision")
@@ -346,7 +346,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     # Show a confirmation modal when submitting a decision.
     observeEvent(input$submit_decision, {
       req(input$decision)
-      req(user$role %in% c(approved_roles[["final_decision"]], approved_roles[["tier1"]]))
+      req("final_decision" %in% approved_roles[[user$role]])
       
       showModal(modalDialog(
         size = "l",
@@ -373,7 +373,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     # Show a confirmation modal when resetting a decision
     observeEvent(input$reset_decision, {
       req(input$decision)
-      req(user$role %in% c(approved_roles[["revert_decision"]], approved_roles[["tier1"]]))
+      req("revert_decision" %in% approved_roles[[user$role]])
       
       showModal(modalDialog(
         size = "l",
@@ -401,7 +401,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     
     # Update database info after decision is submitted.
     observeEvent(input$submit_confirmed_decision, {
-      req(user$role %in% c(approved_roles[["final_decision"]], approved_roles[["tier1"]]))
+      req("final_decision" %in% approved_roles[[user$role]])
       
       dbUpdate("UPDATE package
           SET decision_id = {match(input$decision, golem::get_golem_options(\"decision_categories\"))}, decision_by = {user$name}, decision_date = {Sys.Date()}
@@ -423,7 +423,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     })
     
     observeEvent(input$reset_confirmed_decision, {
-      req(user$role %in% c(approved_roles[["revert_decision"]], approved_roles[["tier1"]]))
+      req("revert_decision" %in% approved_roles[[user$role]])
       
       dbUpdate("UPDATE package
           SET decision_id = NULL, decision_by = '', decision_date = NULL

@@ -46,7 +46,7 @@ reweightViewServer <- function(id, user, decision_list) {
         dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
     
     observeEvent(input$update_weight, {
-      req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["reweighting"]]))
+      req("weight_adjust" %in% approved_roles[[user$role]])
       curr_new_wts(save$data %>%
                      dplyr::mutate(new_weight = ifelse(name == isolate(input$metric_name),
                                                        isolate(input$metric_weight), new_weight)))
@@ -194,7 +194,7 @@ reweightViewServer <- function(id, user, decision_list) {
     
     # Update metric weight dropdown so that it matches the metric name.
     observeEvent(input$metric_name, {
-      req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["reweighting"]]))
+      req("weight_adjust" %in% approved_roles[[user$role]])
       
       if(input$metric_name == "covr_coverage"){
         # set to zero, don't allow change until riskmetric fixes this assessment
@@ -215,14 +215,14 @@ reweightViewServer <- function(id, user, decision_list) {
     # Note that another of the observeEvents will update the metric weight after
     # the selected metric name is updated.
     observeEvent(input$weights_table_rows_selected, {
-      req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["reweighting"]]))
+      req("weight_adjust" %in% approved_roles[[user$role]])
       updateSelectInput(session, "metric_name",
                         selected = curr_new_wts()$name[input$weights_table_rows_selected])
     })
     
     # Save new weight into db.
     observeEvent(input$update_pkg_risk, {
-      req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["reweighting"]]))
+      req("weight_adjust" %in% approved_roles[[user$role]])
       
       # if you the user goes input$back2dash, then when they return to the 
       if(n_wts_chngd() == 0){
@@ -259,7 +259,7 @@ reweightViewServer <- function(id, user, decision_list) {
     
     # Upon confirming the risk re-calculation
     observeEvent(input$confirm_update_risk, {
-      req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["reweighting"]]))
+      req("weight_adjust" %in% approved_roles[[user$role]])
       removeModal()
       
       # Update the weights in the `metric` table to reflect recent changes

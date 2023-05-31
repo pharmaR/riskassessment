@@ -81,7 +81,7 @@ uploadPackageServer <- function(id, user, auto_list) {
     approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
     
     observeEvent(user$role, {
-      req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["tier2"]], approved_roles[["add_package"]]))
+      req("add_package" %in% approved_roles[[user$role]])
       
       shinyjs::enable("pkg_lst")
       shinyjs::enable("add_pkgs")
@@ -90,7 +90,7 @@ uploadPackageServer <- function(id, user, auto_list) {
     })
 
     output$upload_format_lnk <- renderUI({
-      req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["tier2"]], approved_roles[["add_package"]]))
+      req("add_package" %in% approved_roles[[user$role]])
       
       actionLink(NS(id, "upload_format"), "View Sample Dataset")
     })
@@ -101,9 +101,9 @@ uploadPackageServer <- function(id, user, auto_list) {
       
       dplyr::bind_rows(
         upload_pkg,
-        if (user$role %in% c(approved_roles[["tier1"]], approved_roles[["tier2"]], approved_roles[["add_package"]])) upload_pkg_add,
-        if (user$role %in% c(approved_roles[["tier1"]], approved_roles[["delete_package"]])) upload_pkg_delete,
-        if (user$role %in% c(approved_roles[["tier1"]], approved_roles[["decision_adjust"]])) upload_pkg_dec_adj,
+        if ("add_package" %in% approved_roles[[user$role]]) upload_pkg_add,
+        if ("delete_package" %in% approved_roles[[user$role]]) upload_pkg_delete,
+        if ("decision_adjust" %in% approved_roles[[user$role]]) upload_pkg_dec_adj,
         if (nrow(uploaded_pkgs()) > 0) upload_pkg_comp
       )
     })
@@ -143,7 +143,7 @@ uploadPackageServer <- function(id, user, auto_list) {
     uploaded_pkgs00 <- reactiveVal()
 
     observeEvent(user$role, {
-    req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["delete_package"]]))  
+    req("delete_package" %in% approved_roles[[user$role]])
     output$rem_pkg_div <- renderUI({
       session$onFlushed(function() {
         shinyjs::runjs(glue::glue('$("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))'))
@@ -211,7 +211,7 @@ uploadPackageServer <- function(id, user, auto_list) {
     })
     
     observeEvent(input$rem_pkg_btn, {
-      req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["delete_package"]]))  
+      req("delete_package" %in% approved_roles[[user$role]]) 
       
       np <- length(input$rem_pkg_lst)
       uploaded_packages <-

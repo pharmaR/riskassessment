@@ -36,7 +36,7 @@ app_server <- function(input, output, session) {
 
   
   observeEvent(res_auth$user, {
-    req(res_auth$admin == TRUE | res_auth$role %in% c(approved_roles[["tier1"]], approved_roles[["weight_adjust"]]))
+    req(res_auth$admin == TRUE | "weight_adjust" %in% approved_roles[[res_auth$role]])
     
       appendTab("apptabs",
                 tabPanel(
@@ -53,7 +53,7 @@ app_server <- function(input, output, session) {
                         title = "Credential Manager",
                         shinymanager:::admin_ui("admin")
                       ),
-                    if (res_auth$role %in% c(approved_roles[["tier1"]], approved_roles[["weight_adjust"]]))
+                    if ("weight_adjust" %in% approved_roles[[res_auth$role]])
                       tabPanel(
                         id = "reweight_id",
                         title = "Assessment Reweighting",

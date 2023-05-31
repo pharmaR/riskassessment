@@ -184,7 +184,7 @@ mod_decision_automation_server <- function(id, user){
     })
     
     output$auto_classify <- renderUI({
-      if (user$role %in% c(approved_roles[["tier1"]], approved_roles[["decision_adjust"]])) {
+      if ("decision_adjust" %in% approved_roles[[user$role]]) {
         tagList(
           br(),br(),
           hr(),
@@ -253,7 +253,7 @@ mod_decision_automation_server <- function(id, user){
     })
     
     observeEvent(input$auto_dropdown, {
-      req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["decision_adjust"]]))
+      req("decision_adjust" %in% approved_roles[[user$role]])
       
       showModal(modalDialog(
         size = "l",
@@ -272,7 +272,7 @@ mod_decision_automation_server <- function(id, user){
     })
     
     output$decision_rule_div <- renderUI({
-      req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["decision_adjust"]]))
+      req("decision_adjust" %in% approved_roles[[user$role]])
       
       tagList(
         div(
@@ -308,7 +308,7 @@ mod_decision_automation_server <- function(id, user){
     
     output$auto_settings <-
       renderUI({
-        req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["decision_adjust"]]))
+        req("decision_adjust" %in% approved_roles[[user$role]])
         
         div(
           style = "float: right;",
@@ -320,7 +320,7 @@ mod_decision_automation_server <- function(id, user){
     
     output$auto_settings2 <-
       renderUI({
-        req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["decision_adjust"]]))
+        req("decision_adjust" %in% approved_roles[[user$role]])
         
         div(
           style = "float: right;",
@@ -479,7 +479,7 @@ mod_decision_automation_server <- function(id, user){
       })
     
     observeEvent(input$submit_auto, {
-      req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["decision_adjust"]]))
+      req("decision_adjust" %in% approved_roles[[user$role]])
       
       showModal(modalDialog(
         size = "l",
@@ -506,7 +506,7 @@ mod_decision_automation_server <- function(id, user){
     })
     
     observeEvent(input$submit_color, {
-      req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["decision_adjust"]]))
+      req("decision_adjust" %in% approved_roles[[user$role]])
       
       showModal(modalDialog(
         size = "l",
@@ -538,7 +538,7 @@ mod_decision_automation_server <- function(id, user){
     })
     
     observeEvent(input$confirm_submit_auto, {
-      req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["decision_adjust"]]))
+      req("decision_adjust" %in% approved_roles[[user$role]])
       
       out_lst <- purrr::compact(reactiveValuesToList(auto_decision))
       dbUpdate("UPDATE decision_categories SET lower_limit = NULL, upper_limit = NULL")
@@ -567,7 +567,7 @@ mod_decision_automation_server <- function(id, user){
       
     
     observeEvent(input$confirm_submit_col, {
-      req(user$role %in% c(approved_roles[["tier1"]], approved_roles[["decision_adjust"]]))
+      req("decision_adjust" %in% approved_roles[[user$role]])
       
       selected_colors <- 
         decision_lst %>%
