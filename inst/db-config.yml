@@ -19,6 +19,8 @@ default:
       - Low Risk
       - Medium Risk
       - High Risk
+  metric_weights:
+    covr_coverage: 0
 example:
   assessment_db: database_ex.sqlite
   decisions:
@@ -37,6 +39,9 @@ example:
         - 1
     colors:
       Moderate Risk: !expr grDevices::rgb(52, 235, 229, maxColorValue = 255)
+  metric_weights:
+    covr_coverage:
+    has_vignettes: 2
 example2:
   assessment_db: database_ex2.sqlite
   decisions:
