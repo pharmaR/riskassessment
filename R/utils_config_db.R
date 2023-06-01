@@ -36,6 +36,9 @@ configure_db <- function(dbname, config) {
   purrr::iwalk(config[["decisions"]]$colors, ~ {col_lst[.y] <<- .x})
   purrr::iwalk(col_lst, ~ dbUpdate("UPDATE decision_categories SET color = {.x} WHERE decision = {.y}", dbname))
   
+  if (!is.null(config[["metric_weights"]]))
+    check_metric_weights(config[["metric_weights"]])
+  
   # Set metric weights
   if (!is.null(config[["metric_weights"]]))
     purrr::iwalk(config[["metric_weights"]], ~ if (!is.null(.x)) dbUpdate("UPDATE metric SET weight = {.x} WHERE name = {.y}"))
@@ -96,6 +99,25 @@ check_dec_rules <- function(decision_categories, decision_rules) {
   
   if (decision_categories[length(decision_categories)] %in% names(decision_rules) && unlist(decision_rules[[decision_categories[length(decision_categories)]]])[2] != 1)
     stop("Rules for the last decision category must have an upper bound of 1")
+}
+
+#' Check metric weights
+#' 
+#' Checks that the metric weights supplied by the configuration file are valid
+#' 
+#' @param metric_weights A vector containing the metric weights
+#' 
+#' @noRd
+check_metric_weights <- function(metric_weights) {
+  allowed_lst <- c('has_vignettes', 'has_news', 'news_current', 'has_bug_reports_url', 'has_website', 'has_maintainer', 'has_source_control', 'export_help', 'bugs_status', 'license', 'covr_coverage', 'downloads_1yr')
+  if (!all(names(metric_weights) %in% allowed_lst))
+    stop(glue::glue("The metric weights must be a subset of the following: {paste(allowed_lst, collapse = ', ')}"))
+  
+  if (length(names(metric_weights)) != length(unique(names(metric_weights))))
+    stop("The metric weights must be unique")
+  
+  if (!all(purrr::map_lgl(metric_weights, ~ is.numeric(.x) && (is.null(.x) || length(.x) == 1 && .x >= 0))))
+    stop("The weights must be single, non-negative, numeric values")
 }
 
 #' Check credential configuration file

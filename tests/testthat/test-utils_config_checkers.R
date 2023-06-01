@@ -55,6 +55,40 @@ test_that("check_dec_rules works", {
   )
 })
 
+test_that("check_metric_weights works", {
+  
+  allowed_lst <- c('has_vignettes', 'has_news', 'news_current', 'has_bug_reports_url', 'has_website', 'has_maintainer', 'has_source_control', 'export_help', 'bugs_status', 'license', 'covr_coverage', 'downloads_1yr')
+  expect_error(
+    check_metric_weights(list(has_vignette = -2, has_vignette = 0)),
+    glue::glue("The metric weights must be a subset of the following: {paste(allowed_lst, collapse = ', ')}")
+  )
+  
+  expect_error(
+    check_metric_weights(list(has_vignettes = -2, has_vignettes = 0)),
+    "The metric weights must be unique"
+  )
+  
+  expect_error(
+    check_metric_weights(list(has_vignettes = -2, covr_coverage = 0)),
+    "The weights must be single, non-negative, numeric values"
+  )
+  
+  expect_error(
+    check_metric_weights(list(has_vignettes = c(0,1), covr_coverage = 0)),
+    "The weights must be single, non-negative, numeric values"
+  )
+  
+  expect_error(
+    check_metric_weights(list(has_vignettes = "YES", covr_coverage = 0)),
+    "The weights must be single, non-negative, numeric values"
+  )
+  
+  expect_equal(
+    check_metric_weights(list(has_vignettes = 2, covr_coverage = 0)),
+    NULL
+  )
+})
+
 test_that("check_credentials works", {
   
   expect_error(
