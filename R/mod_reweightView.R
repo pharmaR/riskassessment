@@ -15,6 +15,7 @@ reweightViewUI <- function(id) {
 #' @param id the module id
 #' @param user the user name
 #' @param decision_list the list containing the decision automation criteria
+#' @param trigger_events a reactive values object to trigger actions here or elsewhere
 #' 
 #' 
 #' @import dplyr
@@ -25,7 +26,7 @@ reweightViewUI <- function(id) {
 #' @importFrom RSQLite SQLite sqliteCopyDatabase
 #' 
 #' @keywords internal
-reweightViewServer <- function(id, user, decision_list) {
+reweightViewServer <- function(id, user, decision_list, trigger_events) {
   moduleServer(id, function(input, output, session) {
     
     exportTestValues(
@@ -260,6 +261,8 @@ reweightViewServer <- function(id, user, decision_list) {
     observeEvent(input$confirm_update_risk, {
       req(user$role == "admin")
       removeModal()
+      
+      trigger_events[["reset_pkg_upload"]] <- trigger_events[["reset_pkg_upload"]] + 1
       
       # Update the weights in the `metric` table to reflect recent changes
       # First, which weights are different than the originals?

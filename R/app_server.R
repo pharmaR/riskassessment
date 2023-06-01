@@ -14,6 +14,9 @@ app_server <- function(input, output, session) {
   credential_config <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   role_opts <- list(admin = as.list(credential_config$privileges$admin), 
                     nonadmin = as.list(setdiff(credential_config$roles, credential_config$privileges$admin)))
+  trigger_events <- reactiveValues(
+    reset_pkg_upload = 0
+  )
   
   
   # this skips authentication if the application is running in test mode
@@ -120,11 +123,11 @@ app_server <- function(input, output, session) {
   })
   
   # Load server of the reweightView module.
-  metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules)
+  metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules, trigger_events)
   
   # Load server of the uploadPackage module.
   auto_decision <- mod_decision_automation_server("automate", user)
-  uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules)
+  uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules, trigger_events)
   
   # Load server of the sidebar module.
   selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs)

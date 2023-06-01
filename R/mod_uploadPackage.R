@@ -67,6 +67,7 @@ uploadPackageUI <- function(id) {
 #' @param id a module id
 #' @param user a username
 #' @param auto_list a list of decision automation rules
+#' @param trigger_events a reactive values object to trigger actions here or elsewhere
 #' 
 #' @importFrom riskmetric pkg_ref
 #' @importFrom rintrojs introjs
@@ -74,7 +75,7 @@ uploadPackageUI <- function(id) {
 #' @importFrom rvest read_html html_nodes html_text
 #' @keywords internal
 #' 
-uploadPackageServer <- function(id, user, auto_list) {
+uploadPackageServer <- function(id, user, auto_list, trigger_events) {
   moduleServer(id, function(input, output, session) {
     
     # Determine which guide to use for IntroJS.
@@ -125,6 +126,10 @@ uploadPackageServer <- function(id, user, auto_list) {
     introJSServer("introJS", text = upload_pkg_txt, user)
 
     uploaded_pkgs00 <- reactiveVal()
+    
+    observeEvent(trigger_events$reset_pkg_upload, {
+      uploaded_pkgs(NULL)
+    })
 
     observeEvent(user$role, {
     req(user$role == "admin")  
