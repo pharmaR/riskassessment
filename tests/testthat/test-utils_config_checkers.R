@@ -84,7 +84,7 @@ test_that("check_metric_weights works", {
   )
   
   expect_equal(
-    check_metric_weights(list(has_vignettes = 2, covr_coverage = 0)),
+    check_metric_weights(list(has_vignettes = NULL, covr_coverage = 0)),
     NULL
   )
 })

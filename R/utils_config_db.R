@@ -116,7 +116,7 @@ check_metric_weights <- function(metric_weights) {
   if (length(names(metric_weights)) != length(unique(names(metric_weights))))
     stop("The metric weights must be unique")
   
-  if (!all(purrr::map_lgl(metric_weights, ~ is.numeric(.x) && (is.null(.x) || length(.x) == 1 && .x >= 0))))
+  if (!all(purrr::map_lgl(metric_weights, ~ is.null(.x) || is.numeric(.x) && length(.x) == 1 && .x >= 0)))
     stop("The weights must be single, non-negative, numeric values")
 }
 
