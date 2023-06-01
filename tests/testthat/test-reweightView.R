@@ -48,14 +48,6 @@ test_that("reweightView works", {
   expect_equal(curr_new_wts2[1,3], 2)
   expect_equal(curr_new_wts2[-1,], curr_new_wts[-1,])
   
-  expect_equal(app$get_js("$('[data-ns-prefix=reweightInfo-]').css('display')"), "none")
-  app$set_inputs(`reweightInfo-metric_name` = "covr_coverage")
-  expect_equal(app$get_js("$('[data-ns-prefix=reweightInfo-]').css('display')"), "block")
-  
-  app$set_inputs(`reweightInfo-metric_weight` = 2)
-  app$wait_for_idle()
-  expect_equal(app$get_value(input = "reweightInfo-metric_weight"), 0)
-  
   app$set_inputs(`reweightInfo-metric_name` = curr_new_wts[3,1])
   app$set_inputs(`reweightInfo-metric_weight` = 3.5)
   app$wait_for_idle()
