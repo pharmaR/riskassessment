@@ -41,7 +41,7 @@ configure_db <- function(dbname, config) {
   
   # Set metric weights
   if (!is.null(config[["metric_weights"]]))
-    purrr::iwalk(config[["metric_weights"]], ~ if (!is.null(.x)) dbUpdate("UPDATE metric SET weight = {.x} WHERE name = {.y}"))
+    purrr::iwalk(config[["metric_weights"]], ~ if (!is.null(.x)) dbUpdate("UPDATE metric SET weight = {.x} WHERE name = {.y}", dbname))
 }
 
 check_decision_config <- function(dec_config) {
