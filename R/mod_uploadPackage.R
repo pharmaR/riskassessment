@@ -128,7 +128,7 @@ uploadPackageServer <- function(id, user, auto_list, trigger_events) {
     uploaded_pkgs00 <- reactiveVal()
     
     observeEvent(trigger_events$reset_pkg_upload, {
-      uploaded_pkgs(NULL)
+      uploaded_pkgs(data.frame())
     })
 
     observeEvent(user$role, {
