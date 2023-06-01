@@ -273,8 +273,17 @@ reweightViewServer <- function(id, user, decision_list) {
       rlang::inform(paste(wt_chgd_metric, ": ", wt_chgd_wt))
       purrr::walk2(wt_chgd_metric, wt_chgd_wt, ~update_metric_weight(.x, .y))
       
+      curr_new_wts(
+        get_metric_weights() %>%
+          dplyr::mutate(new_weight = weight) %>%
+          dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
+      
+      user$metrics_reweighted <- user$metrics_reweighted + 1
+      
       # update for each package
       all_pkgs <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")
+      req(nrow(all_pkgs) > 0)
+      
       cmt_or_dec_pkgs <- unique(dplyr::bind_rows(
         dbSelect("SELECT DISTINCT id AS pkg_name FROM comments where comment_type = 'o'"),
         dbSelect("SELECT DISTINCT name AS pkg_name FROM package where decision_id IS NOT NULL")
@@ -330,13 +339,6 @@ reweightViewServer <- function(id, user, decision_list) {
       
       showNotification(id = "show_notification_id", "Updates completed", type = "message", duration = 1)
       shinyjs::runjs("$('.shiny-notification').css('width', '450px');")
-      
-      curr_new_wts(
-        get_metric_weights() %>%
-          dplyr::mutate(new_weight = weight) %>%
-          dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
-      
-      user$metrics_reweighted <- user$metrics_reweighted + 1
     }, ignoreInit = TRUE)
     
     
