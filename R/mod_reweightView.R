@@ -100,7 +100,7 @@ reweightViewServer <- function(id, user, decision_list) {
                        numericInput(NS(id, "metric_weight"), "Choose new weight", min = 0, value = curr_new_wts()$new_weight[1]) ),
                 column(width = 1,
                        br(),
-                       actionButton(NS(id, "update_weight"), "Update weight", class = "btn-secondary") ) ),
+                       actionButton(NS(id, "update_weight"), "Confirm", class = "btn-secondary") ) ),
               br(), br(), 
               fluidRow(
                 column(width = 3, offset = 1, align = "center",
@@ -119,7 +119,7 @@ reweightViewServer <- function(id, user, decision_list) {
                        br(), br(),
                        
                        h3("Apply new weights and re-calculate risk for each package"),
-                       actionButton(NS(id, "update_pkg_risk"), "Re-calculate", class = "btn-secondary")
+                       actionButton(NS(id, "update_pkg_risk"), "Update", class = "btn-secondary")
                        
                 ),
                 column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
@@ -142,7 +142,7 @@ reweightViewServer <- function(id, user, decision_list) {
                 column(width = 1),
                 column(width = 10,
                        h5(em("Note: Changing the weights of the metrics will not update the
-               risk of the packages on the database until 'Re-calculate' button is selected.
+               risk of the packages on the database until 'Update' button is selected.
                ")), align = "center"),
                 column(width = 1)
               ),
