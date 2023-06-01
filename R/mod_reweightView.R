@@ -41,8 +41,8 @@ reweightViewServer <- function(id, user, decision_list) {
     
     curr_new_wts <- reactiveVal(
       get_metric_weights() %>%
-        dplyr::mutate(new_weight = weight) %>%
-        dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
+        dplyr::mutate(new_weight = weight)
+      )
     
     observeEvent(input$update_weight, {
       req(user$role == "admin")
@@ -128,16 +128,6 @@ reweightViewServer <- function(id, user, decision_list) {
                        DT::dataTableOutput(NS(id, "weights_table")))
               ),
               br(), br(), br(),
-              conditionalPanel("input.metric_name === 'covr_coverage'",
-                               ns = NS(id),
-                               fluidRow(
-                                 column(1),
-                                 column(width = 10, h5(em("Note: the 'covr_coverage' metric is currently disabled (weight = 0) until the 'riskmetric' package returns a non-NA value for this metric. 
-               "), style = "color: red;"), align = "center"),
-                                 column(1)
-                               ),
-                               br()
-              ),
               fluidRow(
                 column(width = 1),
                 column(width = 10,
@@ -160,9 +150,7 @@ reweightViewServer <- function(id, user, decision_list) {
     observeEvent(metric_weight(), {
       req(input$metric_name)
       
-      if (input$metric_name == "covr_coverage" && (is.na(metric_weight()) || metric_weight() != 0)) {
-        updateNumericInput(session, "metric_weight", value = 0)
-      } else if (is.na(metric_weight()) || metric_weight() < 0) {
+      if (is.na(metric_weight()) || metric_weight() < 0) {
         updateNumericInput(session, "metric_weight", value = 0)
       } else if (metric_weight() != curr_new_wts() %>%
                  dplyr::filter(name == input$metric_name) %>%
@@ -195,18 +183,12 @@ reweightViewServer <- function(id, user, decision_list) {
     observeEvent(input$metric_name, {
       req(user$role == "admin")
       
-      if(input$metric_name == "covr_coverage"){
-        # set to zero, don't allow change until riskmetric fixes this assessment
-        updateNumericInput(session, "metric_weight",
-                           value = 0, min = 0, max = 0)
-      } else {
         updateNumericInput(session, "metric_weight",
                            value = curr_new_wts() %>%
                              dplyr::filter(name == input$metric_name) %>%
                              dplyr::select(new_weight) %>% # new weight
                              dplyr::pull())
-      }
-      
+
     })
     
     
@@ -333,8 +315,8 @@ reweightViewServer <- function(id, user, decision_list) {
       
       curr_new_wts(
         get_metric_weights() %>%
-          dplyr::mutate(new_weight = weight) %>%
-          dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
+          dplyr::mutate(new_weight = weight)
+        )
       
       user$metrics_reweighted <- user$metrics_reweighted + 1
     }, ignoreInit = TRUE)
