@@ -10,12 +10,12 @@
 app_server <- function(input, output, session) {
   # Collect user info.
   user <- reactiveValues()
-  user$metrics_reweighted <- 0
   credential_config <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   role_opts <- list(admin = as.list(credential_config$privileges$admin), 
                     nonadmin = as.list(setdiff(credential_config$roles, credential_config$privileges$admin)))
   trigger_events <- reactiveValues(
-    reset_pkg_upload = 0
+    reset_pkg_upload = 0,
+    reset_sidebar = 0
   )
   
   
@@ -130,7 +130,7 @@ app_server <- function(input, output, session) {
   uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules, trigger_events)
   
   # Load server of the sidebar module.
-  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs)
+  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs, trigger_events)
   
   changes <- reactiveVal(0)
   observe({

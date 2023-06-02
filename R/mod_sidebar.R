@@ -82,12 +82,13 @@ sidebarUI <- function(id) {
 #' @param id a module id
 #' @param user a username
 #' @param uploaded_pkgs a vector of packages
+#' @param trigger_events a reactive values object to trigger actions here or elsewhere
 #' 
 #' 
 #' @importFrom shinyjs enable disable
 #' @keywords internal
 #' 
-sidebarServer <- function(id, user, uploaded_pkgs) {
+sidebarServer <- function(id, user, uploaded_pkgs, trigger_events) {
   moduleServer(id, function(input, output, session) {
     
     # Required for shinyhelper to work.
@@ -118,7 +119,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     # Get information about selected package.
     selected_pkg <- reactiveValues()
     
-    observeEvent(req(input$select_pkg, user$metrics_reweighted), {
+    observeEvent(req(input$select_pkg, trigger_events$reset_sidebar), {
       pkg_selected <- get_pkg_info(input$select_pkg)
 
       pkg_selected %>%
@@ -302,7 +303,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     })
     
     # Enable/disable sidebar decision and comment.
-    observeEvent(req(input$select_ver, user$metrics_reweighted), {
+    observeEvent(req(input$select_ver, trigger_events$reset_sidebar), {
       if (input$select_pkg != "-" && input$select_ver != "-" &&
           (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) {
         shinyjs::enable("decision")

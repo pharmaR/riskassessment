@@ -263,7 +263,7 @@ reweightViewServer <- function(id, user, decision_list, trigger_events) {
           dplyr::mutate(new_weight = weight) %>%
           dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
       
-      user$metrics_reweighted <- user$metrics_reweighted + 1
+      trigger_events$reset_sidebar <- trigger_events$reset_sidebar + 1
       
       # update for each package
       all_pkgs <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")
@@ -330,7 +330,7 @@ reweightViewServer <- function(id, user, decision_list, trigger_events) {
           dplyr::mutate(new_weight = weight)
         )
       
-      user$metrics_reweighted <- user$metrics_reweighted + 1
+      trigger_events$reset_sidebar <- trigger_events$reset_sidebar + 1
     }, ignoreInit = TRUE)
     
     
