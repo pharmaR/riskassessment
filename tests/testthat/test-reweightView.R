@@ -96,4 +96,18 @@ test_that("reweightView works", {
   curr_new_wts <- app$get_value(export = "reweightInfo-curr_new_wts")
   expect_equal(metric_weights, curr_new_wts[,1:2])
   expect_equal(metric_weights[1:3,2], c(2,1,3.5))
+  
+  # Verify that app will not crash and metrics update if database is empty
+  dbUpdate("DELETE FROM package", app_db_loc)
+  
+  expect_equal(nrow(dbSelect("SELECT DISTINCT name FROM package", app_db_loc)), 0)
+  expect_equal(app$get_value(input = "reweightInfo-metric_name"), curr_new_wts[1,1])
+  app$set_inputs(`reweightInfo-metric_weight` = 1)
+  app$click("reweightInfo-update_weight")
+  expect_equal(app$get_value(export = "metric_weights")[1,2], 2)
+  
+  app$click("reweightInfo-update_pkg_risk")
+  app$click("reweightInfo-confirm_update_risk")
+  app$wait_for_idle()
+  expect_equal(app$get_value(export = "metric_weights")[1,2], 1)
 })
