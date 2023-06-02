@@ -260,8 +260,8 @@ reweightViewServer <- function(id, user, decision_list, trigger_events) {
       
       curr_new_wts(
         get_metric_weights() %>%
-          dplyr::mutate(new_weight = weight) %>%
-          dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
+          dplyr::mutate(new_weight = weight)
+      )
       
       trigger_events$reset_sidebar <- trigger_events$reset_sidebar + 1
       
@@ -324,13 +324,6 @@ reweightViewServer <- function(id, user, decision_list, trigger_events) {
       
       showNotification(id = "show_notification_id", "Updates completed", type = "message", duration = 1)
       shinyjs::runjs("$('.shiny-notification').css('width', '450px');")
-
-      curr_new_wts(
-        get_metric_weights() %>%
-          dplyr::mutate(new_weight = weight)
-        )
-      
-      trigger_events$reset_sidebar <- trigger_events$reset_sidebar + 1
     }, ignoreInit = TRUE)
     
     
