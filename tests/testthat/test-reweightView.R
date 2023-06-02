@@ -81,8 +81,8 @@ test_that("reweightView works", {
   expect_equal(dbSelect("select * from package", db_backup)[["decision_id"]], 1)
   
   app$click("reweightInfo-update_pkg_risk")
-  app$click("reweightInfo-confirm_update_risk")
   app$wait_for_idle()
+  app$click("reweightInfo-confirm_update_risk")
   
   db_backup <- app$get_download("reweightInfo-download_database_btn")
   app$wait_for_idle()
@@ -107,6 +107,7 @@ test_that("reweightView works", {
   expect_equal(app$get_value(export = "metric_weights")[1,2], 2)
   
   app$click("reweightInfo-update_pkg_risk")
+  app$wait_for_idle()
   app$click("reweightInfo-confirm_update_risk")
   expect_equal(app$get_value(export = "metric_weights")[1,2], 1)
 })
