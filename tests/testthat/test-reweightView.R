@@ -49,6 +49,7 @@ test_that("reweightView works", {
   expect_equal(curr_new_wts2[-1,], curr_new_wts[-1,])
   
   app$set_inputs(`reweightInfo-metric_name` = curr_new_wts[3,1])
+  app$wait_for_idle()
   app$set_inputs(`reweightInfo-metric_weight` = 3.5)
   app$wait_for_idle()
   app$click("reweightInfo-update_weight")
@@ -86,7 +87,6 @@ test_that("reweightView works", {
   db_backup <- app$get_download("reweightInfo-download_database_btn")
   app$wait_for_idle()
   app$click(selector = "#confirmation_id button")
-  app$wait_for_idle(timeout = 30*1000)
   
   expect_equal(nrow(dbSelect("select * from comments where comment_type = 'o'", db_backup)), 0)
   expect_equal(nrow(dbSelect("select * from comments", db_backup)), 3)
@@ -108,6 +108,5 @@ test_that("reweightView works", {
   
   app$click("reweightInfo-update_pkg_risk")
   app$click("reweightInfo-confirm_update_risk")
-  app$wait_for_idle(timeout = 30*1000)
   expect_equal(app$get_value(export = "metric_weights")[1,2], 1)
 })
