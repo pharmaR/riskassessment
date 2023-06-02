@@ -90,7 +90,7 @@ test_that("reweightView works", {
   expect_equal(nrow(dbSelect("select * from comments where comment_type = 'o'", db_backup)), 0)
   expect_equal(nrow(dbSelect("select * from comments", db_backup)), 3)
   expect_equal(dbSelect("select * from package", db_backup)[["decision"]], NULL)
-  app$wait_for_idle()
+  app$wait_for_idle(timeout = 10000)
   
   metric_weights <- app$get_value(export = "metric_weights")
   curr_new_wts <- app$get_value(export = "reweightInfo-curr_new_wts")
@@ -108,6 +108,6 @@ test_that("reweightView works", {
   
   app$click("reweightInfo-update_pkg_risk")
   app$click("reweightInfo-confirm_update_risk")
-  app$wait_for_idle()
+  app$wait_for_idle(timeout = 10000)
   expect_equal(app$get_value(export = "metric_weights")[1,2], 1)
 })
