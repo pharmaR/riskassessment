@@ -69,6 +69,7 @@ uploadPackageUI <- function(id) {
 #' @param id a module id
 #' @param user a username
 #' @param auto_list a list of decision automation rules
+#' @param trigger_events a reactive values object to trigger actions here or elsewhere
 #' 
 #' @importFrom riskmetric pkg_ref
 #' @importFrom rintrojs introjs
@@ -76,7 +77,7 @@ uploadPackageUI <- function(id) {
 #' @importFrom rvest read_html html_nodes html_text
 #' @keywords internal
 #' 
-uploadPackageServer <- function(id, user, auto_list) {
+uploadPackageServer <- function(id, user, auto_list, trigger_events) {
   moduleServer(id, function(input, output, session) {
     approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
     
@@ -141,6 +142,10 @@ uploadPackageServer <- function(id, user, auto_list) {
     introJSServer("introJS", text = upload_pkg_txt, user)
 
     uploaded_pkgs00 <- reactiveVal()
+    
+    observeEvent(trigger_events$reset_pkg_upload, {
+      uploaded_pkgs(data.frame())
+    })
 
     observeEvent(user$role, {
     req("delete_package" %in% approved_roles[[user$role]])
@@ -367,8 +372,14 @@ uploadPackageServer <- function(id, user, auto_list) {
             
             ref_ver <- as.character(ref$version)
             
-            if(user_ver == ref_ver) ver_msg <- ref_ver
-            else ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
+            # The message about different versions is only given if the package 
+            # name is uploaded from CSV file and not if it is selected from drop-down.
+            if(isTruthy(input$load_cran)) {
+              ver_msg <- ref_ver
+            } else {
+              if(user_ver == ref_ver) ver_msg <- ref_ver
+              else ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
+            }
             
             as.character(ref$version)
             deets <- glue::glue("{uploaded_packages$package[i]} {ver_msg}")
