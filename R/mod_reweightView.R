@@ -285,7 +285,7 @@ reweightViewServer <- function(id, user, decision_list, trigger_events) {
       
       # update for each package
       all_pkgs <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")
-      req(nrow(all_pkgs) > 0)
+      req(nrow(all_pkgs) > 0) # Stops re-weighting execution when no packages are in the database which crashes the app.
       
       cmt_or_dec_pkgs <- unique(dplyr::bind_rows(
         dbSelect("SELECT DISTINCT id AS pkg_name FROM comments where comment_type = 'o'"),
