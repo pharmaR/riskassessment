@@ -143,20 +143,18 @@ reweightViewServer <- function(id, user, decision_list, trigger_events) {
       )
     })
     
-    metric_weight <- debounce(reactive(input$metric_weight), 500)
-    
     observeEvent(input$metric_weight, {
-      shinyjs::disable("update_weight")
-    })
-    observeEvent(metric_weight(), {
       req(input$metric_name)
       
-      if (is.na(metric_weight()) || metric_weight() < 0) {
+      if (is.na(input$metric_weight) || input$metric_weight < 0) {
+        shinyjs::disable("update_weight")
         updateNumericInput(session, "metric_weight", value = 0)
-      } else if (metric_weight() != curr_new_wts() %>%
+      } else if (input$metric_weight != curr_new_wts() %>%
                  dplyr::filter(name == input$metric_name) %>%
                  dplyr::pull(new_weight)){
         shinyjs::enable("update_weight")
+      } else {
+        shinyjs::disable("update_weight")
       }
     })
     
@@ -184,12 +182,12 @@ reweightViewServer <- function(id, user, decision_list, trigger_events) {
     observeEvent(input$metric_name, {
       req(user$role == "admin")
       
-        updateNumericInput(session, "metric_weight",
-                           value = curr_new_wts() %>%
-                             dplyr::filter(name == input$metric_name) %>%
-                             dplyr::select(new_weight) %>% # new weight
-                             dplyr::pull())
-
+      shinyjs::disable("update_weight")
+      updateNumericInput(session, "metric_weight",
+                         value = curr_new_wts() %>%
+                           dplyr::filter(name == input$metric_name) %>%
+                           dplyr::select(new_weight) %>% # new weight
+                           dplyr::pull())
     })
     
     
