@@ -17,6 +17,7 @@
 * Enhanced the "Database View" tab to include the decision category table
 * Allowed the user to set a custom color for decision categories (#465)
 * Add a check to give message about different versions only when package name is given from CSV file (#515)
+* Updated the version of `{riskmetric}` used to V0.2.2
 
 # riskassessment 0.1.1
 
