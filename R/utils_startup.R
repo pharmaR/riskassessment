@@ -62,6 +62,7 @@ create_db <- function(db_name){
 #' Note: the credentials_db_name object is assigned by the deployment user in R/run_app.R
 #' 
 #' @param db_name A string denoting the name of the database
+#' @param admin_role A string denoting the initialized privileges of the admin
 #' 
 #' @import dplyr
 #' @importFrom DBI dbConnect dbDisconnect
@@ -69,7 +70,7 @@ create_db <- function(db_name){
 #' @importFrom shinymanager read_db_decrypt write_db_encrypt
 #' @keywords internal
 #' 
-create_credentials_db <- function(db_name){
+create_credentials_db <- function(db_name, admin_role = ""){
   
   if (missing(db_name) || is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
     stop("db_name must follow SQLite naming conventions (e.g. 'credentials.sqlite')")
@@ -81,7 +82,7 @@ create_credentials_db <- function(db_name){
     # password will automatically be hashed
     admin = TRUE,
     expire = as.character(Sys.Date()),
-    role = '',
+    role = admin_role,
     stringsAsFactors = FALSE
   )
   
@@ -215,7 +216,13 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
 
   # Create package db & credentials db if it doesn't exist yet.
   if(!file.exists(assessment_db)) create_db(assessment_db)
-  if(!file.exists(credentials_db)) create_credentials_db(credentials_db)
+  if(!file.exists(credentials_db)) {
+    admin_role <- db_config[["credentials"]][["privileges"]] %>%
+      purrr::imap(~ if ("admin" %in% .x) .y) %>%
+      unlist(use.names = FALSE) %>%
+      `[`(1)
+    create_credentials_db(credentials_db, admin_role)
+  }
   
   decision_categories <- if (missing(decision_cat)) golem::get_golem_options('decision_categories') else decision_cat
   decisions <- suppressMessages(dbSelect("SELECT decision FROM decision_categories", assessment_db))
