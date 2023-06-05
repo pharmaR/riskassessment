@@ -12,9 +12,9 @@ app_server <- function(input, output, session) {
   user <- reactiveValues()
   user$metrics_reweighted <- 0
   credential_config <- get_golem_config("credentials", file = app_sys("db-config.yml"))
-  role_opts <- list(admin = as.list(credential_config$privileges$admin), 
-                    nonadmin = as.list(setdiff(credential_config$roles, credential_config$privileges$admin)))
-  approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+  role_opts <- list(admin = purrr::imap(credential_config$privileges, ~ if ("admin" %in% .x) .y) %>% unlist(use.names = FALSE) %>% as.list())
+  role_opts[["nonadmin"]] <- as.list(setdiff(credential_config$roles, unlist(role_opts$admin)))
+  approved_roles <- credential_config[["privileges"]]
   trigger_events <- reactiveValues(
     reset_pkg_upload = 0
   )
