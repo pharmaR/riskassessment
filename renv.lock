@@ -1795,15 +1795,15 @@
     },
     "riskmetric": {
       "Package": "riskmetric",
-      "Version": "0.2.0",
+      "Version": "0.2.2",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "riskmetric",
       "RemoteUsername": "pharmaR",
       "RemoteRef": "HEAD",
-      "RemoteSha": "50d53c1f77da1d8b8800181fb72d58c115daa712",
-      "Hash": "f71a6baf6463355bf9079e368d79c567",
+      "RemoteSha": "3d1501880edc07cff5cd72129c0df0899db83029",
+      "Hash": "01fc1e5dd36df12d0ec604862c8af197",
       "Requirements": [
         "BiocManager",
         "backports",
