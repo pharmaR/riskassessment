@@ -31,9 +31,10 @@ introJSUI <- function(id) {
 #' 
 #' @importFrom rintrojs introjs
 #' @keywords internal
-introJSServer <- function(id, text, user) {
-  moduleServer(id, function(input, output, session) {
+introJSServer <- function(id, text, user, approved_roles) {
+  if (missing(approved_roles))
     approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+  moduleServer(id, function(input, output, session) {
     
     steps <- reactive({
       if(user$admin || "weight_adjust" %in% approved_roles[[user$role]]) {

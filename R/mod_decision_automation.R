@@ -88,10 +88,11 @@ mod_decision_automation_ui_2 <- function(id){
 #' @importFrom purrr compact
 #' @importFrom shinyWidgets tooltipOptions
 #' @importFrom colourpicker colourInput updateColourInput
-mod_decision_automation_server <- function(id, user){
+mod_decision_automation_server <- function(id, user, approved_roles){
+  if (missing(approved_roles))
+    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
     
     exportTestValues(
       datatable = {

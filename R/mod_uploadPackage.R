@@ -77,9 +77,10 @@ uploadPackageUI <- function(id) {
 #' @importFrom rvest read_html html_nodes html_text
 #' @keywords internal
 #' 
-uploadPackageServer <- function(id, user, auto_list, trigger_events) {
-  moduleServer(id, function(input, output, session) {
+uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_events) {
+  if (missing(approved_roles))
     approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+  moduleServer(id, function(input, output, session) {
     
     observeEvent(user$role, {
       req("add_package" %in% approved_roles[[user$role]])

@@ -22,11 +22,11 @@ mod_user_roles_ui <- function(id){
 #' user_roles Server Functions
 #'
 #' @noRd 
-mod_user_roles_server <- function(id){
+mod_user_roles_server <- function(id, credentials){
+  if (missing(credentials))
+    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-    
-    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
     
     output$roles_table <-
       DT::renderDataTable(

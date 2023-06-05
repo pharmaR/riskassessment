@@ -130,17 +130,17 @@ app_server <- function(input, output, session) {
     user$role <- trimws(res_auth$role)
   })
   
-  mod_user_roles_server("userRoles")
+  mod_user_roles_server("userRoles", credential_config)
   
   # Load server of the reweightView module.
-  metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules, trigger_events)
+  metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules, approved_roles, trigger_events)
   
   # Load server of the uploadPackage module.
-  auto_decision <- mod_decision_automation_server("automate", user)
-  uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules, trigger_events)
+  auto_decision <- mod_decision_automation_server("automate", user, approved_roles)
+  uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules, approved_roles, trigger_events)
   
   # Load server of the sidebar module.
-  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs)
+  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs, approved_roles)
   
   changes <- reactiveVal(0)
   observe({

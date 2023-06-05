@@ -26,9 +26,10 @@ reweightViewUI <- function(id) {
 #' @importFrom RSQLite SQLite sqliteCopyDatabase
 #' 
 #' @keywords internal
-reweightViewServer <- function(id, user, decision_list, trigger_events) {
-  moduleServer(id, function(input, output, session) {
+reweightViewServer <- function(id, user, decision_list, approved_roles, trigger_events) {
+  if (missing(approved_roles))
     approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+  moduleServer(id, function(input, output, session) {
     
     exportTestValues(
       save = {

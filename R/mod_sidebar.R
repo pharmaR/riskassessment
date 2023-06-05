@@ -87,9 +87,10 @@ sidebarUI <- function(id) {
 #' @importFrom shinyjs enable disable
 #' @keywords internal
 #' 
-sidebarServer <- function(id, user, uploaded_pkgs) {
-  moduleServer(id, function(input, output, session) {
+sidebarServer <- function(id, user, uploaded_pkgs, approved_roles) {
+  if (missing(approved_roles))
     approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+  moduleServer(id, function(input, output, session) {
     
     # Required for shinyhelper to work.
     # shinyhelper::observe_helpers()
