@@ -23,7 +23,7 @@ server <- function(input, output, session) {
     }
   )
   
-  metric_weights <- riskassessment:::reweightViewServer("reweightInfo", user, auto_list, trigger_events)
+  metric_weights <- riskassessment:::reweightViewServer("reweightInfo", user, auto_list,, trigger_events)
 }
 
 shinyApp(ui, server)
