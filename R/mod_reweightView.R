@@ -44,8 +44,8 @@ reweightViewServer <- function(id, user, decision_list, approved_roles, trigger_
     
     curr_new_wts <- reactiveVal(
       get_metric_weights() %>%
-        dplyr::mutate(new_weight = weight) %>%
-        dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
+        dplyr::mutate(new_weight = weight)
+      )
     
     observeEvent(input$update_weight, {
       req("weight_adjust" %in% approved_roles[[user$role]])
@@ -131,16 +131,6 @@ reweightViewServer <- function(id, user, decision_list, approved_roles, trigger_
                        DT::dataTableOutput(NS(id, "weights_table")))
               ),
               br(), br(), br(),
-              conditionalPanel("input.metric_name === 'covr_coverage'",
-                               ns = NS(id),
-                               fluidRow(
-                                 column(1),
-                                 column(width = 10, h5(em("Note: the 'covr_coverage' metric is currently disabled (weight = 0) until the 'riskmetric' package returns a non-NA value for this metric. 
-               "), style = "color: red;"), align = "center"),
-                                 column(1)
-                               ),
-                               br()
-              ),
               fluidRow(
                 column(width = 1),
                 column(width = 10,
@@ -155,22 +145,18 @@ reweightViewServer <- function(id, user, decision_list, approved_roles, trigger_
       )
     })
     
-    metric_weight <- debounce(reactive(input$metric_weight), 500)
-    
     observeEvent(input$metric_weight, {
-      shinyjs::disable("update_weight")
-    })
-    observeEvent(metric_weight(), {
       req(input$metric_name)
       
-      if (input$metric_name == "covr_coverage" && (is.na(metric_weight()) || metric_weight() != 0)) {
+      if (is.na(input$metric_weight) || input$metric_weight < 0) {
+        shinyjs::disable("update_weight")
         updateNumericInput(session, "metric_weight", value = 0)
-      } else if (is.na(metric_weight()) || metric_weight() < 0) {
-        updateNumericInput(session, "metric_weight", value = 0)
-      } else if (metric_weight() != curr_new_wts() %>%
+      } else if (input$metric_weight != curr_new_wts() %>%
                  dplyr::filter(name == input$metric_name) %>%
                  dplyr::pull(new_weight)){
         shinyjs::enable("update_weight")
+      } else {
+        shinyjs::disable("update_weight")
       }
     })
     
@@ -198,18 +184,12 @@ reweightViewServer <- function(id, user, decision_list, approved_roles, trigger_
     observeEvent(input$metric_name, {
       req("weight_adjust" %in% approved_roles[[user$role]])
       
-      if(input$metric_name == "covr_coverage"){
-        # set to zero, don't allow change until riskmetric fixes this assessment
-        updateNumericInput(session, "metric_weight",
-                           value = 0, min = 0, max = 0)
-      } else {
-        updateNumericInput(session, "metric_weight",
-                           value = curr_new_wts() %>%
-                             dplyr::filter(name == input$metric_name) %>%
-                             dplyr::select(new_weight) %>% # new weight
-                             dplyr::pull())
-      }
-      
+      shinyjs::disable("update_weight")
+      updateNumericInput(session, "metric_weight",
+                         value = curr_new_wts() %>%
+                           dplyr::filter(name == input$metric_name) %>%
+                           dplyr::select(new_weight) %>% # new weight
+                           dplyr::pull())
     })
     
     
@@ -280,10 +260,10 @@ reweightViewServer <- function(id, user, decision_list, approved_roles, trigger_
       
       curr_new_wts(
         get_metric_weights() %>%
-          dplyr::mutate(new_weight = weight) %>%
-          dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
+          dplyr::mutate(new_weight = weight)
+      )
       
-      user$metrics_reweighted <- user$metrics_reweighted + 1
+      trigger_events$reset_sidebar <- trigger_events$reset_sidebar + 1
       
       # update for each package
       all_pkgs <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")

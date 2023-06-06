@@ -10,13 +10,13 @@
 app_server <- function(input, output, session) {
   # Collect user info.
   user <- reactiveValues()
-  user$metrics_reweighted <- 0
   credential_config <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   role_opts <- list(admin = purrr::imap(credential_config$privileges, ~ if ("admin" %in% .x) .y) %>% unlist(use.names = FALSE) %>% as.list())
   role_opts[["nonadmin"]] <- as.list(setdiff(credential_config$roles, unlist(role_opts$admin)))
   approved_roles <- credential_config[["privileges"]]
   trigger_events <- reactiveValues(
-    reset_pkg_upload = 0
+    reset_pkg_upload = 0,
+    reset_sidebar = 0
   )
   
   
@@ -140,8 +140,8 @@ app_server <- function(input, output, session) {
   uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules, approved_roles, trigger_events)
   
   # Load server of the sidebar module.
-  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs, approved_roles)
-  
+  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs, approved_roles, trigger_events)
+
   changes <- reactiveVal(0)
   observe({
     changes(changes() + 1)
