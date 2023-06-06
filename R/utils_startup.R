@@ -174,7 +174,7 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
   if (isTRUE(getOption("shiny.testmode"))) return(NULL)
   
   db_config <- get_golem_config(NULL, file = app_sys("db-config.yml"))
-  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json")
+  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json", "metric_weights")
   if (any(!names(db_config) %in% used_configs)) {
     names(db_config) %>%
       `[`(!. %in% used_configs) %>%
@@ -210,7 +210,7 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
   decisions <- suppressMessages(dbSelect("SELECT decision FROM decision_categories", assessment_db))
   check_dec_cat(decision_categories)
   if (nrow(decisions) == 0) {
-    configure_db(assessment_db)
+    configure_db(assessment_db, db_config)
   } else if (!identical(decisions$decision, decision_categories)) {
     stop("The decision categories in the configuration file do not match those in the assessment database.")
   }
