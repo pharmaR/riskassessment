@@ -385,6 +385,7 @@ uploadPackageServer <- function(id, user, auto_list, trigger_events) {
               # Get and upload pkg general info to db.
               incProgress(1, detail = deets)
               insert_pkg_info_to_db(uploaded_packages$package[i])
+              download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), mode = "wb")
               # Get and upload maintenance metrics to db.
               incProgress(1, detail = deets)
               insert_riskmetric_to_db(uploaded_packages$package[i])
