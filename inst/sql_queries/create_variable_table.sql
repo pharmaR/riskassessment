@@ -1,0 +1,7 @@
+CREATE TABLE IF NOT EXISTS _variables (
+   user CHAR
+);
+
+INSERT INTO _variables
+VALUES ("CONFIGURATION")
+;

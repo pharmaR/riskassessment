@@ -13,7 +13,8 @@ CREATE TABLE IF NOT EXISTS comments_audit_log (
    old_row_data   JSON,
    new_row_data   JSON,
    dml_type       CHAR NOT NULL,
-   dml_timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP
+   dml_timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,
+   dml_created_by CHAR
 );
 
 CREATE TRIGGER comments_update_audit_trigger
@@ -23,7 +24,8 @@ BEGIN
     comment_id,
     old_row_data,
     new_row_data,
-    dml_type
+    dml_type,
+    dml_created_by
   )
   VALUES(
     NEW.id,
@@ -41,7 +43,8 @@ BEGIN
       "comment_type", NEW.comment_type,
       "added_on", NEW.added_on
     ),
-    'UPDATE'
+    'UPDATE',
+    (SELECT user FROM _variables LIMIT 1)
   );
 END
 
@@ -52,7 +55,8 @@ BEGIN
     comment_id,
     old_row_data,
     new_row_data,
-    dml_type
+    dml_type,
+    dml_created_by
   )
   VALUES(
     OLD.id,
@@ -64,6 +68,7 @@ BEGIN
       "added_on", OLD.added_on
     ),
     NULL,
-    'DELETE'
+    'DELETE',
+    (SELECT user FROM _variables LIMIT 1)
   );
 END

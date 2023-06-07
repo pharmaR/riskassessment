@@ -22,6 +22,7 @@ create_db <- function(db_name){
   
   # Queries needed to run the first time the db is created.
   queries <- c(
+    "create_variable_table.sql",
     "create_decision_table.sql",
     "create_package_table.sql",
     "create_metric_table.sql",

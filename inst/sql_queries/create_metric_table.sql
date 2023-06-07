@@ -27,13 +27,14 @@ VALUES
 ;
 
 CREATE TABLE IF NOT EXISTS metric_audit_log (
-   id            INTEGER PRIMARY KEY AUTOINCREMENT,
-   metric_id     INTEGER NOT NULL,
-   metric_name   CHAR,
-   old_weight    REAL,
-   new_weight    REAL,
-   dml_type      CHAR NOT NULL,
-   dml_timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+   id             INTEGER PRIMARY KEY AUTOINCREMENT,
+   metric_id      INTEGER NOT NULL,
+   metric_name    CHAR,
+   old_weight     REAL,
+   new_weight     REAL,
+   dml_type       CHAR NOT NULL,
+   dml_timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,
+   dml_created_by CHAR
 );
 
 CREATE TRIGGER metric_update_audit_trigger
@@ -44,13 +45,15 @@ BEGIN
     metric_name,
     old_weight,
     new_weight,
-    dml_type
+    dml_type,
+    dml_created_by
   )
   VALUES(
     NEW.id,
     NEW.name,
     OLD.weight,
     NEW.weight,
-    'UPDATE'
+    'UPDATE',
+    (SELECT user FROM _variables LIMIT 1)
   );
 END
