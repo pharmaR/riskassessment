@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS decision_categories_audit_log (
    old_row_data           JSON,
    new_row_data           JSON,
    dml_type               CHAR NOT NULL,
-   dml_timestamp          DATETIME DEFAULT CURRENT_TIMESTAMP,
+   dml_timestamp          DATETIME DEFAULT UTC_TIMESTAMP,
    dml_created_by         CHAR
 );
 
@@ -41,6 +41,6 @@ BEGIN
       "upper_limit", NEW.upper_limit
     ),
     'UPDATE',
-    (SELECT user FROM _variables LIMIT 1)
+    (SELECT user FROM _variables ORDER BY id DESC LIMIT 1)
   );
 END

@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS comments_audit_log (
    old_row_data   JSON,
    new_row_data   JSON,
    dml_type       CHAR NOT NULL,
-   dml_timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,
+   dml_timestamp  DATETIME DEFAULT UTC_TIMESTAMP,
    dml_created_by CHAR
 );
 

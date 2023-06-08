@@ -1,7 +1,9 @@
 CREATE TABLE IF NOT EXISTS _variables (
+   id   INTEGER PRIMARY KEY AUTOINCREMENT,
    user CHAR
 );
 
 INSERT INTO _variables
+  (user)
 VALUES ("CONFIGURATION")
 ;

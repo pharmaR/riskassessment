@@ -33,7 +33,7 @@ CREATE TABLE IF NOT EXISTS metric_audit_log (
    old_weight     REAL,
    new_weight     REAL,
    dml_type       CHAR NOT NULL,
-   dml_timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,
+   dml_timestamp  DATETIME DEFAULT UTC_TIMESTAMP,
    dml_created_by CHAR
 );
 
@@ -54,6 +54,6 @@ BEGIN
     OLD.weight,
     NEW.weight,
     'UPDATE',
-    (SELECT user FROM _variables LIMIT 1)
+    (SELECT user FROM _variables ORDER BY id DESC LIMIT 1)
   );
 END
