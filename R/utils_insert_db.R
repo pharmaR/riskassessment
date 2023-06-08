@@ -272,6 +272,45 @@ update_metric_weight <- function(metric_name, metric_weight,
   , db_name)
 }
 
+#' The 'Insert MM to DB ' Function
+#'
+#' Get the maintenance and testing metrics info and upload into DB.
+#' 
+#' @param pkg_name string name of the package
+#' @param db_name character name (and file path) of the database
+#' 
+#' @import dplyr
+#' @importFrom riskmetric pkg_ref pkg_assess pkg_score
+#' @importFrom glue glue 
+#' 
+#' @returns nothing
+#' @noRd
+rescore_package <- function(pkg_name, 
+                            db_name = golem::get_golem_options('assessment_db_name')) {
+  
+  db_table <- dbSelect("SELECT metric.name, package_metrics.encode FROM package 
+                       INNER JOIN package_metrics ON package.id = package_metrics.package_id
+                       INNER JOIN metric ON package_metrics.metric_id = metric.id
+                       WHERE package.name = {pkg_name}", db_name)
+  
+  riskmetric_assess <-
+    purrr::pmap_dfc(db_table, function(name, encode) {dplyr::tibble(unserialize(encode)) %>% purrr::set_names(name)})
+  
+  # Get the metrics weights to be used during pkg_score.
+  metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric", db_name)
+  metric_weights <- metric_weights_df$weight
+  names(metric_weights) <- metric_weights_df$name
+  
+  riskmetric_score <-
+    riskmetric_assess %>%
+    riskmetric::pkg_score(weights = metric_weights)
+  
+  dbUpdate(
+    "UPDATE package
+    SET score = {format(round(riskmetric_score$pkg_score[1], 2))}
+    WHERE name = {pkg_name}", db_name)
+}
+
 #' db trash collection
 #' 
 #' clean up tables package_metrics, community_usage_metrics and comments
