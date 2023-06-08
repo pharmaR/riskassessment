@@ -38,6 +38,9 @@ app_server <- function(input, output, session) {
 
   
   observeEvent(res_auth$user, {
+    dbUpdate("DELETE FROM _variables")
+    dbUpdate("INSERT INTO _variables (user) VALUES ({res_auth$user})")
+    
     if (res_auth$admin == TRUE) {
       appendTab("apptabs",
                 tabPanel(

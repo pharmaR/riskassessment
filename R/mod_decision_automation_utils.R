@@ -13,6 +13,7 @@ assign_decisions <- function(decision_list, package) {
   decision <- paste0(names(decision_list)[purrr::map_lgl(decision_list, ~ .x[1] < score && score <= .x[2])], "")
   decision_id <- dbSelect("SELECT id FROM decision_categories WHERE decision = {decision}")
   if (decision != "") {
+    dbUpdate("INSERT INTO _variables (user) VALUES ('SYSTEM')")
     dbUpdate("UPDATE package SET decision_id = {decision_id},
                         decision_by = 'Auto Assigned', decision_date = {Sys.Date()}
                          WHERE name = {package}")
@@ -23,6 +24,7 @@ assign_decisions <- function(decision_list, package) {
       "INSERT INTO comments
           VALUES ({package}, 'Auto Assigned', 'admin',
           {comment}, 'o', {getTimeStamp()})")
+    dbUpdate("DELETE FROM _variables WHERE id IN (SELECT id FROM _variables ORDER BY id DESC LIMIT 1)")
   }
   
   return(decision)
