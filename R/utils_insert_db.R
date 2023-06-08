@@ -16,12 +16,14 @@
 #' 
 #' @returns nothing
 #' @noRd
-dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_name'), .envir = parent.frame()){
+dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_name'), .envir = parent.frame(), params = NULL){
   errFlag <- FALSE
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   tryCatch({
     rs <- DBI::dbSendStatement(con, glue::glue_sql(command, .envir = .envir, .con = con))
+    if (!is.null(params))
+      DBI::dbBind(rs, params)
   }, error = function(err) {
     message <- glue::glue("command: {command} resulted in {err}")
     message(message, .loggit = FALSE)
@@ -176,6 +178,7 @@ insert_riskmetric_to_db <- function(pkg_name,
     return()
   }
   
+  assessment_serialized <- data.frame(pkg_assess = I(lapply(riskmetric_assess, serialize, connection = NULL)))
   # Insert all the metrics (columns of class "pkg_score") into the db.
   # TODO: Are pkg_score and pkg_metric_error mutually exclusive?
   for(row in 1:nrow(metric_weights_df)){
@@ -200,8 +203,9 @@ insert_riskmetric_to_db <- function(pkg_name,
              riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])]))
     
     dbUpdate(
-      "INSERT INTO package_metrics (package_id, metric_id, weight, value) 
-      VALUES ({package_id}, {metric$id}, {metric$weight}, {metric_value})", db_name
+      "INSERT INTO package_metrics (package_id, metric_id, weight, value, encode) 
+      VALUES ({package_id}, {metric$id}, {metric$weight}, {metric_value}, $pkg_assess)", db_name,
+      params = list(pkg_assess = assessment_serialized[metric$name,])
     )
   }
   
