@@ -214,6 +214,9 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
   } else if (!identical(decisions$decision, decision_categories)) {
     stop("The decision categories in the configuration file do not match those in the assessment database.")
   }
+  
+  if (!dir.exists("tarballs")) dir.create("tarballs")
+  if (!dir.exists("source")) dir.create("source")
 
   invisible(c(assessment_db, credentials_db))
 }
