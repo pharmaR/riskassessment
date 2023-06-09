@@ -272,16 +272,17 @@ update_metric_weight <- function(metric_name, metric_weight,
   , db_name)
 }
 
-#' The 'Insert MM to DB ' Function
+#' The Rescore Function
 #'
-#' Get the maintenance and testing metrics info and upload into DB.
+#' Rescore package based on stored riskmetric assessments and weights
 #' 
 #' @param pkg_name string name of the package
 #' @param db_name character name (and file path) of the database
 #' 
 #' @import dplyr
-#' @importFrom riskmetric pkg_ref pkg_assess pkg_score
+#' @importFrom riskmetric pkg_score
 #' @importFrom glue glue 
+#' @importFrom purrr pmap_dfc set_names
 #' 
 #' @returns nothing
 #' @noRd
