@@ -73,6 +73,25 @@ get_latest_pkg_info <- function(pkg_name) {
   return(table_info)
 }
 
+#' @importFrom desc desc_get_field
+#' @importFrom glue glue
+#' @importFrom purrr map set_names
+#' @import dplyr
+#' 
+#' @noRd
+get_desc_pkg_info <- function(pkg_name, pkg_version) {
+  untar(glue::glue("tarballs/{pkg_name}_{pkg_version}.tar.gz"), exdir = "source")
+  
+  desc_file <- glue::glue("source/{pkg_name}/DESCRIPTION")
+  
+  keys <- c("Package", "Version", "Maintainer", "Author", "License", "Packaged", "Title", "Description")
+  purrr::map(keys,
+             desc::desc_get_field, file = desc_file) %>%
+    purrr::set_names(keys) %>%
+    dplyr::as_tibble() %>%
+    dplyr::rename("Published"="Packaged")
+}
+
 #' Generate Community Usage Data
 #' 
 #' @description 
