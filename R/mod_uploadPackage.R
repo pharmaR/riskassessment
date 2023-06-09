@@ -22,8 +22,8 @@ uploadPackageUI <- function(id) {
           id = "type-package-group",
           style = "display: flex;",
           selectizeInput(NS(id, "pkg_lst"), "Type Package Name(s)", choices = NULL, multiple = TRUE, 
-                         options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
-                                        onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_cran"), '", "load", {priority: "event"})}')))),
+                         options = list(create = FALSE, showAddOptionOnCreate = FALSE, 
+                                        onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_remote"), '", "load", {priority: "event"})}')))),
           actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
                        style = 'height: calc(1.5em + 1.5rem + 2px)'),
           tags$script(I(glue::glue('$(window).on("load resize", function() {{
@@ -91,14 +91,14 @@ uploadPackageServer <- function(id, user, auto_list, trigger_events) {
         upload_pkg
     })
 
-    cran_pkgs <- reactiveVal()
+    remote_pkgs <- reactiveVal()
     
-    observeEvent(input$load_cran, {
-      if (!isTruthy(cran_pkgs())) {
+    observeEvent(input$load_remote, {
+      if (!isTruthy(remote_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
-          cran_pkgs(test_pkg_lst)
+          remote_pkgs(list(CRAN = test_pkg_lst))
         } else {
-          cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+          remote_pkgs(list(CRAN = unname(available.packages("https://cran.rstudio.com/src/contrib")[,1]), BIOC = bioc.packages()[["Package"]]))
         }
       }
     },
@@ -110,9 +110,9 @@ uploadPackageServer <- function(id, user, auto_list, trigger_events) {
       pkgs_have(dbSelect("select name from package")[,1])
     })
     
-    observeEvent(cran_pkgs(), {
-      req(cran_pkgs())
-      updateSelectizeInput(session, "pkg_lst", choices = cran_pkgs(), server = TRUE)
+    observeEvent(remote_pkgs(), {
+      req(remote_pkgs())
+      updateSelectizeInput(session, "pkg_lst", choices = remote_pkgs(), server = TRUE)
     })
     
     observeEvent(pkgs_have(), {
@@ -299,11 +299,11 @@ uploadPackageServer <- function(id, user, auto_list, trigger_events) {
       req(all(good_urls))
       }
       
-      if (!isTruthy(cran_pkgs())) {
+      if (!isTruthy(remote_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
-          cran_pkgs(test_pkg_lst)
+          remote_pkgs(list(CRAN = test_pkg_lst))
         } else {
-          cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+          remote_pkgs(list(CRAN = unname(available.packages("https://cran.rstudio.com/src/contrib")[,1]), BIOC = bioc.packages()[["Package"]]))
         }
       }
       
@@ -337,10 +337,10 @@ uploadPackageServer <- function(id, user, auto_list, trigger_events) {
               incProgress(1, detail = 'Package {uploaded_packages$package[i]} not found')
               
               # Suggest alternative spellings using utils::adist() function
-              v <- utils::adist(uploaded_packages$package[i], cran_pkgs(), ignore.case = FALSE)
+              v <- utils::adist(uploaded_packages$package[i], remote_pkgs(), ignore.case = FALSE)
               rlang::inform(paste("Package name",uploaded_packages$package[i],"was not found."))
               
-              suggested_nms <- paste("Suggested package name(s):",paste(head(cran_pkgs()[which(v == min(v))], 10),collapse = ", "))
+              suggested_nms <- paste("Suggested package name(s):",paste(head(remote_pkgs()[which(v == min(v))], 10),collapse = ", "))
               rlang::inform(suggested_nms)
               
               uploaded_packages$status[i] <- HTML(paste0('<a href="#" title="', suggested_nms, '">not found</a>'))
@@ -359,7 +359,7 @@ uploadPackageServer <- function(id, user, auto_list, trigger_events) {
             
             # The message about different versions is only given if the package 
             # name is uploaded from CSV file and not if it is selected from drop-down.
-            if(isTruthy(input$load_cran)) {
+            if(isTruthy(input$load_remote)) {
               ver_msg <- ref_ver
             } else {
               if(user_ver == ref_ver) ver_msg <- ref_ver
