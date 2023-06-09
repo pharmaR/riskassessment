@@ -533,16 +533,12 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
     plotly::config(displayModeBar = F)
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+#' @importFrom rvest read_html html_table
+#' 
+#' @noRd
+bioc.packages <- function() {
+  'https://www.bioconductor.org/packages/release/bioc/' %>% 
+    rvest::read_html() %>% 
+    rvest::html_table() %>%
+    `[[`(1) 
+}
