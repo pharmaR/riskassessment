@@ -20,3 +20,5 @@ $run_dev.*
 _\.new\.png$
 ^_pkgdown\.yml$
 ^pkgdown$
+^tarballs$
+^source$
