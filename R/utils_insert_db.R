@@ -5,7 +5,8 @@
 #'
 #' @param command a string
 #' @param db_name character name (and file path) of the database
-#' @param .envir Environemtn to evaluate each expression in
+#' @param .envir Environment to evaluate each expression in
+#' @param params A list of bindings, named or unnamed. Default is `NULL`, if present parameters will be passed to `DBI::dbBind()`
 #'
 #' @import dplyr
 #' @importFrom DBI dbConnect dbSendStatement dbClearResult dbDisconnect
