@@ -309,11 +309,8 @@ reweightViewServer <- function(id, user, decision_list, trigger_events) {
         shinyjs::runjs("$('<br>').insertAfter('.progress-message');")
         for (i in 1:nrow(pkg)) {
           incProgress(1 / (nrow(pkg) + 1), detail = pkg$pkg_name[i])
-          dbUpdate(
-            "DELETE FROM package_metrics WHERE package_id = 
-            (SELECT id FROM package WHERE name = {pkg$pkg_name[i]})")
           # metric_mm_tm_Info_upload_to_DB(pkg$pkg_name[i])
-          insert_riskmetric_to_db(pkg$pkg_name[i])
+          rescore_package(pkg$pkg_name[i])
           if (!rlang::is_empty(decision_list())) {
               assign_decisions(decision_list(), pkg$pkg_name[i])
           }
