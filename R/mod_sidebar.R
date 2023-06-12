@@ -317,7 +317,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, approved_roles, trigger_event
       }
     }, ignoreInit = TRUE)
     
-    observeEvent(req(input$select_ver, user$metrics_reweighted), {
+    observeEvent(req(input$select_ver, trigger_events$reset_sidebar), {
       req("final_decision" %in% approved_roles[[user$role]])
 
       if (input$select_pkg != "-" && input$select_ver != "-" &&
