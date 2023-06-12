@@ -105,7 +105,7 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
         upload_pkg,
         if ("add_package" %in% approved_roles[[user$role]]) upload_pkg_add,
         if ("delete_package" %in% approved_roles[[user$role]]) upload_pkg_delete,
-        if ("decision_adjust" %in% approved_roles[[user$role]]) upload_pkg_dec_adj,
+        if ("auto_decision_adjust" %in% approved_roles[[user$role]]) upload_pkg_dec_adj,
         if (nrow(uploaded_pkgs()) > 0) upload_pkg_comp
       )
     })

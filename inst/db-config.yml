@@ -8,8 +8,8 @@ default:
       - lead
       - reviewer
     privileges:
-      admin: [admin, weight_adjust, decision_adjust, final_decision, revert_decision, add_package, delete_package]
-      lead: [weight_adjust, decision_adjust, final_decision, revert_decision, add_package, delete_package]
+      admin: [admin, weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package]
+      lead: [weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package]
       reviewer: add_package
   decisions:
     categories:
@@ -31,7 +31,7 @@ example:
       - deleter
     privileges:
       admin: admin
-      reweight: [weight_adjust, decision_adjust]
+      reweight: [weight_adjust, auto_decision_adjust]
       decider: final_decision
       reverter: [final_decision, revert_decision]
       adder: [add_package]

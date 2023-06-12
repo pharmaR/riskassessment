@@ -1,7 +1,7 @@
 Name,Privilege,Description,Applicable Role(s)
 Administrator,admin,An `administrator` user manages the users of the application.,
 Weight Adjustment,weight_adjust,A `weight adjustment` user can change the weights applied to the {riskmetric} risk calculation.,
-Decision Adjustment,decision_adjust,A `decision adjustment` user can change the decision automation rules and decision category colors.,
+Automated Decision Adjustment,auto_decision_adjust,An `automated decision adjustment` user can change the decision automation rules and decision category colors.,
 Final Decision,final_decision,A `final decision` user can make final decision regarding packages.,
 Revert Decision,revert_decision,A `revert decision` user can undo final decisions made regarding packages.,
 Add Packages,add_package,A `add packages` user can add packages for consideration.,
