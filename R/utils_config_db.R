@@ -137,10 +137,11 @@ check_credentials <- function(credentials_lst) {
   if(length(credentials_lst$roles) != length(unique(credentials_lst$roles)))
     stop("The roles must be unique")
   
-  if (is.null(credentials_lst$privileges[["admin"]]))
+  privileges_roles <- names(credentials_lst$privileges)
+  privileges <- unique(unlist(credentials_lst$privileges, use.names = FALSE))
+  if (!"admin" %in% privileges)
     stop("The roles corresponding to 'admin' privileges must be specified")
   
-  privileges_roles <- unique(unlist(credentials_lst$privileges, use.names = FALSE))
   if (!all(privileges_roles %in% credentials_lst$roles))
     stop(glue::glue("The following role(s) designated under privileges is(are) not present in the 'roles' configuration: {paste(privileges_roles[!privileges_roles %in% credentials_lst$roles], collapse = ', ')}"))
 }
