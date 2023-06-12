@@ -19,6 +19,7 @@
 * Add a check to give message about different versions only when package name is given from CSV file (#515)
 * Updated the version of `{riskmetric}` used to V0.2.2
 * Allow metric weights to be initialized in the configuration file (#482)
+* Re-score instead of re-assess when metric weights are changed (#537)
 
 # riskassessment 0.1.1
 
