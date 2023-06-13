@@ -24,17 +24,18 @@ Starting with Version 2.0.0, there has been a major overhaul on how privileges f
 
 Currently, there are six different privileges that can be tied to user roles:
 
-* Administrator: manages the users of the application
-* Weight Adjustment: manages the weights applied to the `{riskmetric}` risk calculation
-* Automated Decision Adjustment: manages the decision automation rules and decision category display colors
-* Final Decision: makes final decisions regarding packages
-* Revert Decision: can undo a final decisions made regarding packages
-* Add Packages: adds packages for consideration
-* Delete Packages: can remove packages from consideration
+* [Administrator](User_Roles_and_Privileges.html#administrator): manages the users of the application
+* [Weight Adjustment](User_Roles_and_Privileges.html#weight-adjustment): manages the weights applied to the `{riskmetric}` risk calculation
+* [Automated Decision Adjustment](User_Roles_and_Privileges.html#automated-decision-adjustment): manages the decision automation rules and decision category display colors
+* [Final Decision](User_Roles_and_Privileges.html#final-decision): makes final decisions regarding packages
+* [Revert Decision](User_Roles_and_Privileges.html#revert-decision): can undo a final decisions made regarding packages
+* [Add Packages](User_Roles_and_Privileges.html#add-packages): adds packages for consideration
+* [Delete Packages](User_Roles_and_Privileges.html#delete-packages): can remove packages from consideration
 
 ### Administrator
 
 The `admin` privilege is discussed at length in [Administrative Tools and Options](Administrative_Tools_and_Options.html). Please reference that vignette for more information.
+<font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
 ### Weight Adjustment
 
@@ -42,11 +43,11 @@ The `weight_adjust` privilege allows a user to change the weights applied to the
 
 ![](images/assessment_reweighting_tab.png){style="position:center; width:800px"}
 
-</br></br>There are three buttons on this page: <a style="color:red">**UPDATE WEIGHT**</a> on the top right, <a style="color:red">**DOWNLOAD**</a> on the middle left, and <a style="color:red">**RE-CALCULATE**</a> on the bottom left. 
+</br></br>There are three buttons on this page: <a style="color:red">**CONFIRM**</a> on the top right, <a style="color:red">**DOWNLOAD**</a> on the middle left, and <a style="color:red">**UPDATE**</a> on the bottom left. 
 
 <br>
 
-## Download Database
+#### Download Database
 
 First, the simplest: the <a style="color:red">**DOWNLOAD**</a> database button.
 
@@ -62,9 +63,9 @@ When clicked, this button will download a copy of the current database (by defau
 
 <br>
 
-## Updating Weights
+#### Updating Weights
 
-As the name suggests, this modules allows to us view existing and change metric weights used to calculate a risk score using `riskmemtric`.
+The <a style="color:red">**CONFIRM**</a> button allows you to view existing and change metric weights used to calculate a risk score using `riskmemtric`.
 
 <br>
 
@@ -76,7 +77,7 @@ As the name suggests, this modules allows to us view existing and change metric 
 
 </br>Here you can either select a metric from the `Select metric` dropdown box or select a row </br>in the "CURRENT RISK SCORE WEIGHTS BY METRIC" table.
 
-Once the metric is selected, enter a new (numeric) weight in the "Choose new weight" box and select the <a style="color:red">**UPDATE WEIGHT**</a> button. You'll notice the row with the change will appear highlighted, showing you the old weight value and the new weight value:
+Once the metric is selected, enter a new (numeric) weight in the "Choose new weight" box and click the <a style="color:red">**CONFIRM**</a> button. You'll notice the row with the change will appear highlighted, showing you the old weight value and the new weight value:
 
 <br>
 
@@ -86,9 +87,9 @@ Once the metric is selected, enter a new (numeric) weight in the "Choose new wei
 
 <br>
 
-After you have updated **at least one** metric weight, the <a style="color:red">**RE-CALCULATE**</a> button is enabled, allowing you to apply new weights and re-calculated the risk for each package.</br>
+After you have updated **at least one** metric weight, the <a style="color:red">**UPDATE**</a> button is enabled, allowing you to apply new weights and re-calculated the risk for each package.</br>
 
-After you've made all final re-weighting changes, you can click the "Re-calculate" button pictured here. Note that these weight changes will take effect on all packages in the database, updating the risk score for each.
+After you've made all final re-weighting changes, you can click the "Update" button pictured here. Note that these weight changes will take effect on all packages in the database, updating the risk score for each.
 
 <br>
 
@@ -98,7 +99,7 @@ After you've made all final re-weighting changes, you can click the "Re-calculat
 
 <br>
 
-</br></br>Once you click on <a style="color:red">**RE-CALCULATE**</a> you will get a confirmation modal, reminding you that "updating the risk metrics cannot be reverted", and strongly recommending you download a copy of the current database first before clicking on <a style="color:red">**SUBMIT**</a>. The modal also details all the actions that will take effect in the app if you submit these changes.
+</br></br>Once you click on <a style="color:red">**UPDATE**</a> you will get a confirmation modal, reminding you that "updating the risk metrics cannot be reverted", and strongly recommending you download a copy of the current database first before clicking on <a style="color:red">**SUBMIT**</a>. The modal also details all the actions that will take effect in the app if you submit these changes.
 
 <br>
 
@@ -120,4 +121,101 @@ that it is applying weights and updating risk scores to each package you have up
 <br>
 
 Now go to the database overview tab to confirm that the risk scores have been updated. You can also view the new weights, including the standardized weight on the `Assessment Criteria` tab.
+<font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
+### Automated Decision Adjustment
+
+Users with `auto_decision_adjust` privilege can edit decision automation rules and decision category colors. If your organization has black and white rules about package risk decisions based solely on  `riskmetric` scores, then decision automation is for you. When leveraged, it will help you automatically classify packages into the "Low Risk", "Medium Risk", or "High Risk"  decision categories upon upload (for the default configuration). The current automation rules are accessible in two locations: under 'Upload Package' in the `Risk Assessment` tab & under 'Decision Categories' in the `Database` tab. To get started, click on the small `r fa("gear", fill = "red", height = "1em")` (gear) button in the upper right hand corner of either section.
+
+
+<br>
+
+<center>
+![](images/start_decision_automation.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+If there are no decision rules applied, you'll see the following risk decision categories next to empty check boxes. When setting up these rules for your organization, you can choose as much or as little automation as needed. 
+
+<br>
+
+<center>
+![](images/decision_automation_gear.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+For example, if you only want to set up an automatic decision for "High" risk scores, you only need to select that check box and make your risk score designation / cut off value. Every time a package is uploaded with a risk score > 0.66, it will automatically receive the decision label: "High" which saves your review team time and mental capacity when reviewing large groups of packages.
+
+<br>
+
+<center>
+![](images/decision_automation_high.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+Similarly, if you have package risk thresholds mapped out for each decision category, then apply them here! The user interface won't allow the slider ranges to overlap, but it will allow gaps between each range. In the example below, we adopt automatic decisions for packages with risk scores less than 0.33 and greater than .66. In this fictitious example, let's say our organization has a policy that any package whose risk score falls between 0.33 and 0.66 will need to be reviewed manually. 
+
+<br>
+
+<center>
+![](images/decision_automation_allcat.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+To apply these changes, your `ADMIN` will need to select <a style="color:red">**APPLY DECISION RULES**</a>. A pop-up will ask the user to review and confirm the selected automation rules:
+
+<br>
+
+<center>
+![](images/decision_automation_confirm.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+Upon clicking submit, the automation rules will be stored for all users to see on the 'Upload Package' tab. After uploading a new CSV of packages, you can see the 'Summary of Uploaded Package(s)' that now includes a summary of decisions made, and in each category. In the example below, you can see that 10 packages were uploaded, and 5 automatic decisions were made: four received the "low" designation and one was labeled as "high" risk. In the summary table, the risk score and decision on the right-hand side. You can also observe that a few packages weren't found because they don't exist on CRAN.
+
+<br>
+
+<center>
+![](images/decision_automation_applied.png){style="margin: 10px 0 10px 0"}
+</center>
+
+<br>
+
+Consulting the 'PACKAGE CONTROL PANEL', if we select one of the packages where a decision was made, you can see that the 'Status' has been changed to "Reviewed" and the risk decision slider has been adjusted accordingly and disabled. In addition, an 'Overall Comment' was submitted, stating that the decision made was driven via the automation rules.
+
+
+<br>
+
+<center>
+![](images/decision_automation_control_panel.png){style="margin: 10px 0 10px 0"}
+</center>
+<font size="2">[return to top](User_Roles_and_Privileges.html)</font>
+
+### Final Decision
+<font size="2">[return to top](User_Roles_and_Privileges.html)</font>
+
+### Revert Decision
+<font size="2">[return to top](User_Roles_and_Privileges.html)</font>
+
+### Add Packages
+<font size="2">[return to top](User_Roles_and_Privileges.html)</font>
+
+### Delete Packages
+<font size="2">[return to top](User_Roles_and_Privileges.html)</font>
+
+# Roles
+
+User roles package the privileges together to allow individuals users different, but not necessarily mutually exclusive, access to the application. The default configuration contains three user roles: **admin**, **lead**, **reviewer**. Here is a snippet from the `yml` file:
+
+<center>
+![](images/config_privileges.png)
+</center>
+<br>
+
+In this configuration, an **admin** user has access to the entire application, a **lead** user has access to all privileges except administrative privileges (e.g. managaing user access), and a **reviewer** only has the privilege to add packages for consideration. An organization can customize these user roles to support their needs. For more information please reference the [Deployment](Deployment.html) vignette.
+<font size="2">[return to top](User_Roles_and_Privileges.html)</font>

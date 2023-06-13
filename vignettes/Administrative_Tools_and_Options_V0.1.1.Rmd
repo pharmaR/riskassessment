@@ -355,7 +355,7 @@ next log-in.
 
 Head over to the other tab available to `ADMIN` users called `Assessment Reweighting`. Here is a high level view:
 
-![](images/assessment_reweighting_tab.png){style="position:center; width:800px"}
+![](images/assessment_reweighting_tab_V0.1.1.png){style="position:center; width:800px"}
 
 </br></br>There are three buttons on this page: <a style="color:red">**UPDATE WEIGHT**</a> on the top right, <a style="color:red">**DOWNLOAD**</a> on the middle left, and <a style="color:red">**RE-CALCULATE**</a> on the bottom left. 
 
@@ -384,7 +384,7 @@ As the name suggests, this modules allows to us view existing and change metric 
 <br>
 
 <center>
-![](images/set_update_weights.png){style="position:center; width:812px"}
+![](images/set_update_weights_V0.1.1.png){style="position:center; width:812px"}
 </center>
 
 <br>
@@ -396,7 +396,7 @@ Once the metric is selected, enter a new (numeric) weight in the "Choose new wei
 <br>
 
 <center>
-![](images/weight_updated.png){style="position:center; width:540px"}
+![](images/weight_updated_V0.1.1.png){style="position:center; width:540px"}
 </center>
 
 <br>
@@ -408,7 +408,7 @@ After you've made all final re-weighting changes, you can click the "Re-calculat
 <br>
 
 <center>
-![](images/apply_new_weights.png){style="position:center; width:481px"}
+![](images/apply_new_weights_V0.1.1.png){style="position:center; width:481px"}
 </center>
 
 <br>
