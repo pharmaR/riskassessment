@@ -11,6 +11,7 @@ articles:
   desc: Step-by-step tutorials for modules in the application
   contents:
   - Administrative_Tools_and_Options
+  - User_Roles_and_Privileges
   - Deployment
 - title: Developer Guides
   desc: Reference material for those who plan to contribute to the application's code base
