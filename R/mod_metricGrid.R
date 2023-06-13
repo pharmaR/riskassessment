@@ -24,7 +24,7 @@ metricGridServer <- function(id, metrics) {
     output$grid <- renderUI({
       req(nrow(metrics()) > 0)
       
-      col_length <- nrow(metrics())%/%3
+      col_length <- floor((nrow(metrics()) + 1)/3)
       
       fluidRow(style = "padding-right: 10px", class = "card-group",
                column(width = 4, {
