@@ -50,7 +50,7 @@ Once you have selected the <a style="color:darkblue">**Administrative Tools**<a/
 <br>
 
 <center>
-![](images/admin_tools_tabs.png)
+![](images/admin_tools_tabs_V0.1.1.png)
 </center>
 
 </br>
@@ -69,10 +69,10 @@ There is also a button at the bottom to download a copy of the current sqlite da
 
 <br>
 
-![](images/admin_mode_tables1.png){style="position:center; width:790px"}
+![](images/admin_mode_tables1_V0.1.1.png){style="position:center; width:790px"}
 <br>
 
-![](images/admin_mode_tables2.png){style="position:center; width:790px"}
+![](images/admin_mode_tables2_V0.1.1.png){style="position:center; width:790px"}
 
 <br>
 
@@ -95,7 +95,7 @@ To add a new user, click the button labelled: "Add a user".
 
 <br>
 
-![](images/add_user.png){style="float:right; width:411px; margin-left: 20px;"}
+![](images/add_user_V0.1.1.png){style="float:right; width:411px; margin-left: 20px;"}
 </br></br>
 
 A prompt will appear where you can specify a user name, as well as **optional** start & expire date for that new member. By default set to today's date (more on that later). 
@@ -148,7 +148,7 @@ Feel free to set either or both of these dates as needed, or just leave them bla
 
 <br>
 
-![](images/users_table.png){style="position:center; width:780px"}
+![](images/users_table_V0.1.1.png){style="position:center; width:780px"}
 
 <br>
 
@@ -160,7 +160,7 @@ An `Edit User` window will appear:
 <br>
 
 <center>
-![](images/edit_user_popup.png){style="position:center; width:416px"}
+![](images/edit_user_popup_V0.1.1.png){style="position:center; width:416px"}
 </center>
 
 <br>
@@ -266,7 +266,7 @@ The same confirmatory modal dialog box will appear.  Click on <a style="color:re
 
 ### Replace initial `Admin` user
 
-![](images/create_new_admin.png){style="float:right; width:410px; margin-left: 20px;"} 
+![](images/create_new_admin_V0.1.1.png){style="float:right; width:410px; margin-left: 20px;"} 
 
 
 As an administrator, it's recommended you replace the initial `ADMIN` user ID created the first time the app is launched. Note that there must always be **at least** one admin user, and **you cannot delete yourself!**  If you want to delete the initial `admin` user you will first need to create another user ID with administrative privileges, as described below.
