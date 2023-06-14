@@ -27,7 +27,7 @@ To reap all the advantages of the `riskassessment` application, an organization 
 1. Credential management for authorized users
 1. Etc
 
-To accomplish this, the app automatically creates and populates several storage solutions locally, in the app's root directory:
+To accomplish this, the app uses configuration settings to create and populate several storage solutions locally, in the app's root directory:
 
 * A `SQLite` database named `credentials.sqlite` (by default) for credential management
 * A `loggit.json`, recording rudimentary logs of actions performed in the app
@@ -44,7 +44,6 @@ Note that this article won't cover the credentials database since that's that's 
 * ShinyProxy
 
 Note! In the future, we'll consider adding utilities that would allow users to connect to an external, or remote storage method (like a database). 
-
 
 <br>
 

@@ -461,7 +461,7 @@ If there are no decision rules applied, you'll see the following risk decision c
 <br>
 
 <center>
-![](images/decision_automation_gear.png){style="margin: 10px 0 10px 0"}
+![](images/decision_automation_gear_V0.1.1.png){style="margin: 10px 0 10px 0"}
 </center>
 
 <br>
@@ -471,7 +471,7 @@ For example, if you only want to set up an automatic decision for "High" risk sc
 <br>
 
 <center>
-![](images/decision_automation_high.png){style="margin: 10px 0 10px 0"}
+![](images/decision_automation_high_V0.1.1.png){style="margin: 10px 0 10px 0"}
 </center>
 
 <br>
@@ -481,7 +481,7 @@ Similarly, if you have package risk thresholds mapped out for each decision cate
 <br>
 
 <center>
-![](images/decision_automation_allcat.png){style="margin: 10px 0 10px 0"}
+![](images/decision_automation_allcat_V0.1.1.png){style="margin: 10px 0 10px 0"}
 </center>
 
 <br>
@@ -491,7 +491,7 @@ To apply these changes, your `ADMIN` will need to select <a style="color:red">**
 <br>
 
 <center>
-![](images/decision_automation_confirm.png){style="margin: 10px 0 10px 0"}
+![](images/decision_automation_confirm_V0.1.1.png){style="margin: 10px 0 10px 0"}
 </center>
 
 <br>
@@ -501,7 +501,7 @@ Upon clicking submit, the automation rules will be stored for all users to see o
 <br>
 
 <center>
-![](images/decision_automation_applied.png){style="margin: 10px 0 10px 0"}
+![](images/decision_automation_applied_V0.1.1.png){style="margin: 10px 0 10px 0"}
 </center>
 
 <br>
@@ -512,7 +512,7 @@ Consulting the 'PACKAGE CONTROL PANEL', if we select one of the packages where a
 <br>
 
 <center>
-![](images/decision_automation_control_panel.png){style="margin: 10px 0 10px 0"}
+![](images/decision_automation_control_panel_V0.1.1.png){style="margin: 10px 0 10px 0"}
 </center>
 
 
