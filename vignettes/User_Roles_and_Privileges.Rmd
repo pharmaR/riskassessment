@@ -197,15 +197,34 @@ Consulting the 'PACKAGE CONTROL PANEL', if we select one of the packages where a
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
 ### Final Decision
+
+As the name suggests, a user with the `final_decision` privilege can make final decisions as to which category a package should be assigned. Overall comments regarding the package are also tied to this privilege.
+<center>
+![](images/final_decision_privilege.png)
+</center>
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
 ### Revert Decision
+A user with the `revert_decision` privilege can undo a final decision after it has been made. This will set the status of the package as "under review" and will re-enable overall package comments.
+<center>
+![](images/revert_decision_privilege.png)
+</center>
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
 ### Add Packages
+
+A user with the `add_package` privilege can upload packages to the database for consideration.
+<center>
+![](images/add_package_privilege.png)
+</center>
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
 ### Delete Packages
+
+A user with the `delete_package` privilege can remove packages from consideration.
+<center>
+![](images/delete_package_privilege.png)
+</center>
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
 # Roles
@@ -217,5 +236,5 @@ User roles package the privileges together to allow individuals users different,
 </center>
 <br>
 
-In this configuration, an **admin** user has access to the entire application, a **lead** user has access to all privileges except administrative privileges (e.g. managaing user access), and a **reviewer** only has the privilege to add packages for consideration. An organization can customize these user roles to support their needs. For more information please reference the [Deployment](Deployment.html) vignette.
+In this configuration, an **admin** user has access to the entire application, a **lead** user has access to all privileges except administrative privileges (e.g. managing user access), and a **reviewer** only has the privilege to add packages for consideration. An organization can customize these user roles to support their needs. For more information please reference the [Deployment](Deployment.html) vignette.
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
