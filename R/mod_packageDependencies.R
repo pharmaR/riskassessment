@@ -35,10 +35,18 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
-    metric_wts_df <- dbSelect("SELECT id, name, weight FROM metric")
-    metric_weights <- metric_wts_df$weight
-    names(metric_weights) <- metric_wts_df$name
+    metric_wts_df <- eventReactive(selected_pkg$name(), {
+      dbSelect("SELECT id, name, weight FROM metric", db_name)
+    }) 
     
+    metric_weights <- NULL
+    observeEvent(metric_wts_df(), {
+      cat("in observeEvent for metric_wts_df() \n")
+      # Get the metrics weights to be used during pkg_score.
+      metric_weights <<- isolate(metric_wts_df()$weight)
+      names(metric_weights) <<- isolate(metric_wts_df()$name)
+    })
+
     loaded2_db <- eventReactive(changes(), {
       dbSelect('SELECT name FROM package')$name
     })
