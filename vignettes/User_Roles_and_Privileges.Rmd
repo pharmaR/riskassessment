@@ -137,7 +137,7 @@ Users with the `auto_decision_adjust` privilege can edit decision automation rul
 
 <br>
 
-Clicking on the r fa("gear", fill = "red", height = "1em")` (gear) buttom will open a modal with two sections: "Select Category Colors" and "Automate Decisions by Risk Score".
+Clicking on the r fa("gear", fill = "red", height = "1em")` (gear) button will open a modal with two sections: "Select Category Colors" and "Automate Decisions by Risk Score".
 <center>
 ![](images/decision_automation_modal.png){style="margin: 10px 0 10px 0"}
 </center>
