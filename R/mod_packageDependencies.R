@@ -39,7 +39,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     metric_weights <- metric_wts_df$weight
     names(metric_weights) <- metric_wts_df$name
     
-    loaded2_db <- reactive({
+    loaded2_db <- eventReactive(changes(), {
       dbSelect('SELECT name FROM package')$name
     })
     
