@@ -62,7 +62,7 @@ Starting with Version 2.0.0 a configuration file is used to initialize the appli
 
 * **assessment_db**: A string designation the file path of the assessment SQLite database (will be created upon initialization). It has a default value of `database.sqlite`.
 * **credential_db**: A string designation the file path of the credentials SQLite database (will be created upon initialization). It has a default value of `credentials.sqlite`.
-* **loggit_json**: A string designation of the file path of the loggin JSON file (will be created upon initialization). It has a default value of `loggit.json`.
+* **loggit_json**: A string designation of the file path of the logging JSON file (will be created upon initialization). It has a default value of `loggit.json`.
 * **credentials**: A list containing the user roles and privileges to assign in the credentials database.
 * **decisions**: A list containing the decision categories, automated decision rules (if desired), and custom decision category colors (if desired).
 * **metric_weights**: A list containing the `{riskmetric}` weights to use upon initialization.
