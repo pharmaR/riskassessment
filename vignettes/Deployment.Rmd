@@ -47,6 +47,46 @@ Note! In the future, we'll consider adding utilities that would allow users to c
 
 <br>
 
+## Version Control
+
+The `{riskassessment}` is developed using `{renv}` as a form of source control. This helps maintain stability in the code base. While you can install `{riskassessment}` from Github, it is strongly recommended to use a fork of the riskassessment repository for deployment. This will serve a handful or purposes for your organization:
+
+1. You can utilize `{renv}` in your deployment to help ensure you are getting the expected behavior.
+1. You will have easier access to the configuration file allowing for a more streamlined deployment if you have several projects.
+
+<br>
+
+## The `db-config.yml` file
+
+Starting with Version 2.0.0 a configuration file is used to initialize the application on deployment. This configuration file will grow as development continues and many of the elements in the file are editable from within the application itself (provided you have the privileges to do so). Currently, `db-config.yml` contains the following elements:
+
+* **assessment_db**: A string designation the file path of the assessment SQLite database (will be created upon initialization). It has a default value of `database.sqlite`.
+* **credential_db**: A string designation the file path of the credentials SQLite database (will be created upon initialization). It has a default value of `credentials.sqlite`.
+* **loggit_json**: A string designation of the file path of the loggin JSON file (will be created upon initialization). It has a default value of `loggit.json`.
+* **credentials**: A list containing the user roles and privileges to assign in the credentials database.
+* **decisions**: A list containing the decision categories, automated decision rules (if desired), and custom decision category colors (if desired).
+* **metric_weights**: A list containing the `{riskmetric}` weights to use upon initialization.
+
+#### Credentials configuration
+
+The **credentials** element contains two sub-elements: **roles** and **privileges**. Here is a snippet of the default configuration:
+<center>
+![](images/config_credentials.png)
+</center>
+
+#### Decisions configuration
+
+The **decisions** element contains up to three sub-elements: **categories** (mandatory), **rules**, and **colors**. Here is a snipped from one of the example configurations:
+<center>
+![](images/config_decisions.png)
+</center>
+
+#### Metric weights configuration
+
+The **metric_weights** element contains the named list of weights. If a weight is not supplied, it will default to 1. The current list of weights that can be included are the following: has_vignettes, has_news, news_current, has_bug_reports_url, has_website, has_maintainer, has_source_control, export_help, bugs_status, license, covr_coverage, downloads_1yr. The default configuration sets the weight for `covr_coverage` to 0.
+
+<br>
+
 ## The `database.sqlite` file
 
 
