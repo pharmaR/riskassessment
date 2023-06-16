@@ -22,6 +22,7 @@
 * Re-score instead of re-assess when metric weights are changed (#537)
 * Implemented user roles/privileges to allow for more granular access to actions in the application (#527)
 * Add Code coverage card and add optimized card layout logic( #533)
+* Bug squash: removed ability to edit "roles" field for multiple users
 
 # riskassessment 0.1.1
 
