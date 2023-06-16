@@ -21,6 +21,7 @@
 * Allow metric weights to be initialized in the configuration file (#482)
 * Re-score instead of re-assess when metric weights are changed (#537)
 * Implemented user roles/privileges to allow for more granular access to actions in the application (#527)
+* Add Code coverage card and add optimise card layout logic( #533)
 
 # riskassessment 0.1.1
 
