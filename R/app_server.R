@@ -86,7 +86,10 @@ app_server <- function(input, output, session) {
                   shinyjs::runjs(paste0("document.getElementById('", .x, c("-start-", "-expire-", "-user-"), "label').innerHTML = ", c("'Start Date'", "'Expiration Date'", "'User Name'"), collapse = ";\n"))
                   role_lst <- list(id = .x, role_opts = role_opts)
                   # Send the roles to Javascript side for processing
-                  session$sendCustomMessage("roles", role_lst)
+                  if (!grepl("edit_mult_user", .x))
+                    session$sendCustomMessage("roles", role_lst)
+                  else
+                    shinyjs::runjs(glue::glue('$("#{.x}-role").closest("div").remove()'))
                 }, priority = -1)
               })
   
