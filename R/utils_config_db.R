@@ -143,5 +143,5 @@ check_credentials <- function(credentials_lst) {
     stop("The roles corresponding to 'admin' privileges must be specified")
   
   if (!all(privileges_roles %in% credentials_lst$roles))
-    stop(glue::glue("The following role(s) designated under privileges is(are) not present in the 'roles' configuration: {paste(privileges_roles[!privileges_roles %in% credentials_lst$roles], collapse = ', ')}"))
+    warning(glue::glue("The following role(s) designated under privileges is(are) not present in the 'roles' configuration: {paste(privileges_roles[!privileges_roles %in% credentials_lst$roles], collapse = ', ')}"))
 }

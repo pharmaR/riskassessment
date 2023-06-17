@@ -31,7 +31,7 @@ example:
       - deleter
     privileges:
       admin: admin
-      reweight: [weight_adjust, auto_decision_adjust]
+      reweighter: [weight_adjust, auto_decision_adjust]
       decider: final_decision
       reverter: [final_decision, revert_decision]
       adder: [add_package]

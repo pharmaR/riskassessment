@@ -23,6 +23,7 @@
 * Implemented user roles/privileges to allow for more granular access to actions in the application (#527)
 * Add Code coverage card and add optimized card layout logic( #533)
 * Bug squash: removed ability to edit "roles" field for multiple users
+* Pass warning instead of error when default privilege configuration gets combined with another configuration (#547)
 
 # riskassessment 0.1.1
 
