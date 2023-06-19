@@ -36,12 +36,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     ns <- session$ns
     
     metric_wts_df <- eventReactive(selected_pkg$name(), {
-      dbSelect("SELECT id, name, weight FROM metric", db_name)
+      dbSelect("SELECT id, name, weight FROM metric")
     }) 
     
     metric_weights <- NULL
     observeEvent(metric_wts_df(), {
-      cat("in observeEvent for metric_wts_df() \n")
       # Get the metrics weights to be used during pkg_score.
       metric_weights <<- isolate(metric_wts_df()$weight)
       names(metric_weights) <<- isolate(metric_wts_df()$name)
@@ -84,10 +83,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     }
     
     pkgref <- reactive({
+      req(selected_pkg$name())
       req(selected_pkg$name() != "-")
       riskmetric::pkg_ref(selected_pkg$name())
-    }) %>% 
-      bindEvent(selected_pkg$name())
+    }) 
     
     depends <- reactive({
       req(pkgref())
@@ -115,13 +114,18 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     
     tabready <- reactiveVal()
     add_pkg <- reactiveVal()
-    
-    observeEvent(parent$input$tabs, {
+    lastpkg <- reactiveVal()
+
+    observeEvent(list(parent$input$tabs, selected_pkg$name()), {
+      req(parent$input$tabs, selected_pkg$name())
+ 
       tabready(0L)
       if(parent$input$tabs == "Package Dependencies") {
         tabready(1L)
+        
+        if(length(lastpkg()) == 0) lastpkg("$$$$$") # dummy package name
+
       }
-      
     })
     
     m_id <- reactiveVal()
@@ -129,6 +133,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     observeEvent(list(selected_pkg$name(),tabready()), {
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
+      req(lastpkg() != selected_pkg$name())
+
       # this is really where the progress bar should start
       m_id(cli::cli_progress_message("About to Create Data Table...", .auto_close = FALSE))
     }, ignoreInit = TRUE)
@@ -137,6 +143,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       req(!rlang::is_empty(selected_pkg$name()))
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
+      req(lastpkg() != selected_pkg$name())
 
       pkginfo <- depends() %>%  
         as_tibble() %>% 
@@ -163,6 +170,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     observeEvent(pkg_df(), {
       cli::cli_progress_done(id = m_id())
       cli::cli_progress_done()
+      
+      lastpkg(isolate(selected_pkg$name()))
+      
     }) 
     
     # Render Output UI for Package Dependencies.
@@ -202,7 +212,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                          
                          formattable::as.datatable(
                            formattable::formattable(
-                             my_data_table(),
+                             isolate(my_data_table()),
                              list(
                                score = formattable::formatter(
                                  "span",
@@ -241,9 +251,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                        # }, cacheKeyExpr = { list(dd()) },
                        # sizePolicy = sizeGrowthRatio(width = 900, height = 900) )
                        renderPlot(width = 900, height = 900, {
-                         deepdep::plot_dependencies(dd(), type = "circular", same_level = TRUE, show_version = TRUE, reverse = TRUE, show_stamp = FALSE)
-                       }) %>% 
-                         bindEvent(dd())
+                         deepdep::plot_dependencies(isolate(dd()), type = "circular", same_level = TRUE, show_version = TRUE, reverse = TRUE, show_stamp = FALSE)
+                       }) # %>% 
+                         # bindEvent(dd())
                 )
               )
             ),
