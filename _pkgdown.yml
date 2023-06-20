@@ -10,7 +10,7 @@ articles:
   navbar: User Guides
   desc: Step-by-step tutorials for modules in the application
   contents:
-  - Administrative_Tools_and_Options
+  - Credential_Manager
   - User_Roles_and_Privileges
   - Deployment
 - title: Developer Guides

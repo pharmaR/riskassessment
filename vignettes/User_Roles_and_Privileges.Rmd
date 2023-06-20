@@ -20,6 +20,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Starting with Version 2.0.0, there has been a major overhaul on how privileges function within the application. Privileges are now tied to user roles! This allows additional flexibility to manage a user's access. While privileges are tied to the application itself, user roles can be configured. For purposes of discussion, the default configuration will be used as reference in this vignette. For more information see [Deployment](Deployment.html).
 
+<br>
+
 # Privileges
 
 Currently, there are six different privileges that can be tied to user roles:
@@ -34,7 +36,7 @@ Currently, there are six different privileges that can be tied to user roles:
 
 ### Administrator
 
-The `admin` privilege is discussed at length in [Administrative Tools and Options](Administrative_Tools_and_Options.html). Please reference that vignette for more information.
+Basically, the `admin` privilege includes all the privileges discussed below, plus the ability to manage credentials. The crendential-heavy features of the `admin` privilege are discussed at length in ["Credential Manager" guide](../articles/Credential_Manager.html). Please reference that vignette for more information.
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
@@ -122,6 +124,7 @@ that it is applying weights and updating risk scores to each package you have up
 <br>
 
 Now go to the database overview tab to confirm that the risk scores have been updated. You can also view the new weights, including the standardized weight on the `Assessment Criteria` tab.
+
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
 ### Automated Decision Adjustment
@@ -220,6 +223,7 @@ Consulting the 'PACKAGE CONTROL PANEL', if we select one of the packages where a
 <center>
 ![](images/decision_automation_control_panel.png){style="margin: 10px 0 10px 0"}
 </center>
+
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
 ### Final Decision
@@ -228,6 +232,7 @@ As the name suggests, a user with the `final_decision` privilege can make final 
 <center>
 ![](images/final_decision_privilege.png)
 </center>
+
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
 ### Revert Decision
@@ -235,6 +240,7 @@ A user with the `revert_decision` privilege can undo a final decision after it h
 <center>
 ![](images/revert_decision_privilege.png)
 </center>
+
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
 ### Add Packages
@@ -243,6 +249,7 @@ A user with the `add_package` privilege can upload packages to the database for 
 <center>
 ![](images/add_package_privilege.png)
 </center>
+
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
 ### Delete Packages
@@ -251,6 +258,7 @@ A user with the `delete_package` privilege can remove packages from consideratio
 <center>
 ![](images/delete_package_privilege.png)
 </center>
+
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
 # Roles

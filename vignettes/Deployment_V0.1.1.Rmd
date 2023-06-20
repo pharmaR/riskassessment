@@ -34,7 +34,7 @@ To accomplish this, the app automatically creates and populates several storage 
 * A `SQLite` database named `database.sqlite` (by default) for storing all pkg info, metric info, and comments/ decisions
 * A `auto_decisions.json` file, that initiates and keeps track of score-based thresholds for decision automation
 
-Note that this article won't cover the credentials database since that's that's been covered (at length) in the ["Administrative Tools and Options" guide](../articles/Administrative_Tools_and_Options.html). As you might expect, some deployment environments come with limitations that are not amicable to storage method defined above! Spoiler alert - shinyapps.io is one of them. This article will provide more details about these crucial storage objects and share a run down of the following deployment options with helpful tips:
+Note that this article won't cover the credentials database since that's that's been covered (at length) in the ["Administrative Tools and Options" guide](../articles/Administrative_Tools_and_Options_V0.1.1.html). As you might expect, some deployment environments come with limitations that are not amicable to storage method defined above! Spoiler alert - shinyapps.io is one of them. This article will provide more details about these crucial storage objects and share a run down of the following deployment options with helpful tips:
 
 * shinyapps.io
 
