@@ -244,16 +244,18 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                            DT::formatStyle(names(my_data_table()), textAlign = 'center')
                        })
                 ),
-                column(width = 4, 
-                       style="position:relative; top: 0px; right 0px; left: 250px;",
+                column(width = 8, 
+                       style="position:relative; top: 0px; right: 0px; left: 100px; width: 750px; height: 750px",
                        # renderCachedPlot({
                        #   deepdep::plot_dependencies(dd(), type = "circular", same_level = TRUE, show_version = TRUE, reverse = TRUE, show_stamp = FALSE)
-                       # }, cacheKeyExpr = { list(dd()) },
-                       # sizePolicy = sizeGrowthRatio(width = 900, height = 900) )
-                       renderPlot(width = 900, height = 900, {
+                       # }, 
+                       # cacheKeyExpr = { list(selected_pkg$name()) },
+                       # cache = cachem::cache_mem(),
+                       # sizePolicy = sizeGrowthRatio(width = 1250, height = 1250, growthRate = 1)
+                       # )
+                       renderPlot(width = 750, height = 750, {
                          deepdep::plot_dependencies(isolate(dd()), type = "circular", same_level = TRUE, show_version = TRUE, reverse = TRUE, show_stamp = FALSE)
-                       }) # %>% 
-                         # bindEvent(dd())
+                       })
                 )
               )
             ),
