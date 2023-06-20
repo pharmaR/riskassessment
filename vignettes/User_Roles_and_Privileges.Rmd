@@ -18,25 +18,32 @@ knitr::opts_chunk$set(echo = TRUE)
 
 </br></br></br>
 
-Starting with Version 2.0.0, there has been a major overhaul on how privileges function within the application. Privileges are now tied to user roles! This allows additional flexibility to manage a user's access. While privileges are tied to the application itself, user roles can be configured. For purposes of discussion, the default configuration will be used as reference in this vignette. For more information see [Deployment](Deployment.html).
+Starting with version 1.0.0, there has been a major overhaul on how privileges function within the application. Privileges are now tied to a user's role, and the person responsible for deploying the application can create custom roles, compiled with any combination of privileges! These user-defined roles allows the most flexibility to manage a user's access & ability in the app. For purposes of discussion, the default configuration will be used as reference. For more information see the ["Deployment" guide](../articles/Deployment.html).
 
+Below is a snippet from the `inst/db-config.yml` file where the default roles are defined with privileges we'll discuss in this article:
+
+<br>
+
+<center>
+![](images/config_privileges.png)
+</center>
 <br>
 
 # Privileges
 
-Currently, there are six different privileges that can be tied to user roles:
+At the time this vignette was authored, there are six different privileges that can be assigned to a role:
 
-* [Administrator](User_Roles_and_Privileges.html#administrator): manages the users of the application
-* [Weight Adjustment](User_Roles_and_Privileges.html#weight-adjustment): manages the weights applied to the `{riskmetric}` risk calculation
-* [Automated Decision Adjustment](User_Roles_and_Privileges.html#automated-decision-adjustment): manages the decision automation rules and decision category display colors
-* [Final Decision](User_Roles_and_Privileges.html#final-decision): makes final decisions regarding packages
-* [Revert Decision](User_Roles_and_Privileges.html#revert-decision): can undo a final decisions made regarding packages
-* [Add Packages](User_Roles_and_Privileges.html#add-packages): adds packages for consideration
-* [Delete Packages](User_Roles_and_Privileges.html#delete-packages): can remove packages from consideration
+* [Administrator](User_Roles_and_Privileges.html#administrator) (`admin`): manages the users of the application
+* [Weight Adjustment](User_Roles_and_Privileges.html#weight-adjustment) (`weight_adjust`): manages the weights applied to the `{riskmetric}` risk calculation
+* [Automated Decision Adjustment](User_Roles_and_Privileges.html#automated-decision-adjustment) (`auto_decision_adjust`): manages the decision automation rules and decision category display colors
+* [Final Decision](User_Roles_and_Privileges.html#final-decision) (`final_decision`): makes final decisions regarding packages
+* [Revert Decision](User_Roles_and_Privileges.html#revert-decision) (`revert_decision`): can undo a final decisions made regarding packages
+* [Add Packages](User_Roles_and_Privileges.html#add-packages) (`add_package`): adds packages for consideration
+* [Delete Packages](User_Roles_and_Privileges.html#delete-packages) (`delete_package`): can remove packages from consideration
 
 ### Administrator
 
-Basically, the `admin` privilege includes all the privileges discussed below, plus the ability to manage credentials. The crendential-heavy features of the `admin` privilege are discussed at length in ["Credential Manager" guide](../articles/Credential_Manager.html). Please reference that vignette for more information.
+Basically, the `admin` privilege includes all the privileges discussed below, plus the ability to manage credentials. The credential-heavy features of the `admin` privilege are discussed at length in ["Credential Manager" guide](../articles/Credential_Manager.html). Please reference that vignette for more information.
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
@@ -102,7 +109,7 @@ After you've made all final re-weighting changes, you can click the "Update" but
 
 <br>
 
-</br></br>Once you click on <a style="color:red">**UPDATE**</a> you will get a confirmation modal, reminding you that "updating the risk metrics cannot be reverted", and strongly recommending you download a copy of the current database first before clicking on <a style="color:red">**SUBMIT**</a>. The modal also details all the actions that will take effect in the app if you submit these changes. Note that starting with Version 2.0.0, this will be a re-calculation on the stored `{riskmetric}` assessments, not a re-assessment.
+</br></br>Once you click on <a style="color:red">**UPDATE**</a> you will get a confirmation modal, reminding you that "updating the risk metrics cannot be reverted", and strongly recommending you download a copy of the current database first before clicking on <a style="color:red">**SUBMIT**</a>. The modal also details all the actions that will take effect in the app if you submit these changes. Note that starting with Version 1.0.0, this will be a re-calculation on the stored `{riskmetric}` assessments, not a re-assessment.
 
 <br>
 
@@ -140,7 +147,7 @@ Users with the `auto_decision_adjust` privilege can edit decision automation rul
 
 <br>
 
-Clicking on the r fa("gear", fill = "red", height = "1em")` (gear) button will open a modal with two sections: "Select Category Colors" and "Automate Decisions by Risk Score".
+Clicking on the `r fa("gear", fill = "red", height = "1em")` (gear) button will open a modal with two sections: "Select Category Colors" and "Automate Decisions by Risk Score".
 <center>
 ![](images/decision_automation_modal.png){style="margin: 10px 0 10px 0"}
 </center>
@@ -165,7 +172,7 @@ The modal contains a summary of all decision categories with their respective ne
 
 #### Automate Decision by Risk Score
 
-If there are no decision rules applied, you'll see the following risk decision categories next to empty check boxes. When setting up these rules for your organization, you can choose as much or as little automation as needed. 
+If there are no decision rules applied, you'll see the following decision categories adjacent empty check boxes. When setting up these rules for your organization, you can choose as much or as little automation as desired. 
 
 <br>
 
@@ -175,7 +182,7 @@ If there are no decision rules applied, you'll see the following risk decision c
 
 <br>
 
-For example, if you only want to set up an automatic decision for "High Risk" scores, you only need to select that check box and make your risk score designation / cut off value. Every time a package is uploaded with a risk score > 0.67, it will automatically receive the decision label: "High Risk" which saves your review team time and mental capacity when reviewing large groups of packages.
+For example, if you want to set up an automatic decision for "High Risk" scores, you only need to select that check box and make your risk score designation / cut off value. From then on, every time a package is uploaded with a risk score > 0.67, it will automatically receive the decision label: "High Risk" which saves your review team time and mental capacity when reviewing large groups of packages.
 
 <br>
 
@@ -205,7 +212,7 @@ To apply these changes, click <a style="color:red">**APPLY DECISION RULES**</a>.
 
 <br>
 
-Upon clicking submit, the automation rules will be stored for all users to see on the 'Upload Package' tab. After uploading a new CSV of packages, you can see the 'Summary of Uploaded Package(s)' that now includes a summary of decisions made, and in each category. In the example below, you can see that 10 packages were uploaded, and 7 automatic decisions were made: six received the "low risk" designation and one was labeled as "high risk". In the summary table, you can note the risk score and decision on the right-hand side. You can also observe that a few packages weren't found because they don't exist on CRAN.
+Upon clicking submit, the automation rules will be stored for all users to see on the 'Upload Package' tab. After uploading a new set of packages, you can see the 'Summary of Uploaded Package(s)' now includes a summary of decisions made and each category it was automatically assigned. In the example below, you can see that 10 packages were uploaded, and 7 automatic decisions were made: six received the "low risk" designation and one was labeled as "high risk". In the summary table, you can note the risk score and decision on the right-hand side. You can also observe that a few packages weren't found because they don't exist on CRAN.
 
 <br>
 
@@ -215,7 +222,7 @@ Upon clicking submit, the automation rules will be stored for all users to see o
 
 <br>
 
-Consulting the 'PACKAGE CONTROL PANEL', if we select one of the packages where a decision was made, you can see that the 'Status' has been changed to "Reviewed" and the risk decision slider has been adjusted accordingly and disabled. In addition, an 'Overall Comment' was submitted, stating that the decision made was driven via the automation rules.
+In the 'PACKAGE CONTROL PANEL', if we select one of the packages where a decision was made, you will see that the 'Status' has been changed to "Reviewed" and the risk decision slider has been adjusted accordingly and disabled. In addition, an 'Overall Comment' was submitted, stating that the decision made was driven via the automation rules.
 
 
 <br>
@@ -226,50 +233,106 @@ Consulting the 'PACKAGE CONTROL PANEL', if we select one of the packages where a
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
+
+
+
+
+
+
 ### Final Decision
 
 As the name suggests, a user with the `final_decision` privilege can make final decisions as to which category a package should be assigned. Overall comments regarding the package are also tied to this privilege.
+
+<br>
+
 <center>
 ![](images/final_decision_privilege.png)
 </center>
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
+
+
+
+
+
+
 ### Revert Decision
-A user with the `revert_decision` privilege can undo a final decision after it has been made. This will set the status of the package as "under review" and will re-enable overall package comments.
+
+A user with the `revert_decision` privilege can undo a final decision after it has been made. Doing so will set the package's status to "under review" and will re-enable "overall comments" regarding the decision.
+
 <center>
 ![](images/revert_decision_privilege.png)
 </center>
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
+
+
+
+
+
+
 ### Add Packages
 
 A user with the `add_package` privilege can upload packages to the database for consideration.
+
 <center>
 ![](images/add_package_privilege.png)
 </center>
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
+
+
+
+
 ### Delete Packages
 
-A user with the `delete_package` privilege can remove packages from consideration.
+A user with the `delete_package` privilege can remove packages from consideration (the database).
+
 <center>
 ![](images/delete_package_privilege.png)
 </center>
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
+
+
+<br>
+
+<br>
+
 # Roles
 
-User roles package the privileges together to allow individual users different, but not necessarily mutually exclusive, access to the application. The default configuration contains three user roles: **admin**, **lead**, **reviewer**. Here is a snippet from the `yml` file:
+User roles group select privileges together providing users with different, but not necessarily mutually exclusive, access to the application. The default configuration contains three user roles: **admin**, **lead**, **reviewer**. Here is a snippet from the `inst/db-config.yml` file where these roles are defined:
+
+<br>
 
 <center>
 ![](images/config_privileges.png)
 </center>
 <br>
 
-In this configuration, an **admin** user has access to the entire application, a **lead** user has access to all privileges except administrative ones (e.g. managing user access), and a **reviewer** only has the privilege to add packages for consideration. An organization can customize these user roles to support their needs. For more information please reference the [Deployment](Deployment.html) vignette.
+In this configuration, an **admin** user has access to the entire application, a **lead** user has access to all privileges except administrative ones (e.g. managing user credentials), and a **reviewer** only has the privilege to add packages for consideration. An organization can customize these user roles to support their needs. For more information please reference the ["Deployment" guide](../articles/Deployment.html).
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+
+
