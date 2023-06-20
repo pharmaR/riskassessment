@@ -6,6 +6,7 @@ Chromote
 Conf
 Deployment’
 Devs
+Github
 GxP
 Imran
 JSON
@@ -34,6 +35,8 @@ biopharmaceutical
 bs
 bslib's
 cmd
+config
+covr
 dev
 docx
 dropdown
@@ -45,6 +48,7 @@ getTimeStamp
 github
 golem
 gui
+hexidecimal
 ing
 introJS
 introjs
