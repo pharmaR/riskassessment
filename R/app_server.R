@@ -10,10 +10,14 @@
 app_server <- function(input, output, session) {
   # Collect user info.
   user <- reactiveValues()
-  user$metrics_reweighted <- 0
   credential_config <- get_golem_config("credentials", file = app_sys("db-config.yml"))
-  role_opts <- list(admin = as.list(credential_config$privileges$admin), 
-                    nonadmin = as.list(setdiff(credential_config$roles, credential_config$privileges$admin)))
+  role_opts <- list(admin = purrr::imap(credential_config$privileges, ~ if ("admin" %in% .x) .y) %>% unlist(use.names = FALSE) %>% as.list())
+  role_opts[["nonadmin"]] <- as.list(setdiff(credential_config$roles, unlist(role_opts$admin)))
+  approved_roles <- credential_config[["privileges"]]
+  trigger_events <- reactiveValues(
+    reset_pkg_upload = 0,
+    reset_sidebar = 0
+  )
   
   
   # this skips authentication if the application is running in test mode
@@ -22,7 +26,7 @@ app_server <- function(input, output, session) {
     res_auth <- reactiveValues()
     res_auth[["admin"]] <- !isTRUE(golem::get_golem_options('nonadmin'))
     res_auth[["user"]] <- "test_user"
-    
+    res_auth[["role"]] <- ifelse(!isTRUE(golem::get_golem_options('nonadmin')), "admin", "reviewer")
   } else {
     # check_credentials directly on sqlite db
     res_auth <- shinymanager::secure_server(
@@ -35,7 +39,8 @@ app_server <- function(input, output, session) {
 
   
   observeEvent(res_auth$user, {
-    if (res_auth$admin == TRUE) {
+    req(res_auth$admin == TRUE | "weight_adjust" %in% approved_roles[[res_auth$role]])
+    
       appendTab("apptabs",
                 tabPanel(
                   title = "Administrative Tools",
@@ -45,22 +50,27 @@ app_server <- function(input, output, session) {
                   br(),
                   tabsetPanel(
                     id = "credentials",
-                    tabPanel(
-                      id = "credentials_id",
-                      title = "Credential Manager",
-                      shinymanager:::admin_ui("admin")
-                    ),
-                    tabPanel(
-                      id = "reweight_id",
-                      title = "Assessment Reweighting",
-                      reweightViewUI("reweightInfo")
-                    )
+                    if (res_auth$admin)
+                      tabPanel(
+                        id = "credentials_id",
+                        title = "Credential Manager",
+                        shinymanager:::admin_ui("admin")
+                      ),
+                    if (res_auth$admin)
+                      tabPanel(
+                        id = "privilege_id",
+                        title = "Roles & Privileges",
+                        mod_user_roles_ui("userRoles")
+                      ),
+                    if ("weight_adjust" %in% approved_roles[[res_auth$role]])
+                      tabPanel(
+                        id = "reweight_id",
+                        title = "Assessment Reweighting",
+                        reweightViewUI("reweightInfo")
+                      )
                   ),
                   tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';"))
                 ))
-    } else {
-      removeTab(inputId = "apptabs", target = "admin-mode-tab")
-    }
   }, priority = 1)
   
   purrr::walk(paste("admin", c("edited_user", "edited_mult_user", "delete_selected_users", "delete_user", "changed_password", "changed_password_users"), sep = "-"),
@@ -76,7 +86,10 @@ app_server <- function(input, output, session) {
                   shinyjs::runjs(paste0("document.getElementById('", .x, c("-start-", "-expire-", "-user-"), "label').innerHTML = ", c("'Start Date'", "'Expiration Date'", "'User Name'"), collapse = ";\n"))
                   role_lst <- list(id = .x, role_opts = role_opts)
                   # Send the roles to Javascript side for processing
-                  session$sendCustomMessage("roles", role_lst)
+                  if (!grepl("edit_mult_user", .x))
+                    session$sendCustomMessage("roles", role_lst)
+                  else
+                    shinyjs::runjs(glue::glue('$("#{.x}-role").closest("div").remove()'))
                 }, priority = -1)
               })
   
@@ -116,19 +129,22 @@ app_server <- function(input, output, session) {
       loggit::loggit("INFO", glue::glue("User {res_auth$user} signed on as admin"))
     
     user$name <- trimws(res_auth$user)
-    user$role <- trimws(ifelse(res_auth$admin == TRUE, "admin", "user"))
+    user$admin <- isTRUE(res_auth$admin) || res_auth$admin == "TRUE"
+    user$role <- trimws(res_auth$role)
   })
   
+  mod_user_roles_server("userRoles", credential_config)
+  
   # Load server of the reweightView module.
-  metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules)
+  metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules, approved_roles, trigger_events)
   
   # Load server of the uploadPackage module.
-  auto_decision <- mod_decision_automation_server("automate", user)
-  uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules)
+  auto_decision <- mod_decision_automation_server("automate", user, approved_roles)
+  uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules, approved_roles, trigger_events)
   
   # Load server of the sidebar module.
-  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs)
-  
+  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs, approved_roles, trigger_events)
+
   changes <- reactiveVal(0)
   observe({
     changes(changes() + 1)

@@ -75,6 +75,7 @@ test_that("Sample upload file can be shown and downloaded", {
 
   # set up new app driver object
   app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
+  app$wait_for_idle()
 
   # click to show example upload table
   app$click(selector = "#upload_package-upload_format")

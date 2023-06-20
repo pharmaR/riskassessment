@@ -16,6 +16,14 @@
 * Utilized `glue::glue_sql()` inside of update and select functions (#520)
 * Enhanced the "Database View" tab to include the decision category table
 * Allowed the user to set a custom color for decision categories (#465)
+* Add a check to give message about different versions only when package name is given from CSV file (#515)
+* Updated the version of `{riskmetric}` used to V0.2.2
+* Allow metric weights to be initialized in the configuration file (#482)
+* Re-score instead of re-assess when metric weights are changed (#537)
+* Implemented user roles/privileges to allow for more granular access to actions in the application (#527)
+* Add Code coverage card and add optimized card layout logic( #533)
+* Bug squash: removed ability to edit "roles" field for multiple users
+* Pass warning instead of error when default privilege configuration gets combined with another configuration (#547)* Added Package Dependencies tab, and two new cards to Maintenance Metrics (#261)
 * Added Package Dependencies tab, and two new cards to Maintenance Metrics (#261)
 
 # riskassessment 0.1.1

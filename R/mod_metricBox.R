@@ -34,13 +34,13 @@ metricBoxServer <- function(id, title, desc, value,
     
     # Render metric.
     output$metricBox_ui <- renderUI({
-      req(title, desc, value)
+      req(title, desc)
       
       # A str length of 41 chars tends to wrap to two rows and look quite nice
       val_max_nchar <- 31
-      is_true <- !(value %in% c(0, "pkg_metric_error", "NA", "", 'FALSE'))
+      is_true <- !(value %in% c(0, "pkg_metric_error", "NA", "", 'FALSE',NA))
       
-      if(value %in% c("pkg_metric_error", "NA"))
+      if(value %in% c("pkg_metric_error", "NA",NA))
         value <- "Not found"
       else if(is_perc)
         value <- glue::glue('{round(as.numeric(value), 1)}%')

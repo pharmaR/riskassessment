@@ -18,18 +18,30 @@ set_colors <- function(decision_categories) {
 }
 
 configure_db <- function(dbname, config) {
-  if (missing(config)) dec_config <- get_golem_config('decisions', file = app_sys("db-config.yml"))
+  if (missing(config)) config <- get_golem_config(NULL, file = app_sys("db-config.yml"))
+
+  check_decision_config(config[["decisions"]])
   
-  check_decision_config(dec_config)
+  # Set decision categories
+  purrr::walk(config[["decisions"]]$categories, ~ dbUpdate("INSERT INTO decision_categories (decision) VALUES ({.x})", dbname))
   
-  dbUpdate(glue::glue("INSERT INTO decision_categories (decision) VALUES {paste0('(\\'', dec_config$categories, '\\')', collapse = ', ')}"), dbname)
-  if (!is.null(dec_config$rules)) 
-    purrr::iwalk(dec_config$rules, ~ dbUpdate("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = {.y}", dbname))
+  # Set decision rules
+  if (!is.null(config[["decisions"]]$rules)) 
+    purrr::iwalk(config[["decisions"]]$rules, ~ dbUpdate("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = {.y}", dbname))
   else
     message("No decision rules applied from configuration")
-  col_lst <- set_colors(dec_config$categories)
-  purrr::iwalk(dec_config$colors, ~ {col_lst[.y] <<- .x})
+  
+  # Set decision category colors
+  col_lst <- set_colors(config[["decisions"]]$categories)
+  purrr::iwalk(config[["decisions"]]$colors, ~ {col_lst[.y] <<- .x})
   purrr::iwalk(col_lst, ~ dbUpdate("UPDATE decision_categories SET color = {.x} WHERE decision = {.y}", dbname))
+  
+  if (!is.null(config[["metric_weights"]]))
+    check_metric_weights(config[["metric_weights"]])
+  
+  # Set metric weights
+  if (!is.null(config[["metric_weights"]]))
+    purrr::iwalk(config[["metric_weights"]], ~ if (!is.null(.x)) dbUpdate("UPDATE metric SET weight = {.x} WHERE name = {.y}", dbname))
 }
 
 check_decision_config <- function(dec_config) {
@@ -89,6 +101,25 @@ check_dec_rules <- function(decision_categories, decision_rules) {
     stop("Rules for the last decision category must have an upper bound of 1")
 }
 
+#' Check metric weights
+#' 
+#' Checks that the metric weights supplied by the configuration file are valid
+#' 
+#' @param metric_weights A vector containing the metric weights
+#' 
+#' @noRd
+check_metric_weights <- function(metric_weights) {
+  allowed_lst <- c('has_vignettes', 'has_news', 'news_current', 'has_bug_reports_url', 'has_website', 'has_maintainer', 'has_source_control', 'export_help', 'bugs_status', 'license', 'covr_coverage', 'downloads_1yr')
+  if (!all(names(metric_weights) %in% allowed_lst))
+    stop(glue::glue("The metric weights must be a subset of the following: {paste(allowed_lst, collapse = ', ')}"))
+  
+  if (length(names(metric_weights)) != length(unique(names(metric_weights))))
+    stop("The metric weights must be unique")
+  
+  if (!all(purrr::map_lgl(metric_weights, ~ is.null(.x) || is.numeric(.x) && length(.x) == 1 && .x >= 0)))
+    stop("The weights must be single, non-negative, numeric values")
+}
+
 #' Check credential configuration file
 #' 
 #' Checks that the credentials design supplied by the configuration file are valid
@@ -106,10 +137,11 @@ check_credentials <- function(credentials_lst) {
   if(length(credentials_lst$roles) != length(unique(credentials_lst$roles)))
     stop("The roles must be unique")
   
-  if (is.null(credentials_lst$privileges[["admin"]]))
+  privileges_roles <- names(credentials_lst$privileges)
+  privileges <- unique(unlist(credentials_lst$privileges, use.names = FALSE))
+  if (!"admin" %in% privileges)
     stop("The roles corresponding to 'admin' privileges must be specified")
   
-  privileges_roles <- unique(unlist(credentials_lst$privileges, use.names = FALSE))
   if (!all(privileges_roles %in% credentials_lst$roles))
-    stop(glue::glue("The following role(s) designated under privileges is(are) not present in the 'roles' configuration: {paste(privileges_roles[!privileges_roles %in% credentials_lst$roles], collapse = ', ')}"))
+    warning(glue::glue("The following role(s) designated under privileges is(are) not present in the 'roles' configuration: {paste(privileges_roles[!privileges_roles %in% credentials_lst$roles], collapse = ', ')}"))
 }

@@ -11,7 +11,12 @@ VALUES
 ('export_help',         'Documentation',     '% of documented objects',          0, 1, 'maintenance', 1),
 ('bugs_status',         'Bugs Closure Rate', '% of the last 30 bugs closed',     0, 1, 'maintenance', 1),
 ('license',             'License',           "Package's license",                0, 0, 'maintenance', 1),
+<<<<<<< HEAD
 ('dependencies',        'Dependencies',      'Number of Package Dependencies',   0, 0, 'maintenance', 1),  
 ('reverse_dependencies','Reverse Dependencies', 'Number of Reverse Dependencies', 0, 0, 'maintenance', 1),
 ('covr_coverage',       'Test Coverage',     'Percentage of objects tested',     0, 1, 'test', 0),
 ('downloads_1yr',       'Downloads',         'Number of package downloads in the last year', 0, 0, 'community', 1);
+=======
+('covr_coverage',       'Test Coverage',     '% of objects tested',     1, 1, 'maintenance', 0),
+('downloads_1yr',       'Downloads',         'Number of package downloads in the last year', 0, 0, 'community', 1);
+>>>>>>> dev

@@ -8,19 +8,34 @@ default:
       - lead
       - reviewer
     privileges:
-      admin: admin
-      reweighting: lead
-      final_decision: lead
-      revert_decision: lead
-      add_package: [lead, reviewer]
-      delete_package: lead
+      admin: [admin, weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package]
+      lead: [weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package]
+      reviewer: add_package
   decisions:
     categories:
       - Low Risk
       - Medium Risk
       - High Risk
+  metric_weights:
+    covr_coverage: 0
 example:
   assessment_db: database_ex.sqlite
+  credential_db: credentials_ex.sqlite
+  credentials:
+    roles:
+      - admin
+      - reweighter
+      - decider
+      - reverter
+      - adder
+      - deleter
+    privileges:
+      admin: admin
+      reweighter: [weight_adjust, auto_decision_adjust]
+      decider: final_decision
+      reverter: [final_decision, revert_decision]
+      adder: [add_package]
+      deleter: [add_package, delete_package]
   decisions:
     categories:
       - Insignificant Risk
@@ -37,8 +52,12 @@ example:
         - 1
     colors:
       Moderate Risk: !expr grDevices::rgb(52, 235, 229, maxColorValue = 255)
+  metric_weights:
+    covr_coverage:
+    has_vignettes: 2
 example2:
   assessment_db: database_ex2.sqlite
+  credential_db: credentials_ex2.sqlite
   decisions:
     categories:
       - GxP Compliant

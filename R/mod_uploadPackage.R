@@ -21,11 +21,12 @@ uploadPackageUI <- function(id) {
         div(
           id = "type-package-group",
           style = "display: flex;",
-          selectizeInput(NS(id, "pkg_lst"), "Type Package Name(s)", choices = NULL, multiple = TRUE, 
-                         options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
-                                        onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_cran"), '", "load", {priority: "event"})}')))),
-          actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
-                       style = 'height: calc(1.5em + 1.5rem + 2px)'),
+          shinyjs::disabled(
+            selectizeInput(NS(id, "pkg_lst"), "Type Package Name(s)", choices = NULL, multiple = TRUE, 
+                           options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
+                                          onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_cran"), '", "load", {priority: "event"})}')))),
+            actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
+                         style = 'height: calc(1.5em + 1.5rem + 2px)')),
           tags$script(I(glue::glue('$(window).on("load resize", function() {{
                                              $("#{NS(id, "add_pkgs")}").css("margin-top", $("#{NS(id, "pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
                                              }})
@@ -33,7 +34,6 @@ uploadPackageUI <- function(id) {
                                              $("#{NS(id, "add_pkgs")}").css("margin-top", $("#{NS(id, "pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
                                              }})')))
         ),
-        
         uiOutput(NS(id, "rem_pkg_div"))
       ),
       column(width = 1),
@@ -41,18 +41,20 @@ uploadPackageUI <- function(id) {
       column(
         width = 4,
         div(id = "upload-file-grp",
-            fileInput(
-              inputId = NS(id, "uploaded_file"),
-              label = "Or Upload a CSV file",
-              accept = ".csv",
-              placeholder = "No file selected"
-            )
+            shinyjs::disabled(
+              fileInput(
+                inputId = NS(id, "uploaded_file"),
+                label = "Or Upload a CSV file",
+                accept = ".csv",
+                placeholder = "No file selected"
+              )),
+            tags$script(glue::glue('$("#{NS(id, \'uploaded_file\')}").parents("span").addClass("disabled")'))
         ),
-        actionLink(NS(id, "upload_format"), "View Sample Dataset")
+        uiOutput(NS(id, "upload_format_lnk"))
       ),
-     ),
+    ),
     fluidRow(mod_decision_automation_ui("automate")),
-
+    
     # Display the summary information of the uploaded csv.
     fluidRow(column(width = 12, htmlOutput(NS(id, "upload_summary_text")))),
     
@@ -67,6 +69,7 @@ uploadPackageUI <- function(id) {
 #' @param id a module id
 #' @param user a username
 #' @param auto_list a list of decision automation rules
+#' @param trigger_events a reactive values object to trigger actions here or elsewhere
 #' 
 #' @importFrom riskmetric pkg_ref
 #' @importFrom rintrojs introjs
@@ -75,20 +78,37 @@ uploadPackageUI <- function(id) {
 #' @importFrom cli cli_progress_message cli_progress_bar cli_progress_update
 #' @keywords internal
 #' 
-uploadPackageServer <- function(id, user, auto_list) {
+uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_events) {
+  if (missing(approved_roles))
+    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
   moduleServer(id, function(input, output, session) {
+    
+    observeEvent(user$role, {
+      req("add_package" %in% approved_roles[[user$role]])
+      
+      shinyjs::enable("pkg_lst")
+      shinyjs::enable("add_pkgs")
+      shinyjs::enable("uploaded_file")
+      shinyjs::runjs(glue::glue('$("#{NS(id, \'uploaded_file\')}").parents("span").removeClass("disabled")'))
+    })
+
+    output$upload_format_lnk <- renderUI({
+      req("add_package" %in% approved_roles[[user$role]])
+      
+      actionLink(NS(id, "upload_format"), "View Sample Dataset")
+    })
     
     # Determine which guide to use for IntroJS.
     upload_pkg_txt <- reactive({
       req(uploaded_pkgs())
       
-      if(user$role == "admin") {
-        upload_pkg <- bind_rows(upload_pkg, upload_adm)
-      }
-      if(nrow(uploaded_pkgs()) > 0) 
-        upload_pkg_complete <- bind_rows(upload_pkg, upload_pkg_comp)
-      else 
-        upload_pkg
+      dplyr::bind_rows(
+        upload_pkg,
+        if ("add_package" %in% approved_roles[[user$role]]) upload_pkg_add,
+        if ("delete_package" %in% approved_roles[[user$role]]) upload_pkg_delete,
+        if ("auto_decision_adjust" %in% approved_roles[[user$role]]) upload_pkg_dec_adj,
+        if (nrow(uploaded_pkgs()) > 0) upload_pkg_comp
+      )
     })
 
     cran_pkgs <- reactiveVal()
@@ -116,8 +136,6 @@ uploadPackageServer <- function(id, user, auto_list) {
     })
     
     observeEvent(pkgs_have(), {
-      req(pkgs_have())
-      req(user$role == "admin")
       updateSelectizeInput(session, "rem_pkg_lst", choices = pkgs_have(), server = TRUE)
     })
     
@@ -126,9 +144,13 @@ uploadPackageServer <- function(id, user, auto_list) {
     introJSServer("introJS", text = upload_pkg_txt, user)
 
     uploaded_pkgs00 <- reactiveVal()
+    
+    observeEvent(trigger_events$reset_pkg_upload, {
+      uploaded_pkgs(data.frame())
+    })
 
     observeEvent(user$role, {
-    req(user$role == "admin")  
+    req("delete_package" %in% approved_roles[[user$role]])
     output$rem_pkg_div <- renderUI({
       session$onFlushed(function() {
         shinyjs::runjs(glue::glue('$("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))'))
@@ -196,9 +218,8 @@ uploadPackageServer <- function(id, user, auto_list) {
     })
     
     observeEvent(input$rem_pkg_btn, {
-      req(input$rem_pkg_lst)
-      req(user$role == "admin")
-
+      req("delete_package" %in% approved_roles[[user$role]]) 
+      
       np <- length(input$rem_pkg_lst)
       uploaded_packages <-
         dplyr::tibble(
@@ -356,10 +377,18 @@ uploadPackageServer <- function(id, user, auto_list) {
             }
 
             ref_ver <- as.character(ref$version)
-
-            if(user_ver == ref_ver) ver_msg <- ref_ver
-            else ver_msg <- glue::glue("{ref_ver}")
-
+            
+            # The message about different versions is only given if the package 
+            # name is uploaded from CSV file and not if it is selected from drop-down.
+            if(isTruthy(input$load_cran)) {
+              ver_msg <- ref_ver
+            } else {
+              if(user_ver == ref_ver) ver_msg <- ref_ver
+              else ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
+            }
+            
+            as.character(ref$version)
+			
             deets <- glue::glue("{uploaded_packages$package[i]} {ver_msg}")
             uploaded_packages$version[i] <- ref_ver
             

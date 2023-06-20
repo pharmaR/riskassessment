@@ -49,18 +49,18 @@ test_that("decision_automation works", {
   
   # Check "Insignificant Risk" input
   expected <- 0.1
-  actual <- app$get_value(input = "automate-insignificant_risk_attr")
+  actual <- app$get_value(input = "automate-cat_insignificant_risk_attr")
   expect_equal(actual, expected)
   
   # Check "Severe Risk" input
   expected <- 0.7
-  actual <- app$get_value(input = "automate-severe_risk_attr")
+  actual <- app$get_value(input = "automate-cat_severe_risk_attr")
   expect_equal(actual, expected)
   
   
   # Set inputs for new decision rules
   app$set_inputs(`automate-auto_include` = c("Insignificant Risk", "Moderate Risk"),
-                 `automate-moderate_risk_attr` = c(.3, .45))
+                 `automate-cat_moderate_risk_attr` = c(.3, .45))
   # Submit new decision rules
   app$click(input = "automate-submit_auto")
   app$wait_for_idle()
@@ -86,7 +86,7 @@ test_that("decision_automation works", {
   
   # Check that sliders are working correctly
   app$set_inputs(`automate-auto_include` = c("Insignificant Risk", "Moderate Risk", "Severe Risk"),
-                 `automate-severe_risk_attr` = .4)
+                 `automate-cat_severe_risk_attr` = .4)
   app$wait_for_idle()
   
   # Check that Moderate Risk got adjusted
