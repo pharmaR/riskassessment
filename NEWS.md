@@ -1,4 +1,4 @@
-# riskassessment (development version)
+# riskassessment 1.0.0
 * Fix for Chromote error provided by Winston Chang
 * Implemented usage of database configuration file instead of passing arguments in `run_app()` (#459)
 * Added decision categories as an option in the database configuration file (#459)
