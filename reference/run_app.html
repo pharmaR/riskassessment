@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">riskassessment</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,7 +28,8 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <h6 class="dropdown-header" data-toc-skip>User Guides</h6>
-    <a class="dropdown-item" href="../articles/Administrative_Tools_and_Options.html">Administrative Tools and Options</a>
+    <a class="dropdown-item" href="../articles/Credential_Manager.html">Credential Manager</a>
+    <a class="dropdown-item" href="../articles/User_Roles_and_Privileges.html">User Roles and Privileges</a>
     <a class="dropdown-item" href="../articles/Deployment.html">Deployment</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../articles/index.html">More articles...</a>
@@ -71,8 +72,6 @@
   uiPattern <span class="op">=</span> <span class="st">"/"</span>,
   app_ver <span class="op">=</span> <span class="cn">NULL</span>,
   login_note <span class="op">=</span> <span class="cn">NULL</span>,
-  credentials_db_name <span class="op">=</span> <span class="cn">NULL</span>,
-  assessment_db_name <span class="op">=</span> <span class="cn">NULL</span>,
   <span class="va">...</span>
 <span class="op">)</span></code></pre></div>
     </div>
@@ -92,7 +91,7 @@ about the ideal height/width for the app.</p></dd>
 <dt>enableBookmarking</dt>
 <dd><p>Can be one of <code>"url"</code>, <code>"server"</code>, or
 <code>"disable"</code>. The default value, <code>NULL</code>, will respect the setting from
-any previous calls to  <code><a href="https://shiny.rstudio.com/reference/shiny/latest/enableBookmarking.html" class="external-link">enableBookmarking()</a></code>. See <code><a href="https://shiny.rstudio.com/reference/shiny/latest/enableBookmarking.html" class="external-link">enableBookmarking()</a></code>
+any previous calls to  <code><a href="https://rdrr.io/pkg/shiny/man/enableBookmarking.html" class="external-link">enableBookmarking()</a></code>. See <code><a href="https://rdrr.io/pkg/shiny/man/enableBookmarking.html" class="external-link">enableBookmarking()</a></code>
 for more information on bookmarking your app.</p></dd>
 <dt>uiPattern</dt>
 <dd><p>A regular expression that will be applied to each <code>GET</code>
@@ -106,12 +105,6 @@ can be overwritten to include a specific version name as a text string.</p></dd>
 <dt>login_note</dt>
 <dd><p>a text string to display underneath the auth screen's login
 button, provided to guide users</p></dd>
-<dt>credentials_db_name</dt>
-<dd><p>a text string that names the credentials databse.
-Please make sure name ends with '.sqlite'. For example: 'cred_db.sqlite'.</p></dd>
-<dt>assessment_db_name</dt>
-<dd><p>text string that names the credentials databse.
-Please make sure name ends with '.sqlite'. For example: 'assess_db.sqlite'.</p></dd>
 <dt>...</dt>
 <dd><p>arguments to pass to golem_opts. See <code><a href="https://rdrr.io/pkg/golem/man/get_golem_options.html" class="external-link">?golem::get_golem_options</a></code>
 for more details.</p></dd>

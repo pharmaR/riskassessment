@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">riskassessment</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,7 +28,8 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <h6 class="dropdown-header" data-toc-skip>User Guides</h6>
-    <a class="dropdown-item" href="../articles/Administrative_Tools_and_Options.html">Administrative Tools and Options</a>
+    <a class="dropdown-item" href="../articles/Credential_Manager.html">Credential Manager</a>
+    <a class="dropdown-item" href="../articles/User_Roles_and_Privileges.html">User Roles and Privileges</a>
     <a class="dropdown-item" href="../articles/Deployment.html">Deployment</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../articles/index.html">More articles...</a>
@@ -57,6 +58,56 @@
       <small>Source: <a href="https://github.com/pharmaR/riskassessment/blob/HEAD/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.0.0" id="riskassessment-100">riskassessment 1.0.0<a class="anchor" aria-label="anchor" href="#riskassessment-100"></a></h2>
+<div class="section level4">
+<h4 id="enhancements-1-0-0">Enhancements<a class="anchor" aria-label="anchor" href="#enhancements-1-0-0"></a></h4>
+<ul><li>Updated the version of <a href="https://pharmar.github.io/riskmetric/" class="external-link">riskmetric</a> used to V0.2.2</li>
+<li>Implemented usage of configuration file instead of passing arguments in <code><a href="../reference/run_app.html">run_app()</a></code> (<a href="https://github.com/pharmaR/riskassessment/issues/459" class="external-link">#459</a>)
+<ul><li>Added decision categories (<a href="https://github.com/pharmaR/riskassessment/issues/459" class="external-link">#459</a>)</li>
+<li>Added decision automation rules (<a href="https://github.com/pharmaR/riskassessment/issues/459" class="external-link">#459</a>)</li>
+<li>Added log file designation (<a href="https://github.com/pharmaR/riskassessment/issues/463" class="external-link">#463</a>)</li>
+<li>Implemented user roles/privileges to allow for more granular access to actions in the application (<a href="https://github.com/pharmaR/riskassessment/issues/527" class="external-link">#527</a>)</li>
+<li>Allow metric weights to be initialized (<a href="https://github.com/pharmaR/riskassessment/issues/482" class="external-link">#482</a>)</li>
+</ul></li>
+<li>From a computational speed perspective, we made the following improvements that users should feel
+<ul><li>During package upload, inserting community metrics into database (<a href="https://github.com/pharmaR/riskassessment/issues/516" class="external-link">#516</a>)</li>
+<li>When metric weights are changed, we re-score instead of re-assess, saving huge amounts of time (<a href="https://github.com/pharmaR/riskassessment/issues/537" class="external-link">#537</a>)</li>
+</ul></li>
+<li>The Database View got a few updates:
+<ul><li>Added Decision-related columns like the decision time stamp &amp; decision source</li>
+<li>Introduced the decision category table</li>
+</ul></li>
+<li>Enhanced (what was formerly known as) the “Report Preview” tab to include:
+<ul><li>A more holistic Report Builder. This allows users to define what content shows up in the report (<a href="https://github.com/pharmaR/riskassessment/issues/348" class="external-link">#348</a>).</li>
+<li>Users can now compose a long form “Package Summary” to keep track of more pertinent items (perhaps items less central to {riskmetric} output) for a more rounded package review (<a href="https://github.com/pharmaR/riskassessment/issues/348" class="external-link">#348</a>).</li>
+</ul></li>
+<li>Allowed the certain users to set a custom color for decision categories (<a href="https://github.com/pharmaR/riskassessment/issues/465" class="external-link">#465</a>)</li>
+<li>Added a code coverage (covr_coverage) card and add optimized the card layout logic (<a href="https://github.com/pharmaR/riskassessment/issues/533" class="external-link">#533</a>)</li>
+</ul></div>
+<div class="section level4">
+<h4 id="squashed-bugs-1-0-0">Squashed Bugs<a class="anchor" aria-label="anchor" href="#squashed-bugs-1-0-0"></a></h4>
+<ul><li>Fixed Chromote error (<a href="https://github.com/pharmaR/riskassessment/issues/477" class="external-link">#477</a>)</li>
+<li>Fixed bug preventing icons from displaying on admin tab (<a href="https://github.com/pharmaR/riskassessment/issues/427" class="external-link">#427</a>)</li>
+<li>Fixed button alignment issues (<a href="https://github.com/pharmaR/riskassessment/issues/514" class="external-link">#514</a>)</li>
+<li>Re-positioned footer to be at the bottom of the visible page (<a href="https://github.com/pharmaR/riskassessment/issues/518" class="external-link">#518</a>)</li>
+<li>Added a new check that conditionally delivers message about differing pkg versions ONLY when CSV file is loaded (<a href="https://github.com/pharmaR/riskassessment/issues/515" class="external-link">#515</a>)</li>
+</ul></div>
+<div class="section level4">
+<h4 id="docs-1-0-0">Docs<a class="anchor" aria-label="anchor" href="#docs-1-0-0"></a></h4>
+<ul><li>Updated help files for <code><a href="../reference/build_comm_plotly.html">build_comm_plotly()</a></code> to include example output (<a href="https://github.com/pharmaR/riskassessment/issues/409" class="external-link">#409</a>).</li>
+<li>Created new (and updated some) user guides to explain how to precisely control the app deployment using a configuration file.</li>
+<li>Retired some pertinent “old”” user guides in case users are still running old versions of <a href="https://github.com/pharmaR/riskassessment" class="external-link">riskassessment</a>
+</li>
+</ul></div>
+<div class="section level4">
+<h4 id="for-devs-1-0-0">For Devs<a class="anchor" aria-label="anchor" href="#for-devs-1-0-0"></a></h4>
+<ul><li>Utilized <code><a href="https://glue.tidyverse.org/reference/glue_sql.html" class="external-link">glue::glue_sql()</a></code> inside of update and select functions (<a href="https://github.com/pharmaR/riskassessment/issues/520" class="external-link">#520</a>)</li>
+<li>Improved speed of inserting community metrics into database (<a href="https://github.com/pharmaR/riskassessment/issues/516" class="external-link">#516</a>)</li>
+<li>Re-score instead of re-assess when metric weights are changed, meaning we are now storing the pkg assessment (<a href="https://github.com/pharmaR/riskassessment/issues/537" class="external-link">#537</a>)</li>
+<li>Pass warning instead of error when default privilege config gets combined with another config (<a href="https://github.com/pharmaR/riskassessment/issues/547" class="external-link">#547</a>)</li>
+</ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.1.1" id="riskassessment-011">riskassessment 0.1.1<a class="anchor" aria-label="anchor" href="#riskassessment-011"></a></h2>
 <div class="section level4">

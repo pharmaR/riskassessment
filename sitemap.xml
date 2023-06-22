@@ -10,10 +10,19 @@
     <loc>https://pharmar.github.io/riskassessment/LICENSE.html</loc>
   </url>
   <url>
-    <loc>https://pharmar.github.io/riskassessment/articles/Administrative_Tools_and_Options.html</loc>
+    <loc>https://pharmar.github.io/riskassessment/articles/Administrative_Tools_and_Options_V0.1.1.html</loc>
+  </url>
+  <url>
+    <loc>https://pharmar.github.io/riskassessment/articles/Credential_Manager.html</loc>
   </url>
   <url>
     <loc>https://pharmar.github.io/riskassessment/articles/Deployment.html</loc>
+  </url>
+  <url>
+    <loc>https://pharmar.github.io/riskassessment/articles/Deployment_V0.1.1.html</loc>
+  </url>
+  <url>
+    <loc>https://pharmar.github.io/riskassessment/articles/User_Roles_and_Privileges.html</loc>
   </url>
   <url>
     <loc>https://pharmar.github.io/riskassessment/articles/dev_Using_SQLite_Command_Line.html</loc>

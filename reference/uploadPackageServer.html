@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">riskassessment</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -28,7 +28,8 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <h6 class="dropdown-header" data-toc-skip>User Guides</h6>
-    <a class="dropdown-item" href="../articles/Administrative_Tools_and_Options.html">Administrative Tools and Options</a>
+    <a class="dropdown-item" href="../articles/Credential_Manager.html">Credential Manager</a>
+    <a class="dropdown-item" href="../articles/User_Roles_and_Privileges.html">User Roles and Privileges</a>
     <a class="dropdown-item" href="../articles/Deployment.html">Deployment</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../articles/index.html">More articles...</a>
@@ -64,7 +65,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">uploadPackageServer</span><span class="op">(</span><span class="va">id</span>, <span class="va">user</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">uploadPackageServer</span><span class="op">(</span><span class="va">id</span>, <span class="va">user</span>, <span class="va">auto_list</span>, <span class="va">approved_roles</span>, <span class="va">trigger_events</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -73,6 +74,10 @@
 <dd><p>a module id</p></dd>
 <dt>user</dt>
 <dd><p>a username</p></dd>
+<dt>auto_list</dt>
+<dd><p>a list of decision automation rules</p></dd>
+<dt>trigger_events</dt>
+<dd><p>a reactive values object to trigger actions here or elsewhere</p></dd>
 </dl></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -46,7 +46,7 @@
     
     <a class="navbar-brand me-2" href="index.html">riskassessment</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,7 +65,8 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <h6 class="dropdown-header" data-toc-skip>User Guides</h6>
-    <a class="dropdown-item" href="articles/Administrative_Tools_and_Options.html">Administrative Tools and Options</a>
+    <a class="dropdown-item" href="articles/Credential_Manager.html">Credential Manager</a>
+    <a class="dropdown-item" href="articles/User_Roles_and_Privileges.html">User Roles and Privileges</a>
     <a class="dropdown-item" href="articles/Deployment.html">Deployment</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="articles/index.html">More articles...</a>
@@ -105,63 +106,62 @@
 <a href="https://bit.ly/demo_raa" class="external-link"><img src="reference/figures/demo_riskassessment.png" alt="{riskassessment} app" width="25%"></a>
 </center>
 <p><br></p>
-<p><code>riskmetric</code> is a framework to quantify an R package’s “risk” by assessing a number of meaningful metrics designed to evaluate package development best practices, code documentation, community engagement, and development sustainability. Together, the <code>riskassessment</code> app and the <code>riskmetric</code> package aim to provide some context for validation within regulated industries.</p>
+<p><code>riskmetric</code> is a framework to quantify an R package’s “risk of use” by assessing a number of meaningful metrics designed to evaluate package development best practices, code documentation, community engagement, and development sustainability. Together, the <code>riskassessment</code> app and the <code>riskmetric</code> package aim to provide some context for validation within regulated industries.</p>
 <p>The app extends the functionality of <code>riskmetric</code> by allowing the reviewer to:</p>
 <ul>
 <li>analyze <code>riskmetric</code> output without the need to write code in R</li>
 <li>contribute personalized comments on the value of individual metrics</li>
 <li>categorize a package with an overall assessment (i.e., low, medium, or high risk) based on subjective opinions or after tabulating user(s) consensus after the evaluating metric output</li>
-<li>download a static reports with the package risk, metrics outputs, and reviewer comments, and more</li>
+<li>download a static reports with the package risk, metrics outputs, and reviewer summary &amp; comments, plus more</li>
 <li>store assessments in a database for future viewing and historical backup</li>
-<li>user authentication with with admin roles to manage users and metric weighting</li>
+<li>user authentication with privileges &amp; admin-defined roles to manage users and tasks performed in the app</li>
 </ul>
 <div class="section level3">
 <h3 id="echo-ing-riskmetrics-approach-to-validation-">Echo-ing <code>{riskmetric}</code>’s Approach to Validation <a href="https://pharmar.github.io/riskmetric/" class="external-link"><img src="reference/figures/hex-riskmetric-aspconfig.png" align="right" height="172" style="float:right; height:172px;"></a>
 <a class="anchor" aria-label="anchor" href="#echo-ing-riskmetrics-approach-to-validation-"></a>
 </h3>
-<p>Validation can serve as an umbrella for various terms, and admittedly, companies will diverge on what may be the “correct approach”. The <code>riskassessment</code> app is built on a <code>rismetric</code>-foundation, whose deverlopers follow the validation philosophy proposed in <a href="https://www.pharmar.org/white-paper/" class="external-link">this white paper</a> published by the R Validation Hub. As such, the scope of <code>riskassessment</code> and <code>riskmetric</code> are only designed to support decision making from that view point. The full robustness and reliability of any software may (and likely will) require deeper inspection by the reviewing party.</p>
+<p>Validation can serve as an umbrella for various terms, and admittedly, companies will diverge on what may be the “correct approach”. The <code>riskassessment</code> app is built on a <code>rismetric</code>-foundation, whose developers follow the validation philosophy proposed in <a href="https://www.pharmar.org/white-paper/" class="external-link">this white paper</a> published by the R Validation Hub. As such, the scope of <code>riskassessment</code> and <code>riskmetric</code> are only designed to support decision making from that view point. The full robustness and reliability of any software may (and likely will) require deeper inspection by the reviewing party.</p>
 <p><em>Note:</em> Development of both <code>riskassessment</code> and <code>riskmetric</code> were made possible thanks to the <a href="https://www.pharmar.org/about/" class="external-link">R Validation Hub</a>, a collaboration to support the adoption of R within a biopharmaceutical regulatory setting.</p>
 </div>
 <div class="section level3">
 <h3 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h3>
-<p>If you are new to using the <code>riskassessment</code> app, welcome! We’d highly encourage you to start exploring the <a href="https://bit.ly/demo_raa" class="external-link"><code>demo version</code></a> of the app currently deployed on shinyapps.io. There, you’ll find a number of pre-loaded packages just waiting to be assessed. Hands on experience will help you become familiar with the general layout of the app as you poke around and explore.</p>
-<p>With that said, you should immediately recognize that the app requires authentication, since it’s intended use is within an organization. There are two pre-defined roles: ‘nonadmin’ users and ‘admin’ users. The latter can add/delete users, download an entire copy of the database, and modify the metric weights used in calculation of risk scores. Initially, both share the same password: <code>QWERTY1</code>. If you log in with this credential, the app will immediately prompt you to change your password and repeat the the process with your new credentials.</p>
-<p>If you want a quick overview of the project and demo of the application, you should watch this video walk through on YouTube <a href="https://bit.ly/raa_shinyconf23" class="external-link">from Shiny Conf 2023</a>. At the conference, <code>riskassessment</code> was voted “best application” in the shiny showcase by conference attendees!</p>
+<p>If you are new to using the <code>riskassessment</code> app, welcome! We’d highly encourage you to start exploring the <a href="https://bit.ly/demo_raa" class="external-link">demo version</a> of the app currently deployed on shinyapps.io. There, you’ll find a number of pre-loaded packages just waiting to be assessed. Hands on experience will help you become familiar with the general layout of the app as you poke around and explore.</p>
+<p>With that said, you should immediately recognize that the app requires authentication, since it’s intended use is within an organization. There are several pre-defined roles, but the most important is the <code>admin</code> user. By default, the <code>admin</code> can add/delete users, download an entire copy of the database, and modify the metric weights used in calculation of risk scores, define custom decision categories, and automation rules base on risk scores. The demo version of the app tells prompts you with how to log in initially. However, if you launch the <code>app.R</code> file locally, the <code>admin</code> user will have to leverage the password <code>QWERTY1</code> initially. If you log in with this credential, the app will immediately prompt you to change your password and repeat the the process with your new credentials.</p>
+<p>If you want a quick overview of the project and demo of the application, we highly recommend watching the following video walk through <a href="https://bit.ly/raa_shinyconf23" class="external-link">from Shiny Conf 2023</a>. At the conference, <code>riskassessment</code> was voted “best application” by conference attendees! The app was also featured at <a href="https://www.youtube.com/watch?v=4uVQXHpNmUQ" class="external-link">Rstudio::Global 2021</a>.</p>
 <p><br></p>
 <center>
 <a href="https://bit.ly/raa_shinyconf23" target="_blank" class="external-link"> <img src="reference/figures/raa_shinyConf23.png" alt="riskassessment at shinyConf 2023" width="75%"></a>
 </center>
 <p><br></p>
-<p>If you desire a more comprehensive overview of <code>riskmetric</code>’s approach to validation in the context of this app, watch our talk at <a href="https://www.youtube.com/watch?v=4uVQXHpNmUQ" class="external-link">Rstudio::Global 2021</a>. But don’t forget to take it for a spin!</p>
 <div class="section level4">
 <h4 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h4>
-<p>We recommend to run/deploy this application in a controlled development environment. Of course, you can install the latest version from GitHub using the code below, but it doesn’t take into consideration other environment dependencies which means we can’t guarantee stability:</p>
+<p>We recommend to run/deploy this application in a controlled development environment. Of course, you can install the latest version from GitHub using the code below, but it doesn’t take into consideration other environment dependencies…</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("remotes") # if needed</span>
+<code class="sourceCode R"><span class="co"># DON'T RUN THIS CODE! There's a better way!</span>
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"pharmaR/riskmetric"</span><span class="op">)</span>
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"pharmaR/riskassessment"</span><span class="op">)</span>
 
 <span class="co"># Run the application </span>
 <span class="fu">riskassessment</span><span class="fu">::</span><span class="fu"><a href="reference/run_app.html">run_app</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>Instead, we’d recommend that you clone the repo’s R project locally and run the following code in order to take advantage of our <code>renv.lock</code> file which set’s up the project dependencies:</p>
+<p>For example, what if you are using a different version of <code>riskmetric</code> than our dev team? Thus, the development team can’t guarantee it’s stability, and we recommend you clone the repo’s R project locally instead. Once cloned/ forked, run the following code in order to take advantage of our <code>renv.lock</code> file which set’s up the project dependencies:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># First, clone the repo from GitHub, then...</span>
 <span class="co"># Get dependcies synced using {renv}</span>
 <span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/activate.html" class="external-link">activate</a></span><span class="op">(</span><span class="op">)</span>
 <span class="fu">renv</span><span class="fu">::</span><span class="fu"><a href="https://rstudio.github.io/renv/reference/restore.html" class="external-link">restore</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p>After this step is complete, you can simply run the contents of <code>app.R</code> to launch and/or deploy the application! For more information on our dev philosophy as it pertains to package management, please read the <a href="https://pharmar.github.io/riskassessment/articles/dev_renv.html">“Using <code>renv</code>”</a> article.</p>
+<p>After this step is complete, you can simply run the contents of <code>app.R</code> to launch and/or deploy the application with default settings! For more information on our dev philosophy as it pertains to package management, please read the <a href="https://pharmar.github.io/riskassessment/articles/dev_renv.html">“Using <code>renv</code>”</a> article. Then, learn how to manipulate the app’s configuration away from the defaults by reading the guide on <a href="https://pharmar.github.io/riskassessment/articles/Deployment.html">“Deployment”</a> which covers how to use the app’s configuration file to tailor the app to your needs.</p>
 </div>
 </div>
 <div class="section level3">
 <h3 id="user-guides-and-user-feedback">User Guides and User Feedback<a class="anchor" aria-label="anchor" href="#user-guides-and-user-feedback"></a>
 </h3>
 <p><a href="https://bit.ly/raa_docs" class="external-link"><img src="reference/figures/raa-image-ug.png" align="right" height="120" style="float:right; padding-right: 30px; height:120px;"></a></p>
-<p>We’re constantly improving the app and it’s documentation. Please explore the user guides that have been developed to date, available on the <code>riskassessment</code> <a href="https://bit.ly/raa_docs" class="external-link">documentation site</a>. Be sure to read the <a href="https://pharmar.github.io/riskassessment/articles/riskassessment.html">‘Get Started’</a> tab and perhaps <a href="https://pharmar.github.io/riskassessment/articles/index.html">an article or two</a>!</p>
+<p>We’re constantly improving the app and it’s documentation. Please explore the user guides that have been developed to date, available on the <code>riskassessment</code> <a href="https://bit.ly/raa_docs" class="external-link">documentation site</a>. Be sure to read the <a href="https://pharmar.github.io/riskassessment/articles/riskassessment.html">‘Get Started’</a> tab and perhaps <a href="https://pharmar.github.io/riskassessment/articles/index.html">another article or two</a>!</p>
 <p>Of course, if you ever have specific feedback for the developers, or if you encounter a problem / bug within the app, we recommend <a href="https://github.com/pharmaR/riskassessment/issues/new" class="external-link">opening a new issue</a> on GitHub and we’ll address it promptly.</p>
 <p><a href="https://bit.ly/raa_survey" class="external-link"><img src="reference/figures/google_forms_logo.png" align="right" height="72" style="float:right; height:172px;"></a></p>
-<p>We also want align with our users on big picture, strategic topics. Specifically, we want to hear from groups who’ve built (or are currently building) their R-package validation process, whether you use <code>riskmetric</code> / <code>riskassessment</code> or not! Ideally, our goal is to form a consensus from companies regarding their validation approach so we can make <code>riskmetric</code> and <code>riskassessment</code> better. For example, we’d love to understand how users are currently weighting the metrics used to calculate a package’s risk score. We’d also love to learn if companies leverage certain risk score thresholds to make GxP environment inclusion decisions for a set of packages. To facilitate the gathering of this information, we’ve created an <a href="https://bit.ly/raa_survey" class="external-link">incredibly brief questionnaire</a> to let us know where you’re at.</p>
+<p>We also want to align with our users on big picture, strategic topics. Specifically, we want to hear from groups who’ve built (or are currently building) their R-package validation process, whether you use <code>riskmetric</code> / <code>riskassessment</code> or not! Ideally, our goal is to form a consensus from companies regarding their validation approach so we can make <code>riskmetric</code> and <code>riskassessment</code> better. For example, we’d love to understand how users are currently weighting the metrics used to calculate a package’s risk score. We’d also love to learn if companies leverage certain risk score thresholds to make GxP environment inclusion (or exclusion) decisions for a package. To facilitate the gathering of this information, we’ve created an <a href="https://bit.ly/raa_survey" class="external-link">incredibly brief questionnaire</a> to let us know where you’re at.</p>
 <div class="section level4">
 <h4 id="deployment">Deployment<a class="anchor" aria-label="anchor" href="#deployment"></a>
 </h4>

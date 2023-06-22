@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">riskassessment</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -45,7 +45,8 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <h6 class="dropdown-header" data-toc-skip>User Guides</h6>
-    <a class="dropdown-item" href="../articles/Administrative_Tools_and_Options.html">Administrative Tools and Options</a>
+    <a class="dropdown-item" href="../articles/Credential_Manager.html">Credential Manager</a>
+    <a class="dropdown-item" href="../articles/User_Roles_and_Privileges.html">User Roles and Privileges</a>
     <a class="dropdown-item" href="../articles/Deployment.html">Deployment</a>
     <div class="dropdown-divider"></div>
     <a class="dropdown-item" href="../articles/index.html">More articles...</a>
@@ -101,27 +102,25 @@ for decision automation</li>
 <li>Credential management for authorized users</li>
 <li>Etc</li>
 </ol>
-<p>To accomplish this, the app automatically creates and populates
-several storage solutions locally, in the app’s root directory:</p>
+<p>To accomplish this, the app uses configuration settings to create and
+populate several storage solutions locally, in the app’s root
+directory:</p>
 <ul>
 <li>A <code>SQLite</code> database named <code>credentials.sqlite</code>
 (by default) for credential management</li>
-<li>A <code>loggit.json</code>, recording rudimentary logs of actions
-performed in the app</li>
+<li>A json file named <code>loggit.json</code> (by default), recording
+rudimentary logs of actions performed in the app</li>
 <li>A <code>SQLite</code> database named <code>database.sqlite</code>
 (by default) for storing all pkg info, metric info, and comments/
 decisions</li>
-<li>A <code>auto_decisions.json</code> file, that initiates and keeps
-track of score-based thresholds for decision automation</li>
 </ul>
 <p>Note that this article won’t cover the credentials database since
-that’s that’s been covered (at length) in the <a href="../articles/Administrative_Tools_and_Options.html">“Administrative
-Tools and Options” guide</a>. As you might expect, some deployment
-environments come with limitations that are not amicable to storage
-method defined above! Spoiler alert - shinyapps.io is one of them. This
-article will provide more details about these crucial storage objects
-and share a run down of the following deployment options with helpful
-tips:</p>
+that’s that’s been covered (at length) in the <a href="../articles/Credential_Manager.html">“Credential Manager”
+guide</a>. As you might expect, some deployment environments come with
+limitations that are not amicable to storage method defined above!
+Spoiler alert - shinyapps.io is one of them. This article will provide
+more details about these crucial storage objects and share a run down of
+the following deployment options with helpful tips:</p>
 <ul>
 <li><p>shinyapps.io</p></li>
 <li><p>RStudio Connect</p></li>
@@ -132,6 +131,168 @@ tips:</p>
 users to connect to an external, or remote storage method (like a
 database).</p>
 <p><br></p>
+<div class="section level2">
+<h2 id="installing-vs-forking">Installing vs Forking<a class="anchor" aria-label="anchor" href="#installing-vs-forking"></a>
+</h2>
+<p>Before we discuss deployment methods, we should note that the
+<a href="https://github.com/pharmaR/riskassessment" class="external-link">riskassessment</a> application is developed using
+<a href="https://rstudio.github.io/renv/" class="external-link">renv</a> as a form of source control. This helps maintain
+stability in the code base. While you can install
+<a href="https://github.com/pharmaR/riskassessment" class="external-link">riskassessment</a> from Github, it is strongly recommended to
+use a fork of the <a href="https://github.com/pharmaR/riskassessment" class="external-link">riskassessment</a> repository for
+deployment. This will serve a handful or purposes for your
+organization:</p>
+<ol style="list-style-type: decimal">
+<li>You can utilize <a href="https://rstudio.github.io/renv/" class="external-link">renv</a> in your deployment to help
+ensure you share the same environment as the app developers, ensuring
+consistent behavior.</li>
+<li>You will have easier access to the configuration file allowing for a
+more streamlined deployment if you have several projects.</li>
+</ol>
+<p><br></p>
+</div>
+<div class="section level2">
+<h2 id="the-db-config-yml-file">The <code>db-config.yml</code> file<a class="anchor" aria-label="anchor" href="#the-db-config-yml-file"></a>
+</h2>
+<p>Starting with <code>{riskassessment} v1.0.0</code>, a configuration
+file can be found at <code>inst/db-config.yml</code> which is used to
+initialize the application for deployment. This configuration contains
+elements vital to app initialization and will only grow as development
+continues. Many of the elements in the file are also editable from
+within the application itself (provided your user role has the
+privileges to do so). Currently, <code>db-config.yml</code> contains the
+following major elements:</p>
+<ul>
+<li>
+<strong>assessment_db</strong>: A string designating the file path
+of the assessment SQLite database (will be created upon initialization).
+It has a default value of <code>database.sqlite</code>.</li>
+<li>
+<strong>credential_db</strong>: A string designating the file path
+of the credentials SQLite database (will be created upon
+initialization). It has a default value of
+<code>credentials.sqlite</code>.</li>
+<li>
+<strong>loggit_json</strong>: A string designating the file path of
+the logging JSON file (will be created upon initialization). It has a
+default value of <code>loggit.json</code>.</li>
+<li>
+<strong>credentials</strong>: A list defining user roles and
+privileges to assigned to those roles in the credentials database.</li>
+<li>
+<strong>decisions</strong>: A list defining decision categories,
+automated decision rules (optional), and custom decision category colors
+(also optional).</li>
+<li>
+<strong>metric_weights</strong>: A list containing the
+<a href="https://pharmar.github.io/riskmetric/" class="external-link">riskmetric</a> weights to use upon initialization. These
+weights are used to increase and decrease the priority of any one
+metric.</li>
+</ul>
+<p>Below is a look at the current default configuration if you were to
+fork the <a href="https://github.com/pharmaR/riskassessment" class="external-link">riskassessment</a> code today:</p>
+<p><br></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">default</span><span class="kw">:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">assessment_db</span><span class="kw">:</span><span class="at"> database.sqlite</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">credential_db</span><span class="kw">:</span><span class="at"> credentials.sqlite</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">loggit_json</span><span class="kw">:</span><span class="at"> loggit.json</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">credentials</span><span class="kw">:</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">roles</span><span class="kw">:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> admin</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> lead</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> reviewer</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">privileges</span><span class="kw">:</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">admin</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">admin</span><span class="kw">,</span><span class="at"> weight_adjust</span><span class="kw">,</span><span class="at"> auto_decision_adjust</span><span class="kw">,</span><span class="at"> final_decision</span><span class="kw">,</span><span class="at"> revert_decision</span><span class="kw">,</span><span class="at"> add_package</span><span class="kw">,</span><span class="at"> delete_package</span><span class="kw">]</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">lead</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">weight_adjust</span><span class="kw">,</span><span class="at"> auto_decision_adjust</span><span class="kw">,</span><span class="at"> final_decision</span><span class="kw">,</span><span class="at"> revert_decision</span><span class="kw">,</span><span class="at"> add_package</span><span class="kw">,</span><span class="at"> delete_package</span><span class="kw">]</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">reviewer</span><span class="kw">:</span><span class="at"> add_package</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">decisions</span><span class="kw">:</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">categories</span><span class="kw">:</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> Low Risk</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> Medium Risk</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> High Risk</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">metric_weights</span><span class="kw">:</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">covr_coverage</span><span class="kw">:</span><span class="at"> </span><span class="dv">0</span></span></code></pre></div>
+<p><br></p>
+<div class="section level4">
+<h4 id="credentials-configuration">Credentials configuration<a class="anchor" aria-label="anchor" href="#credentials-configuration"></a>
+</h4>
+<p>The <strong>credentials</strong> element contains two sub-elements:
+<strong>roles</strong> and <strong>privileges</strong>. Here is a
+snippet of the default configuration to showcase how you might go about
+designing your own configuration:</p>
+<p><br></p>
+<center>
+<img src="images/config_credentials.png">
+</center>
+<p>Note the <a href="../articles/User_Roles_and_Privileges.html">“User
+Roles and Privileges” guide</a> is entirely dedicated to this config.
+For full details, visit &amp; read that article!</p>
+<p><br></p>
+</div>
+<div class="section level4">
+<h4 id="decisions-configuration">Decisions configuration<a class="anchor" aria-label="anchor" href="#decisions-configuration"></a>
+</h4>
+<p>The <strong>decisions</strong> element contains up to three
+sub-elements: <strong>categories</strong> (mandatory),
+<strong>rules</strong>, and <strong>colors</strong>. Here is a snipped
+from one of the example configurations:</p>
+<p><br></p>
+<center>
+<img src="images/config_decisions.png">
+</center>
+<p><br></p>
+<p>Notice that you can set as many decision <code>categories</code> as
+you wish, but you must specify at least two! If you want to set up
+automatic decision rules before deploying the app, you can do so using
+the <code>rules</code> element. Just list the category name and
+underneath it, a mutually exclusive range of values so that when a
+package is uploaded, if it’s risk score falls between those values, it
+will automatically get labelled with the appropriate decision.
+Categories not addressed under the <code>rules</code> banner will not
+receive automated decisions. However, users with this privilege can
+change this configuration in the app at a later time.</p>
+<p>Similarly for <code>colors</code>, you can detail specific colors be
+assigned to certain categories. If you don’t care what color is used for
+each category, then a color-blind friendly color palette is used to fill
+in the rest.</p>
+<p><br></p>
+</div>
+<div class="section level4">
+<h4 id="metric-weights-configuration">Metric weights configuration<a class="anchor" aria-label="anchor" href="#metric-weights-configuration"></a>
+</h4>
+<p>The <strong>metric_weights</strong> element contains the named list
+of weights. If a weight is not supplied, it will default to 1. The
+current list of weights that can be included are the following:
+has_vignettes, has_news, news_current, has_bug_reports_url, has_website,
+has_maintainer, has_source_control, export_help, bugs_status, license,
+covr_coverage, downloads_1yr. As seen above, the default configuration
+sets the weight for <code>covr_coverage</code> to 0. If you want to
+ignore a certain metric because it has little value to our organization,
+you could give it a value of zero.</p>
+<p>When metrics are not explicitly given here, the app uses the default
+weight of 1 for each, unless of course there already exists a assessment
+database previously initialized where those metric weights were manually
+changed. If you wanted to toggle all current metrics, there is no harm
+in stating each metric and weight, so you could set up the config file
+to look like this, for example:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">metric_weights</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_vignettes</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_news</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.5</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">news_current</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_bug_reports_url</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_website</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_maintainer</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_source_control</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">export_help</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">bugs_status</span><span class="kw">:</span><span class="at"> </span><span class="dv">5</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">license</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">downloads_1yr.</span><span class="kw">:</span><span class="at"> </span><span class="dv">3</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">covr_coverage</span><span class="kw">:</span><span class="at"> </span><span class="dv">0</span></span></code></pre></div>
+<p><a href="https://pharmar.github.io/riskmetric/" class="external-link">riskmetric</a> will use these weights to score your
+package according to our org’s needs!</p>
+<p><br></p>
+</div>
+</div>
 <div class="section level2">
 <h2 id="the-database-sqlite-file">The <code>database.sqlite</code> file<a class="anchor" aria-label="anchor" href="#the-database-sqlite-file"></a>
 </h2>
@@ -169,16 +330,6 @@ weight</li>
 version, maintainer, etc. It also contains a the <code>riskmetric</code>
 score, the weighted score, decision, and timestamp.</li>
 </ul>
-<p>There is one exception to this: the <code>metric</code> table is
-populated with data via the <a href="https://github.com/pharmaR/riskassessment/blob/master/inst/app/www/sql_queries/initialize_metric_table.sql" class="external-link">initialize_metric_table.sql</a>
-file. If the user deploying the app wants to enter certain weights prior
-to launching the application, this would be a good place to do it. For
-example, if your org wants to place a heavier weight on “has_vignettes”,
-then you can increase the <code>weight</code> value up accordingly. Of
-course, you can still do this in the application, but that would require
-a manual change once the app has launched. Similarly, if you want to
-ignore a certain metric because it has little value to our organization,
-you could give it a value of zero here.</p>
 <p>Note: if any changes/ updates occur in these tables with a new
 release of <code>riskassessment</code>, you may need to delete the
 database file before re-running the app. Any such changes should be
@@ -212,29 +363,12 @@ notably, it will contain a timestamp, record type (“info”, “warn”, or
 “error”), and a message. For database transactions, the message will
 usually include the query that was executed. All log entries are always
 printed out in the R console for your convenience. For example:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>riskassessment<span class="sc">::</span><span class="fu">run_app</span>()</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> [<span class="dv">1</span>] <span class="st">"Log file set to loggit.json"</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> Listening on http<span class="sc">:</span><span class="er">//</span><span class="dv">127</span>.<span class="dv">0</span>.<span class="fl">0.1</span><span class="sc">:</span><span class="dv">4097</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> {<span class="st">"timestamp"</span><span class="sc">:</span> <span class="st">"2023-03-20T11:46:23-0400"</span>, <span class="st">"log_lvl"</span><span class="sc">:</span> <span class="st">"INFO"</span>, <span class="st">"log_msg"</span><span class="sc">:</span> <span class="st">"User admin signed on as admin"</span>}</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> {<span class="st">"timestamp"</span><span class="sc">:</span> <span class="st">"2023-03-20T11:46:33-0400"</span>, <span class="st">"log_lvl"</span><span class="sc">:</span> <span class="st">"INFO"</span>, <span class="st">"log_msg"</span><span class="sc">:</span> <span class="st">"The following decision rules were implemented by admin (admin): Medium = (0.33__COMMA__ 0.66]; Low = (0__COMMA__ 0.33]; High = (0.66__COMMA__ 1]."</span>}</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>riskassessment<span class="sc">::</span><span class="fu">run_app</span>()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> [<span class="dv">1</span>] <span class="st">"Log file set to loggit.json"</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> Listening on http<span class="sc">:</span><span class="er">//</span><span class="dv">127</span>.<span class="dv">0</span>.<span class="fl">0.1</span><span class="sc">:</span><span class="dv">4097</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> {<span class="st">"timestamp"</span><span class="sc">:</span> <span class="st">"2023-03-20T11:46:23-0400"</span>, <span class="st">"log_lvl"</span><span class="sc">:</span> <span class="st">"INFO"</span>, <span class="st">"log_msg"</span><span class="sc">:</span> <span class="st">"User admin signed on as admin"</span>}</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> {<span class="st">"timestamp"</span><span class="sc">:</span> <span class="st">"2023-03-20T11:46:33-0400"</span>, <span class="st">"log_lvl"</span><span class="sc">:</span> <span class="st">"INFO"</span>, <span class="st">"log_msg"</span><span class="sc">:</span> <span class="st">"The following decision rules were implemented by admin (admin): Medium = (0.33__COMMA__ 0.66]; Low = (0__COMMA__ 0.33]; High = (0.66__COMMA__ 1]."</span>}</span></code></pre></div>
 <p>Feel free to use this information as you see fit!</p>
-<p><br></p>
-</div>
-<div class="section level2">
-<h2 id="the-auto_decisions-json-file">The <code>auto_decisions.json</code> file<a class="anchor" aria-label="anchor" href="#the-auto_decisions-json-file"></a>
-</h2>
-<p>When <code><a href="../reference/run_app.html">riskassessment::run_app()</a></code> is executed, a search is
-performed to see if there exists an <code>auto_decisions.json</code>
-file in the root directory. Without such file, an empty one will be
-automatically created. This file is used to keep track of any decision
-automation rules. As you add &amp; edit the rules in the app, the
-<code>json</code> file will update accordingly, keeping track of each
-categories risk score range. For example, the following json file
-coordinates with ranges displayed in the app:</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span><span class="dt">"Medium"</span><span class="fu">:</span><span class="ot">[</span><span class="fl">0.33</span><span class="ot">,</span><span class="fl">0.66</span><span class="ot">]</span><span class="fu">,</span><span class="dt">"Low"</span><span class="fu">:</span><span class="ot">[</span><span class="dv">0</span><span class="ot">,</span><span class="fl">0.33</span><span class="ot">]</span><span class="fu">,</span><span class="dt">"High"</span><span class="fu">:</span><span class="ot">[</span><span class="fl">0.66</span><span class="ot">,</span><span class="dv">1</span><span class="ot">]</span><span class="fu">}</span></span></code></pre></div>
-<center>
-<img src="images/deploy_full_auto_decision_rules.png" style="position:left; width:456px">
-</center>
 <p><br></p>
 </div>
 <div class="section level2">
