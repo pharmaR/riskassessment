@@ -75,8 +75,8 @@ Below is a look at the current default configuration if you were to fork the `{r
 ```yml
 default:
   assessment_db: database.sqlite
-  credential_db: credentials.sqlite
   loggit_json: loggit.json
+  credential_db: credentials.sqlite
   credentials:
     roles:
       - admin
@@ -103,11 +103,11 @@ default:
 
 ![](images/SQLite.png){style="float:right; height:80px"}
 
-When the `riskassessment::run_app()` function is ran, the code base will check if the `database.sqlite` file exists, and if it doesn't, [several tables will be initiated](https://github.com/pharmaR/riskassessment/tree/master/inst/sql_queries) to create this database just before the app launches. Note that the user has the authority to name the database file to whatever they like using the `inst/db-config.yml` file. There, you can include a file path preceding the file name if you wish to move the location of the database away from the root directory.  For example, the following code would create a database called "test_database.sqlite" in the `dev/` folder:
+When the `riskassessment::run_app()` function is ran, the code base will check if an assessment sqlite file exists by the name you give it (default is `database.sqlite`) and if it doesn't, [several tables will be initiated](https://github.com/pharmaR/riskassessment/tree/master/inst/sql_queries) to create this database just before the app launches. Note that the user has the authority to name the database file to whatever they like using the `inst/db-config.yml` file. There, you can include a file path preceding the file name if you wish to move the location of the database away from the root directory.  For example, the following code would create a database called "database.sqlite" in the `dev/` folder:
 
 ```yml
 default:
-  assessment_db: ./dev/test_database.sqlite
+  assessment_db: ./dev/database.sqlite
 ```
 
 At the time this vignette was authored, the database will initialize the following tables with all `NULL` values:
@@ -129,7 +129,7 @@ Note: if any changes/ updates occur in these tables with a new release of `riska
 
 ### Database log file config
 
-As mentioned previously, the `loggit.json` file is initiated to track general actions performed in the application, especially those that would impact a change in the `database.sqlite` file. At the time this vignette was authored, here's a summary of actions logged:
+As mentioned previously, the `loggit.json` file is initiated to track general actions performed in the application, especially those that would reflect a change in the assessment db (`database.sqlite` file). At the time this vignette was authored, here's a summary of actions logged:
 
 * App start up
 * User log-ins
@@ -139,7 +139,7 @@ As mentioned previously, the `loggit.json` file is initiated to track general ac
 * Re-weighting pkg metrics
 * Any database issues or conflicts that may arise
 
-Each loggit "transaction" recorded contains a lot of info, but most notably, it will contain a timestamp, record type ("info", "warn", or "error"), and a message. For database transactions, the message will usually include the query that was executed. All log entries are always printed out in the R console for your convenience. For example:
+Each loggit "transaction" recorded contains a lot of info, but most notably, it will contain a time stamp, record type ("info", "warn", or "error"), and a message. For database transactions, the message will usually include the query that was executed. All log entries are always printed out in the R console for your convenience. For example:
 
 ```{r, echo=TRUE, eval=FALSE}
 riskassessment::run_app()
@@ -150,8 +150,13 @@ riskassessment::run_app()
 ```
 
 
-Feel free to use this information as you see fit!
+Feel free to use this information as you see fit! Similar to the `assessment_db` parameter in `inst/db-config`, you can name the file whatever you like, and save it in an any directory you'd like. Below, we save it in the `dev/` folder and name it "loggit.json":
 
+```yml
+default:
+  assessment_db: ./dev/database.sqlite
+  assessment_db: ./dev/loggit.json
+```
 
 <br>
 
@@ -160,17 +165,34 @@ Feel free to use this information as you see fit!
 
 ### Credentials configuration
 
-The **credentials** element contains two sub-elements: **roles** and **privileges**. Here is a snippet of the default configuration to showcase how you might go about designing your own configuration:
+Similar to the assessment database, when the `riskassessment::run_app()` function executes, the code base will check if an credentials sqlite file exists by the name you give it (default is `credentials.sqlite`) and if it doesn't, `riskassessment` will initiate this new database before the app launches. Note that the user has the authority to name the database sqlite file whatever they desire using `inst/db-config.yml`. There, you can include a file path preceding the file name if you wish to move the location of the database away from the root directory.  For example, the following code would create a database called "credentials.sqlite" in the `dev/` folder:
+
+```yml
+default:
+  assessment_db: ./dev/database.sqlite
+  assessment_db: ./dev/loggit.json
+  credential_db: ./dev/credentials.sqlite
+```
+
+Right after the **credentials_db** element is used, the **credentials** element (with two sub-elements: **roles** and **privileges**) must be populated. As a guide, below is a snippet of the default values for these elements, but we encourage you to design the configuration that works for you (or your organization).
+
+```yml
+credentials:
+  roles:
+    - admin
+    - lead
+    - reviewer
+  privileges:
+    admin: [admin, weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package]
+    lead: [weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package]
+    reviewer: add_package
+```
+
+
+Note the ["User Roles and Privileges" guide](../articles/User_Roles_and_Privileges.html) is entirely dedicated to this config. For full details, please visit & read that article!
 
 <br>
 
-<center>
-![](images/config_credentials.png)
-</center>
-
-Note the ["User Roles and Privileges" guide](../articles/User_Roles_and_Privileges.html) is entirely dedicated to this config. For full details, visit & read that article!
-
-<br>
 
 
 
@@ -181,13 +203,25 @@ Note the ["User Roles and Privileges" guide](../articles/User_Roles_and_Privileg
 
 The **decisions** element contains up to three sub-elements: **categories** (mandatory), **rules**, and **colors**. Here is a snipped from one of the example configurations:
 
-<br>
 
-<center>
-![](images/config_decisions.png)
-</center>
-
-<br>
+```yml
+decisions:
+  categories:
+    - Insignificant Risk
+    - Minor Risk
+    - Moderate Risk
+    - Major Risk
+    - Severe Risk
+  rules:
+    Insignificant Risk:
+      - 0
+      - .1
+    Severe Risk:
+      - .7
+      - 1
+  colors:
+    Moderate Risk: !expr grDevices::rgb(52, 235, 229, maxColorValue = 255)
+```
 
 
 Notice that you can set as many decision `categories` as you wish, but you must specify at least two! If you want to set up automatic decision rules before deploying the app, you can do so using the `rules` element. Just list the category name and underneath it, a mutually exclusive range of values so that when a package is uploaded, if it's risk score falls between those values, it will automatically get labelled with the appropriate decision. Categories not addressed under the `rules` banner will not receive automated decisions. However, users with this privilege can change this configuration in the app at a later time.
@@ -195,6 +229,7 @@ Notice that you can set as many decision `categories` as you wish, but you must 
 Similarly for `colors`, you can detail specific colors be assigned to certain categories. If you don't care what color is used for each category, then a color-blind friendly color palette is used to fill in the rest.
 
 <br>
+
 
 
 
