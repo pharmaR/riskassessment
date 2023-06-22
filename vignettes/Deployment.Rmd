@@ -273,6 +273,8 @@ metric_weights:
 ![](images/deploy_general.png){style="height:220px"}
 </center>
 
+<br>
+
 ### shinyapps.io
 
 Beware: shinyapps.io **does not** offer persistent storage of `riskassessment`'s `SQLite` database or logs. Thus, it **is not** likely a viable deployment option for your organization or group. For example, our [demo application](https://rinpharma.shinyapps.io/riskassessment) (hosted on shinyapps.io) contains a pre-prepared database of packages that can't be permanently altered. It CAN be altered within a session, but any changes **will not** persist outside the session.
