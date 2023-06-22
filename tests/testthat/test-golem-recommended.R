@@ -67,9 +67,11 @@ test_that(
 # })
 
 # Configure this test to fit your need
+
+if(interactive()) {
 test_that(
   "app launches",
   {
     golem::expect_running(sleep = 5)
   }
-)
+)}

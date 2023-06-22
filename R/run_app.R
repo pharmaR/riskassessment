@@ -5,10 +5,6 @@
 #'   can be overwritten to include a specific version name as a text string.
 #' @param login_note a text string to display underneath the auth screen's login
 #'   button, provided to guide users
-#' @param credentials_db_name a text string that names the credentials databse.
-#'   Please make sure name ends with '.sqlite'. For example: 'cred_db.sqlite'.
-#' @param assessment_db_name text string that names the credentials databse.
-#'   Please make sure name ends with '.sqlite'. For example: 'assess_db.sqlite'.
 #' @param ... arguments to pass to golem_opts. See `?golem::get_golem_options`
 #'   for more details.
 #' @inheritParams shiny::shinyApp
@@ -24,14 +20,17 @@ run_app <- function(
   uiPattern = "/",
   app_ver = NULL,
   login_note = NULL,
-  credentials_db_name = NULL,
-  assessment_db_name = NULL,
   ...
 ) {
   # Pre-process some run-app inputs
   if(is.null(app_ver)) app_ver <- paste0(packageVersion("riskassessment"))
+  assessment_db_name <- get_golem_config('assessment_db', file = app_sys("db-config.yml"))
   if(is.null(assessment_db_name)) assessment_db_name <- "database.sqlite"
+  credentials_db_name <- get_golem_config('credential_db', file = app_sys("db-config.yml"))
   if(is.null(credentials_db_name)) credentials_db_name <- "credentials.sqlite"
+  decisions <- get_golem_config('decisions', file = app_sys("db-config.yml"))
+  decision_categories <- if(is.null(decisions) || is.null(decisions$categories)) c("Low Risk", "Medium Risk", "High Risk") else decisions$categories
+  
   if(is.null(login_note)) {
     # https://github.com/rstudio/fontawesome/issues/99
     # Here, we make sure user has a functional version of fontawesome
@@ -50,17 +49,16 @@ run_app <- function(
   if (isFALSE(getOption("golem.app.prod"))) {
     arg_lst <- as.list(match.call())
   
+    login_creds <- list(user_id = "",
+                        user_pwd = "cxk1QEMYSpYcrNB")
   if (!is.null(arg_lst$pre_auth_user)) {
     pre_auth_user <- arg_lst$pre_auth_user
     if (isTRUE(pre_auth_user) || pre_auth_user == "admin") {
-      credentials_db_name <- "credentials_dev.sqlite"
-      login_creds <- list(user_id = "admin",
-                          user_pwd = "cxk1QEMYSpYcrNB")
-    } else if (pre_auth_user == "nonadmin") {
-      credentials_db_name <- "credentials_dev.sqlite"
-      login_creds <- list(user_id = "nonadmin",
-                          user_pwd = "Bt0dHK383lLP1NM")
+      login_creds$user_id <- "admin"
+    } else {
+      login_creds$user_id <- pre_auth_user
     }
+    credentials_db_name <- gsub("\\.sqlite", "_dev\\.sqlite", credentials_db_name)
   }
   }
   
@@ -79,6 +77,7 @@ run_app <- function(
                       assessment_db_name = assessment_db_name,
                       pre_auth_user = pre_auth_user,
                       login_creds = login_creds,
+                      decision_categories = decision_categories,
                       ...)
   )
 }

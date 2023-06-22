@@ -20,9 +20,9 @@ test_that("database has been defined and dbSelect function works", {
   # 4. test s3 class is data.frame
   testthat::expect_s3_class(tbls, "data.frame")
 
-  tbl_names <- c("package", "sqlite_sequence", "metric", "package_metrics", "community_usage_metrics", "comments")
+  tbl_names <- c("package", "sqlite_sequence", "metric", "package_metrics", "community_usage_metrics", "comments", "decision_categories")
   # 5. test all tables have been created
-  testthat::expect_equal(tbls |> dplyr::pull(), tbl_names)
+  testthat::expect_equal(tbls |> dplyr::pull() |> sort(), sort(tbl_names))
 
   query <- "select * FROM [metric] WHERE [class] = 'maintenance' order by [id]"
   metric <- dbSelect(query, file.path(base_path, db_name))

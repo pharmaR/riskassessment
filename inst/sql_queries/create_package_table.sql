@@ -10,6 +10,9 @@ CREATE TABLE IF NOT EXISTS package (
    published_on   CHAR,
    score          REAL,
    weighted_score REAL,
-   decision       CHAR,
-   date_added     DATE
+   decision_id    INT,
+   decision_by    CHAR,
+   decision_date  DATE NULL,
+   date_added     DATE,
+   FOREIGN KEY (decision_id) REFERENCES decision_categories(id)
 );

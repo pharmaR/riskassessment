@@ -24,7 +24,7 @@ test_that("The introJS module works as expected for admins", {
   expect_equal(app$get_value(input = "tabs"), "Upload Package")
   
   # note upload_pkgs 
-  upload_pkgs <- bind_rows(list(upload_pkg, upload_adm, apptab_admn, apptab_steps, sidebar_steps))
+  upload_pkgs <- bind_rows(list(upload_pkg, upload_pkg_add, upload_pkg_delete, upload_pkg_dec_adj, apptab_admn, apptab_steps, sidebar_steps))
   
   app$click("upload_package-introJS-help")
   app$wait_for_idle()
@@ -52,7 +52,7 @@ test_that("The introJS module works as expected for admins", {
   app$click("upload_package-introJS-help")
   app$wait_for_idle()
   
-  upload_pkg_complete <- dplyr::bind_rows(list(upload_pkg, upload_adm, upload_pkg_comp, apptab_admn, apptab_steps, sidebar_steps))
+  upload_pkg_complete <- bind_rows(list(upload_pkg, upload_pkg_add, upload_pkg_delete, upload_pkg_dec_adj, upload_pkg_comp, apptab_admn, apptab_steps, sidebar_steps))
   
   # Verify that all elements exist and are visible
   el_pos <- purrr::map(upload_pkg_complete$element, getBoundingClientRect, appDriver = app)
@@ -99,7 +99,7 @@ test_that("The introJS module works as expected for admins", {
   expect_equal(community_metrics, steps)
   
   app$click(selector = ".introjs-skipbutton")
-  app$set_inputs(tabs = "Report Preview")
+  app$set_inputs(tabs = "Build Report")
   app$wait_for_idle()
   
   app$click("reportPreview-introJS-help")
@@ -137,15 +137,14 @@ test_that("The introJS module works as expected for nonadmins", {
   }
   
   # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps", "nonadmin-app"),
-                                   load_timeout = 600 * 1000)
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps", "nonadmin-app"))
   app$set_window_size(width = 1619, height = 1057)
   app$wait_for_idle()
   
   expect_equal(app$get_value(input = "tabs"), "Upload Package")
   
   # note upload_pkgs 
-  upload_pkgs <- bind_rows(list(upload_pkg, apptab_steps, sidebar_steps))
+  upload_pkgs <- bind_rows(list(upload_pkg, upload_pkg_add, apptab_steps, sidebar_steps))
   
   app$click("upload_package-introJS-help")
   app$wait_for_idle()
@@ -173,7 +172,7 @@ test_that("The introJS module works as expected for nonadmins", {
   app$click("upload_package-introJS-help")
   app$wait_for_idle()
   
-  upload_pkg_complete <- dplyr::bind_rows(list(upload_pkg, upload_pkg_comp, apptab_steps, sidebar_steps))
+  upload_pkg_complete <- dplyr::bind_rows(list(upload_pkg, upload_pkg_add, upload_pkg_comp, apptab_steps, sidebar_steps))
   
   # Verify that all elements exist and are visible
   el_pos <- purrr::map(upload_pkg_complete$element, getBoundingClientRect, appDriver = app)

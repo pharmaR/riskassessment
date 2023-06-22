@@ -43,10 +43,11 @@ sidebarUI <- function(id) {
       div(id = NS(id, "decision-grp"),
         shinyWidgets::sliderTextInput(
           inputId = NS(id, "decision"),
-          h5("Select Overall Risk"), 
+          h5("Select Overall Decision"), 
           selected = NULL,
           grid = TRUE,
-          c("Low", "Medium", "High")
+          if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk"),
+          force_edges = TRUE
         ),
         
         # Action button to reset decision for selected package.
@@ -81,12 +82,15 @@ sidebarUI <- function(id) {
 #' @param id a module id
 #' @param user a username
 #' @param uploaded_pkgs a vector of packages
+#' @param trigger_events a reactive values object to trigger actions here or elsewhere
 #' 
 #' 
 #' @importFrom shinyjs enable disable
 #' @keywords internal
 #' 
-sidebarServer <- function(id, user, uploaded_pkgs) {
+sidebarServer <- function(id, user, uploaded_pkgs, approved_roles, trigger_events) {
+  if (missing(approved_roles))
+    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
   moduleServer(id, function(input, output, session) {
     
     # Required for shinyhelper to work.
@@ -117,7 +121,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     # Get information about selected package.
     selected_pkg <- reactiveValues()
     
-    observeEvent(req(input$select_pkg, user$metrics_reweighted), {
+    observeEvent(req(input$select_pkg, trigger_events$reset_sidebar), {
       pkg_selected <- get_pkg_info(input$select_pkg)
 
       pkg_selected %>%
@@ -153,7 +157,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       if(input$select_ver == "-")
         validate("Please select a version")
       
-      status <- ifelse(selected_pkg$decision == '', "Under Review", "Reviewed")
+      status <- ifelse(is.na(selected_pkg$decision), "Under Review", "Reviewed")
       h5(status)
     })
     
@@ -184,10 +188,10 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       }
       else {
         # Display package comments if a package and version are selected.
-        comments <- dbSelect(glue::glue(
+        comments <- dbSelect(
           "SELECT comment FROM comments
-          WHERE id = '{input$select_pkg}'
-          AND comment_type = 'o'"))$comment
+          WHERE id = {input$select_pkg}
+          AND comment_type = 'o'")$comment
         
         updateTextAreaInput(session, "overall_comment",
                             placeholder = glue::glue('Current Overall Comment: {comments}'))
@@ -227,11 +231,10 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
           )
         ))
       } else {
-        comment <- stringr::str_replace_all(current_comment, "'", "''")
-        dbUpdate(glue::glue(
+        dbUpdate(
           "INSERT INTO comments
-          VALUES ('{selected_pkg$name}', '{user$name}', '{user$role}',
-          '{comment}', 'o', '{getTimeStamp()}')"))
+          VALUES ({selected_pkg$name}, {user$name}, {user$role},
+          {current_comment}, 'o', {getTimeStamp()})")
         
         updateTextAreaInput(session, "overall_comment", value = "",
                             placeholder = glue::glue('Current Comment: {current_comment}'))
@@ -249,18 +252,14 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     observeEvent(input$submit_overall_comment_yes, {
 
       req(selected_pkg$name)
-      
-      comment <- stringr::str_replace_all(input$overall_comment, "'", "''")
 
       dbUpdate(
-        glue::glue(
           "UPDATE comments
-          SET comment = '{comment}', added_on = '{getTimeStamp()}'
-          WHERE id = '{selected_pkg$name}' AND
-          user_name = '{user$name}' AND
-          user_role = '{user$role}' AND
+          SET comment = {input$overall_comment}, added_on = {getTimeStamp()}
+          WHERE id = {selected_pkg$name} AND
+          user_name = {user$name} AND
+          user_role = {user$role} AND
           comment_type = 'o'"
-        )
       )
       current_comment <- trimws(input$overall_comment)
       updateTextAreaInput(session, "overall_comment", value = "",
@@ -283,12 +282,12 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       req(input$select_ver)
       
       # Reset decision if no package/version is selected.
-      if(input$select_pkg == "-" || input$select_ver == "-" || selected_pkg$decision == "") {
+      if(input$select_pkg == "-" || input$select_ver == "-" || is.na(selected_pkg$decision)) {
         shinyWidgets::updateSliderTextInput(
           session,
           "decision",
-          choices = c("Low", "Medium", "High"),
-          selected = 'Low'
+          choices = golem::get_golem_options("decision_categories"),
+          selected = golem::get_golem_options("decision_categories")[1]
         )
         
         validate('Please select a package and a version.')
@@ -300,34 +299,44 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       shinyWidgets::updateSliderTextInput(
         session,
         "decision",
-        choices = c("Low", "Medium", "High"),
+        choices = golem::get_golem_options("decision_categories"),
         selected = selected_pkg$decision
       )
     })
     
     # Enable/disable sidebar decision and comment.
-    observeEvent(req(input$select_ver, user$metrics_reweighted), {
+    observeEvent(req(input$select_ver, trigger_events$reset_sidebar), {
       if (input$select_pkg != "-" && input$select_ver != "-" &&
-          (rlang::is_empty(selected_pkg$decision) || selected_pkg$decision == "")) {
-        shinyjs::enable("decision")
-        shinyjs::enable("submit_decision")
+          (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) {
         shinyjs::enable("overall_comment")
         shinyjs::enable("submit_overall_comment")
         
       } else{
-        shinyjs::disable("decision")
-        shinyjs::disable("submit_decision")
         shinyjs::disable("overall_comment")
         shinyjs::disable("submit_overall_comment")
       }
     }, ignoreInit = TRUE)
     
+    observeEvent(req(input$select_ver, trigger_events$reset_sidebar), {
+      req("final_decision" %in% approved_roles[[user$role]])
+
+      if (input$select_pkg != "-" && input$select_ver != "-" &&
+          (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) {
+        shinyjs::enable("decision")
+        shinyjs::enable("submit_decision")
+
+      } else{
+        shinyjs::disable("decision")
+        shinyjs::disable("submit_decision")
+      }
+    }, ignoreInit = TRUE)
+    
     # Show reset final decision link if user is admin the a final decision has been made.
     observeEvent(selected_pkg$decision, {
-      req(user$role == "admin")
-      
+      req("revert_decision" %in% approved_roles[[user$role]])
+
       if (input$select_pkg == "-" && input$select_ver == "-" ||
-          (rlang::is_empty(selected_pkg$decision) || selected_pkg$decision == "")) {
+          (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) {
         shinyjs::show("submit_decision")
         removeUI(paste0("#", NS(id, "reset_decision")), immediate = TRUE)
       } else {
@@ -339,6 +348,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     # Show a confirmation modal when submitting a decision.
     observeEvent(input$submit_decision, {
       req(input$decision)
+      req("final_decision" %in% approved_roles[[user$role]])
       
       showModal(modalDialog(
         size = "l",
@@ -365,6 +375,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     # Show a confirmation modal when resetting a decision
     observeEvent(input$reset_decision, {
       req(input$decision)
+      req("revert_decision" %in% approved_roles[[user$role]])
       
       showModal(modalDialog(
         size = "l",
@@ -392,10 +403,11 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     
     # Update database info after decision is submitted.
     observeEvent(input$submit_confirmed_decision, {
-      dbUpdate(glue::glue(
-        "UPDATE package
-          SET decision = '{input$decision}'
-          WHERE name = '{selected_pkg$name}'")
+      req("final_decision" %in% approved_roles[[user$role]])
+      
+      dbUpdate("UPDATE package
+          SET decision_id = {match(input$decision, golem::get_golem_options(\"decision_categories\"))}, decision_by = {user$name}, decision_date = {Sys.Date()}
+          WHERE name = {selected_pkg$name}"
       )
       
       selected_pkg$decision <- input$decision
@@ -413,13 +425,18 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     })
     
     observeEvent(input$reset_confirmed_decision, {
-      dbUpdate(glue::glue(
-        "UPDATE package
-          SET decision = ''
-          WHERE name = '{selected_pkg$name}'")
-      )
+      req("revert_decision" %in% approved_roles[[user$role]])
       
-      selected_pkg$decision <- ''
+      dbUpdate("UPDATE package
+          SET decision_id = NULL, decision_by = '', decision_date = NULL
+          WHERE name = {selected_pkg$name}"
+      )
+      # remove overall comment for this package 
+      dbUpdate("DELETE FROM comments 
+           WHERE comment_type = 'o'
+           AND id IN (SELECT {selected_pkg$name} FROM package)")
+      
+      selected_pkg$decision <- NA_character_
       
       shinyjs::enable("decision")
       shinyjs::enable("submit_decision")

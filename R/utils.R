@@ -183,21 +183,23 @@ generate_comm_data <- function(pkg_name){
 }
 
 #' showComments
-#' 
+#'
 #' Displays formatted comments
-#' 
+#'
 #' @param pkg_name string name of the package
 #' @param comments data.frame comments table entry
+#' @param none_txt if there is no text to show in `comments` object, then
+#'   display this text string. Default: "No comments"
 #' @return a formatted string of comments
 #' @keywords internal
 #' @export
-showComments <- function(pkg_name, comments){
+showComments <- function(pkg_name, comments, none_txt = "No comments"){
   if (length(pkg_name) == 0)
     return("")
   
   ifelse(
     length(comments$user_name) == 0, 
-    "No comments",
+    none_txt,
     paste0(
       "<div class='well'>",
       icon("user-tie"), " ", "user: ", comments$user_name, ", ", 
@@ -393,14 +395,20 @@ auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
 #' @param data a data.frame containing monthly download data, built using `generate_comm_data()`. This argument is optional, but if `NULL`, a `pkg_name` must be provided.
 #' @param pkg_name a string of a package name. This parameter is optional. If `pkg_name` is provided, the data argument should be `NULL`.
 #' @returns a plotly object
-#' @examples 
-#' metricGraph <- build_comm_plotly(pkg_name = "ggplot2")
+#' @section Example:
+#' 
+#' \preformatted{
+#'   build_comm_plotly(pkg_name = "ggplot2")
+#' }
+#' 
+#' @section Example Output: 
+#' \if{html}{\figure{build_comm_plotly_ex2.png}{options: width=95\%}}
+#' 
 #' @import dplyr
 #' @importFrom lubridate NA_Date_ interval
 #' @importFrom glue glue
 #' @importFrom plotly plot_ly layout add_segments add_annotations config
 #' @return an interactive plotly object
-#' 
 #' @keywords reproduce
 #' @export
 build_comm_plotly <- function(data = NULL, pkg_name = NULL) {

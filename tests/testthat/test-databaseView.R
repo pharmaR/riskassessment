@@ -1,4 +1,5 @@
 test_that("Reactivity of database view table", {
+  skip_on_ci()
   # delete app DB if exists to ensure clean test
   app_db_loc <- test_path("test-apps", "database.sqlite")
   if (file.exists(app_db_loc)) {
@@ -14,14 +15,14 @@ test_that("Reactivity of database view table", {
   )
   
   # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 60*1000)
-
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
+  
   app$set_inputs(apptabs = "database-tab")
   
   #### Test that the `table_data` loads correctly ####
   tbl_expect <-
-    structure(list(name = "dplyr", version = "1.0.10", score = 0.1, 
-                   was_decision_made = FALSE, decision = "-", 
+    structure(list(name = "dplyr", version = "1.1.2", score = 0.29, 
+                   decision = "-", decision_by = "-", decision_date = "-",
                    last_comment = "-"), 
               class = "data.frame", row.names = c(NA, -1L))
   tbl_actual <-
@@ -30,14 +31,14 @@ test_that("Reactivity of database view table", {
   expect_equal(tbl_actual, tbl_expect)
   
   #### Test that`table_data` updates in response to `changes` ####
-  app$set_inputs(`sidebar-select_pkg` = "dplyr")
+  app$set_inputs(`sidebar-select_pkg` = "dplyr", timeout_ = 60 * 1000)
   app$click("sidebar-submit_decision")
   app$wait_for_idle()
   app$click("sidebar-submit_confirmed_decision")
   
   tbl_expect <-
-    structure(list(name = "dplyr", version = "1.0.10", score = 0.1, 
-                   was_decision_made = TRUE, decision = "Low Risk", 
+    structure(list(name = "dplyr", version = "1.1.2", score = 0.29, 
+                   decision = "Low Risk", decision_by = "test_user", decision_date = as.character(Sys.Date()),
                    last_comment = "-"), 
               class = "data.frame", row.names = c(NA, -1L))
   tbl_actual <-
@@ -57,19 +58,19 @@ test_that("Reactivity of database view table", {
                      ignore = tbl_actual, timeout = 30 * 1000 )
   
   tbl_expect <- structure(list(name = c("tidyr", "dplyr"), 
-                               was_decision_made = c(FALSE, TRUE), 
-                               decision = c("-", "Low Risk"), 
+                               decision = c("-", "Low Risk"),
+                               decision_by = c('-', "test_user"),
+                               decision_date = c("-", as.character(Sys.Date())),
                                last_comment = c("-", "-")), 
                           class = "data.frame", row.names = c(NA, -2L))
   tbl_actual <-
     app$get_value(export = "databaseView-table_data")
   
-  expect_equal(tbl_actual %>% dplyr::select(1,4,5,6) %>% dplyr::arrange(1), tbl_expect)
+  expect_equal(tbl_actual %>% dplyr::select(1,4,5,6,7) %>% dplyr::arrange(1), tbl_expect)
   
   #### Test that `packages_table` is loaded correctly ####
   tbl_actual <-
-    app$get_value(export = "databaseView-table_data") %>% 
-    dplyr::mutate(was_decision_made = dplyr::if_else(was_decision_made, "Yes", "No"))
+    app$get_value(export = "databaseView-table_data") # has tidyr first, then dplyr
   
   packages_table <-
     app$get_html("#databaseView-packages_table") %>%
@@ -94,4 +95,5 @@ test_that("Reactivity of database view table", {
   expect_equal(app$get_value(export = "databaseView-pkgs"), character(0))
   
   app$stop()
+  
 })

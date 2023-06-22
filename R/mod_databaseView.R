@@ -1,12 +1,7 @@
 # Global Risk color palettes.
 # run locally and paste hex codes
 # colorspace::darken(viridisLite::turbo(11, begin = 0.4, end = .8225), .25)
-low_risk_color  <- "#06B756FF"  # 1st
-med_risk_color  <- "#A99D04FF"  # 6th
-high_risk_color <- "#A63E24FF"  # 11th
-setColorPalette <- colorRampPalette(
-  c("#06B756FF","#2FBC06FF","#67BA04FF","#81B50AFF","#96AB0AFF","#A99D04FF",
-    "#B78D07FF","#BE7900FF","#BE6200FF","#B24F22FF","#A63E24FF"))
+setColorPalette <- colorRampPalette(c("#06B756FF","#2FBC06FF","#67BA04FF","#81B50AFF","#96AB0AFF","#A99D04FF","#B78D07FF","#BE7900FF","#BE6200FF","#B24F22FF","#A63E24FF"))
 
 
 #' UI for 'Database View' module
@@ -19,28 +14,42 @@ setColorPalette <- colorRampPalette(
 #' 
 #' @keywords internal
 databaseViewUI <- function(id) {
-  fluidPage(
-    fluidRow(
-      column(
-        width = 8, offset = 2, align = "center",
-        h2("Database Overview", align = "center", `padding-bottom`="20px"),
-        tags$section(
-          br(), br(),
-          shinydashboard::box(width = 12,
-              title = h3("Uploaded Packages", style = "margin-top: 5px"),
-              DT::dataTableOutput(NS(id, "packages_table")),
-              br(),
-              fluidRow(
-                column(
-                  width = 6,
-                  style = "margin: auto;",
-                  mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = TRUE)),
-                column(
-                  width = 6,
-                  mod_downloadHandler_filetype_ui(NS(id, "downloadHandler"))
-                )
-              )))
+  tagList(
+    h2("Database Overview", align = "center", `padding-bottom`="20px"),
+    br(),
+    tabsetPanel(
+      tabPanel(
+        "Uploaded Packages",
+        column(
+          width = 8, offset = 2, align = "center",
+          tags$section(
+            shinydashboard::box(width = 12,
+                                title = h3("Uploaded Packages", style = "margin-top: 5px"),
+                                DT::dataTableOutput(NS(id, "packages_table")),
+                                br(),
+                                h5("Report Configurations"),
+                                br(),
+                                fluidRow(
+                                  column(5,
+                                         mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
+                                         mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
+                                  ),
+                                  column(7, 
+                                         mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
+                                  )
+                                )))
+        )),
+      tabPanel(
+        "Decision Categories",
+        column(
+          width = 8, offset = 2, align = "center",
+          tags$section(
+            shinydashboard::box(width = 12,
+                                title = h3("Decision Categories", style = "margin-top: 5px"),
+                                mod_decision_automation_ui_2("automate")
+                                ))
       ))
+    )
   )
 }
 
@@ -69,6 +78,9 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     
     ns = session$ns
     
+    decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
+    color_lst <- get_colors(golem::get_golem_options("assessment_db_name"))
+    
     # used for adding action buttons to table_data
     shinyInput <- function(FUN, len, id, ...) {
       inputs <- character(len)
@@ -80,22 +92,25 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     
     # Update table_data if a package has been uploaded
     table_data <- eventReactive({uploaded_pkgs(); changes()}, {
-      
+     
       db_pkg_overview <- dbSelect(
-        'SELECT pi.name, pi.version, pi.score, pi.decision, c.last_comment
+        'SELECT pi.name, pi.version, pi.score, dc.decision, pi.decision_by, pi.decision_date, c.last_comment
         FROM package as pi
         LEFT JOIN (
             SELECT id, max(added_on) as last_comment FROM comments GROUP BY id)
         AS c ON c.id = pi.name
+        LEFT JOIN decision_categories as dc
+          ON pi.decision_id = dc.id
         ORDER BY 1 DESC'
       )
       
       db_pkg_overview %>%
         dplyr::mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>%
         dplyr::mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
-        dplyr::mutate(decision = ifelse(decision != "", paste(decision, "Risk"), "-")) %>%
-        dplyr::mutate(was_decision_made = ifelse(decision != "-", TRUE, FALSE)) %>%
-        dplyr::select(name, version, score, was_decision_made, decision, last_comment)
+        dplyr::mutate(decision    = if_else(is.na(decision)    | decision    == "", "-", decision)) %>%
+        dplyr::mutate(decision_by = if_else(is.na(decision_by) | decision_by == "", "-", decision_by)) %>% 
+        dplyr::mutate(decision_date = ifelse(is.na(decision_date) | decision_date == "NA", "-", decision_date)) %>% 
+        dplyr::select(name, version, score, decision, decision_by, decision_date, last_comment)
     })
     
     exportTestValues(
@@ -144,17 +159,14 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                                 "border-radius" = "4px",
                                 "padding-right" = "4px",
                                 "font-weight" = "bold",
-                                "color" = "white",
+                                "color" = ifelse(x %in% decision_lst, "white", "inherit"),
                                 "background-color" = 
-                                  ifelse(x == "High Risk", high_risk_color,
-                                         ifelse(x == "Medium Risk", med_risk_color,
-                                                ifelse(x == "Low Risk", low_risk_color, "transparent"))))),
-            was_decision_made = formattable::formatter("span",
-                                          style = x ~ formattable::style(color = ifelse(x, "#0668A3", "gray")),
-                                          x ~ formattable::icontext(ifelse(x, "ok", "remove"), ifelse(x, "Yes", "No")))
+                                  ifelse(x %in% decision_lst, 
+                                         glue::glue("var(--{risk_lbl(x, input = FALSE)}-color)"), 
+                                         "transparent")))
           )),
         selection = list(mode = 'multiple'),
-        colnames = c("Package", "Version", "Score", "Decision Made?", "Decision", "Last Comment", "Explore Metrics"),
+        colnames = c("Package", "Version", "Score", "Decision", "Decision by", "Decision Date", "Last Comment", "Explore Metrics"),
         rownames = FALSE,
         extensions = "Buttons",
         options = list(
@@ -166,10 +178,10 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
           columnDefs = list(list(className = 'dt-center', targets = "_all")),
           buttons = list(
             list(extend = "excel", text = shiny::HTML('<i class="fas fa-download"></i> Excel'),
-                 exportOptions = list(columns = c(0:5)), # which columns to download
+                 exportOptions = list(columns = c(0:6)), # which columns to download
                  filename = paste("{riskassessment} pkgs " ,stringr::str_replace_all(paste(Sys.time()),":", "."))),
             list(extend = "csv", text = shiny::HTML('<i class="fas fa-download"></i> CSV'),
-                 exportOptions = list(columns = c(0:5)), # which columns to download
+                 exportOptions = list(columns = c(0:6)), # which columns to download
                  filename = paste("{riskassessment} pkgs " ,stringr::str_replace_all(paste(Sys.time()),":", "."))))
         )
         , style="default"
