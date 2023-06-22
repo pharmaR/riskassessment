@@ -180,7 +180,7 @@ metric_weights:
 
 ![](images/SQLite.png){style="float:right; height:80px"}
 
-When the `riskassessment::run_app()` function is ran, the code base will check if the `database.sqlite` file exists, and if it doesn't, [several tables will be initiated](https://github.com/pharmaR/riskassessment/tree/master/inst/app/www/sql_queries) to create this database just before the app launches. Note that the user has the authority to name the database file to whatever they like using the `assessment_db_name` argument in `run_app()`. In addition, you can include a file path here preceding the file name if you wish to move the location of the database away from the root directory.  For example, the following code would create a database called "test_database.sqlite" in the `dev/` folder:
+When the `riskassessment::run_app()` function is ran, the code base will check if the `database.sqlite` file exists, and if it doesn't, [several tables will be initiated](https://github.com/pharmaR/riskassessment/tree/master/inst/sql_queries) to create this database just before the app launches. Note that the user has the authority to name the database file to whatever they like using the `assessment_db_name` argument in `run_app()`. In addition, you can include a file path here preceding the file name if you wish to move the location of the database away from the root directory.  For example, the following code would create a database called "test_database.sqlite" in the `dev/` folder:
 
 ```
 run_app(assessment_db_name = './dev/test_database.sqlite')
