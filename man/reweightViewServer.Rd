@@ -4,7 +4,7 @@
 \alias{reweightViewServer}
 \title{Server logic for the 'Re-weight View' module}
 \usage{
-reweightViewServer(id, user, decision_list)
+reweightViewServer(id, user, decision_list, approved_roles, trigger_events)
 }
 \arguments{
 \item{id}{the module id}
@@ -12,6 +12,8 @@ reweightViewServer(id, user, decision_list)
 \item{user}{the user name}
 
 \item{decision_list}{the list containing the decision automation criteria}
+
+\item{trigger_events}{a reactive values object to trigger actions here or elsewhere}
 }
 \description{
 Server logic for the 'Re-weight View' module

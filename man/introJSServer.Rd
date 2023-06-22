@@ -4,7 +4,7 @@
 \alias{introJSServer}
 \title{Server logic for introJS module}
 \usage{
-introJSServer(id, text, user)
+introJSServer(id, text, user, approved_roles)
 }
 \arguments{
 \item{id}{a module id}

@@ -19,7 +19,17 @@ an interactive plotly object
 \description{
 Responsible for building an interactive \code{{plotly}} graphic containing the trend line for number of CRAN pkg downloads by month.
 }
-\examples{
-metricGraph <- build_comm_plotly(pkg_name = "ggplot2")
+\section{Example}{
+
+
+\preformatted{
+  build_comm_plotly(pkg_name = "ggplot2")
 }
+}
+
+\section{Example Output}{
+
+\if{html}{\figure{build_comm_plotly_ex2.png}{options: width=95\%}}
+}
+
 \keyword{reproduce}

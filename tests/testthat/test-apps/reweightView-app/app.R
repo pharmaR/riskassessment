@@ -13,8 +13,9 @@ server <- function(input, output, session) {
     role = "admin"
   )
   
-  auto_json <- jsonlite::read_json("auto_decisions.json")
+  auto_json <- list()
   auto_list <- reactiveVal(auto_json)
+  trigger_events <- reactiveValues()
   
   exportTestValues(
     metric_weights = {
@@ -22,7 +23,7 @@ server <- function(input, output, session) {
     }
   )
   
-  metric_weights <- riskassessment:::reweightViewServer("reweightInfo", user, auto_list)
+  metric_weights <- riskassessment:::reweightViewServer("reweightInfo", user, auto_list,, trigger_events)
 }
 
 shinyApp(ui, server)

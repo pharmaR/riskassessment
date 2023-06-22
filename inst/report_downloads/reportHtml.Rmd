@@ -1,8 +1,8 @@
 ---
-title:    "<span class='txtasis'>R Package Risk Assessment  </span>"
+title:    "<span class='txtasis'>R Package Risk Assessment</span>"
 subtitle: "<span class='txtasis'>Report for Package: `r params$pkg[['name']]`</span>"
-author:   "<span class='txtasis'>Author (Role): `r params$user_name` (`r params$user_role `)</span>"
-date:     "<span class='txtasis'>Report Date: `r format(Sys.time(), '%B %d, %Y')`</span>"
+author:   "<span class='txtasis'> `r if('Report Author' %in% params$report_includes) paste0('Author (Role): ', params$user_name, ' (', params$user_role, ')') else ''`</span>"
+date:     "<span class='txtasis'> `r if('Report Date' %in% params$report_includes) paste0('Report Date: ', format(Sys.time(), '%B %d, %Y')) else ''`</span>"
 always_allow_html: true
 classoption: portrait
 output: 
@@ -14,12 +14,14 @@ output:
 runtime: shiny
 params:
   pkg: NA
+  report_includes: NA
   riskmetric_version: NA
   app_version: NA
   metric_weights: NA
   user_name: NA
   user_role: NA
   overall_comments: NA
+  pkg_summary: NA
   mm_comments: NA
   cm_comments: NA
   maint_metrics: NA
@@ -175,70 +177,116 @@ tagList(
   h6('Maintainer:'), params$pkg$maintainer,
   h6('License:'), params$pkg$license,
   h6('Published:'), params$pkg$published,
-  h6('Risk Score:'), params$pkg$score,
-  h6('Overall Risk:'), ifelse(params$pkg$decision == '', 'Pending', params$pkg$decision)
+  if('Risk Score' %in% params$report_includes) tagList(h6('Risk Score:'), params$pkg$score) else "",
+  h6('Package Decision:'), ifelse(is.na(params$pkg$decision), 'Pending', params$pkg$decision)
 )
 ```
 
 
 ```{r overall_comments}
-tagList(
-  h5('Overall Comments', style = "padding-bottom:10px;"),
-  wellPanel(
-    HTML(showComments(
-      pkg_name = params$pkg$name,
-      comments = params$overall_comments))
+if('Overall Comment' %in% params$report_includes){
+  tagList(
+    br(),
+    h5('Overall Comment', style = "padding-bottom:10px;"),
+    wellPanel(
+      HTML(showComments(
+        pkg_name = params$pkg$name,
+        comments = params$overall_comments))
+    )
   )
-)
+}
+
 ```
 
-<br>
-<hr>
-<br>
+```{r pkg_summary}
+if('Package Summary' %in% params$report_includes){
+  tagList(
+    br(),
+    h5('Package Summary', style = "padding-bottom:10px;"),
+    wellPanel(
+      HTML(showComments(
+        pkg_name = params$pkg$name,
+        comments = params$pkg_summary,
+        none_txt = "No summary"))
+    )
+  )
+}
+```
+
 
 ```{r maintenance_metrics}
 tagList(
-  br(),
-  h5("Maintenance Metrics", style = "text-align: center;"),
-  br(), br(),
-  createGrid(metrics = params$maint_metrics),
-  br(), br(),
-  h5('Comments', style = "padding-bottom:10px;"),
-  wellPanel(
-    HTML(showComments(
-      pkg_name = params$pkg$name,
-      comments = params$mm_comments))
-  )
+  if(any(c('Maintenance Metrics', 'Maintenance Comments') %in% params$report_includes)) {
+    tagList(
+      br(),
+      hr(),
+      br(), br(),
+      h5("Maintenance Metrics", style = "text-align: center;"),
+      br()
+    )
+  } else "",
+  if('Maintenance Metrics' %in% params$report_includes){
+    tagList(
+      br(),
+      createGrid(metrics = params$maint_metrics),
+      br()
+    )
+  } else "",
+  if('Maintenance Comments' %in% params$report_includes){
+    tagList(
+      br(),
+      h5('Comments', style = "padding-bottom:10px;"),
+      wellPanel(
+        HTML(showComments(
+          pkg_name = params$pkg$name,
+          comments = params$mm_comments))
+      )
+    )
+  } else ""
 )
 ```
 
-<br>
-<hr>
-<br>
 
 ```{r community_metrics, warning=FALSE, message=FALSE}
 tagList(
-  br(),
-  h5("Community Usage Metrics", style = "text-align: center;"),
+  if(any(c('Community Usage Metrics', 'Community Usage Comments') %in% params$report_includes)) {
+    tagList(
+      br(),
+      hr(),
+      br(), br(),
+      h5("Community Usage Metrics", style = "text-align: center;"),
+      br()
+    )
+  } else "",
   if (nrow(params$com_metrics) == 0) {
     h6(glue::glue("Community Usage Metrics not avaiable for {params$pkg$name}"),
        style = "text-align: center; color: gray; padding-top: 50px;")
   } else {
     tagList(
-  br(), br(),
-  createGrid(metrics = params$com_metrics),
-  br(), br(),
-  fluidRow(
-    column(width = 12, style = 'padding-left: 20px; padding-right: 20px;',
-           params$downloads_plot_data,
-           height = "500px")),
-  br(), br(),
-  h5('Comments', style = "padding-bottom:10px;"),
-  wellPanel(
-    HTML(showComments(
-      pkg_name = params$pkg$name,
-      comments = params$cm_comments))
-  ))
+      if('Community Usage Metrics' %in% params$report_includes){
+        tagList(
+          br(),
+          createGrid(metrics = params$com_metrics),
+          br(),
+          fluidRow(
+            column(width = 12, style = 'padding-left: 20px; padding-right: 20px;',
+                   params$downloads_plot_data,
+                   height = "500px")
+            ),
+          br()
+        )
+      } else "",
+      if('Community Usage Comments' %in% params$report_includes){
+        tagList(
+          br(),
+          h5('Comments', style = "padding-bottom:10px;"),
+          wellPanel(
+            HTML(showComments(
+              pkg_name = params$pkg$name,
+              comments = params$cm_comments))
+          ))
+      } else ""
+    )
   }
 )
 ```
@@ -253,12 +301,16 @@ tagList(
   strong('{riskassessment} App Version:'), br(), getElement(params, 'app_version'), br(), br(),
   strong('{riskmetric} Version:'), br(), getElement(params, 'riskmetric_version'), br(), br(),
   strong('Generated on:'), br(), format(Sys.time(), usetz = TRUE), br(), br(),
-  strong('Metric Weights:')
+  if('Risk Score' %in% params$report_includes) strong('Metric Weights:') else ""
 )
 
-DT::datatable(params$metric_weights,
-          options = list(searching = FALSE, pageLength = 15,
-                         lengthChange = FALSE, info = FALSE))
+if('Risk Score' %in% params$report_includes) {
+  DT::datatable(params$metric_weights,
+          options = list(dom = "t", searching = FALSE, pageLength = -1,
+                         lengthChange = FALSE, info = FALSE, 
+                         columnDefs = list(list(className = 'dt-center', targets = 2))))
+}
+
 ```
 
 <style>

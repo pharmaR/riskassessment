@@ -13,17 +13,16 @@ test_that("Comments can be added via the addComment module", {
     test_db_loc,
     app_db_loc
   )
+  
+  # set up new app driver object
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
+  app$wait_for_idle()
 
-  # confirm no comments exist in the database
-  con <- DBI::dbConnect(RSQLite::SQLite(), app_db_loc)
-  comments <- DBI::dbGetQuery(con, "select * from comments")
+  comments <- dbSelect("select * from comments", app_db_loc)
   expect_equal(
     nrow(comments),
     0
   )
-  
-  # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 600*1000)
 
   # select dplyr package
   app$set_inputs(`sidebar-select_pkg` = "dplyr")
@@ -89,7 +88,7 @@ test_that("Comments can be added via the addComment module", {
   )
   
   # confirm comment is in database and has correct metadata
-  comments <- DBI::dbGetQuery(con, "select * from comments")
+  comments <- dbSelect("select * from comments", app_db_loc)
   expect_equal(
     nrow(comments),
     1
@@ -99,13 +98,7 @@ test_that("Comments can be added via the addComment module", {
     maintenance_comment
   )
   
-  # close connection
-  DBI::dbDisconnect(con)
-  
-  if (file.exists(app_db_loc)) {
-    file.remove(app_db_loc)
-  }
-  
+
 })
 
 
@@ -125,7 +118,8 @@ test_that("Comment input box is rendered according to the tab and user state", {
   )
 
   # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 600*1000)
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
+  app$wait_for_idle()
   
   # select dplyr package
   app$set_inputs(`sidebar-select_pkg` = "dplyr")

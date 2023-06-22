@@ -15,6 +15,7 @@ reweightViewUI <- function(id) {
 #' @param id the module id
 #' @param user the user name
 #' @param decision_list the list containing the decision automation criteria
+#' @param trigger_events a reactive values object to trigger actions here or elsewhere
 #' 
 #' 
 #' @import dplyr
@@ -25,7 +26,9 @@ reweightViewUI <- function(id) {
 #' @importFrom RSQLite SQLite sqliteCopyDatabase
 #' 
 #' @keywords internal
-reweightViewServer <- function(id, user, decision_list) {
+reweightViewServer <- function(id, user, decision_list, approved_roles, trigger_events) {
+  if (missing(approved_roles))
+    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
   moduleServer(id, function(input, output, session) {
     
     exportTestValues(
@@ -41,11 +44,11 @@ reweightViewServer <- function(id, user, decision_list) {
     
     curr_new_wts <- reactiveVal(
       get_metric_weights() %>%
-        dplyr::mutate(new_weight = weight) %>%
-        dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
+        dplyr::mutate(new_weight = weight)
+      )
     
     observeEvent(input$update_weight, {
-      req(user$role == "admin")
+      req("weight_adjust" %in% approved_roles[[user$role]])
       curr_new_wts(save$data %>%
                      dplyr::mutate(new_weight = ifelse(name == isolate(input$metric_name),
                                                        isolate(input$metric_weight), new_weight)))
@@ -100,7 +103,7 @@ reweightViewServer <- function(id, user, decision_list) {
                        numericInput(NS(id, "metric_weight"), "Choose new weight", min = 0, value = curr_new_wts()$new_weight[1]) ),
                 column(width = 1,
                        br(),
-                       actionButton(NS(id, "update_weight"), "Update weight", class = "btn-secondary") ) ),
+                       actionButton(NS(id, "update_weight"), "Confirm", class = "btn-secondary") ) ),
               br(), br(), 
               fluidRow(
                 column(width = 3, offset = 1, align = "center",
@@ -119,7 +122,7 @@ reweightViewServer <- function(id, user, decision_list) {
                        br(), br(),
                        
                        h3("Apply new weights and re-calculate risk for each package"),
-                       actionButton(NS(id, "update_pkg_risk"), "Re-calculate", class = "btn-secondary")
+                       actionButton(NS(id, "update_pkg_risk"), "Update", class = "btn-secondary")
                        
                 ),
                 column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
@@ -128,21 +131,11 @@ reweightViewServer <- function(id, user, decision_list) {
                        DT::dataTableOutput(NS(id, "weights_table")))
               ),
               br(), br(), br(),
-              conditionalPanel("input.metric_name === 'covr_coverage'",
-                               ns = NS(id),
-                               fluidRow(
-                                 column(1),
-                                 column(width = 10, h5(em("Note: the 'covr_coverage' metric is currently disabled (weight = 0) until the 'riskmetric' package returns a non-NA value for this metric. 
-               "), style = "color: red;"), align = "center"),
-                                 column(1)
-                               ),
-                               br()
-              ),
               fluidRow(
                 column(width = 1),
                 column(width = 10,
                        h5(em("Note: Changing the weights of the metrics will not update the
-               risk of the packages on the database until 'Re-calculate' button is selected.
+               risk of the packages on the database until 'Update' button is selected.
                ")), align = "center"),
                 column(width = 1)
               ),
@@ -152,22 +145,18 @@ reweightViewServer <- function(id, user, decision_list) {
       )
     })
     
-    metric_weight <- debounce(reactive(input$metric_weight), 500)
-    
     observeEvent(input$metric_weight, {
-      shinyjs::disable("update_weight")
-    })
-    observeEvent(metric_weight(), {
       req(input$metric_name)
       
-      if (input$metric_name == "covr_coverage" && (is.na(metric_weight()) || metric_weight() != 0)) {
+      if (is.na(input$metric_weight) || input$metric_weight < 0) {
+        shinyjs::disable("update_weight")
         updateNumericInput(session, "metric_weight", value = 0)
-      } else if (is.na(metric_weight()) || metric_weight() < 0) {
-        updateNumericInput(session, "metric_weight", value = 0)
-      } else if (metric_weight() != curr_new_wts() %>%
+      } else if (input$metric_weight != curr_new_wts() %>%
                  dplyr::filter(name == input$metric_name) %>%
                  dplyr::pull(new_weight)){
         shinyjs::enable("update_weight")
+      } else {
+        shinyjs::disable("update_weight")
       }
     })
     
@@ -193,20 +182,14 @@ reweightViewServer <- function(id, user, decision_list) {
     
     # Update metric weight dropdown so that it matches the metric name.
     observeEvent(input$metric_name, {
-      req(user$role == "admin")
+      req("weight_adjust" %in% approved_roles[[user$role]])
       
-      if(input$metric_name == "covr_coverage"){
-        # set to zero, don't allow change until riskmetric fixes this assessment
-        updateNumericInput(session, "metric_weight",
-                           value = 0, min = 0, max = 0)
-      } else {
-        updateNumericInput(session, "metric_weight",
-                           value = curr_new_wts() %>%
-                             dplyr::filter(name == input$metric_name) %>%
-                             dplyr::select(new_weight) %>% # new weight
-                             dplyr::pull())
-      }
-      
+      shinyjs::disable("update_weight")
+      updateNumericInput(session, "metric_weight",
+                         value = curr_new_wts() %>%
+                           dplyr::filter(name == input$metric_name) %>%
+                           dplyr::select(new_weight) %>% # new weight
+                           dplyr::pull())
     })
     
     
@@ -214,14 +197,14 @@ reweightViewServer <- function(id, user, decision_list) {
     # Note that another of the observeEvents will update the metric weight after
     # the selected metric name is updated.
     observeEvent(input$weights_table_rows_selected, {
-      req(user$role == "admin")
+      req("weight_adjust" %in% approved_roles[[user$role]])
       updateSelectInput(session, "metric_name",
                         selected = curr_new_wts()$name[input$weights_table_rows_selected])
     })
     
     # Save new weight into db.
     observeEvent(input$update_pkg_risk, {
-      req(user$role == "admin")
+      req("weight_adjust" %in% approved_roles[[user$role]])
       
       # if you the user goes input$back2dash, then when they return to the 
       if(n_wts_chngd() == 0){
@@ -258,8 +241,10 @@ reweightViewServer <- function(id, user, decision_list) {
     
     # Upon confirming the risk re-calculation
     observeEvent(input$confirm_update_risk, {
-      req(user$role == "admin")
+      req("weight_adjust" %in% approved_roles[[user$role]])
       removeModal()
+      
+      trigger_events[["reset_pkg_upload"]] <- trigger_events[["reset_pkg_upload"]] + 1
       
       # Update the weights in the `metric` table to reflect recent changes
       # First, which weights are different than the originals?
@@ -273,11 +258,20 @@ reweightViewServer <- function(id, user, decision_list) {
       rlang::inform(paste(wt_chgd_metric, ": ", wt_chgd_wt))
       purrr::walk2(wt_chgd_metric, wt_chgd_wt, ~update_metric_weight(.x, .y))
       
+      curr_new_wts(
+        get_metric_weights() %>%
+          dplyr::mutate(new_weight = weight)
+      )
+      
+      trigger_events$reset_sidebar <- trigger_events$reset_sidebar + 1
+      
       # update for each package
       all_pkgs <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")
+      req(nrow(all_pkgs) > 0) # Stops re-weighting execution when no packages are in the database which crashes the app.
+      
       cmt_or_dec_pkgs <- unique(dplyr::bind_rows(
         dbSelect("SELECT DISTINCT id AS pkg_name FROM comments where comment_type = 'o'"),
-        dbSelect("SELECT DISTINCT name AS pkg_name FROM package where decision != ''")
+        dbSelect("SELECT DISTINCT name AS pkg_name FROM package where decision_id IS NOT NULL")
       ))
       
       cmt_or_dec_dropped_cmt <- " Since they may no longer be applicable, the final decision & comment have been dropped to allow for re-evaluation."
@@ -289,25 +283,20 @@ reweightViewServer <- function(id, user, decision_list) {
         # insert comment for both mm and cum tabs
         for (typ in c("mm","cum")) {
           dbUpdate(
-            paste0(
-              "INSERT INTO comments values('", all_pkgs$pkg_name[i], "',",
-              "'", user$name, "'," ,
-              "'", user$role, "',",
-              "'", paste0(weight_risk_comment(all_pkgs$pkg_name[i]), 
-                          ifelse(all_pkgs$pkg_name[i] %in% cmt_or_dec_pkgs$pkg_name, cmt_or_dec_dropped_cmt, "")), "',",
-              "'", typ, "',",
-              "'", getTimeStamp(), "'" ,
-              ")"
-            )
+            'INSERT INTO comments
+            VALUES({all_pkgs$pkg_name[i]}, {user$name}, {user$role},
+            {paste0(weight_risk_comment(all_pkgs$pkg_name[i]), 
+                          ifelse(all_pkgs$pkg_name[i] %in% cmt_or_dec_pkgs$pkg_name, cmt_or_dec_dropped_cmt, ""))},
+            {typ}, {getTimeStamp()})'
           )
         }
       }
       
       # Reset any decisions made prior to this.
-      pkg <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package WHERE decision != ''")
+      pkg <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package WHERE decision_id IS NOT NULL")
       if (nrow(pkg) > 0) {
         for (i in 1:nrow(pkg)) {
-          dbUpdate(glue::glue("UPDATE package SET decision = '' where name = '{pkg$pkg_name[i]}'"))
+          dbUpdate("UPDATE package SET decision_id = NULL where name = {pkg$pkg_name[i]}")
         }
       }
       
@@ -322,11 +311,8 @@ reweightViewServer <- function(id, user, decision_list) {
         shinyjs::runjs("$('<br>').insertAfter('.progress-message');")
         for (i in 1:nrow(pkg)) {
           incProgress(1 / (nrow(pkg) + 1), detail = pkg$pkg_name[i])
-          dbUpdate(glue::glue(
-            "DELETE FROM package_metrics WHERE package_id = 
-            (SELECT id FROM package WHERE name = '{pkg$pkg_name[i]}')") )
           # metric_mm_tm_Info_upload_to_DB(pkg$pkg_name[i])
-          insert_riskmetric_to_db(pkg$pkg_name[i])
+          rescore_package(pkg$pkg_name[i])
           if (!rlang::is_empty(decision_list())) {
               assign_decisions(decision_list(), pkg$pkg_name[i])
           }
@@ -335,13 +321,6 @@ reweightViewServer <- function(id, user, decision_list) {
       
       showNotification(id = "show_notification_id", "Updates completed", type = "message", duration = 1)
       shinyjs::runjs("$('.shiny-notification').css('width', '450px');")
-      
-      curr_new_wts(
-        get_metric_weights() %>%
-          dplyr::mutate(new_weight = weight) %>%
-          dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)))
-      
-      user$metrics_reweighted <- user$metrics_reweighted + 1
     }, ignoreInit = TRUE)
     
     

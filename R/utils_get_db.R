@@ -3,31 +3,33 @@
 #' 
 #' @param query a sql query as a string
 #' @param db_name character name (and file path) of the database
+#' @param .envir Environment to evaluate each expression in
 #' 
 #' @import dplyr
 #' @importFrom DBI dbConnect dbSendQuery dbFetch dbClearResult dbDisconnect
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
+#' @importFrom glue glue glue_sql
 #' 
 #' @returns a data frame
 #'
 #' @noRd
-dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_name')){
+dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_name'), .envir = parent.frame()){
   errFlag <- FALSE
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   tryCatch(
     expr = {
-      rs <- DBI::dbSendQuery(con, query)
+      rs <- DBI::dbSendQuery(con, glue::glue_sql(query, .envir = .envir, .con = con))
     },
     warning = function(warn) {
-      message <- paste0("warning:\n", query, "\nresulted in\n", warn)
+      message <- glue::glue("warning:\n {query} \nresulted in\n {warn}")
       message(message, .loggit = FALSE)
       loggit::loggit("WARN", message, echo = FALSE)
       errFlag <<- TRUE
     },
     error = function(err) {
-      message <- paste0("error:\n", query, "\nresulted in\n",err)
+      message <- glue::glue("error:\n {query} \nresulted in\n {err}")
       message(message, .loggit = FALSE)
       loggit::loggit("ERROR", message, echo = FALSE)
       DBI::dbDisconnect(con)
@@ -62,9 +64,27 @@ dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_na
 #' @returns a data frame
 #' @noRd
 get_overall_comments <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
-  dbSelect(glue::glue(
+  dbSelect(
     "SELECT * FROM comments 
-     WHERE comment_type = 'o' AND id = '{pkg_name}'"), db_name
+     WHERE comment_type = 'o' AND id = {pkg_name}", db_name
+  )
+}
+
+#' The 'Get Package Summary' function
+#' 
+#' Retrieves the package summary "comment" for a specific package
+#' 
+#' @param pkg_name character name of the package
+#' @param db_name character name (and file path) of the database
+#' 
+#' @importFrom glue glue
+#' 
+#' @returns a data frame
+#' @noRd
+get_pkg_summary <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
+  dbSelect(
+    "SELECT * FROM comments 
+     WHERE comment_type = 's' AND id = {pkg_name}", db_name
   )
 }
 
@@ -83,11 +103,10 @@ get_overall_comments <- function(pkg_name, db_name = golem::get_golem_options('a
 #' @noRd 
 get_mm_comments <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
   dbSelect(
-    glue::glue(
       "SELECT user_name, user_role, comment, added_on
        FROM comments
-       WHERE id = '{pkg_name}' AND comment_type = 'mm'"
-    ), db_name
+       WHERE id = {pkg_name} AND comment_type = 'mm'"
+    , db_name
   ) %>%
     purrr::map(rev)
 }
@@ -107,11 +126,10 @@ get_mm_comments <- function(pkg_name, db_name = golem::get_golem_options('assess
 #' @noRd
 get_cm_comments <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
   dbSelect(
-    glue::glue(
       "SELECT user_name, user_role, comment, added_on
        FROM comments
-       WHERE id = '{pkg_name}' AND comment_type = 'cum'"
-    ), db_name
+       WHERE id = {pkg_name} AND comment_type = 'cum'"
+    , db_name
   ) %>%
     purrr::map(rev)
 }
@@ -130,13 +148,13 @@ get_cm_comments <- function(pkg_name, db_name = golem::get_golem_options('assess
 #' @returns a data frame
 #' @noRd
 get_mm_data <- function(pkg_id, db_name = golem::get_golem_options('assessment_db_name')){
-  dbSelect(glue::glue(
+  dbSelect(
     "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
                     metric.is_url, package_metrics.value
                     FROM metric
                     INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
-                    WHERE package_metrics.package_id = '{pkg_id}' AND 
-                    metric.class = 'maintenance' ;"), db_name) %>%
+                    WHERE package_metrics.package_id = {pkg_id} AND 
+                    metric.class = 'maintenance' ;", db_name) %>%
     dplyr::mutate(
       title = long_name,
       desc = description,
@@ -160,10 +178,10 @@ get_mm_data <- function(pkg_id, db_name = golem::get_golem_options('assessment_d
 #' @returns a data frame
 #' @noRd
 get_comm_data <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')){
-  dbSelect(glue::glue(
+  dbSelect(
     "SELECT *
      FROM community_usage_metrics
-     WHERE id = '{pkg_name}'"), db_name
+     WHERE id = {pkg_name}", db_name
   )
 }
 
@@ -179,10 +197,12 @@ get_comm_data <- function(pkg_name, db_name = golem::get_golem_options('assessme
 #' @returns a data frame
 #' @noRd
 get_pkg_info <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')){
-  dbSelect(glue::glue(
-    "SELECT *
-     FROM package
-     WHERE name = '{pkg_name}'"), db_name
+  dbSelect(
+    "SELECT p.*, dc.decision
+     FROM package p
+     LEFT JOIN decision_categories dc
+      ON p.decision_id = dc.id
+     WHERE name = {pkg_name}", db_name
   )
 }
 
@@ -219,11 +239,11 @@ get_metric_weights <- function(db_name = golem::get_golem_options('assessment_db
 #' @noRd
 weight_risk_comment <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
   
-  pkg_score <- dbSelect(glue::glue(
+  pkg_score <- dbSelect(
     "SELECT score
      FROM package
-     WHERE name = '{pkg_name}'"
-  ), db_name)
+     WHERE name = {pkg_name}"
+  , db_name)
   
   glue::glue('Metric re-weighting has occurred.
        The previous risk score was {pkg_score}.')
