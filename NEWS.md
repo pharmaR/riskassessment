@@ -28,6 +28,7 @@
 * Fixed button alignment issues (#514)
 * Re-positioned footer to be at the bottom of the visible page (#518)
 * Added a new check that conditionally delivers message about differing pkg versions ONLY when CSV file is loaded (#515)
+* Fixed broken links in docs
 
 ### Docs
 * Updated help files for `build_comm_plotly()` to include example output (#409).
