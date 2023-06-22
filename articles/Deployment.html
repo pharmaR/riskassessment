@@ -194,8 +194,8 @@ fork the <a href="https://github.com/pharmaR/riskassessment" class="external-lin
 <p><br></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">default</span><span class="kw">:</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">assessment_db</span><span class="kw">:</span><span class="at"> database.sqlite</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">credential_db</span><span class="kw">:</span><span class="at"> credentials.sqlite</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">loggit_json</span><span class="kw">:</span><span class="at"> loggit.json</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">loggit_json</span><span class="kw">:</span><span class="at"> loggit.json</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">credential_db</span><span class="kw">:</span><span class="at"> credentials.sqlite</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">credentials</span><span class="kw">:</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">roles</span><span class="kw">:</span></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> admin</span></span>
@@ -213,102 +213,22 @@ fork the <a href="https://github.com/pharmaR/riskassessment" class="external-lin
 <span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">metric_weights</span><span class="kw">:</span></span>
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">covr_coverage</span><span class="kw">:</span><span class="at"> </span><span class="dv">0</span></span></code></pre></div>
 <p><br></p>
-<div class="section level4">
-<h4 id="credentials-configuration">Credentials configuration<a class="anchor" aria-label="anchor" href="#credentials-configuration"></a>
-</h4>
-<p>The <strong>credentials</strong> element contains two sub-elements:
-<strong>roles</strong> and <strong>privileges</strong>. Here is a
-snippet of the default configuration to showcase how you might go about
-designing your own configuration:</p>
-<p><br></p>
-<center>
-<img src="images/config_credentials.png">
-</center>
-<p>Note the <a href="../articles/User_Roles_and_Privileges.html">“User
-Roles and Privileges” guide</a> is entirely dedicated to this config.
-For full details, visit &amp; read that article!</p>
-<p><br></p>
-</div>
-<div class="section level4">
-<h4 id="decisions-configuration">Decisions configuration<a class="anchor" aria-label="anchor" href="#decisions-configuration"></a>
-</h4>
-<p>The <strong>decisions</strong> element contains up to three
-sub-elements: <strong>categories</strong> (mandatory),
-<strong>rules</strong>, and <strong>colors</strong>. Here is a snipped
-from one of the example configurations:</p>
-<p><br></p>
-<center>
-<img src="images/config_decisions.png">
-</center>
-<p><br></p>
-<p>Notice that you can set as many decision <code>categories</code> as
-you wish, but you must specify at least two! If you want to set up
-automatic decision rules before deploying the app, you can do so using
-the <code>rules</code> element. Just list the category name and
-underneath it, a mutually exclusive range of values so that when a
-package is uploaded, if it’s risk score falls between those values, it
-will automatically get labelled with the appropriate decision.
-Categories not addressed under the <code>rules</code> banner will not
-receive automated decisions. However, users with this privilege can
-change this configuration in the app at a later time.</p>
-<p>Similarly for <code>colors</code>, you can detail specific colors be
-assigned to certain categories. If you don’t care what color is used for
-each category, then a color-blind friendly color palette is used to fill
-in the rest.</p>
-<p><br></p>
-</div>
-<div class="section level4">
-<h4 id="metric-weights-configuration">Metric weights configuration<a class="anchor" aria-label="anchor" href="#metric-weights-configuration"></a>
-</h4>
-<p>The <strong>metric_weights</strong> element contains the named list
-of weights. If a weight is not supplied, it will default to 1. The
-current list of weights that can be included are the following:
-has_vignettes, has_news, news_current, has_bug_reports_url, has_website,
-has_maintainer, has_source_control, export_help, bugs_status, license,
-covr_coverage, downloads_1yr. As seen above, the default configuration
-sets the weight for <code>covr_coverage</code> to 0. If you want to
-ignore a certain metric because it has little value to our organization,
-you could give it a value of zero.</p>
-<p>When metrics are not explicitly given here, the app uses the default
-weight of 1 for each, unless of course there already exists a assessment
-database previously initialized where those metric weights were manually
-changed. If you wanted to toggle all current metrics, there is no harm
-in stating each metric and weight, so you could set up the config file
-to look like this, for example:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">metric_weights</span><span class="kw">:</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_vignettes</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_news</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.5</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">news_current</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_bug_reports_url</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_website</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_maintainer</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_source_control</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">export_help</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">bugs_status</span><span class="kw">:</span><span class="at"> </span><span class="dv">5</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">license</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">downloads_1yr.</span><span class="kw">:</span><span class="at"> </span><span class="dv">3</span></span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">covr_coverage</span><span class="kw">:</span><span class="at"> </span><span class="dv">0</span></span></code></pre></div>
-<p><a href="https://pharmar.github.io/riskmetric/" class="external-link">riskmetric</a> will use these weights to score your
-package according to our org’s needs!</p>
-<p><br></p>
-</div>
-</div>
-<div class="section level2">
-<h2 id="the-database-sqlite-file">The <code>database.sqlite</code> file<a class="anchor" aria-label="anchor" href="#the-database-sqlite-file"></a>
-</h2>
+<div class="section level3">
+<h3 id="configuring-the-assessment-database">Configuring the assessment database<a class="anchor" aria-label="anchor" href="#configuring-the-assessment-database"></a>
+</h3>
 <p><img src="images/SQLite.png" style="float:right; height:80px"></p>
 <p>When the <code><a href="../reference/run_app.html">riskassessment::run_app()</a></code> function is ran, the
-code base will check if the <code>database.sqlite</code> file exists,
-and if it doesn’t, <a href="https://github.com/pharmaR/riskassessment/tree/master/inst/app/www/sql_queries" class="external-link">several
+code base will check if an assessment sqlite file exists by the name you
+give it (default is <code>database.sqlite</code>) and if it doesn’t, <a href="https://github.com/pharmaR/riskassessment/tree/master/inst/sql_queries" class="external-link">several
 tables will be initiated</a> to create this database just before the app
 launches. Note that the user has the authority to name the database file
-to whatever they like using the <code>assessment_db_name</code> argument
-in <code><a href="../reference/run_app.html">run_app()</a></code>. In addition, you can include a file path here
-preceding the file name if you wish to move the location of the database
-away from the root directory. For example, the following code would
-create a database called “test_database.sqlite” in the <code>dev/</code>
-folder:</p>
-<pre><code><span class="fu"><a href="../reference/run_app.html">run_app</a></span><span class="op">(</span>assessment_db_name <span class="op">=</span> <span class="st">'./dev/test_database.sqlite'</span><span class="op">)</span></code></pre>
+to whatever they like using the <code>inst/db-config.yml</code> file.
+There, you can include a file path preceding the file name if you wish
+to move the location of the database away from the root directory. For
+example, the following code would create a database called
+“database.sqlite” in the <code>dev/</code> folder:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">default</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">assessment_db</span><span class="kw">:</span><span class="at"> ./dev/database.sqlite</span></span></code></pre></div>
 <p>At the time this vignette was authored, the database will initialize
 the following tables with all <code>NULL</code> values:</p>
 <ul>
@@ -338,13 +258,13 @@ copy of your current database file in another directory for backup
 purposes.</p>
 <p><br></p>
 </div>
-<div class="section level2">
-<h2 id="the-loggit-json-file">The <code>loggit.json</code> file<a class="anchor" aria-label="anchor" href="#the-loggit-json-file"></a>
-</h2>
+<div class="section level3">
+<h3 id="database-log-file-config">Database log file config<a class="anchor" aria-label="anchor" href="#database-log-file-config"></a>
+</h3>
 <p>As mentioned previously, the <code>loggit.json</code> file is
 initiated to track general actions performed in the application,
-especially those that would impact a change in the
-<code>database.sqlite</code> file. At the time this vignette was
+especially those that would reflect a change in the assessment db
+(<code>database.sqlite</code> file). At the time this vignette was
 authored, here’s a summary of actions logged:</p>
 <ul>
 <li>App start up</li>
@@ -359,17 +279,137 @@ support certain metrics</li>
 <li>Any database issues or conflicts that may arise</li>
 </ul>
 <p>Each loggit “transaction” recorded contains a lot of info, but most
-notably, it will contain a timestamp, record type (“info”, “warn”, or
+notably, it will contain a time stamp, record type (“info”, “warn”, or
 “error”), and a message. For database transactions, the message will
 usually include the query that was executed. All log entries are always
 printed out in the R console for your convenience. For example:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>riskassessment<span class="sc">::</span><span class="fu">run_app</span>()</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> [<span class="dv">1</span>] <span class="st">"Log file set to loggit.json"</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> Listening on http<span class="sc">:</span><span class="er">//</span><span class="dv">127</span>.<span class="dv">0</span>.<span class="fl">0.1</span><span class="sc">:</span><span class="dv">4097</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> {<span class="st">"timestamp"</span><span class="sc">:</span> <span class="st">"2023-03-20T11:46:23-0400"</span>, <span class="st">"log_lvl"</span><span class="sc">:</span> <span class="st">"INFO"</span>, <span class="st">"log_msg"</span><span class="sc">:</span> <span class="st">"User admin signed on as admin"</span>}</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> {<span class="st">"timestamp"</span><span class="sc">:</span> <span class="st">"2023-03-20T11:46:33-0400"</span>, <span class="st">"log_lvl"</span><span class="sc">:</span> <span class="st">"INFO"</span>, <span class="st">"log_msg"</span><span class="sc">:</span> <span class="st">"The following decision rules were implemented by admin (admin): Medium = (0.33__COMMA__ 0.66]; Low = (0__COMMA__ 0.33]; High = (0.66__COMMA__ 1]."</span>}</span></code></pre></div>
-<p>Feel free to use this information as you see fit!</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>riskassessment<span class="sc">::</span><span class="fu">run_app</span>()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> [<span class="dv">1</span>] <span class="st">"Log file set to loggit.json"</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> Listening on http<span class="sc">:</span><span class="er">//</span><span class="dv">127</span>.<span class="dv">0</span>.<span class="fl">0.1</span><span class="sc">:</span><span class="dv">4097</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> {<span class="st">"timestamp"</span><span class="sc">:</span> <span class="st">"2023-03-20T11:46:23-0400"</span>, <span class="st">"log_lvl"</span><span class="sc">:</span> <span class="st">"INFO"</span>, <span class="st">"log_msg"</span><span class="sc">:</span> <span class="st">"User admin signed on as admin"</span>}</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="sc">&gt;</span> {<span class="st">"timestamp"</span><span class="sc">:</span> <span class="st">"2023-03-20T11:46:33-0400"</span>, <span class="st">"log_lvl"</span><span class="sc">:</span> <span class="st">"INFO"</span>, <span class="st">"log_msg"</span><span class="sc">:</span> <span class="st">"The following decision rules were implemented by admin (admin): Medium = (0.33__COMMA__ 0.66]; Low = (0__COMMA__ 0.33]; High = (0.66__COMMA__ 1]."</span>}</span></code></pre></div>
+<p>Feel free to use this information as you see fit! Similar to the
+<code>assessment_db</code> parameter in <code>inst/db-config</code>, you
+can name the file whatever you like, and save it in an any directory
+you’d like. Below, we save it in the <code>dev/</code> folder and name
+it “loggit.json”:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">default</span><span class="kw">:</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">assessment_db</span><span class="kw">:</span><span class="at"> ./dev/database.sqlite</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">assessment_db</span><span class="kw">:</span><span class="at"> ./dev/loggit.json</span></span></code></pre></div>
 <p><br></p>
+</div>
+<div class="section level3">
+<h3 id="credentials-configuration">Credentials configuration<a class="anchor" aria-label="anchor" href="#credentials-configuration"></a>
+</h3>
+<p>Similar to the assessment database, when the
+<code><a href="../reference/run_app.html">riskassessment::run_app()</a></code> function executes, the code base
+will check if an credentials sqlite file exists by the name you give it
+(default is <code>credentials.sqlite</code>) and if it doesn’t,
+<code>riskassessment</code> will initiate this new database before the
+app launches. Note that the user has the authority to name the database
+sqlite file whatever they desire using <code>inst/db-config.yml</code>.
+There, you can include a file path preceding the file name if you wish
+to move the location of the database away from the root directory. For
+example, the following code would create a database called
+“credentials.sqlite” in the <code>dev/</code> folder:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">default</span><span class="kw">:</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">assessment_db</span><span class="kw">:</span><span class="at"> ./dev/database.sqlite</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">assessment_db</span><span class="kw">:</span><span class="at"> ./dev/loggit.json</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">credential_db</span><span class="kw">:</span><span class="at"> ./dev/credentials.sqlite</span></span></code></pre></div>
+<p>Right after the <strong>credentials_db</strong> element is used, the
+<strong>credentials</strong> element (with two sub-elements:
+<strong>roles</strong> and <strong>privileges</strong>) must be
+populated. As a guide, below is a snippet of the default values for
+these elements, but we encourage you to design the configuration that
+works for you (or your organization).</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">credentials</span><span class="kw">:</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">roles</span><span class="kw">:</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> admin</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> lead</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> reviewer</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">privileges</span><span class="kw">:</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">admin</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">admin</span><span class="kw">,</span><span class="at"> weight_adjust</span><span class="kw">,</span><span class="at"> auto_decision_adjust</span><span class="kw">,</span><span class="at"> final_decision</span><span class="kw">,</span><span class="at"> revert_decision</span><span class="kw">,</span><span class="at"> add_package</span><span class="kw">,</span><span class="at"> delete_package</span><span class="kw">]</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">lead</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">weight_adjust</span><span class="kw">,</span><span class="at"> auto_decision_adjust</span><span class="kw">,</span><span class="at"> final_decision</span><span class="kw">,</span><span class="at"> revert_decision</span><span class="kw">,</span><span class="at"> add_package</span><span class="kw">,</span><span class="at"> delete_package</span><span class="kw">]</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">reviewer</span><span class="kw">:</span><span class="at"> add_package</span></span></code></pre></div>
+<p>Note the <a href="../articles/User_Roles_and_Privileges.html">“User
+Roles and Privileges” guide</a> is entirely dedicated to this config.
+For full details, please visit &amp; read that article!</p>
+<p><br></p>
+</div>
+<div class="section level3">
+<h3 id="decisions-configuration">Decisions configuration<a class="anchor" aria-label="anchor" href="#decisions-configuration"></a>
+</h3>
+<p>The <strong>decisions</strong> element contains up to three
+sub-elements: <strong>categories</strong> (mandatory),
+<strong>rules</strong>, and <strong>colors</strong>. Here is a snipped
+from one of the example configurations:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">decisions</span><span class="kw">:</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">categories</span><span class="kw">:</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> Insignificant Risk</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> Minor Risk</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> Moderate Risk</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> Major Risk</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> Severe Risk</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">rules</span><span class="kw">:</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Insignificant Risk</span><span class="kw">:</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="dv">0</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fl">.1</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Severe Risk</span><span class="kw">:</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="fl">.7</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="kw">-</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">colors</span><span class="kw">:</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">Moderate Risk</span><span class="kw">:</span><span class="at"> !expr grDevices::rgb(52, 235, 229, maxColorValue = 255)</span></span></code></pre></div>
+<p>Notice that you can set as many decision <code>categories</code> as
+you wish, but you must specify at least two! If you want to set up
+automatic decision rules before deploying the app, you can do so using
+the <code>rules</code> element. Just list the category name and
+underneath it, a mutually exclusive range of values so that when a
+package is uploaded, if it’s risk score falls between those values, it
+will automatically get labelled with the appropriate decision.
+Categories not addressed under the <code>rules</code> banner will not
+receive automated decisions. However, users with this privilege can
+change this configuration in the app at a later time.</p>
+<p>Similarly for <code>colors</code>, you can detail specific colors be
+assigned to certain categories. If you don’t care what color is used for
+each category, then a color-blind friendly color palette is used to fill
+in the rest.</p>
+<p><br></p>
+</div>
+<div class="section level3">
+<h3 id="metric-weights-configuration">Metric weights configuration<a class="anchor" aria-label="anchor" href="#metric-weights-configuration"></a>
+</h3>
+<p>The <strong>metric_weights</strong> element contains the named list
+of weights. If a weight is not supplied, it will default to 1. The
+current list of weights that can be included are the following:
+has_vignettes, has_news, news_current, has_bug_reports_url, has_website,
+has_maintainer, has_source_control, export_help, bugs_status, license,
+covr_coverage, downloads_1yr. As seen above, the default configuration
+sets the weight for <code>covr_coverage</code> to 0. If you want to
+ignore a certain metric because it has little value to our organization,
+you could give it a value of zero.</p>
+<p>When metrics are not explicitly given here, the app uses the default
+weight of 1 for each, unless of course there already exists a assessment
+database previously initialized where those metric weights were manually
+changed. If you wanted to toggle all current metrics, there is no harm
+in stating each metric and weight, so you could set up the config file
+to look like this, for example:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">metric_weights</span><span class="kw">:</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_vignettes</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_news</span><span class="kw">:</span><span class="at"> </span><span class="fl">0.5</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">news_current</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_bug_reports_url</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_website</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_maintainer</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">has_source_control</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">export_help</span><span class="kw">:</span><span class="at"> </span><span class="dv">2</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">bugs_status</span><span class="kw">:</span><span class="at"> </span><span class="dv">5</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">license</span><span class="kw">:</span><span class="at"> </span><span class="dv">1</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">downloads_1yr.</span><span class="kw">:</span><span class="at"> </span><span class="dv">3</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">covr_coverage</span><span class="kw">:</span><span class="at"> </span><span class="dv">0</span></span></code></pre></div>
+<p><a href="https://pharmar.github.io/riskmetric/" class="external-link">riskmetric</a> will use these weights to score your
+package according to our org’s needs!</p>
+<p><br></p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="deployment-options">Deployment options<a class="anchor" aria-label="anchor" href="#deployment-options"></a>
@@ -377,6 +417,7 @@ printed out in the R console for your convenience. For example:</p>
 <center>
 <img src="images/deploy_general.png" style="height:220px">
 </center>
+<p><br></p>
 <div class="section level3">
 <h3 id="shinyapps-io">shinyapps.io<a class="anchor" aria-label="anchor" href="#shinyapps-io"></a>
 </h3>
