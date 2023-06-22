@@ -47,7 +47,7 @@ jobs:
           use-public-rspm: true
           
       - name: Restore packages
-        shell: Rscript{0}
+        shell: Rscript {0}
         run: |
           if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
           renv::restore()
