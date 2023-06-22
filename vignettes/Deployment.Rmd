@@ -98,11 +98,67 @@ default:
 <br>
 
 
+### Configuring the assessment database
+
+
+![](images/SQLite.png){style="float:right; height:80px"}
+
+When the `riskassessment::run_app()` function is ran, the code base will check if the `database.sqlite` file exists, and if it doesn't, [several tables will be initiated](https://github.com/pharmaR/riskassessment/tree/master/inst/sql_queries) to create this database just before the app launches. Note that the user has the authority to name the database file to whatever they like using the `inst/db-config.yml` file. There, you can include a file path preceding the file name if you wish to move the location of the database away from the root directory.  For example, the following code would create a database called "test_database.sqlite" in the `dev/` folder:
+
+```yml
+default:
+  assessment_db: ./dev/test_database.sqlite
+```
+
+At the time this vignette was authored, the database will initialize the following tables with all `NULL` values:
+
+* `comments`: stores user comments, including user names associated with each comment entry, comment type, and timestamp
+* `community_usage_metrics`: stores CRAN package downloads per month
+* `metric`: stores metric info, including the `riskmetric` name, label, short description, type, and weight
+* `package_metrics`: stores all package-specific `rismetric` metrics
+* `package`: Contains all package information, like name, version, maintainer, etc. It also contains a the `riskmetric` score, the weighted score, decision, and timestamp.
+
+
+Note: if any changes/ updates occur in these tables with a new release of `riskassessment`, you may need to delete the database file before re-running the app. Any such changes should be announced as 'breaking changes' in the app. If so, remember to save a copy of your current database file in another directory for backup purposes.
+
+
+<br>
 
 
 
 
-#### Credentials configuration
+### Database log file config
+
+As mentioned previously, the `loggit.json` file is initiated to track general actions performed in the application, especially those that would impact a change in the `database.sqlite` file. At the time this vignette was authored, here's a summary of actions logged:
+
+* App start up
+* User log-ins
+* Enabling/ Disabling or changing automated decision rules
+* Decisions initiated by users or the decision automation rules, including 
+* When pkgs are added or removed from the database, or when there are issues with this process, like when there is an absence of data to that support certain metrics
+* Re-weighting pkg metrics
+* Any database issues or conflicts that may arise
+
+Each loggit "transaction" recorded contains a lot of info, but most notably, it will contain a timestamp, record type ("info", "warn", or "error"), and a message. For database transactions, the message will usually include the query that was executed. All log entries are always printed out in the R console for your convenience. For example:
+
+```{r, echo=TRUE, eval=FALSE}
+riskassessment::run_app()
+> [1] "Log file set to loggit.json"
+> Listening on http://127.0.0.1:4097
+> {"timestamp": "2023-03-20T11:46:23-0400", "log_lvl": "INFO", "log_msg": "User admin signed on as admin"}
+> {"timestamp": "2023-03-20T11:46:33-0400", "log_lvl": "INFO", "log_msg": "The following decision rules were implemented by admin (admin): Medium = (0.33__COMMA__ 0.66]; Low = (0__COMMA__ 0.33]; High = (0.66__COMMA__ 1]."}
+```
+
+
+Feel free to use this information as you see fit!
+
+
+<br>
+
+
+
+
+### Credentials configuration
 
 The **credentials** element contains two sub-elements: **roles** and **privileges**. Here is a snippet of the default configuration to showcase how you might go about designing your own configuration:
 
@@ -121,7 +177,7 @@ Note the ["User Roles and Privileges" guide](../articles/User_Roles_and_Privileg
 
 
 
-#### Decisions configuration
+### Decisions configuration
 
 The **decisions** element contains up to three sub-elements: **categories** (mandatory), **rules**, and **colors**. Here is a snipped from one of the example configurations:
 
@@ -145,7 +201,7 @@ Similarly for `colors`, you can detail specific colors be assigned to certain ca
 
 
 
-#### Metric weights configuration
+### Metric weights configuration
 
 The **metric_weights** element contains the named list of weights. If a weight is not supplied, it will default to 1. The current list of weights that can be included are the following: has_vignettes, has_news, news_current, has_bug_reports_url, has_website, has_maintainer, has_source_control, export_help, bugs_status, license, covr_coverage, downloads_1yr. As seen above, the default configuration sets the weight for `covr_coverage` to 0. If you want to ignore a certain metric because it has little value to our organization, you could give it a value of zero.
 
@@ -173,63 +229,6 @@ metric_weights:
 
 <br>
 
-
-
-## The `database.sqlite` file
-
-
-![](images/SQLite.png){style="float:right; height:80px"}
-
-When the `riskassessment::run_app()` function is ran, the code base will check if the `database.sqlite` file exists, and if it doesn't, [several tables will be initiated](https://github.com/pharmaR/riskassessment/tree/master/inst/sql_queries) to create this database just before the app launches. Note that the user has the authority to name the database file to whatever they like using the `assessment_db_name` argument in `run_app()`. In addition, you can include a file path here preceding the file name if you wish to move the location of the database away from the root directory.  For example, the following code would create a database called "test_database.sqlite" in the `dev/` folder:
-
-```
-run_app(assessment_db_name = './dev/test_database.sqlite')
-```
-
-At the time this vignette was authored, the database will initialize the following tables with all `NULL` values:
-
-* `comments`: stores user comments, including user names associated with each comment entry, comment type, and timestamp
-* `community_usage_metrics`: stores CRAN package downloads per month
-* `metric`: stores metric info, including the `riskmetric` name, label, short description, type, and weight
-* `package_metrics`: stores all package-specific `rismetric` metrics
-* `package`: Contains all package information, like name, version, maintainer, etc. It also contains a the `riskmetric` score, the weighted score, decision, and timestamp.
-
-
-Note: if any changes/ updates occur in these tables with a new release of `riskassessment`, you may need to delete the database file before re-running the app. Any such changes should be announced as 'breaking changes' in the app. If so, remember to save a copy of your current database file in another directory for backup purposes.
-
-
-<br>
-
-
-
-
-## The `loggit.json` file
-
-As mentioned previously, the `loggit.json` file is initiated to track general actions performed in the application, especially those that would impact a change in the `database.sqlite` file. At the time this vignette was authored, here's a summary of actions logged:
-
-* App start up
-* User log-ins
-* Enabling/ Disabling or changing automated decision rules
-* Decisions initiated by users or the decision automation rules, including 
-* When pkgs are added or removed from the database, or when there are issues with this process, like when there is an absence of data to that support certain metrics
-* Re-weighting pkg metrics
-* Any database issues or conflicts that may arise
-
-Each loggit "transaction" recorded contains a lot of info, but most notably, it will contain a timestamp, record type ("info", "warn", or "error"), and a message. For database transactions, the message will usually include the query that was executed. All log entries are always printed out in the R console for your convenience. For example:
-
-```{r, echo=TRUE, eval=FALSE}
-riskassessment::run_app()
-> [1] "Log file set to loggit.json"
-> Listening on http://127.0.0.1:4097
-> {"timestamp": "2023-03-20T11:46:23-0400", "log_lvl": "INFO", "log_msg": "User admin signed on as admin"}
-> {"timestamp": "2023-03-20T11:46:33-0400", "log_lvl": "INFO", "log_msg": "The following decision rules were implemented by admin (admin): Medium = (0.33__COMMA__ 0.66]; Low = (0__COMMA__ 0.33]; High = (0.66__COMMA__ 1]."}
-```
-
-
-Feel free to use this information as you see fit!
-
-
-<br>
 
 
 
