@@ -1,7 +1,7 @@
 default:
   assessment_db: database.sqlite
-  credential_db: credentials.sqlite
   loggit_json: loggit.json
+  credential_db: credentials.sqlite
   credentials:
     roles:
       - admin
