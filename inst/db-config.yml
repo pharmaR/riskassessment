@@ -16,6 +16,10 @@ default:
       - Low Risk
       - Medium Risk
       - High Risk
+    rules:
+      High Risk:
+        - .666
+        - 1
   metric_weights:
     covr_coverage: 0
 example:

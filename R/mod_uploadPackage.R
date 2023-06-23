@@ -256,14 +256,14 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
     # observe({
     #   req(input$check_urls, !isTRUE(checking_urls$finished))
     #   invalidateLater(60*1000)
-    #   
+    # 
     #   withProgress({
-    #     good_urls <- purrr::map_lgl(checking_urls$url_lst, 
+    #     good_urls <- purrr::map_lgl(checking_urls$url_lst,
     #                                 ~ try(curlGetHeaders(.x, verify = FALSE), silent = TRUE) %>%
     #                                   {class(.) != "try-error" && attr(., "status") != 404})
     #     Sys.sleep(.5)
     #   }, message = "Checking URLs")
-    #   
+    # 
     #   checking_urls$finished <- all(good_urls)
     # })
     # 
@@ -281,7 +281,7 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
     observeEvent(uploaded_pkgs00(), {
 
       uploaded_packages <- uploaded_pkgs00()
-      # uploaded_pkgs00(NULL)
+      uploaded_pkgs00(NULL) # keep!
       uploaded_packages$score <- NA_real_
       if (!rlang::is_empty(auto_list()))
         uploaded_packages$decision <- ""
