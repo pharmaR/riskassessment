@@ -20,8 +20,8 @@ jobs:
       matrix:
         config:
           - {os: macOS-latest,   r: 'renv.lock version'}
-          # - {os: windows-latest, r: 'renv.lock version'}
-          # - {os: ubuntu-latest,   r: 'renv.lock version'}
+          - {os: windows-latest, r: 'renv.lock version'}
+          - {os: ubuntu-latest,   r: 'renv.lock version'}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
