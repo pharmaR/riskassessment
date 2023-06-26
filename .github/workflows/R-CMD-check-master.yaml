@@ -50,6 +50,7 @@ jobs:
         shell: Rscript {0}
         run: |
           if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
+          options(renv.config.mran.enabled = FALSE)
           renv::restore()
 
       - name: Install riskassessment
