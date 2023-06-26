@@ -46,12 +46,7 @@ jobs:
           r-version: 'renv'
           use-public-rspm: true
           
-      - name: Disable MRAN
-        shell: Rscript {0}
-        run: |
-          if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
-          options(renv.config.mran.enabled = FALSE)
-          renv::restore()
+      - uses: r-lib/actions/setup-renv@v2
 
       - name: Install riskassessment
         shell: bash
