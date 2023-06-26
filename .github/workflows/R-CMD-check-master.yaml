@@ -46,9 +46,11 @@ jobs:
           r-version: 'renv'
           use-public-rspm: true
           
-      - uses: r-lib/actions/setup-renv@v2
-        with:
-          cache-version: 2
+      - name: Restore packages
+        shell: Rscript {0}
+        run: |
+          if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
+          renv::restore()
 
       - name: Install riskassessment
         shell: bash
