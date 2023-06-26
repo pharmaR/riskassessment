@@ -3,7 +3,7 @@
     "Version": "4.2.2",
     "Repositories": [
       {
-        "Name": "CRAN",
+        "Name": "RSPM",
         "URL": "https://packagemanager.rstudio.com/cran/2023-02-01"
       }
     ]
