@@ -49,9 +49,9 @@ jobs:
       - name: Disable MRAN
         shell: Rscript {0}
         run: |
+          if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
           options(renv.config.mran.enabled = FALSE)
-          
-      - uses: r-lib/actions/setup-renv@v2
+          renv::restore()
 
       - name: Install riskassessment
         shell: bash
