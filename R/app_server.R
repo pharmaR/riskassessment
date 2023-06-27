@@ -182,13 +182,15 @@ app_server <- function(input, output, session) {
                                                selected_pkg,
                                                maint_metrics,
                                                user,
+                                               approved_roles,
                                                parent = session)
   
   # Load server for the community metrics tab.
   community_data <- communityMetricsServer('communityMetrics',
                                            selected_pkg,
                                            community_usage_metrics,
-                                           user)
+                                           user,
+                                           approved_roles)
   
   # Load server of the report preview tab.
   reportPreviewServer(id = "reportPreview",

@@ -30,7 +30,10 @@ addCommentUI <- function(id) {
 #' @importFrom stringr str_replace_all
 #' @keywords internal
 #' 
-addCommentServer <- function(id, metric_abrv, user_name, user_role, pkg_name) {
+addCommentServer <- function(id, metric_abrv, user, approved_roles, pkg_name) {
+  if (missing(approved_roles))
+    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+  
   moduleServer(id, function(input, output, session) {
     
     output$add_comment_ui <- renderUI({
@@ -45,7 +48,7 @@ addCommentServer <- function(id, metric_abrv, user_name, user_role, pkg_name) {
         width = "100%",
         rows = 4,
         placeholder = glue::glue(
-          "Commenting as user: {user_name()}, role: {user_role()}"
+          "Commenting as user: {user$name}, role: {user$role}"
         )
       )
     })
@@ -57,15 +60,9 @@ addCommentServer <- function(id, metric_abrv, user_name, user_role, pkg_name) {
       
       if (comment != "") {
         
-        # TODO: comments can't contain "'". Check for other invalid
-        # characters.
-        # if(str_count(string = comment, pattern = "'") != 0)
-        #   validate("Invalid character: comments cannot contain single
-        #            quotes (')")
-
         dbUpdate(
-        "INSERT INTO comments values({pkg_name()}, {user_name()}, 
-        {user_role()}, {comment}, {metric_abrv},
+        "INSERT INTO comments values({pkg_name()}, {user$name}, 
+        {user$role}, {comment}, {metric_abrv},
         {getTimeStamp()})"
         )
         
