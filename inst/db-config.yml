@@ -7,10 +7,12 @@ default:
       - admin
       - lead
       - reviewer
+      - viewer
     privileges:
-      admin: [admin, weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package]
-      lead: [weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package]
-      reviewer: add_package
+      admin: [admin, weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, metric_comment]
+      lead: [weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, metric_comment]
+      reviewer: [add_package, metric_comment]
+      viewer:
   decisions:
     categories:
       - Low Risk
