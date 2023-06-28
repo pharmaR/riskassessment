@@ -144,4 +144,8 @@ check_credentials <- function(credentials_lst) {
   
   if (!all(privileges_roles %in% credentials_lst$roles))
     warning(glue::glue("The following role(s) designated under privileges is(are) not present in the 'roles' configuration: {paste(privileges_roles[!privileges_roles %in% credentials_lst$roles], collapse = ', ')}"))
+  
+  valid_privileges <- unique(unlist(credentials_lst$privileges[credentials_lst$roles], use.names = FALSE))
+  if (!all(used_privileges %in% valid_privileges))
+    warning(glue::glue("The following privilege(s) is(are) not assigned to any 'role' in the credentials configuration: {paste(used_privileges[!used_privileges %in% valid_privileges], collapse = ', ')}"))
 }
