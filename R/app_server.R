@@ -202,6 +202,7 @@ app_server <- function(input, output, session) {
                       cm_comments = community_data$comments,
                       downloads_plot_data = community_data$downloads_plot_data,
                       user = user,
+                      approved_roles,
                       app_version = golem::get_golem_options('app_version'),
                       metric_weights = metric_weights)
   
