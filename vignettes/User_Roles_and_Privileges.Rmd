@@ -305,7 +305,7 @@ A user with the `overall_comment` privilege can add/edit the overall comment and
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
-### Generall Commentator
+### General Commentator
 
 A user with the `general_comment` privilege can add comments regarding the maintenance and community metrics of a package.
 
