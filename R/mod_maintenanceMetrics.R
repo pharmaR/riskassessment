@@ -43,7 +43,7 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, appr
             metricGridUI(NS(id, 'metricGrid')),
             br(), br(),
             fluidRow(div(id = "comments_for_mm",
-                         addCommentUI(NS(id, 'add_comment')),
+                         if ("general_comment" %in% approved_roles[[user$role]]) addCommentUI(NS(id, 'add_comment')),
                          viewCommentsUI(NS(id, 'view_comments')))
             )
           )

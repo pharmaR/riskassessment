@@ -55,6 +55,7 @@ addCommentServer <- function(id, metric_abrv, user, approved_roles, pkg_name) {
     
     observeEvent(input$submit_comment, {
       req(input$add_comment)
+      req("general_comment" %in% approved_roles[[user$role]])
       
       comment <- trimws(input$add_comment)
       

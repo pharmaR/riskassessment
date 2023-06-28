@@ -55,7 +55,7 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user, ap
                      plotly::plotlyOutput(NS(id, "downloads_plot"), height = "500px")))),
             br(), br(),
             div(id = "comments_for_cum", fluidRow( 
-              addCommentUI(id = session$ns("add_comment")),
+              if ("general_comment" %in% approved_roles[[user$role]]) addCommentUI(id = session$ns("add_comment")),
               viewCommentsUI(id = session$ns("view_comments"))))
           )
         )
