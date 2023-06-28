@@ -40,6 +40,8 @@ At the time this vignette was authored, there are six different privileges that 
 * [Revert Decision](User_Roles_and_Privileges.html#revert-decision) (`revert_decision`): can undo a final decisions made regarding packages
 * [Add Packages](User_Roles_and_Privileges.html#add-packages) (`add_package`): adds packages for consideration
 * [Delete Packages](User_Roles_and_Privileges.html#delete-packages) (`delete_package`): can remove packages from consideration
+* [Overall Commentator](User_Roles_and_Privileges.html#overall-commentator) (`overall_comment`): can add/edit the overall comment and summary for a package
+* [General Commentator](User_Roles_and_Privileges.html#general-commentator) (`general_comment`): can add maintenance and community metric comments
 
 ### Administrator
 
@@ -294,6 +296,18 @@ A user with the `delete_package` privilege can remove packages from consideratio
 <center>
 ![](images/delete_package_privilege.png)
 </center>
+
+<font size="2">[return to top](User_Roles_and_Privileges.html)</font>
+
+### Overall Commentator
+
+A user with the `overall_comment` privilege can add/edit the overall comment and summary of a package.
+
+<font size="2">[return to top](User_Roles_and_Privileges.html)</font>
+
+### Generall Commentator
+
+A user with the `general_comment` privilege can add comments regarding the maintenance and community metrics of a package.
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
