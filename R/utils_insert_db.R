@@ -61,10 +61,12 @@ insert_pkg_info_to_db <- function(pkg_name, pkg_version,
     expr = {
       # get latest high-level package info
       # pkg_name <- "dplyr" # testing
-      if (!isTRUE(getOption("shiny.testmode")))
-        pkg_info <- get_desc_pkg_info(pkg_name, pkg_version)
-      else
+      if (isTRUE(getOption("shiny.testmode")))
         pkg_info <- test_pkg_info[[pkg_name]]
+      else if (identical(Sys.getenv("TESTTHAT"), "true"))
+        pkg_info <- get_latest_pkg_info(pkg_name)
+      else
+        pkg_info <- get_desc_pkg_info(pkg_name, pkg_version)
       
       # store it in the database
       upload_package_to_db(pkg_name, pkg_info$Version, pkg_info$Title,
