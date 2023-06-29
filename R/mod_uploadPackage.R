@@ -400,7 +400,8 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
             if(!found) {
               # Get and upload pkg general info to db.
               incProgress(1, detail = deets)
-              download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), mode = "wb")
+              if (!isTRUE(getOption("shiny.testmode")))
+                download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), mode = "wb")
               insert_pkg_info_to_db(uploaded_packages$package[i], ref_ver)
               # Get and upload maintenance metrics to db.
               incProgress(1, detail = deets)
