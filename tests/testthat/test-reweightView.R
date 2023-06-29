@@ -48,15 +48,8 @@ test_that("reweightView works", {
   expect_equal(curr_new_wts2[1,3], 2)
   expect_equal(curr_new_wts2[-1,], curr_new_wts[-1,])
   
-  expect_equal(app$get_js("$('[data-ns-prefix=reweightInfo-]').css('display')"), "none")
-  app$set_inputs(`reweightInfo-metric_name` = "covr_coverage")
-  expect_equal(app$get_js("$('[data-ns-prefix=reweightInfo-]').css('display')"), "block")
-  
-  app$set_inputs(`reweightInfo-metric_weight` = 2)
-  app$wait_for_idle()
-  expect_equal(app$get_value(input = "reweightInfo-metric_weight"), 0)
-  
   app$set_inputs(`reweightInfo-metric_name` = curr_new_wts[3,1])
+  app$wait_for_idle()
   app$set_inputs(`reweightInfo-metric_weight` = 3.5)
   app$wait_for_idle()
   app$click("reweightInfo-update_weight")
@@ -88,8 +81,8 @@ test_that("reweightView works", {
   expect_equal(dbSelect("select * from package", db_backup)[["decision_id"]], 1)
   
   app$click("reweightInfo-update_pkg_risk")
-  app$click("reweightInfo-confirm_update_risk")
   app$wait_for_idle()
+  app$click("reweightInfo-confirm_update_risk")
   
   db_backup <- app$get_download("reweightInfo-download_database_btn")
   app$wait_for_idle()
@@ -114,7 +107,7 @@ test_that("reweightView works", {
   expect_equal(app$get_value(export = "metric_weights")[1,2], 2)
   
   app$click("reweightInfo-update_pkg_risk")
-  app$click("reweightInfo-confirm_update_risk")
   app$wait_for_idle()
+  app$click("reweightInfo-confirm_update_risk")
   expect_equal(app$get_value(export = "metric_weights")[1,2], 1)
 })

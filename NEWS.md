@@ -1,23 +1,47 @@
 # riskassessment (development version)
-* Fix for Chromote error provided by Winston Chang
-* Implemented usage of database configuration file instead of passing arguments in `run_app()` (#459)
-* Added decision categories as an option in the database configuration file (#459)
-* Added decision automation rules as an option in the database configuration file (#459)
-* Fix bug preventing icons from displaying on admin tab (#427)
-* Added Decision-related columns to the database view
-* Moved log file designation to configuration file (#463)
-* Add configuration options for different user roles
-* Updated help files for `build_comm_plotly()` to include example output (#409).
-* Created an open 'forum' for org's to compose a "Package Summary" so they can keep track of all pertinent items central to a full fledged package review (#348).
-* Enhanced (what was formerly known as) the "Report Preview" tab to include more holistic Report Builder. This allows users to define what content shows up in the report (#348).
-* Improved speed of inserting community metrics into database (#516)
-* Fix button alignment issues (#514)
-* Re-position filter to be at the bottom of the visible page (#518)
-* Utilized `glue::glue_sql()` inside of update and select functions (#520)
-* Enhanced the "Database View" tab to include the decision category table
-* Allowed the user to set a custom color for decision categories (#465)
-* Add a check to give message about different versions only when package name is given from CSV file (#515)
+
+# riskassessment 1.0.0
+
+### Enhancements
 * Updated the version of `{riskmetric}` used to V0.2.2
+* Implemented usage of configuration file instead of passing arguments in `run_app()` (#459)
+  * Added decision categories (#459)
+  * Added decision automation rules (#459)
+  * Added log file designation (#463)
+  * Implemented user roles/privileges to allow for more granular access to actions in the application (#527)
+  * Allow metric weights to be initialized (#482)
+* From a computational speed perspective, we made the following improvements that users should feel
+  * During package upload, inserting community metrics into database (#516)
+  * When metric weights are changed, we re-score instead of re-assess, saving huge amounts of time (#537)
+* The Database View got a few updates:
+  * Added Decision-related columns like the decision time stamp & decision source
+  * Introduced the decision category table
+* Enhanced (what was formerly known as) the "Report Preview" tab to include:
+  * A more holistic Report Builder. This allows users to define what content shows up in the report (#348).
+  * Users can now compose a long form "Package Summary" to keep track of more pertinent items (perhaps items less central to {riskmetric} output) for a more rounded package review (#348).
+* Allowed the certain users to set a custom color for decision categories (#465)
+* Added a code coverage (covr_coverage) card and add optimized the card layout logic (#533)
+
+### Squashed Bugs
+* Fixed Chromote error (#477)
+* Fixed bug preventing icons from displaying on admin tab (#427)
+* Fixed button alignment issues (#514)
+* Re-positioned footer to be at the bottom of the visible page (#518)
+* Added a new check that conditionally delivers message about differing pkg versions ONLY when CSV file is loaded (#515)
+* Fixed broken links in docs
+
+### Docs
+* Updated help files for `build_comm_plotly()` to include example output (#409).
+* Created new (and updated some) user guides to explain how to precisely control the app deployment using a configuration file.
+* Retired some pertinent "old"" user guides in case users are still running old versions of `{riskassessment}`
+
+### For Devs
+* Utilized `glue::glue_sql()` inside of update and select functions (#520)
+* Improved speed of inserting community metrics into database (#516)
+* Re-score instead of re-assess when metric weights are changed, meaning we are now storing the pkg assessment (#537)
+* Pass warning instead of error when default privilege config gets combined with another config (#547)
+
+
 
 # riskassessment 0.1.1
 

@@ -20,5 +20,6 @@ $run_dev.*
 _\.new\.png$
 ^_pkgdown\.yml$
 ^pkgdown$
+^Crashpad$
 ^tarballs$
 ^source$

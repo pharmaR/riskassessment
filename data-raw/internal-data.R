@@ -48,6 +48,8 @@ that each is between 0 and 1, and when summed,
 equal 1. The risk of a package will be determined by 1 - sum(metric's
 numeric value <b>x</b> standardized weight)")
 
+privileges_tbl <- readr::read_csv(file.path("data-raw", "privileges.csv"), col_types = "cccc")
+
 
 # Upload format template.
 template <- read.csv(file.path('data-raw', 'upload_format.csv'),  stringsAsFactors = FALSE)
@@ -89,6 +91,7 @@ usethis::use_data(
   maintenance_metrics_text, maintenance_metrics_tbl,
   testing_text, testing_tbl,
   riskcalc_text, template,
+  privileges_tbl,
   test_pkg_lst, test_pkg_refs, test_pkg_info, test_pkg_assess, test_pkg_cum,
   color_palette,
   internal = TRUE, overwrite = TRUE)
