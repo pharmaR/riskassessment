@@ -230,8 +230,10 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
       for (i in 1:np) {
       pkg_name <- input$rem_pkg_lst[i]
       # update version with what is in the package table
-      uploaded_packages$version[i] <- dbSelect("select version from package where name = {pkg_name}", db_name = golem::get_golem_options('assessment_db_name')) 
+      ver_num <- dbSelect("select version from package where name = {pkg_name}", db_name = golem::get_golem_options('assessment_db_name'))
+      uploaded_packages$version[i] <- ver_num
       dbUpdate("DELETE FROM package WHERE name = {pkg_name}", db_name = golem::get_golem_options('assessment_db_name'))
+      unlink(glue::glue("tarballs/{pkg_name}_{ver_num}.tar.gz"))
       }
       
       # clean up other db tables
