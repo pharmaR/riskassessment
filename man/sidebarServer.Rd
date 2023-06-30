@@ -4,7 +4,7 @@
 \alias{sidebarServer}
 \title{Sidebar Server Logic}
 \usage{
-sidebarServer(id, user, uploaded_pkgs, trigger_events)
+sidebarServer(id, user, uploaded_pkgs, approved_roles, trigger_events)
 }
 \arguments{
 \item{id}{a module id}

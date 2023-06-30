@@ -49,19 +49,16 @@ run_app <- function(
   if (isFALSE(getOption("golem.app.prod"))) {
     arg_lst <- as.list(match.call())
   
+    login_creds <- list(user_id = "",
+                        user_pwd = "cxk1QEMYSpYcrNB")
   if (!is.null(arg_lst$pre_auth_user)) {
     pre_auth_user <- arg_lst$pre_auth_user
     if (isTRUE(pre_auth_user) || pre_auth_user == "admin") {
-      login_creds <- list(user_id = "admin",
-                          user_pwd = "cxk1QEMYSpYcrNB")
-    } else if (pre_auth_user == "lead") {
-      login_creds <- list(user_id = "lead",
-                          user_pwd = "Bt0dHK383lLP1NM")
-    } else if (pre_auth_user == "reviewer") {
-      login_creds <- list(user_id = "reviewer",
-                          user_pwd = "tgh29f8SH0UllXJ")
+      login_creds$user_id <- "admin"
+    } else {
+      login_creds$user_id <- pre_auth_user
     }
-    credentials_db_name <- "credentials_dev.sqlite"
+    credentials_db_name <- gsub("\\.sqlite", "_dev\\.sqlite", credentials_db_name)
   }
   }
   

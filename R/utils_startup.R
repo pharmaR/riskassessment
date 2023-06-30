@@ -66,6 +66,7 @@ create_db <- function(db_name){
 #' Note: the credentials_db_name object is assigned by the deployment user in R/run_app.R
 #' 
 #' @param db_name A string denoting the name of the database
+#' @param admin_role A string denoting the initialized privileges of the admin
 #' 
 #' @import dplyr
 #' @importFrom DBI dbConnect dbDisconnect
@@ -73,7 +74,7 @@ create_db <- function(db_name){
 #' @importFrom shinymanager read_db_decrypt write_db_encrypt
 #' @keywords internal
 #' 
-create_credentials_db <- function(db_name){
+create_credentials_db <- function(db_name, admin_role = ""){
   
   if (missing(db_name) || is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
     stop("db_name must follow SQLite naming conventions (e.g. 'credentials.sqlite')")
@@ -85,7 +86,7 @@ create_credentials_db <- function(db_name){
     # password will automatically be hashed
     admin = TRUE,
     expire = as.character(Sys.Date()),
-    role = '',
+    role = admin_role,
     stringsAsFactors = FALSE
   )
   
@@ -140,15 +141,26 @@ create_credentials_dev_db <- function(db_name){
   if (missing(db_name) || is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
     stop("db_name must follow SQLite naming conventions (e.g. 'credentials.sqlite')")
   
+  credential_config <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   # Init the credentials table for credentials database
-  credentials <- data.frame(
-    user = c("admin", "lead", "reviewer"),
-    password = c("cxk1QEMYSpYcrNB", "Bt0dHK383lLP1NM", "tgh29f8SH0UllXJ"),
-    # password will automatically be hashed
-    admin = c(TRUE, FALSE, FALSE),
-    role = c("admin", "lead", "reviewer"),
-    stringsAsFactors = FALSE
-  )
+  if (is.null(credential_config)) {
+    credentials <- data.frame(
+      user = c("admin", "lead", "reviewer"),
+      password = rep("cxk1QEMYSpYcrNB", 3),
+      # password will automatically be hashed
+      admin = c(TRUE, FALSE, FALSE),
+      role = c("admin", "lead", "reviewer"),
+      stringsAsFactors = FALSE
+    )
+  } else {
+    credentials <- data.frame(
+      user = credential_config[["roles"]],
+      password = rep("cxk1QEMYSpYcrNB", length(credential_config[["roles"]])),
+      admin = credential_config[["roles"]] %in% credential_config[["privileges"]][["admin"]],
+      role = credential_config[["roles"]],
+      stringsAsFactors = FALSE
+    )
+  }
   
   # Init the credentials database
   shinymanager::create_db(
@@ -208,7 +220,13 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
 
   # Create package db & credentials db if it doesn't exist yet.
   if(!file.exists(assessment_db)) create_db(assessment_db)
-  if(!file.exists(credentials_db)) create_credentials_db(credentials_db)
+  if(!file.exists(credentials_db)) {
+    admin_role <- db_config[["credentials"]][["privileges"]] %>%
+      purrr::imap(~ if ("admin" %in% .x) .y) %>%
+      unlist(use.names = FALSE) %>%
+      `[`(1)
+    create_credentials_db(credentials_db, admin_role)
+  }
   
   decision_categories <- if (missing(decision_cat)) golem::get_golem_options('decision_categories') else decision_cat
   decisions <- suppressMessages(dbSelect("SELECT decision FROM decision_categories", assessment_db))

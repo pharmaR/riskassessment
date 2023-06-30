@@ -4,10 +4,12 @@
 \alias{create_credentials_db}
 \title{Create credentials database}
 \usage{
-create_credentials_db(db_name)
+create_credentials_db(db_name, admin_role = "")
 }
 \arguments{
 \item{db_name}{A string denoting the name of the database}
+
+\item{admin_role}{A string denoting the initialized privileges of the admin}
 }
 \description{
 Note: the credentials_db_name object is assigned by the deployment user in R/run_app.R

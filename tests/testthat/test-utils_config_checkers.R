@@ -106,14 +106,14 @@ test_that("check_credentials works", {
     "The roles corresponding to 'admin' privileges must be specified"
   )
   
-  expect_error(
-    check_credentials(list(roles = c("admin", "reviewer"), privileges = list(admin = c("admin", "lead")))),
+  expect_warning(
+    check_credentials(list(roles = c("admin", "reviewer"), privileges = list(admin = "admin", lead = "admin"))),
     "The following role(s) designated under privileges is(are) not present in the 'roles' configuration: lead",
     fixed = TRUE
   )
   
   expect_equal(
-    check_credentials(list(roles = c("admin", "lead", "reviewer"), privileges = list(admin = c("admin")))),
+    check_credentials(list(roles = c("admin", "lead", "reviewer"), privileges = list(admin = "admin"))),
     NULL
   )
 })

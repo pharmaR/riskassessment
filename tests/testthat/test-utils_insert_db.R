@@ -73,6 +73,15 @@ test_that("utils_insert_db functions other than dbUpdate", {
   testthat::expect_equal(mtwt$weight, 2)
   })
   
+  old_package <- dbSelect("SELECT * FROM package", app_db_loc)
+  rescore_package(pkg_name, app_db_loc)
+  
+  test_that("rescore_package works", {
+    new_package <- dbSelect("SELECT * FROM package", app_db_loc)
+    testthat::expect(old_package$score != new_package$score, "Updated risk score equals old risk score")
+    testthat::expect_equal(dplyr::select(new_package, - score), dplyr::select(old_package, - score))
+  })
+  
   test_that("db_trash_collection works", {
     cmdata1 <- dbSelect(
       "SELECT *

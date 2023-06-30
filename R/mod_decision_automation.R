@@ -88,7 +88,9 @@ mod_decision_automation_ui_2 <- function(id){
 #' @importFrom purrr compact
 #' @importFrom shinyWidgets tooltipOptions
 #' @importFrom colourpicker colourInput updateColourInput
-mod_decision_automation_server <- function(id, user){
+mod_decision_automation_server <- function(id, user, approved_roles){
+  if (missing(approved_roles))
+    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
@@ -183,7 +185,7 @@ mod_decision_automation_server <- function(id, user){
     })
     
     output$auto_classify <- renderUI({
-      if (user$role == "admin") {
+      if ("auto_decision_adjust" %in% approved_roles[[user$role]]) {
         tagList(
           br(),br(),
           hr(),
@@ -252,7 +254,7 @@ mod_decision_automation_server <- function(id, user){
     })
     
     observeEvent(input$auto_dropdown, {
-      req(user$role == "admin")
+      req("auto_decision_adjust" %in% approved_roles[[user$role]])
       
       showModal(modalDialog(
         size = "l",
@@ -271,7 +273,7 @@ mod_decision_automation_server <- function(id, user){
     })
     
     output$decision_rule_div <- renderUI({
-      req(user$role == "admin")
+      req("auto_decision_adjust" %in% approved_roles[[user$role]])
       
       tagList(
         div(
@@ -307,8 +309,7 @@ mod_decision_automation_server <- function(id, user){
     
     output$auto_settings <-
       renderUI({
-        req(user$role)
-        req(user$role == "admin")
+        req("auto_decision_adjust" %in% approved_roles[[user$role]])
         
         div(
           style = "float: right;",
@@ -320,8 +321,7 @@ mod_decision_automation_server <- function(id, user){
     
     output$auto_settings2 <-
       renderUI({
-        req(user$role)
-        req(user$role == "admin")
+        req("auto_decision_adjust" %in% approved_roles[[user$role]])
         
         div(
           style = "float: right;",
@@ -480,7 +480,7 @@ mod_decision_automation_server <- function(id, user){
       })
     
     observeEvent(input$submit_auto, {
-      req(user$role == "admin")
+      req("auto_decision_adjust" %in% approved_roles[[user$role]])
       
       showModal(modalDialog(
         size = "l",
@@ -507,7 +507,7 @@ mod_decision_automation_server <- function(id, user){
     })
     
     observeEvent(input$submit_color, {
-      req(user$role == "admin")
+      req("auto_decision_adjust" %in% approved_roles[[user$role]])
       
       showModal(modalDialog(
         size = "l",
@@ -539,8 +539,7 @@ mod_decision_automation_server <- function(id, user){
     })
     
     observeEvent(input$confirm_submit_auto, {
-      req(user$role)
-      req(user$role == "admin")
+      req("auto_decision_adjust" %in% approved_roles[[user$role]])
       
       out_lst <- purrr::compact(reactiveValuesToList(auto_decision))
       purrr::walk(decision_lst, ~
@@ -576,8 +575,7 @@ mod_decision_automation_server <- function(id, user){
       
     
     observeEvent(input$confirm_submit_col, {
-      req(user$role)
-      req(user$role == "admin")
+      req("auto_decision_adjust" %in% approved_roles[[user$role]])
       
       selected_colors <- 
         decision_lst %>%

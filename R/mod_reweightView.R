@@ -26,7 +26,9 @@ reweightViewUI <- function(id) {
 #' @importFrom RSQLite SQLite sqliteCopyDatabase
 #' 
 #' @keywords internal
-reweightViewServer <- function(id, user, decision_list, trigger_events) {
+reweightViewServer <- function(id, user, decision_list, approved_roles, trigger_events) {
+  if (missing(approved_roles))
+    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
   moduleServer(id, function(input, output, session) {
     
     exportTestValues(
@@ -46,7 +48,7 @@ reweightViewServer <- function(id, user, decision_list, trigger_events) {
       )
     
     observeEvent(input$update_weight, {
-      req(user$role == "admin")
+      req("weight_adjust" %in% approved_roles[[user$role]])
       curr_new_wts(save$data %>%
                      dplyr::mutate(new_weight = ifelse(name == isolate(input$metric_name),
                                                        isolate(input$metric_weight), new_weight)))
@@ -180,7 +182,7 @@ reweightViewServer <- function(id, user, decision_list, trigger_events) {
     
     # Update metric weight dropdown so that it matches the metric name.
     observeEvent(input$metric_name, {
-      req(user$role == "admin")
+      req("weight_adjust" %in% approved_roles[[user$role]])
       
       shinyjs::disable("update_weight")
       updateNumericInput(session, "metric_weight",
@@ -195,14 +197,14 @@ reweightViewServer <- function(id, user, decision_list, trigger_events) {
     # Note that another of the observeEvents will update the metric weight after
     # the selected metric name is updated.
     observeEvent(input$weights_table_rows_selected, {
-      req(user$role == "admin")
+      req("weight_adjust" %in% approved_roles[[user$role]])
       updateSelectInput(session, "metric_name",
                         selected = curr_new_wts()$name[input$weights_table_rows_selected])
     })
     
     # Save new weight into db.
     observeEvent(input$update_pkg_risk, {
-      req(user$role == "admin")
+      req("weight_adjust" %in% approved_roles[[user$role]])
       
       # if you the user goes input$back2dash, then when they return to the 
       if(n_wts_chngd() == 0){
@@ -239,7 +241,7 @@ reweightViewServer <- function(id, user, decision_list, trigger_events) {
     
     # Upon confirming the risk re-calculation
     observeEvent(input$confirm_update_risk, {
-      req(user$role == "admin")
+      req("weight_adjust" %in% approved_roles[[user$role]])
       removeModal()
       
       trigger_events[["reset_pkg_upload"]] <- trigger_events[["reset_pkg_upload"]] + 1
@@ -309,11 +311,8 @@ reweightViewServer <- function(id, user, decision_list, trigger_events) {
         shinyjs::runjs("$('<br>').insertAfter('.progress-message');")
         for (i in 1:nrow(pkg)) {
           incProgress(1 / (nrow(pkg) + 1), detail = pkg$pkg_name[i])
-          dbUpdate(
-            "DELETE FROM package_metrics WHERE package_id = 
-            (SELECT id FROM package WHERE name = {pkg$pkg_name[i]})")
           # metric_mm_tm_Info_upload_to_DB(pkg$pkg_name[i])
-          insert_riskmetric_to_db(pkg$pkg_name[i])
+          rescore_package(pkg$pkg_name[i])
           if (!rlang::is_empty(decision_list())) {
               assign_decisions(decision_list(), pkg$pkg_name[i])
           }
