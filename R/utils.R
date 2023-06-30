@@ -80,6 +80,9 @@ get_latest_pkg_info <- function(pkg_name) {
 #' 
 #' @noRd
 get_desc_pkg_info <- function(pkg_name, pkg_version) {
+  if (!file.exists(glue::glue("tarballs/{pkg_name}_{pkg_version}.tar.gz")))
+    return(get_latest_pkg_info(pkg_name))
+  
   untar(glue::glue("tarballs/{pkg_name}_{pkg_version}.tar.gz"), exdir = "source")
   
   desc_file <- glue::glue("source/{pkg_name}/DESCRIPTION")

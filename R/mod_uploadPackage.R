@@ -402,8 +402,13 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
             if(!found) {
               # Get and upload pkg general info to db.
               incProgress(1, detail = deets)
-              if (!isTRUE(getOption("shiny.testmode")))
-                download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), mode = "wb")
+              if (!isTRUE(getOption("shiny.testmode"))) {
+                dwn_ld <- download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), 
+                                        quiet = TRUE, mode = "wb")
+                if (dwn_ld != 0) {
+                  loggit::loggit("INFO", glue::glue("Unable to download the source files for {uploaded_packages$package[i]} from '{ref$tarball_url}'."))
+                }
+              }
               insert_pkg_info_to_db(uploaded_packages$package[i], ref_ver)
               # Get and upload maintenance metrics to db.
               incProgress(1, detail = deets)
