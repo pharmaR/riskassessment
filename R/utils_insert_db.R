@@ -163,8 +163,6 @@ insert_riskmetric_to_db <- function(pkg_name,
   
   # Get the metrics weights to be used during pkg_score.
   metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric", db_name)
-  print("metric_weights_df\n")
-  print(metric_weights_df)
   
   # TODO: due to riskmetric bug (#293), need to block NA assessments from being used in score calc
   block_na_assess <- riskmetric_assess %>%
@@ -175,8 +173,6 @@ insert_riskmetric_to_db <- function(pkg_name,
     right_join(metric_weights_df, by = "name") %>%
     mutate(weight = ifelse(V1 == 0, 0, weight))
   
-  print("\nblock_na_assess\n")
-  print(block_na_assess)
   
   metric_weights <- block_na_assess$weight
   names(metric_weights) <- block_na_assess$name
