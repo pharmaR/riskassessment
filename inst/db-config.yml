@@ -20,8 +20,6 @@ default:
       High Risk:
         - .666
         - 1
-  metric_weights:
-    covr_coverage: 0
 example:
   assessment_db: database_ex.sqlite
   credential_db: credentials_ex.sqlite

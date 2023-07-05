@@ -163,8 +163,27 @@ insert_riskmetric_to_db <- function(pkg_name,
   
   # Get the metrics weights to be used during pkg_score.
   metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric", db_name)
-  metric_weights <- metric_weights_df$weight
-  names(metric_weights) <- metric_weights_df$name
+  print("metric_weights_df\n")
+  print(metric_weights_df)
+  
+  # TODO: due to riskmetric bug (#293), need to block NA assessments from being used in score calc
+  block_na_assess <- riskmetric_assess %>%
+    select(-c(package, version, pkg_ref)) %>%
+    t %>% is.na() %>% ifelse(0, 1) %>%
+    as.data.frame() %>%
+    tibble::rownames_to_column("name") %>%
+    right_join(metric_weights_df, by = "name") %>%
+    mutate(weight = ifelse(V1 == 0, 0, weight))
+  
+  print("\nblock_na_assess\n")
+  print(block_na_assess)
+  
+  metric_weights <- block_na_assess$weight
+  names(metric_weights) <- block_na_assess$name
+  
+  
+  # metric_weights <- metric_weights_df$weight
+  # names(metric_weights) <- metric_weights_df$name
   
   riskmetric_score <-
     riskmetric_assess %>%
@@ -300,8 +319,20 @@ rescore_package <- function(pkg_name,
   
   # Get the metrics weights to be used during pkg_score.
   metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric", db_name)
-  metric_weights <- metric_weights_df$weight
-  names(metric_weights) <- metric_weights_df$name
+  
+  # TODO: due to riskmetric bug (#293), need to block NA assessments from being used in score calc
+  block_na_assess <- riskmetric_assess %>%
+    select(-c(package, version, pkg_ref)) %>%
+    t %>% is.na() %>% ifelse(0, 1) %>%
+    as.data.frame() %>%
+    tibble::rownames_to_column("name") %>%
+    right_join(metric_weights_df, by = "name") %>%
+    mutate(weight = ifelse(V1 == 0, 0, weight))
+  metric_weights <- block_na_assess$weight
+  names(metric_weights) <- block_na_assess$name
+  
+  # metric_weights <- metric_weights_df$weight
+  # names(metric_weights) <- metric_weights_df$name
   
   riskmetric_score <-
     riskmetric_assess %>%

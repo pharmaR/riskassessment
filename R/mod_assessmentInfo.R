@@ -65,7 +65,7 @@ assessmentInfoServer <- function(id, metric_weights) {
     # Render table for Maintenance Metrics.
     output$riskcalc_weights_table <- DT::renderDataTable({
       d <- metric_weights() %>%
-        dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)) %>%
+        # dplyr::mutate(weight = ifelse(name == "covr_coverage", 0, weight)) %>%
         formattable::formattable() %>%
         dplyr::mutate(standardized_weight = round(weight / sum(weight, na.rm = TRUE), 4))
       
