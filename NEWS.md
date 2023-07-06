@@ -1,4 +1,5 @@
 # riskassessment (development version)
+* Disable using the Microsoft R Application Network (MRAN) for restoring packages
 
 # riskassessment 1.0.0
 
