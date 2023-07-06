@@ -1,4 +1,5 @@
 # riskassessment (development version)
+* Removed legacy code that set the covr_coverage assessment's metric weight to 0 in the assessmentInfo mod and metric table initialization sql file.
 
 # riskassessment 1.0.0
 
