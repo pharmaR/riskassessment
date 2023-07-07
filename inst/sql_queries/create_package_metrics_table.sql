@@ -38,8 +38,7 @@ BEGIN
       "package_name", (SELECT name FROM package WHERE id = NEW.package_id LIMIT 1),
       "metric_id", NEW.metric_id,
       "metric_name", (SELECT name FROM metric WHERE id = NEW.metric_id LIMIT 1),
-      "value", NEW.value,
-      "weight", NEW.weight
+      "value", NEW.value
     ),
     'INSERT',
     (SELECT user FROM _variables ORDER BY id DESC LIMIT 1)
@@ -63,16 +62,14 @@ BEGIN
       "package_name", (SELECT name FROM package WHERE id = OLD.package_id LIMIT 1),
       "metric_id", OLD.metric_id,
       "metric_name", (SELECT name FROM metric WHERE id = OLD.metric_id LIMIT 1),
-      "value", OLD.value,
-      "weight", OLD.weight
+      "value", OLD.value
     ),
     JSON_OBJECT(
       "package_id", NEW.package_id,
       "package_name", (SELECT name FROM package WHERE id = NEW.package_id LIMIT 1),
       "metric_id", NEW.metric_id,
       "metric_name", (SELECT name FROM metric WHERE id = NEW.metric_id LIMIT 1),
-      "value", NEW.value,
-      "weight", NEW.weight
+      "value", NEW.value
     ),
     'UPDATE',
     (SELECT user FROM _variables ORDER BY id DESC LIMIT 1)
@@ -96,8 +93,7 @@ BEGIN
       "package_name", (SELECT name FROM package WHERE id = OLD.package_id LIMIT 1),
       "metric_id", OLD.metric_id,
       "metric_name", (SELECT name FROM metric WHERE id = OLD.metric_id LIMIT 1),
-      "value", OLD.value,
-      "weight", OLD.weight
+      "value", OLD.value
     ),
     NULL,
     'DELETE',
