@@ -22,7 +22,7 @@ VALUES
   ('export_help',         'Documentation',     '% of documented objects',          1, 0, 'maintenance', 1),
   ('bugs_status',         'Bugs Closure Rate', '% of the last 30 bugs closed',     1, 0, 'maintenance', 1),
   ('license',             'License',           "Package's license",                0, 0, 'maintenance', 1),
-  ('covr_coverage',       'Test Coverage',     '% of objects tested',     1, 1, 'maintenance', 0),
+  ('covr_coverage',       'Test Coverage',     '% of objects tested',     1, 0, 'maintenance', 1),
   ('downloads_1yr',       'Downloads',         'Number of package downloads in the last year', 0, 0, 'community', 1)
 ;
 
