@@ -1,6 +1,4 @@
 rsconnect/
-crendetials.sqlite
-credentials_dev.sqlite
 .Rproj.user
 .Rhistory
 .RData
