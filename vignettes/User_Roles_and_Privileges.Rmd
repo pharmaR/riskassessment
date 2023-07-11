@@ -24,9 +24,13 @@ Below is a snippet from the `inst/db-config.yml` file where the default roles ar
 
 <br>
 
-<center>
-![](images/config_privileges.png)
-</center>
+```yml
+privileges:
+  admin: [admin, weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]
+  lead: [weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]
+  reviewer: [add_package, general_comment]
+  viewer:
+```
 <br>
 
 # Privileges
@@ -319,16 +323,20 @@ A user with the `general_comment` privilege can add comments regarding the maint
 
 # Roles
 
-User roles group select privileges together providing users with different, but not necessarily mutually exclusive, access to the application. The default configuration contains three user roles: **admin**, **lead**, **reviewer**. Here is a snippet from the `inst/db-config.yml` file where these roles are defined:
+User roles group select privileges together providing users with different, but not necessarily mutually exclusive, access to the application. The default configuration contains four user roles: **admin**, **lead**, **reviewer**, **viewer**. Here is a snippet from the `inst/db-config.yml` file where these roles are defined:
 
 <br>
 
-<center>
-![](images/config_privileges.png)
-</center>
+```yml
+privileges:
+  admin: [admin, weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]
+  lead: [weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]
+  reviewer: [add_package, general_comment]
+  viewer:
+```
 <br>
 
-In this configuration, an **admin** user has access to the entire application, a **lead** user has access to all privileges except administrative ones (e.g. managing user credentials), and a **reviewer** only has the privilege to add packages for consideration. An organization can customize these user roles to support their needs. For more information please reference the ["Deployment" guide](../articles/Deployment.html).
+In this configuration, an **admin** user has access to the entire application, a **lead** user has access to all privileges except administrative ones (e.g. managing user credentials), a **reviewer** only has the privilege to add packages for consideration and adding comments/descriptions, and a **viewer** can only view the current state of assessment. An organization can customize these user roles to support their needs. For more information please reference the ["Deployment" guide](../articles/Deployment.html).
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
