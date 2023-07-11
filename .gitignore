@@ -11,3 +11,5 @@ inst/doc
 auto_decisions.json
 ^docs$
 docs/
+*.sqlite
+!*demo.sqlite
