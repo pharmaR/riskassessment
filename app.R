@@ -2,7 +2,7 @@
 # To deploy, run: rsconnect::deployApp()
 # Or use the blue button on top of this file
 
-Sys.setenv(GOLEM_ACTIVE_CONFIG = "demo")
+Sys.setenv(GOLEM_CONFIG_ACTIVE = "demo")
 pkgload::load_all(export_all = FALSE,helpers = FALSE,attach_testthat = FALSE)
 options( "golem.app.prod" = TRUE)
 riskassessment::run_app(
