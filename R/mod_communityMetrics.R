@@ -23,7 +23,10 @@ communityMetricsUI <- function(id) {
 #' 
 #' @keywords internal
 #' 
-communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
+communityMetricsServer <- function(id, selected_pkg, community_metrics, user, approved_roles) {
+  if (missing(approved_roles))
+    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+  
   moduleServer(id, function(input, output, session) {
     
     # Render Output UI for Community Usage Metrics.
@@ -52,7 +55,7 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
                      plotly::plotlyOutput(NS(id, "downloads_plot"), height = "500px")))),
             br(), br(),
             div(id = "comments_for_cum", fluidRow( 
-              addCommentUI(id = session$ns("add_comment")),
+              if ("general_comment" %in% approved_roles[[user$role]]) addCommentUI(id = session$ns("add_comment")),
               viewCommentsUI(id = session$ns("view_comments"))))
           )
         )
@@ -75,8 +78,8 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
     # Call module to create comments and save the output.
     comment_added <- addCommentServer(id = "add_comment",
                                       metric_abrv = 'cum',
-                                      user_name = reactive(user$name),
-                                      user_role = reactive(user$role),
+                                      user = user,
+                                      approved_roles = approved_roles,
                                       pkg_name = selected_pkg$name)
     
     comments <- eventReactive(list(comment_added(), selected_pkg$name()), {

@@ -200,6 +200,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, approved_roles, trigger_event
     
     # Update db if comment is submitted.
     observeEvent(input$submit_overall_comment, {
+      req("overall_comment" %in% approved_roles[[user$role]])
       
       current_comment <- trimws(input$overall_comment)
       
@@ -252,6 +253,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, approved_roles, trigger_event
     observeEvent(input$submit_overall_comment_yes, {
 
       req(selected_pkg$name)
+      req("overall_comment" %in% approved_roles[[user$role]])
 
       dbUpdate(
           "UPDATE comments
@@ -307,7 +309,8 @@ sidebarServer <- function(id, user, uploaded_pkgs, approved_roles, trigger_event
     # Enable/disable sidebar decision and comment.
     observeEvent(req(input$select_ver, trigger_events$reset_sidebar), {
       if (input$select_pkg != "-" && input$select_ver != "-" &&
-          (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) {
+          (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision)) &&
+          "overall_comment" %in% approved_roles[[user$role]]) {
         shinyjs::enable("overall_comment")
         shinyjs::enable("submit_overall_comment")
         
