@@ -35,7 +35,7 @@ privileges:
 
 # Privileges
 
-At the time this vignette was authored, there are six different privileges that can be assigned to a role:
+At the time this vignette was authored, there are eight different privileges that can be assigned to a role:
 
 * [Administrator](User_Roles_and_Privileges.html#administrator) (`admin`): manages the users of the application
 * [Weight Adjustment](User_Roles_and_Privileges.html#weight-adjustment) (`weight_adjust`): manages the weights applied to the `{riskmetric}` risk calculation
@@ -49,7 +49,7 @@ At the time this vignette was authored, there are six different privileges that 
 
 ### Administrator
 
-Basically, the `admin` privilege includes all the privileges discussed below, plus the ability to manage credentials. The credential-heavy features of the `admin` privilege are discussed at length in ["Credential Manager" guide](../articles/Credential_Manager.html). Please reference that vignette for more information.
+Basically, the `admin` privilege allows a user to manage the credentials and privileges of other users. The credential-heavy features of the `admin` privilege are discussed at length in ["Credential Manager" guide](../articles/Credential_Manager.html). Please reference that vignette for more information.
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
@@ -305,13 +305,21 @@ A user with the `delete_package` privilege can remove packages from consideratio
 
 ### Overall Commentator
 
-A user with the `overall_comment` privilege can add/edit the overall comment and summary of a package.
+A user with the `overall_comment` privilege can add/edit the overall comment and summary of a package. Unlike maintenance or community usage metrics, each package can only have one overall comment and summary. A user with the `overall_comment` privilege can provide the overall recommendation for the package decision and provide the summary of what the package offers.
+
+<center>
+![](images/overall_comment_privilege.png)
+</center>
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
 ### General Commentator
 
-A user with the `general_comment` privilege can add comments regarding the maintenance and community metrics of a package.
+A user with the `general_comment` privilege can add comments regarding the maintenance and community metrics of a package. These are meant to provide suggestions or justifications for decision making.
+
+<center>
+![](images/general_comment_privilege.png)
+</center>
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
