@@ -231,8 +231,10 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
       for (i in 1:np) {
       pkg_name <- input$rem_pkg_lst[i]
       # update version with what is in the package table
-      uploaded_packages$version[i] <- dbSelect("select version from package where name = {pkg_name}", db_name = golem::get_golem_options('assessment_db_name')) 
+      ver_num <- dbSelect("select version from package where name = {pkg_name}", db_name = golem::get_golem_options('assessment_db_name'))
+      uploaded_packages$version[i] <- ver_num
       dbUpdate("DELETE FROM package WHERE name = {pkg_name}", db_name = golem::get_golem_options('assessment_db_name'))
+      unlink(glue::glue("tarballs/{pkg_name}_{ver_num}.tar.gz"))
       }
       
       # clean up other db tables
@@ -405,9 +407,16 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
             # Add package and metrics to the db if package is not in the db.
             if(!found) {
               # Get and upload pkg general info to db.
-              cli::cli_progress_update(id = cl_id)
-              
-              insert_pkg_info_to_db(uploaded_packages$package[i])
+
+              incProgress(1, detail = deets)
+              if (!isTRUE(getOption("shiny.testmode"))) {
+                dwn_ld <- download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), 
+                                        quiet = TRUE, mode = "wb")
+                if (dwn_ld != 0) {
+                  loggit::loggit("INFO", glue::glue("Unable to download the source files for {uploaded_packages$package[i]} from '{ref$tarball_url}'."))
+                }
+              }
+              insert_pkg_info_to_db(uploaded_packages$package[i], ref_ver)
               # Get and upload maintenance metrics to db.
               cli::cli_progress_update(id = cl_id)
               

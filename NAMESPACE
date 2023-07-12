@@ -32,8 +32,12 @@ importFrom(cli,pb_percent)
 importFrom(colourpicker,colourInput)
 importFrom(colourpicker,updateColourInput)
 importFrom(cranlogs,cran_downloads)
+<<<<<<< HEAD
 importFrom(deepdep,deepdep)
 importFrom(deepdep,plot_dependencies)
+=======
+importFrom(desc,desc_get_field)
+>>>>>>> dev
 importFrom(formattable,as.datatable)
 importFrom(formattable,csscolor)
 importFrom(formattable,formattable)

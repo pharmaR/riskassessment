@@ -4,7 +4,14 @@
 \alias{maintenanceMetricsServer}
 \title{Maintenance Metrics module's server logic}
 \usage{
-maintenanceMetricsServer(id, selected_pkg, maint_metrics, user, parent)
+maintenanceMetricsServer(
+  id,
+  selected_pkg,
+  maint_metrics,
+  user,
+  approved_roles,
+  parent
+)
 }
 \arguments{
 \item{id}{a module id name}
