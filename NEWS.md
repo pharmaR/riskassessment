@@ -1,6 +1,7 @@
 # riskassessment (development version)
 * Disable using the Microsoft R Application Network (MRAN) for restoring packages
 * Removed legacy code that set the covr_coverage assessment's metric weight to 0 in the assessmentInfo mod and metric table initialization sql file.
+* Download source tarball when uploading package to database
 
 # riskassessment 1.0.0
 
