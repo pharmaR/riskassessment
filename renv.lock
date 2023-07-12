@@ -1758,7 +1758,7 @@
       "Package": "pkgconfig",
       "Version": "2.0.3",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "RSPM"
     },
     "pkgdown": {
       "Package": "pkgdown",
