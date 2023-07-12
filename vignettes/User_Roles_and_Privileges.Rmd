@@ -255,6 +255,8 @@ As the name suggests, a user with the `final_decision` privilege can make final 
 ![](images/final_decision_privilege.png)
 </center>
 
+<br>
+
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
 
@@ -267,9 +269,13 @@ As the name suggests, a user with the `final_decision` privilege can make final 
 
 A user with the `revert_decision` privilege can undo a final decision after it has been made. Doing so will set the package's status to "under review" and will re-enable "overall comments" regarding the decision.
 
+<br>
+
 <center>
 ![](images/revert_decision_privilege.png)
 </center>
+
+<br>
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
@@ -283,9 +289,13 @@ A user with the `revert_decision` privilege can undo a final decision after it h
 
 A user with the `add_package` privilege can upload packages to the database for consideration.
 
+<br>
+
 <center>
 ![](images/add_package_privilege.png)
 </center>
+
+<br>
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
@@ -297,19 +307,32 @@ A user with the `add_package` privilege can upload packages to the database for 
 
 A user with the `delete_package` privilege can remove packages from consideration (the database).
 
+<br>
+
 <center>
 ![](images/delete_package_privilege.png)
 </center>
+
+<br>
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
 ### Overall Commentator
 
-A user with the `overall_comment` privilege can add/edit the overall comment and summary of a package. Unlike maintenance or community usage metrics, each package can only have one overall comment and summary. A user with the `overall_comment` privilege can provide the overall recommendation for the package decision and provide the summary of what the package offers.
+A user with the `overall_comment` privilege can add/edit two optional high-level summaries for a package:
+
+* First, the "Overall Comment", located on the sidebar, is an outlet for users to specify a quick synopsis related to the package decision, and
+* The Package Summary, located on the "Build Report" tab, allows a user to compose a long-form, open-ended summary of their evaluation / review process for the package of interest
+
+Unlike maintenance or community usage metrics, each package can only have one entry for "Overall Comment" and "Package Summary".
+
+<br>
 
 <center>
 ![](images/overall_comment_privilege.png)
 </center>
+
+<br>
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
@@ -317,9 +340,13 @@ A user with the `overall_comment` privilege can add/edit the overall comment and
 
 A user with the `general_comment` privilege can add comments regarding the maintenance and community metrics of a package. These are meant to provide suggestions or justifications for decision making.
 
+<br>
+
 <center>
 ![](images/general_comment_privilege.png)
 </center>
+
+<br>
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
