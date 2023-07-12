@@ -99,12 +99,12 @@ test_that("database creation", {
   expect_equal(DBI::dbListTables(con),
                c("credentials", "logs", "pwd_mngt"))
   creds <- shinymanager::read_db_decrypt(con, name = "credentials", passphrase = passphrase)
-  expect_equal(creds$user, c("admin", "lead", "reviewer"))
-  expect_equal(creds$admin, c('TRUE', 'FALSE', 'FALSE'))
-  expect_equal(creds$expire, c(NA_character_, NA_character_, NA_character_))
-  expect_equal(creds$role, c("admin", "lead", "reviewer"))
+  expect_equal(creds$user, c("admin", "lead", "reviewer", "viewer"))
+  expect_equal(creds$admin, c('TRUE', 'FALSE', 'FALSE', 'FALSE'))
+  expect_equal(creds$expire, c(NA_character_, NA_character_, NA_character_, NA_character_))
+  expect_equal(creds$role, c("admin", "lead", "reviewer", "viewer"))
   pwd <- shinymanager::read_db_decrypt(con, name = "pwd_mngt", passphrase = passphrase)
-  expect_equal(pwd$must_change, c('FALSE', 'FALSE', 'FALSE'))
+  expect_equal(pwd$must_change, c('FALSE', 'FALSE', 'FALSE', 'FALSE'))
 })
 
 #### initialize_raa tests ####
