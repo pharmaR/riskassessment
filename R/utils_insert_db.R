@@ -318,7 +318,7 @@ rescore_package <- function(pkg_name,
   
   # TODO: due to riskmetric bug (#293), need to block NA assessments from being used in score calc
   block_na_assess <- riskmetric_assess %>%
-    select(-c(package, version, pkg_ref)) %>%
+    # select(-c(package, version, pkg_ref)) %>% # these cols don't exist here
     t %>% is.na() %>% ifelse(0, 1) %>%
     as.data.frame() %>%
     tibble::rownames_to_column("name") %>%
@@ -326,6 +326,8 @@ rescore_package <- function(pkg_name,
     mutate(weight = ifelse(V1 == 0, 0, weight))
   metric_weights <- block_na_assess$weight
   names(metric_weights) <- block_na_assess$name
+  
+
   
   # metric_weights <- metric_weights_df$weight
   # names(metric_weights) <- metric_weights_df$name
