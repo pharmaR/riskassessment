@@ -161,13 +161,11 @@ insert_riskmetric_to_db <- function(pkg_name,
     riskmetric_assess <-
       test_pkg_assess[[pkg_name]]
   }
-  metric_weights_df <- eventReactive(pkg_name, {
-    dbSelect("SELECT id, name, weight, is_perc FROM metric", db_name)
-  }) 
+  metric_weights_df <- get_metric_weights()
   
   # Get the metrics weights to be used during pkg_score.
-  metric_weights <- isolate(metric_weights_df()$weight)
-  names(metric_weights) <- isolate(metric_weights_df()$name)
+  metric_weights <- metric_weights_df$weight
+  names(metric_weights) <- metric_weights_df$name
   
   riskmetric_score <-
     riskmetric_assess %>%
@@ -300,7 +298,7 @@ rescore_package <- function(pkg_name,
     purrr::pmap_dfc(db_table, function(name, encode) {dplyr::tibble(unserialize(encode)) %>% purrr::set_names(name)})
   
   # Get the metrics weights to be used during pkg_score.
-  metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric", db_name)
+  metric_weights_df <- get_metric_weights()
   metric_weights <- metric_weights_df$weight
   names(metric_weights) <- metric_weights_df$name
   
