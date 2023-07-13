@@ -342,6 +342,35 @@ build_comm_cards <- function(data){
             is_perc = 0,
             is_url = 0)
   
+  year_downloads <- dplyr::as_tibble(data) %>% 
+    dplyr::arrange(year, month) %>%
+    dplyr::filter(row_number() >= (n() - 11)) %>% 
+    dplyr::mutate(row_n = row_number())
+  
+  model_result <- lm(downloads ~ row_n, data = year_downloads) %>% 
+    broom::tidy() %>% 
+    dplyr::filter(term == "row_n") %>% 
+    dplyr::mutate(estimate = round(estimate, 0)) %>% 
+    dplyr::mutate(succ_icon = dplyr::case_when(
+      estimate > 0 ~ "arrow-trend-up",
+      estimate < 0 ~ "arrow-trend-down",
+      TRUE ~ "bars"
+      )
+    ) %>%
+    dplyr::select(estimate, succ_icon)
+  
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'downloads_trend',
+      title = 'Downloads trend',
+      desc = 'Trend of downloads in last 12 months',
+      value = format(model_result$estimate, big.mark = ","),
+      succ_icon = model_result$succ_icon,
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
+  
   cards
 }
 
