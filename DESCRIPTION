@@ -41,6 +41,7 @@ Imports:
     colourpicker,
     cranlogs,
     DBI,
+    deepdep,
     desc,
     dplyr,
     DT,
