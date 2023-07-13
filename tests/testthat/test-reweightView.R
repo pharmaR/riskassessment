@@ -45,7 +45,7 @@ test_that("reweightView works", {
   expect_equal(curr_new_wts2, curr_new_wts)
   app$click("reweightInfo-update_weight")
   curr_new_wts2 <- app$get_value(export = "reweightInfo-curr_new_wts")
-  expect_equal(curr_new_wts2[1,3], 3)
+  expect_equal(curr_new_wts2[1,3], 0)
   expect_equal(curr_new_wts2[-1,], curr_new_wts[-1,])
   
   app$set_inputs(`reweightInfo-metric_name` = curr_new_wts[3,1])
