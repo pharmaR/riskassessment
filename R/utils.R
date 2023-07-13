@@ -342,12 +342,16 @@ build_comm_cards <- function(data){
             is_perc = 0,
             is_url = 0)
   
-  year_downloads <- dplyr::as_tibble(data) %>% 
+  if (time_diff_first_rel$value < 2) {
+    return(cards)
+  }
+  
+  trend_downloads <- dplyr::as_tibble(data) %>% 
     dplyr::arrange(year, month) %>%
     dplyr::filter(row_number() >= (n() - 11)) %>% 
     dplyr::mutate(row_n = row_number())
   
-  model_result <- lm(downloads ~ row_n, data = year_downloads) %>% 
+  model_result <- lm(downloads ~ row_n, data = trend_downloads) %>% 
     broom::tidy() %>% 
     dplyr::filter(term == "row_n") %>% 
     dplyr::mutate(estimate = round(estimate, 0)) %>% 
@@ -493,22 +497,42 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
   default_range <- c(
     max(downloads_data$day_month_year) - 45 - (365 * 2),
     max(downloads_data$day_month_year) + 15)
+
+  #Create linear model
+  data_horizon <- downloads_data %>% 
+    dplyr::arrange(day_month_year) %>%
+    filter(day_month_year >= max(day_month_year) - lubridate::years(2)) %>% 
+    dplyr::mutate(row_n = row_number())
   
-  plotly::plot_ly(downloads_data,
-          x = ~day_month_year,
-          y = ~downloads,
-          name = "# Downloads", type = 'scatter', 
-          mode = 'lines+markers', line = list(color = '#1F9BCF'),
-          marker = list(color = '#1F9BCF'),
-          hoverinfo = "text",
-          text = ~glue::glue('No. of Downloads: {format(downloads, big.mark = ",")}
-                         {month} {year}')) %>%
-    plotly::layout(title = glue::glue('NUMBER OF DOWNLOADS BY MONTH: {pkg_name}'),
-           margin = list(t = 100),
-           showlegend = FALSE,
-           yaxis = list(title = "Downloads"),
-           xaxis = list(title = "", type = 'date', tickformat = "%b %Y",
-                        range = dates_range)) %>% 
+  lm_model <- lm(downloads ~ row_n, data = data_horizon)
+  
+  downloads_trend <- data_horizon %>% 
+    dplyr::mutate(trend = predict(lm_model, data_horizon))
+  
+  # plot
+  plotly::plot_ly(
+    downloads_data,
+    x = ~day_month_year,
+    y = ~downloads,
+    name = "# Downloads", type = 'scatter', 
+    mode = 'lines+markers', line = list(color = '#1F9BCF'),
+    marker = list(color = '#1F9BCF'),
+    hoverinfo = "text",
+    text = ~glue::glue(
+      'No. of Downloads: {format(downloads, big.mark = ",")}
+      {month} {year}'
+      )
+    ) %>%
+    plotly::layout(
+      title = glue::glue('NUMBER OF DOWNLOADS BY MONTH: {pkg_name}'),
+      margin = list(t = 100),
+      showlegend = TRUE,
+      yaxis = list(title = "Downloads"),
+      xaxis = list(
+        title = "", type = 'date', tickformat = "%b %Y",
+        range = dates_range
+      )
+    ) %>% 
     plotly::add_segments(
       x = ~dplyr::if_else(version %in% c("", "NA", NA), lubridate::NA_Date_, day_month_year),
       xend = ~dplyr::if_else(version %in% c("", "NA", NA), lubridate::NA_Date_, day_month_year),
@@ -517,7 +541,8 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
       name = "Version Release",
       hoverinfo = "text",
       text = ~glue::glue('Version {version}'),
-      line = list(color = '#4BBF73')) %>% 
+      line = list(color = '#4BBF73')
+    ) %>% 
     plotly::add_annotations( 
       yref = 'paper',
       xref = "x",
@@ -527,8 +552,25 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
       showarrow = F,
       textangle = 270,
       font = list(size = 14, color = '#4BBF73'),
-      text = ~ifelse(downloads_data$version %in% c("", "NA", NA), "", downloads_data$version)) %>%
+      text = ~ifelse(downloads_data$version %in% c("", "NA", NA), "", downloads_data$version)
+    ) %>%
+    plotly::add_trace(
+      data = downloads_trend,
+      x = ~day_month_year,
+      y = ~trend,
+      inherit = FALSE,
+      name = 'Linear trend',
+      type = 'scatter',
+      mode = "marker",
+      opacity = 0.45,
+      line = list(color = '#080808')
+    ) %>%
     plotly::layout(
+      legend = list(
+        title = list(text = 'Legend'),
+        orientation = "h",
+        y = -0.5
+      ),
       xaxis = list(
         range = dates_range,
         rangeselector = list(
@@ -556,10 +598,34 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
               label = "6 mo",
               step = "month",
               stepmode = "backward")
-          )),
+          )
+        ),
         rangeslider = list(visible = TRUE)
-      )) %>%
-    plotly::config(displayModeBar = F)
+      ),
+      updatemenus = list(
+        active = -1,
+        type = 'buttons',
+        buttons = list(
+          list(
+            label = "Trends",
+            method = "update",
+            args = list(
+              list(visible = c(TRUE, TRUE)),
+              list(list(c(), c()))
+            )
+          ),
+          list(
+            label = "Reset",
+            method = "update",
+            args = list(
+              list(visible = c(TRUE, TRUE)),
+              list(annotations = list(c(), c() ))
+            )
+          )
+        )
+      )
+    ) %>%
+    plotly::config(displayModeBar = FALSE)
 }
 
 
