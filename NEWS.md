@@ -1,6 +1,7 @@
 # riskassessment (development version)
 * Disable using the Microsoft R Application Network (MRAN) for restoring packages
 * Removed legacy code that set the covr_coverage assessment's metric weight to 0 in the assessmentInfo mod and metric table initialization sql file.
+* Added card Download Trend and linear trend plot on community usage metrics (#438)
 
 # riskassessment 1.0.0
 
