@@ -17,7 +17,7 @@ test_that("reweightView works", {
 
   metric_weights <- app$get_value(export = "metric_weights")
   curr_new_wts <- app$get_value(export = "reweightInfo-curr_new_wts")
-  expect_equal(metric_weights, curr_new_wts[,1:2])
+  expect_equal(metric_weights, curr_new_wts[,1:3])
   expect_equal(app$get_value(input = "reweightInfo-metric_weight"), 1)
   
   db_backup <- app$get_download("reweightInfo-download_database_btn")
@@ -45,7 +45,7 @@ test_that("reweightView works", {
   expect_equal(curr_new_wts2, curr_new_wts)
   app$click("reweightInfo-update_weight")
   curr_new_wts2 <- app$get_value(export = "reweightInfo-curr_new_wts")
-  expect_equal(curr_new_wts2[1,3], 2)
+  expect_equal(curr_new_wts2[1,3], 3)
   expect_equal(curr_new_wts2[-1,], curr_new_wts[-1,])
   
   app$set_inputs(`reweightInfo-metric_name` = curr_new_wts[3,1])
@@ -94,7 +94,7 @@ test_that("reweightView works", {
   
   metric_weights <- app$get_value(export = "metric_weights")
   curr_new_wts <- app$get_value(export = "reweightInfo-curr_new_wts")
-  expect_equal(metric_weights, curr_new_wts[,1:2])
+  expect_equal(metric_weights, curr_new_wts[,1:3])
   expect_equal(metric_weights[1:3,2], c(2,1,3.5))
   
   # Verify that app will not crash and metrics update if database is empty
