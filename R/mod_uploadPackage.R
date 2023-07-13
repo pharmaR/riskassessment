@@ -290,10 +290,7 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
         uploaded_packages$decision <- ""
       np <- nrow(uploaded_packages)
 
-      # Start progress bar. Need to establish a maximum increment
-      # value based on the number of packages, np, and the number of
-      # incProgress() function calls in the loop, plus one to show
-      # the incProgress() that the process is completed.
+      # Start cli_progress_bar 
       deets <- "... "
       cl_id <- cli::cli_progress_bar("Uploading ", 
                     type = "iterator",
@@ -408,7 +405,6 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
             if(!found) {
               # Get and upload pkg general info to db.
 
-              incProgress(1, detail = deets)
               if (!isTRUE(getOption("shiny.testmode"))) {
                 dwn_ld <- download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), 
                                         quiet = TRUE, mode = "wb")
