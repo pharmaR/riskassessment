@@ -59,8 +59,8 @@ test_that("decision_automation works", {
   # Submit new decision rules
   app$click(input = "automate-submit_auto")
   app$wait_for_idle()
-  app$click(input = "automate-confirm_submit_auto")
-  app$wait_for_idle(1000)
+  app$click(input = "automate-confirm_submit_auto", wait_ = FALSE)
+  app$wait_for_idle()
   app$click("automate-auto_dropdown")
   app$wait_for_idle()
   
