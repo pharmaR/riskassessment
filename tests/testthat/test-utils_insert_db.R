@@ -18,9 +18,10 @@ test_that("utils_insert_db functions other than dbUpdate", {
   
   # load pkg info for stringr into the database
   pkg_name <- "stringr"
+  pkg_info <- test_pkg_info[[pkg_name]]
   
-  insert_pkg_info_to_db(pkg_name, db_name = app_db_loc)
-  
+  insert_pkg_info_to_db(pkg_name, pkg_info$Version, db_name = app_db_loc)
+
   test_that("insert_pkg_info_to_db works", {
     pkg <- dbSelect(
       "SELECT *
@@ -42,7 +43,7 @@ test_that("utils_insert_db functions other than dbUpdate", {
       "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
                     metric.is_url, package_metrics.value
                     FROM metric
-                    INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
+                    INNER JOIN package_metrics ON metric.id = package_metrics.id
                     WHERE package_metrics.package_id = {pkg_id} AND 
                     metric.class = 'maintenance' ;", app_db_loc)
     expect_s3_class(mmdata, "data.frame")
