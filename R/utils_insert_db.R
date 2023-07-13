@@ -163,7 +163,8 @@ insert_riskmetric_to_db <- function(pkg_name,
     riskmetric_assess <-
       test_pkg_assess[[pkg_name]]
   }
-  metric_weights_df <- get_metric_weights()
+  metric_weights_df <- get_metric_weights(db_name)
+
   
   # Get the metrics weights to be used during pkg_score.
   metric_weights <- metric_weights_df$weight
@@ -185,8 +186,8 @@ insert_riskmetric_to_db <- function(pkg_name,
   assessment_serialized <- data.frame(pkg_assess = I(lapply(riskmetric_assess, serialize, connection = NULL)))
   # Insert all the metrics (columns of class "pkg_score") into the db.
   # TODO: Are pkg_score and pkg_metric_error mutually exclusive?
-  for(row in 1:nrow(isolate(metric_weights_df()))) {
-    metric <- isolate(metric_weights_df()) %>% dplyr::slice(row)
+  for(row in 1:nrow(metric_weights_df)) {
+    metric <- metric_weights_df %>% dplyr::slice(row)
     # If the metric is not part of the assessment, then skip iteration.
     if(!(metric$name %in% colnames(riskmetric_score))) next
     
@@ -300,7 +301,7 @@ rescore_package <- function(pkg_name,
     purrr::pmap_dfc(db_table, function(name, encode) {dplyr::tibble(unserialize(encode)) %>% purrr::set_names(name)})
   
   # Get the metrics weights to be used during pkg_score.
-  metric_weights_df <- get_metric_weights()
+  metric_weights_df <- get_metric_weights(db_name)
   metric_weights <- metric_weights_df$weight
   names(metric_weights) <- metric_weights_df$name
   
