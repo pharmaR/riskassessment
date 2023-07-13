@@ -294,7 +294,7 @@ rescore_package <- function(pkg_name,
   
   db_table <- dbSelect("SELECT metric.name, package_metrics.encode FROM package 
                        INNER JOIN package_metrics ON package.id = package_metrics.package_id
-                       INNER JOIN metric ON package_metrics.metric_id = metric.id
+                       INNER JOIN metric ON package_metrics.id = metric.id
                        WHERE package.name = {pkg_name}", db_name)
   
   riskmetric_assess <-
