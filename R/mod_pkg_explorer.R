@@ -37,17 +37,31 @@ mod_pkg_explorer_ui <- function(id){
 
 #' pkg_explorer Server Functions
 #' 
-#' @importFrom jsTreeR renderJstree jstree
+#' @importFrom jsTreeR renderJstree jstree jstreeUpdate
 #' @importFrom shinyAce updateAceEditor
 #'
 #' @noRd 
-mod_pkg_explorer_server <- function(id, pkgdir, accepted_extensions = c("r", "rmd", "rd", "txt", "md","csv", "tsv", "json", "xml", "yaml", "yml", "dcf", "html", "js", "css", "c", "cpp", "h", "java", "scala", "py", "perl", "sh", "sql"), accepted_filenames = c("DESCRIPTION", "NAMESPACE", "LICENSE", "LICENSE.note", "NEWS", "README", "CHANGES", "MD5")) {
-  if (!is.reactive(pkgdir))
-    pkgdir <- reactiveVal(pkgdir)
+mod_pkg_explorer_server <- function(id, selected_pkg, accepted_extensions = c("r", "rmd", "rd", "txt", "md","csv", "tsv", "json", "xml", "yaml", "yml", "dcf", "html", "js", "css", "c", "cpp", "h", "java", "scala", "py", "perl", "sh", "sql"), accepted_filenames = c("DESCRIPTION", "NAMESPACE", "LICENSE", "LICENSE.note", "NEWS", "README", "CHANGES", "MD5")) {
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    nodes <- reactive(makeNodes(list.files(pkgdir(), recursive = TRUE, include.dirs = TRUE)))
+    pkgdir <- reactiveVal()
+    
+    observeEvent(selected_pkg$name(), {
+      req(selected_pkg$name() != "-")
+      src_dir <- file.path("source", selected_pkg$name())
+      if (dir.exists(src_dir)) {
+        pkgdir(src_dir)
+      } else {
+        untar(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")), exdir = "source")
+        pkgdir(src_dir)
+      }
+    })
+    
+    nodes <- reactive({
+      req(pkgdir())
+      makeNodes(list.files(pkgdir(), recursive = TRUE, include.dirs = TRUE))
+    })
     
     types <- list(
       root = list(icon = "fa fa-folder"),
@@ -56,6 +70,10 @@ mod_pkg_explorer_server <- function(id, pkgdir, accepted_extensions = c("r", "rm
     
     output$dirtree <- jsTreeR::renderJstree({
       jsTreeR::jstree(nodes(), types = types, multiple = FALSE, theme = "proton")
+    })
+    
+    observeEvent(nodes(), {
+      jsTreeR::jstreeUpdate(session, ns("dirtree"), nodes())
     })
     
     output$is_child <- reactive({
