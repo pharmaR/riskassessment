@@ -152,7 +152,7 @@ get_mm_data <- function(pkg_id, db_name = golem::get_golem_options('assessment_d
     "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
                     metric.is_url, package_metrics.value
                     FROM metric
-                    INNER JOIN package_metrics ON metric.id = package_metrics.id
+                    INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
                     WHERE package_metrics.package_id = {pkg_id} AND 
                     metric.class = 'maintenance' ;", db_name) %>%
     dplyr::mutate(
