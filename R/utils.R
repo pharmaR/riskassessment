@@ -364,19 +364,26 @@ build_comm_cards <- function(data){
             icon_class = "text-info",
             is_perc = 0,
             is_url = 0)
+
+  trend_downloads <- dplyr::as_tibble(data) %>% 
+    dplyr::arrange(year, month) %>%
+    dplyr::mutate(day_month_year = glue::glue('1-{month}-{year}')) %>%
+    dplyr::mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
+    dplyr::filter(
+      day_month_year >= max(day_month_year) - lubridate::years(2) + lubridate::month(1)
+    ) %>% 
+    dplyr::mutate(row_n = row_number())
   
-  if (time_diff_first_rel$value < 2) {
+  amount_months <- max(trend_downloads$row_n)
+  if (amount_months < 12) {
     return(cards)
   }
   
-  trend_downloads <- dplyr::as_tibble(data) %>% 
-    dplyr::arrange(year, month) %>%
-    dplyr::filter(row_number() >= (n() - 11)) %>% 
-    dplyr::mutate(row_n = row_number())
-  
-  model_result <- lm(downloads ~ row_n, data = trend_downloads) %>% 
-    broom::tidy() %>% 
-    dplyr::filter(term == "row_n") %>% 
+  model_result <- as.list(
+    lm(downloads ~ row_n, data = trend_downloads)$coefficients
+    ) %>% 
+    dplyr::as_tibble() %>% 
+    dplyr::select(estimate = row_n) %>% 
     dplyr::mutate(estimate = round(estimate, 0)) %>% 
     dplyr::mutate(succ_icon = dplyr::case_when(
       estimate > 0 ~ "arrow-trend-up",
@@ -390,7 +397,7 @@ build_comm_cards <- function(data){
     dplyr::add_row(
       name = 'downloads_trend',
       title = 'Downloads trend',
-      desc = 'Trend of downloads in last 12 months',
+      desc = glue::glue("Trend of downloads in last {amount_months} months"),
       value = format(model_result$estimate, big.mark = ","),
       succ_icon = model_result$succ_icon,
       icon_class = "text-info",
@@ -521,19 +528,10 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
     max(downloads_data$day_month_year) - 45 - (365 * 2),
     max(downloads_data$day_month_year) + 15)
 
-  #Create linear model
-  data_horizon <- downloads_data %>% 
-    dplyr::arrange(day_month_year) %>%
-    filter(day_month_year >= max(day_month_year) - lubridate::years(2)) %>% 
-    dplyr::mutate(row_n = row_number())
-  
-  lm_model <- lm(downloads ~ row_n, data = data_horizon)
-  
-  downloads_trend <- data_horizon %>% 
-    dplyr::mutate(trend = predict(lm_model, data_horizon))
+
   
   # plot
-  plotly::plot_ly(
+  plot <- plotly::plot_ly(
     downloads_data,
     x = ~day_month_year,
     y = ~downloads,
@@ -577,17 +575,6 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
       font = list(size = 14, color = '#4BBF73'),
       text = ~ifelse(downloads_data$version %in% c("", "NA", NA), "", downloads_data$version)
     ) %>%
-    plotly::add_trace(
-      data = downloads_trend,
-      x = ~day_month_year,
-      y = ~trend,
-      inherit = FALSE,
-      name = 'Linear trend',
-      type = 'scatter',
-      mode = "marker",
-      opacity = 0.45,
-      line = list(color = '#080808')
-    ) %>%
     plotly::layout(
       legend = list(
         title = list(text = 'Legend'),
@@ -627,6 +614,37 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
       )
     ) %>%
     plotly::config(displayModeBar = FALSE)
+  
+  #Create linear model
+  data_horizon <- downloads_data %>% 
+    dplyr::arrange(day_month_year) %>%
+    dplyr::filter(
+      day_month_year >= max(day_month_year) - lubridate::years(2) + lubridate::month(1)
+    ) %>% 
+    dplyr::mutate(row_n = row_number())
+  
+  if (max(data_horizon$row_n) < 12) {
+   return(plot) 
+  } else {
+    lm_model <- lm(downloads ~ row_n, data = data_horizon)
+    
+    downloads_trend <- data_horizon %>% 
+      dplyr::mutate(trend = predict(lm_model, data_horizon))
+    
+    plot %>% 
+      plotly::add_trace(
+        data = downloads_trend,
+        x = ~day_month_year,
+        y = ~trend,
+        inherit = FALSE,
+        name = 'Linear trend',
+        type = 'scatter',
+        mode = "marker",
+        opacity = 0.45,
+        line = list(color = '#080808')
+      )
+  }
+  
 }
 
 
