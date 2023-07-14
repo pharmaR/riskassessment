@@ -13,26 +13,28 @@ mod_pkg_explorer_ui <- function(id){
   ns <- NS(id)
   tagList(
     h4("file browser"),
-    column(4,
-           wellPanel(
-             jsTreeR::jstreeOutput(ns("dirtree")),
-           )
-    ),
-    column(8,
-           conditionalPanel(
-             condition = "output.is_child",
-             shinyAce::aceEditor(ns("editor"), value = "", height = "600px",
-                       mode = "txt", readOnly = TRUE, theme = "tomorrow",
-                       fontSize = 14, wordWrap = FALSE, showLineNumbers = FALSE,
-                       highlightActiveLine = TRUE, tabSize = 2, showInvisibles = FALSE
-             ),
-             htmlOutput(ns("filepath")),
-             ns = ns
-           )
+    fluidRow(
+      column(4,
+             wellPanel(
+               jsTreeR::jstreeOutput(ns("dirtree")),
+             )
+      ),
+      column(8,
+             conditionalPanel(
+               condition = "output.is_child",
+               shinyAce::aceEditor(ns("editor"), value = "", height = "600px",
+                                   mode = "txt", readOnly = TRUE, theme = "tomorrow",
+                                   fontSize = 14, wordWrap = FALSE, showLineNumbers = FALSE,
+                                   highlightActiveLine = TRUE, tabSize = 2, showInvisibles = FALSE
+               ),
+               htmlOutput(ns("filepath")),
+               ns = ns
+             )
+      )
     )
   )
 }
-    
+
 #' pkg_explorer Server Functions
 #' 
 #' @importFrom jsTreeR renderJstree jstree
@@ -105,12 +107,12 @@ mod_pkg_explorer_server <- function(id, pkgdir, accepted_extensions = c("r", "rm
       HTML(sprintf('<h5>%s</h5>', s))
     }) %>%
       bindEvent(input$dirtree_selected)
- 
+    
   })
 }
-    
+
 ## To be copied in the UI
 # mod_pkg_explorer_ui("pkg_explorer")
-    
+
 ## To be copied in the server
 # mod_pkg_explorer_server("pkg_explorer")
