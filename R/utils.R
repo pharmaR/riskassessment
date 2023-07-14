@@ -601,28 +601,6 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
           )
         ),
         rangeslider = list(visible = TRUE)
-      ),
-      updatemenus = list(
-        active = -1,
-        type = 'buttons',
-        buttons = list(
-          list(
-            label = "Trends",
-            method = "update",
-            args = list(
-              list(visible = c(TRUE, TRUE)),
-              list(list(c(), c()))
-            )
-          ),
-          list(
-            label = "Reset",
-            method = "update",
-            args = list(
-              list(visible = c(TRUE, TRUE)),
-              list(annotations = list(c(), c() ))
-            )
-          )
-        )
       )
     ) %>%
     plotly::config(displayModeBar = FALSE)
