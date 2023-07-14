@@ -1317,6 +1317,29 @@
       ],
       "Hash": "5aab57a3bd297eee1c1d862735972182"
     },
+    "jsTreeR": {
+      "Package": "jsTreeR",
+      "Version": "2.2.0",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "R.utils",
+        "base64enc",
+        "fontawesome",
+        "htmltools",
+        "htmlwidgets",
+        "jquerylib",
+        "miniUI",
+        "rstudioapi",
+        "shiny",
+        "shinyAce",
+        "stats",
+        "tools",
+        "utils"
+      ],
+      "Hash": "008c56de7ac90f7471c4f08dc69c6855"
+    },
     "jsonlite": {
       "Package": "jsonlite",
       "Version": "1.8.0",
@@ -2278,6 +2301,20 @@
         "xtable"
       ],
       "Hash": "00344c227c7bd0ab5d78052c5d736c44"
+    },
+    "shinyAce": {
+      "Package": "shinyAce",
+      "Version": "0.4.2",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "jsonlite",
+        "shiny",
+        "tools",
+        "utils"
+      ],
+      "Hash": "99b2ee37c4f174539b1b0d920b00d16c"
     },
     "shinyWidgets": {
       "Package": "shinyWidgets",

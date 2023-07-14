@@ -61,7 +61,9 @@ Imports:
     shinyjs,
     shinymanager,
     shinyWidgets,
-    stringr
+    stringr,
+    shinyAce,
+    jsTreeR
 Suggests: 
     chromote,
     fontawesome,
