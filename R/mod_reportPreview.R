@@ -36,8 +36,11 @@ reportPreviewUI <- function(id) {
 #' 
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                                 com_metrics_raw, mm_comments, cm_comments,
-                                downloads_plot_data, user, app_version,
+                                downloads_plot_data, user, approved_roles, app_version,
                                 metric_weights) {
+  if (missing(approved_roles))
+    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+  
   moduleServer(id, function(input, output, session) {
     
     # IntroJS.
@@ -74,13 +77,14 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             
             br(), br(),
             
-            div(id = NS(id, "pkg-summary-grp"),
-              # Compose pkg summary - either disabled, enabled, or pre-populated
-              uiOutput(NS(id, "pkg_summary_ui")),
-              
-              # Submit or Edit Summary for selected Package.
-              uiOutput(NS(id, "submit_edit_pkg_summary_ui")),
-            ),
+            if ("overall_comment" %in% approved_roles[[user$role]]) 
+              div(id = NS(id, "pkg-summary-grp"),
+                  # Compose pkg summary - either disabled, enabled, or pre-populated
+                  uiOutput(NS(id, "pkg_summary_ui")),
+                  
+                  # Submit or Edit Summary for selected Package.
+                  uiOutput(NS(id, "submit_edit_pkg_summary_ui")),
+              ),
             
             br(), br()
           )

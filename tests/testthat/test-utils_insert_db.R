@@ -19,7 +19,7 @@ test_that("utils_insert_db functions other than dbUpdate", {
   # load pkg info for stringr into the database
   pkg_name <- "stringr"
   
-  insert_pkg_info_to_db(pkg_name, app_db_loc)
+  insert_pkg_info_to_db(pkg_name, db_name = app_db_loc)
 
   test_that("insert_pkg_info_to_db works", {
     pkg <- dbSelect(
