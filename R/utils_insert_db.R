@@ -163,7 +163,7 @@ insert_riskmetric_to_db <- function(pkg_name,
     riskmetric_assess <-
       test_pkg_assess[[pkg_name]]
   }
-  metric_weights_df <- get_metric_weights(db_name)
+  metric_weights_df <- dbSelect("SELECT id, name, weight, is_perc FROM metric", db_name)
 
   
   # Get the metrics weights to be used during pkg_score.
@@ -294,7 +294,7 @@ rescore_package <- function(pkg_name,
   
   db_table <- dbSelect("SELECT metric.name, package_metrics.encode FROM package 
                        INNER JOIN package_metrics ON package.id = package_metrics.package_id
-                       INNER JOIN metric ON package_metrics.id = metric.id
+                       INNER JOIN metric ON package_metrics.metric_id = metric.id
                        WHERE package.name = {pkg_name}", db_name)
   
   riskmetric_assess <-
