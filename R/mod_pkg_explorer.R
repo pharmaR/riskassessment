@@ -20,13 +20,14 @@ mod_pkg_explorer_ui <- function(id){
     ),
     column(8,
            conditionalPanel(
-             condition = paste0("output.", ns("is_child")),
+             condition = "output.is_child",
              shinyAce::aceEditor(ns("editor"), value = "", height = "600px",
                        mode = "txt", readOnly = TRUE, theme = "tomorrow",
                        fontSize = 14, wordWrap = FALSE, showLineNumbers = FALSE,
                        highlightActiveLine = TRUE, tabSize = 2, showInvisibles = FALSE
              ),
-             htmlOutput(ns("filepath"))
+             htmlOutput(ns("filepath")),
+             ns = ns
            )
     )
   )
@@ -75,10 +76,10 @@ mod_pkg_explorer_server <- function(id, pkgdir, accepted_extensions = c("r", "rm
       jsTreeR::jstree(nodes(), types = types, multiple = FALSE, theme = "proton")
     })
     
-    # output$is_child <- reactive({
-    #   return(length(input$dirtree_selected) > 0 && input$dirtree_selected[[1]]$type == "child")
-    # })
-    # outputOptions(output, "is_child", suspendWhenHidden = FALSE)
+    output$is_child <- reactive({
+      return(length(input$dirtree_selected) > 0 && input$dirtree_selected[[1]]$type == "child")
+    })
+    outputOptions(output, "is_child", suspendWhenHidden = FALSE)
     
     observeEvent(input$dirtree_selected, {
       s <- ""
