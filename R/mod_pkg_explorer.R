@@ -47,26 +47,6 @@ mod_pkg_explorer_server <- function(id, pkgdir, accepted_extensions = c("r", "rm
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    # Necessary addition for {jsTree} to work without attaching the package.
-    # I anticipate that the package developer will update the package to work
-    # on load. When that occurs, I will update the package and remove these
-    # lines of code.
-    shiny::registerInputHandler("jsTreeR.list", function(data, ...){
-      data
-    }, force = TRUE)
-    shiny::registerInputHandler("jsTreeR.move", function(data, ...){
-      lapply(data, unlist)
-    }, force = TRUE)
-    shiny::registerInputHandler("jsTreeR.copied", function(data, ...){
-      data[["from"]][["path"]] <- unlist(data[["from"]][["path"]])
-      data[["to"]][["path"]] <- unlist(data[["to"]][["path"]])
-      data
-    }, force = TRUE)
-    shiny::registerInputHandler("jsTreeR.path", function(data, ...){
-      data[["path"]] <- unlist(data[["path"]])
-      data
-    }, force = TRUE)
-    
     nodes <- reactive(makeNodes(list.files(pkgdir(), recursive = TRUE, include.dirs = TRUE)))
     
     types <- list(

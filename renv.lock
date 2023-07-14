@@ -1319,9 +1319,14 @@
     },
     "jsTreeR": {
       "Package": "jsTreeR",
-      "Version": "2.2.0",
-      "Source": "Repository",
-      "Repository": "RSPM",
+      "Version": "2.3.1.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "jsTreeR",
+      "RemoteUsername": "stla",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "7e2060010bc98769484a82558047f2c1bcc7ed62",
       "Requirements": [
         "R",
         "R.utils",
@@ -1338,7 +1343,7 @@
         "tools",
         "utils"
       ],
-      "Hash": "008c56de7ac90f7471c4f08dc69c6855"
+      "Hash": "2503b47f10ef7cf1ccaf3f2af8ec8195"
     },
     "jsonlite": {
       "Package": "jsonlite",
