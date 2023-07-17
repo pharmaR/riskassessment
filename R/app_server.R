@@ -182,6 +182,9 @@ app_server <- function(input, output, session) {
     get_comm_data(selected_pkg$name())
   })
   
+  
+  mod_pkg_explorer_server("pkg_explorer", selected_pkg)
+  
   # Load server for the maintenance metrics tab.
   maintenance_data <- maintenanceMetricsServer('maintenanceMetrics',
                                                selected_pkg,
