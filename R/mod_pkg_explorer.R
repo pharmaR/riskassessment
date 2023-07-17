@@ -30,10 +30,11 @@ mod_pkg_explorer_server <- function(id, selected_pkg, accepted_extensions = c("r
       
       
       # Lets the user know that a package needs to be selected.
-      if(identical(selected_pkg$name(), character(0)))
+      if(identical(selected_pkg$name(), character(0))) {
         showHelperMessage()
-      
-      else {
+      } else if (!file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")))) {
+        showHelperMessage(message = glue::glue("Source code not available for {{{selected_pkg$name()}}}"))
+      } else {
         tagList(
           br(),
           h4("File Browser", style = "text-align: center;"),
@@ -64,6 +65,7 @@ mod_pkg_explorer_server <- function(id, selected_pkg, accepted_extensions = c("r
     observe({
       req(selected_pkg$name() != "-")
       req(create_dir())
+      req(file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz"))))
       
       src_dir <- file.path("source", selected_pkg$name())
       if (dir.exists(src_dir)) {
