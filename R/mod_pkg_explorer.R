@@ -11,28 +11,7 @@
 #' @importFrom shinyAce aceEditor
 mod_pkg_explorer_ui <- function(id){
   ns <- NS(id)
-  tagList(
-    h4("file browser"),
-    fluidRow(
-      column(4,
-             wellPanel(
-               jsTreeR::jstreeOutput(ns("dirtree")),
-             )
-      ),
-      column(8,
-             conditionalPanel(
-               condition = "output.is_child",
-               shinyAce::aceEditor(ns("editor"), value = "", height = "600px",
-                                   mode = "txt", readOnly = TRUE, theme = "tomorrow",
-                                   fontSize = 14, wordWrap = FALSE, showLineNumbers = FALSE,
-                                   highlightActiveLine = TRUE, tabSize = 2, showInvisibles = FALSE
-               ),
-               htmlOutput(ns("filepath")),
-               ns = ns
-             )
-      )
-    )
-  )
+  uiOutput(ns("pkg_explorer_ui"))
 }
 
 #' pkg_explorer Server Functions
@@ -46,6 +25,41 @@ mod_pkg_explorer_server <- function(id, selected_pkg, accepted_extensions = c("r
     ns <- session$ns
     
     pkgdir <- reactiveVal()
+    
+    output$pkg_explorer_ui <- renderUI({
+      
+      
+      # Lets the user know that a package needs to be selected.
+      if(identical(selected_pkg$name(), character(0)))
+        showHelperMessage()
+      
+      else {
+        tagList(
+          br(),
+          h4("File Browser", style = "text-align: center;"),
+          br(), br(),
+          fluidRow(
+            column(4,
+                   wellPanel(
+                     jsTreeR::jstreeOutput(ns("dirtree")),
+                   )
+            ),
+            column(8,
+                   conditionalPanel(
+                     condition = "output.is_child",
+                     shinyAce::aceEditor(ns("editor"), value = "", height = "600px",
+                                         mode = "txt", readOnly = TRUE, theme = "tomorrow",
+                                         fontSize = 14, wordWrap = FALSE, showLineNumbers = FALSE,
+                                         highlightActiveLine = TRUE, tabSize = 2, showInvisibles = FALSE
+                     ),
+                     htmlOutput(ns("filepath")),
+                     ns = ns
+                   )
+            )
+          )
+        )
+      }
+    })
     
     observe({
       req(selected_pkg$name() != "-")
