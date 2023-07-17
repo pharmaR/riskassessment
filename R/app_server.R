@@ -182,8 +182,9 @@ app_server <- function(input, output, session) {
     get_comm_data(selected_pkg$name())
   })
   
+  create_src_dir <- eventReactive(input$tabs, input$tabs == "Source Explorer")
   
-  mod_pkg_explorer_server("pkg_explorer", selected_pkg)
+  mod_pkg_explorer_server("pkg_explorer", selected_pkg, create_dir = create_src_dir)
   
   # Load server for the maintenance metrics tab.
   maintenance_data <- maintenanceMetricsServer('maintenanceMetrics',

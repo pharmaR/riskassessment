@@ -41,14 +41,16 @@ mod_pkg_explorer_ui <- function(id){
 #' @importFrom shinyAce updateAceEditor
 #'
 #' @noRd 
-mod_pkg_explorer_server <- function(id, selected_pkg, accepted_extensions = c("r", "rmd", "rd", "txt", "md","csv", "tsv", "json", "xml", "yaml", "yml", "dcf", "html", "js", "css", "c", "cpp", "h", "java", "scala", "py", "perl", "sh", "sql"), accepted_filenames = c("DESCRIPTION", "NAMESPACE", "LICENSE", "LICENSE.note", "NEWS", "README", "CHANGES", "MD5")) {
+mod_pkg_explorer_server <- function(id, selected_pkg, accepted_extensions = c("r", "rmd", "rd", "txt", "md","csv", "tsv", "json", "xml", "yaml", "yml", "dcf", "html", "js", "css", "c", "cpp", "h", "java", "scala", "py", "perl", "sh", "sql"), accepted_filenames = c("DESCRIPTION", "NAMESPACE", "LICENSE", "LICENSE.note", "NEWS", "README", "CHANGES", "MD5"), create_dir = reactiveVal(TRUE)) {
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
     pkgdir <- reactiveVal()
     
-    observeEvent(selected_pkg$name(), {
+    observe({
       req(selected_pkg$name() != "-")
+      req(create_dir())
+      
       src_dir <- file.path("source", selected_pkg$name())
       if (dir.exists(src_dir)) {
         pkgdir(src_dir)
@@ -56,7 +58,8 @@ mod_pkg_explorer_server <- function(id, selected_pkg, accepted_extensions = c("r
         untar(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")), exdir = "source")
         pkgdir(src_dir)
       }
-    })
+    }) %>% 
+      bindEvent(selected_pkg$name(), create_dir())
     
     nodes <- reactive({
       req(pkgdir())
