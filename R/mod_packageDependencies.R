@@ -136,7 +136,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       req(lastpkg() != selected_pkg$name())
 
       # this is really where the progress bar should start
-      m_id(cli::cli_progress_message("About to Create Data Table...", .auto_close = FALSE))
+      m_id(cli::cli_progress_message("Compiling dependency info...", .auto_close = FALSE))
     }, ignoreInit = TRUE)
     
     pkg_df <- eventReactive({selected_pkg$name(); tabready()}, {
