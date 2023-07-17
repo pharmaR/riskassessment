@@ -35,6 +35,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
+    decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
+    color_lst <- get_colors(golem::get_golem_options("assessment_db_name"))
+    
+    auto_assess_dependencies <- FALSE
+    
     metric_wts_df <- eventReactive(selected_pkg$name(), {
       dbSelect("SELECT id, name, weight FROM metric")
     }) 
@@ -68,6 +73,18 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = round(riskmetric_score$pkg_score,2) ))
     }
     
+    get_versn <- function(pkg_name, id) {
+      
+      riskmetric_assess <-
+        riskmetric::pkg_ref(pkg_name,
+                            source = "pkg_cran_remote",
+                            repos = c("https://cran.rstudio.com")) %>%
+        dplyr::as_tibble() 
+      
+      cli::cli_progress_update(id = id)
+      
+      return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = NA ))
+    }
     # used for adding action buttons to data_table
     shinyInput <- function(FUN, len, id, ...) {
       inputs <- character(len)
@@ -161,9 +178,14 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                                      format = "{pkg_name} {cli::pb_percent} | ETA: {cli::pb_eta}",
                                      total = nrow(pkginfo))
       
+      if (auto_assess_dependencies == TRUE) {
       purrr::map_df(pkginfo$name, ~get_versnScore(.x, cl_id), .progress = TRUE) %>% 
         right_join(pkginfo, by = "name") %>% 
         select(package, type, name, version, score)
+      } else {
+        purrr::map_df(pkginfo$name, ~get_versn(.x, cl_id), .progress = TRUE) %>% 
+          right_join(pkginfo, by = "name") %>% 
+          select(package, type, name, version, score)      }
       
     }, ignoreInit = TRUE) 
     
@@ -239,6 +261,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                            selection = list(mode = 'multiple'),
                            colnames = c("Package", "Type", "Name", "Version", "Score", "Review Package"),
                            rownames = FALSE,
+                           options = list(
+                             lengthMenu = list(c(15, -1), c('15', 'All'))),
                            style="default"
                          ) %>%
                            DT::formatStyle(names(my_data_table()), textAlign = 'center')
