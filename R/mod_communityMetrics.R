@@ -41,12 +41,8 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user, ap
           showHelperMessage(message = glue::glue("Community Usage Metrics not avaiable for ", {selected_pkg$name()} ))
       }
       else {
-        fluidPage(
-          
           tagList(
-            br(),
             introJSUI(NS(id, 'introJS')),
-            h4("Community Usage Metrics", style = "text-align: center;"),
             br(), br(),
             div(id = "cum_infoboxes", metricGridUI(NS(id, 'metricGrid'))),
             br(), br(),
@@ -58,7 +54,6 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user, ap
               if ("general_comment" %in% approved_roles[[user$role]]) addCommentUI(id = session$ns("add_comment")),
               viewCommentsUI(id = session$ns("view_comments"))))
           )
-        )
       }
     })
     
