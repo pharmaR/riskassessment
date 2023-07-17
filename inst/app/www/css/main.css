@@ -43,3 +43,7 @@
 #upload_package-rem_pkg_btn:focus {
 box-shadow: 0 0 0 0.25rem rgb(51, 153, 255, 50%);
 }
+
+.tab-pane {
+  position: relative;
+}
