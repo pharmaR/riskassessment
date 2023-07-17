@@ -757,16 +757,21 @@
     },
     "deepdep": {
       "Package": "deepdep",
-      "Version": "0.4.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
+      "Version": "0.4.2",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "deepdep",
+      "RemoteUsername": "DominikRafacz",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "df6678e07c9cfaef4ab48afba7c5fdf97f3719f5",
       "Requirements": [
         "R",
         "cranlogs",
         "httr",
         "jsonlite"
       ],
-      "Hash": "3f757a1bd11132693014fc275f9c61b5"
+      "Hash": "b97ad26a0ca037cd8f7d8ee51410f120"
     },
     "desc": {
       "Package": "desc",
