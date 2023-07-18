@@ -33,12 +33,8 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, appr
         showHelperMessage()
       
       else {
-        fluidPage(
-          
           tagList(
-            br(),
             introJSUI(NS(id, 'introJS')),
-            h4("Maintenance Metrics", style = "text-align: center;"),
             br(), br(),
             metricGridUI(NS(id, 'metricGrid')),
             br(), br(),
@@ -47,7 +43,6 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, appr
                          viewCommentsUI(NS(id, 'view_comments')))
             )
           )
-         )
       }
     })
 
