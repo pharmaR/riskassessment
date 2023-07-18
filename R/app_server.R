@@ -15,7 +15,7 @@ app_server <- function(input, output, session) {
   
   # Collect user info.
   user <- reactiveValues()
-  credential_config <- get_golem_config("credentials", file = app_sys("db-config.yml"))
+  credential_config <- get_credential_config()
   role_opts <- list(admin = purrr::imap(credential_config$privileges, ~ if ("admin" %in% .x) .y) %>% unlist(use.names = FALSE) %>% as.list())
   role_opts[["nonadmin"]] <- as.list(setdiff(credential_config$roles, unlist(role_opts$admin)))
   approved_roles <- credential_config[["privileges"]]

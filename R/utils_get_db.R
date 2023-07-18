@@ -249,3 +249,17 @@ weight_risk_comment <- function(pkg_name, db_name = golem::get_golem_options('as
        The previous risk score was {pkg_score}.')
 }
 
+get_credential_config <- function(db_name = golem::get_golem_options('assessment_db_name')) {
+  roles_tbl <- dbSelect("SELECT * FROM roles", db_name)
+  config <- list()
+  config[["roles"]] <- roles_tbl$user_role
+  config[["privileges"]] <- purrr::map(roles_tbl$user_role, ~ 
+                                         roles_tbl[roles_tbl$user_role == .x, used_privileges] %>% 
+                                         unlist() %>% 
+                                         `[`(. != 0) %>% 
+                                         names()) %>%
+    purrr::set_names(roles_tbl$user_role) %>%
+    purrr::compact()
+  config
+}
+
