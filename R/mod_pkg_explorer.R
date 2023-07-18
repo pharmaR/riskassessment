@@ -48,7 +48,7 @@ mod_pkg_explorer_server <- function(id, selected_pkg, accepted_extensions = c("r
             column(8,
                    conditionalPanel(
                      condition = "output.is_child",
-                     shinyAce::aceEditor(ns("editor"), value = "", height = "600px",
+                     shinyAce::aceEditor(ns("editor"), value = "", height = "62vh",
                                          mode = "txt", readOnly = TRUE, theme = "tomorrow",
                                          fontSize = 14, wordWrap = FALSE, showLineNumbers = FALSE,
                                          highlightActiveLine = TRUE, tabSize = 2, showInvisibles = FALSE
