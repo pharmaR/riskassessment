@@ -28,7 +28,8 @@ test_that("Comments can be added via the addComment module", {
   app$set_inputs(`sidebar-select_pkg` = "dplyr")
 
   # navigate to maintenance metrics tab
-  app$set_inputs(tabs = "Maintenance Metrics")
+  app$set_inputs(tabs = "Package Metrics",
+                 metric_type = "mm")
   app$wait_for_idle(500)
 
   # confirm no comments are currently shown
@@ -125,7 +126,8 @@ test_that("Comment input box is rendered according to the tab and user state", {
   app$set_inputs(`sidebar-select_pkg` = "dplyr")
 
   # navigate to maintenance metrics tab
-  app$set_inputs(tabs = "Maintenance Metrics")
+  app$set_inputs(tabs = "Package Metrics",
+                 metric_type = "mm")
   app$wait_for_idle(500)
 
   # helper fn
@@ -155,7 +157,7 @@ test_that("Comment input box is rendered according to the tab and user state", {
 
 
   # change to Community Usage Metrics tab
-  app$set_inputs(tabs = "Community Usage Metrics")
+  app$set_inputs(metric_type = "cum")
   app$wait_for_idle(500)
 
   # confirm label & placeholder text are rendered properly

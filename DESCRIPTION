@@ -14,7 +14,8 @@ Authors@R: c(
     person("Aravind Reddy", "Kallem", role = "aut"),
     person(family = "Fission Labs India Pvt Ltd", role = "aut"),
 	  person(family = "PSI special interest group Application and Implementation of Methodologies in Statistics", role = c("cph", "fnd")),
-    person(family = "R Validation Hub", role = c("cph", "fnd"))
+    person(family = "R Validation Hub", role = c("cph", "fnd")),
+    person(family = "GSK contributors", role = "ctb", comment = "Author of 'pharmaR/pkg_explorer' repo")
   )
 Description: The `riskassessment` application allows users to define a list of R
     packages to assess against metrics engineered by the `riskmetric` package.
@@ -61,7 +62,9 @@ Imports:
     shinyjs,
     shinymanager,
     shinyWidgets,
-    stringr
+    stringr,
+    shinyAce,
+    jsTreeR
 Suggests: 
     chromote,
     fontawesome,

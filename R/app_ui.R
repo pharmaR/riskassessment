@@ -43,14 +43,24 @@ app_ui <- function(request) {
                 uploadPackageUI("upload_package")
               ),
               tabPanel(
-                id = "mm_tab_id",
-                title = "Maintenance Metrics",
-                maintenanceMetricsUI("maintenanceMetrics")
+                id = "metric_tab_id",
+                title = "Package Metrics",
+                br(),
+                selectInput("metric_type", NULL, choices = c("Maintenance Metrics" = "mm", "Community Usage Metrics" = "cum")) %>%
+                  tagAppendAttributes(class = "metric_select"),
+                conditionalPanel(
+                  "input.metric_type == 'mm'",
+                  maintenanceMetricsUI("maintenanceMetrics")
+                ),
+                conditionalPanel(
+                  "input.metric_type == 'cum'",
+                  communityMetricsUI("communityMetrics")
+                )
               ),
               tabPanel(
-                id = "cum_tab_id",
-                title = "Community Usage Metrics",
-                communityMetricsUI("communityMetrics")
+                id = "src_explorer_id",
+                title = "Source Explorer",
+                mod_pkg_explorer_ui("pkg_explorer")
               ),
               tabPanel(
                 id = "reportPreview_tab_id",
