@@ -20,7 +20,8 @@ test_that("Reactivity of maintenanceMetrics", {
   app$set_inputs(`sidebar-select_pkg` = "dplyr")
   
   # get to the Maintenance Metrics tab
-  app$set_inputs(tabs = "Maintenance Metrics")
+  app$set_inputs(tabs = "Package Metrics",
+                 metric_type = "mm")
   app$wait_for_idle()
   
   # read the current comment -- set to "No comments"
