@@ -42,6 +42,7 @@ Other contributors:
   \item Scott Schumacker \email{scottschu97@gmail.com} [contributor]
   \item  PSI special interest group Application and Implementation of Methodologies in Statistics [copyright holder, funder]
   \item  R Validation Hub [copyright holder, funder]
+  \item  GSK contributors (Author of 'pharmaR/pkg_explorer' repo) [contributor]
 }
 
 }

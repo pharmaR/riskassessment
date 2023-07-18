@@ -18,7 +18,10 @@ maintenanceMetricsUI <- function(id) {
 #' @import dplyr
 #' @keywords internal
 #' 
-maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, parent) {
+maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, approved_roles, parent) {
+  if (missing(approved_roles))
+    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+  
   moduleServer(id, function(input, output, session) {
        ns <- NS(id)
    # Render Output UI for Maintenance Metrics.
@@ -30,21 +33,16 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, pare
         showHelperMessage()
       
       else {
-        fluidPage(
-          
           tagList(
-            br(),
             introJSUI(NS(id, 'introJS')),
-            h4("Maintenance Metrics", style = "text-align: center;"),
             br(), br(),
             metricGridUI(NS(id, 'metricGrid')),
             br(), br(),
             fluidRow(div(id = "comments_for_mm",
-                         addCommentUI(NS(id, 'add_comment')),
+                         if ("general_comment" %in% approved_roles[[user$role]]) addCommentUI(NS(id, 'add_comment')),
                          viewCommentsUI(NS(id, 'view_comments')))
             )
           )
-         )
       }
     })
 
@@ -54,8 +52,8 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, pare
     # Call module that creates section to add comments.
     comment_added <- addCommentServer(id = "add_comment",
                                       metric_abrv = 'mm',
-                                      user_name = reactive(user$name),
-                                      user_role = reactive(user$role),
+                                      user = user,
+                                      approved_roles = approved_roles,
                                       pkg_name = selected_pkg$name)
     
     comments <- eventReactive(list(comment_added(), selected_pkg$name()), {

@@ -55,16 +55,18 @@ dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_
 #' 
 #' @returns nothing
 #' @noRd
-insert_pkg_info_to_db <- function(pkg_name, 
+insert_pkg_info_to_db <- function(pkg_name, pkg_version,
                                   db_name = golem::get_golem_options('assessment_db_name')) {
   tryCatch(
     expr = {
       # get latest high-level package info
       # pkg_name <- "dplyr" # testing
-      if (!isTRUE(getOption("shiny.testmode")))
+      if (isTRUE(getOption("shiny.testmode")))
+        pkg_info <- test_pkg_info[[pkg_name]]
+      else if (identical(Sys.getenv("TESTTHAT"), "true"))
         pkg_info <- get_latest_pkg_info(pkg_name)
       else
-        pkg_info <- test_pkg_info[[pkg_name]]
+        pkg_info <- get_desc_pkg_info(pkg_name, pkg_version)
       
       # store it in the database
       upload_package_to_db(pkg_name, pkg_info$Version, pkg_info$Title,

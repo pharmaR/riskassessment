@@ -107,13 +107,19 @@ test_that("check_credentials works", {
   )
   
   expect_warning(
-    check_credentials(list(roles = c("admin", "reviewer"), privileges = list(admin = "admin", lead = "admin"))),
+    check_credentials(list(roles = c("admin", "reviewer"), privileges = list(admin = used_privileges, lead = "admin"))),
     "The following role(s) designated under privileges is(are) not present in the 'roles' configuration: lead",
     fixed = TRUE
   )
   
-  expect_equal(
+  expect_warning(
     check_credentials(list(roles = c("admin", "lead", "reviewer"), privileges = list(admin = "admin"))),
+    "The following privilege(s) is(are) not assigned to any 'role' in the credentials configuration: weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment",
+    fixed = TRUE
+  )
+  
+  expect_equal(
+    check_credentials(list(roles = c("admin", "lead", "reviewer"), privileges = list(admin = used_privileges))),
     NULL
   )
 })

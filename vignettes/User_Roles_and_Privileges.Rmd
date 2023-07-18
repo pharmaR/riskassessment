@@ -24,14 +24,18 @@ Below is a snippet from the `inst/db-config.yml` file where the default roles ar
 
 <br>
 
-<center>
-![](images/config_privileges.png)
-</center>
+```yml
+privileges:
+  admin: [admin, weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]
+  lead: [weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]
+  reviewer: [add_package, general_comment]
+  viewer:
+```
 <br>
 
 # Privileges
 
-At the time this vignette was authored, there are six different privileges that can be assigned to a role:
+At the time this vignette was authored, there are eight different privileges that can be assigned to a role:
 
 * [Administrator](User_Roles_and_Privileges.html#administrator) (`admin`): manages the users of the application
 * [Weight Adjustment](User_Roles_and_Privileges.html#weight-adjustment) (`weight_adjust`): manages the weights applied to the `{riskmetric}` risk calculation
@@ -40,10 +44,12 @@ At the time this vignette was authored, there are six different privileges that 
 * [Revert Decision](User_Roles_and_Privileges.html#revert-decision) (`revert_decision`): can undo a final decisions made regarding packages
 * [Add Packages](User_Roles_and_Privileges.html#add-packages) (`add_package`): adds packages for consideration
 * [Delete Packages](User_Roles_and_Privileges.html#delete-packages) (`delete_package`): can remove packages from consideration
+* [Overall Commentator](User_Roles_and_Privileges.html#overall-commentator) (`overall_comment`): can add/edit the overall comment and summary for a package
+* [General Commentator](User_Roles_and_Privileges.html#general-commentator) (`general_comment`): can add maintenance and community metric comments
 
 ### Administrator
 
-Basically, the `admin` privilege includes all the privileges discussed below, plus the ability to manage credentials. The credential-heavy features of the `admin` privilege are discussed at length in ["Credential Manager" guide](../articles/Credential_Manager.html). Please reference that vignette for more information.
+Basically, the `admin` privilege allows a user to manage the credentials and privileges of other users. The credential-heavy features of the `admin` privilege are discussed at length in ["Credential Manager" guide](../articles/Credential_Manager.html). Please reference that vignette for more information.
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
@@ -249,6 +255,8 @@ As the name suggests, a user with the `final_decision` privilege can make final 
 ![](images/final_decision_privilege.png)
 </center>
 
+<br>
+
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
 
@@ -261,9 +269,13 @@ As the name suggests, a user with the `final_decision` privilege can make final 
 
 A user with the `revert_decision` privilege can undo a final decision after it has been made. Doing so will set the package's status to "under review" and will re-enable "overall comments" regarding the decision.
 
+<br>
+
 <center>
 ![](images/revert_decision_privilege.png)
 </center>
+
+<br>
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
@@ -277,9 +289,13 @@ A user with the `revert_decision` privilege can undo a final decision after it h
 
 A user with the `add_package` privilege can upload packages to the database for consideration.
 
+<br>
+
 <center>
 ![](images/add_package_privilege.png)
 </center>
+
+<br>
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
@@ -291,9 +307,46 @@ A user with the `add_package` privilege can upload packages to the database for 
 
 A user with the `delete_package` privilege can remove packages from consideration (the database).
 
+<br>
+
 <center>
 ![](images/delete_package_privilege.png)
 </center>
+
+<br>
+
+<font size="2">[return to top](User_Roles_and_Privileges.html)</font>
+
+### Overall Commentator
+
+A user with the `overall_comment` privilege can add/edit two optional high-level summaries for a package:
+
+* First, the "Overall Comment", located on the sidebar, is an outlet for users to specify a quick synopsis related to the package decision, and
+* The Package Summary, located on the "Build Report" tab, allows a user to compose a long-form, open-ended summary of their evaluation / review process for the package of interest
+
+Unlike maintenance or community usage metrics, each package can only have one entry for "Overall Comment" and "Package Summary".
+
+<br>
+
+<center>
+![](images/overall_comment_privilege.png)
+</center>
+
+<br>
+
+<font size="2">[return to top](User_Roles_and_Privileges.html)</font>
+
+### General Commentator
+
+A user with the `general_comment` privilege can add comments regarding the maintenance and community metrics of a package. These are meant to provide suggestions or justifications for decision making.
+
+<br>
+
+<center>
+![](images/general_comment_privilege.png)
+</center>
+
+<br>
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 
@@ -305,16 +358,20 @@ A user with the `delete_package` privilege can remove packages from consideratio
 
 # Roles
 
-User roles group select privileges together providing users with different, but not necessarily mutually exclusive, access to the application. The default configuration contains three user roles: **admin**, **lead**, **reviewer**. Here is a snippet from the `inst/db-config.yml` file where these roles are defined:
+User roles group select privileges together providing users with different, but not necessarily mutually exclusive, access to the application. The default configuration contains four user roles: **admin**, **lead**, **reviewer**, **viewer**. Here is a snippet from the `inst/db-config.yml` file where these roles are defined:
 
 <br>
 
-<center>
-![](images/config_privileges.png)
-</center>
+```yml
+privileges:
+  admin: [admin, weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]
+  lead: [weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]
+  reviewer: [add_package, general_comment]
+  viewer:
+```
 <br>
 
-In this configuration, an **admin** user has access to the entire application, a **lead** user has access to all privileges except administrative ones (e.g. managing user credentials), and a **reviewer** only has the privilege to add packages for consideration. An organization can customize these user roles to support their needs. For more information please reference the ["Deployment" guide](../articles/Deployment.html).
+In this configuration, an **admin** user has access to the entire application, a **lead** user has access to all privileges except administrative ones (e.g. managing user credentials), a **reviewer** only has the privilege to add packages for consideration and adding comments/descriptions, and a **viewer** can only view the current state of assessment. An organization can customize these user roles to support their needs. For more information please reference the ["Deployment" guide](../articles/Deployment.html).
 
 <font size="2">[return to top](User_Roles_and_Privileges.html)</font>
 

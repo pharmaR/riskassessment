@@ -8,6 +8,11 @@
 #' @importFrom loggit loggit
 #' @noRd
 app_server <- function(input, output, session) {
+  
+  onStop(function() {
+    unlink("source/*", recursive = TRUE)
+    })
+  
   # Collect user info.
   user <- reactiveValues()
   credential_config <- get_golem_config("credentials", file = app_sys("db-config.yml"))
@@ -177,18 +182,24 @@ app_server <- function(input, output, session) {
     get_comm_data(selected_pkg$name())
   })
   
+  create_src_dir <- eventReactive(input$tabs, input$tabs == "Source Explorer")
+  
+  mod_pkg_explorer_server("pkg_explorer", selected_pkg, create_dir = create_src_dir)
+  
   # Load server for the maintenance metrics tab.
   maintenance_data <- maintenanceMetricsServer('maintenanceMetrics',
                                                selected_pkg,
                                                maint_metrics,
                                                user,
+                                               approved_roles,
                                                parent = session)
   
   # Load server for the community metrics tab.
   community_data <- communityMetricsServer('communityMetrics',
                                            selected_pkg,
                                            community_usage_metrics,
-                                           user)
+                                           user,
+                                           approved_roles)
   
   # Load server of the report preview tab.
   reportPreviewServer(id = "reportPreview",
@@ -200,6 +211,7 @@ app_server <- function(input, output, session) {
                       cm_comments = community_data$comments,
                       downloads_plot_data = community_data$downloads_plot_data,
                       user = user,
+                      approved_roles,
                       app_version = golem::get_golem_options('app_version'),
                       metric_weights = metric_weights)
   
