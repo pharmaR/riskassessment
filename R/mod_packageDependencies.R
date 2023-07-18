@@ -38,7 +38,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
     color_lst <- get_colors(golem::get_golem_options("assessment_db_name"))
     
-    auto_assess_dependencies <- FALSE
+    assess_dependencies <- reactiveVal(value = NULL)
     
     metric_wts_df <- eventReactive(selected_pkg$name(), {
       dbSelect("SELECT id, name, weight FROM metric")
@@ -55,25 +55,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       dbSelect('SELECT name FROM package')$name
     })
     
-    get_versnScore <- function(pkg_name, id) {
-      
-      riskmetric_assess <-
-        riskmetric::pkg_ref(pkg_name,
-                            source = "pkg_cran_remote",
-                            repos = c("https://cran.rstudio.com")) %>%
-        dplyr::as_tibble() %>%
-        riskmetric::pkg_assess()
-      
-      riskmetric_score <-
-        riskmetric_assess %>%
-        riskmetric::pkg_score(weights = metric_weights)
-      
-      cli::cli_progress_update(id = id)
-      
-      return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = round(riskmetric_score$pkg_score,2) ))
-    }
-    
-    get_versn <- function(pkg_name, id) {
+    get_versnScore <- function(pkg_name, id, toggle_score) {
       
       riskmetric_assess <-
         riskmetric::pkg_ref(pkg_name,
@@ -81,10 +63,23 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                             repos = c("https://cran.rstudio.com")) %>%
         dplyr::as_tibble() 
       
+      if (toggle_score == FALSE) {
+        return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = NA ))
+        
+      } else {
+      riskmetric_assess <- riskmetric_assess %>% riskmetric::pkg_assess()
+      
+      riskmetric_score <-
+        riskmetric_assess %>%
+        riskmetric::pkg_score(weights = metric_weights)
+      
       cli::cli_progress_update(id = id)
       
-      return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = NA ))
+      return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = round(riskmetric_score$pkg_score,2) ))   
+      } 
+
     }
+    
     # used for adding action buttons to data_table
     shinyInput <- function(FUN, len, id, ...) {
       inputs <- character(len)
@@ -117,51 +112,40 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         riskmetric::assess_reverse_dependencies() 
     })
     
-    dd <- eventReactive(pkg_df(), {
-      x <- deepdep::deepdep(selected_pkg$name(), depth = 2, dependency_type = c("Depends", "Imports", "LinkingTo"))
-      if (nrow(x) == 0) {
-        x <- data.frame(origin = selected_pkg$name(),
-                        name = pull(pkg_df()[1, 3]), version = NA_character_, type = "Imports",
-                        origin_level = 0L, dest_level = 1L)
-        attributes(x)$class <- c("deepdep", "data.frame")
-        attributes(x)$package_name <- selected_pkg$name()
-      }
-      return(x)
-    })
-    
     tabready <- reactiveVal()
     add_pkg <- reactiveVal()
     lastpkg <- reactiveVal()
 
+    observeEvent(selected_pkg$name(), {
+      req(selected_pkg$name())
+    # reset default for MaterialSwitch
+      shinyWidgets::updateMaterialSwitch(session = session, inputId = "toggle_score", value = FALSE)
+    }, ignoreInit = TRUE)
+    
     observeEvent(list(parent$input$tabs, selected_pkg$name()), {
       req(parent$input$tabs, selected_pkg$name())
- 
+      
       tabready(0L)
       if(parent$input$tabs == "Package Dependencies") {
         tabready(1L)
-        
         if(length(lastpkg()) == 0) lastpkg("$$$$$") # dummy package name
-
       }
-    })
-    
-    m_id <- reactiveVal()
-    # start the progress message as soon as possible
-    observeEvent(list(selected_pkg$name(),tabready()), {
-      req(selected_pkg$name() != "-")
-      req(tabready() == 1L)
-      req(lastpkg() != selected_pkg$name())
-
-      # this is really where the progress bar should start
-      m_id(cli::cli_progress_message("Compiling dependency info...", .auto_close = FALSE))
     }, ignoreInit = TRUE)
     
-    pkg_df <- eventReactive({selected_pkg$name(); tabready()}, {
+    m_id <- reactiveVal()
+    
+    pkg_df <- eventReactive({selected_pkg$name(); tabready(); input$toggle_score}, {
       req(!rlang::is_empty(selected_pkg$name()))
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
-      req(lastpkg() != selected_pkg$name())
 
+      req(lastpkg() != selected_pkg$name() & input$toggle_score == FALSE | 
+          lastpkg() == selected_pkg$name() & input$toggle_score == TRUE)
+      # req(lastpkg() != selected_pkg$name() | (is.null(assess_dependencies()) || input$toggle_score != assess_dependencies() ))
+
+      # start the progress message as soon as possible.
+      m_id(cli::cli_progress_message("Compiling dependency info...", .auto_close = FALSE))
+      
       pkginfo <- depends() %>%  
         as_tibble() %>% 
         mutate(package = stringr::str_replace(package, "\n", "")) %>% 
@@ -178,24 +162,44 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                                      format = "{pkg_name} {cli::pb_percent} | ETA: {cli::pb_eta}",
                                      total = nrow(pkginfo))
       
-      if (auto_assess_dependencies == TRUE) {
-      purrr::map_df(pkginfo$name, ~get_versnScore(.x, cl_id), .progress = TRUE) %>% 
+      purrr::map_df(pkginfo$name, ~get_versnScore(.x, cl_id, input$toggle_score)) %>% 
         right_join(pkginfo, by = "name") %>% 
         select(package, type, name, version, score)
-      } else {
-        purrr::map_df(pkginfo$name, ~get_versn(.x, cl_id), .progress = TRUE) %>% 
-          right_join(pkginfo, by = "name") %>% 
-          select(package, type, name, version, score)      }
-      
+
     }, ignoreInit = TRUE) 
     
     observeEvent(pkg_df(), {
       cli::cli_progress_done(id = m_id())
       cli::cli_progress_done()
-      
+      assess_dependencies(input$toggle_score) # remember last input$toggle_score value
       lastpkg(isolate(selected_pkg$name()))
-      
     }) 
+    
+    data_table <- eventReactive(pkg_df(), {
+      cbind(pkg_df(), 
+            data.frame(
+              Actions = shinyInput(actionButton, nrow(pkg_df()),
+                        'button_',
+                        size = "xs",
+                        style='height:24px; padding-top:1px;',
+                        label = icon("arrow-right", class="fa-regular", lib = "font-awesome"),
+                        onclick = paste0('Shiny.setInputValue(\"' , ns("select_button"), '\", this.id)')
+              )
+            )
+      )
+    })
+    
+    dd <- eventReactive(pkg_df(), {
+      x <- deepdep::deepdep(selected_pkg$name(), depth = 2, dependency_type = c("Depends", "Imports", "LinkingTo"))
+      if (nrow(x) == 0) {
+        x <- data.frame(origin = selected_pkg$name(),
+                        name = pull(pkg_df()[1, 3]), version = NA_character_, type = "Imports",
+                        origin_level = 0L, dest_level = 1L)
+        attributes(x)$class <- c("deepdep", "data.frame")
+        attributes(x)$package_name <- selected_pkg$name()
+      }
+      return(x)
+    })
     
     # Render Output UI for Package Dependencies.
     output$package_dependencies_ui <- renderUI({
@@ -211,30 +215,24 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
             tagList(
               br(),
               h4(glue::glue("Package Dependencies: {nrow(depends())}"), style = "text-align: left;"),
-              br(), 
+              br(),
               tags$strong(glue::glue("First-order dependencies for package: ", {selected_pkg$name()})),
+              br(),
+              shinyWidgets::materialSwitch(
+                inputId = NS(id, "toggle_score"),
+                label = "Include SCORE?",
+                value = FALSE, 
+                inline = TRUE,
+                status = "success"
+              ),
               br(),
               fluidRow(
                 column(width = 4,
                        DT::renderDataTable(server = FALSE, {
                          
-                         my_data_table <- reactive({
-                           cbind(pkg_df(), 
-                                 data.frame(
-                                   Actions = shinyInput(actionButton, nrow(pkg_df()),
-                                                        'button_',
-                                                        size = "xs",
-                                                        style='height:24px; padding-top:1px;',
-                                                        label = icon("arrow-right", class="fa-regular", lib = "font-awesome"),
-                                                        onclick = paste0('Shiny.setInputValue(\"' , ns("select_button"), '\", this.id)')
-                                   )
-                                 )
-                           )
-                         })
-                         
                          formattable::as.datatable(
                            formattable::formattable(
-                             isolate(my_data_table()),
+                             data_table(),
                              list(
                                score = formattable::formatter(
                                  "span",
@@ -265,34 +263,27 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                              lengthMenu = list(c(15, -1), c('15', 'All'))),
                            style="default"
                          ) %>%
-                           DT::formatStyle(names(my_data_table()), textAlign = 'center')
-                       })
+                           DT::formatStyle(names(data_table()), textAlign = 'center')
+                       }) %>% bindCache(selected_pkg$name(), input$toggle_score)
                 ),
                 column(width = 8, 
                        style="position:relative; top: 0px; right: 0px; left: 100px; width: 750px; height: 750px",
-                       # renderCachedPlot({
-                       #   deepdep::plot_dependencies(dd(), type = "circular", same_level = TRUE, show_version = TRUE, reverse = TRUE, show_stamp = FALSE)
-                       # }, 
-                       # cacheKeyExpr = { list(selected_pkg$name()) },
-                       # cache = cachem::cache_mem(),
-                       # sizePolicy = sizeGrowthRatio(width = 1250, height = 1250, growthRate = 1)
-                       # )
                        renderPlot(width = 750, height = 750, {
                          deepdep::plot_dependencies(isolate(dd()), type = "circular", same_level = TRUE, show_version = TRUE, reverse = TRUE, show_stamp = FALSE)
                        })
                 )
-              )
-            ),
+              ),
           br(),
           h4(glue::glue("Reverse Dependencies: {length(revdeps())}"), style = "text-align: left;"),
           br(), br(),
-          fluidRow(column(width = 8,
-                          renderText(
-                            revdeps() %>% sort()
-                          )
-          )
-          )
-        )
+          fluidRow(
+            column(width = 8,
+                   renderText(revdeps() %>% sort() )
+                   )
+           )
+          
+         ) # taglist
+        ) #fluidpage
       }
     }) # renderUI
     
