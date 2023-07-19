@@ -63,7 +63,8 @@ test_that("The introJS module works as expected for admins", {
   expect_equal(upload_pkg_complete, steps)
   
   app$click(selector = ".introjs-skipbutton")
-  app$set_inputs(tabs = "Maintenance Metrics")
+  app$set_inputs(tabs = "Package Metrics",
+                 metric_type = "mm")
   app$set_inputs(`sidebar-select_pkg` = "tidyr")
   app$wait_for_idle()
   
@@ -82,7 +83,8 @@ test_that("The introJS module works as expected for admins", {
   
   app$click(selector = ".introjs-skipbutton")
   
-  app$set_inputs(tabs = "Community Usage Metrics")
+  app$set_inputs(tabs = "Package Metrics",
+                 metric_type = "cum")
   app$wait_for_idle()
   
   app$click("communityMetrics-introJS-help")
