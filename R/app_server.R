@@ -9,10 +9,6 @@
 #' @noRd
 app_server <- function(input, output, session) {
   
-  onStop(function() {
-    unlink("source/*", recursive = TRUE)
-    })
-  
   # Collect user info.
   user <- reactiveValues()
   credential_config <- get_golem_config("credentials", file = app_sys("db-config.yml"))
