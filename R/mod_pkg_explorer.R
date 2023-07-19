@@ -98,12 +98,12 @@ mod_pkg_explorer_server <- function(id, selected_pkg, accepted_extensions = c("r
     )
     
     output$dirtree <- jsTreeR::renderJstree({
-      jsTreeR::jstree(nodes(), types = types, multiple = FALSE, theme = "proton")
+      jsTreeR::jstree(isolate(nodes()), types = types, multiple = FALSE, theme = "proton")
     })
     
     observeEvent(nodes(), {
       jsTreeR::jstreeUpdate(session, ns("dirtree"), nodes())
-    })
+    }, ignoreInit = TRUE)
     
     output$is_child <- reactive({
       return(length(input$dirtree_selected) > 0 && input$dirtree_selected[[1]]$type == "child")
