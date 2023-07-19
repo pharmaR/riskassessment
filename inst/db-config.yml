@@ -71,5 +71,5 @@ example2:
       - Needs Review
       - Not GxP Compliant
 demo:
-  assessment_db: database_demo.sqlite
+  assessment_db: small_database_demo.sqlite
   credential_db: credentials_demo.sqlite
