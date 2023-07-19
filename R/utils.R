@@ -556,16 +556,21 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
     plotly::config(displayModeBar = F)
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+get_tarball <- function(pkg_name, pkg_version, repo = "https://cran.rstudio.com") {
+  out_dir <- file.path(tempdir(), "tarballs")
+  tarball <- glue::glue("{pkg_name}_{pkg_version}.tar.gz")
+  if (!dir.exists(out_dir)) dir.create(out_dir)
+  if (file.exists(file.path(out_dir, tarball))) return(0)
+  
+  out <- try(download.file(file.path(repo, "src", "contrib", tarball),
+                           file.path(out_dir, tarball),
+                           quiet = TRUE, mode = "wb"),
+             silent = TRUE)
+  if (identical(class(out), "try-error")) {
+    out <- try(download.file(file.path(repo, "src", "contrib", "Archive", pkg_name, tarball),
+                             file.path(out_dir, tarball),
+                             quiet = TRUE, mode = "wb"),
+               silent = TRUE)
+  }
+  out
+}
