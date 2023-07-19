@@ -542,7 +542,8 @@ mod_decision_automation_server <- function(id, user, approved_roles){
       req("auto_decision_adjust" %in% approved_roles[[user$role]])
       
       out_lst <- purrr::compact(reactiveValuesToList(auto_decision))
-      dbUpdate("UPDATE decision_categories SET lower_limit = NULL, upper_limit = NULL")
+      null_lst <- setdiff(names(auto_decision_update()), names(out_lst))
+      purrr::walk(null_lst, ~ dbUpdate("UPDATE decision_categories SET lower_limit = NULL, upper_limit = NULL WHERE decision = {.x}"))
       purrr::iwalk(out_lst, ~ dbUpdate("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[2]} WHERE decision = {.y}"))
       auto_decision_update(out_lst)
       
@@ -574,10 +575,10 @@ mod_decision_automation_server <- function(id, user, approved_roles){
         decision_lst %>%
         purrr::map_chr(~ input[[glue::glue("{risk_lbl(.x, input = FALSE)}_col")]]) %>%
         purrr::set_names(decision_lst)
-      purrr::iwalk(selected_colors, ~ {
+      purrr::iwalk(selected_colors, ~ if (!.x %in% color_current()[.y]) {
         dbUpdate("UPDATE decision_categories SET color = {.x} WHERE decision = {.y}")
         shinyjs::runjs(glue::glue("document.documentElement.style.setProperty('--{risk_lbl(.y, input = FALSE)}-color', '{.x}');"))
-        })
+      })
       loggit::loggit("INFO", glue::glue("The decision category display colors were modified by {user$name} ({user$role})"))
       color_current(selected_colors)
       

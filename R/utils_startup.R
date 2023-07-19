@@ -22,10 +22,10 @@ create_db <- function(db_name){
   
   # Queries needed to run the first time the db is created.
   queries <- c(
+    "create_variable_table.sql",
     "create_decision_table.sql",
     "create_package_table.sql",
     "create_metric_table.sql",
-    "initialize_metric_table.sql",
     "create_package_metrics_table.sql",
     "create_community_usage_metrics_table.sql",
     "create_comments_table.sql"
@@ -34,13 +34,17 @@ create_db <- function(db_name){
   # Append path to the queries.
   queries <- file.path(path, queries)
   
+  queries <- purrr::map(queries, ~ scan(.x, sep = "\n", what = "character", blank.lines.skip = FALSE, quiet = TRUE) %>%
+                          {split(.[nzchar(.)], cumsum(!nzchar(.))[nzchar(.)])} %>%
+                          purrr::map(~ paste(.x, collapse = " "))) %>% 
+    unlist()
   # Apply each query.
   sapply(queries, function(x){
     
     tryCatch({
       rs <- DBI::dbSendStatement(
         con,
-        paste(scan(x, sep = "\n", what = "character"), collapse = ""))
+        x)
     }, error = function(err) {
       message <- paste("dbSendStatement",err)
       message(message, .loggit = FALSE)

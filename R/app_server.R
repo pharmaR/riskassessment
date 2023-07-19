@@ -44,6 +44,9 @@ app_server <- function(input, output, session) {
 
   
   observeEvent(res_auth$user, {
+    dbUpdate("DELETE FROM _variables")
+    dbUpdate("INSERT INTO _variables (user) VALUES ({res_auth$user})")
+    
     req(res_auth$admin == TRUE | "weight_adjust" %in% approved_roles[[res_auth$role]])
     
       appendTab("apptabs",
