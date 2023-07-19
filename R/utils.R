@@ -297,7 +297,8 @@ build_comm_cards <- function(data){
     succ_icon = character(),
     icon_class = character(),
     is_perc = numeric(),
-    is_url = numeric()
+    is_url = numeric(),
+    type = "information"
   )
   
   if (nrow(data) == 0)
@@ -391,20 +392,27 @@ build_comm_cards <- function(data){
       TRUE ~ "bars"
       )
     ) %>%
-    dplyr::select(estimate, succ_icon)
+    dplyr::mutate(type = dplyr::case_when(
+      estimate > 0 ~ "information",
+      estimate < 0 ~ "danger",
+      TRUE ~ "information"
+      )
+    ) %>% 
+    dplyr::select(estimate, succ_icon, type)
   
   cards <- cards %>%
     dplyr::add_row(
       name = 'downloads_trend',
-      title = 'Downloads trend',
+      title = 'Monthly downloads trend',
       desc = glue::glue("Trend of downloads in last {amount_months} months"),
       value = format(model_result$estimate, big.mark = ","),
       succ_icon = model_result$succ_icon,
       icon_class = "text-info",
       is_perc = 0,
-      is_url = 0
+      is_url = 0,
+      type = model_result$type
     )
-  
+
   cards
 }
 
@@ -641,7 +649,7 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
         type = 'scatter',
         mode = "marker",
         opacity = 0.45,
-        line = list(color = '#080808')
+        line = list(color = '#db5502')
       )
   }
   
