@@ -560,7 +560,7 @@ get_tarball <- function(pkg_name, pkg_version, repo = "https://cran.rstudio.com"
   out_dir <- file.path(tempdir(), "tarballs")
   tarball <- glue::glue("{pkg_name}_{pkg_version}.tar.gz")
   if (!dir.exists(out_dir)) dir.create(out_dir)
-  if (file.exists(file.path(out_dir, tarball))) return(0)
+  if (file.exists(file.path(out_dir, tarball))) return(file.path(out_dir, tarball))
   
   out <- try(download.file(file.path(repo, "src", "contrib", tarball),
                            file.path(out_dir, tarball),
@@ -572,5 +572,15 @@ get_tarball <- function(pkg_name, pkg_version, repo = "https://cran.rstudio.com"
                              quiet = TRUE, mode = "wb"),
                silent = TRUE)
   }
-  out
+  if (identical(class(out), "try-error")) out else file.path(out_dir, tarball)
+}
+
+get_source <- function(pkg_name, pkg_version) {
+  out_dir <- file.path(tempdir(), "source")
+  source_dir <- file.path(out_dir, glue::glue("{pkg_name}_{pkg_version}"))
+  if (dir.exists(file.path(source_dir, pkg_name))) return(file.path(source_dir, pkg_name))
+  
+  tar_file <- file.path(tempdir(), "tarballs", glue::glue("{pkg_name}_{pkg_version}.tar.gz"))
+  out <- try(untar(tar_file, exdir = source_dir), silent = TRUE)
+  if (identical(class(out), "try-error")) out else file.path(source_dir, pkg_name)
 }
