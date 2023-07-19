@@ -542,15 +542,9 @@ mod_decision_automation_server <- function(id, user, approved_roles){
       req("auto_decision_adjust" %in% approved_roles[[user$role]])
       
       out_lst <- purrr::compact(reactiveValuesToList(auto_decision))
-      purrr::walk(decision_lst, ~
-                    if (!.x %in% names(out_lst)) {
-                      if (.x %in% names(auto_decision_update()))
-                        dbUpdate("UPDATE decision_categories SET lower_limit = NULL, upper_limit = NULL WHERE decision = {.x}")
-                    } else {
-                      if (!.x %in% names(auto_decision_update()) || .x %in% names(auto_decision_update()) && auto_decision_update()[[.x]] != out_lst[[.x]])
-                        dbUpdate("UPDATE decision_categories SET lower_limit = {out_lst[[.x]][1]}, upper_limit = {out_lst[[.x]][2]} WHERE decision = {.x}")
-                    }
-      )
+      null_lst <- setdiff(names(auto_decision_update()), names(out_lst))
+      purrr::walk(null_lst, ~ dbUpdate("UPDATE decision_categories SET lower_limit = NULL, upper_limit = NULL WHERE decision = {.x}"))
+      purrr::iwalk(out_lst, ~ dbUpdate("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[2]} WHERE decision = {.y}"))
       auto_decision_update(out_lst)
       
       if (length(out_lst) == 0) {
