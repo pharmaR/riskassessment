@@ -121,7 +121,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
 
     observeEvent(selected_pkg$name(), {
       req(selected_pkg$name())
-    # reset default for MaterialSwitch
+    # reset MaterialSwitch to FALSE whenever the package name changes
       shinyWidgets::updateMaterialSwitch(session = session, inputId = "toggle_score", value = FALSE)
     }, ignoreInit = TRUE)
     
@@ -142,10 +142,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
 
-      # cat("lastpkg() was:", lastpkg(), "selected_pkg$name() is:", selected_pkg$name(), "\n")
-      # cat("is.null(assess_dependencies())?", is.null(assess_dependencies()), "assess_dependencies()", assess_dependencies(), "input$toggle_score:", input$toggle_score, "\n")
       req(lastpkg() != selected_pkg$name() | (is.null(assess_dependencies()) || input$toggle_score != assess_dependencies() ))
-
+      if( lastpkg() != selected_pkg$name()) req(input$toggle_score == FALSE)
+      
       # start the progress message as soon as possible.
       m_id(cli::cli_progress_message("Compiling dependency info...", .auto_close = FALSE))
       
@@ -222,7 +221,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
               tags$strong(glue::glue("First-order dependencies for package: ", {selected_pkg$name()})),
               br(),
               shinyWidgets::materialSwitch(
-                inputId = NS(id, "toggle_score"),
+                inputId = ns("toggle_score"),
                 label = "Include SCORE?",
                 value = FALSE, 
                 inline = TRUE,
