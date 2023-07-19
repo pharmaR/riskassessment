@@ -53,7 +53,6 @@ metricBoxServer <- function(id, title, desc, value,
       }
 
       icon_name <- succ_icon
-      #TODO: add type reference here too
       if (!is_true) {
         icon_name <- unsucc_icon
         icon_class <- "text-warning"
