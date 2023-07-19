@@ -6,7 +6,7 @@
 #' 
 introJSUI <- function(id) {
   fluidRow(
-    style = "float: right",
+    style = "position: absolute; top: 1.5rem; right: 0; margin-right: auto;",
     column(
       width = 3,
       shinyWidgets::actionBttn(NS(id, "help"),

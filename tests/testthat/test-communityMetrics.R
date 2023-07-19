@@ -20,7 +20,8 @@ test_that("Reactivity of communityMetrics", {
   app$set_inputs(`sidebar-select_pkg` = "dplyr")
   
   # get to the Maintenance Metrics tab
-  app$set_inputs(tabs = "Community Usage Metrics")
+  app$set_inputs(tabs = "Package Metrics",
+                 metric_type = "cum")
   
   app$wait_for_idle(500)
   
