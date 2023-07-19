@@ -142,9 +142,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
 
-      req(lastpkg() != selected_pkg$name() & input$toggle_score == FALSE | 
-          lastpkg() == selected_pkg$name() & input$toggle_score == TRUE)
-      # req(lastpkg() != selected_pkg$name() | (is.null(assess_dependencies()) || input$toggle_score != assess_dependencies() ))
+      # cat("lastpkg() was:", lastpkg(), "selected_pkg$name() is:", selected_pkg$name(), "\n")
+      # cat("is.null(assess_dependencies())?", is.null(assess_dependencies()), "assess_dependencies()", assess_dependencies(), "input$toggle_score:", input$toggle_score, "\n")
+      req(lastpkg() != selected_pkg$name() | (is.null(assess_dependencies()) || input$toggle_score != assess_dependencies() ))
 
       # start the progress message as soon as possible.
       m_id(cli::cli_progress_message("Compiling dependency info...", .auto_close = FALSE))
