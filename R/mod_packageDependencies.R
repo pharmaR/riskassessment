@@ -22,11 +22,14 @@ packageDependenciesUI <- function(id) {
 #' @importFrom DT formatStyle renderDataTable
 #' @importFrom formattable as.datatable csscolor formattable formatter style
 #' @importFrom glue glue
+#' @importFrom golem get_golem_options
 #' @importFrom purrr map_df
-#' @importFrom riskmetric assess_dependencies assess_reverse_dependencies pkg_assess pkg_score
+#' @importFrom riskmetric assess_dependencies assess_reverse_dependencies 
+#'             pkg_assess pkg_ref pkg_score
 #' @importFrom rlang is_empty
-#' @importFrom shiny tagList showModal removeModal
+#' @importFrom shiny removeModal showModal tagList
 #' @importFrom shinyjs click
+#' @importFrom shinyWidgets materialSwitch updateMaterialSwitch
 #' @importFrom stringr regex str_replace word
 #' 
 #' @keywords internal
