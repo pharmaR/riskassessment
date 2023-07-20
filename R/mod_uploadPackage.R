@@ -233,7 +233,6 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
       ver_num <- dbSelect("select version from package where name = {pkg_name}", db_name = golem::get_golem_options('assessment_db_name'))
       uploaded_packages$version[i] <- ver_num
       dbUpdate("DELETE FROM package WHERE name = {pkg_name}", db_name = golem::get_golem_options('assessment_db_name'))
-      unlink(glue::glue("tarballs/{pkg_name}_{ver_num}.tar.gz"))
       }
       
       # clean up other db tables
@@ -403,9 +402,8 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
               # Get and upload pkg general info to db.
               incProgress(1, detail = deets)
               if (!isTRUE(getOption("shiny.testmode"))) {
-                dwn_ld <- download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), 
-                                        quiet = TRUE, mode = "wb")
-                if (dwn_ld != 0) {
+                dwn_ld <- get_tarball(uploaded_packages$package[i], ref_ver)
+                if (identical(class(dwn_ld), "try-error")) {
                   loggit::loggit("INFO", glue::glue("Unable to download the source files for {uploaded_packages$package[i]} from '{ref$tarball_url}'."))
                 }
               }

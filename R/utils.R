@@ -79,14 +79,15 @@ get_latest_pkg_info <- function(pkg_name) {
 #' @import dplyr
 #' 
 #' @noRd
-get_desc_pkg_info <- function(pkg_name, pkg_version, tar_dir = "tarballs") {
+get_desc_pkg_info <- function(pkg_name, pkg_version, tar_dir) {
+  if (missing(tar_dir)) tar_dir <- file.path(tempdir(), "tarballs")
   tar_file <- file.path(tar_dir, glue::glue("{pkg_name}_{pkg_version}.tar.gz"))
   if (!file.exists(tar_file))
     return(get_latest_pkg_info(pkg_name))
   
-  untar(tar_file, exdir = "source")
+  untar_dir <- get_source(pkg_name, pkg_version, tar_dir = tar_dir)
   
-  desc_file <- glue::glue("source/{pkg_name}/DESCRIPTION")
+  desc_file <- file.path(untar_dir, "DESCRIPTION")
   
   keys <- c("Package", "Version", "Maintainer", "Author", "License", "Packaged", "Title", "Description")
   purrr::map(keys,
@@ -556,16 +557,33 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
     plotly::config(displayModeBar = F)
 }
 
+get_tarball <- function(pkg_name, pkg_version, repo = "https://cran.rstudio.com") {
+  out_dir <- file.path(tempdir(), "tarballs")
+  tarball <- glue::glue("{pkg_name}_{pkg_version}.tar.gz")
+  if (!dir.exists(out_dir)) dir.create(out_dir)
+  if (file.exists(file.path(out_dir, tarball))) return(file.path(out_dir, tarball))
+  
+  out <- try(download.file(file.path(repo, "src", "contrib", tarball),
+                           file.path(out_dir, tarball),
+                           quiet = TRUE, mode = "wb"),
+             silent = TRUE)
+  if (identical(class(out), "try-error")) {
+    out <- try(download.file(file.path(repo, "src", "contrib", "Archive", pkg_name, tarball),
+                             file.path(out_dir, tarball),
+                             quiet = TRUE, mode = "wb"),
+               silent = TRUE)
+  }
+  if (identical(class(out), "try-error")) out else file.path(out_dir, tarball)
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
+get_source <- function(pkg_name, pkg_version, tar_dir) {
+  if (missing(tar_dir)) tar_dir <- file.path(tempdir(), "tarballs")
+  
+  out_dir <- file.path(tempdir(), "source")
+  source_dir <- file.path(out_dir, glue::glue("{pkg_name}_{pkg_version}"))
+  if (dir.exists(file.path(source_dir, pkg_name))) return(file.path(source_dir, pkg_name))
+  
+  tar_file <- file.path(tar_dir, glue::glue("{pkg_name}_{pkg_version}.tar.gz"))
+  out <- try(untar(tar_file, exdir = source_dir), silent = TRUE)
+  if (identical(class(out), "try-error")) out else file.path(source_dir, pkg_name)
+}

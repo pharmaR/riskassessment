@@ -55,6 +55,15 @@ mod_pkg_explorer_server <- function(id, selected_pkg, accepted_extensions = c("r
     ns <- session$ns
     
     pkgdir <- reactiveVal()
+    tardir <- reactiveVal()
+    
+    observe({
+      req(selected_pkg$name() != "-")
+      req(create_dir())
+      
+      tardir(get_tarball(selected_pkg$name(), selected_pkg$version()))
+    }) %>%
+      bindEvent(selected_pkg$name(), selected_pkg$version(), create_dir())
     
     output$pkg_explorer_ui <- renderUI({
       
@@ -62,33 +71,28 @@ mod_pkg_explorer_server <- function(id, selected_pkg, accepted_extensions = c("r
       # Lets the user know that a package needs to be selected.
       if(identical(selected_pkg$name(), character(0))) {
         showHelperMessage()
-      } else if (!file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")))) {
+      } else if (identical(class(tardir()), "try-error")) {
         showHelperMessage(message = glue::glue("Source code not available for {{{selected_pkg$name()}}}"))
       }
     })
     
     output$show_tree <- reactive({
-      !identical(selected_pkg$name(), character(0)) && file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")))
+      !identical(selected_pkg$name(), character(0)) && !identical(class(tardir()), "try-error")
     })
     outputOptions(output, "show_tree", suspendWhenHidden = FALSE)
     
     observe({
-      req(selected_pkg$name() != "-")
+      req(tardir())
+      req(!identical(class(tardir()), "try-error"))
       req(create_dir())
-      req(file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz"))))
       
-      src_dir <- file.path("source", selected_pkg$name())
-      if (dir.exists(src_dir)) {
-        pkgdir(src_dir)
-      } else {
-        untar(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")), exdir = "source")
-        pkgdir(src_dir)
-      }
+      pkgdir(get_source(selected_pkg$name(), selected_pkg$version()))
     }) %>% 
-      bindEvent(selected_pkg$name(), create_dir())
+      bindEvent(tardir(), create_dir())
     
     nodes <- reactive({
       req(pkgdir())
+      req(!identical(class(pkgdir()), "try-error"))
       makeNodes(list.files(pkgdir(), recursive = TRUE, include.dirs = TRUE))
     })
     
