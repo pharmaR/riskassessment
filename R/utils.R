@@ -429,10 +429,10 @@ build_db_cards <- function(data){
     )
   
   # Get the Count (and %) of pkgs by Decision
-  # Dummy test data set
+  # # Dummy test data set
   # data <- data.frame(
   #   package = c("tidyCDISC", "rhino", "MCPMod"),
-  #   decision = c("Medium Risk","Low Risk","High Risk")
+  #   decision = c("-","-","-")
   # ) %>%
   # mutate(decision = factor(decision, levels = c("Low Risk", "Medium Risk", "High Risk")))
   
@@ -452,9 +452,9 @@ build_db_cards <- function(data){
   cards <- cards %>%
     dplyr::add_row(
       name = 'decision_cat_count',
-      title = 'Decision Categories',
+      title = 'Decision Summary',
       desc = 'Package Counts by Decision Type',
-      value = decision_cat_rows,
+      value = ifelse(decision_cat_rows == "", "No Decisions Made", decision_cat_rows),
       succ_icon = 'boxes-stacked',
       icon_class = "text-info",
       is_perc = 0,
