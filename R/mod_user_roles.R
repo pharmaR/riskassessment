@@ -9,7 +9,12 @@ mod_user_roles_ui <- function(id){
   ns <- NS(id)
   column(
     width = 10, offset = 1,
-    h3("Roles"),
+    div(
+      style = "float: right;",
+      actionButton(ns("edit_dropdown"), label = icon("gear"), class = "btn-circle", style = "margin-left: auto;"),
+      tags$script(glue::glue("$('#{ns(\"edit_dropdown\")}').tooltip({{placement: 'left', title: 'Click here to edit the user roles and privileges.', html: false, trigger: 'hover'}});"))
+    ),
+    h3("Roles", style = "padding-top: 15px"),
     hr(),
     DT::dataTableOutput(ns("roles_table")),
     br(),
@@ -27,6 +32,13 @@ mod_user_roles_server <- function(id, credentials){
     credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+    
+    roles_dbtbl <- reactiveVal({
+      dbSelect("SELECT * FROM roles") %>%
+        {rownames(.) <- .$user_role; .} %>%
+        dplyr::select(-id, -user_role) %>%
+        t()
+      })
     
     output$roles_table <-
       DT::renderDataTable(
@@ -63,6 +75,42 @@ mod_user_roles_server <- function(id, credentials){
           )
         )
       )
+    
+    output$modal_table <- 
+      DT::renderDataTable({
+        DT::datatable(
+          roles_dbtbl(),
+          escape = FALSE,
+          class = "cell-border",
+          selection = 'none',
+          rownames = TRUE,
+          options = list(
+            dom = "t",
+            searching = FALSE,
+            sScrollX = "100%",
+            iDisplayLength = -1,
+            ordering = FALSE,
+            columnDefs = list(list(
+                targets = "_all",
+                render = DT::JS(
+                  "function(data, type, row, meta) {",
+                  "  if(meta.col != 0){",
+                  "    return data ? '<input type=\"checkbox\" checked/>' : '<input type=\"checkbox\"/>';", 
+                  "  }",
+                  "  return data;",
+                  "}"
+                )
+              ))
+          ))
+      })
+    
+    observeEvent(input$edit_dropdown, {
+      
+      showModal(modalDialog(
+        size = "l",
+        DT::DTOutput(ns("modal_table"))
+      ))
+    })
  
   })
 }
