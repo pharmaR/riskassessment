@@ -416,6 +416,102 @@ build_comm_cards <- function(data){
   cards
 }
 
+
+
+#' The 'Build Database Cards' function
+#' 
+#' @param data a data.frame
+#' 
+#' @import dplyr
+#' @importFrom glue glue
+#' @keywords internal
+#' 
+build_db_cards <- function(data){
+  
+  cards <- dplyr::tibble(
+    name = character(),
+    title = character(),
+    desc = character(),
+    value = character(),
+    succ_icon = character(),
+    icon_class = character(),
+    is_perc = numeric(),
+    is_url = numeric()
+  )
+  
+  if (nrow(data) == 0)
+    return(cards)
+  
+  # Get the Number of packages in the db
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'pkg_cnt',
+      title = 'Package Count',
+      desc = 'Number of Packages Uploaded to DB',
+      value = paste(nrow(data)),
+      succ_icon = 'upload',
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
+  
+  # Get the Count (and %) of pkgs with a decision made
+  decision_cnt <-
+    data %>%
+    mutate(decision = as.character(decision)) %>%
+    filter(decision != "-") %>%
+    nrow
+  # decision_cnt <- length(data$decision[data$decision != "-"])
+  decision_pct <- format(100 * (decision_cnt / nrow(data)), digits = 1)
+  
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'decision_cnt',
+      title = 'Decision Count',
+      desc = 'Packages with Decisions Made',
+      value = glue::glue('{decision_cnt} ({decision_pct}%)'),
+      succ_icon = 'gavel',
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
+  
+  # Get the Count (and %) of pkgs by Decision
+  # # Dummy test data set
+  # data <- data.frame(
+  #   package = c("tidyCDISC", "rhino", "MCPMod"),
+  #   decision = c("-","-","-")
+  # ) %>%
+  # mutate(decision = factor(decision, levels = c("Low Risk", "Medium Risk", "High Risk")))
+  
+  decision_cat_rows <-
+    data %>%
+    filter(decision != "-") %>%
+    group_by(decision) %>%
+    summarize(decision_cat_sum = n()) %>%
+    ungroup() %>%
+    mutate(decision_cat_pct = 100 * (decision_cat_sum / nrow(data)),
+           decision_cat_disp = glue::glue('{decision}: {decision_cat_sum} ({format(decision_cat_pct, digits = 1)}%)')) %>%
+    arrange(decision) %>%
+    pull(decision_cat_disp) %>%
+    paste(., collapse = "\n")
+    
+
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'decision_cat_count',
+      title = 'Decision Summary',
+      desc = 'Package Counts by Decision Type',
+      value = ifelse(decision_cat_rows == "", "No Decisions Made", decision_cat_rows),
+      succ_icon = 'boxes-stacked',
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
+  
+  cards
+}
+
 #' Automatic font re-sizer
 #'
 #' A function that adjusts the number (to be used as font size) that is
