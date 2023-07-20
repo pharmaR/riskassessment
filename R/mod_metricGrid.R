@@ -37,7 +37,8 @@ metricGridServer <- function(id, metrics) {
     
       fluidRow(style = "padding-right: 10px", class = "card-group",
                map(column_vector_grid_split, 
-                   ~ column(width= 4,map(.x,~ metricBoxUI(session$ns(metrics()$name[.x])))))
+                   ~ column(width= 4,map(.x,~ metricBoxUI(session$ns(metrics()$name[.x]))))),
+      tags$em("* = Provided for additional context. Not a {riskmetric} assessment, so they will not impact risk score.")
       )
     })
     
