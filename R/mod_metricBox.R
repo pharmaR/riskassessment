@@ -31,6 +31,7 @@ metricBoxServer <- function(id, title, desc, value,
                             icon_class = "text-success") {
   moduleServer(id, function(input, output, session) {
     
+    metric <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
     
     # Render metric.
     output$metricBox_ui <- renderUI({
@@ -64,6 +65,9 @@ metricBoxServer <- function(id, title, desc, value,
         icon_name <- "percent"
         icon_class <- "text-info"
       }
+      
+      # add asterisk to desc if the id is not in the metric table
+      desc = ifelse(id %in% metric$name, desc, paste0(desc, "*"))
       
       # define some styles prior to building card
       card_style = "max-width: 400px; max-height: 250px; padding-left: 5%; padding-right: 5%;" # overflow-y: scroll;
