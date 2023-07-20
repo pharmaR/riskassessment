@@ -95,7 +95,7 @@ mod_user_roles_server <- function(id, credentials){
                 render = DT::JS(
                   "function(data, type, row, meta) {",
                   "  if(meta.col != 0){",
-                  "    return data ? '<input type=\"checkbox\" checked/>' : '<input type=\"checkbox\"/>';", 
+                  "    return data ? `<input type=\"checkbox\" row=${meta.row} col=${meta.col} checked/>` : `<input type=\"checkbox\" row=${meta.row} col=${meta.col} />`;", 
                   "  }",
                   "  return data;",
                   "}"
