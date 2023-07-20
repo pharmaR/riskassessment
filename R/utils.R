@@ -453,7 +453,7 @@ build_db_cards <- function(data){
     dplyr::add_row(
       name = 'decision_cat_count',
       title = 'Decision Categories',
-      desc = 'Package Counts by Decisions Type',
+      desc = 'Package Counts by Decision Type',
       value = decision_cat_rows,
       succ_icon = 'boxes-stacked',
       icon_class = "text-info",
