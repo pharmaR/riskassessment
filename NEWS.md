@@ -4,6 +4,7 @@
 * Download source tarball when uploading package to database
 * Expand privileges to include commenting on metrics and packages (#564)
 * Allow users to explore source contents of package (#574)
+* Identify non-riskmetric cards (#573)
 
 # riskassessment 1.0.0
 
