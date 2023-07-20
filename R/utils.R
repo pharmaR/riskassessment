@@ -395,74 +395,71 @@ build_db_cards <- function(data){
     return(cards)
   
   # Get the Number of packages in the db
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'pkg_cnt',
+      title = 'Package Count',
+      desc = 'Number of Packages Uploaded to DB',
+      value = paste(nrow(data)),
+      succ_icon = 'upload',
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
   
   # Get the Count (and %) of pkgs with a decision made
+  decision_cnt <-
+    data %>%
+    mutate(decision = as.character(decision)) %>%
+    filter(decision != "-") %>%
+    nrow
+  # decision_cnt <- length(data$decision[data$decision != "-"])
+  decision_pct <- format(100 * (decision_cnt / nrow(data)), digits = 1)
+  
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'decision_cnt',
+      title = 'Decision Count',
+      desc = 'Packages with Decisions Made',
+      value = glue::glue('{decision_cnt} ({decision_pct}%)'),
+      succ_icon = 'gavel',
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
   
   # Get the Count (and %) of pkgs by Decision
+  # Dummy test data set
+  # data <- data.frame(
+  #   package = c("tidyCDISC", "rhino", "MCPMod"),
+  #   decision = c("Medium Risk","Low Risk","High Risk")
+  # ) %>%
+  # mutate(decision = factor(decision, levels = c("Low Risk", "Medium Risk", "High Risk")))
   
-  
-  # ### Old comm stuff
-  # # Get the first package release.
-  # first_version <- data %>%
-  #   dplyr::filter(year == min(year)) %>%
-  #   dplyr::filter(month == min(month)) %>%
-  #   dplyr::slice_head(n = 1) %>%
-  #   dplyr::mutate(fake_rel_date = lubridate::make_date(year, month, 15))
-  # 
-  # # get the time span in months or years depending on how much time
-  # # has elapsed
-  # time_diff_first_rel <- get_date_span(first_version$fake_rel_date)
-  # 
-  # cards <- cards %>%
-  #   dplyr::add_row(
-  #     name = 'time_since_first_version',
-  #     title = 'First Version Release',
-  #     desc = 'Time passed since first version release',
-  #     value = glue::glue('{time_diff_first_rel$value} {time_diff_first_rel$label} Ago'),
-  #     succ_icon = 'black-tie',
-  #     icon_class = "text-info",
-  #     is_perc = 0,
-  #     is_url = 0
-  #   )
-  # 
-  # 
-  # # Get the last package release's month and year, then
-  # # make add in the release date
-  # last_ver <- data %>%
-  #   dplyr::filter(!(version %in% c('', 'NA'))) %>%
-  #   dplyr::filter(year == max(year)) %>%
-  #   dplyr::filter(month == max(month)) %>%
-  #   dplyr::slice_head(n = 1) %>%
-  #   dplyr::mutate(fake_rel_date = lubridate::make_date(year, month, 15))
-  # 
-  # # get the time span in months or years depending on how much time
-  # # has elapsed
-  # time_diff_latest_rel <- get_date_span(last_ver$fake_rel_date)
-  # 
-  # cards <- cards %>%
-  #   dplyr::add_row(name = 'time_since_latest_version',
-  #                  title = 'Latest Version Release',
-  #                  desc = 'Time passed since latest version release',
-  #                  value = glue::glue('{time_diff_latest_rel$value} {time_diff_latest_rel$label} Ago'),
-  #                  succ_icon = 'meteor',
-  #                  icon_class = "text-info",
-  #                  is_perc = 0,
-  #                  is_url = 0)
-  # 
-  # downloads_last_year <- data %>%
-  #   dplyr::arrange(year, month) %>% # insurance
-  #   dplyr::filter(row_number() >= (n() - 11)) %>%
-  #   dplyr::distinct(year, month, downloads)
-  # 
-  # cards <- cards %>%
-  #   dplyr::add_row(name = 'downloads_last_year',
-  #                  title = 'Package Downloads',
-  #                  desc = 'Number of downloads in last 12 months',
-  #                  value = format(sum(downloads_last_year$downloads), big.mark = ","),
-  #                  succ_icon = 'box-open',
-  #                  icon_class = "text-info",
-  #                  is_perc = 0,
-  #                  is_url = 0)
+  decision_cat_rows <-
+    data %>%
+    filter(decision != "-") %>%
+    group_by(decision) %>%
+    summarize(decision_cat_sum = n()) %>%
+    ungroup() %>%
+    mutate(decision_cat_pct = 100 * (decision_cat_sum / nrow(data)),
+           decision_cat_disp = glue::glue('{decision}: {decision_cat_sum} ({format(decision_cat_pct, digits = 1)}%)')) %>%
+    arrange(decision) %>%
+    pull(decision_cat_disp) %>%
+    paste(., collapse = "\n")
+    
+
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'decision_cat_count',
+      title = 'Decision Categories',
+      desc = 'Package Counts by Decisions Type',
+      value = decision_cat_rows,
+      succ_icon = 'boxes-stacked',
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
   
   cards
 }
