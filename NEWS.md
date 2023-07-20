@@ -4,6 +4,7 @@
 * Download source tarball when uploading package to database
 * Expand privileges to include commenting on metrics and packages (#564)
 * Allow users to explore source contents of package (#574)
+* Added card Download Trend and linear trend plot on community usage metrics (#438)
 
 # riskassessment 1.0.0
 

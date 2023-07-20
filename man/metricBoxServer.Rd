@@ -13,7 +13,8 @@ metricBoxServer(
   is_url = FALSE,
   succ_icon = "check",
   unsucc_icon = "times",
-  icon_class = "text-success"
+  icon_class = "text-success",
+  type = "information"
 )
 }
 \arguments{
