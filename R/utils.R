@@ -368,6 +368,105 @@ build_comm_cards <- function(data){
   cards
 }
 
+
+
+#' The 'Build Database Cards' function
+#' 
+#' @param data a data.frame
+#' 
+#' @import dplyr
+#' @importFrom glue glue
+#' @keywords internal
+#' 
+build_db_cards <- function(data){
+  
+  cards <- dplyr::tibble(
+    name = character(),
+    title = character(),
+    desc = character(),
+    value = character(),
+    succ_icon = character(),
+    icon_class = character(),
+    is_perc = numeric(),
+    is_url = numeric()
+  )
+  
+  if (nrow(data) == 0)
+    return(cards)
+  
+  # Get the Number of packages in the db
+  
+  # Get the Count (and %) of pkgs with a decision made
+  
+  # Get the Count (and %) of pkgs by Decision
+  
+  
+  # ### Old comm stuff
+  # # Get the first package release.
+  # first_version <- data %>%
+  #   dplyr::filter(year == min(year)) %>%
+  #   dplyr::filter(month == min(month)) %>%
+  #   dplyr::slice_head(n = 1) %>%
+  #   dplyr::mutate(fake_rel_date = lubridate::make_date(year, month, 15))
+  # 
+  # # get the time span in months or years depending on how much time
+  # # has elapsed
+  # time_diff_first_rel <- get_date_span(first_version$fake_rel_date)
+  # 
+  # cards <- cards %>%
+  #   dplyr::add_row(
+  #     name = 'time_since_first_version',
+  #     title = 'First Version Release',
+  #     desc = 'Time passed since first version release',
+  #     value = glue::glue('{time_diff_first_rel$value} {time_diff_first_rel$label} Ago'),
+  #     succ_icon = 'black-tie',
+  #     icon_class = "text-info",
+  #     is_perc = 0,
+  #     is_url = 0
+  #   )
+  # 
+  # 
+  # # Get the last package release's month and year, then
+  # # make add in the release date
+  # last_ver <- data %>%
+  #   dplyr::filter(!(version %in% c('', 'NA'))) %>%
+  #   dplyr::filter(year == max(year)) %>%
+  #   dplyr::filter(month == max(month)) %>%
+  #   dplyr::slice_head(n = 1) %>%
+  #   dplyr::mutate(fake_rel_date = lubridate::make_date(year, month, 15))
+  # 
+  # # get the time span in months or years depending on how much time
+  # # has elapsed
+  # time_diff_latest_rel <- get_date_span(last_ver$fake_rel_date)
+  # 
+  # cards <- cards %>%
+  #   dplyr::add_row(name = 'time_since_latest_version',
+  #                  title = 'Latest Version Release',
+  #                  desc = 'Time passed since latest version release',
+  #                  value = glue::glue('{time_diff_latest_rel$value} {time_diff_latest_rel$label} Ago'),
+  #                  succ_icon = 'meteor',
+  #                  icon_class = "text-info",
+  #                  is_perc = 0,
+  #                  is_url = 0)
+  # 
+  # downloads_last_year <- data %>%
+  #   dplyr::arrange(year, month) %>% # insurance
+  #   dplyr::filter(row_number() >= (n() - 11)) %>%
+  #   dplyr::distinct(year, month, downloads)
+  # 
+  # cards <- cards %>%
+  #   dplyr::add_row(name = 'downloads_last_year',
+  #                  title = 'Package Downloads',
+  #                  desc = 'Number of downloads in last 12 months',
+  #                  value = format(sum(downloads_last_year$downloads), big.mark = ","),
+  #                  succ_icon = 'box-open',
+  #                  icon_class = "text-info",
+  #                  is_perc = 0,
+  #                  is_url = 0)
+  
+  cards
+}
+
 #' Automatic font re-sizer
 #'
 #' A function that adjusts the number (to be used as font size) that is
