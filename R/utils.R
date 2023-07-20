@@ -492,8 +492,9 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
           x = ~day_month_year,
           y = ~downloads,
           name = "# Downloads", type = 'scatter', 
-          mode = 'lines+markers', line = list(color = '#1F9BCF'),
-          marker = list(color = '#1F9BCF'),
+          mode = 'lines', 
+          line = list(color = '#1F9BCF'),
+          # marker = list(color = '#1F9BCF'),
           hoverinfo = "text",
           text = ~glue::glue('No. of Downloads: {format(downloads, big.mark = ",")}
                          {month} {year}')) %>%
