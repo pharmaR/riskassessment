@@ -219,7 +219,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       # select maintenance metrics panel
       updateTabsetPanel(session = parent, 
                         inputId = 'tabs', 
-                        selected = "Maintenance Metrics"
+                        selected = "Package Metrics"
       )
       
       # jump over to risk-assessment-tab so we can see the maintenance metrics
