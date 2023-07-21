@@ -17,10 +17,11 @@ app_server <- function(input, output, session) {
   user <- reactiveValues()
   credential_config <- do.call(reactiveValues, get_credential_config())
   role_opts <- reactiveValues()
-  observeEvent(credential_config$privileges, {
+  observe(reactiveValuesToList(credential_config), {
     role_opts[["admin"]] <- purrr::imap(credential_config$privileges, ~ if ("admin" %in% .x) .y) %>% unlist(use.names = FALSE) %>% as.list()
     role_opts[["nonadmin"]] <- as.list(setdiff(credential_config$roles, unlist(role_opts$admin)))
-  })
+  }) %>%
+    bindEvent(credential_config$roles, credential_config$privileges)
   trigger_events <- reactiveValues(
     reset_pkg_upload = 0,
     reset_sidebar = 0

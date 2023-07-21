@@ -246,6 +246,8 @@ mod_user_roles_server <- function(id, credentials){
       roles_dbtbl(update_tbl)
       role_changes(dplyr::tibble(old_role = colnames(update_tbl), new_role = colnames(update_tbl)))
       
+      purrr::iwalk(get_credential_config(), ~ `<-`(credentials[[.y]], .x))
+      
       removeModal()
       shinyjs::runjs("document.body.setAttribute('data-bs-overflow', 'auto');")
     })
