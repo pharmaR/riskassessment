@@ -88,9 +88,11 @@ mod_user_roles_server <- function(id, credentials){
           class = "cell-border",
           selection = 'none',
           rownames = TRUE,
+          extensions = "FixedColumns",
           options = list(
             dom = "t",
             searching = FALSE,
+            fixedColumns = list(leftColumns = 1),
             drawCallback = DT::JS(
               "function ( settings ) {",
               "  $(':checkbox[row]').on('click', function() {",
