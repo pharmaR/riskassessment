@@ -141,7 +141,7 @@ app_server <- function(input, output, session) {
     user$role <- trimws(res_auth$role)
   })
   
-  mod_user_roles_server("userRoles", credential_config)
+  mod_user_roles_server("userRoles", user, credential_config)
   
   # Load server of the reweightView module.
   metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules, credential_config$privileges, trigger_events)

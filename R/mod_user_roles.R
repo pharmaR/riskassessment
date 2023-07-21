@@ -27,7 +27,7 @@ mod_user_roles_ui <- function(id){
 #' user_roles Server Functions
 #'
 #' @noRd 
-mod_user_roles_server <- function(id, credentials){
+mod_user_roles_server <- function(id, user, credentials){
   if (missing(credentials))
     credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   moduleServer( id, function(input, output, session){
