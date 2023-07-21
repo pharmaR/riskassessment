@@ -25,6 +25,8 @@ databaseViewUI <- function(id) {
           tags$section(
             shinydashboard::box(width = 12,
                                 title = h3("Uploaded Packages", style = "margin-top: 5px"),
+                                br(),
+                                metricGridUI(NS(id, 'metricGrid')),
                                 DT::dataTableOutput(NS(id, "packages_table")),
                                 br(),
                                 h5("Report Configurations"),
@@ -122,6 +124,15 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       }
     )
     
+    # Database cards (saved to share with db report): Package Count,
+    #   Count (%) by Decision made, Count (%) by Decision
+    cards <- eventReactive(table_data(), {
+      build_db_cards(data = table_data() %>% mutate(decision = factor(decision, levels = decision_lst)))
+    })
+    
+    # Create metric grid cards, containing database stats.
+    metricGridServer(id = 'metricGrid', metrics = cards)
+    
     # Create table for the db dashboard.
     output$packages_table <- DT::renderDataTable(server = FALSE, {  # This allows for downloading entire data set
       
@@ -208,7 +219,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       # select maintenance metrics panel
       updateTabsetPanel(session = parent, 
                         inputId = 'tabs', 
-                        selected = "Maintenance Metrics"
+                        selected = "Package Metrics"
       )
       
       # jump over to risk-assessment-tab so we can see the maintenance metrics
