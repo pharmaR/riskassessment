@@ -39,6 +39,10 @@ mod_user_roles_server <- function(id, credentials){
         dplyr::select(-id, -user_role) %>%
         t()
       })
+    proxy_tbl <- reactiveVal()
+    observeEvent(roles_dbtbl(), {
+      proxy_tbl(roles_dbtbl())
+    })
     
     output$roles_table <-
       DT::renderDataTable(
@@ -79,7 +83,7 @@ mod_user_roles_server <- function(id, credentials){
     output$modal_table <- 
       DT::renderDataTable({
         DT::datatable(
-          isolate(roles_dbtbl()),
+          roles_dbtbl(),
           escape = FALSE,
           class = "cell-border",
           selection = 'none',
@@ -126,8 +130,8 @@ mod_user_roles_server <- function(id, credentials){
     proxy <- DT::dataTableProxy("modal_table")
     
     observeEvent(input$modal_table_cell_edit, {
-      roles_dbtbl(DT::editData(roles_dbtbl(), input$modal_table_cell_edit))
-      DT::replaceData(proxy, roles_dbtbl(), resetPaging = FALSE)
+      proxy_tbl(DT::editData(proxy_tbl(), input$modal_table_cell_edit))
+      DT::replaceData(proxy, proxy_tbl(), resetPaging = FALSE)
     })
  
   })
