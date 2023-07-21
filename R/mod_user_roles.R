@@ -33,16 +33,14 @@ mod_user_roles_server <- function(id, credentials){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    roles_dbtbl <- reactiveVal({
-      dbSelect("SELECT * FROM roles") %>%
-        {rownames(.) <- .$user_role; .} %>%
-        dplyr::select(-id, -user_role) %>%
-        t()
-      })
+    initial_tbl <- get_roles_table()
+    roles_dbtbl <- reactiveVal(initial_tbl)
     proxy_tbl <- reactiveVal()
     observeEvent(roles_dbtbl(), {
       proxy_tbl(roles_dbtbl())
     })
+    
+    role_changes <- reactiveVal(dplyr::tibble(old_role = colnames(initial_tbl), new_role = colnames(initial_tbl)))
     
     output$roles_table <-
       DT::renderDataTable(
@@ -126,6 +124,11 @@ mod_user_roles_server <- function(id, credentials){
       
       showModal(modalDialog(
         size = "l",
+        div(
+          style = "display: flex",
+          span("Edit User Roles and Privileges", style = "font-size: x-large; font-weight: bold"),
+          actionButton(ns("tbl_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
+        ),
         tags$label("Add Role", class = "control-label"),
         div(
           style = "display: flex",
@@ -153,6 +156,12 @@ mod_user_roles_server <- function(id, credentials){
     })
     proxy <- DT::dataTableProxy("modal_table")
     
+    observeEvent(input$tbl_reset, {
+      reset_table <- get_roles_table()
+      roles_dbtbl(reset_table)
+      role_changes(dplyr::tibble(old_role = colnames(reset_table), new_role = colnames(reset_table)))
+    })
+    
     observeEvent(input$modal_table_cell_edit, {
       proxy_tbl(DT::editData(proxy_tbl(), input$modal_table_cell_edit))
       DT::replaceData(proxy, proxy_tbl(), resetPaging = FALSE)
@@ -165,10 +174,13 @@ mod_user_roles_server <- function(id, credentials){
       tbl <- cbind(proxy_tbl(), 0)
       colnames(tbl) <- c(colnames(proxy_tbl()), input$add_col)
       roles_dbtbl(tbl)
+      role_changes(dplyr::add_row(role_changes(), new_role = input$add_col))
+      
       updateTextInput(session, "add_col", value = "")
       updateSelectInput(session, "select_edit_col", choices = colnames(tbl))
       updateTextInput(session, "edit_col", value = "")
       updateSelectInput(session, "delete_col", choices = colnames(tbl))
+      
     })
     
     observeEvent(input$edit_col_submit, {
@@ -180,6 +192,11 @@ mod_user_roles_server <- function(id, credentials){
       i <- match(input$select_edit_col, colnames(tbl))
       colnames(tbl)[i] <- input$edit_col
       roles_dbtbl(tbl)
+      role_changes(dplyr::mutate(role_changes(), 
+                                 new_role = if_else(new_role == input$select_edit_col, 
+                                                    input$edit_col, 
+                                                    new_role)))
+      
       updateTextInput(session, "add_col", value = "")
       updateSelectInput(session, "select_edit_col", choices = colnames(tbl))
       updateTextInput(session, "edit_col", value = "")
@@ -191,6 +208,11 @@ mod_user_roles_server <- function(id, credentials){
       tbl <- proxy_tbl()
       i <- match(input$delete_col, colnames(tbl))
       roles_dbtbl(tbl[,-i])
+      role_changes(dplyr::mutate(role_changes(), 
+                                 new_role = if_else(new_role == input$delete_col, 
+                                                    NA_character_, 
+                                                    new_role)))
+      
       updateTextInput(session, "add_col", value = "")
       updateSelectInput(session, "select_edit_col", choices = colnames(tbl))
       updateTextInput(session, "edit_col", value = "")
