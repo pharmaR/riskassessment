@@ -15,10 +15,12 @@ app_server <- function(input, output, session) {
   
   # Collect user info.
   user <- reactiveValues()
-  credential_config <- get_credential_config()
-  role_opts <- list(admin = purrr::imap(credential_config$privileges, ~ if ("admin" %in% .x) .y) %>% unlist(use.names = FALSE) %>% as.list())
-  role_opts[["nonadmin"]] <- as.list(setdiff(credential_config$roles, unlist(role_opts$admin)))
-  approved_roles <- credential_config[["privileges"]]
+  credential_config <- do.call(reactiveValues, get_credential_config())
+  role_opts <- reactiveValues()
+  observeEvent(credential_config$privileges, {
+    role_opts[["admin"]] <- purrr::imap(credential_config$privileges, ~ if ("admin" %in% .x) .y) %>% unlist(use.names = FALSE) %>% as.list()
+    role_opts[["nonadmin"]] <- as.list(setdiff(credential_config$roles, unlist(role_opts$admin)))
+  })
   trigger_events <- reactiveValues(
     reset_pkg_upload = 0,
     reset_sidebar = 0
@@ -44,7 +46,7 @@ app_server <- function(input, output, session) {
 
   
   observeEvent(res_auth$user, {
-    req(res_auth$admin == TRUE | "weight_adjust" %in% approved_roles[[res_auth$role]])
+    req(res_auth$admin == TRUE | "weight_adjust" %in% credential_config$privileges[[res_auth$role]])
     
       appendTab("apptabs",
                 tabPanel(
@@ -67,7 +69,7 @@ app_server <- function(input, output, session) {
                         title = "Roles & Privileges",
                         mod_user_roles_ui("userRoles")
                       ),
-                    if ("weight_adjust" %in% approved_roles[[res_auth$role]])
+                    if ("weight_adjust" %in% credential_config$privileges[[res_auth$role]])
                       tabPanel(
                         id = "reweight_id",
                         title = "Assessment Reweighting",
@@ -141,14 +143,14 @@ app_server <- function(input, output, session) {
   mod_user_roles_server("userRoles", credential_config)
   
   # Load server of the reweightView module.
-  metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules, approved_roles, trigger_events)
+  metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules, credential_config$privileges, trigger_events)
   
   # Load server of the uploadPackage module.
-  auto_decision <- mod_decision_automation_server("automate", user, approved_roles)
-  uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules, approved_roles, trigger_events)
+  auto_decision <- mod_decision_automation_server("automate", user, credential_config$privileges)
+  uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules, credential_config$privileges, trigger_events)
   
   # Load server of the sidebar module.
-  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs, approved_roles, trigger_events)
+  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs, credential_config$privileges, trigger_events)
 
   changes <- reactiveVal(0)
   observe({
@@ -191,7 +193,7 @@ app_server <- function(input, output, session) {
                                                selected_pkg,
                                                maint_metrics,
                                                user,
-                                               approved_roles,
+                                               credential_config$privileges,
                                                parent = session)
   
   # Load server for the community metrics tab.
@@ -199,7 +201,7 @@ app_server <- function(input, output, session) {
                                            selected_pkg,
                                            community_usage_metrics,
                                            user,
-                                           approved_roles)
+                                           credential_config$privileges)
   
   # Load server of the report preview tab.
   reportPreviewServer(id = "reportPreview",
@@ -211,7 +213,7 @@ app_server <- function(input, output, session) {
                       cm_comments = community_data$comments,
                       downloads_plot_data = community_data$downloads_plot_data,
                       user = user,
-                      approved_roles,
+                      credential_config$privileges,
                       app_version = golem::get_golem_options('app_version'),
                       metric_weights = metric_weights)
   
