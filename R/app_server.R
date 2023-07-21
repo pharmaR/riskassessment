@@ -17,7 +17,7 @@ app_server <- function(input, output, session) {
   user <- reactiveValues()
   credential_config <- do.call(reactiveValues, get_credential_config())
   role_opts <- reactiveValues()
-  observe(reactiveValuesToList(credential_config), {
+  observe({
     role_opts[["admin"]] <- purrr::imap(credential_config$privileges, ~ if ("admin" %in% .x) .y) %>% unlist(use.names = FALSE) %>% as.list()
     role_opts[["nonadmin"]] <- as.list(setdiff(credential_config$roles, unlist(role_opts$admin)))
   }) %>%
