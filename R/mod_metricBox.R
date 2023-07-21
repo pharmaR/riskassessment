@@ -67,7 +67,7 @@ metricBoxServer <- function(id, title, desc, value,
       }
 
       # add asterisk to desc if the id is not in the metric table
-      desc = ifelse(id %in% metric$name, desc, paste0(desc, "*"))
+      title = ifelse(title %in% metric$long_name, title, paste0(title, "*"))
 
       # define some styles prior to building card
       card_style <- "max-width: 400px; max-height: 250px; padding-left: 5%; padding-right: 5%;" # overflow-y: scroll;
