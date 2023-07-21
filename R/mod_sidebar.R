@@ -32,7 +32,7 @@ sidebarUI <- function(id) {
         htmlOutput(NS(id, "status"))
       ))),
       column(6, div(id = NS(id, "score-wp"), wellPanel(
-        h5("Risk"),
+        h5("Metric Risk"),
         htmlOutput(NS(id, "score"))
       ))
     ),

@@ -22,7 +22,7 @@ metricGridServer <- function(id, metrics) {
     
     
     output$grid <- renderUI({
-      req(nrow(metrics()) > 0)
+      req(nrow(metrics()) > 1) # need at least two cards to make a metric grid UI
       
       col_length <- (nrow(metrics()) + 1) %/% 3
       
@@ -52,7 +52,9 @@ metricGridServer <- function(id, metrics) {
             is_perc = metric['is_perc'] == 1,
             is_url = metric['is_url'] == 1,
             succ_icon = metric['succ_icon'],
-            icon_class = metric['icon_class'])
+            icon_class = metric['icon_class'],
+            type = metric['type']
+          )
         )
     })
   })
