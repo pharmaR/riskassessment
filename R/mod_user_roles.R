@@ -79,7 +79,7 @@ mod_user_roles_server <- function(id, credentials){
     output$modal_table <- 
       DT::renderDataTable({
         DT::datatable(
-          roles_dbtbl(),
+          isolate(roles_dbtbl()),
           escape = FALSE,
           class = "cell-border",
           selection = 'none',
@@ -87,6 +87,18 @@ mod_user_roles_server <- function(id, credentials){
           options = list(
             dom = "t",
             searching = FALSE,
+            drawCallback = DT::JS(
+              "function ( settings ) {",
+              "  $(':checkbox[row]').on('click', function() {",
+              "    var row = Number(this.getAttribute('row')) + 1",
+              "    var col = Number(this.getAttribute('col'))",
+              "    var value = $(this).is(':checked') ? 1 : 0",
+              "    var info = [{row: row, col: col, value: value}]",
+              glue::glue("    Shiny.setInputValue('{ns(\"modal_table\")}_cell_edit:DT.cellInfo', info)"),
+              "    console.log(info)",
+              "  })",
+              "}"
+              ),
             sScrollX = "100%",
             iDisplayLength = -1,
             ordering = FALSE,
@@ -110,6 +122,12 @@ mod_user_roles_server <- function(id, credentials){
         size = "l",
         DT::DTOutput(ns("modal_table"))
       ))
+    })
+    proxy <- DT::dataTableProxy("modal_table")
+    
+    observeEvent(input$modal_table_cell_edit, {
+      roles_dbtbl(DT::editData(roles_dbtbl(), input$modal_table_cell_edit))
+      DT::replaceData(proxy, roles_dbtbl(), resetPaging = FALSE)
     })
  
   })
