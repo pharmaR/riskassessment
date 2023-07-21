@@ -12,4 +12,4 @@ VALUES
 ('bugs_status',         'Bugs Closure Rate', '% of the last 30 bugs closed',     1, 0, 'maintenance', 1),
 ('license',             'License',           "Package's license",                0, 0, 'maintenance', 1),
 ('covr_coverage',       'Test Coverage',     '% of objects tested',     1, 0, 'maintenance', 1),
-('downloads_last_year', 'Package Downloads', 'Number of downloads in last 12 months', 0, 0, 'community', 1);
+('downloads_1yr ', 'Package Downloads', 'Number of downloads in last 12 months', 0, 0, 'community', 1);
