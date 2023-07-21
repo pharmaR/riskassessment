@@ -124,6 +124,28 @@ mod_user_roles_server <- function(id, credentials){
       
       showModal(modalDialog(
         size = "l",
+        tags$label("Add Role", class = "control-label"),
+        div(
+          style = "display: flex",
+          textInput(ns("add_col"), NULL),
+          actionButton(ns("add_col_submit"), shiny::icon("angle-right"),
+                       style = 'height: calc(1.5em + 1.5rem + 2px)')
+          ),
+        tags$label("Edit Role", class = "control-label"),
+        div(
+          style = "display: flex",
+          selectInput(ns("select_edit_col"), NULL, choices = colnames(proxy_tbl())),
+          textInput(ns("edit_col"), NULL),
+          actionButton(ns("edit_col_submit"), shiny::icon("angle-right"),
+                       style = 'height: calc(1.5em + 1.5rem + 2px)')
+        ),
+        tags$label("Delete Role", class = "control-label"),
+        div(
+          style = "display: flex",
+          selectInput(ns("delete_col"), NULL, choices = colnames(proxy_tbl())),
+          actionButton(ns("delete_col_submit"), shiny::icon("trash-can"),
+                       style = 'height: calc(1.5em + 1.5rem + 2px)')
+        ),
         DT::DTOutput(ns("modal_table"))
       ))
     })
@@ -132,6 +154,45 @@ mod_user_roles_server <- function(id, credentials){
     observeEvent(input$modal_table_cell_edit, {
       proxy_tbl(DT::editData(proxy_tbl(), input$modal_table_cell_edit))
       DT::replaceData(proxy, proxy_tbl(), resetPaging = FALSE)
+    })
+    
+    observeEvent(input$add_col_submit, {
+      req(input$add_col)
+      req(!input$add_col %in% c(""))
+      
+      tbl <- cbind(proxy_tbl(), 0)
+      colnames(tbl) <- c(colnames(proxy_tbl()), input$add_col)
+      roles_dbtbl(tbl)
+      updateTextInput(session, "add_col", value = "")
+      updateSelectInput(session, "select_edit_col", choices = colnames(tbl))
+      updateTextInput(session, "edit_col", value = "")
+      updateSelectInput(session, "delete_col", choices = colnames(tbl))
+    })
+    
+    observeEvent(input$edit_col_submit, {
+      req(input$edit_col)
+      req(input$edit_col != input$select_edit_col)
+      req(!input$edit_col %in% c(""))
+      
+      tbl <- proxy_tbl()
+      i <- match(input$select_edit_col, colnames(tbl))
+      colnames(tbl)[i] <- input$edit_col
+      roles_dbtbl(tbl)
+      updateTextInput(session, "add_col", value = "")
+      updateSelectInput(session, "select_edit_col", choices = colnames(tbl))
+      updateTextInput(session, "edit_col", value = "")
+      updateSelectInput(session, "delete_col", choices = colnames(tbl))
+    })
+    
+    observeEvent(input$delete_col_submit, {
+      
+      tbl <- proxy_tbl()
+      i <- match(input$delete_col, colnames(tbl))
+      roles_dbtbl(tbl[,-i])
+      updateTextInput(session, "add_col", value = "")
+      updateSelectInput(session, "select_edit_col", choices = colnames(tbl))
+      updateTextInput(session, "edit_col", value = "")
+      updateSelectInput(session, "delete_col", choices = colnames(tbl))
     })
  
   })
