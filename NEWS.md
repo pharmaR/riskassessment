@@ -6,6 +6,7 @@
 * Allow users to explore source contents of package (#574)
 * Added card Download Trend and linear trend plot on community usage metrics (#438)
 * Introduced cards to Database tab, reviewing contents of db (#587)
+* Fixed busted button introduced with #547 (#592)
 
 
 # riskassessment 1.0.0
