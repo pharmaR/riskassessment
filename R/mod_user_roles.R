@@ -124,9 +124,12 @@ mod_user_roles_server <- function(id, credentials){
       
       showModal(modalDialog(
         size = "l",
+        footer = tagList(
+          actionButton(ns("close_decision_modal"), "Close")
+          ),
         div(
           style = "display: flex",
-          span("Edit User Roles and Privileges", style = "font-size: x-large; font-weight: bold"),
+          span("Edit User Roles", style = "font-size: x-large; font-weight: bold"),
           actionButton(ns("tbl_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
         ),
         tags$label("Add Role", class = "control-label"),
@@ -151,10 +154,18 @@ mod_user_roles_server <- function(id, credentials){
           actionButton(ns("delete_col_submit"), shiny::icon("trash-can"),
                        style = 'height: calc(1.5em + 1.5rem + 2px)')
         ),
-        DT::DTOutput(ns("modal_table"))
+        span("Edit Role Privileges", style = "font-size: x-large; font-weight: bold"),
+        DT::DTOutput(ns("modal_table")),
+        br(),
+        actionButton(ns("submit_changes"), width = "100%", "Apply Changes to Roles & Privileges")
       ))
     })
     proxy <- DT::dataTableProxy("modal_table")
+    
+    observeEvent(input$close_decision_modal, {
+      removeModal()
+      shinyjs::runjs("document.body.setAttribute('data-bs-overflow', 'auto');")
+    })
     
     observeEvent(input$tbl_reset, {
       reset_table <- get_roles_table()
@@ -217,6 +228,26 @@ mod_user_roles_server <- function(id, credentials){
       updateSelectInput(session, "select_edit_col", choices = colnames(tbl))
       updateTextInput(session, "edit_col", value = "")
       updateSelectInput(session, "delete_col", choices = colnames(tbl))
+    })
+    
+    observeEvent(input$submit_changes, {
+      chng_lst <- dplyr::filter(role_changes(), paste(old_role) != paste(new_role))
+      purrr::pmap(chng_lst, function(old_role, new_role) {
+        cmd <- dplyr::case_when(
+          is.na(old_role) ~ "INSERT INTO roles (user_role) VALUES ({new_role})",
+          is.na(new_role) ~ "DELETE FROM roles WHERE user_role = {old_role}",
+          TRUE ~ "UPDATE roles SET user_role = {new_role} WHERE user_role = {old_role}"
+        )
+        dbUpdate(cmd)
+      })
+      purrr::iwalk(as.data.frame(proxy_tbl()), ~ dbUpdate(glue::glue("UPDATE roles SET {paste(used_privileges, ' = ', .x, collapse = ', ')} WHERE user_role = '{.y}'")))
+      
+      update_tbl <- get_roles_table()
+      roles_dbtbl(update_tbl)
+      role_changes(dplyr::tibble(old_role = colnames(update_tbl), new_role = colnames(update_tbl)))
+      
+      removeModal()
+      shinyjs::runjs("document.body.setAttribute('data-bs-overflow', 'auto');")
     })
  
   })
