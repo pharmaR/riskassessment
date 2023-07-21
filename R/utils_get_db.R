@@ -46,6 +46,15 @@ dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_na
   return(dat)
 }
 
+get_credentials_table <- function(db_name = golem::get_golem_options('credentials_db_name'), passphrase) {
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
+  
+  tbl <- shinymanager::read_db_decrypt(conn = con, name = "credentials", passphrase = passphrase)
+  
+  DBI::dbDisconnect(con)
+  tbl
+}
+
 
 # Below are a series of get_* functions that help us query
 # certain sql tables in a certain way. They are used 2 - 3

@@ -40,6 +40,8 @@ mod_user_roles_server <- function(id, user, credentials){
       proxy_tbl(roles_dbtbl())
     })
     
+    user_table <- reactiveVal(get_credentials_table(passphrase = passphrase))
+    
     role_changes <- reactiveVal(dplyr::tibble(old_role = colnames(initial_tbl), new_role = colnames(initial_tbl)))
     
     output$roles_table <-
