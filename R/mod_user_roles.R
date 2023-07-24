@@ -240,6 +240,8 @@ mod_user_roles_server <- function(id, user, credentials){
     })
     
     observeEvent(input$submit_changes, {
+      req("admin" %in% credentials$privileges[[user$role]])
+      
       chng_lst <- dplyr::filter(role_changes(), paste(old_role) != paste(new_role))
       purrr::pmap(chng_lst, function(old_role, new_role) {
         cmd <- dplyr::case_when(
@@ -251,11 +253,24 @@ mod_user_roles_server <- function(id, user, credentials){
       })
       purrr::iwalk(as.data.frame(proxy_tbl()), ~ dbUpdate(glue::glue("UPDATE roles SET {paste(used_privileges, ' = ', .x, collapse = ', ')} WHERE user_role = '{.y}'")))
       
+      updated_user_tbl <-
+        user_table() %>%
+        dplyr::rowwise() %>%
+        dplyr::mutate(
+          role = role_changes() %>% `[`(!is.na(.$old_role) & .$old_role == role, "new_role") %>% `[[`(1),
+          admin = purrr::map(role, ~ dplyr::if_else(proxy_tbl()["admin", .x] == 1, 'TRUE', 'FALSE')) %>% unlist()
+        )
+      set_credentials_table(updated_user_tbl, passphrase = passphrase)
+      
+      user$role <- role_changes() %>% `[`(!is.na(.$old_role) & .$old_role == user$role, "new_role") %>% `[[`(1)
+      
       update_tbl <- get_roles_table()
       roles_dbtbl(update_tbl)
       role_changes(dplyr::tibble(old_role = colnames(update_tbl), new_role = colnames(update_tbl)))
       
       purrr::iwalk(get_credential_config(), ~ `<-`(credentials[[.y]], .x))
+      
+      user_table(get_credentials_table(passphrase = passphrase))
       
       removeModal()
       shinyjs::runjs("document.body.setAttribute('data-bs-overflow', 'auto');")

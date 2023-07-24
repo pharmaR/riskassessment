@@ -333,3 +333,12 @@ db_trash_collection <- function(db_name = golem::get_golem_options('assessment_d
     dbUpdate("delete from comments where id not in(select name from package)", db_name)
   }
 }
+
+set_credentials_table <- function(credentials, db_name = golem::get_golem_options('credentials_db_name'), passphrase) {
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
+  
+  out <- shinymanager::write_db_encrypt(conn = con, value = credentials, name = "credentials", passphrase = passphrase)
+  
+  DBI::dbDisconnect(con)
+  invisible(out)
+}
