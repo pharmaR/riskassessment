@@ -70,16 +70,24 @@ app_server <- function(input, output, session) {
                         title = "Roles & Privileges",
                         mod_user_roles_ui("userRoles")
                       ),
-                    if ("weight_adjust" %in% credential_config$privileges[[res_auth$role]])
-                      tabPanel(
-                        id = "reweight_id",
-                        title = "Assessment Reweighting",
-                        reweightViewUI("reweightInfo")
-                      )
+                    tabPanel(
+                      id = "reweight_id",
+                      title = "Assessment Reweighting",
+                      reweightViewUI("reweightInfo")
+                    )
                   ),
                   tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';"))
                 ))
   }, priority = 1)
+  
+  observeEvent(credential_config$privileges, {
+    req(user$role)
+    
+    if ("weight_adjust" %in% credential_config$privileges[[user$role]])
+      showTab("credentials", "Assessment Reweighting")
+    else
+      hideTab("credentials", "Assessment Reweighting")
+  })
   
   purrr::walk(paste("admin", c("edited_user", "edited_mult_user", "delete_selected_users", "delete_user", "changed_password", "changed_password_users"), sep = "-"),
               ~ observeEvent(input[[.x]], removeModal(), priority = 1))
