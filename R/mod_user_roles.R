@@ -40,7 +40,7 @@ mod_user_roles_server <- function(id, user, credentials){
       proxy_tbl(roles_dbtbl())
     })
     
-    user_table <- reactiveVal(get_credentials_table(passphrase = passphrase))
+    user_table <- reactiveVal()
     
     role_changes <- reactiveVal(dplyr::tibble(old_role = colnames(initial_tbl), new_role = colnames(initial_tbl)))
     
@@ -126,6 +126,7 @@ mod_user_roles_server <- function(id, user, credentials){
       bindEvent(roles_dbtbl())
     
     observeEvent(input$edit_dropdown, {
+      user_table(get_credentials_table(passphrase = passphrase))
       used_roles <- role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
       showModal(modalDialog(
         size = "l",
