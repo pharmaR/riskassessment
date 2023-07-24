@@ -83,7 +83,7 @@ mod_user_roles_server <- function(id, user, credentials){
     output$modal_table <- 
       DT::renderDataTable({
         i <- match("admin", rownames(roles_dbtbl()))
-        j <- match(user$role, colnames(roles_dbtbl()))
+        j <- match(role_changes() %>% dplyr::filter(old_role == user$role) %>% dplyr::pull(new_role), colnames(roles_dbtbl()))
         DT::datatable(
           roles_dbtbl(),
           escape = FALSE,
@@ -122,10 +122,11 @@ mod_user_roles_server <- function(id, user, credentials){
                 ))
               ))
           ))
-      })
+      }) %>%
+      bindEvent(roles_dbtbl())
     
     observeEvent(input$edit_dropdown, {
-      
+      used_roles <- role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
       showModal(modalDialog(
         size = "l",
         footer = tagList(
@@ -139,22 +140,22 @@ mod_user_roles_server <- function(id, user, credentials){
         tags$label("Add Role", class = "control-label"),
         div(
           style = "display: flex",
-          textInput(ns("add_col"), NULL),
-          actionButton(ns("add_col_submit"), shiny::icon("angle-right"),
+          textInput(ns("add_col"), NULL, width = "50%"),
+          actionButton(ns("add_col_submit"), shiny::icon("plus"),
                        style = 'height: calc(1.5em + 1.5rem + 2px)')
           ),
         tags$label("Edit Role", class = "control-label"),
         div(
           style = "display: flex",
-          selectInput(ns("select_edit_col"), NULL, choices = colnames(proxy_tbl())),
-          textInput(ns("edit_col"), NULL),
-          actionButton(ns("edit_col_submit"), shiny::icon("angle-right"),
+          selectInput(ns("select_edit_col"), NULL, choices = colnames(proxy_tbl()), width = "25%"),
+          textInput(ns("edit_col"), NULL, width = "25%"),
+          actionButton(ns("edit_col_submit"), shiny::icon("pen-to-square"),
                        style = 'height: calc(1.5em + 1.5rem + 2px)')
         ),
         tags$label("Delete Role", class = "control-label"),
         div(
           style = "display: flex",
-          selectInput(ns("delete_col"), NULL, choices = setdiff(colnames(tbl), user_table()$role)),
+          selectInput(ns("delete_col"), NULL, choices = setdiff(colnames(proxy_tbl()), used_roles), width = "50%"),
           actionButton(ns("delete_col_submit"), shiny::icon("trash-can"),
                        style = 'height: calc(1.5em + 1.5rem + 2px)')
         ),
@@ -175,6 +176,12 @@ mod_user_roles_server <- function(id, user, credentials){
       reset_table <- get_roles_table()
       roles_dbtbl(reset_table)
       role_changes(dplyr::tibble(old_role = colnames(reset_table), new_role = colnames(reset_table)))
+      used_roles <- role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
+      
+      updateTextInput(session, "add_col", value = "")
+      updateSelectInput(session, "select_edit_col", choices = colnames(reset_table))
+      updateTextInput(session, "edit_col", value = "")
+      updateSelectInput(session, "delete_col", choices = setdiff(colnames(reset_table), used_roles))
     })
     
     observeEvent(input$modal_table_cell_edit, {
@@ -194,11 +201,12 @@ mod_user_roles_server <- function(id, user, credentials){
       colnames(tbl) <- c(colnames(proxy_tbl()), input$add_col)
       roles_dbtbl(tbl)
       role_changes(dplyr::add_row(role_changes(), new_role = input$add_col))
+      used_roles <- role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
       
       updateTextInput(session, "add_col", value = "")
       updateSelectInput(session, "select_edit_col", choices = colnames(tbl))
       updateTextInput(session, "edit_col", value = "")
-      updateSelectInput(session, "delete_col", choices = setdiff(colnames(tbl), user_table()$role))
+      updateSelectInput(session, "delete_col", choices = setdiff(colnames(tbl), used_roles))
       
     })
     
@@ -214,29 +222,32 @@ mod_user_roles_server <- function(id, user, credentials){
                                  new_role = if_else(new_role == input$select_edit_col, 
                                                     input$edit_col, 
                                                     new_role)))
+      used_roles <- role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
       
       updateTextInput(session, "add_col", value = "")
       updateSelectInput(session, "select_edit_col", choices = colnames(tbl))
       updateTextInput(session, "edit_col", value = "")
-      updateSelectInput(session, "delete_col", choices = setdiff(colnames(tbl), user_table()$role))
+      updateSelectInput(session, "delete_col", choices = setdiff(colnames(tbl), used_roles))
     })
     
     observeEvent(input$delete_col_submit, {
-      o_role <- role_changes() %>% dplyr::filter(new_role == input$delete_col_submit) %>% dplyr::pull(name = old_role)
-      req(o_role %in% user_table()$role)
+      o_role <- role_changes() %>% dplyr::filter(new_role == input$delete_col) %>% dplyr::pull(name = old_role)
+      req(!o_role %in% user_table()$role)
       
       tbl <- proxy_tbl()
       i <- match(input$delete_col, colnames(tbl))
-      roles_dbtbl(tbl[,-i])
+      tbl <- tbl[,-i]
+      roles_dbtbl(tbl)
       role_changes(dplyr::mutate(role_changes(), 
                                  new_role = if_else(new_role == input$delete_col, 
                                                     NA_character_, 
                                                     new_role)))
+      used_roles <- role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
       
       updateTextInput(session, "add_col", value = "")
       updateSelectInput(session, "select_edit_col", choices = colnames(tbl))
       updateTextInput(session, "edit_col", value = "")
-      updateSelectInput(session, "delete_col", choices = colnames(tbl))
+      updateSelectInput(session, "delete_col", choices = setdiff(colnames(tbl), used_roles))
     })
     
     observeEvent(input$submit_changes, {
