@@ -152,7 +152,7 @@ app_server <- function(input, output, session) {
   mod_user_roles_server("userRoles", user, credential_config)
   
   # Load server of the reweightView module.
-  metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules, credential_config$privileges, trigger_events)
+  metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules, credential_config, trigger_events)
   
   # Load server of the uploadPackage module.
   auto_decision <- mod_decision_automation_server("automate", user, credential_config)
