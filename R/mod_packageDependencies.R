@@ -222,7 +222,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
               br(),
               shinyWidgets::materialSwitch(
                 inputId = ns("toggle_score"),
-                label = "Include SCORE?",
+                label = "Calculate risk scores",
                 value = FALSE, 
                 inline = TRUE,
                 status = "success"
