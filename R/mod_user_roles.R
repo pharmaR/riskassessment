@@ -145,7 +145,7 @@ mod_user_roles_server <- function(id, user, credentials){
           actionButton(ns("add_col_submit"), shiny::icon("plus"),
                        style = 'height: calc(1.5em + 1.5rem + 2px)')
           ),
-        tags$label("Edit Role", class = "control-label"),
+        tags$label("Edit Role Name", class = "control-label"),
         div(
           style = "display: flex",
           selectInput(ns("select_edit_col"), NULL, choices = colnames(proxy_tbl()), width = "25%"),
