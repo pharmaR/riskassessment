@@ -82,6 +82,8 @@ mod_user_roles_server <- function(id, user, credentials){
     
     output$modal_table <- 
       DT::renderDataTable({
+        i <- match("admin", rownames(roles_dbtbl()))
+        j <- match(user$role, colnames(roles_dbtbl()))
         DT::datatable(
           roles_dbtbl(),
           escape = FALSE,
@@ -110,14 +112,14 @@ mod_user_roles_server <- function(id, user, credentials){
             ordering = FALSE,
             columnDefs = list(list(
                 targets = "_all",
-                render = DT::JS(
-                  "function(data, type, row, meta) {",
-                  "  if(meta.col != 0){",
-                  "    return data ? `<input type=\"checkbox\" row=${meta.row} col=${meta.col} checked/>` : `<input type=\"checkbox\" row=${meta.row} col=${meta.col} />`;", 
-                  "  }",
+                render = DT::JS(glue::glue(
+                  "function(data, type, row, meta) {{",
+                  "  if(meta.col != 0){{",
+                  "    return `<input type=\"checkbox\" ${{meta.row == {i-1} & meta.col == {j} ? 'disabled' : ''}} row=${{meta.row}} col=${{meta.col}} ${{data ? 'checked' : ''}}/>`;", 
+                  "  }}",
                   "  return data;",
-                  "}"
-                )
+                  "}}"
+                ))
               ))
           ))
       })
@@ -152,7 +154,7 @@ mod_user_roles_server <- function(id, user, credentials){
         tags$label("Delete Role", class = "control-label"),
         div(
           style = "display: flex",
-          selectInput(ns("delete_col"), NULL, choices = colnames(proxy_tbl())),
+          selectInput(ns("delete_col"), NULL, choices = setdiff(colnames(tbl), user_table()$role)),
           actionButton(ns("delete_col_submit"), shiny::icon("trash-can"),
                        style = 'height: calc(1.5em + 1.5rem + 2px)')
         ),
@@ -176,13 +178,17 @@ mod_user_roles_server <- function(id, user, credentials){
     })
     
     observeEvent(input$modal_table_cell_edit, {
+      i <- match("admin", rownames(roles_dbtbl()))
+      j <- match(user$role, colnames(roles_dbtbl()))
+      req(i != input$modal_table_cell_edit$row || j != input$modal_table_cell_edit$col)
+      
       proxy_tbl(DT::editData(proxy_tbl(), input$modal_table_cell_edit))
       DT::replaceData(proxy, proxy_tbl(), resetPaging = FALSE)
     })
     
     observeEvent(input$add_col_submit, {
       req(input$add_col)
-      req(!input$add_col %in% c(""))
+      req(!input$add_col %in% c("", role_changes()$new_role))
       
       tbl <- cbind(proxy_tbl(), 0)
       colnames(tbl) <- c(colnames(proxy_tbl()), input$add_col)
@@ -192,14 +198,13 @@ mod_user_roles_server <- function(id, user, credentials){
       updateTextInput(session, "add_col", value = "")
       updateSelectInput(session, "select_edit_col", choices = colnames(tbl))
       updateTextInput(session, "edit_col", value = "")
-      updateSelectInput(session, "delete_col", choices = colnames(tbl))
+      updateSelectInput(session, "delete_col", choices = setdiff(colnames(tbl), user_table()$role))
       
     })
     
     observeEvent(input$edit_col_submit, {
       req(input$edit_col)
-      req(input$edit_col != input$select_edit_col)
-      req(!input$edit_col %in% c(""))
+      req(!input$edit_col %in% c("", role_changes()$new_role))
       
       tbl <- proxy_tbl()
       i <- match(input$select_edit_col, colnames(tbl))
@@ -213,10 +218,12 @@ mod_user_roles_server <- function(id, user, credentials){
       updateTextInput(session, "add_col", value = "")
       updateSelectInput(session, "select_edit_col", choices = colnames(tbl))
       updateTextInput(session, "edit_col", value = "")
-      updateSelectInput(session, "delete_col", choices = colnames(tbl))
+      updateSelectInput(session, "delete_col", choices = setdiff(colnames(tbl), user_table()$role))
     })
     
     observeEvent(input$delete_col_submit, {
+      o_role <- role_changes() %>% dplyr::filter(new_role == input$delete_col_submit) %>% dplyr::pull(name = old_role)
+      req(o_role %in% user_table()$role)
       
       tbl <- proxy_tbl()
       i <- match(input$delete_col, colnames(tbl))
