@@ -263,6 +263,13 @@ get_credential_config <- function(db_name = golem::get_golem_options('assessment
   config
 }
 
+get_roles_table <- function(db_name = golem::get_golem_options('assessment_db_name')) {
+  dbSelect("SELECT * FROM roles", db_name = db_name) %>%
+    {rownames(.) <- .$user_role; .} %>%
+    dplyr::select(-id, -user_role) %>%
+    t()
+}
+
 get_credentials_table <- function(db_name = golem::get_golem_options('credentials_db_name'), passphrase) {
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
