@@ -155,7 +155,7 @@ app_server <- function(input, output, session) {
   metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules, credential_config$privileges, trigger_events)
   
   # Load server of the uploadPackage module.
-  auto_decision <- mod_decision_automation_server("automate", user, credential_config$privileges)
+  auto_decision <- mod_decision_automation_server("automate", user, credential_config)
   uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules, credential_config$privileges, trigger_events)
   
   # Load server of the sidebar module.
