@@ -9,7 +9,7 @@ maintenanceMetricsServer(
   selected_pkg,
   maint_metrics,
   user,
-  approved_roles,
+  credentials,
   parent
 )
 }

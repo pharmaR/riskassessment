@@ -18,9 +18,9 @@ maintenanceMetricsUI <- function(id) {
 #' @import dplyr
 #' @keywords internal
 #' 
-maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, approved_roles, parent) {
-  if (missing(approved_roles))
-    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, credentials, parent) {
+  if (missing(credentials))
+    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   
   moduleServer(id, function(input, output, session) {
        ns <- NS(id)
@@ -39,7 +39,7 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, appr
             metricGridUI(NS(id, 'metricGrid')),
             br(), br(),
             fluidRow(div(id = "comments_for_mm",
-                         if ("general_comment" %in% approved_roles[[user$role]]) addCommentUI(NS(id, 'add_comment')),
+                         if ("general_comment" %in% credentials$privileges[[user$role]]) addCommentUI(NS(id, 'add_comment')),
                          viewCommentsUI(NS(id, 'view_comments')))
             )
           )
@@ -47,13 +47,13 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, appr
     })
 
     # IntroJS.
-    introJSServer(id = "introJS", text = reactive(mm_steps), user)
+    introJSServer(id = "introJS", text = reactive(mm_steps), user, credentials)
 
     # Call module that creates section to add comments.
     comment_added <- addCommentServer(id = "add_comment",
                                       metric_abrv = 'mm',
                                       user = user,
-                                      approved_roles = approved_roles,
+                                      credentials = credentials,
                                       pkg_name = selected_pkg$name)
     
     comments <- eventReactive(list(comment_added(), selected_pkg$name()), {

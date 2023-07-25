@@ -149,17 +149,17 @@ app_server <- function(input, output, session) {
     user$role <- trimws(res_auth$role)
   })
   
-  mod_user_roles_server("userRoles", user, credential_config)
+  mod_user_roles_server("userRoles", user, credential_config, trigger_events)
   
   # Load server of the reweightView module.
   metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules, credential_config, trigger_events)
   
   # Load server of the uploadPackage module.
   auto_decision <- mod_decision_automation_server("automate", user, credential_config)
-  uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules, credential_config$privileges, trigger_events)
+  uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules, credential_config, trigger_events)
   
   # Load server of the sidebar module.
-  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs, credential_config$privileges, trigger_events)
+  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs, credential_config, trigger_events)
 
   changes <- reactiveVal(0)
   observe({
@@ -202,7 +202,7 @@ app_server <- function(input, output, session) {
                                                selected_pkg,
                                                maint_metrics,
                                                user,
-                                               credential_config$privileges,
+                                               credential_config,
                                                parent = session)
   
   # Load server for the community metrics tab.
@@ -210,7 +210,7 @@ app_server <- function(input, output, session) {
                                            selected_pkg,
                                            community_usage_metrics,
                                            user,
-                                           credential_config$privileges)
+                                           credential_config)
   
   # Load server of the report preview tab.
   reportPreviewServer(id = "reportPreview",
@@ -222,7 +222,7 @@ app_server <- function(input, output, session) {
                       cm_comments = community_data$comments,
                       downloads_plot_data = community_data$downloads_plot_data,
                       user = user,
-                      credential_config$privileges,
+                      credential_config,
                       app_version = golem::get_golem_options('app_version'),
                       metric_weights = metric_weights)
   

@@ -27,7 +27,7 @@ mod_user_roles_ui <- function(id){
 #' user_roles Server Functions
 #'
 #' @noRd 
-mod_user_roles_server <- function(id, user, credentials){
+mod_user_roles_server <- function(id, user, credentials, trigger_events){
   if (missing(credentials))
     credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   moduleServer( id, function(input, output, session){
@@ -283,6 +283,8 @@ mod_user_roles_server <- function(id, user, credentials){
       purrr::iwalk(get_credential_config(), ~ `<-`(credentials[[.y]], .x))
       
       user_table(get_credentials_table(passphrase = passphrase))
+      
+      trigger_events[["reset_sidebar"]] <- trigger_events[["reset_sidebar"]] + 1
       
       removeModal()
       shinyjs::runjs("document.body.setAttribute('data-bs-overflow', 'auto');")

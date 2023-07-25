@@ -88,9 +88,9 @@ sidebarUI <- function(id) {
 #' @importFrom shinyjs enable disable
 #' @keywords internal
 #' 
-sidebarServer <- function(id, user, uploaded_pkgs, approved_roles, trigger_events) {
-  if (missing(approved_roles))
-    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) {
+  if (missing(credentials))
+    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   moduleServer(id, function(input, output, session) {
     
     # Required for shinyhelper to work.
@@ -200,7 +200,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, approved_roles, trigger_event
     
     # Update db if comment is submitted.
     observeEvent(input$submit_overall_comment, {
-      req("overall_comment" %in% approved_roles[[user$role]])
+      req("overall_comment" %in% credentials$privileges[[user$role]])
       
       current_comment <- trimws(input$overall_comment)
       
@@ -253,7 +253,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, approved_roles, trigger_event
     observeEvent(input$submit_overall_comment_yes, {
 
       req(selected_pkg$name)
-      req("overall_comment" %in% approved_roles[[user$role]])
+      req("overall_comment" %in% credentials$privileges[[user$role]])
 
       dbUpdate(
           "UPDATE comments
@@ -310,7 +310,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, approved_roles, trigger_event
     observeEvent(req(input$select_ver, trigger_events$reset_sidebar), {
       if (input$select_pkg != "-" && input$select_ver != "-" &&
           (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision)) &&
-          "overall_comment" %in% approved_roles[[user$role]]) {
+          "overall_comment" %in% credentials$privileges[[user$role]]) {
         shinyjs::enable("overall_comment")
         shinyjs::enable("submit_overall_comment")
         
@@ -321,7 +321,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, approved_roles, trigger_event
     }, ignoreInit = TRUE)
     
     observeEvent(req(input$select_ver, trigger_events$reset_sidebar), {
-      req("final_decision" %in% approved_roles[[user$role]])
+      req("final_decision" %in% credentials$privileges[[user$role]])
 
       if (input$select_pkg != "-" && input$select_ver != "-" &&
           (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) {
@@ -336,7 +336,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, approved_roles, trigger_event
     
     # Show reset final decision link if user is admin the a final decision has been made.
     observeEvent(selected_pkg$decision, {
-      req("revert_decision" %in% approved_roles[[user$role]])
+      req("revert_decision" %in% credentials$privileges[[user$role]])
 
       if (input$select_pkg == "-" && input$select_ver == "-" ||
           (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) {
@@ -351,7 +351,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, approved_roles, trigger_event
     # Show a confirmation modal when submitting a decision.
     observeEvent(input$submit_decision, {
       req(input$decision)
-      req("final_decision" %in% approved_roles[[user$role]])
+      req("final_decision" %in% credentials$privileges[[user$role]])
       
       showModal(modalDialog(
         size = "l",
@@ -378,7 +378,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, approved_roles, trigger_event
     # Show a confirmation modal when resetting a decision
     observeEvent(input$reset_decision, {
       req(input$decision)
-      req("revert_decision" %in% approved_roles[[user$role]])
+      req("revert_decision" %in% credentials$privileges[[user$role]])
       
       showModal(modalDialog(
         size = "l",
@@ -406,7 +406,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, approved_roles, trigger_event
     
     # Update database info after decision is submitted.
     observeEvent(input$submit_confirmed_decision, {
-      req("final_decision" %in% approved_roles[[user$role]])
+      req("final_decision" %in% credentials$privileges[[user$role]])
       
       dbUpdate("UPDATE package
           SET decision_id = {match(input$decision, golem::get_golem_options(\"decision_categories\"))}, decision_by = {user$name}, decision_date = {Sys.Date()}
@@ -428,7 +428,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, approved_roles, trigger_event
     })
     
     observeEvent(input$reset_confirmed_decision, {
-      req("revert_decision" %in% approved_roles[[user$role]])
+      req("revert_decision" %in% credentials$privileges[[user$role]])
       
       dbUpdate("UPDATE package
           SET decision_id = NULL, decision_by = '', decision_date = NULL
