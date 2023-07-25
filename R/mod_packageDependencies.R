@@ -30,7 +30,7 @@ packageDependenciesUI <- function(id) {
 #' @importFrom shiny removeModal showModal tagList
 #' @importFrom shinyjs click
 #' @importFrom shinyWidgets materialSwitch updateMaterialSwitch
-#' @importFrom stringr regex str_replace word
+#' @importFrom stringr str_extract str_replace
 #' 
 #' @keywords internal
 #' 
@@ -151,8 +151,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       pkginfo <- depends() %>%  
         as_tibble() %>% 
         mutate(package = stringr::str_replace(package, "\n", "")) %>% 
-        mutate(name = stringr::word(.data$package, 1, sep = stringr::regex("[\\s|\\(]"))) 
-      
+        mutate(name = stringr::str_extract(package, "\\w+"))
+
       # drop any Base R packages from list, unless we ony have 1 row
       pkginf2 <- pkginfo %>% 
         filter(!name %in% c(rownames(installed.packages(priority="base")))) 
