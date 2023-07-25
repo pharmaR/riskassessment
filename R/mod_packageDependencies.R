@@ -67,7 +67,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         dplyr::as_tibble() 
       
       if (toggle_score == FALSE) {
-        return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = NA ))
+        return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = "" ))
         
       } else {
       riskmetric_assess <- riskmetric_assess %>% riskmetric::pkg_assess()
