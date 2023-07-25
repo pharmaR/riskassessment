@@ -335,18 +335,28 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
     }, ignoreInit = TRUE)
     
     # Show reset final decision link if user is admin the a final decision has been made.
-    observeEvent(selected_pkg$decision, {
-      req("revert_decision" %in% credentials$privileges[[user$role]])
+    observe({
 
-      if (input$select_pkg == "-" && input$select_ver == "-" ||
-          (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) {
-        shinyjs::show("submit_decision")
-        removeUI(paste0("#", NS(id, "reset_decision")), immediate = TRUE)
-      } else {
+      if (!(input$select_pkg == "-" && input$select_ver == "-" ||
+          (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) &&
+          "revert_decision" %in% credentials$privileges[[user$role]]) {
         shinyjs::hide("submit_decision")
-        output$reset_decision_ui <- renderUI(actionButton(NS(id, "reset_decision"), "Reset Decision", width = "100%"))
+      } else {
+        shinyjs::show("submit_decision")
       }
-    }, ignoreInit = TRUE)
+    }) %>%
+      bindEvent(selected_pkg$decision, trigger_events$reset_sidebar,
+                ignoreInit = TRUE)
+    
+    output$reset_decision_ui <- renderUI({
+      req(user$role)
+      req(credentials$privileges)
+      req("revert_decision" %in% credentials$privileges[[user$role]])
+      req(!(input$select_pkg == "-" && input$select_ver == "-" ||
+            (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))))
+      
+      actionButton(NS(id, "reset_decision"), "Reset Decision", width = "100%")
+    })
     
     # Show a confirmation modal when submitting a decision.
     observeEvent(input$submit_decision, {
