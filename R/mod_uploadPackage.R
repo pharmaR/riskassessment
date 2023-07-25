@@ -156,9 +156,11 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
       uploaded_pkgs(data.frame())
     })
 
-    observeEvent(user$role, {
-    req("delete_package" %in% credentials$privileges[[user$role]])
     output$rem_pkg_div <- renderUI({
+      req(user$role)
+      req(credentials$privileges)
+      req("delete_package" %in% credentials$privileges[[user$role]])
+      
       session$onFlushed(function() {
         shinyjs::runjs(glue::glue('$("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))'))
       })
@@ -178,7 +180,6 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
                                              $("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
                                              }})')))
       )
-     })
     })
     
     observeEvent(input$uploaded_file, {
