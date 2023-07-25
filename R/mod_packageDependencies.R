@@ -65,7 +65,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                             repos = c("https://cran.rstudio.com")) %>%
         dplyr::as_tibble() 
       
-      if (toggle_score == FALSE) {
+      if (!is.null(toggle_score) && toggle_score == FALSE) {
         return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = "" ))
         
       } else {
@@ -122,13 +122,13 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       req(selected_pkg$name())
     # reset MaterialSwitch to FALSE whenever the package name changes
       shinyWidgets::updateMaterialSwitch(session = session, inputId = "toggle_score", value = FALSE)
-    }, ignoreInit = TRUE)
+    })
     
-    observeEvent(list(parent$input$tabs, selected_pkg$name()), {
+    observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
       req(parent$input$tabs, selected_pkg$name())
       
       tabready(0L)
-      if(parent$input$tabs == "Package Dependencies") {
+      if(parent$input$tabs == "Package Metrics" & parent$input$metric_type == "dep") {
         tabready(1L)
         if(length(lastpkg()) == 0) lastpkg("$$$$$") # dummy package name
       }
@@ -137,6 +137,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     m_id <- reactiveVal()
     
     pkg_df <- eventReactive({selected_pkg$name(); tabready(); input$toggle_score}, {
+
       req(!rlang::is_empty(selected_pkg$name()))
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
