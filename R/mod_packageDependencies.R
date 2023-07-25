@@ -228,8 +228,13 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                 status = "success"
               ),
               br(),
+              # remove DT "search:" rectangle
+              tags$head(
+                tags$style(type="text/css", ".dataTables_filter {display: none;    }"
+              )),
               fluidRow(
-                column(width = 4,
+                column(width = 3,
+                       
                        DT::renderDataTable(server = FALSE, {
                          
                          formattable::as.datatable(
@@ -262,17 +267,18 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                            colnames = c("Package", "Type", "Name", "Version", "Score", "Review Package"),
                            rownames = FALSE,
                            options = list(
-                             lengthMenu = list(c(15, -1), c('15', 'All'))),
+                             lengthMenu = list(c(15, -1), c('15', 'All')),
+                             searchable = FALSE),
                            style="default"
                          ) %>%
                            DT::formatStyle(names(data_table()), textAlign = 'center')
                        }) %>% bindCache(selected_pkg$name(), input$toggle_score)
                 ),
-                column(width = 8, 
-                       style="position:relative; top: 0px; right: 0px; left: 100px; width: 750px; height: 750px",
-                       renderPlot(width = 750, height = 750, {
-                         deepdep::plot_dependencies(isolate(dd()), type = "circular", same_level = TRUE, show_version = TRUE, reverse = TRUE, show_stamp = FALSE)
-                       })
+                column(width = 9, 
+                       style="position:relative; top: 0px; right: 0px; left: 375px;",
+                       renderPlot(width = 750, height = 750,{
+                         deepdep::plot_dependencies(dd(), type = "circular", same_level = TRUE, show_version = TRUE, reverse = TRUE, show_stamp = FALSE)
+                       }) 
                 )
               ),
           br(),
