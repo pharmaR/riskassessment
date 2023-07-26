@@ -153,10 +153,11 @@ mod_user_roles_server <- function(id, user, credentials, trigger_events){
           actionButton(ns("edit_col_submit"), shiny::icon("pen-to-square"),
                        style = 'height: calc(1.5em + 1.5rem + 2px)')
         ),
-        tags$label("Delete Role", class = "control-label"),
+        tags$label("Delete Role", icon("circle-info", class = "fa-xs", title = "A role can only be deleted if no users are assigned to it. If the role is not visible, first ensure no users are assigned that role in the Credential Manager."), class = "control-label"),
         div(
           style = "display: flex",
-          selectInput(ns("delete_col"), NULL, choices = setdiff(colnames(proxy_tbl()), used_roles), width = "50%"),
+          selectInput(ns("delete_col"), NULL, choices = setdiff(colnames(proxy_tbl()), used_roles), width = "50%") %>%
+            tagAppendAttributes(class = if(length(setdiff(colnames(proxy_tbl()), used_roles)) == 0) "shinyjs-disabled"),
           actionButton(ns("delete_col_submit"), shiny::icon("trash-can"),
                        style = 'height: calc(1.5em + 1.5rem + 2px)')
         ),
@@ -183,6 +184,10 @@ mod_user_roles_server <- function(id, user, credentials, trigger_events){
       updateSelectInput(session, "select_edit_col", choices = colnames(reset_table))
       updateTextInput(session, "edit_col", value = "")
       updateSelectInput(session, "delete_col", choices = setdiff(colnames(reset_table), used_roles))
+      if (length(setdiff(colnames(reset_table), used_roles)) == 0)
+        shinyjs::disable("delete_col")
+      else
+        shinyjs::enable("delete_col")
     })
     
     observeEvent(input$modal_table_cell_edit, {
@@ -208,6 +213,7 @@ mod_user_roles_server <- function(id, user, credentials, trigger_events){
       updateSelectInput(session, "select_edit_col", choices = colnames(tbl))
       updateTextInput(session, "edit_col", value = "")
       updateSelectInput(session, "delete_col", choices = setdiff(colnames(tbl), used_roles))
+      shinyjs::enable("delete_col")
       
     })
     
@@ -249,6 +255,10 @@ mod_user_roles_server <- function(id, user, credentials, trigger_events){
       updateSelectInput(session, "select_edit_col", choices = colnames(tbl))
       updateTextInput(session, "edit_col", value = "")
       updateSelectInput(session, "delete_col", choices = setdiff(colnames(tbl), used_roles))
+      if (length(setdiff(colnames(tbl), used_roles)) == 0)
+        shinyjs::disable("delete_col")
+      else
+        shinyjs::enable("delete_col")
     })
     
     observeEvent(input$submit_changes, {
