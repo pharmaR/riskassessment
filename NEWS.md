@@ -7,7 +7,7 @@
 * Added card Download Trend and linear trend plot on community usage metrics (#438)
 * Introduced cards to Database tab, reviewing contents of db (#587)
 * Fixed busted button introduced with #547 (#592)
-* Added Package Dependencies tab, and two new cards to Maintenance Metrics (#261)
+* Added Package Dependencies page to "Package Metrics" tab, and two new cards to Maintenance Metrics page (#261)
 
 # riskassessment 1.0.0
 
