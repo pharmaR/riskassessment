@@ -373,7 +373,7 @@ build_comm_cards <- function(data){
                    title = 'Reverse Dependencies',
                    desc = 'Number of Reverse Dependencies',
                    value = format(length(rev_deps), big.mark = ","),
-  succ_icon = 'box-open',
+  succ_icon = 'sitemap',
   icon_class = "text-info",
   is_perc = 0,
   is_url = 0)
