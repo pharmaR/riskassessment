@@ -366,6 +366,18 @@ build_comm_cards <- function(data){
             is_perc = 0,
             is_url = 0)
 
+  rev_deps <- riskmetric::pkg_ref(data$id[1]) %>% riskmetric::assess_reverse_dependencies()
+  
+  cards <- cards %>%
+    dplyr::add_row(name = 'reverse_dependencies',
+                   title = 'Reverse Dependencies',
+                   desc = 'Number of Reverse Dependencies',
+                   value = format(length(rev_deps), big.mark = ","),
+  succ_icon = 'box-open',
+  icon_class = "text-info",
+  is_perc = 0,
+  is_url = 0)
+
   trend_downloads <- dplyr::as_tibble(data) %>% 
     dplyr::arrange(year, month) %>%
     dplyr::mutate(day_month_year = glue::glue('1-{month}-{year}')) %>%
