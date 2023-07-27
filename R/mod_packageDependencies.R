@@ -40,7 +40,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
     color_lst <- get_colors(golem::get_golem_options("assessment_db_name"))
     
-    assess_dependencies <- reactiveVal(value = NULL)
+    last_toggle <- reactiveVal(value = NULL)
     
     metric_wts_df <- eventReactive(selected_pkg$name(), {
       dbSelect("SELECT id, name, weight FROM metric")
@@ -53,8 +53,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       names(metric_weights) <<- isolate(metric_wts_df()$name)
     })
 
-    loaded2_db <- eventReactive(changes(), {
-      dbSelect('SELECT name FROM package')$name
+    loaded2_db <- eventReactive(list(selected_pkg$name(), changes()), {
+      print("in loaded2_db...")
+      dbSelect('SELECT name, score FROM package')
     })
     
     get_versnScore <- function(pkg_name, id, toggle_score) {
@@ -71,15 +72,20 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       } else {
       riskmetric_assess <- riskmetric_assess %>% riskmetric::pkg_assess()
       
-      riskmetric_score <-
-        riskmetric_assess %>%
-        riskmetric::pkg_score(weights = metric_weights)
-      
       cli::cli_progress_update(id = id)
       
-      return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = round(riskmetric_score$pkg_score,2) ))   
-      } 
-
+        if (pkg_name %in% loaded2_db()$name) {
+          pkg_score <- loaded2_db() %>% filter(name == pkg_name) %>% pull(score)
+        } else {
+        riskmetric_score <-
+          riskmetric_assess %>%
+          riskmetric::pkg_score(weights = metric_weights)
+          pkg_score <- round(riskmetric_score$pkg_score,2)
+        } 
+        cat("pkg_name is", pkg_name, "score is", pkg_score, str(pkg_score), "\n")
+        
+        return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = pkg_score))   
+      }
     }
     
     # used for adding action buttons to data_table
@@ -89,7 +95,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         inputs[i] <- as.character(FUN(paste0(id, i), ...))
         # change icon from arrow to upload if not loaded into db yet
         pkg_name <- pkg_df()[i, 3] %>% pull()
-        if (!pkg_name %in% loaded2_db()) {
+        if (!pkg_name %in% loaded2_db()$name) {
           inputs[i] <- gsub("fas fa-arrow-right fa-regular", "fas fa-upload fa-solid", inputs[i])
         }
       }
@@ -121,7 +127,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     observeEvent(selected_pkg$name(), {
       req(selected_pkg$name())
     # reset MaterialSwitch to FALSE whenever the package name changes
-      shinyWidgets::updateMaterialSwitch(session = session, inputId = "toggle_score", value = FALSE)
+      cat("here is where we would set toggle switch to FALSE \n")
+      #shinyWidgets::updateMaterialSwitch(session = session, inputId = "toggle_score", value = FALSE)
     })
     
     observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
@@ -140,10 +147,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
 
       req(!rlang::is_empty(selected_pkg$name()))
       req(selected_pkg$name() != "-")
+      cat("in pkg_df(), tabready() is", tabready(), "\n")
       req(tabready() == 1L)
 
-      req(lastpkg() != selected_pkg$name() | (is.null(assess_dependencies()) || input$toggle_score != assess_dependencies() ))
-      if( lastpkg() != selected_pkg$name()) req(input$toggle_score == FALSE)
+      req(lastpkg() != selected_pkg$name() | (is.null(last_toggle()) || last_toggle() != input$toggle_score))
+      # if( lastpkg() != selected_pkg$name()) req(input$toggle_score == FALSE)
       
       # start the progress message as soon as possible.
       m_id(cli::cli_progress_message("Compiling dependency info...", .auto_close = FALSE))
@@ -164,6 +172,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                                      format = "{pkg_name} {cli::pb_percent} | ETA: {cli::pb_eta}",
                                      total = nrow(pkginfo))
       
+      cat("just before right_join \n")
       purrr::map_df(pkginfo$name, ~get_versnScore(.x, cl_id, input$toggle_score)) %>% 
         right_join(pkginfo, by = "name") %>% 
         select(package, type, name, version, score)
@@ -173,7 +182,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     observeEvent(pkg_df(), {
       cli::cli_progress_done(id = m_id())
       cli::cli_progress_done()
-      assess_dependencies(input$toggle_score) # remember last input$toggle_score value
+      last_toggle(input$toggle_score) # remember last input$toggle_score value
       lastpkg(isolate(selected_pkg$name()))
     }) 
     
@@ -272,7 +281,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                            style="default"
                          ) %>%
                            DT::formatStyle(names(data_table()), textAlign = 'center')
-                       }) %>% bindCache(selected_pkg$name(), input$toggle_score)
+                       }) # %>% bindCache(selected_pkg$name(), input$toggle_score)
                 ),
                 column(width = 9, 
                        # style="position:relative; top: 0px; right: 0px; left: 375px;",
@@ -371,6 +380,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       
       pkg_name <- names_vect()[length(names_vect())]
       
+      cat("pkg_name just added was", pkg_name, "\n")
       updateSelectizeInput(
         session = parent,
         inputId = "sidebar-select_pkg",
