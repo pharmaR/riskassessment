@@ -30,9 +30,9 @@ addCommentUI <- function(id) {
 #' @importFrom stringr str_replace_all
 #' @keywords internal
 #' 
-addCommentServer <- function(id, metric_abrv, user, approved_roles, pkg_name) {
-  if (missing(approved_roles))
-    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+addCommentServer <- function(id, metric_abrv, user, credentials, pkg_name) {
+  if (missing(credentials))
+    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   
   moduleServer(id, function(input, output, session) {
     
@@ -55,7 +55,7 @@ addCommentServer <- function(id, metric_abrv, user, approved_roles, pkg_name) {
     
     observeEvent(input$submit_comment, {
       req(input$add_comment)
-      req("general_comment" %in% approved_roles[[user$role]])
+      req("general_comment" %in% credentials$privileges[[user$role]])
       
       comment <- trimws(input$add_comment)
       

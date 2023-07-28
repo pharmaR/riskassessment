@@ -77,22 +77,30 @@ uploadPackageUI <- function(id) {
 #' @importFrom rvest read_html html_nodes html_text
 #' @keywords internal
 #' 
-uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_events) {
-  if (missing(approved_roles))
-    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events) {
+  if (missing(credentials))
+    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   moduleServer(id, function(input, output, session) {
     
-    observeEvent(user$role, {
-      req("add_package" %in% approved_roles[[user$role]])
+    observe({
+      req(user$role)
+      req(credentials$privileges)
       
-      shinyjs::enable("pkg_lst")
-      shinyjs::enable("add_pkgs")
-      shinyjs::enable("uploaded_file")
-      shinyjs::runjs(glue::glue('$("#{NS(id, \'uploaded_file\')}").parents("span").removeClass("disabled")'))
+      if ("add_package" %in% credentials$privileges[[user$role]]) {
+        shinyjs::enable("pkg_lst")
+        shinyjs::enable("add_pkgs")
+        shinyjs::enable("uploaded_file")
+        shinyjs::runjs(glue::glue('$("#{NS(id, \'uploaded_file\')}").parents("span").removeClass("disabled")'))
+      } else {
+        shinyjs::disable("pkg_lst")
+        shinyjs::disable("add_pkgs")
+        shinyjs::disable("uploaded_file")
+        shinyjs::runjs(glue::glue('$("#{NS(id, \'uploaded_file\')}").parents("span").addClass("disabled")'))
+      }
     })
 
     output$upload_format_lnk <- renderUI({
-      req("add_package" %in% approved_roles[[user$role]])
+      req("add_package" %in% credentials$privileges[[user$role]])
       
       actionLink(NS(id, "upload_format"), "View Sample Dataset")
     })
@@ -103,9 +111,9 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
       
       dplyr::bind_rows(
         upload_pkg,
-        if ("add_package" %in% approved_roles[[user$role]]) upload_pkg_add,
-        if ("delete_package" %in% approved_roles[[user$role]]) upload_pkg_delete,
-        if ("auto_decision_adjust" %in% approved_roles[[user$role]]) upload_pkg_dec_adj,
+        if ("add_package" %in% credentials$privileges[[user$role]]) upload_pkg_add,
+        if ("delete_package" %in% credentials$privileges[[user$role]]) upload_pkg_delete,
+        if ("auto_decision_adjust" %in% credentials$privileges[[user$role]]) upload_pkg_dec_adj,
         if (nrow(uploaded_pkgs()) > 0) upload_pkg_comp
       )
     })
@@ -140,7 +148,7 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
     
     # Start introjs when help button is pressed. Had to do this outside of
     # a module in order to take a reactive data frame of steps
-    introJSServer("introJS", text = upload_pkg_txt, user)
+    introJSServer("introJS", text = upload_pkg_txt, user, credentials)
 
     uploaded_pkgs00 <- reactiveVal()
     
@@ -148,9 +156,11 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
       uploaded_pkgs(data.frame())
     })
 
-    observeEvent(user$role, {
-    req("delete_package" %in% approved_roles[[user$role]])
     output$rem_pkg_div <- renderUI({
+      req(user$role)
+      req(credentials$privileges)
+      req("delete_package" %in% credentials$privileges[[user$role]])
+      
       session$onFlushed(function() {
         shinyjs::runjs(glue::glue('$("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))'))
       })
@@ -170,7 +180,6 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
                                              $("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
                                              }})')))
       )
-     })
     })
     
     observeEvent(input$uploaded_file, {
@@ -217,7 +226,7 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
     })
     
     observeEvent(input$rem_pkg_btn, {
-      req("delete_package" %in% approved_roles[[user$role]]) 
+      req("delete_package" %in% credentials$privileges[[user$role]]) 
       
       np <- length(input$rem_pkg_lst)
       uploaded_packages <-

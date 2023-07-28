@@ -4,7 +4,7 @@
 \alias{addCommentServer}
 \title{addComment module's server logic}
 \usage{
-addCommentServer(id, metric_abrv, user, approved_roles, pkg_name)
+addCommentServer(id, metric_abrv, user, credentials, pkg_name)
 }
 \arguments{
 \item{id}{a module id name}
