@@ -759,24 +759,6 @@
       ],
       "Hash": "2d8a9e4f08f3dd669cb8ddd1eb575959"
     },
-    "deepdep": {
-      "Package": "deepdep",
-      "Version": "0.4.2",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "deepdep",
-      "RemoteUsername": "DominikRafacz",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "df6678e07c9cfaef4ab48afba7c5fdf97f3719f5",
-      "Requirements": [
-        "R",
-        "cranlogs",
-        "httr",
-        "jsonlite"
-      ],
-      "Hash": "b97ad26a0ca037cd8f7d8ee51410f120"
-    },
     "desc": {
       "Package": "desc",
       "Version": "1.4.1",
