@@ -200,18 +200,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       )
     })
     
-    # dd <- eventReactive(pkg_df(), {
-    #   x <- deepdep::deepdep(selected_pkg$name(), depth = 2, dependency_type = c("Depends", "Imports", "LinkingTo"))
-    #   if (nrow(x) == 0) {
-    #     x <- data.frame(origin = selected_pkg$name(),
-    #                     name = pull(pkg_df()[1, 3]), version = NA_character_, type = "Imports",
-    #                     origin_level = 0L, dest_level = 1L)
-    #     attributes(x)$class <- c("deepdep", "data.frame")
-    #     attributes(x)$package_name <- selected_pkg$name()
-    #   }
-    #   return(x)
-    # })
-    
     # Render Output UI for Package Dependencies.
     output$package_dependencies_ui <- renderUI({
       
@@ -282,12 +270,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                          ) %>%
                            DT::formatStyle(names(data_table()), textAlign = 'center')
                        }) # %>% bindCache(selected_pkg$name(), input$toggle_score)
-                ),
-                column(width = 9, 
-                       # style="position:relative; top: 0px; right: 0px; left: 375px;",
-                       # renderPlot(width = 750, height = 750,{
-                       #   deepdep::plot_dependencies(dd(), type = "circular", same_level = TRUE, show_version = TRUE, reverse = TRUE, show_stamp = FALSE)
-                       # }) 
                 )
               ),
           br(),
