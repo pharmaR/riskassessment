@@ -762,17 +762,3 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
   }
   
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
