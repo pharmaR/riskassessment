@@ -23,8 +23,7 @@ packageDependenciesUI <- function(id) {
 #' @importFrom glue glue
 #' @importFrom golem get_golem_options
 #' @importFrom purrr map_df
-#' @importFrom riskmetric assess_dependencies assess_reverse_dependencies 
-#'             pkg_assess pkg_ref pkg_score
+#' @importFrom riskmetric pkg_ref pkg_score
 #' @importFrom rlang is_empty
 #' @importFrom shiny removeModal showModal tagList
 #' @importFrom shinyjs click
@@ -64,13 +63,13 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         riskmetric::pkg_ref(pkg_name,
                             source = "pkg_cran_remote",
                             repos = c("https://cran.rstudio.com")) %>%
-        dplyr::as_tibble() 
+        dplyr::as_tibble()  
       
       if (!is.null(toggle_score) && toggle_score == FALSE) {
         return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = "" ))
         
       } else {
-      riskmetric_assess <- riskmetric_assess %>% riskmetric::pkg_assess()
+      # riskmetric_assess <- riskmetric_assess %>% riskmetric::pkg_assess()
       
       cli::cli_progress_update(id = id)
       
@@ -78,7 +77,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
           pkg_score <- loaded2_db() %>% filter(name == pkg_name) %>% pull(score)
         } else {
         riskmetric_score <-
-          riskmetric_assess %>%
+          # riskmetric_assess %>%
+          pkgref() %>% 
           riskmetric::pkg_score(weights = metric_weights)
           pkg_score <- round(riskmetric_score$pkg_score,2)
         } 
@@ -101,23 +101,28 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       }
       inputs
     }
-    
+ 
     pkgref <- reactive({
       req(selected_pkg$name())
       req(selected_pkg$name() != "-")
-      riskmetric::pkg_ref(selected_pkg$name())
+      
+      db_table <- dbSelect("SELECT metric.name, package_metrics.encode FROM package 
+                       INNER JOIN package_metrics ON package.id = package_metrics.package_id
+                       INNER JOIN metric ON package_metrics.metric_id = metric.id
+                       WHERE package.name = {selected_pkg$name()}", 
+                           db_name = golem::get_golem_options('assessment_db_name'))
+      
+      purrr::pmap_dfc(db_table, function(name, encode) {dplyr::tibble(unserialize(encode)) %>% purrr::set_names(name)}) 
     }) 
-    
-    depends <- reactive({
+	
+    depends <- eventReactive( pkgref(), {
       req(pkgref())
-      pkgref() %>% 
-        riskmetric::assess_dependencies() 
+      pkgref()$dependencies[[1]] %>% dplyr::as_tibble()
     })
     
-    revdeps <- reactive({
+    revdeps <- eventReactive( pkgref(),{
       req(pkgref())
-      pkgref() %>% 
-        riskmetric::assess_reverse_dependencies() 
+      pkgref()$reverse_dependencies[[1]] %>% as.vector()
     })
     
     tabready <- reactiveVal()
