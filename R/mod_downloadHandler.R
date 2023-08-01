@@ -211,6 +211,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                 id = selected_pkg$id,
                 name = selected_pkg$name,
                 version = selected_pkg$version,
+                date_added = selected_pkg$date_added,
                 title = selected_pkg$title,
                 decision = selected_pkg$decision,
                 description = selected_pkg$description,

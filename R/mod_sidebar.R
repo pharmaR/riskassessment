@@ -31,7 +31,7 @@ sidebarUI <- function(id) {
     
     selectizeInput(
       inputId = NS(id, "select_date"),
-      label = h5("Date Added"),
+      label = h5("Date Uploaded"),
       choices = "-",
       selected = "-"
     ) %>%
@@ -477,6 +477,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
       id = reactive(selected_pkg$id),
       name = reactive(selected_pkg$name),
       version = reactive(selected_pkg$version),
+      date_added = reactive(selected_pkg$date_added),
       title = reactive(selected_pkg$title),
       decision = reactive(selected_pkg$decision),
       description = reactive(selected_pkg$description),
