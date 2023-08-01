@@ -16,9 +16,10 @@ sidebarUI <- function(id) {
     selectizeInput(
       inputId = NS(id, "select_pkg"),
       label = h5("Package Name"),
-      choices = c("-", dbSelect('SELECT name FROM package')$name),
+      choices = "-",
       selected = "-"
     ) %>%
+      shinyjs::disabled() %>%
       div(id = NS(id, "select_pkg_ui")),
     
     tags$label("Package Version", icon("circle-info", class = "fa-xs", title = "The most recent package version avaiable at date of upload will be used."), class = c("control-label", "h5")),
@@ -119,6 +120,8 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
         choices = c("-", dbSelect('SELECT name FROM package')$name),
         selected = "-"
       )
+      
+      shinyjs::enable("select_pkg")
       
     }, ignoreNULL = TRUE)
     
