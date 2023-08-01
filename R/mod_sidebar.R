@@ -20,14 +20,15 @@ sidebarUI <- function(id) {
       selected = "-"
     ),
     
+    tags$label("Package Version", icon("circle-info", class = "fa-xs", title = "The most recent package version avaiable at date of upload will be used."), class = c("control-label", "h5")),
     selectizeInput(
       inputId = NS(id, "select_ver"),
-      label = h5("Select Version"),
+      label = NULL,
       choices = "-",
       selected = "-"
-    ),
+    ) %>%
+      shinyjs::disabled(),
     
-    helpText(HTML('<em>Note</em>: the latest package version will be used.')),
     
     br(), br(),
     
@@ -140,7 +141,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
       
       shinyjs::disable(id = 'select_ver')
       
-    }, ignoreInit = TRUE)
+    })
     
     # Display the review status of the selected package.
     output$status <- renderUI({
