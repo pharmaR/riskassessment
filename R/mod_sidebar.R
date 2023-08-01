@@ -29,6 +29,13 @@ sidebarUI <- function(id) {
     ) %>%
       shinyjs::disabled(),
     
+    selectizeInput(
+      inputId = NS(id, "select_date"),
+      label = h5("Date Added"),
+      choices = "-",
+      selected = "-"
+    ) %>%
+      shinyjs::disabled(),
     
     br(), br(),
     
@@ -129,8 +136,8 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
       req(input$select_pkg)
       req(input$select_ver)
       
-      version <- ifelse(input$select_pkg == "-", "-",
-                        glue::glue('{selected_pkg$version} - latest version'))
+      version <- ifelse(input$select_pkg == "-", "-", selected_pkg$version)
+      date_added <- ifelse(input$select_pkg == "-", "-", selected_pkg$date_added)
       
       updateSelectizeInput(
         session,
@@ -139,7 +146,12 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
         selected = version
       )
       
-      shinyjs::disable(id = 'select_ver')
+      updateSelectizeInput(
+        session,
+        'select_date',
+        choices = date_added,
+        selected = date_added
+      )
       
     })
     
