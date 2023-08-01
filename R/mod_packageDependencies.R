@@ -23,7 +23,7 @@ packageDependenciesUI <- function(id) {
 #' @importFrom glue glue
 #' @importFrom golem get_golem_options
 #' @importFrom purrr map_df
-#' @importFrom riskmetric pkg_ref pkg_score
+#' @importFrom riskmetric pkg_ref pkg_assess pkg_score
 #' @importFrom rlang is_empty
 #' @importFrom shiny removeModal showModal tagList
 #' @importFrom shinyjs click
@@ -53,7 +53,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     })
 
     loaded2_db <- eventReactive(list(selected_pkg$name(), changes()), {
-      print("in loaded2_db...")
       dbSelect('SELECT name, score FROM package')
     })
     
@@ -69,16 +68,16 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = "" ))
         
       } else {
-      # riskmetric_assess <- riskmetric_assess %>% riskmetric::pkg_assess()
       
       cli::cli_progress_update(id = id)
       
         if (pkg_name %in% loaded2_db()$name) {
           pkg_score <- loaded2_db() %>% filter(name == pkg_name) %>% pull(score)
+          
         } else {
         riskmetric_score <-
-          # riskmetric_assess %>%
-          pkgref() %>% 
+          riskmetric_assess %>%
+          riskmetric::pkg_assess() %>% 
           riskmetric::pkg_score(weights = metric_weights)
           pkg_score <- round(riskmetric_score$pkg_score,2)
         } 
@@ -133,7 +132,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       req(selected_pkg$name())
     # reset MaterialSwitch to FALSE whenever the package name changes
       cat("here is where we would set toggle switch to FALSE \n")
-      #shinyWidgets::updateMaterialSwitch(session = session, inputId = "toggle_score", value = FALSE)
+      shinyWidgets::updateMaterialSwitch(session = session, inputId = "toggle_score", value = FALSE)
     })
     
     observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
@@ -148,15 +147,20 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     
     m_id <- reactiveVal()
     
-    pkg_df <- eventReactive({selected_pkg$name(); tabready(); input$toggle_score}, {
-
+    pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), input$toggle_score), {
+      
       req(!rlang::is_empty(selected_pkg$name()))
       req(selected_pkg$name() != "-")
-      cat("in pkg_df(), tabready() is", tabready(), "\n")
+      cat("eventReactive for pkg_df(), tabready() is", tabready(), "\n")
+      cat("is.null(input$toggle_score)?", is.null(input$toggle_score), "\n")
+      req(!is.null(input$toggle_score))
       req(tabready() == 1L)
 
-      req(lastpkg() != selected_pkg$name() | (is.null(last_toggle()) || last_toggle() != input$toggle_score))
-      # if( lastpkg() != selected_pkg$name()) req(input$toggle_score == FALSE)
+      cat("+ is.null(last_toggle())? ", is.null(last_toggle()), "last_toggle() is", last_toggle(), "input$toggle_score is", input$toggle_score, "\n")
+      cat("+ lastpkg() is", lastpkg(), "selected_pkg$name() is", selected_pkg$name(), "\n")
+      
+      req(lastpkg() != selected_pkg$name() | (is.null(last_toggle()) || is.null(input$toggle_score) || last_toggle() != input$toggle_score))
+      if( lastpkg() != selected_pkg$name()) req(input$toggle_score == FALSE)
       
       # start the progress message as soon as possible.
       m_id(cli::cli_progress_message("Compiling dependency info...", .auto_close = FALSE))
@@ -178,9 +182,14 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                                      total = nrow(pkginfo))
       
       cat("just before right_join \n")
+
+      if (nrow(pkginfo) == 0) {
+        tibble(package = NA_character_, type = "", name = "", version = "", score = "")
+      } else {
       purrr::map_df(pkginfo$name, ~get_versnScore(.x, cl_id, input$toggle_score)) %>% 
         right_join(pkginfo, by = "name") %>% 
         select(package, type, name, version, score)
+      }
 
     }, ignoreInit = TRUE) 
     
@@ -274,7 +283,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                            style="default"
                          ) %>%
                            DT::formatStyle(names(data_table()), textAlign = 'center')
-                       }) # %>% bindCache(selected_pkg$name(), input$toggle_score)
+                       })  %>% bindCache(selected_pkg$name(), input$toggle_score, loaded2_db())
                 )
               ),
           br(),
