@@ -12,8 +12,13 @@ sidebarUI <- function(id) {
     tags$b(h4("Package Control Panel", style = "text-align: center;")),
     
     hr(),
-    
-    uiOutput(NS(id, 'select_pkg_ui')),
+
+    selectizeInput(
+      inputId = NS(id, "select_pkg"),
+      label = h5("Package Name"),
+      choices = c("-", dbSelect('SELECT name FROM package')$name),
+      selected = "-"
+    ),
     
     selectizeInput(
       inputId = NS(id, "select_ver"),
@@ -95,16 +100,6 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
     
     # Required for shinyhelper to work.
     # shinyhelper::observe_helpers()
-    
-    # Create list of packages.
-    output$select_pkg_ui <- renderUI({
-      selectizeInput(
-        inputId = NS(id, "select_pkg"),
-        label = h5("Select Package"),
-        choices = c("-", dbSelect('SELECT name FROM package')$name),
-        selected = "-"
-      )
-    })
     
     # Create list of packages.
     observeEvent(uploaded_pkgs(), {
