@@ -18,7 +18,8 @@ sidebarUI <- function(id) {
       label = h5("Package Name"),
       choices = c("-", dbSelect('SELECT name FROM package')$name),
       selected = "-"
-    ),
+    ) %>%
+      div(id = NS(id, "select_pkg_ui")),
     
     tags$label("Package Version", icon("circle-info", class = "fa-xs", title = "The most recent package version avaiable at date of upload will be used."), class = c("control-label", "h5")),
     selectizeInput(
