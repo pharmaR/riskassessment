@@ -22,24 +22,35 @@ sidebarUI <- function(id) {
       shinyjs::disabled() %>%
       div(id = NS(id, "select_pkg_ui")),
     
-    tags$label("Package Version", icon("circle-info", class = "fa-xs", title = "The most recent package version avaiable at date of upload will be used."), class = c("control-label", "h5")),
-    selectizeInput(
-      inputId = NS(id, "select_ver"),
-      label = NULL,
-      choices = "-",
-      selected = "-"
-    ) %>%
-      shinyjs::disabled(),
-    
-    selectizeInput(
-      inputId = NS(id, "select_date"),
-      label = h5("Date Uploaded"),
-      choices = "-",
-      selected = "-"
-    ) %>%
-      shinyjs::disabled(),
-    
-    br(), br(),
+
+    fluidRow(
+
+      column(6,
+        tags$label("Date Uploaded", class = c("control-label", "h5")),
+        selectizeInput(
+          inputId = NS(id, "select_date"),
+          label = NULL, #h5("Date Uploaded"),
+          choices = "-",
+          selected = "-"
+        ) %>%
+          shinyjs::disabled()
+      ),
+
+      column(6,
+        tags$label("Pkg Version",
+                   icon("circle-info", class = "fa-xs",
+                     title = "The most recent package version avaiable at date of upload will be used."),
+                   class = c("control-label", "h5")),
+        selectizeInput(
+          inputId = NS(id, "select_ver"),
+          label = NULL,
+          choices = "-",
+          selected = "-"
+        ) %>%
+          shinyjs::disabled(),
+      )
+    ),
+    br(),
     
     fluidRow(
       column(6, div(id = NS(id, "status-wp"), wellPanel(
@@ -52,7 +63,7 @@ sidebarUI <- function(id) {
       ))
     ),
     
-    br(), br(),
+    br(), br(), br(),
     
     shinyjs::disabled(
       div(id = NS(id, "decision-grp"),

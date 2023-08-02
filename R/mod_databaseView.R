@@ -96,7 +96,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     table_data <- eventReactive({uploaded_pkgs(); changes()}, {
      
       db_pkg_overview <- dbSelect(
-        'SELECT pi.name, pi.version, pi.date_added, pi.score, dc.decision, pi.decision_by, pi.decision_date, c.last_comment
+        'SELECT pi.name, pi.date_added, pi.version, pi.score, dc.decision, pi.decision_by, pi.decision_date, c.last_comment
         FROM package as pi
         LEFT JOIN (
             SELECT id, max(added_on) as last_comment FROM comments GROUP BY id)
@@ -112,7 +112,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
         dplyr::mutate(decision    = if_else(is.na(decision)    | decision    == "", "-", decision)) %>%
         dplyr::mutate(decision_by = if_else(is.na(decision_by) | decision_by == "", "-", decision_by)) %>% 
         dplyr::mutate(decision_date = ifelse(is.na(decision_date) | decision_date == "NA", "-", decision_date)) %>% 
-        dplyr::select(name, version, date_added, score, decision, decision_by, decision_date, last_comment)
+        dplyr::select(name, date_added, version, score, decision, decision_by, decision_date, last_comment)
     })
     
     exportTestValues(
@@ -177,7 +177,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                                          "transparent")))
           )),
         selection = list(mode = 'multiple'),
-        colnames = c("Package", "Version", "Date Uploaded", "Score", "Decision", "Decision by", "Decision Date", "Last Comment", "Explore Metrics"),
+        colnames = c("Package", "Date Uploaded", "Version", "Score", "Decision", "Decision by", "Decision Date", "Last Comment", "Explore Metrics"),
         rownames = FALSE,
         extensions = "Buttons",
         options = list(

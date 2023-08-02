@@ -20,7 +20,7 @@ test_that("Reactivity of database view table", {
   
   #### Test that the `table_data` loads correctly ####
   tbl_expect <-
-    structure(list(name = "dplyr", version = "1.1.0", date_added = "2023-07-20", 
+    structure(list(name = "dplyr", date_added = "2023-07-20", version = "1.1.0",
                    score = 0.29, decision = "-", decision_by = "-", decision_date = "-",
                    last_comment = "-"), 
               class = "data.frame", row.names = c(NA, -1L))
@@ -36,7 +36,7 @@ test_that("Reactivity of database view table", {
   app$click("sidebar-submit_confirmed_decision")
   
   tbl_expect <-
-    structure(list(name = "dplyr", version = "1.1.0", date_added = "2023-07-20", score = 0.29, 
+    structure(list(name = "dplyr", date_added = "2023-07-20", version = "1.1.0", score = 0.29, 
                    decision = "Low Risk", decision_by = "test_user", decision_date = as.character(Sys.Date()),
                    last_comment = "-"), 
               class = "data.frame", row.names = c(NA, -1L))
