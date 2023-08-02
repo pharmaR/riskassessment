@@ -23,7 +23,7 @@ packageDependenciesUI <- function(id) {
 #' @importFrom glue glue
 #' @importFrom golem get_golem_options
 #' @importFrom purrr map_df
-#' @importFrom riskmetric pkg_ref pkg_assess pkg_score
+#' @importFrom riskmetric pkg_ref 
 #' @importFrom rlang is_empty
 #' @importFrom shiny removeModal showModal tagList
 #' @importFrom shinyjs click
@@ -75,14 +75,15 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
           pkg_score <- loaded2_db() %>% filter(name == pkg_name) %>% pull(score)
           
         } else {
-        riskmetric_score <-
-          riskmetric_assess %>%
-          riskmetric::pkg_assess() %>% 
-          riskmetric::pkg_score(weights = metric_weights)
-          pkg_score <- round(riskmetric_score$pkg_score,2)
+        # riskmetric_score <-
+        #   riskmetric_assess %>%
+        #   riskmetric::pkg_assess() %>%
+        #   riskmetric::pkg_score(weights = metric_weights)
+        #   pkg_score <- round(riskmetric_score$pkg_score,2)
+   		    pkg_score <- NA
         } 
-        cat("pkg_name is", pkg_name, "score is", pkg_score, str(pkg_score), "\n")
         
+        cat("pkg_name is", pkg_name, "score is", pkg_score, str(pkg_score), "\n")
         return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = pkg_score))   
       }
     }
@@ -130,8 +131,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
 
     observeEvent(selected_pkg$name(), {
       req(selected_pkg$name())
-    # reset MaterialSwitch to FALSE whenever the package name changes
-      cat("here is where we would set toggle switch to FALSE \n")
+    # reset MaterialSwitch to FALSE (default) whenever the package name changes
       shinyWidgets::updateMaterialSwitch(session = session, inputId = "toggle_score", value = FALSE)
     })
     
@@ -181,8 +181,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                                      format = "{pkg_name} {cli::pb_percent} | ETA: {cli::pb_eta}",
                                      total = nrow(pkginfo))
       
-      cat("just before right_join \n")
-
       if (nrow(pkginfo) == 0) {
         tibble(package = NA_character_, type = "", name = "", version = "", score = "")
       } else {
@@ -196,8 +194,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     observeEvent(pkg_df(), {
       cli::cli_progress_done(id = m_id())
       cli::cli_progress_done()
-      last_toggle(input$toggle_score) # remember last input$toggle_score value
-      lastpkg(isolate(selected_pkg$name()))
+      last_toggle(input$toggle_score)         # remember last input$toggle_score value
+      lastpkg(isolate(selected_pkg$name()))   # remember last package name selected
     }) 
     
     data_table <- eventReactive(pkg_df(), {
@@ -315,7 +313,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       
       if(!pkg_name %in% dbSelect('SELECT name FROM package')$name) {
         pkgname(pkg_name)
-        cat("in showModal dialog... \n")
         shiny::showModal(modalDialog(
           size = "l",
           easyClose = TRUE,
