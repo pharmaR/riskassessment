@@ -27,7 +27,6 @@ packageDependenciesUI <- function(id) {
 #' @importFrom rlang is_empty
 #' @importFrom shiny removeModal showModal tagList
 #' @importFrom shinyjs click
-#' @importFrom shinyWidgets materialSwitch updateMaterialSwitch
 #' @importFrom stringr str_extract str_replace
 #' 
 #' @keywords internal
@@ -38,8 +37,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     
     decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
     color_lst <- get_colors(golem::get_golem_options("assessment_db_name"))
-    
-    last_toggle <- reactiveVal(value = NULL)
     
     metric_wts_df <- eventReactive(selected_pkg$name(), {
       dbSelect("SELECT id, name, weight FROM metric")
@@ -64,11 +61,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                             repos = c("https://cran.rstudio.com")) %>%
         dplyr::as_tibble()  
       
-      if (!is.null(toggle_score) && toggle_score == FALSE) {
-        return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = "" ))
-        
-      } else {
-      
       cli::cli_progress_update(id = id)
       
         if (pkg_name %in% loaded2_db()$name) {
@@ -86,7 +78,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         cat("pkg_name is", pkg_name, "score is", pkg_score, str(pkg_score), "\n")
         return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = pkg_score))   
       }
-    }
     
     # used for adding action buttons to data_table
     shinyInput <- function(FUN, len, id, ...) {
@@ -129,12 +120,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     add_pkg <- reactiveVal()
     lastpkg <- reactiveVal()
 
-    observeEvent(selected_pkg$name(), {
-      req(selected_pkg$name())
-    # reset MaterialSwitch to FALSE (default) whenever the package name changes
-      shinyWidgets::updateMaterialSwitch(session = session, inputId = "toggle_score", value = FALSE)
-    })
-    
     observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
       req(parent$input$tabs, selected_pkg$name())
       
@@ -147,20 +132,16 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     
     m_id <- reactiveVal()
     
-    pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), input$toggle_score), {
+    pkg_df <- eventReactive(list(selected_pkg$name(), tabready()), {
       
       req(!rlang::is_empty(selected_pkg$name()))
       req(selected_pkg$name() != "-")
       cat("eventReactive for pkg_df(), tabready() is", tabready(), "\n")
-      cat("is.null(input$toggle_score)?", is.null(input$toggle_score), "\n")
-      req(!is.null(input$toggle_score))
       req(tabready() == 1L)
 
-      cat("+ is.null(last_toggle())? ", is.null(last_toggle()), "last_toggle() is", last_toggle(), "input$toggle_score is", input$toggle_score, "\n")
       cat("+ lastpkg() is", lastpkg(), "selected_pkg$name() is", selected_pkg$name(), "\n")
       
-      req(lastpkg() != selected_pkg$name() | (is.null(last_toggle()) || is.null(input$toggle_score) || last_toggle() != input$toggle_score))
-      if( lastpkg() != selected_pkg$name()) req(input$toggle_score == FALSE)
+      req(lastpkg() != selected_pkg$name() )
       
       # start the progress message as soon as possible.
       m_id(cli::cli_progress_message("Compiling dependency info...", .auto_close = FALSE))
@@ -173,7 +154,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       # drop any Base R packages from list, unless we ony have 1 row
       pkginf2 <- pkginfo %>% 
         filter(!name %in% c(rownames(installed.packages(priority="base")))) 
-      if (nrow(pkginf2) > 0) pkginfo <- pkginf2
+      #if (nrow(pkginf2) > 0) pkginfo <- pkginf2
       
       pkg_name <- ""
       cl_id <- cli::cli_progress_bar("Assessing Package: ", 
@@ -184,7 +165,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       if (nrow(pkginfo) == 0) {
         tibble(package = NA_character_, type = "", name = "", version = "", score = "")
       } else {
-      purrr::map_df(pkginfo$name, ~get_versnScore(.x, cl_id, input$toggle_score)) %>% 
+      purrr::map_df(pkginfo$name, ~get_versnScore(.x, cl_id)) %>% 
         right_join(pkginfo, by = "name") %>% 
         select(package, type, name, version, score)
       }
@@ -194,7 +175,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     observeEvent(pkg_df(), {
       cli::cli_progress_done(id = m_id())
       cli::cli_progress_done()
-      last_toggle(input$toggle_score)         # remember last input$toggle_score value
       lastpkg(isolate(selected_pkg$name()))   # remember last package name selected
     }) 
     
@@ -228,14 +208,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
               h4(glue::glue("Package Dependencies: {nrow(depends())}"), style = "text-align: left;"),
               br(),
               tags$strong(glue::glue("First-order dependencies for package: ", {selected_pkg$name()})),
-              br(),
-              shinyWidgets::materialSwitch(
-                inputId = ns("toggle_score"),
-                label = "Calculate risk scores",
-                value = FALSE, 
-                inline = TRUE,
-                status = "success"
-              ),
               br(),
               # remove DT "search:" rectangle
               tags$head(
@@ -281,7 +253,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                            style="default"
                          ) %>%
                            DT::formatStyle(names(data_table()), textAlign = 'center')
-                       })  %>% bindCache(selected_pkg$name(), input$toggle_score, loaded2_db())
+                       })  %>% bindCache(selected_pkg$name(), loaded2_db())
                 )
               ),
           br(),
