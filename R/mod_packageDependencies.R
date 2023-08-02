@@ -16,8 +16,6 @@ packageDependenciesUI <- function(id) {
 #' @param parent the parent (calling module) session information
 #' 
 #' @import dplyr
-#' @importFrom cli cli_progress_bar cli_progress_done cli_progress_message 
-#'             cli_progress_update pb_eta pb_percent
 #' @importFrom DT formatStyle renderDataTable
 #' @importFrom formattable as.datatable csscolor formattable formatter style
 #' @importFrom glue glue
@@ -35,9 +33,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
-    decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
-    color_lst <- get_colors(golem::get_golem_options("assessment_db_name"))
-    
     metric_wts_df <- eventReactive(selected_pkg$name(), {
       dbSelect("SELECT id, name, weight FROM metric")
     }) 
@@ -53,7 +48,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       dbSelect('SELECT name, score FROM package')
     })
     
-    get_versnScore <- function(pkg_name, id, toggle_score) {
+    get_versnScore <- function(pkg_name) {
       
       riskmetric_assess <-
         riskmetric::pkg_ref(pkg_name,
@@ -61,21 +56,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                             repos = c("https://cran.rstudio.com")) %>%
         dplyr::as_tibble()  
       
-      cli::cli_progress_update(id = id)
-      
         if (pkg_name %in% loaded2_db()$name) {
           pkg_score <- loaded2_db() %>% filter(name == pkg_name) %>% pull(score)
-          
         } else {
-        # riskmetric_score <-
-        #   riskmetric_assess %>%
-        #   riskmetric::pkg_assess() %>%
-        #   riskmetric::pkg_score(weights = metric_weights)
-        #   pkg_score <- round(riskmetric_score$pkg_score,2)
    		    pkg_score <- NA
         } 
-        
-        cat("pkg_name is", pkg_name, "score is", pkg_score, str(pkg_score), "\n")
         return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = pkg_score))   
       }
     
@@ -93,8 +78,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       inputs
     }
  
-    pkgref <- reactive({
-      req(selected_pkg$name())
+    depends <- reactiveVal(value = NULL)
+    revdeps <- reactiveVal(value = NULL)
+    
+    pkgref <- eventReactive(selected_pkg$name(), {
       req(selected_pkg$name() != "-")
       
       db_table <- dbSelect("SELECT metric.name, package_metrics.encode FROM package 
@@ -106,14 +93,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       purrr::pmap_dfc(db_table, function(name, encode) {dplyr::tibble(unserialize(encode)) %>% purrr::set_names(name)}) 
     }) 
 	
-    depends <- eventReactive( pkgref(), {
+    observeEvent(pkgref(), {
+      cat("observeEvent for pkgref()... \n")
       req(pkgref())
-      pkgref()$dependencies[[1]] %>% dplyr::as_tibble()
-    })
-    
-    revdeps <- eventReactive( pkgref(),{
-      req(pkgref())
-      pkgref()$reverse_dependencies[[1]] %>% as.vector()
+      depends(pkgref()$dependencies[[1]] %>% dplyr::as_tibble())
+      revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
     })
     
     tabready <- reactiveVal()
@@ -134,17 +118,15 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     
     pkg_df <- eventReactive(list(selected_pkg$name(), tabready()), {
       
-      req(!rlang::is_empty(selected_pkg$name()))
+      req(selected_pkg$name())
       req(selected_pkg$name() != "-")
       cat("eventReactive for pkg_df(), tabready() is", tabready(), "\n")
       req(tabready() == 1L)
+	    req(depends())
 
       cat("+ lastpkg() is", lastpkg(), "selected_pkg$name() is", selected_pkg$name(), "\n")
       
       req(lastpkg() != selected_pkg$name() )
-      
-      # start the progress message as soon as possible.
-      m_id(cli::cli_progress_message("Compiling dependency info...", .auto_close = FALSE))
       
       pkginfo <- depends() %>%  
         as_tibble() %>% 
@@ -152,20 +134,14 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         mutate(name = stringr::str_extract(package, "\\w+"))
 
       # drop any Base R packages from list, unless we ony have 1 row
-      pkginf2 <- pkginfo %>% 
-        filter(!name %in% c(rownames(installed.packages(priority="base")))) 
-      #if (nrow(pkginf2) > 0) pkginfo <- pkginf2
-      
-      pkg_name <- ""
-      cl_id <- cli::cli_progress_bar("Assessing Package: ", 
-                                     type = "iterator",
-                                     format = "{pkg_name} {cli::pb_percent} | ETA: {cli::pb_eta}",
-                                     total = nrow(pkginfo))
+      # pkginf2 <- pkginfo %>% 
+      #   filter(!name %in% c(rownames(installed.packages(priority="base")))) 
+      # if (nrow(pkginf2) > 0) pkginfo <- pkginf2
       
       if (nrow(pkginfo) == 0) {
         tibble(package = NA_character_, type = "", name = "", version = "", score = "")
       } else {
-      purrr::map_df(pkginfo$name, ~get_versnScore(.x, cl_id)) %>% 
+      purrr::map_df(pkginfo$name, ~get_versnScore(.x)) %>% 
         right_join(pkginfo, by = "name") %>% 
         select(package, type, name, version, score)
       }
@@ -173,8 +149,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     }, ignoreInit = TRUE) 
     
     observeEvent(pkg_df(), {
-      cli::cli_progress_done(id = m_id())
-      cli::cli_progress_done()
       lastpkg(isolate(selected_pkg$name()))   # remember last package name selected
     }) 
     
@@ -335,18 +309,18 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     shiny::removeModal()
   })
   
-    names_vect <- eventReactive({add_pkg(); changes()}, {
-      req(add_pkg() == 1L)
-      
-      dbSelect('SELECT name FROM package')$name
+    # names_vect <- eventReactive({add_pkg(); changes()}, {
+    #   req(add_pkg() == 1L)
+    #   
+    #   dbSelect('SELECT name FROM package')$name
+    # 
+    # })
     
-    })
-    
-    observeEvent(names_vect(), {
+    observeEvent(list(add_pkg(), changes()), {
 
-      pkgs <- dbSelect("select name from package")[,1]
-      
-      pkg_name <- names_vect()[length(names_vect())]
+      cat("observeEvent for add_pkg() or changes() \n")
+      names_vect <- dbSelect('SELECT name FROM package')$name
+      pkg_name <- names_vect[length(names_vect)]
       
       cat("pkg_name just added was", pkg_name, "\n")
       updateSelectizeInput(
@@ -355,6 +329,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         choices = c("-", dbSelect('SELECT name FROM package')$name),
         selected = pkg_name
         )
+      
+      add_pkg(0L)
 
     }, ignoreInit = TRUE)
     
