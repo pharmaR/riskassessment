@@ -12,19 +12,45 @@ sidebarUI <- function(id) {
     tags$b(h4("Package Control Panel", style = "text-align: center;")),
     
     hr(),
-    
-    uiOutput(NS(id, 'select_pkg_ui')),
-    
+
     selectizeInput(
-      inputId = NS(id, "select_ver"),
-      label = h5("Select Version"),
+      inputId = NS(id, "select_pkg"),
+      label = h5("Package Name"),
       choices = "-",
       selected = "-"
+    ) %>%
+      shinyjs::disabled() %>%
+      div(id = NS(id, "select_pkg_ui")),
+    
+
+    fluidRow(
+
+      column(6,
+        tags$label("Date Uploaded", class = c("control-label", "h5")),
+        selectizeInput(
+          inputId = NS(id, "select_date"),
+          label = NULL, #h5("Date Uploaded"),
+          choices = "-",
+          selected = "-"
+        ) %>%
+          shinyjs::disabled()
+      ),
+
+      column(6,
+        tags$label("Pkg Version",
+                   icon("circle-info", class = "fa-xs",
+                     title = "The most recent package version avaiable at date of upload will be used."),
+                   class = c("control-label", "h5")),
+        selectizeInput(
+          inputId = NS(id, "select_ver"),
+          label = NULL,
+          choices = "-",
+          selected = "-"
+        ) %>%
+          shinyjs::disabled(),
+      )
     ),
-    
-    helpText(HTML('<em>Note</em>: the latest package version will be used.')),
-    
-    br(), br(),
+    br(),
     
     fluidRow(
       column(6, div(id = NS(id, "status-wp"), wellPanel(
@@ -37,7 +63,7 @@ sidebarUI <- function(id) {
       ))
     ),
     
-    br(), br(),
+    br(), br(), br(),
     
     shinyjs::disabled(
       div(id = NS(id, "decision-grp"),
@@ -97,16 +123,6 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
     # shinyhelper::observe_helpers()
     
     # Create list of packages.
-    output$select_pkg_ui <- renderUI({
-      selectizeInput(
-        inputId = NS(id, "select_pkg"),
-        label = h5("Select Package"),
-        choices = c("-", dbSelect('SELECT name FROM package')$name),
-        selected = "-"
-      )
-    })
-    
-    # Create list of packages.
     observeEvent(uploaded_pkgs(), {
       req(input$select_pkg)
       
@@ -115,6 +131,8 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
         choices = c("-", dbSelect('SELECT name FROM package')$name),
         selected = "-"
       )
+      
+      shinyjs::enable("select_pkg")
       
     }, ignoreNULL = TRUE)
     
@@ -133,8 +151,8 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
       req(input$select_pkg)
       req(input$select_ver)
       
-      version <- ifelse(input$select_pkg == "-", "-",
-                        glue::glue('{selected_pkg$version} - latest version'))
+      version <- ifelse(input$select_pkg == "-", "-", selected_pkg$version)
+      date_added <- ifelse(input$select_pkg == "-", "-", selected_pkg$date_added)
       
       updateSelectizeInput(
         session,
@@ -143,9 +161,14 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
         selected = version
       )
       
-      shinyjs::disable(id = 'select_ver')
+      updateSelectizeInput(
+        session,
+        'select_date',
+        choices = date_added,
+        selected = date_added
+      )
       
-    }, ignoreInit = TRUE)
+    })
     
     # Display the review status of the selected package.
     output$status <- renderUI({
@@ -469,6 +492,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
       id = reactive(selected_pkg$id),
       name = reactive(selected_pkg$name),
       version = reactive(selected_pkg$version),
+      date_added = reactive(selected_pkg$date_added),
       title = reactive(selected_pkg$title),
       decision = reactive(selected_pkg$decision),
       description = reactive(selected_pkg$description),
