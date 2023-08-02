@@ -211,9 +211,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                         onclick = paste0('Shiny.setInputValue(\"' , ns("select_button"), '\", this.id)')
               )
             )
-      )
+      ) %>%  # remove action button if there is nothing to review
+        mutate(Actions = if_else(is.na(package) | name %in% c(rownames(installed.packages(priority="base"))), "", Actions))
     })
-    
     # Render Output UI for Package Dependencies.
     output$package_dependencies_ui <- renderUI({
       
@@ -304,16 +304,18 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     
     observeEvent(input$select_button, {
       add_pkg(0L)
-      
+      cat("observeEvent for input$select_button. is.null? ", is.null(input$select_button), "\n")
+	  
       selectedRow <- as.numeric(strsplit(input$select_button, "_")[[1]][2])
       
       # grab the package name
       pkg_name <- pkg_df()[selectedRow, 3] %>% pull() 
+      cat("pkg_name is", pkg_name, "\n")
       pkgname("")
       
       if(!pkg_name %in% dbSelect('SELECT name FROM package')$name) {
         pkgname(pkg_name)
-        
+        cat("in showModal dialog... \n")
         shiny::showModal(modalDialog(
           size = "l",
           easyClose = TRUE,
@@ -334,6 +336,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
 
       } else {
         # update sidebar-select_pkg
+        cat("in updateSelectizeInput... \n")
         updateSelectizeInput(
           session = parent,
           inputId = "sidebar-select_pkg",
