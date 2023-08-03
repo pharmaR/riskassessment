@@ -101,7 +101,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     })
     
     tabready <- reactiveVal()
-    add_pkg <- reactiveVal()
+    rev_pkg <- reactiveVal()
     lastpkg <- reactiveVal()
 
     observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
@@ -116,27 +116,22 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     
     m_id <- reactiveVal()
     
-    pkg_df <- eventReactive(list(selected_pkg$name(), tabready()), {
+    pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), changes()), {
       
       req(selected_pkg$name())
       req(selected_pkg$name() != "-")
-      cat("eventReactive for pkg_df(), tabready() is", tabready(), "\n")
       req(tabready() == 1L)
 	    req(depends())
 
+      cat("eventReactive for pkg_df(), tabready() is", tabready(), "\n")
       cat("+ lastpkg() is", lastpkg(), "selected_pkg$name() is", selected_pkg$name(), "\n")
       
-      req(lastpkg() != selected_pkg$name() )
+	    req(lastpkg() != selected_pkg$name() | changes() )
       
       pkginfo <- depends() %>%  
         as_tibble() %>% 
         mutate(package = stringr::str_replace(package, "\n", "")) %>% 
         mutate(name = stringr::str_extract(package, "\\w+"))
-
-      # drop any Base R packages from list, unless we ony have 1 row
-      # pkginf2 <- pkginfo %>% 
-      #   filter(!name %in% c(rownames(installed.packages(priority="base")))) 
-      # if (nrow(pkginf2) > 0) pkginfo <- pkginf2
       
       if (nrow(pkginfo) == 0) {
         tibble(package = NA_character_, type = "", name = "", version = "", score = "")
@@ -247,7 +242,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     pkgname <- reactiveVal()
     
     observeEvent(input$select_button, {
-      add_pkg(0L)
+	    req(pkg_df())
+      rev_pkg(0L)
       cat("observeEvent for input$select_button. is.null? ", is.null(input$select_button), "\n")
 	  
       selectedRow <- as.numeric(strsplit(input$select_button, "_")[[1]][2])
@@ -299,7 +295,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       session$onFlushed(function() {
         shinyjs::click(id = "upload_package-add_pkgs", asis = TRUE)
 
-      add_pkg(1L)
+      rev_pkg(1L)
       })
       
     })
@@ -309,18 +305,16 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     shiny::removeModal()
   })
   
-    # names_vect <- eventReactive({add_pkg(); changes()}, {
-    #   req(add_pkg() == 1L)
-    #   
-    #   dbSelect('SELECT name FROM package')$name
-    # 
-    # })
+    names_vect <- eventReactive(list(rev_pkg(), changes()), {
+      req(rev_pkg() == 1L)
+	    cat("eventReactive for rev_pkg(), set to 1 \n")
+      dbSelect('SELECT name FROM package')$name
+    })
     
-    observeEvent(list(add_pkg(), changes()), {
+    observeEvent(names_vect(), {
 
-      cat("observeEvent for add_pkg() or changes() \n")
-      names_vect <- dbSelect('SELECT name FROM package')$name
-      pkg_name <- names_vect[length(names_vect)]
+      cat("observeEvent for names_vect() \n")
+      pkg_name <- names_vect()[length(names_vect())]
       
       cat("pkg_name just added was", pkg_name, "\n")
       updateSelectizeInput(
@@ -329,8 +323,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         choices = c("-", dbSelect('SELECT name FROM package')$name),
         selected = pkg_name
         )
-      
-      add_pkg(0L)
 
     }, ignoreInit = TRUE)
     
