@@ -11,37 +11,7 @@
 #' @importFrom shinyAce aceEditor
 mod_pkg_explorer_ui <- function(id){
   ns <- NS(id)
-  tagList(
-    conditionalPanel(
-      condition = "output.show_tree",
-      tagList(
-        br(),
-        h4("File Browser", style = "text-align: center;"),
-        br(), br(),
-        fluidRow(
-          column(4,
-                 wellPanel(
-                   jsTreeR::jstreeOutput(ns("dirtree")),
-                 )
-          ),
-          column(8,
-                 conditionalPanel(
-                   condition = "output.is_child",
-                   shinyAce::aceEditor(ns("editor"), value = "", height = "62vh",
-                                       mode = "txt", readOnly = TRUE, theme = "tomorrow",
-                                       fontSize = 14, wordWrap = FALSE, showLineNumbers = FALSE,
-                                       highlightActiveLine = TRUE, tabSize = 2, showInvisibles = FALSE
-                   ),
-                   htmlOutput(ns("filepath")),
-                   ns = ns
-                 )
-          )
-        )
-      ),
-      ns = ns
-    ),
-    uiOutput(ns("pkg_explorer_ui"))
-  )
+  uiOutput(ns("pkg_explorer_ui"))
 }
 
 #' pkg_explorer Server Functions
@@ -50,7 +20,11 @@ mod_pkg_explorer_ui <- function(id){
 #' @importFrom shinyAce updateAceEditor
 #'
 #' @noRd 
-mod_pkg_explorer_server <- function(id, selected_pkg, accepted_extensions = c("r", "rmd", "rd", "txt", "md","csv", "tsv", "json", "xml", "yaml", "yml", "dcf", "html", "js", "css", "c", "cpp", "h", "java", "scala", "py", "perl", "sh", "sql"), accepted_filenames = c("DESCRIPTION", "NAMESPACE", "LICENSE", "LICENSE.note", "NEWS", "README", "CHANGES", "MD5"), create_dir = reactiveVal(TRUE)) {
+mod_pkg_explorer_server <- function(id, selected_pkg,
+                                    accepted_extensions = c("r", "rmd", "rd", "txt", "md","csv", "tsv", "json", "xml", "yaml", "yml", "dcf", "html", "js", "css", "c", "cpp", "h", "java", "scala", "py", "perl", "sh", "sql"),
+                                    accepted_filenames = c("DESCRIPTION", "NAMESPACE", "LICENSE", "LICENSE.note", "NEWS", "README", "CHANGES", "MD5"),
+                                    create_dir = reactiveVal(TRUE),
+                                    user, credentials) {
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
@@ -64,6 +38,41 @@ mod_pkg_explorer_server <- function(id, selected_pkg, accepted_extensions = c("r
         showHelperMessage()
       } else if (!file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")))) {
         showHelperMessage(message = glue::glue("Source code not available for {{{selected_pkg$name()}}}"))
+      } else {
+        tagList(
+          conditionalPanel(
+            condition = "output.show_tree",
+            tagList(
+              br(),
+              h4("File Browser", style = "text-align: center;"),
+              br(), br(),
+              fluidRow(
+                column(4,
+                       wellPanel(
+                         jsTreeR::jstreeOutput(ns("dirtree")),
+                       )
+                ),
+                column(8,
+                       conditionalPanel(
+                         condition = "output.is_child",
+                         shinyAce::aceEditor(ns("editor"), value = "", height = "62vh",
+                                             mode = "txt", readOnly = TRUE, theme = "tomorrow",
+                                             fontSize = 14, wordWrap = FALSE, showLineNumbers = FALSE,
+                                             highlightActiveLine = TRUE, tabSize = 2, showInvisibles = FALSE
+                         ),
+                         htmlOutput(ns("filepath")),
+                         ns = ns
+                       )
+                )
+              )
+            ),
+            ns = ns
+          ),
+          br(), br(),
+          div(id = "comments_for_se", fluidRow( 
+            if ("general_comment" %in% credentials$privileges[[user$role]]) addCommentUI(id = ns("add_comment")),
+            viewCommentsUI(id = ns("view_comments"))))
+        )
       }
     })
     
@@ -134,6 +143,24 @@ mod_pkg_explorer_server <- function(id, selected_pkg, accepted_extensions = c("r
       HTML(sprintf('<h5>%s</h5>', s))
     }) %>%
       bindEvent(input$dirtree_selected)
+    
+    
+    # Call module to create comments and save the output.
+    comment_added <- addCommentServer(id = "add_comment",
+                                      metric_abrv = 'se',
+                                      user = user,
+                                      credentials = credentials,
+                                      pkg_name = selected_pkg$name)
+    
+    comments <- eventReactive(list(comment_added(), selected_pkg$name()), {
+      get_se_comments(selected_pkg$name()) # see utils
+    })
+    
+    # View comments.
+    viewCommentsServer(id = "view_comments",
+                       comments = comments,
+                       pkg_name = selected_pkg$name)
+    
     
   })
 }

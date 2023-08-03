@@ -24,6 +24,7 @@ params:
   pkg_summary: NA
   mm_comments: NA
   cm_comments: NA
+  se_comments: NA
   maint_metrics: NA
   com_metrics: NA
   com_metrics_raw: NA
@@ -289,6 +290,34 @@ tagList(
       } else ""
     )
   }
+)
+```
+
+
+```{r source_explorer}
+tagList(
+  if(any(c('Source Explorer Comments') %in% params$report_includes)) {
+    tagList(
+      br(),
+      hr(),
+      br(), br(),
+      h5("Source Explorer", style = "text-align: center;"),
+      br(),
+      h6("Source code visals not available."),
+      br()
+    )
+  } else "",
+  if('Source Explorer Comments' %in% params$report_includes){
+    tagList(
+      br(),
+      h5('Comments', style = "padding-bottom:10px;"),
+      wellPanel(
+        HTML(showComments(
+          pkg_name = params$pkg$name,
+          comments = params$se_comments))
+      )
+    )
+  } else ""
 )
 ```
 

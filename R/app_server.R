@@ -195,7 +195,10 @@ app_server <- function(input, output, session) {
   
   create_src_dir <- eventReactive(input$tabs, input$tabs == "Source Explorer")
   
-  mod_pkg_explorer_server("pkg_explorer", selected_pkg, create_dir = create_src_dir)
+  mod_pkg_explorer_server("pkg_explorer", selected_pkg,
+                          create_dir = create_src_dir,
+                          user = user,
+                          credentials = credential_config)
   
   # Load server for the maintenance metrics tab.
   maintenance_data <- maintenanceMetricsServer('maintenanceMetrics',
@@ -220,6 +223,7 @@ app_server <- function(input, output, session) {
                       com_metrics_raw = community_usage_metrics,
                       mm_comments = maintenance_data$comments,
                       cm_comments = community_data$comments,
+                      # se_comments = src_explorer_data$comments, # not an arg
                       downloads_plot_data = community_data$downloads_plot_data,
                       user = user,
                       credential_config,
