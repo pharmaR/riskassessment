@@ -115,7 +115,7 @@ golem::add_fct( "helpers" )
 # golem::add_fct( "freq", module = "tableGen" ) 
 # golem::add_fct( "anova", module = "tableGen" ) 
 # 
-golem::add_utils("utils", module = "mod_packageDependencies" )
+# golem::add_utils("helpers", module = "indvExp" )
 # golem::add_fct( "buildEvents", module = "indvExp" ) 
 # golem::add_fct( "organizeEvent", module = "indvExp" )
 # golem::add_fct( "plot", module = "indvExpPatVisits" ) 
