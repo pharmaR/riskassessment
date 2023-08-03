@@ -222,6 +222,61 @@ get_metric_weights <- function(db_name = golem::get_golem_options('assessment_db
   )
 }
 
+#' Get Assessments
+#'
+#' Retrieves metric name and current weight from metric table
+#' 
+#' @param pkg_name character name of the package
+#' @param db_name character name (and file path) of the database
+#'
+#' @returns a data frame
+#' @noRd
+get_assess_blob<- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
+  db_table <- dbSelect("SELECT metric.name, package_metrics.encode FROM package 
+                       INNER JOIN package_metrics ON package.id = package_metrics.package_id
+                       INNER JOIN metric ON package_metrics.metric_id = metric.id
+                       WHERE package.name = {pkg_name}", 
+                       db_name = db_name)
+  
+  purrr::pmap_dfc(db_table, function(name, encode) {dplyr::tibble(unserialize(encode)) %>% purrr::set_names(name)}) 
+}
+
+
+#' Get Dependency Pkg Versions and Scores
+#'
+#' 
+#' @param pkg_name character name of the package
+#' @param verify_data a data.frame used to verify whether a pkg exists in the db
+#'
+#' @returns a list
+#' @noRd
+get_versnScore <- function(pkg_name, verify_data) {
+  
+  # print("pkg_name:")
+  # print(pkg_name)
+  riskmetric_assess <- 
+  riskmetric::pkg_ref(pkg_name,
+                      source = "pkg_cran_remote",
+                      repos = c("https://cran.rstudio.com")) %>%
+  dplyr::as_tibble() #%>%
+  #   riskmetric::pkg_assess()
+  # test$dependencies %>% unlist()
+  
+  
+  if (pkg_name %in% verify_data$name) { #loaded2_db()$name
+    pkg_score <- verify_data %>% filter(name == pkg_name) %>% pull(score) %>% as.character
+  } else {
+    pkg_score <- ""
+  } 
+  
+  # print(paste0("riskmetric_assess$package:", riskmetric_assess$package))
+  # print(paste0("riskmetric_assess$version:", riskmetric_assess$version))
+  # print(paste0("pkg_score:", pkg_score))
+  
+  return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = pkg_score))   
+}
+
+
 
 ##### End of get_* functions #####
 
@@ -278,3 +333,4 @@ get_credentials_table <- function(db_name = golem::get_golem_options('credential
   DBI::dbDisconnect(con)
   tbl
 }
+

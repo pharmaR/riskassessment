@@ -292,13 +292,7 @@ update_metric_weight <- function(metric_name, metric_weight,
 rescore_package <- function(pkg_name, 
                             db_name = golem::get_golem_options('assessment_db_name')) {
   
-  db_table <- dbSelect("SELECT metric.name, package_metrics.encode FROM package 
-                       INNER JOIN package_metrics ON package.id = package_metrics.package_id
-                       INNER JOIN metric ON package_metrics.metric_id = metric.id
-                       WHERE package.name = {pkg_name}", db_name)
-  
-  riskmetric_assess <-
-    purrr::pmap_dfc(db_table, function(name, encode) {dplyr::tibble(unserialize(encode)) %>% purrr::set_names(name)})
+  riskmetric_assess <- get_assess_blob(pkg_name, db_name)
   
   # Get the metrics weights to be used during pkg_score.
   metric_weights_df <- get_metric_weights(db_name)

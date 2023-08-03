@@ -47,22 +47,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     loaded2_db <- eventReactive(list(selected_pkg$name(), changes()), {
       dbSelect('SELECT name, score FROM package')
     })
-    
-    get_versnScore <- function(pkg_name) {
-      
-      riskmetric_assess <-
-        riskmetric::pkg_ref(pkg_name,
-                            source = "pkg_cran_remote",
-                            repos = c("https://cran.rstudio.com")) %>%
-        dplyr::as_tibble()  
-      
-        if (pkg_name %in% loaded2_db()$name) {
-          pkg_score <- loaded2_db() %>% filter(name == pkg_name) %>% pull(score)
-        } else {
-   		    pkg_score <- NA
-        } 
-        return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = pkg_score))   
-      }
+
     
     # used for adding action buttons to data_table
     shinyInput <- function(FUN, len, id, ...) {
@@ -95,14 +80,15 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       req(selected_pkg$name())
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
-
-      db_table <- dbSelect("SELECT metric.name, package_metrics.encode FROM package 
-                       INNER JOIN package_metrics ON package.id = package_metrics.package_id
-                       INNER JOIN metric ON package_metrics.metric_id = metric.id
-                       WHERE package.name = {selected_pkg$name()}", 
-                           db_name = golem::get_golem_options('assessment_db_name'))
       
-      purrr::pmap_dfc(db_table, function(name, encode) {dplyr::tibble(unserialize(encode)) %>% purrr::set_names(name)}) 
+      get_assess_blob(selected_pkg$name())
+      # db_table <- dbSelect("SELECT metric.name, package_metrics.encode FROM package 
+      #                  INNER JOIN package_metrics ON package.id = package_metrics.package_id
+      #                  INNER JOIN metric ON package_metrics.metric_id = metric.id
+      #                  WHERE package.name = {selected_pkg$name()}", 
+      #                      db_name = golem::get_golem_options('assessment_db_name'))
+      # 
+      # purrr::pmap_dfc(db_table, function(name, encode) {dplyr::tibble(unserialize(encode)) %>% purrr::set_names(name)}) 
     }) 
 	
 	  depends <- reactiveVal(value = NULL)
@@ -114,6 +100,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     observeEvent(pkgref(), {
       req(pkgref())
       depends(pkgref()$dependencies[[1]] %>% dplyr::as_tibble())
+      print("depends():")
+      print(depends())
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
     })
    
@@ -134,7 +122,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       if (nrow(pkginfo) == 0) {
         tibble(package = NA_character_, type = "", name = "", version = "", score = "")
       } else {
-      purrr::map_df(pkginfo$name, ~get_versnScore(.x)) %>% 
+      purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db())) %>% 
         right_join(pkginfo, by = "name") %>% 
         select(package, type, name, version, score)
       }
