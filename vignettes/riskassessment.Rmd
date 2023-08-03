@@ -61,7 +61,7 @@ This `admin` user will be asked to change their password immediately. After supp
 
 ## Subsequent logins
 
-The designated `admin` user(s) will have special privileges and duties in the application, including but not limited to creating new users, with both `admin` and non-admin roles. For `admin`s, please see the article titled ["Credential Manager"](../articles/Credentials_Manager.html) on how to create these new users. For non-admin roles, you will receive a temporary password for your initial log in, which you'll be prompted to change with immediately upon your first visit to the app. For subsequent visits, you won't have to worry about all these first-time log in procedures!
+The designated `admin` user(s) will have special privileges and duties in the application, including but not limited to creating new users, with both `admin` and non-admin roles. For `admin`s, please see the article titled ["Credential Manager"](../articles/Credential_Manager.html) on how to create these new users. For non-admin roles, you will receive a temporary password for your initial log in, which you'll be prompted to change with immediately upon your first visit to the app. For subsequent visits, you won't have to worry about all these first-time log in procedures!
 
 
 
@@ -73,7 +73,7 @@ The designated `admin` user(s) will have special privileges and duties in the ap
 Upon successful log in, you'll notice many tabs and panels. 
 <br>
 
-![](images/welcome_landing.png){style="margin: 10px 0 10px 0"}
+![](images/welcome_landing_v2.0.0.png){style="margin: 10px 0 10px 0"}
 
 <br>
 
@@ -85,7 +85,7 @@ Throughout the app, there are small help buttons strategically placed in the upp
 <center>
 ![](images/help_button.png)
 
-![](images/click_help.png){style="margin: 10px 0 10px 0"}
+![](images/click_help_v2.0.0.png){style="margin: 10px 0 10px 0"}
 
 <br>
 
@@ -108,7 +108,7 @@ tidyr,0.0.0
 Alternatively, you may prefer to test the app by typing in a package, such as “glue” into the prompt. Notice that the text input will pre-populate itself with all CRAN packages upon click, thus if you forget the spelling or case of the package, the auto-complete feature can assist your. When ready, select the red “>” button
 
 <center>
-![](images/sel_package.png){style="margin: 10px 0 10px 0"}
+![](images/sel_package_v2.0.0.png){style="margin: 10px 0 10px 0"}
 </center>
 
 A progress modal like the one below will appear indicating the process of generating package info  from various sources has begun and the app will start inserting this information into the database.
@@ -133,7 +133,7 @@ If your organization has black and white rules about package risk decisions base
 <br>
 
 <center>
-![](images/start_decision_automation.png){style="margin: 10px 0 10px 0"}
+![](images/start_decision_automation_v2.0.0.png){style="margin: 10px 0 10px 0"}
 </center>
 
 
@@ -155,7 +155,7 @@ In a fictitious example below, let's say an `admin` user adopts automated decisi
 Now that the database has been populated with package data, direct your attention to the `PACKAGE CONTROL PANEL` at left and select a package (such as `glue`) from the list. Once a package is selected, the `VERSION`, `STATUS` and `RISK` boxes are populated with information. For now, the latest version of the package is displayed. Since a decision to endorse or reject the package hasn't been made yet, the `STATUS` is "Under Review". Third, the `RISK` box contains the `riskmetric` score, represented as a number between 0 (low risk) and 1 (high risk).
 
 <center>
-![](images/sidebar.png){style="margin: 10px 0 10px 0"}
+![](images/sidebar_v2.0.0.png){style="margin: 10px 0 10px 0"}
 </center>
 
 There are also two submission buttons above: `SUBMIT DECISION` and `SUBMIT OVERALL COMMENT`. The goal is that after a thorough review of other info contain in the application, the user would be well informed enough to categorize the package's risk as either "low", "medium", or "high" risk using the slider. Clicking submit here completes the review of this package for the organization and can only be undone by an `admin` user. If you're looking submit something less formal, before submitting a decision, consider submitting an "overall comment" summarizing your high level thoughts on the package. Though it's not required, it's recommended to always submit an "overall comment" when submitting a final decision.
