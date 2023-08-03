@@ -183,7 +183,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                 tags$style(type="text/css", ".dataTables_filter {display: none;    }"
               )),
               fluidRow(
-                column(width = 3,
+                column(width = 8,
                        
                        DT::renderDataTable(server = FALSE, {
                          
