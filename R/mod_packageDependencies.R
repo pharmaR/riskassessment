@@ -78,12 +78,27 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       inputs
     }
  
-    depends <- reactiveVal(value = NULL)
-    revdeps <- reactiveVal(value = NULL)
-    
-    pkgref <- eventReactive(selected_pkg$name(), {
+    tabready <- reactiveVal(value = NULL)
+    lastpkg  <- reactiveVal(value = NULL)
+
+    observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
+      req(selected_pkg$name())
       req(selected_pkg$name() != "-")
+      cat("observeEvent for tabready() \n")
       
+      if(length(lastpkg()) == 0) lastpkg("$$$$$") # dummy package name
+      if(parent$input$tabs == "Package Metrics" & parent$input$metric_type == "dep") {
+        tabready(1L) }
+      else {tabready(0L)}
+      cat("tabready was set to ", tabready(), "\n")
+    })
+	
+    pkgref <- eventReactive(list(selected_pkg$name(), tabready()), {
+      req(selected_pkg$name())
+      req(selected_pkg$name() != "-")
+      req(tabready() == 1L)
+      cat("eventReactive for pkgref() \n")
+
       db_table <- dbSelect("SELECT metric.name, package_metrics.encode FROM package 
                        INNER JOIN package_metrics ON package.id = package_metrics.package_id
                        INNER JOIN metric ON package_metrics.metric_id = metric.id
@@ -93,29 +108,19 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       purrr::pmap_dfc(db_table, function(name, encode) {dplyr::tibble(unserialize(encode)) %>% purrr::set_names(name)}) 
     }) 
 	
+	  depends <- reactiveVal(value = NULL)
+    revdeps <- reactiveVal(value = NULL)
+	
+	  lastpkg <- reactiveVal(value = NULL)
+	  rev_pkg <- reactiveVal(value = NULL)
+
     observeEvent(pkgref(), {
-      cat("observeEvent for pkgref()... \n")
       req(pkgref())
+      cat("observeEvent for pkgref()... \n")
       depends(pkgref()$dependencies[[1]] %>% dplyr::as_tibble())
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
     })
-    
-    tabready <- reactiveVal()
-    rev_pkg <- reactiveVal()
-    lastpkg <- reactiveVal()
-
-    observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
-      req(parent$input$tabs, selected_pkg$name())
-      
-      tabready(0L)
-      if(parent$input$tabs == "Package Metrics" & parent$input$metric_type == "dep") {
-        tabready(1L)
-        if(length(lastpkg()) == 0) lastpkg("$$$$$") # dummy package name
-      }
-    }, ignoreInit = TRUE)
-    
-    m_id <- reactiveVal()
-    
+   
     pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), changes()), {
       
       req(selected_pkg$name())
@@ -126,7 +131,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       cat("eventReactive for pkg_df(), tabready() is", tabready(), "\n")
       cat("+ lastpkg() is", lastpkg(), "selected_pkg$name() is", selected_pkg$name(), "\n")
       
-	    req(lastpkg() != selected_pkg$name() | changes() )
+	    req(lastpkg() != selected_pkg$name() | changes())
       
       pkginfo <- depends() %>%  
         as_tibble() %>% 
@@ -144,10 +149,12 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     }, ignoreInit = TRUE) 
     
     observeEvent(pkg_df(), {
+      cat("observeEvent for pkg_df(), remember lastpkg() \n")
       lastpkg(isolate(selected_pkg$name()))   # remember last package name selected
-    }) 
+    }, ignoreInit = TRUE) 
     
     data_table <- eventReactive(pkg_df(), {
+      cat("eventReactive for pkg_df() to build DataTable \n")
       cbind(pkg_df(), 
             data.frame(
               Actions = shinyInput(actionButton, nrow(pkg_df()),
@@ -161,6 +168,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       ) %>%  # remove action button if there is nothing to review
         mutate(Actions = if_else(is.na(package) | name %in% c(rownames(installed.packages(priority="base"))), "", Actions))
     })
+    
     # Render Output UI for Package Dependencies.
     output$package_dependencies_ui <- renderUI({
       
@@ -222,7 +230,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                            style="default"
                          ) %>%
                            DT::formatStyle(names(data_table()), textAlign = 'center')
-                       })  %>% bindCache(selected_pkg$name(), loaded2_db())
+                       }) # %>% bindCache(selected_pkg$name(), changes())
                 )
               ),
           br(),
@@ -242,9 +250,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     pkgname <- reactiveVal()
     
     observeEvent(input$select_button, {
-	    req(pkg_df())
+	  req(pkg_df())
       rev_pkg(0L)
-      cat("observeEvent for input$select_button. is.null? ", is.null(input$select_button), "\n")
+      cat("observeEvent for input$select_button. \n")
 	  
       selectedRow <- as.numeric(strsplit(input$select_button, "_")[[1]][2])
       
@@ -284,6 +292,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         )}
       
     }, ignoreInit = TRUE) # observeEvent
+	
 
     observeEvent(input$confirm, {
 
