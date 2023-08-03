@@ -155,8 +155,7 @@ insert_riskmetric_to_db <- function(pkg_name,
   if (!isTRUE(getOption("shiny.testmode")))
     riskmetric_assess <-
       riskmetric::pkg_ref(pkg_name,
-                          source = "pkg_cran_remote",
-                          repos = c("https://cran.rstudio.com")) %>%
+                          source = "pkg_cran_remote") %>%
       dplyr::as_tibble() %>%
       riskmetric::pkg_assess()
   else
