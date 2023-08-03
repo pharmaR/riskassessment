@@ -75,7 +75,6 @@ uploadPackageUI <- function(id) {
 #' @importFrom rintrojs introjs
 #' @importFrom utils read.csv available.packages
 #' @importFrom rvest read_html html_nodes html_text
-#' @importFrom cli cli_progress_message cli_progress_bar cli_progress_update
 #' @keywords internal
 #' 
 uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events) {
@@ -298,13 +297,6 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
       if (!rlang::is_empty(auto_list()))
         uploaded_packages$decision <- ""
       np <- nrow(uploaded_packages)
-
-      # Start cli_progress_bar 
-      deets <- "... "
-      cl_id <- cli::cli_progress_bar("Uploading ", 
-                    type = "iterator",
-                    format = "{deets} {cli::pb_percent} | ETA: {cli::pb_eta}",
-                    total = (np * 5) + 1)
       
       if (!isTRUE(getOption("shiny.testmode"))) {
         url_lst <- list(
@@ -344,10 +336,18 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
         }
       }
       
+      # Start progress bar. Need to establish a maximum increment
+      # value based on the number of packages, np, and the number of
+      # incProgress() function calls in the loop, plus one to show
+      # the incProgress() that the process is completed.
+      withProgress(
+        max = (np * 5) + 1, value = 0,
+        message = "Uploading Packages to DB:", {
+          
           for (i in 1:np) {
 
             user_ver <- uploaded_packages$version[i]
-            cli::cli_progress_update(id = cl_id)
+            incProgress(1, detail = glue::glue("{uploaded_packages$package[i]} {user_ver}"))
             
 
             if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
@@ -364,6 +364,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
             }
 
             if (ref$source %in% c("pkg_missing", "name_bad")) {
+              incProgress(1, detail = 'Package {uploaded_packages$package[i]} not found')
 
               # Suggest alternative spellings using utils::adist() function
               v <- utils::adist(uploaded_packages$package[i], cran_pkgs(), ignore.case = FALSE)
@@ -395,13 +396,14 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
               else ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
             }
             
-            as.character(ref$version)
+            as.character(ref$version) # Why is this here?
 			
             deets <- glue::glue("{uploaded_packages$package[i]} {ver_msg}")
             uploaded_packages$version[i] <- ref_ver
             
             # Save version.
-            cli::cli_progress_update(id = cl_id)
+            incProgress(1, detail = deets)
+            uploaded_packages$version[i] <- as.character(ref$version)
             
             found <- nrow(dbSelect(
               "SELECT name
@@ -413,6 +415,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
             # Add package and metrics to the db if package is not in the db.
             if(!found) {
               # Get and upload pkg general info to db.
+              incProgress(1, detail = deets)
 
               if (!isTRUE(getOption("shiny.testmode"))) {
                 dwn_ld <- download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), 
@@ -423,11 +426,11 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
               }
               insert_pkg_info_to_db(uploaded_packages$package[i], ref_ver)
               # Get and upload maintenance metrics to db.
-              cli::cli_progress_update(id = cl_id)
+              incProgress(1, detail = deets)
               
               insert_riskmetric_to_db(uploaded_packages$package[i])
               # Get and upload community metrics to db.
-              cli::cli_progress_update(id = cl_id)
+              incProgress(1, detail = deets)
               
               insert_community_metrics_to_db(uploaded_packages$package[i])
               uploaded_packages$score[i] <- get_pkg_info(uploaded_packages$package[i])$score
@@ -437,10 +440,14 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
               }
             }
           }
-      #     
+          
+          incProgress(1, detail = "   **Completed Pkg Uploads**")
+          Sys.sleep(0.25)
+          
+      }) #withProgress
+      
       uploaded_pkgs(uploaded_packages)
       
-      cli::cli_progress_message(msg = "   **Completed Pkg Uploads**")
     })
     
     # Download the sample dataset.
