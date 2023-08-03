@@ -86,6 +86,15 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       req(selected_pkg$name() != "-")
       cat("observeEvent for tabready() \n")
       
+      # set selecte package to "-" if we jumped over to Upload Package tab
+      if(parent$input$tabs == "Upload Package") {
+        updateSelectizeInput(
+          session = parent,
+          inputId = "sidebar-select_pkg",
+          choices = c("-", dbSelect('SELECT name FROM package')$name),
+          selected = "-"
+        )}
+
       if(length(lastpkg()) == 0) lastpkg("$$$$$") # dummy package name
       if(parent$input$tabs == "Package Metrics" & parent$input$metric_type == "dep") {
         tabready(1L) }
@@ -230,7 +239,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                            style="default"
                          ) %>%
                            DT::formatStyle(names(data_table()), textAlign = 'center')
-                       }) # %>% bindCache(selected_pkg$name(), changes())
+                       }) %>% bindCache(selected_pkg$name(), changes())
                 )
               ),
           br(),
