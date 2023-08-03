@@ -84,29 +84,27 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
       req(selected_pkg$name())
       req(selected_pkg$name() != "-")
-      cat("observeEvent for tabready() \n")
+
+      if(length(lastpkg()) == 0) lastpkg("$$$$$") # dummy package name
+      if(parent$input$tabs == "Package Metrics" & parent$input$metric_type == "dep") {
+        tabready(1L) }
+      else {tabready(0L)}
       
-      # set selecte package to "-" if we jumped over to Upload Package tab
-      if(parent$input$tabs == "Upload Package") {
+      # set selected package to "-" if we jumped over to Upload Package tab
+      if(parent$input$tabs == "Upload Package" & changes()) {
+        cat("in parent$input$tabs. \n")
         updateSelectizeInput(
           session = parent,
           inputId = "sidebar-select_pkg",
           choices = c("-", dbSelect('SELECT name FROM package')$name),
           selected = "-"
         )}
-
-      if(length(lastpkg()) == 0) lastpkg("$$$$$") # dummy package name
-      if(parent$input$tabs == "Package Metrics" & parent$input$metric_type == "dep") {
-        tabready(1L) }
-      else {tabready(0L)}
-      cat("tabready was set to ", tabready(), "\n")
     })
 	
     pkgref <- eventReactive(list(selected_pkg$name(), tabready()), {
       req(selected_pkg$name())
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
-      cat("eventReactive for pkgref() \n")
 
       db_table <- dbSelect("SELECT metric.name, package_metrics.encode FROM package 
                        INNER JOIN package_metrics ON package.id = package_metrics.package_id
@@ -125,7 +123,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
 
     observeEvent(pkgref(), {
       req(pkgref())
-      cat("observeEvent for pkgref()... \n")
       depends(pkgref()$dependencies[[1]] %>% dplyr::as_tibble())
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
     })
@@ -137,9 +134,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       req(tabready() == 1L)
 	    req(depends())
 
-      cat("eventReactive for pkg_df(), tabready() is", tabready(), "\n")
-      cat("+ lastpkg() is", lastpkg(), "selected_pkg$name() is", selected_pkg$name(), "\n")
-      
 	    req(lastpkg() != selected_pkg$name() | changes())
       
       pkginfo <- depends() %>%  
@@ -158,12 +152,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     }, ignoreInit = TRUE) 
     
     observeEvent(pkg_df(), {
-      cat("observeEvent for pkg_df(), remember lastpkg() \n")
       lastpkg(isolate(selected_pkg$name()))   # remember last package name selected
     }, ignoreInit = TRUE) 
     
     data_table <- eventReactive(pkg_df(), {
-      cat("eventReactive for pkg_df() to build DataTable \n")
       cbind(pkg_df(), 
             data.frame(
               Actions = shinyInput(actionButton, nrow(pkg_df()),
@@ -261,13 +253,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     observeEvent(input$select_button, {
 	  req(pkg_df())
       rev_pkg(0L)
-      cat("observeEvent for input$select_button. \n")
-	  
+
       selectedRow <- as.numeric(strsplit(input$select_button, "_")[[1]][2])
       
       # grab the package name
       pkg_name <- pkg_df()[selectedRow, 3] %>% pull() 
-      cat("pkg_name is", pkg_name, "\n")
       pkgname("")
       
       if(!pkg_name %in% dbSelect('SELECT name FROM package')$name) {
@@ -292,7 +282,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
 
       } else {
         # update sidebar-select_pkg
-        cat("in updateSelectizeInput... \n")
         updateSelectizeInput(
           session = parent,
           inputId = "sidebar-select_pkg",
@@ -325,16 +314,13 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
   
     names_vect <- eventReactive(list(rev_pkg(), changes()), {
       req(rev_pkg() == 1L)
-	    cat("eventReactive for rev_pkg(), set to 1 \n")
       dbSelect('SELECT name FROM package')$name
     })
     
     observeEvent(names_vect(), {
 
-      cat("observeEvent for names_vect() \n")
       pkg_name <- names_vect()[length(names_vect())]
       
-      cat("pkg_name just added was", pkg_name, "\n")
       updateSelectizeInput(
         session = parent,
         inputId = "sidebar-select_pkg",
