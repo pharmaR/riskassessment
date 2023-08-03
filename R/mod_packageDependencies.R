@@ -89,16 +89,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       if(parent$input$tabs == "Package Metrics" & parent$input$metric_type == "dep") {
         tabready(1L) }
       else {tabready(0L)}
-      
-      # set selected package to "-" if we jumped over to Upload Package tab
-      if(parent$input$tabs == "Upload Package" & changes()) {
-        cat("in parent$input$tabs. \n")
-        updateSelectizeInput(
-          session = parent,
-          inputId = "sidebar-select_pkg",
-          choices = c("-", dbSelect('SELECT name FROM package')$name),
-          selected = "-"
-        )}
     })
 	
     pkgref <- eventReactive(list(selected_pkg$name(), tabready()), {
