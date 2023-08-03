@@ -252,15 +252,11 @@ get_assess_blob<- function(pkg_name, db_name = golem::get_golem_options('assessm
 #' @noRd
 get_versnScore <- function(pkg_name, verify_data) {
   
-  # print("pkg_name:")
-  # print(pkg_name)
   riskmetric_assess <- 
-  riskmetric::pkg_ref(pkg_name,
-                      source = "pkg_cran_remote",
-                      repos = c("https://cran.rstudio.com")) %>%
-  dplyr::as_tibble() #%>%
-  #   riskmetric::pkg_assess()
-  # test$dependencies %>% unlist()
+    riskmetric::pkg_ref(pkg_name,
+                        source = "pkg_cran_remote",
+                        repos = c("https://cran.rstudio.com")) %>%
+    dplyr::as_tibble() 
   
   
   if (pkg_name %in% verify_data$name) { #loaded2_db()$name
@@ -268,10 +264,6 @@ get_versnScore <- function(pkg_name, verify_data) {
   } else {
     pkg_score <- ""
   } 
-  
-  # print(paste0("riskmetric_assess$package:", riskmetric_assess$package))
-  # print(paste0("riskmetric_assess$version:", riskmetric_assess$version))
-  # print(paste0("pkg_score:", pkg_score))
   
   return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = pkg_score))   
 }

@@ -100,8 +100,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     observeEvent(pkgref(), {
       req(pkgref())
       depends(pkgref()$dependencies[[1]] %>% dplyr::as_tibble())
-      print("depends():")
-      print(depends())
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
     })
    
