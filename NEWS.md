@@ -7,6 +7,7 @@
 * Added card Download Trend and linear trend plot on community usage metrics (#438)
 * Introduced cards to Database tab, reviewing contents of db (#587)
 * Prominently display the date a package was added (#486)
+* Fix issue where the repository being used to gather information was inconsistent
 
 ### Squashed Bugs
 * Fixed busted button introduced with #547 (#592)
