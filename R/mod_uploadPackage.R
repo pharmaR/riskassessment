@@ -358,8 +358,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
               ref <- list(name = uploaded_packages$package[i],
                           source = "name_bad")
             }
-            browser()
-            
+
             if (ref$source %in% c("pkg_missing", "name_bad")) {
               incProgress(1, detail = 'Package {uploaded_packages$package[i]} not found')
               
