@@ -99,7 +99,19 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
 
     observeEvent(pkgref(), {
       req(pkgref())
-      depends(pkgref()$dependencies[[1]] %>% dplyr::as_tibble())
+
+      tryCatch(
+        expr = {
+          depends(pkgref()$dependencies[[1]] %>% dplyr::as_tibble())
+        },
+        error = function(e) {
+          msg <- paste("Detailed dependency information is not available for ", selected_pkg$name())
+          rlang::warn(msg)
+          loggit::loggit("ERROR", paste(msg, "info:", e),
+                         app = "mod_packageDependencies")
+          depends(tibble(package = NA_character_, type = "pkg_metric_error"))
+        }
+      )
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
     })
    
@@ -143,7 +155,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
               )
             )
       ) %>%  # remove action button if there is nothing to review
-        mutate(Actions = if_else(is.na(package) | name %in% c(rownames(installed.packages(priority="base"))), "", Actions))
+        mutate(Actions = if_else(is.na(package) | type == "pkg_metric_error" | name %in% c(rownames(installed.packages(priority="base"))), "", Actions))
     })
     
     # Render Output UI for Package Dependencies.
