@@ -9,9 +9,12 @@
 #' @noRd
 app_server <- function(input, output, session) {
   
+  old <- options()
   onStop(function() {
     unlink("source/*", recursive = TRUE)
+    options(old)
     })
+  options(repos = c(CRAN = "https://cran.rstudio.com"))
   
   # Collect user info.
   user <- reactiveValues()
