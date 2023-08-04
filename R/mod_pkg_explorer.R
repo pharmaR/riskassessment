@@ -11,10 +11,9 @@
 #' @importFrom shinyAce aceEditor
 mod_pkg_explorer_ui <- function(id){
   ns <- NS(id)
-  tagList(
+  div(
     conditionalPanel(
         condition = "output.show_tree",
-        tagList(
             br(),
             h4("File Browser", style = "text-align: center;"),
             br(), br(),
@@ -38,11 +37,11 @@ mod_pkg_explorer_ui <- function(id){
                )
               ),
             br(), br(),
-            uiOutput(ns("comments_for_se"))
-          ),
+            uiOutput(ns("comments_for_se")),
         ns = ns
       ),
-    uiOutput(ns("pkg_explorer_ui"))
+    uiOutput(ns("pkg_explorer_ui")),
+    id = id
   )
 }
 
@@ -89,6 +88,10 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
       req(create_dir())
       req(file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz"))))
       
+      shinyjs::addClass(id, class = "jstree-disable", asis = TRUE)
+      session$onFlushed(function() {
+        shinyjs::removeClass(id, class = "jstree-disable", asis = TRUE)
+      })
       src_dir <- file.path("source", selected_pkg$name())
       if (dir.exists(src_dir)) {
         pkgdir(src_dir)
