@@ -351,15 +351,14 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
               # run pkg_ref() to get pkg version and source info
               if (!isTRUE(getOption("shiny.testmode")))
                 ref <- riskmetric::pkg_ref(uploaded_packages$package[i],
-                                           source = "pkg_cran_remote",
-                                           repos = c("https://cran.rstudio.com"))
+                                           source = "pkg_cran_remote")
               else
                 ref <- test_pkg_refs[[uploaded_packages$package[i]]]
             } else {
               ref <- list(name = uploaded_packages$package[i],
                           source = "name_bad")
             }
-            
+
             if (ref$source %in% c("pkg_missing", "name_bad")) {
               incProgress(1, detail = 'Package {uploaded_packages$package[i]} not found')
               

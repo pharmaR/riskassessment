@@ -9,6 +9,7 @@
 * Fixed busted button introduced with #547 (#592)
 * Allow `admin` users to edit roles and privileges (#541)
 * Prominently display the date a package was added (#486)
+* Fix issue where the repository being used to gather information was inconsistent
 
 
 # riskassessment 1.0.0
