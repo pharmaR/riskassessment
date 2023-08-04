@@ -62,7 +62,8 @@ utils::globalVariables(
     'date_added',
     'user_role',
     'old_role',
-    'new_role'
+    'new_role',
+    'role'
   )
 )
 
