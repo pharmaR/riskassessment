@@ -305,11 +305,9 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
           "https://cranlogs.r-pkg.org"
         )
         
-        system.time({
         good_urls <- purrr::map_lgl(url_lst, 
                                     ~ try(curlGetHeaders(.x, verify = FALSE), silent = TRUE) %>%
                                       {class(.) != "try-error" && attr(., "status") != 404})
-        })
 
         if (!all(good_urls)) {
           checking_urls$url_lst <- url_lst[!good_urls]
