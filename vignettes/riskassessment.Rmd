@@ -205,7 +205,7 @@ Here is a first look at the Community Usage Metrics for the "glue" package:
 <br>
 
 <center>
-![](images/comm_usage metrics_v2.0.0.png){style="margin: 10px 0 10px 0"}
+![](images/comm_usage_metrics_v2.0.0.png){style="margin: 10px 0 10px 0"}
 </center>
 
 <br>
