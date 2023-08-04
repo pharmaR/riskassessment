@@ -19,10 +19,10 @@ packageDependenciesUI <- function(id) {
 #' @importFrom DT formatStyle renderDataTable
 #' @importFrom formattable as.datatable csscolor formattable formatter style
 #' @importFrom glue glue
-#' @importFrom golem get_golem_options
+#' @importFrom loggit loggit
 #' @importFrom purrr map_df
 #' @importFrom riskmetric pkg_ref 
-#' @importFrom rlang is_empty
+#' @importFrom rlang warn
 #' @importFrom shiny removeModal showModal tagList
 #' @importFrom shinyjs click
 #' @importFrom stringr str_extract str_replace
@@ -32,6 +32,8 @@ packageDependenciesUI <- function(id) {
 packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    
+    cran_pkgs <- as.data.frame(available.packages("https://cran.rstudio.com/src/contrib")[,1:2])
     
     metric_wts_df <- eventReactive(selected_pkg$name(), {
       dbSelect("SELECT id, name, weight FROM metric")
@@ -45,7 +47,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     })
 
     loaded2_db <- eventReactive(list(selected_pkg$name(), changes()), {
-      dbSelect('SELECT name, score FROM package')
+      dbSelect('SELECT name, version, score FROM package')
     })
 
     
@@ -82,13 +84,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       req(tabready() == 1L)
       
       get_assess_blob(selected_pkg$name())
-      # db_table <- dbSelect("SELECT metric.name, package_metrics.encode FROM package 
-      #                  INNER JOIN package_metrics ON package.id = package_metrics.package_id
-      #                  INNER JOIN metric ON package_metrics.metric_id = metric.id
-      #                  WHERE package.name = {selected_pkg$name()}", 
-      #                      db_name = golem::get_golem_options('assessment_db_name'))
-      # 
-      # purrr::pmap_dfc(db_table, function(name, encode) {dplyr::tibble(unserialize(encode)) %>% purrr::set_names(name)}) 
     }) 
 	
 	  depends <- reactiveVal(value = NULL)
@@ -132,7 +127,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       if (nrow(pkginfo) == 0) {
         tibble(package = NA_character_, type = "", name = "", version = "", score = "")
       } else {
-      purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db())) %>% 
+      purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), cran_pkgs)) %>% 
         right_join(pkginfo, by = "name") %>% 
         select(package, type, name, version, score)
       }

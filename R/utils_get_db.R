@@ -247,25 +247,25 @@ get_assess_blob<- function(pkg_name, db_name = golem::get_golem_options('assessm
 #' 
 #' @param pkg_name character name of the package
 #' @param verify_data a data.frame used to verify whether a pkg exists in the db
+#' @param cran_pkgs a data.frame containing all available cran package names/versions
 #'
 #' @returns a list
 #' @noRd
-get_versnScore <- function(pkg_name, verify_data) {
-  
-  riskmetric_assess <- 
-    riskmetric::pkg_ref(pkg_name,
-                        source = "pkg_cran_remote",
-                        repos = c("https://cran.rstudio.com")) %>%
-    dplyr::as_tibble() 
-  
+get_versnScore <- function(pkg_name, verify_data, cran_pkgs) {
   
   if (pkg_name %in% verify_data$name) { #loaded2_db()$name
-    pkg_score <- verify_data %>% filter(name == pkg_name) %>% pull(score) %>% as.character
+    tmp_df <- verify_data %>% filter(name == pkg_name) %>% select(score, version)
+    pkg_score <- tmp_df %>% pull(score) %>% as.character
+    pkg_versn <- tmp_df %>% pull(version) %>% as.character
   } else {
     pkg_score <- ""
+    # pkg_versn <- riskmetric::pkg_ref(pkg_name,
+    #                                  source = "pkg_cran_remote",
+    #                                  repos = c("https://cran.rstudio.com"))$version 
+    pkg_versn <- subset(cran_pkgs, Package == pkg_name, c("Version")) %>% as.character()
   } 
   
-  return(list(name = riskmetric_assess$package, version = riskmetric_assess$version, score = pkg_score))   
+  return(list(name = pkg_name, version = pkg_versn, score = pkg_score))   
 }
 
 
