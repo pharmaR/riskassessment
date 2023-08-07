@@ -178,9 +178,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                 column(width = 8,
                        
                        DT::renderDataTable(server = FALSE, {
-                         browser()
-                         target <- which(names(data_table()) %in% c("Name")) - 1
-                         
+                         # Hiding name from DT table. target contains index for "name"
+                         # The - 1 is because js uses 0 index instead of 1 like R
+                         target <- which(names(data_table()) %in% c("name")) - 1
+
                          formattable::as.datatable(
                            formattable::formattable(
                              data_table(),
@@ -212,8 +213,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                            rownames = FALSE,
                            options = list(
                              lengthMenu = list(c(15, -1), c('15', 'All')),
+                             columnDefs = list(list(visible = FALSE, targets = target)),
                              searchable = FALSE),
-                             list(visible = FALSE, targets = as.integer(target)),
                            style="default"
                          ) %>%
                            DT::formatStyle(names(data_table()), textAlign = 'center')
