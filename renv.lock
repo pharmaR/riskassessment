@@ -195,34 +195,6 @@
       ],
       "Hash": "32e79b908fda56ee57fe518a8d37b864"
     },
-    "RcppArmadillo": {
-      "Package": "RcppArmadillo",
-      "Version": "0.11.4.3.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "R",
-        "Rcpp",
-        "methods",
-        "stats",
-        "utils"
-      ],
-      "Hash": "836c1aeec6a7a2b28273bd42a0511a9e"
-    },
-    "RcppEigen": {
-      "Package": "RcppEigen",
-      "Version": "0.3.3.9.3",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "Matrix",
-        "R",
-        "Rcpp",
-        "stats",
-        "utils"
-      ],
-      "Hash": "1e035db628cefb315c571202d70202fe"
-    },
     "askpass": {
       "Package": "askpass",
       "Version": "1.1",
@@ -1040,35 +1012,6 @@
       ],
       "Hash": "98c014c4c933f23ea5a0321a4d0b588b"
     },
-    "ggforce": {
-      "Package": "ggforce",
-      "Version": "0.4.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "MASS",
-        "R",
-        "Rcpp",
-        "RcppEigen",
-        "cli",
-        "ggplot2",
-        "grDevices",
-        "grid",
-        "gtable",
-        "lifecycle",
-        "polyclip",
-        "rlang",
-        "scales",
-        "stats",
-        "systemfonts",
-        "tidyselect",
-        "tweenr",
-        "utils",
-        "vctrs",
-        "withr"
-      ],
-      "Hash": "a06503f54e227f79b45a72df2946a2d2"
-    },
     "ggplot2": {
       "Package": "ggplot2",
       "Version": "3.3.6",
@@ -1091,52 +1034,6 @@
         "withr"
       ],
       "Hash": "0fb26d0674c82705c6b701d1a61e02ea"
-    },
-    "ggraph": {
-      "Package": "ggraph",
-      "Version": "2.1.0",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "MASS",
-        "R",
-        "Rcpp",
-        "cli",
-        "digest",
-        "dplyr",
-        "ggforce",
-        "ggplot2",
-        "ggrepel",
-        "graphlayouts",
-        "grid",
-        "gtable",
-        "igraph",
-        "lifecycle",
-        "rlang",
-        "scales",
-        "stats",
-        "tidygraph",
-        "utils",
-        "vctrs",
-        "viridis",
-        "withr"
-      ],
-      "Hash": "62672fd99df5df5814f442e9cd5ec29b"
-    },
-    "ggrepel": {
-      "Package": "ggrepel",
-      "Version": "0.9.2",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "R",
-        "Rcpp",
-        "ggplot2",
-        "grid",
-        "rlang",
-        "scales"
-      ],
-      "Hash": "610af35a68a1e8a40f05aad45871e719"
     },
     "gh": {
       "Package": "gh",
@@ -1265,33 +1162,6 @@
         "vctrs"
       ],
       "Hash": "9a6564184dc4a81daea4f1d7ce357c6a"
-    },
-    "graphlayouts": {
-      "Package": "graphlayouts",
-      "Version": "0.8.4",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "R",
-        "Rcpp",
-        "RcppArmadillo",
-        "igraph"
-      ],
-      "Hash": "1f3bfd26e5a4b89a98f63d25508b1f95"
-    },
-    "gridExtra": {
-      "Package": "gridExtra",
-      "Version": "2.3",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "grDevices",
-        "graphics",
-        "grid",
-        "gtable",
-        "utils"
-      ],
-      "Hash": "7d7f283939f563670a697165b2cf5560"
     },
     "gtable": {
       "Package": "gtable",
@@ -1443,33 +1313,6 @@
         "uuid"
       ],
       "Hash": "99df65cfef20e525ed38c3d2577f7190"
-    },
-    "igraph": {
-      "Package": "igraph",
-      "Version": "1.5.0.9006",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "rigraph",
-      "RemoteUsername": "igraph",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "9d34fd78b12200fb386091174fc6b43e21a35f23",
-      "Requirements": [
-        "Matrix",
-        "R",
-        "cli",
-        "cpp11",
-        "grDevices",
-        "graphics",
-        "lifecycle",
-        "magrittr",
-        "methods",
-        "pkgconfig",
-        "rlang",
-        "stats",
-        "utils"
-      ],
-      "Hash": "290878b7cd92ce00d99a34d8dda64c0f"
     },
     "ini": {
       "Package": "ini",
@@ -1928,16 +1771,6 @@
         "viridisLite"
       ],
       "Hash": "fbb11e44d057996ca5fe40d959cacfb0"
-    },
-    "polyclip": {
-      "Package": "polyclip",
-      "Version": "1.10-4",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "R"
-      ],
-      "Hash": "66bbfa06f78108ee967220643596c91e"
     },
     "praise": {
       "Package": "praise",
@@ -2752,28 +2585,6 @@
       ],
       "Hash": "08415af406e3dd75049afef9552e7355"
     },
-    "tidygraph": {
-      "Package": "tidygraph",
-      "Version": "1.2.2",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "R6",
-        "cli",
-        "cpp11",
-        "dplyr",
-        "igraph",
-        "magrittr",
-        "pillar",
-        "rlang",
-        "stats",
-        "tibble",
-        "tidyr",
-        "tools",
-        "utils"
-      ],
-      "Hash": "ae8f3697fc4a865f1074f4fdebe6b1c5"
-    },
     "tidyr": {
       "Package": "tidyr",
       "Version": "1.2.0",
@@ -2869,21 +2680,6 @@
         "Rcpp"
       ],
       "Hash": "847a9d113b78baca4a9a8639609ea228"
-    },
-    "tweenr": {
-      "Package": "tweenr",
-      "Version": "2.0.2",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "R",
-        "cpp11",
-        "farver",
-        "magrittr",
-        "rlang",
-        "vctrs"
-      ],
-      "Hash": "c16efcef4c72d3bff5e65031f3f1f841"
     },
     "tzdb": {
       "Package": "tzdb",
@@ -2986,20 +2782,6 @@
         "rlang"
       ],
       "Hash": "8b54f22e2a58c4f275479c92ce041a57"
-    },
-    "viridis": {
-      "Package": "viridis",
-      "Version": "0.6.2",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "R",
-        "ggplot2",
-        "gridExtra",
-        "stats",
-        "viridisLite"
-      ],
-      "Hash": "ee96aee95a7a563e5496f8991e9fde4b"
     },
     "viridisLite": {
       "Package": "viridisLite",
