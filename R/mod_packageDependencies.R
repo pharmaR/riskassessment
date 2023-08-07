@@ -178,6 +178,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                 column(width = 8,
                        
                        DT::renderDataTable(server = FALSE, {
+                         browser()
+                         target <- which(names(data_table()) %in% c("Name")) - 1
                          
                          formattable::as.datatable(
                            formattable::formattable(
@@ -211,6 +213,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                            options = list(
                              lengthMenu = list(c(15, -1), c('15', 'All')),
                              searchable = FALSE),
+                             list(visible = FALSE, targets = as.integer(target)),
                            style="default"
                          ) %>%
                            DT::formatStyle(names(data_table()), textAlign = 'center')

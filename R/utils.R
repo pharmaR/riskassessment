@@ -73,10 +73,11 @@ get_latest_pkg_info <- function(pkg_name) {
   return(table_info)
 }
 
+#' @import dplyr
 #' @importFrom desc desc_get_field
 #' @importFrom glue glue
 #' @importFrom purrr map set_names
-#' @import dplyr
+#' @importFrom utils untar
 #' 
 #' @noRd
 get_desc_pkg_info <- function(pkg_name, pkg_version, tar_dir = "tarballs") {
@@ -84,7 +85,7 @@ get_desc_pkg_info <- function(pkg_name, pkg_version, tar_dir = "tarballs") {
   if (!file.exists(tar_file))
     return(get_latest_pkg_info(pkg_name))
   
-  untar(tar_file, exdir = "source")
+  utils::untar(tar_file, exdir = "source")
   
   desc_file <- glue::glue("source/{pkg_name}/DESCRIPTION")
   
@@ -285,6 +286,7 @@ get_date_span <- function(start, end = Sys.Date()) {
 #' @import dplyr
 #' @importFrom lubridate interval make_date year
 #' @importFrom glue glue
+#' @importFrom stats lm
 #' @keywords internal
 #' 
 build_comm_cards <- function(data){
@@ -393,7 +395,7 @@ build_comm_cards <- function(data){
   }
   
   model_result <- as.list(
-    lm(downloads ~ row_n, data = trend_downloads)$coefficients
+    stats::lm(downloads ~ row_n, data = trend_downloads)$coefficients
     ) %>% 
     dplyr::as_tibble() %>% 
     dplyr::select(estimate = row_n) %>% 
@@ -587,6 +589,7 @@ auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
 #' @importFrom lubridate NA_Date_ interval
 #' @importFrom glue glue
 #' @importFrom plotly plot_ly layout add_segments add_annotations config
+#' @importFrom stats lm predict
 #' @return an interactive plotly object
 #' @keywords reproduce
 #' @export
@@ -742,10 +745,10 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
   if (max(data_horizon$row_n) < 12) {
    return(plot) 
   } else {
-    lm_model <- lm(downloads ~ row_n, data = data_horizon)
+    lm_model <- stats::lm(downloads ~ row_n, data = data_horizon)
     
     downloads_trend <- data_horizon %>% 
-      dplyr::mutate(trend = predict(lm_model, data_horizon))
+      dplyr::mutate(trend = stats::predict(lm_model, data_horizon))
     
     plot %>% 
       plotly::add_trace(

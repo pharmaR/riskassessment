@@ -73,7 +73,7 @@ uploadPackageUI <- function(id) {
 #' 
 #' @importFrom riskmetric pkg_ref
 #' @importFrom rintrojs introjs
-#' @importFrom utils read.csv available.packages
+#' @importFrom utils read.csv available.packages download.file
 #' @importFrom rvest read_html html_nodes html_text
 #' @keywords internal
 #' 
@@ -404,7 +404,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
               incProgress(1, detail = deets)
 
               if (!isTRUE(getOption("shiny.testmode"))) {
-                dwn_ld <- download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), 
+                dwn_ld <- utils::download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), 
                                         quiet = TRUE, mode = "wb")
                 if (dwn_ld != 0) {
                   loggit::loggit("INFO", glue::glue("Unable to download the source files for {uploaded_packages$package[i]} from '{ref$tarball_url}'."))
