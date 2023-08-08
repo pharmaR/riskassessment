@@ -23,7 +23,7 @@ packageDependenciesUI <- function(id) {
 #' @importFrom purrr map_df
 #' @importFrom riskmetric pkg_ref 
 #' @importFrom rlang warn
-#' @importFrom shiny removeModal showModal tagList
+#' @importFrom shiny removeModal showModal tagList 
 #' @importFrom shinyjs click
 #' @importFrom stringr str_extract str_replace
 #' 
@@ -72,13 +72,12 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       req(selected_pkg$name())
       req(selected_pkg$name() != "-")
 
-      if(length(lastpkg()) == 0) lastpkg("$$$$$") # dummy package name
       if(parent$input$tabs == "Package Metrics" & parent$input$metric_type == "dep") {
         tabready(1L) }
       else {tabready(0L)}
     })
 	
-    pkgref <- eventReactive(list(selected_pkg$name(), tabready()), {
+    pkgref <- eventReactive(list(selected_pkg$name(), changes(), tabready()), {
       req(selected_pkg$name())
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
@@ -88,8 +87,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
 	
 	  depends <- reactiveVal(value = NULL)
     revdeps <- reactiveVal(value = NULL)
-	
-	  lastpkg <- reactiveVal(value = NULL)
 	  rev_pkg <- reactiveVal(value = NULL)
 
     observeEvent(pkgref(), {
@@ -110,15 +107,13 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
     })
    
-    pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), changes()), {
+    pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), depends()), {
       
       req(selected_pkg$name())
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
 	    req(depends())
 
-	    req(lastpkg() != selected_pkg$name() | changes())
-      
       pkginfo <- depends() %>%  
         as_tibble() %>% 
         mutate(package = stringr::str_replace(package, "\n", "")) %>% 
@@ -132,11 +127,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         select(package, type, name, version, score)
       }
 
-    }, ignoreInit = TRUE) 
-    
-    observeEvent(pkg_df(), {
-      lastpkg(isolate(selected_pkg$name()))   # remember last package name selected
-    }, ignoreInit = TRUE) 
+    }) 
     
     data_table <- eventReactive(pkg_df(), {
       cbind(pkg_df(), 
@@ -178,6 +169,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                 column(width = 8,
                        
                        DT::renderDataTable(server = FALSE, {
+                         cat("rendering Data Table... \n")
                          # Hiding name from DT table. target contains index for "name"
                          # The - 1 is because js uses 0 index instead of 1 like R
                          target <- which(names(data_table()) %in% c("name")) - 1
@@ -218,7 +210,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                            style="default"
                          ) %>%
                            DT::formatStyle(names(data_table()), textAlign = 'center')
-                       }) %>% bindCache(selected_pkg$name(), changes())
+                       })  # %>% shiny::bindCache(selected_pkg$name(), changes(), rev_pkg())
                 )
               ),
           br(),
