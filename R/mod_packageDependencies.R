@@ -19,9 +19,7 @@ packageDependenciesUI <- function(id) {
 #' @importFrom DT formatStyle renderDataTable
 #' @importFrom formattable as.datatable csscolor formattable formatter style
 #' @importFrom glue glue
-#' @importFrom loggit loggit
 #' @importFrom purrr map_df
-#' @importFrom riskmetric pkg_ref 
 #' @importFrom rlang warn
 #' @importFrom shiny removeModal showModal tagList 
 #' @importFrom shinyjs click
@@ -35,22 +33,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     
     cran_pkgs <- as.data.frame(available.packages("https://cran.rstudio.com/src/contrib")[,1:2])
     
-    metric_wts_df <- eventReactive(selected_pkg$name(), {
-      dbSelect("SELECT id, name, weight FROM metric")
-    }) 
-    
-    metric_weights <- NULL
-    observeEvent(metric_wts_df(), {
-      # Get the metrics weights to be used during pkg_score.
-      metric_weights <<- isolate(metric_wts_df()$weight)
-      names(metric_weights) <<- isolate(metric_wts_df()$name)
-    })
-
     loaded2_db <- eventReactive(list(selected_pkg$name(), changes()), {
       dbSelect('SELECT name, version, score FROM package')
     })
 
-    
     # used for adding action buttons to data_table
     shinyInput <- function(FUN, len, id, ...) {
       inputs <- character(len)
@@ -66,7 +52,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     }
  
     tabready <- reactiveVal(value = NULL)
-    lastpkg  <- reactiveVal(value = NULL)
+    depends  <- reactiveVal(value = NULL)
+    revdeps  <- reactiveVal(value = NULL)
+    rev_pkg  <- reactiveVal(value = NULL)
 
     observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
       req(selected_pkg$name())
@@ -84,10 +72,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       
       get_assess_blob(selected_pkg$name())
     }) 
-	
-	  depends <- reactiveVal(value = NULL)
-    revdeps <- reactiveVal(value = NULL)
-	  rev_pkg <- reactiveVal(value = NULL)
 
     observeEvent(pkgref(), {
       req(pkgref())
@@ -97,11 +81,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
           depends(pkgref()$dependencies[[1]] %>% dplyr::as_tibble())
         },
         error = function(e) {
-          msg <- paste("Detailed dependency information is not available for ", selected_pkg$name())
-          rlang::warn(msg)
-          loggit::loggit("ERROR", paste(msg, "info:", e),
-                         app = "mod_packageDependencies")
-          depends(tibble(package = NA_character_, type = "pkg_metric_error"))
+          rlang::warn(paste(e, "package:", selected_pkg$name()))
+          depends(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
         }
       )
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
@@ -120,7 +101,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         mutate(name = stringr::str_extract(package, "\\w+"))
       
       if (nrow(pkginfo) == 0) {
-        tibble(package = NA_character_, type = "", name = "", version = "", score = "")
+        # packages like curl, magrittr will appear here instead of in tryCatch() above
+        msg <- paste("Detailed dependency information is not available for package", selected_pkg$name())
+        rlang::warn(msg)
+        dplyr::tibble(package = character(0), type = character(0), name = character(0))
       } else {
       purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), cran_pkgs)) %>% 
         right_join(pkginfo, by = "name") %>% 
@@ -141,19 +125,19 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
               )
             )
       ) %>%  # remove action button if there is nothing to review
-        mutate(Actions = if_else(is.na(package) | type == "pkg_metric_error" | name %in% c(rownames(installed.packages(priority="base"))), "", Actions))
+        mutate(Actions = if_else(identical(package, character(0)) | name %in% c(rownames(installed.packages(priority="base"))), "", Actions))
     })
     
     # Render Output UI for Package Dependencies.
     output$package_dependencies_ui <- renderUI({
-      
+     
       # Lets the user know that a package needs to be selected.
       if(identical(selected_pkg$name(), character(0)))
         showHelperMessage()
       
       else {
         fluidPage(
-          
+         
           shiny::
             tagList(
               br(),
@@ -167,9 +151,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
               )),
               fluidRow(
                 column(width = 8,
-                       
+                       if (nrow(depends()) == 0) {
+                       renderText("No dependency information is available") 
+                       } else {
                        DT::renderDataTable(server = FALSE, {
-                         cat("rendering Data Table... \n")
                          # Hiding name from DT table. target contains index for "name"
                          # The - 1 is because js uses 0 index instead of 1 like R
                          target <- which(names(data_table()) %in% c("name")) - 1
@@ -210,9 +195,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                            style="default"
                          ) %>%
                            DT::formatStyle(names(data_table()), textAlign = 'center')
-                       })  # %>% shiny::bindCache(selected_pkg$name(), changes(), rev_pkg())
-                )
-              ),
+                       })  
+                  } # if_else
+                ) # column
+              ), # fluidRow
           br(),
           h4(glue::glue("Reverse Dependencies: {length(revdeps())}"), style = "text-align: left;"),
           br(), br(),
@@ -237,9 +223,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       
       # grab the package name
       pkg_name <- pkg_df()[selectedRow, 3] %>% pull() 
-      pkgname("")
+      pkgname("-")
       
-      if(!pkg_name %in% dbSelect('SELECT name FROM package')$name) {
+      if(!pkg_name %in% loaded2_db()$name) {
         pkgname(pkg_name)
         shiny::showModal(modalDialog(
           size = "l",
@@ -264,7 +250,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         updateSelectizeInput(
           session = parent,
           inputId = "sidebar-select_pkg",
-          choices = c("-", dbSelect('SELECT name FROM package')$name),
+          choices = c("-", loaded2_db()$name),
           selected = pkg_name
         )}
       
@@ -303,7 +289,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       updateSelectizeInput(
         session = parent,
         inputId = "sidebar-select_pkg",
-        choices = c("-", dbSelect('SELECT name FROM package')$name),
+        choices = c("-", loaded2_db()$name),
         selected = pkg_name
         )
 
