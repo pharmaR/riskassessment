@@ -26,8 +26,7 @@ metricGridServer <- function(id, metrics) {
       
       columns <- 3
       rows <- ceiling(nrow(metrics()) / columns)
-      
-      column_vector_grid_split <- split(seq_len(nrow(metrics())), rep(1:columns, each = rows, length.out = nrow(metrics())))
+      column_vector_grid_split <- split(seq_len(nrow(metrics())), rep(1:columns, length.out = nrow(metrics())))
 
       fluidRow(style = "padding-right: 10px", class = "card-group",
                map(column_vector_grid_split, 
