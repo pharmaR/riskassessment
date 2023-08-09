@@ -259,10 +259,8 @@ get_versnScore <- function(pkg_name, verify_data, cran_pkgs) {
     pkg_versn <- tmp_df %>% pull(version) %>% as.character
   } else {
     pkg_score <- ""
-    # pkg_versn <- riskmetric::pkg_ref(pkg_name,
-    #                                  source = "pkg_cran_remote",
-    #                                  repos = c("https://cran.rstudio.com"))$version 
-    pkg_versn <- subset(cran_pkgs, Package == pkg_name, c("Version")) %>% as.character()
+    pkg_versn <- if_else(pkg_name %in% c(rownames(installed.packages(priority="base"))), "",
+                 subset(cran_pkgs, Package == pkg_name, c("Version")) %>% as.character())
   } 
   
   return(list(name = pkg_name, version = pkg_versn, score = pkg_score))   

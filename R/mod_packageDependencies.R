@@ -133,7 +133,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     
     # Render Output UI for Package Dependencies.
     output$package_dependencies_ui <- renderUI({
-     
+       req(depends())
+      
       # Lets the user know that a package needs to be selected.
       if(identical(selected_pkg$name(), character(0)))
         showHelperMessage()
