@@ -81,7 +81,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
           depends(pkgref()$dependencies[[1]] %>% dplyr::as_tibble())
         },
         error = function(e) {
-          rlang::warn(paste(e, "package:", selected_pkg$name()))
+          msg <- paste("Detailed dependency information is not available for package", selected_pkg$name())
+          rlang::warn(msg)
+          rlang::warn(paste("info:", e))
           depends(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
         }
       )
@@ -95,17 +97,18 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       req(tabready() == 1L)
 	    req(depends())
 
-      pkginfo <- depends() %>%  
-        as_tibble() %>% 
-        mutate(package = stringr::str_replace(package, "\n", "")) %>% 
-        mutate(name = stringr::str_extract(package, "\\w+"))
-      
-      if (nrow(pkginfo) == 0) {
+      if (nrow(depends()) == 0) {
         # packages like curl, magrittr will appear here instead of in tryCatch() above
         msg <- paste("Detailed dependency information is not available for package", selected_pkg$name())
         rlang::warn(msg)
         dplyr::tibble(package = character(0), type = character(0), name = character(0))
+        
       } else {
+      pkginfo <- depends() %>%  
+        as_tibble() %>% 
+        mutate(package = stringr::str_replace(package, "\n", "")) %>% 
+        mutate(name = stringr::str_extract(package, "\\w+"))
+        
       purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), cran_pkgs)) %>% 
         right_join(pkginfo, by = "name") %>% 
         select(package, type, name, version, score)
