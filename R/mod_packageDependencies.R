@@ -207,8 +207,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
           br(), br(),
           fluidRow(
             column(width = 8,
-                   renderText(revdeps() %>% sort() )
+                   wellPanel(
+                     renderText(revdeps() %>% sort() ),
+                     style = "max-height: 500px; overflow: auto"
                    )
+            )
            )
           
          ) # taglist
