@@ -188,7 +188,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                                                                          color_lst[x], 
                                                                          "transparent")))
                              )),
-                           selection = list(mode = 'multiple'),
+                           selection = 'none',
                            colnames = c("Package", "Type", "Name", "Version", "Score", "Review Package"),
                            rownames = FALSE,
                            options = list(
