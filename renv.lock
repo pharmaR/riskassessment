@@ -999,7 +999,7 @@
     },
     "gert": {
       "Package": "gert",
-      "Version": "1.6.0",
+      "Version": "1.9.2",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1010,7 +1010,7 @@
         "sys",
         "zip"
       ],
-      "Hash": "98c014c4c933f23ea5a0321a4d0b588b"
+      "Hash": "9122b3958e749badb5c939f498038b57"
     },
     "ggplot2": {
       "Package": "ggplot2",
@@ -1612,13 +1612,13 @@
     },
     "openssl": {
       "Package": "openssl",
-      "Version": "2.0.2",
+      "Version": "2.0.5",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "askpass"
       ],
-      "Hash": "6d3bef2e305f55c705c674653c7d7d3d"
+      "Hash": "b04c27110bf367b4daa93f34f3d58e75"
     },
     "parsedate": {
       "Package": "parsedate",
