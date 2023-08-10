@@ -367,8 +367,8 @@ build_comm_cards <- function(data){
             icon_class = "text-info",
             is_perc = 0,
             is_url = 0)
-  browser()
-  rev_deps <- riskmetric::pkg_ref(data$id[1]) %>% riskmetric::assess_reverse_dependencies()
+  
+  rev_deps <- get_assess_blob(data$id[1])$reverse_dependencies[[1]]
   
   cards <- cards %>%
     dplyr::add_row(name = 'reverse_dependencies',
