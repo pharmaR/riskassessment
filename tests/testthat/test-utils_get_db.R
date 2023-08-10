@@ -44,9 +44,11 @@ test_that("utils_get_db functions other than dbSelect", {
   }
 
   insert_riskmetric_to_db(pkg_name, app_db_loc)
+  insert_community_metrics_to_db(pkg_name, app_db_loc)
+  
   pkg_id <- dbSelect("SELECT id FROM package WHERE name = {pkg_name}", app_db_loc)
   
-  pkgs_cum_metrics <- test_pkg_cum[[pkg_name]]
+  pkgs_cum_metrics <- generate_comm_data(pkg_name)
   
   pkgs_cum_values <- glue::glue(
     "('{pkg_name}', {pkgs_cum_metrics$month}, {pkgs_cum_metrics$year}, 
@@ -84,7 +86,7 @@ test_that("utils_get_db functions other than dbSelect", {
   })
   
   test_that("get_comm_data works", {
-    cmdata <- test_pkg_cum[[pkg_name]]
+    cmdata <- get_comm_data(pkg_name, app_db_loc)
     expect_s3_class(cmdata, "data.frame")
     expect_equal(colnames(cmdata), c("id", "month", "year", "downloads", "version"))
     expect_equal(cmdata$id[1], pkg_name) # look at insert_community_metrics_to_db()
