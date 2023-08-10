@@ -14,6 +14,7 @@
 * Fixed busted button introduced with #547 (#592)
 
 ### Docs
+* Updated `riskassessment` vignette to reflect new tab structure
 
 
 ### For Devs
