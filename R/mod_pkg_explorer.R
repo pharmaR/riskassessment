@@ -48,6 +48,7 @@ mod_pkg_explorer_ui <- function(id){
 #' 
 #' @importFrom jsTreeR renderJstree jstree jstreeUpdate
 #' @importFrom shinyAce updateAceEditor
+#' @importFrom utils untar
 #'
 #' @noRd 
 mod_pkg_explorer_server <- function(id, selected_pkg, accepted_extensions = c("r", "rmd", "rd", "txt", "md","csv", "tsv", "json", "xml", "yaml", "yml", "dcf", "html", "js", "css", "c", "cpp", "h", "java", "scala", "py", "perl", "sh", "sql"), accepted_filenames = c("DESCRIPTION", "NAMESPACE", "LICENSE", "LICENSE.note", "NEWS", "README", "CHANGES", "MD5"), create_dir = reactiveVal(TRUE)) {
@@ -81,7 +82,7 @@ mod_pkg_explorer_server <- function(id, selected_pkg, accepted_extensions = c("r
       if (dir.exists(src_dir)) {
         pkgdir(src_dir)
       } else {
-        untar(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")), exdir = "source")
+        utils::untar(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")), exdir = "source")
         pkgdir(src_dir)
       }
     }) %>% 

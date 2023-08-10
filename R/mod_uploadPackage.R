@@ -73,26 +73,34 @@ uploadPackageUI <- function(id) {
 #' 
 #' @importFrom riskmetric pkg_ref
 #' @importFrom rintrojs introjs
-#' @importFrom utils read.csv available.packages
+#' @importFrom utils read.csv available.packages download.file
 #' @importFrom rvest read_html html_nodes html_text
 #' @keywords internal
 #' 
-uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_events) {
-  if (missing(approved_roles))
-    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events) {
+  if (missing(credentials))
+    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   moduleServer(id, function(input, output, session) {
     
-    observeEvent(user$role, {
-      req("add_package" %in% approved_roles[[user$role]])
+    observe({
+      req(user$role)
+      req(credentials$privileges)
       
-      shinyjs::enable("pkg_lst")
-      shinyjs::enable("add_pkgs")
-      shinyjs::enable("uploaded_file")
-      shinyjs::runjs(glue::glue('$("#{NS(id, \'uploaded_file\')}").parents("span").removeClass("disabled")'))
+      if ("add_package" %in% credentials$privileges[[user$role]]) {
+        shinyjs::enable("pkg_lst")
+        shinyjs::enable("add_pkgs")
+        shinyjs::enable("uploaded_file")
+        shinyjs::runjs(glue::glue('$("#{NS(id, \'uploaded_file\')}").parents("span").removeClass("disabled")'))
+      } else {
+        shinyjs::disable("pkg_lst")
+        shinyjs::disable("add_pkgs")
+        shinyjs::disable("uploaded_file")
+        shinyjs::runjs(glue::glue('$("#{NS(id, \'uploaded_file\')}").parents("span").addClass("disabled")'))
+      }
     })
 
     output$upload_format_lnk <- renderUI({
-      req("add_package" %in% approved_roles[[user$role]])
+      req("add_package" %in% credentials$privileges[[user$role]])
       
       actionLink(NS(id, "upload_format"), "View Sample Dataset")
     })
@@ -103,9 +111,9 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
       
       dplyr::bind_rows(
         upload_pkg,
-        if ("add_package" %in% approved_roles[[user$role]]) upload_pkg_add,
-        if ("delete_package" %in% approved_roles[[user$role]]) upload_pkg_delete,
-        if ("auto_decision_adjust" %in% approved_roles[[user$role]]) upload_pkg_dec_adj,
+        if ("add_package" %in% credentials$privileges[[user$role]]) upload_pkg_add,
+        if ("delete_package" %in% credentials$privileges[[user$role]]) upload_pkg_delete,
+        if ("auto_decision_adjust" %in% credentials$privileges[[user$role]]) upload_pkg_dec_adj,
         if (nrow(uploaded_pkgs()) > 0) upload_pkg_comp
       )
     })
@@ -140,7 +148,7 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
     
     # Start introjs when help button is pressed. Had to do this outside of
     # a module in order to take a reactive data frame of steps
-    introJSServer("introJS", text = upload_pkg_txt, user)
+    introJSServer("introJS", text = upload_pkg_txt, user, credentials)
 
     uploaded_pkgs00 <- reactiveVal()
     
@@ -148,9 +156,11 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
       uploaded_pkgs(data.frame())
     })
 
-    observeEvent(user$role, {
-    req("delete_package" %in% approved_roles[[user$role]])
     output$rem_pkg_div <- renderUI({
+      req(user$role)
+      req(credentials$privileges)
+      req("delete_package" %in% credentials$privileges[[user$role]])
+      
       session$onFlushed(function() {
         shinyjs::runjs(glue::glue('$("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))'))
       })
@@ -170,7 +180,6 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
                                              $("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
                                              }})')))
       )
-     })
     })
     
     observeEvent(input$uploaded_file, {
@@ -217,7 +226,7 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
     })
     
     observeEvent(input$rem_pkg_btn, {
-      req("delete_package" %in% approved_roles[[user$role]]) 
+      req("delete_package" %in% credentials$privileges[[user$role]]) 
       
       np <- length(input$rem_pkg_lst)
       uploaded_packages <-
@@ -299,7 +308,7 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
         good_urls <- purrr::map_lgl(url_lst, 
                                     ~ try(curlGetHeaders(.x, verify = FALSE), silent = TRUE) %>%
                                       {class(.) != "try-error" && attr(., "status") != 404})
-        
+
         if (!all(good_urls)) {
           checking_urls$url_lst <- url_lst[!good_urls]
           showModal(modalDialog(
@@ -334,58 +343,49 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
         message = "Uploading Packages to DB:", {
           
           for (i in 1:np) {
-            
+
             user_ver <- uploaded_packages$version[i]
             incProgress(1, detail = glue::glue("{uploaded_packages$package[i]} {user_ver}"))
             
+
             if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
               # run pkg_ref() to get pkg version and source info
               if (!isTRUE(getOption("shiny.testmode")))
                 ref <- riskmetric::pkg_ref(uploaded_packages$package[i],
-                                           source = "pkg_cran_remote",
-                                           repos = c("https://cran.rstudio.com"))
+                                           source = "pkg_cran_remote")
               else
                 ref <- test_pkg_refs[[uploaded_packages$package[i]]]
             } else {
               ref <- list(name = uploaded_packages$package[i],
                           source = "name_bad")
             }
-            
+
             if (ref$source %in% c("pkg_missing", "name_bad")) {
               incProgress(1, detail = 'Package {uploaded_packages$package[i]} not found')
-              
+
               # Suggest alternative spellings using utils::adist() function
               v <- utils::adist(uploaded_packages$package[i], cran_pkgs(), ignore.case = FALSE)
               rlang::inform(paste("Package name",uploaded_packages$package[i],"was not found."))
-              
+
               suggested_nms <- paste("Suggested package name(s):",paste(head(cran_pkgs()[which(v == min(v))], 10),collapse = ", "))
               rlang::inform(suggested_nms)
-              
+
               uploaded_packages$status[i] <- HTML(paste0('<a href="#" title="', suggested_nms, '">not found</a>'))
-              
+
               if (ref$source == "pkg_missing")
                 loggit::loggit('WARN',
                                glue::glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
               else
                 loggit::loggit('WARN',
                                glue::glue("Riskmetric can't interpret '{ref$name}' as a package reference."))
-              
+
               next
             }
-            
+
             ref_ver <- as.character(ref$version)
             
-            # The message about different versions is only given if the package 
-            # name is uploaded from CSV file and not if it is selected from drop-down.
-            if(isTruthy(input$load_cran)) {
-              ver_msg <- ref_ver
-            } else {
-              if(user_ver == ref_ver) ver_msg <- ref_ver
-              else ver_msg <- glue::glue("{ref_ver}, not '{user_ver}'")
-            }
-            
-            as.character(ref$version)
-            deets <- glue::glue("{uploaded_packages$package[i]} {ver_msg}")
+            deets <- glue::glue("{uploaded_packages$package[i]} {ref_ver}")
+            uploaded_packages$version[i] <- ref_ver
             
             # Save version.
             incProgress(1, detail = deets)
@@ -402,8 +402,9 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
             if(!found) {
               # Get and upload pkg general info to db.
               incProgress(1, detail = deets)
+
               if (!isTRUE(getOption("shiny.testmode"))) {
-                dwn_ld <- download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), 
+                dwn_ld <- utils::download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), 
                                         quiet = TRUE, mode = "wb")
                 if (dwn_ld != 0) {
                   loggit::loggit("INFO", glue::glue("Unable to download the source files for {uploaded_packages$package[i]} from '{ref$tarball_url}'."))
@@ -412,9 +413,11 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
               insert_pkg_info_to_db(uploaded_packages$package[i], ref_ver)
               # Get and upload maintenance metrics to db.
               incProgress(1, detail = deets)
+              
               insert_riskmetric_to_db(uploaded_packages$package[i])
               # Get and upload community metrics to db.
               incProgress(1, detail = deets)
+              
               insert_community_metrics_to_db(uploaded_packages$package[i])
               uploaded_packages$score[i] <- get_pkg_info(uploaded_packages$package[i])$score
               if (!rlang::is_empty(auto_list())) {
@@ -427,9 +430,10 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
           incProgress(1, detail = "   **Completed Pkg Uploads**")
           Sys.sleep(0.25)
           
-        }) #withProgress
+      }) #withProgress
       
       uploaded_pkgs(uploaded_packages)
+      
     })
     
     # Download the sample dataset.
@@ -446,6 +450,7 @@ uploadPackageServer <- function(id, user, auto_list, approved_roles, trigger_eve
     output$upload_summary_text <- renderText({
       req(uploaded_pkgs)
       req(nrow(uploaded_pkgs()) > 0)
+
       # modify the message if we are removing packages
       if(isTruthy(sum(uploaded_pkgs()$status == 'removed') >0)) {
         loggit::loggit("INFO",

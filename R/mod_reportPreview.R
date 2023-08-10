@@ -36,15 +36,15 @@ reportPreviewUI <- function(id) {
 #' 
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                                 com_metrics_raw, mm_comments, cm_comments,
-                                downloads_plot_data, user, approved_roles, app_version,
+                                downloads_plot_data, user, credentials, app_version,
                                 metric_weights) {
-  if (missing(approved_roles))
-    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+  if (missing(credentials))
+    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   
   moduleServer(id, function(input, output, session) {
     
     # IntroJS.
-    introJSServer(id = "introJS", text = reactive(rp_steps), user)
+    introJSServer(id = "introJS", text = reactive(rp_steps), user, credentials)
 
     # Render Output UI for Report Preview.
     output$reportPreview_configs_ui <- renderUI({
@@ -77,7 +77,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             
             br(), br(),
             
-            if ("overall_comment" %in% approved_roles[[user$role]]) 
+            if ("overall_comment" %in% credentials$privileges[[user$role]]) 
               div(id = NS(id, "pkg-summary-grp"),
                   # Compose pkg summary - either disabled, enabled, or pre-populated
                   uiOutput(NS(id, "pkg_summary_ui")),
@@ -401,6 +401,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       req(selected_pkg$name())
       
       tagList(
+        h5(code('{riskmetric}'), 'Assessment Date:'), selected_pkg$date_added(),
         if('Risk Score' %in% report_includes()) tagList(h5('Risk Score:'), selected_pkg$score()) else "",
         h5('Package Decision:'),ifelse(is.na(selected_pkg$decision()), 'Pending',selected_pkg$decision())
       )

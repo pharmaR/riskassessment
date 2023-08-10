@@ -1,5 +1,4 @@
 test_that("Reactivity of database view table", {
-  skip_on_ci()
   # delete app DB if exists to ensure clean test
   app_db_loc <- test_path("test-apps", "database.sqlite")
   if (file.exists(app_db_loc)) {
@@ -21,8 +20,8 @@ test_that("Reactivity of database view table", {
   
   #### Test that the `table_data` loads correctly ####
   tbl_expect <-
-    structure(list(name = "dplyr", version = "1.1.2", score = 0.29, 
-                   decision = "-", decision_by = "-", decision_date = "-",
+    structure(list(name = "dplyr", date_added = "2023-07-20", version = "1.1.0",
+                   score = 0.29, decision = "-", decision_by = "-", decision_date = "-",
                    last_comment = "-"), 
               class = "data.frame", row.names = c(NA, -1L))
   tbl_actual <-
@@ -37,7 +36,7 @@ test_that("Reactivity of database view table", {
   app$click("sidebar-submit_confirmed_decision")
   
   tbl_expect <-
-    structure(list(name = "dplyr", version = "1.1.2", score = 0.29, 
+    structure(list(name = "dplyr", date_added = "2023-07-20", version = "1.1.0", score = 0.29, 
                    decision = "Low Risk", decision_by = "test_user", decision_date = as.character(Sys.Date()),
                    last_comment = "-"), 
               class = "data.frame", row.names = c(NA, -1L))
@@ -66,7 +65,7 @@ test_that("Reactivity of database view table", {
   tbl_actual <-
     app$get_value(export = "databaseView-table_data")
   
-  expect_equal(tbl_actual %>% dplyr::select(1,4,5,6,7) %>% dplyr::arrange(1), tbl_expect)
+  expect_equal(tbl_actual %>% dplyr::select(1,5,6,7,8) %>% dplyr::arrange(1), tbl_expect)
   
   #### Test that `packages_table` is loaded correctly ####
   tbl_actual <-

@@ -44,9 +44,16 @@ test_that("utils_get_db functions other than dbSelect", {
   }
 
   insert_riskmetric_to_db(pkg_name, app_db_loc)
+  insert_community_metrics_to_db(pkg_name, app_db_loc)
+  
   pkg_id <- dbSelect("SELECT id FROM package WHERE name = {pkg_name}", app_db_loc)
   
-  insert_community_metrics_to_db(pkg_name, app_db_loc)
+  pkgs_cum_metrics <- generate_comm_data(pkg_name)
+  
+  pkgs_cum_values <- glue::glue(
+    "('{pkg_name}', {pkgs_cum_metrics$month}, {pkgs_cum_metrics$year}, 
+  {pkgs_cum_metrics$downloads}, '{pkgs_cum_metrics$version}')") %>%
+    glue::glue_collapse(sep = ", ")
   
   test_that("get_overall_comments works", {
     ocmt <- get_overall_comments(pkg_name, db_name = app_db_loc)
@@ -82,7 +89,7 @@ test_that("utils_get_db functions other than dbSelect", {
     cmdata <- get_comm_data(pkg_name, app_db_loc)
     expect_s3_class(cmdata, "data.frame")
     expect_equal(colnames(cmdata), c("id", "month", "year", "downloads", "version"))
-    expect_equal(cmdata$id[1], pkg_name)
+    expect_equal(cmdata$id[1], pkg_name) # look at insert_community_metrics_to_db()
   })
   
   test_that("get_pkg_info works", {

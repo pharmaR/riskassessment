@@ -23,9 +23,9 @@ communityMetricsUI <- function(id) {
 #' 
 #' @keywords internal
 #' 
-communityMetricsServer <- function(id, selected_pkg, community_metrics, user, approved_roles) {
-  if (missing(approved_roles))
-    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+communityMetricsServer <- function(id, selected_pkg, community_metrics, user, credentials) {
+  if (missing(credentials))
+    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   
   moduleServer(id, function(input, output, session) {
     
@@ -51,14 +51,14 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user, ap
                      plotly::plotlyOutput(NS(id, "downloads_plot"), height = "500px")))),
             br(), br(),
             div(id = "comments_for_cum", fluidRow( 
-              if ("general_comment" %in% approved_roles[[user$role]]) addCommentUI(id = session$ns("add_comment")),
+              if ("general_comment" %in% credentials$privileges[[user$role]]) addCommentUI(id = session$ns("add_comment")),
               viewCommentsUI(id = session$ns("view_comments"))))
           )
       }
     })
     
     # IntroJS.
-    introJSServer(id = "introJS", text = reactive(cum_steps), user)
+    introJSServer(id = "introJS", text = reactive(cum_steps), user, credentials)
 
     # Community cards (saved to share with report preview): the 
     # time since first release, the time since latest release, 
@@ -74,7 +74,7 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user, ap
     comment_added <- addCommentServer(id = "add_comment",
                                       metric_abrv = 'cum',
                                       user = user,
-                                      approved_roles = approved_roles,
+                                      credentials = credentials,
                                       pkg_name = selected_pkg$name)
     
     comments <- eventReactive(list(comment_added(), selected_pkg$name()), {

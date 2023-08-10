@@ -222,6 +222,51 @@ get_metric_weights <- function(db_name = golem::get_golem_options('assessment_db
   )
 }
 
+#' Get Assessments
+#'
+#' Retrieves metric name and current weight from metric table
+#' 
+#' @param pkg_name character name of the package
+#' @param db_name character name (and file path) of the database
+#'
+#' @returns a data frame
+#' @noRd
+get_assess_blob<- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
+  db_table <- dbSelect("SELECT metric.name, package_metrics.encode FROM package 
+                       INNER JOIN package_metrics ON package.id = package_metrics.package_id
+                       INNER JOIN metric ON package_metrics.metric_id = metric.id
+                       WHERE package.name = {pkg_name}", 
+                       db_name = db_name)
+  
+  purrr::pmap_dfc(db_table, function(name, encode) {dplyr::tibble(unserialize(encode)) %>% purrr::set_names(name)}) 
+}
+
+
+#' Get Dependency Pkg Versions and Scores
+#'
+#' 
+#' @param pkg_name character name of the package
+#' @param verify_data a data.frame used to verify whether a pkg exists in the db
+#' @param cran_pkgs a data.frame containing all available cran package names/versions
+#'
+#' @returns a list
+#' @noRd
+get_versnScore <- function(pkg_name, verify_data, cran_pkgs) {
+  
+  if (pkg_name %in% verify_data$name) { #loaded2_db()$name
+    tmp_df <- verify_data %>% filter(name == pkg_name) %>% select(score, version)
+    pkg_score <- tmp_df %>% pull(score) %>% as.character
+    pkg_versn <- tmp_df %>% pull(version) %>% as.character
+  } else {
+    pkg_score <- ""
+    pkg_versn <- if_else(pkg_name %in% c(rownames(installed.packages(priority="base"))), "",
+                 subset(cran_pkgs, Package == pkg_name, c("Version")) %>% as.character())
+  } 
+  
+  return(list(name = pkg_name, version = pkg_versn, score = pkg_score))   
+}
+
+
 
 ##### End of get_* functions #####
 
@@ -247,5 +292,35 @@ weight_risk_comment <- function(pkg_name, db_name = golem::get_golem_options('as
   
   glue::glue('Metric re-weighting has occurred.
        The previous risk score was {pkg_score}.')
+}
+
+get_credential_config <- function(db_name = golem::get_golem_options('assessment_db_name')) {
+  roles_tbl <- dbSelect("SELECT * FROM roles", db_name)
+  config <- list()
+  config[["roles"]] <- roles_tbl$user_role
+  config[["privileges"]] <- purrr::map(roles_tbl$user_role, ~ 
+                                         roles_tbl[roles_tbl$user_role == .x, used_privileges] %>% 
+                                         unlist() %>% 
+                                         `[`(. != 0) %>% 
+                                         names()) %>%
+    purrr::set_names(roles_tbl$user_role) %>%
+    purrr::compact()
+  config
+}
+
+get_roles_table <- function(db_name = golem::get_golem_options('assessment_db_name')) {
+  dbSelect("SELECT * FROM roles", db_name = db_name) %>%
+    {rownames(.) <- .$user_role; .} %>%
+    dplyr::select(-id, -user_role) %>%
+    t()
+}
+
+get_credentials_table <- function(db_name = golem::get_golem_options('credentials_db_name'), passphrase) {
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
+  
+  tbl <- shinymanager::read_db_decrypt(conn = con, name = "credentials", passphrase = passphrase)
+  
+  DBI::dbDisconnect(con)
+  tbl
 }
 

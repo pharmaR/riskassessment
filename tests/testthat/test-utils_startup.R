@@ -20,14 +20,14 @@ test_that("database creation", {
     })
   
   expect_equal(DBI::dbListTables(con),
-               c("comments", "community_usage_metrics", "decision_categories", "metric", "package", "package_metrics", "sqlite_sequence"))
+               c("comments", "community_usage_metrics", "decision_categories", "metric", "package", "package_metrics", "roles", "sqlite_sequence"))
   pkg <- DBI::dbGetQuery(con, "SELECT * FROM package")
   expect_equal(nrow(pkg), 0)
   expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", 
                              "score", "weighted_score", "decision_id", "decision_by", "decision_date", "date_added"))
   metric <- DBI::dbGetQuery(con, "SELECT * FROM metric")
-  expect_equal(nrow(metric), 12)
-  expect_equal(names(metric), c("id", "name", "long_name", "is_url", "is_perc", "description", "class", "weight"))
+  expect_equal(nrow(metric), 14) 
+  expect_equal(names(metric), c("id", "name", "long_name", "is_perc", "is_url", "description", "class", "weight"))
   pkg_metric <- DBI::dbGetQuery(con, "SELECT * FROM package_metrics")
   expect_equal(nrow(pkg_metric), 0)
   expect_equal(names(pkg_metric), c("id", "package_id", "metric_id", "value", "encode"))
@@ -40,6 +40,9 @@ test_that("database creation", {
   decisions <- DBI::dbGetQuery(con, "SELECT * FROM decision_categories")
   expect_equal(nrow(decisions), 0)
   expect_equal(names(decisions), c("id", "decision", "color", "lower_limit", "upper_limit"))
+  roles <- DBI::dbGetQuery(con, "SELECT * FROM roles")
+  expect_equal(nrow(roles), 0)
+  expect_equal(names(roles), c("id", "user_role", used_privileges))
 })
 
 #### create_credentials_db  tests ####

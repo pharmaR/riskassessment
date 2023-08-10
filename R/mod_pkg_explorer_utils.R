@@ -1,4 +1,6 @@
 # based on makeNodes() function in jsTreeR/inst/examples/folder/global.R
+#' @importFrom utils tail
+#' @noRd
 makeNodes <- function(leaves) {
   dfs <- lapply(strsplit(leaves, "/"), function(s) {
     item <- Reduce(function(a, b) paste0(a, "/", b), s[-1], s[1], accumulate = TRUE)
@@ -12,7 +14,7 @@ makeNodes <- function(leaves) {
     i <- match(parent, dat$item)
     item <- dat$item[i]
     children <- dat$item[dat$parent == item]
-    label <- tail(strsplit(item, "/")[[1]], 1)
+    label <- utils::tail(strsplit(item, "/")[[1]], 1)
     if (length(children)) {
       list(type = "root", text = label, data = item,
            children = lapply(children, f))
