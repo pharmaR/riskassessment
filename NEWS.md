@@ -10,7 +10,7 @@
 * Allow `admin` users to edit roles and privileges (#541)
 * Prominently display the date a package was added (#486)
 * Fix issue where the repository being used to gather information was inconsistent
-
+* Added Package Dependencies page to "Package Metrics" tab, and two new cards to Maintenance Metrics page (#261)
 
 # riskassessment 1.0.0
 

@@ -46,7 +46,10 @@ app_ui <- function(request) {
                 id = "metric_tab_id",
                 title = "Package Metrics",
                 br(),
-                selectInput("metric_type", NULL, choices = c("Maintenance Metrics" = "mm", "Community Usage Metrics" = "cum")) %>%
+                selectInput("metric_type", NULL, 
+                            choices = c("Maintenance Metrics" = "mm", 
+                                        "Community Usage Metrics" = "cum",
+                                        "Package Dependencies" = "dep")) %>%
                   tagAppendAttributes(class = "metric_select"),
                 conditionalPanel(
                   "input.metric_type == 'mm'",
@@ -55,6 +58,10 @@ app_ui <- function(request) {
                 conditionalPanel(
                   "input.metric_type == 'cum'",
                   communityMetricsUI("communityMetrics")
+                ),
+                conditionalPanel(
+                  "input.metric_type == 'dep'",
+                  packageDependenciesUI("packageDependencies")
                 )
               ),
               tabPanel(
@@ -66,7 +73,7 @@ app_ui <- function(request) {
                 id = "reportPreview_tab_id",
                 title = "Build Report",
                 reportPreviewUI("reportPreview")
-              )
+              )      
             )
           )
         )

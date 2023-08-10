@@ -152,18 +152,20 @@ upload_package_to_db <- function(name, version, title, description,
 insert_riskmetric_to_db <- function(pkg_name, 
     db_name = golem::get_golem_options('assessment_db_name')){
 
-  if (!isTRUE(getOption("shiny.testmode")))
+  if (!isTRUE(getOption("shiny.testmode"))) {
     riskmetric_assess <-
       riskmetric::pkg_ref(pkg_name,
                           source = "pkg_cran_remote") %>%
       dplyr::as_tibble() %>%
       riskmetric::pkg_assess()
-  else
+  } else {
     riskmetric_assess <-
       test_pkg_assess[[pkg_name]]
+  }
+  metric_weights_df <- dbSelect("SELECT id, name, weight, is_perc FROM metric", db_name)
+
   
   # Get the metrics weights to be used during pkg_score.
-  metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric", db_name)
   metric_weights <- metric_weights_df$weight
   names(metric_weights) <- metric_weights_df$name
   
@@ -183,7 +185,7 @@ insert_riskmetric_to_db <- function(pkg_name,
   assessment_serialized <- data.frame(pkg_assess = I(lapply(riskmetric_assess, serialize, connection = NULL)))
   # Insert all the metrics (columns of class "pkg_score") into the db.
   # TODO: Are pkg_score and pkg_metric_error mutually exclusive?
-  for(row in 1:nrow(metric_weights_df)){
+  for(row in 1:nrow(metric_weights_df)) {
     metric <- metric_weights_df %>% dplyr::slice(row)
     # If the metric is not part of the assessment, then skip iteration.
     if(!(metric$name %in% colnames(riskmetric_score))) next
@@ -194,15 +196,14 @@ insert_riskmetric_to_db <- function(pkg_name,
     #   then save such value as the metric value.
     # Otherwise, save all the possible values of the metric
     #   (note: has_website for instance may have multiple values).
-    metric_value <- ifelse(
-      "pkg_metric_error" %in% class(riskmetric_assess[[metric$name]][[1]]),
-      "pkg_metric_error",
-      # Since the actual value of these metrics appear on riskmetric_score
-      #   and not on riskmetric_assess, they need to be treated differently.
-      # TODO: this code is not clean, fix it. Changes to riskmetric?
-      ifelse(metric$name %in% c('bugs_status', 'export_help'),
-             round(riskmetric_score[[metric$name]]*100, 2),
-             riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])]))
+
+    metric_value <- case_when(
+      "pkg_metric_error" %in% class(riskmetric_assess[[metric$name]][[1]]) ~ "pkg_metric_error",
+      metric$name == "dependencies" ~ as.character(length(unlist(as.vector(riskmetric_assess[[metric$name]][[1]][1])))),
+      metric$name == "reverse_dependencies" ~ as.character(length(as.vector(riskmetric_assess[[metric$name]][[1]]))),
+      metric$is_perc == 1L ~ as.character(round(riskmetric_score[[metric$name]]*100, 2)[[1]]),
+      TRUE ~ as.character(riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])])
+    )
     
     dbUpdate(
       "INSERT INTO package_metrics (package_id, metric_id, value, encode) 
@@ -242,18 +243,17 @@ insert_community_metrics_to_db <- function(pkg_name,
     pkgs_cum_metrics <- test_pkg_cum[[pkg_name]]
   
   pkgs_cum_values <- glue::glue(
-  "('{pkg_name}', {pkgs_cum_metrics$month}, {pkgs_cum_metrics$year}, 
+    "('{pkg_name}', {pkgs_cum_metrics$month}, {pkgs_cum_metrics$year}, 
   {pkgs_cum_metrics$downloads}, '{pkgs_cum_metrics$version}')") %>%
     glue::glue_collapse(sep = ", ")
   
   if(nrow(pkgs_cum_metrics) != 0){
-      dbUpdate(glue::glue(
-        "INSERT INTO community_usage_metrics 
+    dbUpdate(glue::glue(
+      "INSERT INTO community_usage_metrics 
         (id, month, year, downloads, version)
         VALUES {pkgs_cum_values}"), db_name)
   }
 }
-
 
 #' update_metric_weight
 #' 
@@ -291,16 +291,10 @@ update_metric_weight <- function(metric_name, metric_weight,
 rescore_package <- function(pkg_name, 
                             db_name = golem::get_golem_options('assessment_db_name')) {
   
-  db_table <- dbSelect("SELECT metric.name, package_metrics.encode FROM package 
-                       INNER JOIN package_metrics ON package.id = package_metrics.package_id
-                       INNER JOIN metric ON package_metrics.metric_id = metric.id
-                       WHERE package.name = {pkg_name}", db_name)
-  
-  riskmetric_assess <-
-    purrr::pmap_dfc(db_table, function(name, encode) {dplyr::tibble(unserialize(encode)) %>% purrr::set_names(name)})
+  riskmetric_assess <- get_assess_blob(pkg_name, db_name)
   
   # Get the metrics weights to be used during pkg_score.
-  metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric", db_name)
+  metric_weights_df <- get_metric_weights(db_name)
   metric_weights <- metric_weights_df$weight
   names(metric_weights) <- metric_weights_df$name
   
