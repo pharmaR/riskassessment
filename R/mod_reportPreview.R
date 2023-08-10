@@ -35,7 +35,7 @@ reportPreviewUI <- function(id) {
 #' @keywords internal
 #' 
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
-                                com_metrics_raw, mm_comments, cm_comments,
+                                com_metrics_raw, mm_comments, cm_comments, #se_comments,
                                 downloads_plot_data, user, credentials, app_version,
                                 metric_weights) {
   if (missing(credentials))
@@ -168,6 +168,23 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                   hr(),
                   fluidRow(
                     column(width = 12, uiOutput(NS(id, 'communityMetrics_ui')))
+                  )
+                )
+              } else "",
+              
+              
+              if(any(c('Source Explorer Comments') %in% report_includes())) {
+                tagList(
+                  br(), br(),
+                  hr(),
+                  fluidRow(
+                    column(width = 12,
+                           h5("Source Explorer",
+                              style = "text-align: center; padding-bottom: 50px;"),
+                           showHelperMessage(message = "Source code visals not available."),
+                           if('Source Explorer Comments' %in% report_includes())
+                             viewCommentsUI(NS(id, 'se_comments')) else ""
+                    )
                   )
                 )
               } else "",
@@ -341,6 +358,17 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                        comments = cm_comments,
                        pkg_name = selected_pkg$name,
                        label = 'Community Usage Metrics Comments')
+    
+    # grab comments here since it's not being passed as an arg to module
+    se_comments <- eventReactive(list(selected_pkg$name()), {
+      get_se_comments(selected_pkg$name()) # see utils
+    })
+    
+    # View Comm Usage comments.
+    viewCommentsServer(id = 'se_comments',
+                       comments = se_comments, # not a arg
+                       pkg_name = selected_pkg$name,
+                       label = 'Source Explorer Comments')
     
     # Maintenance metrics cards.
     metricGridServer("mm_metricGrid", metrics = maint_metrics)

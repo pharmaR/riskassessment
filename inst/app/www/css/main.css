@@ -53,3 +53,8 @@ box-shadow: 0 0 0 0.25rem rgb(51, 153, 255, 50%);
   overflow: auto;
   max-height: 62vh;
 }
+
+.jstree-disable {
+  opacity: 50%;
+  pointer-events: none;
+}

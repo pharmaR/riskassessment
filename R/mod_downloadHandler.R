@@ -41,7 +41,8 @@ mod_downloadHandler_include_ui <- function(id){
   # will want to change this to input_UI so we can include additional items
   # such as "Include comments" check boxes for summary, maint-metrics, comm usage, and overall comments
   my_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
-    "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments")
+    "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
+    "Source Explorer Comments")
   div(
     strong(p("Elements to include:")),
     div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
@@ -227,6 +228,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               pkg_summary <- get_pkg_summary(this_pkg)
               mm_comments <- get_mm_comments(this_pkg)
               cm_comments <- get_cm_comments(this_pkg)
+              se_comments <- get_se_comments(this_pkg)
               
               # gather maint metrics & community metric data
               mm_data <- get_mm_data(pkg_list$id)
@@ -250,6 +252,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                               pkg_summary = pkg_summary,
                               mm_comments = mm_comments,
                               cm_comments = cm_comments,
+                              se_comments = se_comments,
                               maint_metrics = mm_data,
                               com_metrics = comm_cards,
                               com_metrics_raw = comm_data,

@@ -23,6 +23,7 @@ params:
   pkg_summary: NA
   mm_comments: NA
   cm_comments: NA
+  se_comments: NA
   maint_metrics: NA
   com_metrics: NA
   com_metrics_raw: NA
@@ -222,6 +223,32 @@ if('Community Usage Comments' %in% params$report_includes){
     HTML(outputComments(
       pkg_name = params$pkg$name,
       comments = params$cm_comments))
+  )
+}
+```
+
+
+
+`r if(any(c('Source Explorer Comments') %in% params$report_includes)) {"\\newpage"}`
+
+```{r source_explorer}
+if(any(c('Source Explorer Comments') %in% params$report_includes)) {
+  tagList(br(),
+          h2('Source Explorer'),
+          br(),
+          h6("Source code visals not available."))
+}
+```
+
+
+```{r source_explorer_comments}
+if('Source Explorer Comments' %in% params$report_includes){
+  tagList(
+    br(),
+    h2('Comments'),
+    HTML(outputComments(
+      pkg_name = params$pkg$name,
+      comments = params$se_comments))
   )
 }
 ```

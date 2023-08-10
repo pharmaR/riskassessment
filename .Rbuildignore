@@ -23,3 +23,4 @@ _\.new\.png$
 ^Crashpad$
 ^tarballs$
 ^source$
+^revdep

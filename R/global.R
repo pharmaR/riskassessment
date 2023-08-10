@@ -12,16 +12,59 @@
 #'
 #' 
 #' @import dplyr
+#' @importFrom stats lm predict
+#' @importFrom utils download.file tail untar
 #' 
 "_PACKAGE"
 
 # avoid "no visible binding for global variable" messages from check()
-utils::globalVariables(c('.',
- 'Author', 'day_month_year', 'decision', 'decision_by', 'decision_date', 'description', 'description', 'downloads',   
- 'have_changed', 'Last modified', 'last_comment', 'License', 'll', 'long_name', 'Maintainer',
- 'must_change', 'name', 'Name', 'new_weight', 'package', 'Published',
- 'score', 'Version', 'was_decision_made', 'weight', 'X1', 'X2', 'ea_v',
- 'setNames', 'lower_limit', 'upper_limit', 'Role')
+utils::globalVariables(
+  c(
+    '.',
+    'Author',
+    'day_month_year',
+    'decision',
+    'decision_by',
+    'decision_date',
+    'description',
+    'description',
+    'downloads',
+    'have_changed',
+    'Last modified',
+    'last_comment',
+    'License',
+    'll',
+    'long_name',
+    'Maintainer',
+    'must_change',
+    'name',
+    'Name',
+    'new_weight',
+    'package',
+    'Published',
+    'score',
+    'Version',
+    'was_decision_made',
+    'weight',
+    'X1',
+    'X2',
+    'ea_v',
+    'setNames',
+    'lower_limit',
+    'upper_limit',
+    'Role',
+    'row_n',
+    'estimate',
+    'succ_icon',
+    'type',
+    'decision_cat_sum',
+    'decision_cat_disp',
+    'date_added',
+    'user_role',
+    'old_role',
+    'new_role',
+    'role'
+  )
 )
 
 # report_include_choices <- c("Report Author", "Report Date", "Risk Score", 

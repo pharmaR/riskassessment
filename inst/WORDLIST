@@ -4,6 +4,7 @@ Aravind
 CMD
 Chromote
 Conf
+DOCX
 Deployment’
 Devs
 GSK
@@ -38,7 +39,9 @@ bs
 bslib's
 cmd
 config
+configs
 covr
+cran
 dev
 docx
 dropdown
