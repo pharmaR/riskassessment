@@ -107,11 +107,11 @@ createCard <- function(title, desc, value, is_perc = FALSE, is_url = FALSE,
 # For HTML Report, creates card GRID based on metrics data
 createGrid <- function(metrics){
 
-  col_length <- nrow(metrics)%/%3
+  col_width <- 3
 
   fluidRow(style = "padding-right: 10px", class = "card-group",
            column(width = 4, {
-             lapply(X = 1:col_length, function(i){
+             lapply(X = seq(1, nrow(metrics), col_width), function(i){
                createCard(title = metrics$title[i],
                           desc = metrics$desc[i],
                           value = dplyr::case_when(metrics$name[i] != 'has_bug_reports_url' ~ metrics$value[i],
@@ -124,7 +124,7 @@ createGrid <- function(metrics){
              })
            }),
            column(width = 4, {
-             lapply(X = (col_length + 1):(2*col_length), function(i){
+             lapply(X = seq(2, nrow(metrics), col_width), function(i){
                createCard(title = metrics$title[i],
                           desc = metrics$desc[i],
                           value = dplyr::case_when(metrics$name[i] != 'has_bug_reports_url' ~ metrics$value[i],
@@ -137,7 +137,7 @@ createGrid <- function(metrics){
              })
            }),
            column(width = 4, {
-             lapply(X = (2*col_length + 1):nrow(metrics), function(i){
+             lapply(X = seq(3, nrow(metrics), col_width), function(i){
                createCard(title = metrics$title[i],
                           desc = metrics$desc[i],
                           value = dplyr::case_when(metrics$name[i] != 'has_bug_reports_url' ~ metrics$value[i],

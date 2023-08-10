@@ -24,17 +24,10 @@ metricGridServer <- function(id, metrics) {
     output$grid <- renderUI({
       req(nrow(metrics()) > 1) # need at least two cards to make a metric grid UI
       
-      col_length <- (nrow(metrics()) + 1) %/% 3
-      
-      adjustment_for_custom_box_grid <- ifelse(nrow(metrics()) %% col_length == 0,
-                                               0,
-                                               ifelse(nrow(metrics()) %% col_length ==1,
-                                                      1,
-                                                      -1))
-      column_vector_grid_split <- split(seq_len(nrow(metrics())), rep(1:3, c(col_length, 
-                                              col_length + adjustment_for_custom_box_grid, 
-                                              col_length)))
-    
+      columns <- 3
+      rows <- ceiling(nrow(metrics()) / columns)
+      column_vector_grid_split <- split(seq_len(nrow(metrics())), rep(1:columns, length.out = nrow(metrics())))
+
       fluidRow(style = "padding-right: 10px", class = "card-group",
                map(column_vector_grid_split, 
                    ~ column(width= 4,map(.x,~ metricBoxUI(session$ns(metrics()$name[.x])))))
