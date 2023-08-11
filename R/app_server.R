@@ -8,12 +8,23 @@
 #' @importFrom loggit loggit
 #' @noRd
 app_server <- function(input, output, session) {
+  
+  old <- options()
+  onStop(function() {
+    unlink("source/*", recursive = TRUE)
+    options(old)
+    })
+  options(repos = c(CRAN = "https://cran.rstudio.com"))
+  
   # Collect user info.
   user <- reactiveValues()
-  credential_config <- get_golem_config("credentials", file = app_sys("db-config.yml"))
-  role_opts <- list(admin = purrr::imap(credential_config$privileges, ~ if ("admin" %in% .x) .y) %>% unlist(use.names = FALSE) %>% as.list())
-  role_opts[["nonadmin"]] <- as.list(setdiff(credential_config$roles, unlist(role_opts$admin)))
-  approved_roles <- credential_config[["privileges"]]
+  credential_config <- do.call(reactiveValues, get_credential_config())
+  role_opts <- reactiveValues()
+  observe({
+    role_opts[["admin"]] <- purrr::imap(credential_config$privileges, ~ if ("admin" %in% .x) .y) %>% unlist(use.names = FALSE) %>% as.list()
+    role_opts[["nonadmin"]] <- as.list(setdiff(credential_config$roles, unlist(role_opts$admin)))
+  }) %>%
+    bindEvent(credential_config$roles, credential_config$privileges)
   trigger_events <- reactiveValues(
     reset_pkg_upload = 0,
     reset_sidebar = 0
@@ -39,7 +50,7 @@ app_server <- function(input, output, session) {
 
   
   observeEvent(res_auth$user, {
-    req(res_auth$admin == TRUE | "weight_adjust" %in% approved_roles[[res_auth$role]])
+    req(res_auth$admin == TRUE | "weight_adjust" %in% credential_config$privileges[[res_auth$role]])
     
       appendTab("apptabs",
                 tabPanel(
@@ -62,16 +73,24 @@ app_server <- function(input, output, session) {
                         title = "Roles & Privileges",
                         mod_user_roles_ui("userRoles")
                       ),
-                    if ("weight_adjust" %in% approved_roles[[res_auth$role]])
-                      tabPanel(
-                        id = "reweight_id",
-                        title = "Assessment Reweighting",
-                        reweightViewUI("reweightInfo")
-                      )
+                    tabPanel(
+                      id = "reweight_id",
+                      title = "Assessment Reweighting",
+                      reweightViewUI("reweightInfo")
+                    )
                   ),
                   tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';"))
                 ))
   }, priority = 1)
+  
+  observeEvent(credential_config$privileges, {
+    req(user$role)
+    
+    if ("weight_adjust" %in% credential_config$privileges[[user$role]])
+      showTab("credentials", "Assessment Reweighting")
+    else
+      hideTab("credentials", "Assessment Reweighting")
+  })
   
   purrr::walk(paste("admin", c("edited_user", "edited_mult_user", "delete_selected_users", "delete_user", "changed_password", "changed_password_users"), sep = "-"),
               ~ observeEvent(input[[.x]], removeModal(), priority = 1))
@@ -84,7 +103,7 @@ app_server <- function(input, output, session) {
                 y <- ifelse(.x == "admin-edit_mult_user", "admin-edit_selected_users", .x)
                 observeEvent(input[[y]], {
                   shinyjs::runjs(paste0("document.getElementById('", .x, c("-start-", "-expire-", "-user-"), "label').innerHTML = ", c("'Start Date'", "'Expiration Date'", "'User Name'"), collapse = ";\n"))
-                  role_lst <- list(id = .x, role_opts = role_opts)
+                  role_lst <- list(id = .x, role_opts = reactiveValuesToList(role_opts))
                   # Send the roles to Javascript side for processing
                   if (!grepl("edit_mult_user", .x))
                     session$sendCustomMessage("roles", role_lst)
@@ -133,17 +152,17 @@ app_server <- function(input, output, session) {
     user$role <- trimws(res_auth$role)
   })
   
-  mod_user_roles_server("userRoles", credential_config)
+  mod_user_roles_server("userRoles", user, credential_config, trigger_events)
   
   # Load server of the reweightView module.
-  metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules, approved_roles, trigger_events)
+  metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules, credential_config, trigger_events)
   
   # Load server of the uploadPackage module.
-  auto_decision <- mod_decision_automation_server("automate", user, approved_roles)
-  uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules, approved_roles, trigger_events)
+  auto_decision <- mod_decision_automation_server("automate", user, credential_config)
+  uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules, credential_config, trigger_events)
   
   # Load server of the sidebar module.
-  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs, approved_roles, trigger_events)
+  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs, credential_config, trigger_events)
 
   changes <- reactiveVal(0)
   observe({
@@ -177,18 +196,27 @@ app_server <- function(input, output, session) {
     get_comm_data(selected_pkg$name())
   })
   
+  create_src_dir <- eventReactive(input$tabs, input$tabs == "Source Explorer")
+  
+  mod_pkg_explorer_server("pkg_explorer", selected_pkg,
+                          create_dir = create_src_dir,
+                          user = user,
+                          credentials = credential_config)
+  
   # Load server for the maintenance metrics tab.
   maintenance_data <- maintenanceMetricsServer('maintenanceMetrics',
                                                selected_pkg,
                                                maint_metrics,
                                                user,
+                                               credential_config,
                                                parent = session)
   
   # Load server for the community metrics tab.
   community_data <- communityMetricsServer('communityMetrics',
                                            selected_pkg,
                                            community_usage_metrics,
-                                           user)
+                                           user,
+                                           credential_config)
   
   # Load server of the report preview tab.
   reportPreviewServer(id = "reportPreview",
@@ -198,10 +226,19 @@ app_server <- function(input, output, session) {
                       com_metrics_raw = community_usage_metrics,
                       mm_comments = maintenance_data$comments,
                       cm_comments = community_data$comments,
+                      # se_comments = src_explorer_data$comments, # not an arg
                       downloads_plot_data = community_data$downloads_plot_data,
                       user = user,
+                      credential_config,
                       app_version = golem::get_golem_options('app_version'),
                       metric_weights = metric_weights)
+  
+  # Load server for the package dependencies tab.
+  dependencies_data <- packageDependenciesServer('packageDependencies',
+                                               selected_pkg,
+                                               user,
+                                               changes,
+                                               parent = session)
   
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)

@@ -18,8 +18,9 @@ test_that("utils_insert_db functions other than dbUpdate", {
   
   # load pkg info for stringr into the database
   pkg_name <- "stringr"
+  pkg_info <- test_pkg_info[[pkg_name]]
   
-  insert_pkg_info_to_db(pkg_name, app_db_loc)
+  insert_pkg_info_to_db(pkg_name, pkg_info$Version, db_name = app_db_loc)
 
   test_that("insert_pkg_info_to_db works", {
     pkg <- dbSelect(
@@ -36,7 +37,7 @@ test_that("utils_insert_db functions other than dbUpdate", {
   insert_riskmetric_to_db(pkg_name, app_db_loc)
   
   pkg_id <- dbSelect("SELECT id FROM package WHERE name = {pkg_name}", app_db_loc)
-
+  
   test_that("insert_riskmetric_to_db", {
     mmdata <-   dbSelect(
       "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
@@ -49,7 +50,7 @@ test_that("utils_insert_db functions other than dbUpdate", {
     expect_equal(names(mmdata), c("name", "long_name", "description", "is_perc", "is_url", "value"))
     expect_equal(mmdata$name[1], "has_vignettes")
   })
-
+  
   insert_community_metrics_to_db(pkg_name, app_db_loc)
   
   test_that("insert_community_metrics_to_db works", {
@@ -64,13 +65,13 @@ test_that("utils_insert_db functions other than dbUpdate", {
   })
   
   update_metric_weight(metric_name = 'has_vignettes', metric_weight = 2, app_db_loc)
-                                   
+  
   test_that("update_metric_weight works", {
-  mtwt <-  dbSelect(
+    mtwt <-  dbSelect(
       "SELECT name, weight 
      FROM metric where name = 'has_vignettes'", db_name = app_db_loc
     )
-  testthat::expect_equal(mtwt$weight, 2)
+    testthat::expect_equal(mtwt$weight, 2)
   })
   
   old_package <- dbSelect("SELECT * FROM package", app_db_loc)
@@ -103,4 +104,3 @@ test_that("utils_insert_db functions other than dbUpdate", {
   rm(app_db_loc, pkg_name, pkg_id)
   
 })
-  

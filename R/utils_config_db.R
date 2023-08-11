@@ -20,7 +20,11 @@ set_colors <- function(decision_categories) {
 configure_db <- function(dbname, config) {
   if (missing(config)) config <- get_golem_config(NULL, file = app_sys("db-config.yml"))
 
+  # Perform checks before configuring database
   check_decision_config(config[["decisions"]])
+  if (!is.null(config[["metric_weights"]]))
+    check_metric_weights(config[["metric_weights"]])
+  check_credentials(config[["credentials"]])
   
   # Set decision categories
   purrr::walk(config[["decisions"]]$categories, ~ dbUpdate("INSERT INTO decision_categories (decision) VALUES ({.x})", dbname))
@@ -36,12 +40,17 @@ configure_db <- function(dbname, config) {
   purrr::iwalk(config[["decisions"]]$colors, ~ {col_lst[.y] <<- .x})
   purrr::iwalk(col_lst, ~ dbUpdate("UPDATE decision_categories SET color = {.x} WHERE decision = {.y}", dbname))
   
-  if (!is.null(config[["metric_weights"]]))
-    check_metric_weights(config[["metric_weights"]])
-  
   # Set metric weights
   if (!is.null(config[["metric_weights"]]))
     purrr::iwalk(config[["metric_weights"]], ~ if (!is.null(.x)) dbUpdate("UPDATE metric SET weight = {.x} WHERE name = {.y}", dbname))
+  
+  # Set user roles
+  purrr::walk(config[["credentials"]]$roles, ~ dbUpdate("INSERT INTO roles (user_role) VALUES ({.x})", dbname))
+  
+  # Set privileges
+  update_statements <- purrr::imap(config[["credentials"]]$privileges, ~ glue::glue("UPDATE roles SET {.x} = 1 WHERE user_role = '{.y}'")) %>%
+    unlist(use.names = FALSE)
+  purrr::iwalk(update_statements, ~ dbUpdate(.x, dbname))
 }
 
 check_decision_config <- function(dec_config) {
@@ -144,4 +153,8 @@ check_credentials <- function(credentials_lst) {
   
   if (!all(privileges_roles %in% credentials_lst$roles))
     warning(glue::glue("The following role(s) designated under privileges is(are) not present in the 'roles' configuration: {paste(privileges_roles[!privileges_roles %in% credentials_lst$roles], collapse = ', ')}"))
+  
+  valid_privileges <- unique(unlist(credentials_lst$privileges[credentials_lst$roles], use.names = FALSE))
+  if (!all(used_privileges %in% valid_privileges))
+    warning(glue::glue("The following privilege(s) is(are) not assigned to any 'role' in the credentials configuration: {paste(used_privileges[!used_privileges %in% valid_privileges], collapse = ', ')}"))
 }

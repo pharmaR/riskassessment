@@ -35,13 +35,16 @@ reportPreviewUI <- function(id) {
 #' @keywords internal
 #' 
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
-                                com_metrics_raw, mm_comments, cm_comments,
-                                downloads_plot_data, user, app_version,
+                                com_metrics_raw, mm_comments, cm_comments, #se_comments,
+                                downloads_plot_data, user, credentials, app_version,
                                 metric_weights) {
+  if (missing(credentials))
+    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
+  
   moduleServer(id, function(input, output, session) {
     
     # IntroJS.
-    introJSServer(id = "introJS", text = reactive(rp_steps), user)
+    introJSServer(id = "introJS", text = reactive(rp_steps), user, credentials)
 
     # Render Output UI for Report Preview.
     output$reportPreview_configs_ui <- renderUI({
@@ -74,13 +77,14 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             
             br(), br(),
             
-            div(id = NS(id, "pkg-summary-grp"),
-              # Compose pkg summary - either disabled, enabled, or pre-populated
-              uiOutput(NS(id, "pkg_summary_ui")),
-              
-              # Submit or Edit Summary for selected Package.
-              uiOutput(NS(id, "submit_edit_pkg_summary_ui")),
-            ),
+            if ("overall_comment" %in% credentials$privileges[[user$role]]) 
+              div(id = NS(id, "pkg-summary-grp"),
+                  # Compose pkg summary - either disabled, enabled, or pre-populated
+                  uiOutput(NS(id, "pkg_summary_ui")),
+                  
+                  # Submit or Edit Summary for selected Package.
+                  uiOutput(NS(id, "submit_edit_pkg_summary_ui")),
+              ),
             
             br(), br()
           )
@@ -164,6 +168,23 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                   hr(),
                   fluidRow(
                     column(width = 12, uiOutput(NS(id, 'communityMetrics_ui')))
+                  )
+                )
+              } else "",
+              
+              
+              if(any(c('Source Explorer Comments') %in% report_includes())) {
+                tagList(
+                  br(), br(),
+                  hr(),
+                  fluidRow(
+                    column(width = 12,
+                           h5("Source Explorer",
+                              style = "text-align: center; padding-bottom: 50px;"),
+                           showHelperMessage(message = "Source code visals not available."),
+                           if('Source Explorer Comments' %in% report_includes())
+                             viewCommentsUI(NS(id, 'se_comments')) else ""
+                    )
                   )
                 )
               } else "",
@@ -338,6 +359,17 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                        pkg_name = selected_pkg$name,
                        label = 'Community Usage Metrics Comments')
     
+    # grab comments here since it's not being passed as an arg to module
+    se_comments <- eventReactive(list(selected_pkg$name()), {
+      get_se_comments(selected_pkg$name()) # see utils
+    })
+    
+    # View Comm Usage comments.
+    viewCommentsServer(id = 'se_comments',
+                       comments = se_comments, # not a arg
+                       pkg_name = selected_pkg$name,
+                       label = 'Source Explorer Comments')
+    
     # Maintenance metrics cards.
     metricGridServer("mm_metricGrid", metrics = maint_metrics)
     
@@ -397,6 +429,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       req(selected_pkg$name())
       
       tagList(
+        h5(code('{riskmetric}'), 'Assessment Date:'), selected_pkg$date_added(),
         if('Risk Score' %in% report_includes()) tagList(h5('Risk Score:'), selected_pkg$score()) else "",
         h5('Package Decision:'),ifelse(is.na(selected_pkg$decision()), 'Pending',selected_pkg$decision())
       )

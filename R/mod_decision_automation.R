@@ -88,9 +88,9 @@ mod_decision_automation_ui_2 <- function(id){
 #' @importFrom purrr compact
 #' @importFrom shinyWidgets tooltipOptions
 #' @importFrom colourpicker colourInput updateColourInput
-mod_decision_automation_server <- function(id, user, approved_roles){
-  if (missing(approved_roles))
-    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+mod_decision_automation_server <- function(id, user, credentials){
+  if (missing(credentials))
+    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
@@ -185,7 +185,7 @@ mod_decision_automation_server <- function(id, user, approved_roles){
     })
     
     output$auto_classify <- renderUI({
-      if ("auto_decision_adjust" %in% approved_roles[[user$role]]) {
+      if ("auto_decision_adjust" %in% credentials$privileges[[user$role]]) {
         tagList(
           br(),br(),
           hr(),
@@ -253,27 +253,25 @@ mod_decision_automation_server <- function(id, user, approved_roles){
       ))
     })
     
-    observeEvent(input$auto_dropdown, {
-      req("auto_decision_adjust" %in% approved_roles[[user$role]])
-      
-      showModal(modalDialog(
-        size = "l",
-        footer = actionButton(ns("close_decision_modal"), "Close"),
-        uiOutput(ns("decision_rule_div"))
-      ))
-    })
+    purrr::walk(c("auto_dropdown", "auto_dropdown2"), ~
+                  observeEvent(input[[.x]], {
+                    req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
+                    
+                    showModal(modalDialog(
+                      size = "l",
+                      footer = actionButton(ns("close_decision_modal"), "Close"),
+                      uiOutput(ns("decision_rule_div"))
+                    ))
+                  })
+    )
     
     observeEvent(input$close_decision_modal, {
       removeModal()
       shinyjs::runjs("document.body.setAttribute('data-bs-overflow', 'auto');")
     })
     
-    observeEvent(input$auto_dropdown2, {
-      shinyjs::click("auto_dropdown")
-    })
-    
     output$decision_rule_div <- renderUI({
-      req("auto_decision_adjust" %in% approved_roles[[user$role]])
+      req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
       
       tagList(
         div(
@@ -309,7 +307,7 @@ mod_decision_automation_server <- function(id, user, approved_roles){
     
     output$auto_settings <-
       renderUI({
-        req("auto_decision_adjust" %in% approved_roles[[user$role]])
+        req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
         
         div(
           style = "float: right;",
@@ -321,7 +319,7 @@ mod_decision_automation_server <- function(id, user, approved_roles){
     
     output$auto_settings2 <-
       renderUI({
-        req("auto_decision_adjust" %in% approved_roles[[user$role]])
+        req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
         
         div(
           style = "float: right;",
@@ -480,7 +478,7 @@ mod_decision_automation_server <- function(id, user, approved_roles){
       })
     
     observeEvent(input$submit_auto, {
-      req("auto_decision_adjust" %in% approved_roles[[user$role]])
+      req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
       
       showModal(modalDialog(
         size = "l",
@@ -507,7 +505,7 @@ mod_decision_automation_server <- function(id, user, approved_roles){
     })
     
     observeEvent(input$submit_color, {
-      req("auto_decision_adjust" %in% approved_roles[[user$role]])
+      req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
       
       showModal(modalDialog(
         size = "l",
@@ -539,7 +537,7 @@ mod_decision_automation_server <- function(id, user, approved_roles){
     })
     
     observeEvent(input$confirm_submit_auto, {
-      req("auto_decision_adjust" %in% approved_roles[[user$role]])
+      req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
       
       out_lst <- purrr::compact(reactiveValuesToList(auto_decision))
       dbUpdate("UPDATE decision_categories SET lower_limit = NULL, upper_limit = NULL")
@@ -568,7 +566,7 @@ mod_decision_automation_server <- function(id, user, approved_roles){
       
     
     observeEvent(input$confirm_submit_col, {
-      req("auto_decision_adjust" %in% approved_roles[[user$role]])
+      req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
       
       selected_colors <- 
         decision_lst %>%

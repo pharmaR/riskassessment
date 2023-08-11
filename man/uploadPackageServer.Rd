@@ -4,7 +4,7 @@
 \alias{uploadPackageServer}
 \title{Server logic for the 'Upload Package' module}
 \usage{
-uploadPackageServer(id, user, auto_list, approved_roles, trigger_events)
+uploadPackageServer(id, user, auto_list, credentials, trigger_events)
 }
 \arguments{
 \item{id}{a module id}

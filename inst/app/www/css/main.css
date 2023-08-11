@@ -4,7 +4,7 @@
 }
 
 .container-fluid > .tabbable {
-  padding-bottom: 55px;
+  padding-bottom: 75px;
 }
 
 #footer a {
@@ -21,6 +21,7 @@
   padding-bottom: 10px;
   margin-top: 70px;
   background: #f7f7f7;
+  z-index: 1;
 }
 
 #raa-logo img {
@@ -42,4 +43,18 @@
 #upload_package-rem_pkg_btn:active,
 #upload_package-rem_pkg_btn:focus {
 box-shadow: 0 0 0 0.25rem rgb(51, 153, 255, 50%);
+}
+
+.tab-pane {
+  position: relative;
+}
+
+.jstree {
+  overflow: auto;
+  max-height: 62vh;
+}
+
+.jstree-disable {
+  opacity: 50%;
+  pointer-events: none;
 }

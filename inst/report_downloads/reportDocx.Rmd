@@ -21,6 +21,7 @@ params:
   pkg_summary: NA
   mm_comments: NA
   cm_comments: NA
+  se_comments: NA
   maint_metrics: NA
   com_metrics: NA
   com_metrics_raw: NA
@@ -76,6 +77,7 @@ tagList(
   strong('Maintainer:'),   br(), getElement(params$pkg, 'maintainer'),   br(), br(),
   strong('License:'),      br(), getElement(params$pkg, 'license'),      br(), br(),
   strong('Published:'),    br(), getElement(params$pkg, 'published'),    br(), br(),
+  strong(code('{riskmetric}'), 'Assessment Date:'),    br(), getElement(params$pkg, 'date_added'),    br(), br(),
   if('Risk Score' %in% params$report_includes) tagList(strong('Risk Score:'),   br(), getElement(params$pkg, 'score'),        br(), br()) else "",
   strong('Package Decision:'), br(), ifelse(is.na(params$pkg[['decision']]), 'Pending', params$pkg[['decision']])
   )
@@ -220,6 +222,22 @@ if('Community Usage Comments' %in% params$report_includes){
       pkg_name = params$pkg$name,
       comments = params$cm_comments))
   )
+}
+```
+
+
+```{r source_explorer_metrics}
+if(any(c('Source Explorer Comments') %in% params$report_includes)) {
+tagList(
+  br(),
+  h2('Source Explorer'),
+  br(),
+  h6("Source code visals not available."),
+  br(),
+  h2('Comments'),
+  HTML(outputComments(
+    pkg_name = params$pkg$name,
+    comments = params$se_comments)))
 }
 ```
 

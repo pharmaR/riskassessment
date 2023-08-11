@@ -24,6 +24,7 @@ params:
   pkg_summary: NA
   mm_comments: NA
   cm_comments: NA
+  se_comments: NA
   maint_metrics: NA
   com_metrics: NA
   com_metrics_raw: NA
@@ -106,11 +107,11 @@ createCard <- function(title, desc, value, is_perc = FALSE, is_url = FALSE,
 # For HTML Report, creates card GRID based on metrics data
 createGrid <- function(metrics){
 
-  col_length <- nrow(metrics)%/%3
+  col_width <- 3
 
   fluidRow(style = "padding-right: 10px", class = "card-group",
            column(width = 4, {
-             lapply(X = 1:col_length, function(i){
+             lapply(X = seq(1, nrow(metrics), col_width), function(i){
                createCard(title = metrics$title[i],
                           desc = metrics$desc[i],
                           value = dplyr::case_when(metrics$name[i] != 'has_bug_reports_url' ~ metrics$value[i],
@@ -123,7 +124,7 @@ createGrid <- function(metrics){
              })
            }),
            column(width = 4, {
-             lapply(X = (col_length + 1):(2*col_length), function(i){
+             lapply(X = seq(2, nrow(metrics), col_width), function(i){
                createCard(title = metrics$title[i],
                           desc = metrics$desc[i],
                           value = dplyr::case_when(metrics$name[i] != 'has_bug_reports_url' ~ metrics$value[i],
@@ -136,7 +137,7 @@ createGrid <- function(metrics){
              })
            }),
            column(width = 4, {
-             lapply(X = (2*col_length + 1):nrow(metrics), function(i){
+             lapply(X = seq(3, nrow(metrics), col_width), function(i){
                createCard(title = metrics$title[i],
                           desc = metrics$desc[i],
                           value = dplyr::case_when(metrics$name[i] != 'has_bug_reports_url' ~ metrics$value[i],
@@ -177,6 +178,7 @@ tagList(
   h6('Maintainer:'), params$pkg$maintainer,
   h6('License:'), params$pkg$license,
   h6('Published:'), params$pkg$published,
+  h6(code('{riskmetric}'), 'Assessment Date:'), params$pkg$date_added,
   if('Risk Score' %in% params$report_includes) tagList(h6('Risk Score:'), params$pkg$score) else "",
   h6('Package Decision:'), ifelse(is.na(params$pkg$decision), 'Pending', params$pkg$decision)
 )
@@ -288,6 +290,34 @@ tagList(
       } else ""
     )
   }
+)
+```
+
+
+```{r source_explorer}
+tagList(
+  if(any(c('Source Explorer Comments') %in% params$report_includes)) {
+    tagList(
+      br(),
+      hr(),
+      br(), br(),
+      h5("Source Explorer", style = "text-align: center;"),
+      br(),
+      h6("Source code visals not available."),
+      br()
+    )
+  } else "",
+  if('Source Explorer Comments' %in% params$report_includes){
+    tagList(
+      br(),
+      h5('Comments', style = "padding-bottom:10px;"),
+      wellPanel(
+        HTML(showComments(
+          pkg_name = params$pkg$name,
+          comments = params$se_comments))
+      )
+    )
+  } else ""
 )
 ```
 

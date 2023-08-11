@@ -1,3 +1,29 @@
+# riskassessment 2.0.0
+
+### Enhancements
+* Expand privileges to include commenting on metrics and packages (#564)
+* Allow `admin` users to edit roles and privileges (#541)
+* Download source tarball when uploading package to database so that users can explore source contents of package (#574)
+* Added card Download Trend and linear trend plot on community usage metrics (#438)
+* Introduced cards to Database tab, reviewing contents of db (#587)
+* Prominently display the date a package was added (#486)
+* Fix issue where the repository being used to gather information was inconsistent
+* Added Package Dependencies page to "Package Metrics" tab, and two new cards to Maintenance Metrics page (#261)
+
+### Squashed Bugs
+* Fixed busted button introduced with #547 (#592)
+
+### Docs
+* Updated `riskassessment` vignette to reflect new tab structure
+
+
+### For Devs
+* Disable using the Microsoft R Application Network (MRAN) for restoring packages
+* Removed legacy code that set the `covr_coverage` assessment's metric weight to 0 in the assessmentInfo mod and metric table initialization sql file.
+
+
+
+
 # riskassessment 1.0.0
 
 ### Enhancements

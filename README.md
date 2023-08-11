@@ -16,9 +16,10 @@ status](https://codecov.io/gh/pharmaR/riskassessment/branch/master/graph/badge.s
 
 `riskassessment` is an R package containing a shiny front-end to augment
 the utility of the [`riskmetric`](https://github.com/pharmaR/riskmetric)
-package within an organizational context. Recently awarded the title for
-“Best App” at [Shiny Conf 2023](https://bit.ly/raa_shinyconf23) (see
-[Recognition](#recognition) section below).
+package within an organizational context. We’re honored to announce this
+app was recently awarded the title for “Best App” at [Shiny Conf
+2023](https://bit.ly/raa_shinyconf23) (see [Recognition](#recognition)
+section below).
 
 <br>
 

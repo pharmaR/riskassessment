@@ -4,7 +4,7 @@
 \alias{reweightViewServer}
 \title{Server logic for the 'Re-weight View' module}
 \usage{
-reweightViewServer(id, user, decision_list, approved_roles, trigger_events)
+reweightViewServer(id, user, decision_list, credentials, trigger_events)
 }
 \arguments{
 \item{id}{the module id}
