@@ -63,7 +63,9 @@ utils::globalVariables(
     'user_role',
     'old_role',
     'new_role',
-    'role'
+    'role',
+    'Package',
+    'Actions'
   )
 )
 
