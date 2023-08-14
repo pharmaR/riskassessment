@@ -13,7 +13,7 @@ test_that("Reactivity of reportPreview", {
   )
   
   # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 1E6)
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
   app$wait_for_idle()
   
   # set pkg_name to dplyr
