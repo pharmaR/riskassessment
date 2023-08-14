@@ -156,7 +156,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                    label = "Upload all",
                    icon = icon("fas fa-upload fa-solid", class = "fa-regular", lib = "font-awesome"),
                    size = "xs",
-                   style = "height:24px; padding-top:1px;"
+                   style = "height:30px; padding-top:1px;"
                  )
                 )
               ),
