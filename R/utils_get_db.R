@@ -134,6 +134,29 @@ get_cm_comments <- function(pkg_name, db_name = golem::get_golem_options('assess
     purrr::map(rev)
 }
 
+#' The 'Get Source Explorer Comments' function
+#' 
+#' Retrieve the Community Metrics comments for a specific package
+#' 
+#' @param pkg_name character name of the package
+#' @param db_name character name (and file path) of the database
+#' 
+#' @importFrom glue glue
+#' @importFrom purrr map
+#' 
+#' @returns a data frame
+#' @noRd
+get_se_comments <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
+  dbSelect(
+    "SELECT user_name, user_role, comment, added_on
+       FROM comments
+       WHERE id = {pkg_name} AND comment_type = 'se'"
+    , db_name
+  ) %>%
+    purrr::map(rev)
+}
+
+
 #' The 'Get Maintenance Metrics Data' function
 #' 
 #' Pull the maint metrics data for a specific package id, and create 
