@@ -8,8 +8,8 @@
 <meta name="description" content="riskassessment">
 <title>User Roles and Privileges • riskassessment</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="User Roles and Privileges">
 <meta property="og:description" content="riskassessment">
@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">riskassessment</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,14 +100,16 @@ configuration will be used as reference. For more information see the <a href=".
 where the default roles are defined with privileges we’ll discuss in
 this article:</p>
 <p><br></p>
-<center>
-<img src="images/config_privileges.png">
-</center>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">privileges</span><span class="kw">:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">admin</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">admin</span><span class="kw">,</span><span class="at"> weight_adjust</span><span class="kw">,</span><span class="at"> auto_decision_adjust</span><span class="kw">,</span><span class="at"> final_decision</span><span class="kw">,</span><span class="at"> revert_decision</span><span class="kw">,</span><span class="at"> add_package</span><span class="kw">,</span><span class="at"> delete_package</span><span class="kw">,</span><span class="at"> overall_comment</span><span class="kw">,</span><span class="at"> general_comment</span><span class="kw">]</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">lead</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">weight_adjust</span><span class="kw">,</span><span class="at"> auto_decision_adjust</span><span class="kw">,</span><span class="at"> final_decision</span><span class="kw">,</span><span class="at"> revert_decision</span><span class="kw">,</span><span class="at"> add_package</span><span class="kw">,</span><span class="at"> delete_package</span><span class="kw">,</span><span class="at"> overall_comment</span><span class="kw">,</span><span class="at"> general_comment</span><span class="kw">]</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">reviewer</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">add_package</span><span class="kw">,</span><span class="at"> general_comment</span><span class="kw">]</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">viewer</span><span class="kw">:</span></span></code></pre></div>
 <p><br></p>
 <div class="section level2">
 <h2 id="privileges">Privileges<a class="anchor" aria-label="anchor" href="#privileges"></a>
 </h2>
-<p>At the time this vignette was authored, there are six different
+<p>At the time this vignette was authored, there are eight different
 privileges that can be assigned to a role:</p>
 <ul>
 <li>
@@ -137,14 +139,22 @@ consideration</li>
 <a href="User_Roles_and_Privileges.html#delete-packages">Delete
 Packages</a> (<code>delete_package</code>): can remove packages from
 consideration</li>
+<li>
+<a href="User_Roles_and_Privileges.html#overall-commentator">Overall
+Commentator</a> (<code>overall_comment</code>): can add/edit the overall
+comment and summary for a package</li>
+<li>
+<a href="User_Roles_and_Privileges.html#general-commentator">General
+Commentator</a> (<code>general_comment</code>): can add maintenance and
+community metric comments</li>
 </ul>
 <div class="section level4">
 <h4 id="administrator">Administrator<a class="anchor" aria-label="anchor" href="#administrator"></a>
 </h4>
-<p>Basically, the <code>admin</code> privilege includes all the
-privileges discussed below, plus the ability to manage credentials. The
-credential-heavy features of the <code>admin</code> privilege are
-discussed at length in <a href="../articles/Credential_Manager.html">“Credential Manager”
+<p>Basically, the <code>admin</code> privilege allows a user to manage
+the credentials and privileges of other users. The credential-heavy
+features of the <code>admin</code> privilege are discussed at length in
+<a href="../articles/Credential_Manager.html">“Credential Manager”
 guide</a>. Please reference that vignette for more information.</p>
 <p><font size="2"><a href="User_Roles_and_Privileges.html">return to
 top</a></font></p>
@@ -380,6 +390,7 @@ this privilege.</p>
 <center>
 <img src="images/final_decision_privilege.png">
 </center>
+<p><br></p>
 <p><font size="2"><a href="User_Roles_and_Privileges.html">return to
 top</a></font></p>
 </div>
@@ -390,9 +401,11 @@ top</a></font></p>
 final decision after it has been made. Doing so will set the package’s
 status to “under review” and will re-enable “overall comments” regarding
 the decision.</p>
+<p><br></p>
 <center>
 <img src="images/revert_decision_privilege.png">
 </center>
+<p><br></p>
 <p><font size="2"><a href="User_Roles_and_Privileges.html">return to
 top</a></font></p>
 </div>
@@ -401,9 +414,11 @@ top</a></font></p>
 </h4>
 <p>A user with the <code>add_package</code> privilege can upload
 packages to the database for consideration.</p>
+<p><br></p>
 <center>
 <img src="images/add_package_privilege.png">
 </center>
+<p><br></p>
 <p><font size="2"><a href="User_Roles_and_Privileges.html">return to
 top</a></font></p>
 </div>
@@ -412,9 +427,49 @@ top</a></font></p>
 </h4>
 <p>A user with the <code>delete_package</code> privilege can remove
 packages from consideration (the database).</p>
+<p><br></p>
 <center>
 <img src="images/delete_package_privilege.png">
 </center>
+<p><br></p>
+<p><font size="2"><a href="User_Roles_and_Privileges.html">return to
+top</a></font></p>
+</div>
+<div class="section level4">
+<h4 id="overall-commentator">Overall Commentator<a class="anchor" aria-label="anchor" href="#overall-commentator"></a>
+</h4>
+<p>A user with the <code>overall_comment</code> privilege can add/edit
+two optional high-level summaries for a package:</p>
+<ul>
+<li>First, the “Overall Comment”, located on the sidebar, is an outlet
+for users to specify a quick synopsis related to the package decision,
+and</li>
+<li>The Package Summary, located on the “Build Report” tab, allows a
+user to compose a long-form, open-ended summary of their evaluation /
+review process for the package of interest</li>
+</ul>
+<p>Unlike maintenance or community usage metrics, each package can only
+have one entry for “Overall Comment” and “Package Summary”.</p>
+<p><br></p>
+<center>
+<img src="images/overall_comment_privilege.png">
+</center>
+<p><br></p>
+<p><font size="2"><a href="User_Roles_and_Privileges.html">return to
+top</a></font></p>
+</div>
+<div class="section level4">
+<h4 id="general-commentator">General Commentator<a class="anchor" aria-label="anchor" href="#general-commentator"></a>
+</h4>
+<p>A user with the <code>general_comment</code> privilege can add
+comments regarding the maintenance and community metrics of a package.
+These are meant to provide suggestions or justifications for decision
+making.</p>
+<p><br></p>
+<center>
+<img src="images/general_comment_privilege.png">
+</center>
+<p><br></p>
 <p><font size="2"><a href="User_Roles_and_Privileges.html">return to
 top</a></font></p>
 <p><br></p>
@@ -426,21 +481,26 @@ top</a></font></p>
 </h2>
 <p>User roles group select privileges together providing users with
 different, but not necessarily mutually exclusive, access to the
-application. The default configuration contains three user roles:
+application. The default configuration contains four user roles:
 <strong>admin</strong>, <strong>lead</strong>,
-<strong>reviewer</strong>. Here is a snippet from the
-<code>inst/db-config.yml</code> file where these roles are defined:</p>
+<strong>reviewer</strong>, <strong>viewer</strong>. Here is a snippet
+from the <code>inst/db-config.yml</code> file where these roles are
+defined:</p>
 <p><br></p>
-<center>
-<img src="images/config_privileges.png">
-</center>
+<div class="sourceCode" id="cb2"><pre class="sourceCode yml"><code class="sourceCode yaml"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">privileges</span><span class="kw">:</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">admin</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">admin</span><span class="kw">,</span><span class="at"> weight_adjust</span><span class="kw">,</span><span class="at"> auto_decision_adjust</span><span class="kw">,</span><span class="at"> final_decision</span><span class="kw">,</span><span class="at"> revert_decision</span><span class="kw">,</span><span class="at"> add_package</span><span class="kw">,</span><span class="at"> delete_package</span><span class="kw">,</span><span class="at"> overall_comment</span><span class="kw">,</span><span class="at"> general_comment</span><span class="kw">]</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">lead</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">weight_adjust</span><span class="kw">,</span><span class="at"> auto_decision_adjust</span><span class="kw">,</span><span class="at"> final_decision</span><span class="kw">,</span><span class="at"> revert_decision</span><span class="kw">,</span><span class="at"> add_package</span><span class="kw">,</span><span class="at"> delete_package</span><span class="kw">,</span><span class="at"> overall_comment</span><span class="kw">,</span><span class="at"> general_comment</span><span class="kw">]</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">reviewer</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">add_package</span><span class="kw">,</span><span class="at"> general_comment</span><span class="kw">]</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">viewer</span><span class="kw">:</span></span></code></pre></div>
 <p><br></p>
 <p>In this configuration, an <strong>admin</strong> user has access to
 the entire application, a <strong>lead</strong> user has access to all
 privileges except administrative ones (e.g. managing user credentials),
-and a <strong>reviewer</strong> only has the privilege to add packages
-for consideration. An organization can customize these user roles to
-support their needs. For more information please reference the <a href="../articles/Deployment.html">“Deployment” guide</a>.</p>
+a <strong>reviewer</strong> only has the privilege to add packages for
+consideration and adding comments/descriptions, and a
+<strong>viewer</strong> can only view the current state of assessment.
+An organization can customize these user roles to support their needs.
+For more information please reference the <a href="../articles/Deployment.html">“Deployment” guide</a>.</p>
 <p><font size="2"><a href="User_Roles_and_Privileges.html">return to
 top</a></font></p>
 <p><br></p>
