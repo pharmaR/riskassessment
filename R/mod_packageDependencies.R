@@ -118,12 +118,13 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       cbind(
         pkg_df(),
         data.frame(
-          Actions = shinyInput(actionButton, nrow(pkg_df()),
-                               "button_",
-                               size = "xs",
-                               style = "height:24px; padding-top:1px;",
-                               label = icon("arrow-right", class = "fa-regular", lib = "font-awesome"),
-                               onclick = paste0('Shiny.setInputValue(\"', ns("select_button"), '\", this.id, {priority: "event"})')
+          Actions = shinyInput(
+            actionButton, nrow(pkg_df()),
+            "button_",
+            size = "xs",
+            style = "height:24px; padding-top:1px;",
+            label = icon("arrow-right", class = "fa-regular", lib = "font-awesome"),
+            onclick = paste0('Shiny.setInputValue(\"', ns("select_button"), '\", this.id, {priority: "event"})')
           )
         )
       ) %>% # remove action button if there is nothing to review
