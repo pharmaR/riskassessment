@@ -28,6 +28,7 @@ params:
   com_metrics: NA
   com_metrics_raw: NA
   downloads_plot_data: NA
+  metric_tbl: NA
 ---
 
 <style type="text/css">
