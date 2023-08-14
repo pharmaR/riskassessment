@@ -1,5 +1,3 @@
-# riskassessment (development version)
-
 # riskassessment 2.0.0
 
 ### Enhancements
