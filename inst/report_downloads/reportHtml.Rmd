@@ -157,7 +157,7 @@ createGrid <- function(metrics){
                           icon_class = metrics$icon_class[i])
              })
            }),
-        if(any(!(metrics$title %in% metric$long_name))) {
+        if(any(!(metrics$title %in% metric_tbl$long_name))) {
         tags$em("* Provided for additional context. Not a {riskmetric} assessment, so this measure will not impact the risk score.")
         }
     )
