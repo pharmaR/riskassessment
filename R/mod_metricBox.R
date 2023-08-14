@@ -18,6 +18,7 @@ metricBoxUI <- function(id) {
 #' @param succ_icon icon used if is_true.
 #' @param unsucc_icon icon used if not is_true.
 #' @param icon_class string type of icon
+#' @param type string to color the icon ("information" or "danger")
 #'
 #'
 #' @import dplyr
