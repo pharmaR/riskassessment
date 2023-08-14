@@ -4,18 +4,18 @@
 \alias{addCommentServer}
 \title{addComment module's server logic}
 \usage{
-addCommentServer(id, metric_abrv, user_name, user_role, pkg_name)
+addCommentServer(id, metric_abrv, user, credentials, pkg_name)
 }
 \arguments{
 \item{id}{a module id name}
 
 \item{metric_abrv}{placeholder}
 
+\item{pkg_name}{string name of the package}
+
 \item{user_name}{placeholder}
 
 \item{user_role}{placeholder}
-
-\item{pkg_name}{string name of the package}
 }
 \description{
 addComment module's server logic

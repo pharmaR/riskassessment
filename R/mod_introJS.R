@@ -6,7 +6,7 @@
 #' 
 introJSUI <- function(id) {
   fluidRow(
-    style = "float: right",
+    style = "position: absolute; top: 1.5rem; right: 0; margin-right: auto;",
     column(
       width = 3,
       shinyWidgets::actionBttn(NS(id, "help"),
@@ -31,13 +31,13 @@ introJSUI <- function(id) {
 #' 
 #' @importFrom rintrojs introjs
 #' @keywords internal
-introJSServer <- function(id, text, user, approved_roles) {
-  if (missing(approved_roles))
-    approved_roles <- get_golem_config("credentials", file = app_sys("db-config.yml"))[["privileges"]]
+introJSServer <- function(id, text, user, credentials) {
+  if (missing(credentials))
+    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   moduleServer(id, function(input, output, session) {
     
     steps <- reactive({
-      if(user$admin || "weight_adjust" %in% approved_roles[[user$role]]) {
+      if(user$admin || "weight_adjust" %in% credentials$privileges[[user$role]]) {
         apptab_steps <- bind_rows(apptab_admn, apptab_steps)
       }
       

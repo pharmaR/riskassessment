@@ -22,6 +22,7 @@ test_that("decision_automation works", {
                                   class = c("tbl_df", "tbl", "data.frame"), 
                                   row.names = c(NA, -2L))
   actual <- app$get_value(export = "automate-datatable")
+
   expect_equal(actual, expected)
   app$click("automate-auto_dropdown")
   app$wait_for_idle()
@@ -30,16 +31,20 @@ test_that("decision_automation works", {
   expected <- list(`Insignificant Risk` = c(0, 0.1), 
                    `Severe Risk` = c(0.7, 1))
   actual <- app$get_value(export = "automate-auto_decision")
+  app$wait_for_idle()
+  
   expect_equal(actual[sort(names(actual))], expected[sort(names(expected))])
   
   # Check automate decision module output matches as well
   actual <- app$get_value(export = "auto_decision_output")
   expect_equal(actual[sort(names(actual))], expected[sort(names(expected))])
-  
+
   # Check that inputs got set correctly on initialization
   # Check group checkbox
   expected <- c("Insignificant Risk", "Severe Risk")
   actual <- app$get_value(input = "automate-auto_include")
+  app$wait_for_idle()
+  
   expect_equal(actual, expected)
   
   # Check "Insignificant Risk" input

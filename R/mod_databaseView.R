@@ -25,6 +25,8 @@ databaseViewUI <- function(id) {
           tags$section(
             shinydashboard::box(width = 12,
                                 title = h3("Uploaded Packages", style = "margin-top: 5px"),
+                                br(),
+                                metricGridUI(NS(id, 'metricGrid')),
                                 DT::dataTableOutput(NS(id, "packages_table")),
                                 br(),
                                 h5("Report Configurations"),
@@ -94,7 +96,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     table_data <- eventReactive({uploaded_pkgs(); changes()}, {
      
       db_pkg_overview <- dbSelect(
-        'SELECT pi.name, pi.version, pi.score, dc.decision, pi.decision_by, pi.decision_date, c.last_comment
+        'SELECT pi.name, pi.date_added, pi.version, pi.score, dc.decision, pi.decision_by, pi.decision_date, c.last_comment
         FROM package as pi
         LEFT JOIN (
             SELECT id, max(added_on) as last_comment FROM comments GROUP BY id)
@@ -110,7 +112,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
         dplyr::mutate(decision    = if_else(is.na(decision)    | decision    == "", "-", decision)) %>%
         dplyr::mutate(decision_by = if_else(is.na(decision_by) | decision_by == "", "-", decision_by)) %>% 
         dplyr::mutate(decision_date = ifelse(is.na(decision_date) | decision_date == "NA", "-", decision_date)) %>% 
-        dplyr::select(name, version, score, decision, decision_by, decision_date, last_comment)
+        dplyr::select(name, date_added, version, score, decision, decision_by, decision_date, last_comment)
     })
     
     exportTestValues(
@@ -121,6 +123,15 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
         pkgs()
       }
     )
+    
+    # Database cards (saved to share with db report): Package Count,
+    #   Count (%) by Decision made, Count (%) by Decision
+    cards <- eventReactive(table_data(), {
+      build_db_cards(data = table_data() %>% mutate(decision = factor(decision, levels = decision_lst)))
+    })
+    
+    # Create metric grid cards, containing database stats.
+    metricGridServer(id = 'metricGrid', metrics = cards)
     
     # Create table for the db dashboard.
     output$packages_table <- DT::renderDataTable(server = FALSE, {  # This allows for downloading entire data set
@@ -166,7 +177,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                                          "transparent")))
           )),
         selection = list(mode = 'multiple'),
-        colnames = c("Package", "Version", "Score", "Decision", "Decision by", "Decision Date", "Last Comment", "Explore Metrics"),
+        colnames = c("Package", "Date Uploaded", "Version", "Score", "Decision", "Decision by", "Decision Date", "Last Comment", "Explore Metrics"),
         rownames = FALSE,
         extensions = "Buttons",
         options = list(
@@ -208,7 +219,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       # select maintenance metrics panel
       updateTabsetPanel(session = parent, 
                         inputId = 'tabs', 
-                        selected = "Maintenance Metrics"
+                        selected = "Package Metrics"
       )
       
       # jump over to risk-assessment-tab so we can see the maintenance metrics

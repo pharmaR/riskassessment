@@ -43,25 +43,6 @@ run_app <- function(
     }
   }
   
-  # Note that this overrides other credential set up
-  login_creds <- NULL
-  pre_auth_user <- NULL
-  if (isFALSE(getOption("golem.app.prod"))) {
-    arg_lst <- as.list(match.call())
-  
-    login_creds <- list(user_id = "",
-                        user_pwd = "cxk1QEMYSpYcrNB")
-  if (!is.null(arg_lst$pre_auth_user)) {
-    pre_auth_user <- arg_lst$pre_auth_user
-    if (isTRUE(pre_auth_user) || pre_auth_user == "admin") {
-      login_creds$user_id <- "admin"
-    } else {
-      login_creds$user_id <- pre_auth_user
-    }
-    credentials_db_name <- gsub("\\.sqlite", "_dev\\.sqlite", credentials_db_name)
-  }
-  }
-  
   # Run the app
   with_golem_options(
     app = shinyApp(
@@ -75,8 +56,6 @@ run_app <- function(
     golem_opts = list(app_version = app_ver,
                       credentials_db_name = credentials_db_name,
                       assessment_db_name = assessment_db_name,
-                      pre_auth_user = pre_auth_user,
-                      login_creds = login_creds,
                       decision_categories = decision_categories,
                       ...)
   )

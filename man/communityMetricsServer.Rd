@@ -4,7 +4,7 @@
 \alias{communityMetricsServer}
 \title{Community Usage Metrics server logic}
 \usage{
-communityMetricsServer(id, selected_pkg, community_metrics, user)
+communityMetricsServer(id, selected_pkg, community_metrics, user, credentials)
 }
 \arguments{
 \item{id}{a module id name}

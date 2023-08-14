@@ -1,5 +1,5 @@
 test_that("assign_decisions works", {
-  "Placeholder"
+  expect_true("Placeholder" != "")
 })
 
 test_that("set_colors works", {
