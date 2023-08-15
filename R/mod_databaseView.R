@@ -179,6 +179,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
         selection = list(mode = 'multiple'),
         colnames = c("Package", "Date Uploaded", "Version", "Score", "Decision", "Decision by", "Decision Date", "Last Comment", "Explore Metrics"),
         rownames = FALSE,
+        filter = "top",
         extensions = "Buttons",
         options = list(
           searching = TRUE,
