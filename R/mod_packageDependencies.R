@@ -156,7 +156,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                  actionButton(
                    inputId =  ns("update_all_packages"),
                    label = "Upload all",
-                   icon = icon("fas fa-upload fa-solid", class = "fa-regular", lib = "font-awesome"),
+                   icon = icon("fas fa-upload", class = "fa-regular", lib = "font-awesome"),
                    size = "xs",
                    style = "height:30px; padding-top:1px;"
                  )
