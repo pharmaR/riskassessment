@@ -111,7 +111,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         
       purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), cran_pkgs)) %>% 
         right_join(pkginfo, by = "name") %>% 
-        distinct(package, type, name, version, score)
+        select(package, type, name, version, score) %>%
+        distinct()
       }
 
     }) 
