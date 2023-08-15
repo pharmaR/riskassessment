@@ -73,3 +73,6 @@ example2:
 demo:
   assessment_db: database_demo.sqlite
   credential_db: credentials_demo.sqlite
+  metric_weights:
+    covr_coverage: 0
+    has_vignettes: 2
