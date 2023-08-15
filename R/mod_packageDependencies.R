@@ -333,8 +333,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     
     observeEvent(input$update_all_packages, {
       req(pkg_df(), loaded2_db())
-      pkgs_update <- pkg_df() %>% 
-        dplyr::filter(is.na(score) | score == "")
+      
+      pkgs_update <- pkg_df() %>%
+        dplyr::filter(is.na(score) | score == "") %>%
+        dplyr::filter(!name %in% c(rownames(installed.packages(priority = "base"))))
       
       n_packages <- nrow(pkgs_update)
       if (n_packages > 0) {
