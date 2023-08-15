@@ -646,8 +646,6 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
   default_range <- c(
     max(downloads_data$day_month_year) - 45 - (365 * 2),
     max(downloads_data$day_month_year) + 15)
-
-
   
   # plot
   plot <- plotly::plot_ly(
@@ -655,7 +653,8 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
     x = ~day_month_year,
     y = ~downloads,
     name = "# Downloads", type = 'scatter', 
-    mode = 'lines+markers', line = list(color = '#1F9BCF'),
+    mode = 'lines+markers', 
+    line = list(color = '#1F9BCF'),
     marker = list(color = '#1F9BCF'),
     hoverinfo = "text",
     text = ~glue::glue(

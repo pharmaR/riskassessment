@@ -18,10 +18,11 @@ metricBoxUI <- function(id) {
 #' @param succ_icon icon used if is_true.
 #' @param unsucc_icon icon used if not is_true.
 #' @param icon_class string type of icon
+#' @param type string to color the icon ("information" or "danger")
 #'
 #'
 #' @import dplyr
-#' @importFrom stringr str_sub
+#' @importFrom stringr str_sub str_extract
 #' @importFrom glue glue
 #' @keywords internal
 #'
@@ -30,6 +31,9 @@ metricBoxServer <- function(id, title, desc, value,
                             succ_icon = "check", unsucc_icon = "times",
                             icon_class = "text-success", type = "information") {
   moduleServer(id, function(input, output, session) {
+
+    metric <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
+    
     # Render metric.
     output$metricBox_ui <- renderUI({
       req(title, desc)
@@ -62,6 +66,11 @@ metricBoxServer <- function(id, title, desc, value,
         icon_name <- "percent"
         icon_class <- "text-info"
       }
+
+      # add asterisk to title if it is not in the metric table
+      # skip databaseView cards
+      title = if_else(stringr::str_extract(session$ns(id), "\\w+") != "databaseView" 
+                      & !title %in% metric$long_name, paste0(title, "*"), title)
 
       # define some styles prior to building card
       card_style <- "max-width: 400px; max-height: 250px; padding-left: 5%; padding-right: 5%;" # overflow-y: scroll;

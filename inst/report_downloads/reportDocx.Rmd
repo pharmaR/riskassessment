@@ -26,6 +26,7 @@ params:
   com_metrics: NA
   com_metrics_raw: NA
   downloads_plot_data: NA
+  metric_tbl: NA
 ---
 
 <!-- ![](raa-image.png){style="position:float-right; width:63px; height:52px;"} -->
