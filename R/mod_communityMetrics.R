@@ -23,7 +23,10 @@ communityMetricsUI <- function(id) {
 #' 
 #' @keywords internal
 #' 
-communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
+communityMetricsServer <- function(id, selected_pkg, community_metrics, user, credentials) {
+  if (missing(credentials))
+    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
+  
   moduleServer(id, function(input, output, session) {
     
     # Render Output UI for Community Usage Metrics.
@@ -35,15 +38,11 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
         showHelperMessage()
       
       else if(!selected_pkg$name() %in% vect) {
-          showHelperMessage(message = glue::glue("Community Usage Metrics not avaiable for ", {selected_pkg$name()} ))
+          showHelperMessage(message = glue::glue("Community Usage Metrics not avaiable for {{{selected_pkg$name()}}}"))
       }
       else {
-        fluidPage(
-          
           tagList(
-            br(),
             introJSUI(NS(id, 'introJS')),
-            h4("Community Usage Metrics", style = "text-align: center;"),
             br(), br(),
             div(id = "cum_infoboxes", metricGridUI(NS(id, 'metricGrid'))),
             br(), br(),
@@ -52,15 +51,14 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
                      plotly::plotlyOutput(NS(id, "downloads_plot"), height = "500px")))),
             br(), br(),
             div(id = "comments_for_cum", fluidRow( 
-              addCommentUI(id = session$ns("add_comment")),
+              if ("general_comment" %in% credentials$privileges[[user$role]]) addCommentUI(id = session$ns("add_comment")),
               viewCommentsUI(id = session$ns("view_comments"))))
           )
-        )
       }
     })
     
     # IntroJS.
-    introJSServer(id = "introJS", text = reactive(cum_steps), user)
+    introJSServer(id = "introJS", text = reactive(cum_steps), user, credentials)
 
     # Community cards (saved to share with report preview): the 
     # time since first release, the time since latest release, 
@@ -75,8 +73,8 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user) {
     # Call module to create comments and save the output.
     comment_added <- addCommentServer(id = "add_comment",
                                       metric_abrv = 'cum',
-                                      user_name = reactive(user$name),
-                                      user_role = reactive(user$role),
+                                      user = user,
+                                      credentials = credentials,
                                       pkg_name = selected_pkg$name)
     
     comments <- eventReactive(list(comment_added(), selected_pkg$name()), {

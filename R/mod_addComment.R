@@ -30,14 +30,18 @@ addCommentUI <- function(id) {
 #' @importFrom stringr str_replace_all
 #' @keywords internal
 #' 
-addCommentServer <- function(id, metric_abrv, user_name, user_role, pkg_name) {
+addCommentServer <- function(id, metric_abrv, user, credentials, pkg_name) {
+  if (missing(credentials))
+    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
+  
   moduleServer(id, function(input, output, session) {
     
     output$add_comment_ui <- renderUI({
       
-      metric_name <- ifelse(metric_abrv == "mm",
-                            "Maintenance Metrics",
-                            "Community Usage Metrics")
+      metric_name <- switch(metric_abrv,
+                            mm = "Maintenance Metrics",
+                            cum = "Community Usage Metrics",
+                            se = "Source Explorer")
       
       textAreaInput(
         session$ns("add_comment"),
@@ -45,30 +49,23 @@ addCommentServer <- function(id, metric_abrv, user_name, user_role, pkg_name) {
         width = "100%",
         rows = 4,
         placeholder = glue::glue(
-          "Commenting as user: {user_name()}, role: {user_role()}"
+          "Commenting as user: {user$name}, role: {user$role}"
         )
       )
     })
     
     observeEvent(input$submit_comment, {
       req(input$add_comment)
+      req("general_comment" %in% credentials$privileges[[user$role]])
       
       comment <- trimws(input$add_comment)
       
       if (comment != "") {
         
-        # TODO: comments can't contain "'". Check for other invalid
-        # characters.
-        # if(str_count(string = comment, pattern = "'") != 0)
-        #   validate("Invalid character: comments cannot contain single
-        #            quotes (')")
-        
-        comment <- stringr::str_replace_all(comment, "'", "''")
-
-        dbUpdate(glue::glue(
-        "INSERT INTO comments values('{pkg_name()}', '{user_name()}', 
-        '{user_role()}', '{comment}', '{metric_abrv}',
-        '{getTimeStamp()}')")
+        dbUpdate(
+        "INSERT INTO comments values({pkg_name()}, {user$name}, 
+        {user$role}, {comment}, {metric_abrv},
+        {getTimeStamp()})"
         )
         
         updateTextAreaInput(session, "add_comment", value = "")

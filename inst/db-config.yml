@@ -1,0 +1,78 @@
+default:
+  assessment_db: database.sqlite
+  loggit_json: loggit.json
+  credential_db: credentials.sqlite
+  credentials:
+    roles:
+      - admin
+      - lead
+      - reviewer
+      - viewer
+    privileges:
+      admin: [admin, weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]
+      lead: [weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]
+      reviewer: [add_package, general_comment]
+      viewer:
+  decisions:
+    categories:
+      - Low Risk
+      - Medium Risk
+      - High Risk
+    rules:
+      Medium Risk:
+        - .3983
+        - .6391
+      High Risk:
+        - .6391
+        - 1
+example:
+  assessment_db: database_ex.sqlite
+  credential_db: credentials_ex.sqlite
+  credentials:
+    roles:
+      - admin
+      - reweighter
+      - decider
+      - reverter
+      - adder
+      - deleter
+    privileges:
+      admin: admin
+      reweighter: [weight_adjust, auto_decision_adjust]
+      decider: final_decision
+      reverter: [final_decision, revert_decision]
+      adder: [add_package]
+      deleter: [add_package, delete_package]
+  decisions:
+    categories:
+      - Insignificant Risk
+      - Minor Risk
+      - Moderate Risk
+      - Major Risk
+      - Severe Risk
+    rules:
+      Insignificant Risk:
+        - 0
+        - .1
+      Severe Risk:
+        - .7
+        - 1
+    colors:
+      Moderate Risk: !expr grDevices::rgb(52, 235, 229, maxColorValue = 255)
+  metric_weights:
+    covr_coverage:
+    has_vignettes: 2
+example2:
+  assessment_db: database_ex2.sqlite
+  credential_db: credentials_ex2.sqlite
+  decisions:
+    categories:
+      - GxP Compliant
+      - Needs Review
+      - Not GxP Compliant
+demo:
+  assessment_db: database_demo.sqlite
+  credential_db: credentials_demo.sqlite
+  metric_weights:
+    covr_coverage: 0
+    has_vignettes: 2

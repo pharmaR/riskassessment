@@ -1,3 +1,73 @@
+# riskassessment 2.0.0
+
+### Enhancements
+* Expand privileges to include commenting on metrics and packages (#564)
+* Allow `admin` users to edit roles and privileges (#541)
+* Download source tarball when uploading package to database so that users can explore source contents of package (#574)
+* Added card Download Trend and linear trend plot on community usage metrics (#438)
+* Introduced cards to Database tab, reviewing contents of db (#587)
+* Prominently display the date a package was added (#486)
+* Fix issue where the repository being used to gather information was inconsistent
+* Added Package Dependencies page to "Package Metrics" tab, and two new cards to Maintenance Metrics page (#261)
+* Identify non-riskmetric cards (#573)
+
+### Squashed Bugs
+* Fixed busted button introduced with #547 (#592)
+
+### Docs
+* Updated `riskassessment` vignette to reflect new tab structure
+
+
+### For Devs
+* Disable using the Microsoft R Application Network (MRAN) for restoring packages
+* Removed legacy code that set the `covr_coverage` assessment's metric weight to 0 in the assessmentInfo mod and metric table initialization sql file.
+
+
+
+
+# riskassessment 1.0.0
+
+### Enhancements
+* Updated the version of `{riskmetric}` used to V0.2.2
+* Implemented usage of configuration file instead of passing arguments in `run_app()` (#459)
+  * Added decision categories (#459)
+  * Added decision automation rules (#459)
+  * Added log file designation (#463)
+  * Implemented user roles/privileges to allow for more granular access to actions in the application (#527)
+  * Allow metric weights to be initialized (#482)
+* From a computational speed perspective, we made the following improvements that users should feel
+  * During package upload, inserting community metrics into database (#516)
+  * When metric weights are changed, we re-score instead of re-assess, saving huge amounts of time (#537)
+* The Database View got a few updates:
+  * Added Decision-related columns like the decision time stamp & decision source
+  * Introduced the decision category table
+* Enhanced (what was formerly known as) the "Report Preview" tab to include:
+  * A more holistic Report Builder. This allows users to define what content shows up in the report (#348).
+  * Users can now compose a long form "Package Summary" to keep track of more pertinent items (perhaps items less central to {riskmetric} output) for a more rounded package review (#348).
+* Allowed the certain users to set a custom color for decision categories (#465)
+* Added a code coverage (covr_coverage) card and add optimized the card layout logic (#533)
+
+### Squashed Bugs
+* Fixed Chromote error (#477)
+* Fixed bug preventing icons from displaying on admin tab (#427)
+* Fixed button alignment issues (#514)
+* Re-positioned footer to be at the bottom of the visible page (#518)
+* Added a new check that conditionally delivers message about differing pkg versions ONLY when CSV file is loaded (#515)
+* Fixed broken links in docs
+
+### Docs
+* Updated help files for `build_comm_plotly()` to include example output (#409).
+* Created new (and updated some) user guides to explain how to precisely control the app deployment using a configuration file.
+* Retired some pertinent "old"" user guides in case users are still running old versions of `{riskassessment}`
+
+### For Devs
+* Utilized `glue::glue_sql()` inside of update and select functions (#520)
+* Improved speed of inserting community metrics into database (#516)
+* Re-score instead of re-assess when metric weights are changed, meaning we are now storing the pkg assessment (#537)
+* Pass warning instead of error when default privilege config gets combined with another config (#547)
+
+
+
 # riskassessment 0.1.1
 
 ### Enhancements
@@ -14,6 +84,7 @@
 * Fixed bug where card displaying "Number of downloads in last 12 months" was faulty, summing all months from previous year and none from current year.
 * Report headings were changed to "asis" sentence case to avoid altering case on package names in reports
 * Fix failing tests: prefix AppDriver$new with 'shinytest2::'
+* Fix for Chromote error provided by Winston Chang
 
 ### Docs
 * Added User Feedback survey to `README` (#411)

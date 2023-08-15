@@ -48,6 +48,8 @@ that each is between 0 and 1, and when summed,
 equal 1. The risk of a package will be determined by 1 - sum(metric's
 numeric value <b>x</b> standardized weight)")
 
+privileges_tbl <- readr::read_csv(file.path("data-raw", "privileges.csv"), col_types = "cccc")
+
 
 # Upload format template.
 template <- read.csv(file.path('data-raw', 'upload_format.csv'),  stringsAsFactors = FALSE)
@@ -79,6 +81,10 @@ test_pkg_cum <-
   purrr::map(generate_comm_data) %>%
   purrr::set_names(test_pkg_lst)
 
+color_palette <- c("#06B756","#2FBC06","#67BA04","#81B50A","#96AB0A","#A99D04","#B78D07","#BE7900","#BE6200","#B24F22","#A63E24")
+
+used_privileges <- c("admin", "weight_adjust", "auto_decision_adjust", "final_decision", "revert_decision", "add_package", "delete_package", "overall_comment", "general_comment")
+
 usethis::use_data(
   # app_version, 
   # database_name, #credentials_name,
@@ -87,5 +93,7 @@ usethis::use_data(
   maintenance_metrics_text, maintenance_metrics_tbl,
   testing_text, testing_tbl,
   riskcalc_text, template,
+  privileges_tbl,
   test_pkg_lst, test_pkg_refs, test_pkg_info, test_pkg_assess, test_pkg_cum,
+  color_palette, used_privileges,
   internal = TRUE, overwrite = TRUE)

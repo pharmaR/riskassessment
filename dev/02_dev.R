@@ -47,10 +47,11 @@ usethis::use_package("kableExtra", type = "Suggests")
 # usethis::use_package("rlang")
 # # usethis::use_package("stringi")
 # # usethis::use_package("forcats")
-# 
+# # usethis::use_package("cli")
 # # cannot use dev!
 # # usethis::use_dev_package("tippy") #remotes::install_github("JohnCoene/tippy") #‘1.0.0’
 # usethis::use_package("tippy")
+# usethis::use_package("rjson")
 # 
 # # usethis::use_package("IDEAFilter") # install.packages("IDEAFilter") #‘0.1.0.9000’
 # usethis::use_dev_package("IDEAFilter") # devtools::install_github("Biogen-Inc/IDEAFilter")
@@ -188,6 +189,7 @@ usethis::use_test( "generate_comm_data" )
 # Documentation
 ## Vignettes 
 usethis::use_vignette("getting_started")
+usethis::use_vignette("Deployments")
 
 
 # Before submitting a PR, run this code & update NEWS.md

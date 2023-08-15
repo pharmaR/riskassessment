@@ -5,22 +5,26 @@
 #'
 #' @param command a string
 #' @param db_name character name (and file path) of the database
+#' @param .envir Environment to evaluate each expression in
+#' @param params A list of bindings, named or unnamed. Default is `NULL`, if present parameters will be passed to `DBI::dbBind()`
 #'
 #' @import dplyr
 #' @importFrom DBI dbConnect dbSendStatement dbClearResult dbDisconnect
 #'   dbGetRowsAffected
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
-#' @importFrom glue glue
+#' @importFrom glue glue glue_sql
 #' 
 #' @returns nothing
 #' @noRd
-dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_name')){
+dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_name'), .envir = parent.frame(), params = NULL){
   errFlag <- FALSE
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   tryCatch({
-    rs <- DBI::dbSendStatement(con, command)
+    rs <- DBI::dbSendStatement(con, glue::glue_sql(command, .envir = .envir, .con = con))
+    if (!is.null(params))
+      DBI::dbBind(rs, params)
   }, error = function(err) {
     message <- glue::glue("command: {command} resulted in {err}")
     message(message, .loggit = FALSE)
@@ -51,16 +55,18 @@ dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_
 #' 
 #' @returns nothing
 #' @noRd
-insert_pkg_info_to_db <- function(pkg_name, 
+insert_pkg_info_to_db <- function(pkg_name, pkg_version,
                                   db_name = golem::get_golem_options('assessment_db_name')) {
   tryCatch(
     expr = {
       # get latest high-level package info
       # pkg_name <- "dplyr" # testing
-      if (!isTRUE(getOption("shiny.testmode")))
+      if (isTRUE(getOption("shiny.testmode")))
+        pkg_info <- test_pkg_info[[pkg_name]]
+      else if (identical(Sys.getenv("TESTTHAT"), "true"))
         pkg_info <- get_latest_pkg_info(pkg_name)
       else
-        pkg_info <- test_pkg_info[[pkg_name]]
+        pkg_info <- get_desc_pkg_info(pkg_name, pkg_version)
       
       # store it in the database
       upload_package_to_db(pkg_name, pkg_info$Version, pkg_info$Title,
@@ -114,13 +120,13 @@ upload_package_to_db <- function(name, version, title, description,
                                  authors, maintainers, license, published_on, db_name) {
   tryCatch(
     expr = {
-      dbUpdate(glue::glue(
+      dbUpdate(
         "INSERT or REPLACE INTO package
         (name, version, title, description, maintainer, author,
-        license, published_on, decision, date_added)
-        VALUES('{name}', '{version}', '{title}', '{description}',
-        '{maintainers}', '{authors}', '{license}', '{published_on}',
-        '', '{Sys.Date()}')"), db_name)
+        license, published_on, decision_by, decision_date, date_added)
+        VALUES({name}, {version}, {title}, {description},
+        {maintainers}, {authors}, {license}, {published_on},
+        '', {as.Date(NA)},{Sys.Date()})", db_name)
     },
     error = function(e) {
       loggit::loggit("ERROR", paste("Error in uploading the general info of the package", name, "info", e),
@@ -130,7 +136,7 @@ upload_package_to_db <- function(name, version, title, description,
 }
 
 
-#' The 'Insert MM to DB' Function
+#' The 'Insert MM to DB ' Function
 #'
 #' Get the maintenance and testing metrics info and upload into DB.
 #' 
@@ -146,27 +152,28 @@ upload_package_to_db <- function(name, version, title, description,
 insert_riskmetric_to_db <- function(pkg_name, 
     db_name = golem::get_golem_options('assessment_db_name')){
 
-  if (!isTRUE(getOption("shiny.testmode")))
+  if (!isTRUE(getOption("shiny.testmode"))) {
     riskmetric_assess <-
       riskmetric::pkg_ref(pkg_name,
-                          source = "pkg_cran_remote",
-                          repos = c("https://cran.rstudio.com")) %>%
+                          source = "pkg_cran_remote") %>%
       dplyr::as_tibble() %>%
       riskmetric::pkg_assess()
-  else
+  } else {
     riskmetric_assess <-
       test_pkg_assess[[pkg_name]]
+  }
+  metric_weights_df <- dbSelect("SELECT id, name, weight, is_perc FROM metric", db_name)
+
   
   # Get the metrics weights to be used during pkg_score.
-  metric_weights_df <- dbSelect("SELECT id, name, weight FROM metric", db_name)
   metric_weights <- metric_weights_df$weight
   names(metric_weights) <- metric_weights_df$name
-  
+
   riskmetric_score <-
     riskmetric_assess %>%
     riskmetric::pkg_score(weights = metric_weights)
   
-  package_id <- dbSelect(glue::glue("SELECT id FROM package WHERE name = '{pkg_name}'"), db_name)
+  package_id <- dbSelect("SELECT id FROM package WHERE name = {pkg_name}", db_name)
   
   # Leave method if package not found.
   if(nrow(package_id) == 0){
@@ -175,9 +182,10 @@ insert_riskmetric_to_db <- function(pkg_name,
     return()
   }
   
+  assessment_serialized <- data.frame(pkg_assess = I(lapply(riskmetric_assess, serialize, connection = NULL)))
   # Insert all the metrics (columns of class "pkg_score") into the db.
   # TODO: Are pkg_score and pkg_metric_error mutually exclusive?
-  for(row in 1:nrow(metric_weights_df)){
+  for(row in 1:nrow(metric_weights_df)) {
     metric <- metric_weights_df %>% dplyr::slice(row)
     # If the metric is not part of the assessment, then skip iteration.
     if(!(metric$name %in% colnames(riskmetric_score))) next
@@ -188,26 +196,26 @@ insert_riskmetric_to_db <- function(pkg_name,
     #   then save such value as the metric value.
     # Otherwise, save all the possible values of the metric
     #   (note: has_website for instance may have multiple values).
-    metric_value <- ifelse(
-      "pkg_metric_error" %in% class(riskmetric_assess[[metric$name]][[1]]),
-      "pkg_metric_error",
-      # Since the actual value of these metrics appear on riskmetric_score
-      #   and not on riskmetric_assess, they need to be treated differently.
-      # TODO: this code is not clean, fix it. Changes to riskmetric?
-      ifelse(metric$name %in% c('bugs_status', 'export_help'),
-             round(riskmetric_score[[metric$name]]*100, 2),
-             riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])]))
+
+    metric_value <- case_when(
+      "pkg_metric_error" %in% class(riskmetric_assess[[metric$name]][[1]]) ~ "pkg_metric_error",
+      metric$name == "dependencies" ~ as.character(length(unlist(as.vector(riskmetric_assess[[metric$name]][[1]][1])))),
+      metric$name == "reverse_dependencies" ~ as.character(length(as.vector(riskmetric_assess[[metric$name]][[1]]))),
+      metric$is_perc == 1L ~ as.character(round(riskmetric_score[[metric$name]]*100, 2)[[1]]),
+      TRUE ~ as.character(riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])])
+    )
     
-    dbUpdate(glue::glue(
-      "INSERT INTO package_metrics (package_id, metric_id, weight, value) 
-      VALUES ({package_id}, {metric$id}, {metric$weight}, '{metric_value}')"), db_name
+    dbUpdate(
+      "INSERT INTO package_metrics (package_id, metric_id, value, encode) 
+      VALUES ({package_id}, {metric$id}, {metric_value}, $pkg_assess)", db_name,
+      params = list(pkg_assess = assessment_serialized[metric$name,])
     )
   }
   
-  dbUpdate(glue::glue(
+  dbUpdate(
     "UPDATE package
-    SET score = '{format(round(riskmetric_score$pkg_score[1], 2))}'
-    WHERE name = '{pkg_name}'"), db_name)
+    SET score = {format(round(riskmetric_score$pkg_score[1], 2))}
+    WHERE name = {pkg_name}", db_name)
 }
 
 
@@ -234,18 +242,18 @@ insert_community_metrics_to_db <- function(pkg_name,
   else
     pkgs_cum_metrics <- test_pkg_cum[[pkg_name]]
   
+  pkgs_cum_values <- glue::glue(
+    "('{pkg_name}', {pkgs_cum_metrics$month}, {pkgs_cum_metrics$year}, 
+  {pkgs_cum_metrics$downloads}, '{pkgs_cum_metrics$version}')") %>%
+    glue::glue_collapse(sep = ", ")
+  
   if(nrow(pkgs_cum_metrics) != 0){
-    for (i in 1:nrow(pkgs_cum_metrics)) {
-      dbUpdate(glue::glue(
-        "INSERT INTO community_usage_metrics 
+    dbUpdate(glue::glue(
+      "INSERT INTO community_usage_metrics 
         (id, month, year, downloads, version)
-        VALUES ('{pkg_name}', {pkgs_cum_metrics$month[i]},
-        {pkgs_cum_metrics$year[i]}, {pkgs_cum_metrics$downloads[i]},
-        '{pkgs_cum_metrics$version[i]}')"), db_name)
-    }
+        VALUES {pkgs_cum_values}"), db_name)
   }
 }
-
 
 #' update_metric_weight
 #' 
@@ -259,11 +267,45 @@ insert_community_metrics_to_db <- function(pkg_name,
 #' @noRd
 update_metric_weight <- function(metric_name, metric_weight, 
                                  db_name = golem::get_golem_options('assessment_db_name')){
-  dbUpdate(glue::glue(
+  dbUpdate(
     "UPDATE metric
     SET weight = {metric_weight}
-    WHERE name = '{metric_name}'"
-  ), db_name)
+    WHERE name = {metric_name}"
+  , db_name)
+}
+
+#' The Rescore Function
+#'
+#' Rescore package based on stored riskmetric assessments and weights
+#' 
+#' @param pkg_name string name of the package
+#' @param db_name character name (and file path) of the database
+#' 
+#' @import dplyr
+#' @importFrom riskmetric pkg_score
+#' @importFrom glue glue 
+#' @importFrom purrr pmap_dfc set_names
+#' 
+#' @returns nothing
+#' @noRd
+rescore_package <- function(pkg_name, 
+                            db_name = golem::get_golem_options('assessment_db_name')) {
+  
+  riskmetric_assess <- get_assess_blob(pkg_name, db_name)
+  
+  # Get the metrics weights to be used during pkg_score.
+  metric_weights_df <- get_metric_weights(db_name)
+  metric_weights <- metric_weights_df$weight
+  names(metric_weights) <- metric_weights_df$name
+  
+  riskmetric_score <-
+    riskmetric_assess %>%
+    riskmetric::pkg_score(weights = metric_weights)
+  
+  dbUpdate(
+    "UPDATE package
+    SET score = {format(round(riskmetric_score$pkg_score[1], 2))}
+    WHERE name = {pkg_name}", db_name)
 }
 
 #' db trash collection
@@ -283,4 +325,13 @@ db_trash_collection <- function(db_name = golem::get_golem_options('assessment_d
   if (nrow(cmtbl) >0) {
     dbUpdate("delete from comments where id not in(select name from package)", db_name)
   }
+}
+
+set_credentials_table <- function(credentials, db_name = golem::get_golem_options('credentials_db_name'), passphrase) {
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
+  
+  out <- shinymanager::write_db_encrypt(conn = con, value = credentials, name = "credentials", passphrase = passphrase)
+  
+  DBI::dbDisconnect(con)
+  invisible(out)
 }

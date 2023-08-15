@@ -17,31 +17,24 @@ metricGridUI <- function(id) {
 #' @keywords internal
 #' 
 #' @import dplyr
+#' @importFrom stringr str_extract
 metricGridServer <- function(id, metrics) {
   moduleServer(id, function(input, output, session) {
     
+    metric <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
     
     output$grid <- renderUI({
-      req(nrow(metrics()) > 0)
-      
-      col_length <- nrow(metrics())%/%3
-      
+      req(nrow(metrics()) > 1) # need at least two cards to make a metric grid UI
+
+      columns <- 3
+      column_vector_grid_split <- split(seq_len(nrow(metrics())), rep(1:columns, length.out = nrow(metrics())))
+
       fluidRow(style = "padding-right: 10px", class = "card-group",
-               column(width = 4, {
-                 lapply(X = 1:col_length, function(i){
-                   metricBoxUI(session$ns(metrics()$name[i]))
-                 })
-               }),
-               column(width = 4, {
-                 lapply(X = (col_length + 1):(2*col_length), function(i){
-                   metricBoxUI(session$ns(metrics()$name[i]))
-                 })
-               }),
-               column(width = 4, {
-                 lapply(X = (2*col_length + 1):nrow(metrics()), function(i){
-                   metricBoxUI(session$ns(metrics()$name[i]))
-                 })
-               })
+               map(column_vector_grid_split, 
+                   ~ column(width= 4,map(.x,~ metricBoxUI(session$ns(metrics()$name[.x]))))),
+      if(any(!(metrics()$title %in% metric$long_name)) & stringr::str_extract(session$ns(id), "\\w+") != "databaseView") {
+        tags$em("* Provided for additional context. Not a {riskmetric} assessment, so this measure will not impact the risk score.")
+      } 
       )
     })
     
@@ -56,7 +49,9 @@ metricGridServer <- function(id, metrics) {
             is_perc = metric['is_perc'] == 1,
             is_url = metric['is_url'] == 1,
             succ_icon = metric['succ_icon'],
-            icon_class = metric['icon_class'])
+            icon_class = metric['icon_class'],
+            type = metric['type']
+          )
         )
     })
   })

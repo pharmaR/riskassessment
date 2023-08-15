@@ -11,9 +11,12 @@ golem::detach_all_attached()
 golem::document_and_reload()
 
 # Run the application 
-run_app(login_note = shiny::HTML('<em>Note:</em> To log in for the first time, use the admin user:
+run_app(
+  pre_auth_user = 'admin',
+  login_note = shiny::HTML('<em>Note:</em> To log in for the first time, use the admin user:
                           <u>admin</u> with password <u>QWERTY1</u>.'))
 
 # # turn off any options
 # options(shiny.autoload.r=NULL)
+
 

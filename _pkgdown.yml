@@ -10,11 +10,18 @@ articles:
   navbar: User Guides
   desc: Step-by-step tutorials for modules in the application
   contents:
-  - Administrative_Tools_and_Options
+  - Credential_Manager
+  - User_Roles_and_Privileges
+  - Deployment
 - title: Developer Guides
   desc: Reference material for those who plan to contribute to the application's code base
   contents:
   - starts_with("dev")
+- title: Old User Guides
+  desc: User guides for past versions
+  contents:
+  - Administrative_Tools_and_Options_V0.1.1
+  - Deployment_V0.1.1
 
 reference:
 - title: Run app

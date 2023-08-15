@@ -13,7 +13,8 @@ metricBoxServer(
   is_url = FALSE,
   succ_icon = "check",
   unsucc_icon = "times",
-  icon_class = "text-success"
+  icon_class = "text-success",
+  type = "information"
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ metricBoxServer(
 \item{unsucc_icon}{icon used if not is_true.}
 
 \item{icon_class}{string type of icon}
+
+\item{type}{string to color the icon ("information" or "danger")}
 }
 \description{
 Server logic for the 'Metric Box' module

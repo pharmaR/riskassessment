@@ -4,12 +4,16 @@
 \alias{uploadPackageServer}
 \title{Server logic for the 'Upload Package' module}
 \usage{
-uploadPackageServer(id, user)
+uploadPackageServer(id, user, auto_list, credentials, trigger_events)
 }
 \arguments{
 \item{id}{a module id}
 
 \item{user}{a username}
+
+\item{auto_list}{a list of decision automation rules}
+
+\item{trigger_events}{a reactive values object to trigger actions here or elsewhere}
 }
 \description{
 Server logic for the 'Upload Package' module

@@ -16,7 +16,11 @@ $run_dev.*
 ^rsconnect$
 ^((?!/).)*sqlite$
 ^auto_decisions\.json$
-
+^codecov\.yml$
 _\.new\.png$
 ^_pkgdown\.yml$
 ^pkgdown$
+^Crashpad$
+^tarballs$
+^source$
+^revdep

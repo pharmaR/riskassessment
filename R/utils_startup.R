@@ -18,16 +18,18 @@ create_db <- function(db_name){
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   # Set the path to the queries.
-  path <- app_sys("app/www/sql_queries") #file.path('sql_queries')
+  path <- app_sys("sql_queries") #file.path('sql_queries')
   
   # Queries needed to run the first time the db is created.
   queries <- c(
+    "create_decision_table.sql",
     "create_package_table.sql",
     "create_metric_table.sql",
     "initialize_metric_table.sql",
     "create_package_metrics_table.sql",
     "create_community_usage_metrics_table.sql",
-    "create_comments_table.sql"
+    "create_comments_table.sql",
+    "create_roles_table.sql"
   )
   
   # Append path to the queries.
@@ -61,6 +63,7 @@ create_db <- function(db_name){
 #' Note: the credentials_db_name object is assigned by the deployment user in R/run_app.R
 #' 
 #' @param db_name A string denoting the name of the database
+#' @param admin_role A string denoting the initialized privileges of the admin
 #' 
 #' @import dplyr
 #' @importFrom DBI dbConnect dbDisconnect
@@ -68,7 +71,7 @@ create_db <- function(db_name){
 #' @importFrom shinymanager read_db_decrypt write_db_encrypt
 #' @keywords internal
 #' 
-create_credentials_db <- function(db_name){
+create_credentials_db <- function(db_name, admin_role = ""){
   
   if (missing(db_name) || is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
     stop("db_name must follow SQLite naming conventions (e.g. 'credentials.sqlite')")
@@ -78,8 +81,9 @@ create_credentials_db <- function(db_name){
     user = c("ADMIN", "demo_admin", "demo_nonadmin"),
     password = c("QWERTY1", "Admin@1", "Nonadmin@1"),
     # password will automatically be hashed
-    admin = c(TRUE, TRUE, FALSE),
-    expire = rep(as.character(Sys.Date()), 3),
+    admin = TRUE,
+    expire = as.character(Sys.Date()),
+    role = admin_role,
     stringsAsFactors = FALSE
   )
   
@@ -135,14 +139,26 @@ create_credentials_dev_db <- function(db_name){
   if (missing(db_name) || is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
     stop("db_name must follow SQLite naming conventions (e.g. 'credentials.sqlite')")
   
+  credential_config <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   # Init the credentials table for credentials database
-  credentials <- data.frame(
-    user = c("admin", "nonadmin"),
-    password = c("cxk1QEMYSpYcrNB", "Bt0dHK383lLP1NM"),
-    # password will automatically be hashed
-    admin = c(TRUE, FALSE),
-    stringsAsFactors = FALSE
-  )
+  if (is.null(credential_config)) {
+    credentials <- data.frame(
+      user = c("admin", "lead", "reviewer", "viewer"),
+      password = rep("cxk1QEMYSpYcrNB", 4),
+      # password will automatically be hashed
+      admin = c(TRUE, FALSE, FALSE, FALSE),
+      role = c("admin", "lead", "reviewer", "viewer"),
+      stringsAsFactors = FALSE
+    )
+  } else {
+    credentials <- data.frame(
+      user = credential_config[["roles"]],
+      password = rep("cxk1QEMYSpYcrNB", length(credential_config[["roles"]])),
+      admin = credential_config[["roles"]] %in% credential_config[["privileges"]][["admin"]],
+      role = credential_config[["roles"]],
+      stringsAsFactors = FALSE
+    )
+  }
   
   # Init the credentials database
   shinymanager::create_db(
@@ -162,16 +178,25 @@ create_credentials_dev_db <- function(db_name){
 #' 
 #' @param assess_db A string denoting the name of the assessment database.
 #' @param cred_db A string denoting the name of the credentials database.
+#' @param decision_cat A character vector denoting the decision categories in ascending order of risk
 #'
 #' @return There is no return value. The function is run for its side effects.
 #' @importFrom loggit set_logfile
-#' @importFrom jsonlite write_json
 #'
 #' @export
-initialize_raa <- function(assess_db, cred_db) {
+initialize_raa <- function(assess_db, cred_db, decision_cat) {
+  if (isTRUE(getOption("shiny.testmode"))) return(NULL)
   
-  if (missing(assess_db)) assessment_db <- golem::get_golem_options('assessment_db_name') else assessment_db <- assess_db
-  if (missing(cred_db)) credentials_db <- golem::get_golem_options('credentials_db_name') else credentials_db <- cred_db
+  db_config <- get_golem_config(NULL, file = app_sys("db-config.yml"))
+  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json", "metric_weights")
+  if (any(!names(db_config) %in% used_configs)) {
+    names(db_config) %>%
+      `[`(!. %in% used_configs) %>%
+      purrr::walk(~ warning(glue::glue("Unknown database configuration '{.x}' found in db-config.yml")))
+  }
+  
+  assessment_db <- if (missing(assess_db)) golem::get_golem_options('assessment_db_name') else assess_db
+  credentials_db <- if (missing(cred_db)) golem::get_golem_options('credentials_db_name') else cred_db
   
   if (is.null(assessment_db) || typeof(assessment_db) != "character" || length(assessment_db) != 1 || !grepl("\\.sqlite$", assessment_db))
     stop("assess_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
@@ -179,21 +204,38 @@ initialize_raa <- function(assess_db, cred_db) {
     stop("cred_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
   
   # Start logging info.
-  if (isRunning()) loggit::set_logfile("loggit.json")
-  
+  loggit_file <- get_golem_config("loggit_json", file = app_sys("db-config.yml"))
+  if (isRunning()) loggit::set_logfile(loggit_file)
+
   # https://github.com/rstudio/fontawesome/issues/99
   # Here, we make sure user has a functional version of fontawesome
   fa_v <- packageVersion("fontawesome")
   if(fa_v == '0.4.0') warning(glue::glue("HTML reports will not render with {{fontawesome}} v0.4.0. You currently have v{fa_v} installed. If the report download failed, please install a stable version. We recommend v0.5.0 or higher."))
   
-  if (isFALSE(getOption("golem.app.prod")) && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(credentials_db)) create_credentials_dev_db(credentials_db)
-  
+  check_credentials(db_config[["credentials"]])
+
   # Create package db & credentials db if it doesn't exist yet.
   if(!file.exists(assessment_db)) create_db(assessment_db)
-  if(!file.exists(credentials_db)) create_credentials_db(credentials_db)
+  if(!file.exists(credentials_db)) {
+    admin_role <- db_config[["credentials"]][["privileges"]] %>%
+      purrr::imap(~ if ("admin" %in% .x) .y) %>%
+      unlist(use.names = FALSE) %>%
+      `[`(1)
+    create_credentials_db(credentials_db, admin_role)
+  }
   
-  if(!file.exists("auto_decisions.json")) jsonlite::write_json(data.frame(decision = character(0), lower_limit = numeric(0), upper_limit = numeric(0)), "auto_decisions.json")
+  decision_categories <- if (missing(decision_cat)) golem::get_golem_options('decision_categories') else decision_cat
+  decisions <- suppressMessages(dbSelect("SELECT decision FROM decision_categories", assessment_db))
+  check_dec_cat(decision_categories)
+  if (nrow(decisions) == 0) {
+    configure_db(assessment_db, db_config)
+  } else if (!identical(decisions$decision, decision_categories)) {
+    stop("The decision categories in the configuration file do not match those in the assessment database.")
+  }
   
+  if (!dir.exists("tarballs")) dir.create("tarballs")
+  if (!dir.exists("source")) dir.create("source")
+
   invisible(c(assessment_db, credentials_db))
 }
 
@@ -220,6 +262,7 @@ add_tags <- function(ui, ...) {
     
     if (identical(admin, "true")) {
       ui <- tagList(ui, 
+                    tags$head(favicon(), bundle_resources(app_sys("app/www"), "riskassessment", "shinymanager_resources")),
                     tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';")),
                     tags$script(HTML("var oldfab = Array.prototype.slice.call(document.getElementsByClassName('mfb-component--br'), 0);
                              for (var i = 0; i < oldfab.length; ++i) {
@@ -270,7 +313,7 @@ add_shinymanager_auth <- function(app_ui, app_ver, login_note) {
   if (!isTRUE(getOption("shiny.testmode"))) {
   add_tags(shinymanager::secure_app(app_ui,
     tags_top = tags$div(
-      tags$head(tags$style(HTML(readLines(system.file("app", "www", "css", "login_screen.css", package = "riskassessment"))))),
+      tags$head(favicon(), tags$style(HTML(readLines(app_sys("app/www/css", "login_screen.css"))))),
       tags$head(if (isFALSE(getOption("golem.app.prod")) && !is.null(golem::get_golem_options("pre_auth_user"))) {
         tags$script(HTML(glue::glue("$(document).on('shiny:connected', function () {{
           Shiny.setInputValue('auth-user_id', '{golem::get_golem_options('login_creds')$user_id}');

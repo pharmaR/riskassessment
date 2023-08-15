@@ -12,19 +12,45 @@ sidebarUI <- function(id) {
     tags$b(h4("Package Control Panel", style = "text-align: center;")),
     
     hr(),
-    
-    uiOutput(NS(id, 'select_pkg_ui')),
-    
+
     selectizeInput(
-      inputId = NS(id, "select_ver"),
-      label = h5("Select Version"),
+      inputId = NS(id, "select_pkg"),
+      label = h5("Package Name"),
       choices = "-",
       selected = "-"
+    ) %>%
+      shinyjs::disabled() %>%
+      div(id = NS(id, "select_pkg_ui")),
+    
+
+    fluidRow(
+
+      column(6,
+        tags$label("Date Uploaded", class = c("control-label", "h5")),
+        selectizeInput(
+          inputId = NS(id, "select_date"),
+          label = NULL, #h5("Date Uploaded"),
+          choices = "-",
+          selected = "-"
+        ) %>%
+          shinyjs::disabled()
+      ),
+
+      column(6,
+        tags$label("Pkg Version",
+                   icon("circle-info", class = "fa-xs",
+                     title = "The most recent package version avaiable at date of upload will be used."),
+                   class = c("control-label", "h5")),
+        selectizeInput(
+          inputId = NS(id, "select_ver"),
+          label = NULL,
+          choices = "-",
+          selected = "-"
+        ) %>%
+          shinyjs::disabled(),
+      )
     ),
-    
-    helpText(HTML('<em>Note</em>: the latest package version will be used.')),
-    
-    br(), br(),
+    br(),
     
     fluidRow(
       column(6, div(id = NS(id, "status-wp"), wellPanel(
@@ -32,21 +58,22 @@ sidebarUI <- function(id) {
         htmlOutput(NS(id, "status"))
       ))),
       column(6, div(id = NS(id, "score-wp"), wellPanel(
-        h5("Risk"),
+        h5("Metric Risk"),
         htmlOutput(NS(id, "score"))
       ))
     ),
     
-    br(), br(),
+    br(), br(), br(),
     
     shinyjs::disabled(
       div(id = NS(id, "decision-grp"),
         shinyWidgets::sliderTextInput(
           inputId = NS(id, "decision"),
-          h5("Select Overall Risk"), 
+          h5("Select Overall Decision"), 
           selected = NULL,
           grid = TRUE,
-          c("Low", "Medium", "High")
+          if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk"),
+          force_edges = TRUE
         ),
         
         # Action button to reset decision for selected package.
@@ -81,26 +108,19 @@ sidebarUI <- function(id) {
 #' @param id a module id
 #' @param user a username
 #' @param uploaded_pkgs a vector of packages
+#' @param trigger_events a reactive values object to trigger actions here or elsewhere
 #' 
 #' 
 #' @importFrom shinyjs enable disable
 #' @keywords internal
 #' 
-sidebarServer <- function(id, user, uploaded_pkgs) {
+sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) {
+  if (missing(credentials))
+    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
   moduleServer(id, function(input, output, session) {
     
     # Required for shinyhelper to work.
     # shinyhelper::observe_helpers()
-    
-    # Create list of packages.
-    output$select_pkg_ui <- renderUI({
-      selectizeInput(
-        inputId = NS(id, "select_pkg"),
-        label = h5("Select Package"),
-        choices = c("-", dbSelect('SELECT name FROM package')$name),
-        selected = "-"
-      )
-    })
     
     # Create list of packages.
     observeEvent(uploaded_pkgs(), {
@@ -112,12 +132,14 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
         selected = "-"
       )
       
+      shinyjs::enable("select_pkg")
+      
     }, ignoreNULL = TRUE)
     
     # Get information about selected package.
     selected_pkg <- reactiveValues()
     
-    observeEvent(req(input$select_pkg, user$metrics_reweighted), {
+    observeEvent(req(input$select_pkg, trigger_events$reset_sidebar), {
       pkg_selected <- get_pkg_info(input$select_pkg)
 
       pkg_selected %>%
@@ -129,8 +151,8 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       req(input$select_pkg)
       req(input$select_ver)
       
-      version <- ifelse(input$select_pkg == "-", "-",
-                        glue::glue('{selected_pkg$version} - latest version'))
+      version <- ifelse(input$select_pkg == "-", "-", selected_pkg$version)
+      date_added <- ifelse(input$select_pkg == "-", "-", selected_pkg$date_added)
       
       updateSelectizeInput(
         session,
@@ -139,9 +161,14 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
         selected = version
       )
       
-      shinyjs::disable(id = 'select_ver')
+      updateSelectizeInput(
+        session,
+        'select_date',
+        choices = date_added,
+        selected = date_added
+      )
       
-    }, ignoreInit = TRUE)
+    })
     
     # Display the review status of the selected package.
     output$status <- renderUI({
@@ -153,7 +180,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       if(input$select_ver == "-")
         validate("Please select a version")
       
-      status <- ifelse(selected_pkg$decision == '', "Under Review", "Reviewed")
+      status <- ifelse(is.na(selected_pkg$decision), "Under Review", "Reviewed")
       h5(status)
     })
     
@@ -184,10 +211,10 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       }
       else {
         # Display package comments if a package and version are selected.
-        comments <- dbSelect(glue::glue(
+        comments <- dbSelect(
           "SELECT comment FROM comments
-          WHERE id = '{input$select_pkg}'
-          AND comment_type = 'o'"))$comment
+          WHERE id = {input$select_pkg}
+          AND comment_type = 'o'")$comment
         
         updateTextAreaInput(session, "overall_comment",
                             placeholder = glue::glue('Current Overall Comment: {comments}'))
@@ -196,6 +223,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     
     # Update db if comment is submitted.
     observeEvent(input$submit_overall_comment, {
+      req("overall_comment" %in% credentials$privileges[[user$role]])
       
       current_comment <- trimws(input$overall_comment)
       
@@ -227,11 +255,10 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
           )
         ))
       } else {
-        comment <- stringr::str_replace_all(current_comment, "'", "''")
-        dbUpdate(glue::glue(
+        dbUpdate(
           "INSERT INTO comments
-          VALUES ('{selected_pkg$name}', '{user$name}', '{user$role}',
-          '{comment}', 'o', '{getTimeStamp()}')"))
+          VALUES ({selected_pkg$name}, {user$name}, {user$role},
+          {current_comment}, 'o', {getTimeStamp()})")
         
         updateTextAreaInput(session, "overall_comment", value = "",
                             placeholder = glue::glue('Current Comment: {current_comment}'))
@@ -249,18 +276,15 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     observeEvent(input$submit_overall_comment_yes, {
 
       req(selected_pkg$name)
-      
-      comment <- stringr::str_replace_all(input$overall_comment, "'", "''")
+      req("overall_comment" %in% credentials$privileges[[user$role]])
 
       dbUpdate(
-        glue::glue(
           "UPDATE comments
-          SET comment = '{comment}', added_on = '{getTimeStamp()}'
-          WHERE id = '{selected_pkg$name}' AND
-          user_name = '{user$name}' AND
-          user_role = '{user$role}' AND
+          SET comment = {input$overall_comment}, added_on = {getTimeStamp()}
+          WHERE id = {selected_pkg$name} AND
+          user_name = {user$name} AND
+          user_role = {user$role} AND
           comment_type = 'o'"
-        )
       )
       current_comment <- trimws(input$overall_comment)
       updateTextAreaInput(session, "overall_comment", value = "",
@@ -283,12 +307,12 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       req(input$select_ver)
       
       # Reset decision if no package/version is selected.
-      if(input$select_pkg == "-" || input$select_ver == "-" || selected_pkg$decision == "") {
+      if(input$select_pkg == "-" || input$select_ver == "-" || is.na(selected_pkg$decision)) {
         shinyWidgets::updateSliderTextInput(
           session,
           "decision",
-          choices = c("Low", "Medium", "High"),
-          selected = 'Low'
+          choices = golem::get_golem_options("decision_categories"),
+          selected = golem::get_golem_options("decision_categories")[1]
         )
         
         validate('Please select a package and a version.')
@@ -300,45 +324,67 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       shinyWidgets::updateSliderTextInput(
         session,
         "decision",
-        choices = c("Low", "Medium", "High"),
+        choices = golem::get_golem_options("decision_categories"),
         selected = selected_pkg$decision
       )
     })
     
     # Enable/disable sidebar decision and comment.
-    observeEvent(req(input$select_ver, user$metrics_reweighted), {
+    observeEvent(req(input$select_ver, trigger_events$reset_sidebar), {
       if (input$select_pkg != "-" && input$select_ver != "-" &&
-          (rlang::is_empty(selected_pkg$decision) || selected_pkg$decision == "")) {
-        shinyjs::enable("decision")
-        shinyjs::enable("submit_decision")
+          (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision)) &&
+          "overall_comment" %in% credentials$privileges[[user$role]]) {
         shinyjs::enable("overall_comment")
         shinyjs::enable("submit_overall_comment")
         
       } else{
-        shinyjs::disable("decision")
-        shinyjs::disable("submit_decision")
         shinyjs::disable("overall_comment")
         shinyjs::disable("submit_overall_comment")
       }
     }, ignoreInit = TRUE)
     
-    # Show reset final decision link if user is admin the a final decision has been made.
-    observeEvent(selected_pkg$decision, {
-      req(user$role == "admin")
-      
-      if (input$select_pkg == "-" && input$select_ver == "-" ||
-          (rlang::is_empty(selected_pkg$decision) || selected_pkg$decision == "")) {
-        shinyjs::show("submit_decision")
-        removeUI(paste0("#", NS(id, "reset_decision")), immediate = TRUE)
-      } else {
-        shinyjs::hide("submit_decision")
-        output$reset_decision_ui <- renderUI(actionButton(NS(id, "reset_decision"), "Reset Decision", width = "100%"))
+    observeEvent(req(input$select_ver, trigger_events$reset_sidebar), {
+      req("final_decision" %in% credentials$privileges[[user$role]])
+
+      if (input$select_pkg != "-" && input$select_ver != "-" &&
+          (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) {
+        shinyjs::enable("decision")
+        shinyjs::enable("submit_decision")
+
+      } else{
+        shinyjs::disable("decision")
+        shinyjs::disable("submit_decision")
       }
     }, ignoreInit = TRUE)
+    
+    # Show reset final decision link if user is admin the a final decision has been made.
+    observe({
+
+      if (!(input$select_pkg == "-" && input$select_ver == "-" ||
+          (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) &&
+          "revert_decision" %in% credentials$privileges[[user$role]]) {
+        shinyjs::hide("submit_decision")
+      } else {
+        shinyjs::show("submit_decision")
+      }
+    }) %>%
+      bindEvent(selected_pkg$decision, trigger_events$reset_sidebar,
+                ignoreInit = TRUE)
+    
+    output$reset_decision_ui <- renderUI({
+      req(user$role)
+      req(credentials$privileges)
+      req("revert_decision" %in% credentials$privileges[[user$role]])
+      req(!(input$select_pkg == "-" && input$select_ver == "-" ||
+            (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))))
+      
+      actionButton(NS(id, "reset_decision"), "Reset Decision", width = "100%")
+    })
     
     # Show a confirmation modal when submitting a decision.
     observeEvent(input$submit_decision, {
       req(input$decision)
+      req("final_decision" %in% credentials$privileges[[user$role]])
       
       showModal(modalDialog(
         size = "l",
@@ -365,6 +411,7 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     # Show a confirmation modal when resetting a decision
     observeEvent(input$reset_decision, {
       req(input$decision)
+      req("revert_decision" %in% credentials$privileges[[user$role]])
       
       showModal(modalDialog(
         size = "l",
@@ -392,10 +439,11 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     
     # Update database info after decision is submitted.
     observeEvent(input$submit_confirmed_decision, {
-      dbUpdate(glue::glue(
-        "UPDATE package
-          SET decision = '{input$decision}'
-          WHERE name = '{selected_pkg$name}'")
+      req("final_decision" %in% credentials$privileges[[user$role]])
+      
+      dbUpdate("UPDATE package
+          SET decision_id = {match(input$decision, golem::get_golem_options(\"decision_categories\"))}, decision_by = {user$name}, decision_date = {Sys.Date()}
+          WHERE name = {selected_pkg$name}"
       )
       
       selected_pkg$decision <- input$decision
@@ -413,13 +461,18 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
     })
     
     observeEvent(input$reset_confirmed_decision, {
-      dbUpdate(glue::glue(
-        "UPDATE package
-          SET decision = ''
-          WHERE name = '{selected_pkg$name}'")
-      )
+      req("revert_decision" %in% credentials$privileges[[user$role]])
       
-      selected_pkg$decision <- ''
+      dbUpdate("UPDATE package
+          SET decision_id = NULL, decision_by = '', decision_date = NULL
+          WHERE name = {selected_pkg$name}"
+      )
+      # remove overall comment for this package 
+      dbUpdate("DELETE FROM comments 
+           WHERE comment_type = 'o'
+           AND id IN (SELECT {selected_pkg$name} FROM package)")
+      
+      selected_pkg$decision <- NA_character_
       
       shinyjs::enable("decision")
       shinyjs::enable("submit_decision")
@@ -439,13 +492,14 @@ sidebarServer <- function(id, user, uploaded_pkgs) {
       id = reactive(selected_pkg$id),
       name = reactive(selected_pkg$name),
       version = reactive(selected_pkg$version),
+      date_added = reactive(selected_pkg$date_added),
       title = reactive(selected_pkg$title),
       decision = reactive(selected_pkg$decision),
       description = reactive(selected_pkg$description),
       author = reactive(selected_pkg$author),
       maintainer = reactive(selected_pkg$maintainer),
       license = reactive(selected_pkg$license),
-      published = reactive(selected_pkg$published),
+      published = reactive(selected_pkg$published_on),
       overall_comment_added = reactive(c(input$submit_overall_comment, input$submit_overall_comment_yes)),
       score = reactive(selected_pkg$score)
     )

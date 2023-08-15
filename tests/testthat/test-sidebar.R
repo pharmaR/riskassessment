@@ -1,6 +1,5 @@
 test_that("Reactivity of sidebar", {
-  library(shinytest2, quietly = TRUE)
-  
+
   app_db_loc <- test_path("test-apps", "database.sqlite")
   if (file.exists(app_db_loc)) {
     file.remove(app_db_loc)
@@ -16,7 +15,8 @@ test_that("Reactivity of sidebar", {
   )
   
   # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 600*1000)
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
+  app$wait_for_idle()
   
   # select_pkg is "-"
   expect_equal(app$get_value(input = "sidebar-select_pkg"), "-")
@@ -29,25 +29,25 @@ test_that("Reactivity of sidebar", {
   # expect_true(pkg_ver >= "1.0.10")
   
   # status and risk messages should appear
-  out_htm <- app$get_values()$output$`sidebar-status`$html
+  out_htm <- app$get_value(output = "sidebar-status")$html
   status_txt <- rvest::read_html(out_htm) %>% rvest::html_text()
   # status is "Under Review"
   expect_equal(status_txt, "Under Review")
   
-  out_htm <- app$get_values()$output$`sidebar-score`$html
+  out_htm <- app$get_value(output = "sidebar-score")$html
   score_txt <- rvest::read_html(out_htm) %>% rvest::html_text()
   # numeric score is between 0 and 1, inclusive
   expect_true(dplyr::between(as.numeric(score_txt), 0, 1))
   
   # test slider...
   app$set_inputs(`sidebar-decision` = "1") # 0 = Low, 1 = Medium, 2 = High
-  expect_equal(app$get_values()$input$`sidebar-decision`, "Medium")
+  expect_equal(app$get_value(input = "sidebar-decision"), "Medium Risk")
   
   app$set_inputs(`sidebar-decision` = "2") # 0 = Low, 1 = Medium, 2 = High
-  expect_equal(app$get_values()$input$`sidebar-decision`, "High")
+  expect_equal(app$get_value(input = "sidebar-decision"), "High Risk")
   
   app$set_inputs(`sidebar-decision` = "0") # 0 = Low, 1 = Medium, 2 = High
-  expect_equal(app$get_values()$input$`sidebar-decision`, "Low")
+  expect_equal(app$get_value(input = "sidebar-decision"), "Low Risk")
   
   # add a comment
   add_comment <- "This is a really useful package."
@@ -83,15 +83,16 @@ test_that("Reactivity of sidebar", {
   app$click("sidebar-submit_decision")
   app$wait_for_idle()
   app$click("sidebar-submit_confirmed_decision")
+  app$wait_for_idle()
   
   # and status and risk messages should appear
-  out_htm <- app$get_values()$output$`sidebar-status`$html
+  out_htm <- app$get_value(output = "sidebar-status")$html
   status_txt <- rvest::read_html(out_htm) %>% rvest::html_text()
   # sidebar status set to Reviewed
   expect_equal(status_txt, "Reviewed")
   
   ##### this section only appears with user$role = "admin"
-  out_htm <- app$get_values()$output$`sidebar-reset_decision_ui`$html
+  out_htm <- app$get_value(output = "sidebar-reset_decision_ui")$html
   if (!is.null(out_htm)) {
   score_txt <- rvest::read_html(out_htm) %>% rvest::html_text()
   } else {
@@ -107,7 +108,7 @@ test_that("Reactivity of sidebar", {
     # button pressed once
     expect_equal(app$get_value(input = "sidebar-reset_decision")[1], 1L)
     
-    out_htm <- app$get_values()$output$`sidebar-status`$html
+    out_htm <- app$get_value(output = "sidebar-status")$html
     status_txt <- rvest::read_html(out_htm) %>% rvest::html_text()
     # sidebar status is reset to "Under Review"
     expect_equal(status_txt, "Under Review")

@@ -73,6 +73,30 @@ get_latest_pkg_info <- function(pkg_name) {
   return(table_info)
 }
 
+#' @import dplyr
+#' @importFrom desc desc_get_field
+#' @importFrom glue glue
+#' @importFrom purrr map set_names
+#' @importFrom utils untar
+#' 
+#' @noRd
+get_desc_pkg_info <- function(pkg_name, pkg_version, tar_dir = "tarballs") {
+  tar_file <- file.path(tar_dir, glue::glue("{pkg_name}_{pkg_version}.tar.gz"))
+  if (!file.exists(tar_file))
+    return(get_latest_pkg_info(pkg_name))
+  
+  utils::untar(tar_file, exdir = "source")
+  
+  desc_file <- glue::glue("source/{pkg_name}/DESCRIPTION")
+  
+  keys <- c("Package", "Version", "Maintainer", "Author", "License", "Packaged", "Title", "Description")
+  purrr::map(keys,
+             desc::desc_get_field, file = desc_file) %>%
+    purrr::set_names(keys) %>%
+    dplyr::as_tibble() %>%
+    dplyr::rename("Published"="Packaged")
+}
+
 #' Generate Community Usage Data
 #' 
 #' @description 
@@ -183,21 +207,23 @@ generate_comm_data <- function(pkg_name){
 }
 
 #' showComments
-#' 
+#'
 #' Displays formatted comments
-#' 
+#'
 #' @param pkg_name string name of the package
 #' @param comments data.frame comments table entry
+#' @param none_txt if there is no text to show in `comments` object, then
+#'   display this text string. Default: "No comments"
 #' @return a formatted string of comments
 #' @keywords internal
 #' @export
-showComments <- function(pkg_name, comments){
+showComments <- function(pkg_name, comments, none_txt = "No comments"){
   if (length(pkg_name) == 0)
     return("")
   
   ifelse(
     length(comments$user_name) == 0, 
-    "No comments",
+    none_txt,
     paste0(
       "<div class='well'>",
       icon("user-tie"), " ", "user: ", comments$user_name, ", ", 
@@ -260,6 +286,7 @@ get_date_span <- function(start, end = Sys.Date()) {
 #' @import dplyr
 #' @importFrom lubridate interval make_date year
 #' @importFrom glue glue
+#' @importFrom stats lm
 #' @keywords internal
 #' 
 build_comm_cards <- function(data){
@@ -272,7 +299,8 @@ build_comm_cards <- function(data){
     succ_icon = character(),
     icon_class = character(),
     is_perc = numeric(),
-    is_url = numeric()
+    is_url = numeric(),
+    type = "information"
   )
   
   if (nrow(data) == 0)
@@ -340,6 +368,161 @@ build_comm_cards <- function(data){
             is_perc = 0,
             is_url = 0)
   
+  rev_deps <- get_assess_blob(data$id[1])$reverse_dependencies[[1]]
+  
+  cards <- cards %>%
+    dplyr::add_row(name = 'reverse_dependencies',
+                   title = 'Reverse Dependencies',
+                   desc = 'Number of Reverse Dependencies',
+                   value = format(length(rev_deps), big.mark = ","),
+  succ_icon = 'sitemap',
+  icon_class = "text-info",
+  is_perc = 0,
+  is_url = 0)
+
+  trend_downloads <- dplyr::as_tibble(data) %>% 
+    dplyr::arrange(year, month) %>%
+    dplyr::mutate(day_month_year = glue::glue('1-{month}-{year}')) %>%
+    dplyr::mutate(day_month_year = as.Date(day_month_year, "%d-%m-%Y")) %>%
+    dplyr::filter(
+      day_month_year >= max(day_month_year) - lubridate::years(2) + lubridate::month(1)
+    ) %>% 
+    dplyr::mutate(row_n = row_number())
+  
+  amount_months <- max(trend_downloads$row_n)
+  if (amount_months < 12) {
+    return(cards)
+  }
+  
+  model_result <- as.list(
+    stats::lm(downloads ~ row_n, data = trend_downloads)$coefficients
+    ) %>% 
+    dplyr::as_tibble() %>% 
+    dplyr::select(estimate = row_n) %>% 
+    dplyr::mutate(estimate = round(estimate, 0)) %>% 
+    dplyr::mutate(succ_icon = dplyr::case_when(
+      estimate > 0 ~ "arrow-trend-up",
+      estimate < 0 ~ "arrow-trend-down",
+      TRUE ~ "bars"
+      )
+    ) %>%
+    dplyr::mutate(type = dplyr::case_when(
+      estimate > 0 ~ "information",
+      estimate < 0 ~ "danger",
+      TRUE ~ "information"
+      )
+    ) %>% 
+    dplyr::select(estimate, succ_icon, type)
+  
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'downloads_trend',
+      title = 'Monthly downloads trend',
+      desc = glue::glue("Trend of downloads in last {amount_months} months"),
+      value = format(model_result$estimate, big.mark = ","),
+      succ_icon = model_result$succ_icon,
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0,
+      type = model_result$type
+    )
+
+  cards
+}
+
+
+
+#' The 'Build Database Cards' function
+#' 
+#' @param data a data.frame
+#' 
+#' @import dplyr
+#' @importFrom glue glue
+#' @keywords internal
+#' 
+build_db_cards <- function(data){
+  
+  cards <- dplyr::tibble(
+    name = character(),
+    title = character(),
+    desc = character(),
+    value = character(),
+    succ_icon = character(),
+    icon_class = character(),
+    is_perc = numeric(),
+    is_url = numeric()
+  )
+  
+  if (nrow(data) == 0)
+    return(cards)
+  
+  # Get the Number of packages in the db
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'pkg_cnt',
+      title = 'Package Count',
+      desc = 'Number of Packages Uploaded to DB',
+      value = paste(nrow(data)),
+      succ_icon = 'upload',
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
+  
+  # Get the Count (and %) of pkgs with a decision made
+  decision_cnt <-
+    data %>%
+    mutate(decision = as.character(decision)) %>%
+    filter(decision != "-") %>%
+    nrow
+  # decision_cnt <- length(data$decision[data$decision != "-"])
+  decision_pct <- format(100 * (decision_cnt / nrow(data)), digits = 1)
+  
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'decision_cnt',
+      title = 'Decision Count',
+      desc = 'Packages with Decisions Made',
+      value = glue::glue('{decision_cnt} ({decision_pct}%)'),
+      succ_icon = 'gavel',
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
+  
+  # Get the Count (and %) of pkgs by Decision
+  # # Dummy test data set
+  # data <- data.frame(
+  #   package = c("tidyCDISC", "rhino", "MCPMod"),
+  #   decision = c("-","-","-")
+  # ) %>%
+  # mutate(decision = factor(decision, levels = c("Low Risk", "Medium Risk", "High Risk")))
+  
+  decision_cat_rows <-
+    data %>%
+    filter(decision != "-") %>%
+    group_by(decision) %>%
+    summarize(decision_cat_sum = n()) %>%
+    ungroup() %>%
+    mutate(decision_cat_pct = 100 * (decision_cat_sum / nrow(data)),
+           decision_cat_disp = glue::glue('{decision}: {decision_cat_sum} ({format(decision_cat_pct, digits = 1)}%)')) %>%
+    arrange(decision) %>%
+    pull(decision_cat_disp) %>%
+    paste(., collapse = "\n")
+    
+
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'decision_cat_count',
+      title = 'Decision Summary',
+      desc = 'Package Counts by Decision Type',
+      value = ifelse(decision_cat_rows == "", "No Decisions Made", decision_cat_rows),
+      succ_icon = 'boxes-stacked',
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
+  
   cards
 }
 
@@ -393,14 +576,21 @@ auto_font <- function(txt, txt_max = 45, size_min = .75, size_max = 1.5,
 #' @param data a data.frame containing monthly download data, built using `generate_comm_data()`. This argument is optional, but if `NULL`, a `pkg_name` must be provided.
 #' @param pkg_name a string of a package name. This parameter is optional. If `pkg_name` is provided, the data argument should be `NULL`.
 #' @returns a plotly object
-#' @examples 
-#' metricGraph <- build_comm_plotly(pkg_name = "ggplot2")
+#' @section Example:
+#' 
+#' \preformatted{
+#'   build_comm_plotly(pkg_name = "ggplot2")
+#' }
+#' 
+#' @section Example Output: 
+#' \if{html}{\figure{build_comm_plotly_ex2.png}{options: width=95\%}}
+#' 
 #' @import dplyr
 #' @importFrom lubridate NA_Date_ interval
 #' @importFrom glue glue
 #' @importFrom plotly plot_ly layout add_segments add_annotations config
+#' @importFrom stats lm predict
 #' @return an interactive plotly object
-#' 
 #' @keywords reproduce
 #' @export
 build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
@@ -457,21 +647,31 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
     max(downloads_data$day_month_year) - 45 - (365 * 2),
     max(downloads_data$day_month_year) + 15)
   
-  plotly::plot_ly(downloads_data,
-          x = ~day_month_year,
-          y = ~downloads,
-          name = "# Downloads", type = 'scatter', 
-          mode = 'lines+markers', line = list(color = '#1F9BCF'),
-          marker = list(color = '#1F9BCF'),
-          hoverinfo = "text",
-          text = ~glue::glue('No. of Downloads: {format(downloads, big.mark = ",")}
-                         {month} {year}')) %>%
-    plotly::layout(title = glue::glue('NUMBER OF DOWNLOADS BY MONTH: {pkg_name}'),
-           margin = list(t = 100),
-           showlegend = FALSE,
-           yaxis = list(title = "Downloads"),
-           xaxis = list(title = "", type = 'date', tickformat = "%b %Y",
-                        range = dates_range)) %>% 
+  # plot
+  plot <- plotly::plot_ly(
+    downloads_data,
+    x = ~day_month_year,
+    y = ~downloads,
+    name = "# Downloads", type = 'scatter', 
+    mode = 'lines+markers', 
+    line = list(color = '#1F9BCF'),
+    marker = list(color = '#1F9BCF'),
+    hoverinfo = "text",
+    text = ~glue::glue(
+      'No. of Downloads: {format(downloads, big.mark = ",")}
+      {month} {year}'
+      )
+    ) %>%
+    plotly::layout(
+      title = glue::glue('NUMBER OF DOWNLOADS BY MONTH: {pkg_name}'),
+      margin = list(t = 100),
+      showlegend = TRUE,
+      yaxis = list(title = "Downloads"),
+      xaxis = list(
+        title = "", type = 'date', tickformat = "%b %Y",
+        range = dates_range
+      )
+    ) %>% 
     plotly::add_segments(
       x = ~dplyr::if_else(version %in% c("", "NA", NA), lubridate::NA_Date_, day_month_year),
       xend = ~dplyr::if_else(version %in% c("", "NA", NA), lubridate::NA_Date_, day_month_year),
@@ -480,7 +680,8 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
       name = "Version Release",
       hoverinfo = "text",
       text = ~glue::glue('Version {version}'),
-      line = list(color = '#4BBF73')) %>% 
+      line = list(color = '#4BBF73')
+    ) %>% 
     plotly::add_annotations( 
       yref = 'paper',
       xref = "x",
@@ -490,8 +691,14 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
       showarrow = F,
       textangle = 270,
       font = list(size = 14, color = '#4BBF73'),
-      text = ~ifelse(downloads_data$version %in% c("", "NA", NA), "", downloads_data$version)) %>%
+      text = ~ifelse(downloads_data$version %in% c("", "NA", NA), "", downloads_data$version)
+    ) %>%
     plotly::layout(
+      legend = list(
+        title = list(text = 'Legend'),
+        orientation = "h",
+        y = -0.5
+      ),
       xaxis = list(
         range = dates_range,
         rangeselector = list(
@@ -519,22 +726,41 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
               label = "6 mo",
               step = "month",
               stepmode = "backward")
-          )),
+          )
+        ),
         rangeslider = list(visible = TRUE)
-      )) %>%
-    plotly::config(displayModeBar = F)
+      )
+    ) %>%
+    plotly::config(displayModeBar = FALSE)
+  
+  #Create linear model
+  data_horizon <- downloads_data %>% 
+    dplyr::arrange(day_month_year) %>%
+    dplyr::filter(
+      day_month_year >= max(day_month_year) - lubridate::years(2) + lubridate::month(1)
+    ) %>% 
+    dplyr::mutate(row_n = row_number())
+  
+  if (max(data_horizon$row_n) < 12) {
+   return(plot) 
+  } else {
+    lm_model <- stats::lm(downloads ~ row_n, data = data_horizon)
+    
+    downloads_trend <- data_horizon %>% 
+      dplyr::mutate(trend = stats::predict(lm_model, data_horizon))
+    
+    plot %>% 
+      plotly::add_trace(
+        data = downloads_trend,
+        x = ~day_month_year,
+        y = ~trend,
+        inherit = FALSE,
+        name = 'Linear trend',
+        type = 'scatter',
+        mode = "marker",
+        opacity = 0.45,
+        line = list(color = '#db5502')
+      )
+  }
+  
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -13,23 +13,23 @@ test_that("Comments can be added via the addComment module", {
     test_db_loc,
     app_db_loc
   )
+  
+  # set up new app driver object
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
+  app$wait_for_idle()
 
-  # confirm no comments exist in the database
-  con <- DBI::dbConnect(RSQLite::SQLite(), app_db_loc)
-  comments <- DBI::dbGetQuery(con, "select * from comments")
+  comments <- dbSelect("select * from comments", app_db_loc)
   expect_equal(
     nrow(comments),
     0
   )
-  
-  # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 600*1000)
 
   # select dplyr package
   app$set_inputs(`sidebar-select_pkg` = "dplyr")
 
   # navigate to maintenance metrics tab
-  app$set_inputs(tabs = "Maintenance Metrics")
+  app$set_inputs(tabs = "Package Metrics",
+                 metric_type = "mm")
   app$wait_for_idle(500)
 
   # confirm no comments are currently shown
@@ -89,7 +89,7 @@ test_that("Comments can be added via the addComment module", {
   )
   
   # confirm comment is in database and has correct metadata
-  comments <- DBI::dbGetQuery(con, "select * from comments")
+  comments <- dbSelect("select * from comments", app_db_loc)
   expect_equal(
     nrow(comments),
     1
@@ -99,22 +99,16 @@ test_that("Comments can be added via the addComment module", {
     maintenance_comment
   )
   
-  # close connection
-  DBI::dbDisconnect(con)
-  
-  if (file.exists(app_db_loc)) {
-    file.remove(app_db_loc)
-  }
-  
+
 })
 
 
 test_that("Comment input box is rendered according to the tab and user state", {
   # delete app DB if exists to ensure clean test
   app_db_loc <- test_path("test-apps", "database.sqlite")
-  if (file.exists(app_db_loc)) {
-    file.remove(app_db_loc)
-  }
+  # if (file.exists(app_db_loc)) {
+  #   file.remove(app_db_loc)
+  # }
 
   # copy in already instantiated database to avoid need to rebuild
   # this is a database that has been built via inst/testdata/upload_format.csv
@@ -125,13 +119,15 @@ test_that("Comment input box is rendered according to the tab and user state", {
   )
 
   # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 600*1000)
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
+  app$wait_for_idle()
   
   # select dplyr package
   app$set_inputs(`sidebar-select_pkg` = "dplyr")
 
   # navigate to maintenance metrics tab
-  app$set_inputs(tabs = "Maintenance Metrics")
+  app$set_inputs(tabs = "Package Metrics",
+                 metric_type = "mm")
   app$wait_for_idle(500)
 
   # helper fn
@@ -161,7 +157,7 @@ test_that("Comment input box is rendered according to the tab and user state", {
 
 
   # change to Community Usage Metrics tab
-  app$set_inputs(tabs = "Community Usage Metrics")
+  app$set_inputs(metric_type = "cum")
   app$wait_for_idle(500)
 
   # confirm label & placeholder text are rendered properly

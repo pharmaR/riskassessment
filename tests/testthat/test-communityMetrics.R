@@ -14,17 +14,19 @@ test_that("Reactivity of communityMetrics", {
   
   # set up new app driver object
   app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
+  app$wait_for_idle()
   
   # set pkg_name to dplyr
   app$set_inputs(`sidebar-select_pkg` = "dplyr")
   
   # get to the Maintenance Metrics tab
-  app$set_inputs(tabs = "Community Usage Metrics")
+  app$set_inputs(tabs = "Package Metrics",
+                 metric_type = "cum")
   
   app$wait_for_idle(500)
   
   # read the current comment
-  out_cmt <- app$get_values()$output$`communityMetrics-view_comments-view_comments`$html
+  out_cmt <- app$get_value(output = "communityMetrics-view_comments-view_comments")$html
   
   cmt_txt <- rvest::read_html(out_cmt) %>%  
     rvest::html_nodes(xpath = '//div[@class="well"]/text()') %>% 
@@ -40,7 +42,7 @@ test_that("Reactivity of communityMetrics", {
   app$wait_for_idle()
   
   # read the comment back in
-  out_cmt <- app$get_values()$output$`communityMetrics-view_comments-view_comments`$html
+  out_cmt <- app$get_value(output = "communityMetrics-view_comments-view_comments")$html
   
   cmt_txt <- rvest::read_html(out_cmt) %>%  
     rvest::html_nodes(xpath = '//div[@class="well"]/text()') %>% 

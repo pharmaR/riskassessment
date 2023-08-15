@@ -6,17 +6,16 @@
 sidebar_steps <-
   data.frame(
     element = c(
-      "#sidebar-select_pkg_ui", # "#sidebar-select_ver", # not working
+      "#sidebar-select_pkg_ui",
       "#sidebar-status-wp", "#sidebar-score-wp",
       "#sidebar-decision-grp",
       "#sidebar-overall-comment-grp"),
     intro = c(
       "Expand this dropdown list to select a specific package to assess that was previously uploaded.",
-      # "The latest version will autopopulate here.", # can't peg ui object name, even with a div!
       "The status can be either 'Under Review' or 'Reviewed'.",
       "The score can take any value between 0 (no risk) and 1 (highest risk).",
-      "Provide your input on the overall risk of the selected package.",
-      "After reviewing your package, you can leave an overall comment."
+      "Provide your input on the overall risk of the selected package (PRIVILEGES REQUIRED).",
+      "After reviewing your package, you can leave an overall comment (PRIVILEGES REQUIRED)."
     ),
     position = c(rep("bottom", 5))
   )
@@ -33,28 +32,37 @@ apptab_steps <- data.frame(
 apptab_admn <- data.frame(
   element = c(
     "[data-value=admin-mode-tab]"),
-  intro = c("Manage user credentials and apply assessment reweighting here"),
+  intro = c("Manage user credentials and apply assessment reweighting here (PRIVILEGES REQUIRED)."),
   position = "bottom"
 )
 
 # upload package tab.
 upload_pkg <- data.frame(
-  element = c("#upload_package-introJS-help", "#type-package-group", "#upload-file-grp", "#upload_package-upload_format"),
+  element = c("#upload_package-introJS-help", "#type-package-group", "#upload-file-grp"),
   intro = c(
     "Click here anytime you need help.",
-    "Type in the name of the package(s) you would like to assess.",
-    "Or you can Upload a CSV file with the package(s) if you have a lot.",
-    "Follow format of this sample data when creating your csv. Or you can even download it to use as a template."
+    "Type in the name of the package(s) you would like to assess (PRIVILEGES REQUIRED).",
+    "Or you can Upload a CSV file with the package(s) if you have a lot (PRIVILEGES REQUIRED)."
   ),
-  position = c("right", rep("top", 3))
+  position = c("right", rep("top", 2))
+)
+upload_pkg_add <- data.frame(
+  element = "#upload_package-upload_format",
+  intro = "Follow format of this sample data when creating your csv. Or you can even download it to use as a template.",
+  position = "top"
 )
 
-upload_adm <- data.frame(
-  element = c("#rem-package-group", "#upload_package-automate-auto_dropdown_state"),
-  intro = c("If you are an admin, you can also remove packages here.", "Decision automation: Automatically assign package risk decisions based on {riskmetric}-derived risk scores when uploading packages to the database."),
-  position = c("top", "left")
+upload_pkg_delete <- data.frame(
+  element = "#rem-package-group",
+  intro = "You can remove packages from the database here (PRIVILEGES REQUIRED).",
+  position = "top"
 )
 
+upload_pkg_dec_adj <- data.frame(
+  element = "#automate-auto_dropdown",
+  intro = "Decision automation: Automatically assign package risk decisions based on {riskmetric}-derived risk scores when uploading packages to the database. (PRIVILEGES REQUIRED)",
+  position = "left"
+)
 upload_pkg_comp <-  data.frame(
       element = c("#upload_summary_div", "#upload_package-upload_pkgs_table"),
       intro = c(
@@ -62,17 +70,6 @@ upload_pkg_comp <-  data.frame(
         "Confirm uploaded packages list, filter by type"
       ),
       position = c("bottom", "top")
-)
-      
-upload_pkg_complete <- union(upload_pkg,
-                             data.frame(
-                               element = c("#upload_summary_div", "#upload_package-upload_pkgs_table"),
-                               intro = c(
-                                 "Text description of packages uploaded. Counts by type: 'Total', 'New', 'Undiscovered', 'Duplicate'.",
-                                 "Confirm uploaded packages list, filter by type"
-                               ),
-                               position = c("bottom", "top")
-                             )
 )
 
 
