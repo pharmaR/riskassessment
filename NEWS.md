@@ -1,5 +1,3 @@
-# riskassessment (development version)
-
 # riskassessment 2.0.0
 
 ### Enhancements
@@ -11,6 +9,7 @@
 * Prominently display the date a package was added (#486)
 * Fix issue where the repository being used to gather information was inconsistent
 * Added Package Dependencies page to "Package Metrics" tab, and two new cards to Maintenance Metrics page (#261)
+* Identify non-riskmetric cards (#573)
 
 ### Squashed Bugs
 * Fixed busted button introduced with #547 (#592)

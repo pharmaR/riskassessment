@@ -108,9 +108,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
           mutate(package = stringr::str_replace(package, "\n", "")) %>%
           mutate(name = stringr::str_extract(package, "\\w+"))
         
-        purrr::map_df(pkginfo$name, ~ get_versnScore(.x, loaded2_db(), cran_pkgs)) %>%
-          right_join(pkginfo, by = "name") %>%
-          select(package, type, name, version, score)
+      purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), cran_pkgs)) %>% 
+        right_join(pkginfo, by = "name") %>% 
+        select(package, type, name, version, score) %>%
+        distinct()
       }
     })
     
