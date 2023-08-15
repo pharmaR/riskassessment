@@ -14,4 +14,4 @@ VALUES
 ('dependencies',        'Dependencies',      'Number of Package Dependencies',   0, 0, 'maintenance', 1),  
 ('reverse_dependencies','Reverse Dependencies', 'Number of Reverse Dependencies', 0, 0, 'community', 1),
 ('covr_coverage',       'Test Coverage',     '% of objects tested',     1, 0, 'maintenance', 1),
-('downloads_1yr',       'Downloads',         'Number of package downloads in the last year', 0, 0, 'community', 1);
+('downloads_1yr', 'Package Downloads', 'Number of downloads in last 12 months', 0, 0, 'community', 1);

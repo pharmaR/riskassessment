@@ -235,6 +235,8 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               comm_data <- get_comm_data(this_pkg)
               comm_cards <- build_comm_cards(comm_data)
               downloads_plot <- build_comm_plotly(comm_data)
+              metric_tbl <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
+              
               
               # Render the report, passing parameters to the rmd file.
               rmarkdown::render(
@@ -256,7 +258,8 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                               maint_metrics = mm_data,
                               com_metrics = comm_cards,
                               com_metrics_raw = comm_data,
-                              downloads_plot_data = downloads_plot
+                              downloads_plot_data = downloads_plot,
+                              metric_tbl = metric_tbl
                 )
               )
               fs <- c(fs, path)  # Save all the reports/
