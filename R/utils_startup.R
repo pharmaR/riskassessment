@@ -213,6 +213,8 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
   
   check_credentials(db_config[["credentials"]])
 
+  if (isFALSE(getOption("golem.app.prod")) && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(credentials_db)) create_credentials_dev_db(credentials_db)
+
   # Create package db & credentials db if it doesn't exist yet.
   if(!file.exists(assessment_db)) create_db(assessment_db)
   if(!file.exists(credentials_db)) {
