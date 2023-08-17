@@ -356,7 +356,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
           size = "l",
           easyClose = TRUE,
           title = "Upload all packages?",
-          p(glue::glue("Do you want to upload {pkg_updates$n_packages} package(s)?")),
+          p(glue::glue("Do you want to upload {nrow(pkg_updates$pkgs_update)} package(s)?")),
            footer = tagList(
              actionButton(NS(id, "confirm"), "Load Package(s)"),
              actionButton(NS(id, "cancel"), "Cancel")
