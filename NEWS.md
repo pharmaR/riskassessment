@@ -1,5 +1,4 @@
 # riskassessment (development version)
-* Fixed busted button introduced with #547 (#592)
 * Fixed tests showing "Package Downloads" community usage card as non-metric (#621)
 
 # riskassessment 2.0.0
@@ -16,6 +15,7 @@
 * Identify non-riskmetric cards (#573)
 
 ### Squashed Bugs
+* Fixed busted button introduced with #547 (#592)
 
 ### Docs
 * Updated `riskassessment` vignette to reflect new tab structure
