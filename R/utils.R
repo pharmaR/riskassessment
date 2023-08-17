@@ -246,7 +246,7 @@ showComments <- function(pkg_name, comments, none_txt = "No comments"){
 #' @keywords internal
 getTimeStamp <- function(){
   initial <- stringr::str_replace(get_time(), " ", "; ")
-  return(paste(initial, get_timezone()))
+  return(paste(initial, Sys.timezone()))
 }
 
 
