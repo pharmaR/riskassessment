@@ -5,7 +5,10 @@ old <- options()
 options(shiny.testmode = TRUE)
 options(shinytest2.timeout = 90*1000)
 
-create_db("./inst/testdata/skeleton.sqlite")
+skeleton_db <- "./inst/testdata/skeleton.sqlite"
+if (file.exists(skeleton_db))
+  file.remove(skeleton_db)
+create_db(skeleton_db)
 
 app_db_loc <- test_path("test-apps", "database.sqlite")
 if (file.exists(app_db_loc)) {
@@ -57,6 +60,9 @@ file.copy(
 app$stop()
 
 Sys.setenv("GOLEM_CONFIG_ACTIVE" = "example")
-create_db("./inst/testdata/decision_automation_ex1.sqlite")
+dec_auto_db <- "./inst/testdata/decision_automation_ex1.sqlite"
+if (file.exists(dec_auto_db))
+  file.remove(dec_auto_db)
+create_db(dec_auto_db)
 
 options(old)
