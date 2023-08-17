@@ -54,6 +54,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     depends <- reactiveVal(value = NULL)
     revdeps <- reactiveVal(value = NULL)
     rev_pkg <- reactiveVal(value = NULL)
+    pkg_updates <- reactiveValues()
     
     observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
       req(selected_pkg$name())
@@ -153,7 +154,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                  )
                 ),
                 column(3,
-                 if (nrow(depends()) > 0) {
+                 if (pkg_updates$render_upload) {
                    actionButton(
                      inputId =  ns("update_all_packages"),
                      label = "Upload all",
@@ -332,43 +333,36 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
      },
      ignoreInit = TRUE
     )
-    
-    
-    observeEvent(input$update_all_packages, {
-      req(pkg_df(), loaded2_db())
-      
-      pkgs_update <- pkg_df() %>%
-        dplyr::filter(is.na(score) | score == "") %>%
-        dplyr::filter(!name %in% c(rownames(installed.packages(priority = "base"))))
-      
-      n_packages <- nrow(pkgs_update)
-      if (n_packages > 0) {
-        pkgname(pkgs_update$name)
-        shiny::showModal(
-          modalDialog(
-            size = "l",
-            easyClose = TRUE,
-            title = "Upload all packages?",
-            p(glue::glue("Do you want to upload {n_packages} package(s)?")),
-             footer = tagList(
-               actionButton(NS(id, "confirm"), "Load Package(s)"),
-               actionButton(NS(id, "cancel"), "Cancel")
-             )
-          )
-        )
-        
+
+    observe({
+      if (nrow(pkg_df()) > 0) {
+        pkg_updates$pkgs_update <- pkg_df() %>%
+          dplyr::filter(is.na(score) | score == "") %>%
+          dplyr::filter(!name %in% c(rownames(installed.packages(priority = "base"))))
+
+        pkg_updates$render_upload <- nrow(pkg_updates$pkgs_update) > 0
       } else {
-        shiny::showModal(
-          modalDialog(
-            size = "l",
-            easyClose = TRUE,
-            title = "No packages to update",
-            p("There are no new packages to upload.")
-          )
-        )
-        
+        pkg_updates$render_upload <- FALSE
       }
 
+    })
+
+    observeEvent(input$update_all_packages, {
+      req(pkg_df(), loaded2_db(), pkg_updates)
+
+      pkgname(pkg_updates$pkgs_update$name)
+      shiny::showModal(
+        modalDialog(
+          size = "l",
+          easyClose = TRUE,
+          title = "Upload all packages?",
+          p(glue::glue("Do you want to upload {pkg_updates$n_packages} package(s)?")),
+           footer = tagList(
+             actionButton(NS(id, "confirm"), "Load Package(s)"),
+             actionButton(NS(id, "cancel"), "Cancel")
+           )
+        )
+      )
     })
   }) # moduleServer
 }
