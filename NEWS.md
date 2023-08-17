@@ -1,4 +1,5 @@
 # riskassessment (development version)
+* Fixed tests showing "Package Downloads" community usage card as non-metric (#621)
 
 # riskassessment 2.0.0
 
