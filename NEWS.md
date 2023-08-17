@@ -14,7 +14,7 @@
 * Identify non-riskmetric cards (#573)
 
 ### Squashed Bugs
-* Fixed busted button introduced with #547 
+* Fixed busted button introduced with #547 (#592)
 * Fixed tests showing "Package Downloads" community usage card as non-metric
 
 ### Docs
