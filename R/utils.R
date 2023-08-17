@@ -771,7 +771,7 @@ get_Date <- function() {
   if (isTRUE(getOption("shiny.testmode")))
     as.Date("2023-07-20")
   else
-    get_Date()
+    Sys.Date()
 }
 
 #' @keywords internal
@@ -780,5 +780,5 @@ get_time <- function() {
   if (isTRUE(getOption("shiny.testmode")))
     as.POSIXct("2023-07-20 08:00:00 EDT")
   else
-    get_time()
+    Sys.time()
 }
