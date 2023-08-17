@@ -1,14 +1,20 @@
 # MAKE SURE YOU HAVE INSTALLED YOUR BRANCH WITH THE CHANGES!!!!
+# devtools::install(dependencies = FALSE)
 
 devtools::load_all()
 old <- options()
-options(shiny.testmode = TRUE)
-options(shinytest2.timeout = 90*1000)
+options(golem.app.prod = FALSE)
+db_config <- get_golem_config(NULL, file = app_sys("db-config.yml"))
+shiny::shinyOptions(golem_options = list(pre_auth_user = "admin",
+                                         decision_categories = db_config$decisions$categories))
 
 skeleton_db <- "./inst/testdata/skeleton.sqlite"
 if (file.exists(skeleton_db))
   file.remove(skeleton_db)
-create_db(skeleton_db)
+initialize_raa(skeleton_db, tempfile("credentials", fileext = ".sqlite"))
+
+options(shiny.testmode = TRUE)
+options(shinytest2.timeout = 90*1000)
 
 app_db_loc <- test_path("test-apps", "database.sqlite")
 if (file.exists(app_db_loc)) {
@@ -58,11 +64,19 @@ file.copy(
 )
 
 app$stop()
+options(shiny.testmode = NULL)
+options(shinytest2.timeout = NULL)
 
 Sys.setenv("GOLEM_CONFIG_ACTIVE" = "example")
+db_config <- get_golem_config(NULL, file = app_sys("db-config.yml"))
+shiny::shinyOptions(golem_options = list(pre_auth_user = "admin",
+                                         decision_categories = db_config$decisions$categories))
 dec_auto_db <- "./inst/testdata/decision_automation_ex1.sqlite"
 if (file.exists(dec_auto_db))
   file.remove(dec_auto_db)
-create_db(dec_auto_db)
+initialize_raa(dec_auto_db, tempfile("credentials", fileext = ".sqlite"))
 
+options(golem.app.prod = NULL)
 options(old)
+Sys.unsetenv("GOLEM_CONFIG_ACTIVE")
+rm(app, db_config, app_db_loc, dec_auto_db, skeleton_db, test_db_loc, old)
