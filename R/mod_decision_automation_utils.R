@@ -14,7 +14,7 @@ assign_decisions <- function(decision_list, package) {
   decision_id <- dbSelect("SELECT id FROM decision_categories WHERE decision = {decision}")
   if (decision != "") {
     dbUpdate("UPDATE package SET decision_id = {decision_id},
-                        decision_by = 'Auto Assigned', decision_date = {Sys.Date()}
+                        decision_by = 'Auto Assigned', decision_date = {get_Date()}
                          WHERE name = {package}")
     loggit::loggit("INFO",
                    glue::glue("decision for the package {package} was assigned {decision} by decision automation rules"))

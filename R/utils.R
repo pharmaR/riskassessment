@@ -184,11 +184,11 @@ generate_comm_data <- function(pkg_name){
         cranlogs::cran_downloads(
           pkg_name,
           from = first_release_date,
-          to = Sys.Date()) %>%
+          to = get_Date()) %>%
         dplyr::mutate(month = lubridate::month(date),
                       year = lubridate::year(date)) %>%
-        dplyr::filter(!(month == lubridate::month(Sys.Date()) &
-                          year == lubridate::year(Sys.Date()))) %>%
+        dplyr::filter(!(month == lubridate::month(get_Date()) &
+                          year == lubridate::year(get_Date()))) %>%
         group_by(id = package, month, year) %>%
         summarise(downloads = sum(count)) %>%
         ungroup() %>%
@@ -245,8 +245,8 @@ showComments <- function(pkg_name, comments, none_txt = "No comments"){
 #' @importFrom stringr str_replace
 #' @keywords internal
 getTimeStamp <- function(){
-  initial <- stringr::str_replace(Sys.time(), " ", "; ")
-  return(paste(initial, Sys.timezone()))
+  initial <- stringr::str_replace(get_time(), " ", "; ")
+  return(paste(initial, get_timezone()))
 }
 
 
@@ -260,9 +260,9 @@ getTimeStamp <- function(){
 #' @importFrom lubridate interval years
 #' @importFrom stringr str_remove
 #' @keywords internal
-get_date_span <- function(start, end = Sys.Date()) {
+get_date_span <- function(start, end = get_Date()) {
   # Get approximate difference between today and latest release.
-  # time_diff_latest_version <- lubridate::year(Sys.Date()) - last_ver$year
+  # time_diff_latest_version <- lubridate::year(get_Date()) - last_ver$year
   time_diff <- lubridate::interval(start, end)
   time_diff_val <- time_diff %/% months(1)
   time_diff_label <- 'Months'
@@ -763,4 +763,22 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
       )
   }
   
+}
+
+#' @keywords internal
+#' @noRd
+get_Date <- function() {
+  if (isTRUE(getOption("shiny.testmode")))
+    as.Date("2023-07-20")
+  else
+    get_Date()
+}
+
+#' @keywords internal
+#' @noRd
+get_time <- function() {
+  if (isTRUE(getOption("shiny.testmode")))
+    as.POSIXct("2023-07-20 08:00:00 EDT")
+  else
+    get_time()
 }
