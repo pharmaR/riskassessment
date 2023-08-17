@@ -153,13 +153,15 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                  )
                 ),
                 column(3,
-                 actionButton(
-                   inputId =  ns("update_all_packages"),
-                   label = "Upload all",
-                   icon = icon("fas fa-upload", class = "fa-regular", lib = "font-awesome"),
-                   size = "xs",
-                   style = "height:30px; padding-top:1px;"
-                 )
+                 if (nrow(depends()) > 0) {
+                   actionButton(
+                     inputId =  ns("update_all_packages"),
+                     label = "Upload all",
+                     icon = icon("fas fa-upload", class = "fa-regular", lib = "font-awesome"),
+                     size = "xs",
+                     style = "height:30px; padding-top:1px;"
+                   )
+                 } 
                 )
               ),
               br(),
