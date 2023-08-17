@@ -61,7 +61,7 @@ test_that("Reactivity of reportPreview", {
     rvest::html_text() %>% 
     paste(collapse = ", ")
   
-  str_expect <- "Vignettes, Report Bugs, Source Control, License, NEWS file, Website, Documentation, Test Coverage, NEWS current, Maintainer, Bugs Closure Rate, First Version Release*, Reverse Dependencies*, Latest Version Release*, Monthly downloads trend*, Package Downloads*"
+  str_expect <- "Vignettes, Report Bugs, Source Control, License, NEWS file, Website, Documentation, Dependencies, NEWS current, Maintainer, Bugs Closure Rate, First Version Release*, Reverse Dependencies, Latest Version Release*, Monthly downloads trend*, Package Downloads"
   expect_equal(maint_info, str_expect)
   
   app$stop()
