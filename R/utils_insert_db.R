@@ -182,6 +182,24 @@ insert_riskmetric_to_db <- function(pkg_name,
     return()
   }
   
+  # get suggests and add it to riskmetric_assess
+  src_dir <- file.path("source", pkg_name)
+  if (dir.exists(src_dir)) {
+    desc_file <- glue::glue("source/{pkg_name}/DESCRIPTION")
+    sug_vctr <- desc::desc_get_list(key = 'Suggests', file = desc_file) %>% sort()
+  } else {
+    sug_vctr <- unlist(tools::package_dependencies(pkg_name, available.packages(),
+                       which=c("Suggests"), recursive=FALSE)) %>% unname() %>% sort()
+  }
+  
+  tbl_suggests <- tibble("package" = sug_vctr, type = "Suggests") 
+  attr(tbl_suggests, "class") <- c('pkg_metric_dependencies', 'pkg_metric', 'data.frame')
+  lst_suggests <- list(suggests = tbl_suggests)
+  mostattributes(lst_suggests) <- attributes(riskmetric_assess$dependencies)
+  attr(lst_suggests, "label") <- "Package Suggests"
+  
+  riskmetric_assess$suggests <- lst_suggests
+  
   assessment_serialized <- data.frame(pkg_assess = I(lapply(riskmetric_assess, serialize, connection = NULL)))
   # Insert all the metrics (columns of class "pkg_score") into the db.
   # TODO: Are pkg_score and pkg_metric_error mutually exclusive?
@@ -211,6 +229,16 @@ insert_riskmetric_to_db <- function(pkg_name,
       params = list(pkg_assess = assessment_serialized[metric$name,])
     )
   }
+
+  # suggests_serialized <- serialize(lst_suggests, connection = NULL)
+  metric_id <- dbSelect("select id from metric where name = 'suggests'", db_name)
+  metric_value <- as.character(length(sug_vctr))
+  
+  dbUpdate(
+    "INSERT INTO package_metrics (package_id, metric_id, value, encode) 
+      VALUES ({package_id}, {metric_id$id}, {metric_value}, $pkg_assess)", db_name,
+    params = list(pkg_assess = assessment_serialized["suggests",])
+  )
   
   dbUpdate(
     "UPDATE package
