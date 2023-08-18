@@ -442,7 +442,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
       req("final_decision" %in% credentials$privileges[[user$role]])
       
       dbUpdate("UPDATE package
-          SET decision_id = {match(input$decision, golem::get_golem_options(\"decision_categories\"))}, decision_by = {user$name}, decision_date = {Sys.Date()}
+          SET decision_id = {match(input$decision, golem::get_golem_options(\"decision_categories\"))}, decision_by = {user$name}, decision_date = {get_Date()}
           WHERE name = {selected_pkg$name}"
       )
       

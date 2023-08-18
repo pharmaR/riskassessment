@@ -121,7 +121,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
               if("Report Author" %in% report_includes())
                 HTML(glue::glue("<span class='h4 txtasis'>Author (Role): {user$name} ({user$role})</span><br>")),
               if("Report Date" %in% report_includes())
-                HTML(glue::glue("<span class='h4 txtasis'>Report Date: {format(Sys.time(), '%B %d, %Y')}</span><br>")),
+                HTML(glue::glue("<span class='h4 txtasis'>Report Date: {format(get_time(), '%B %d, %Y')}</span><br>")),
               
               br(),
               
@@ -442,7 +442,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       tagList(
         h5('{riskassessment} App Version:'), app_version,
         h5('riskmetric Version:'), paste0(packageVersion("riskmetric")),
-        h5('Generated on:'), format(Sys.time(), usetz = TRUE)
+        h5('Generated on:'), format(get_time(), usetz = TRUE)
       )
     })
 

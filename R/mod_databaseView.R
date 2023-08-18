@@ -190,10 +190,10 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
           buttons = list(
             list(extend = "excel", text = shiny::HTML('<i class="fas fa-download"></i> Excel'),
                  exportOptions = list(columns = c(0:6)), # which columns to download
-                 filename = paste("{riskassessment} pkgs " ,stringr::str_replace_all(paste(Sys.time()),":", "."))),
+                 filename = paste("{riskassessment} pkgs " ,stringr::str_replace_all(paste(get_time()),":", "."))),
             list(extend = "csv", text = shiny::HTML('<i class="fas fa-download"></i> CSV'),
                  exportOptions = list(columns = c(0:6)), # which columns to download
-                 filename = paste("{riskassessment} pkgs " ,stringr::str_replace_all(paste(Sys.time()),":", "."))))
+                 filename = paste("{riskassessment} pkgs " ,stringr::str_replace_all(paste(get_time()),":", "."))))
         )
         , style="default"
       ) %>%
