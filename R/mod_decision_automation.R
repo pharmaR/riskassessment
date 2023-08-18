@@ -114,6 +114,10 @@ mod_decision_automation_server <- function(id, user, credentials){
     auto_decision_update <- reactiveVal(auto_decision_initial)
     auto_decision <- reactiveValues()
     auto_current <- reactiveVal(names(auto_decision_initial))
+    
+    rule_lst <- reactiveValues()
+    metric_lst <- dbSelect("SELECT name, long_name FROM metric") %>%
+      with(purrr::set_names(name, long_name))
 
     dec_table <- reactiveVal({
       dbSelect("SELECT decision, color, lower_limit, upper_limit FROM decision_categories") %>%
@@ -288,8 +292,15 @@ mod_decision_automation_server <- function(id, user, credentials){
         br(),
         div(
           style = "display: flex;",
-          span("Automate Decisions by Risk Score", style = "font-size: x-large; font-weight: bold"),
+          span("Automate Decisions by Metric Value or Risk Score", style = "font-size: x-large; font-weight: bold"),
           actionButton(ns("auto_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
+        ),
+        br(),
+        div(
+          id = ns("rules_list")
+        ),
+        div(style = "margin-left: 1.5%; margin-right: 1.5%", 
+            actionButton(ns("add_rule"), width = "100%", "Add Rule")
         ),
         br(),
         div(style = "margin-left: 1.5%; margin-right: 1.5%",
@@ -302,7 +313,34 @@ mod_decision_automation_server <- function(id, user, credentials){
         div(style = "margin-left: 1.5%; margin-right: 1.5%", 
           actionButton(ns("submit_auto"), width = "100%", "Apply Decision Rules")
         ),
+        sortable::sortable_js(
+          ns("rules_list"),
+          sortable::sortable_options(
+            handle = ".rule_handle",
+            onUpdate = sortable::sortable_js_capture_input(ns("rules_order")),
+            onLoad = sortable::sortable_js_capture_input(ns("rules_order"))
+          )
+        )
       )
+    })
+    
+    observeEvent(input$add_rule, {
+      number <- input$add_rule
+      insertUI(paste0("#", ns("rules_list")), "beforeEnd", mod_metric_rule_ui(ns("rule"), number, metric_lst, decision_lst))
+      mod_metric_rule_server("rule", number, rule_lst)
+      o <- observeEvent(rule_lst[[paste("rule", number, sep = "_")]], {
+        req(isTRUE(rule_lst[[paste("rule", number, sep = "_")]] == "remove"))
+        removeUI(glue::glue('[data-rank-id=rule_{number}]'))
+        remove_shiny_inputs(paste("rule", number, sep = "_"), input, ns = ns)
+        session$onFlushed(function() {
+          shinyjs::runjs(glue::glue("Shiny.setInputValue('{ns(\"rules_order\")}:sortablejs.rank_list', $.map($('#{ns(\"rules_list\")}').children(), function(child) {{return $(child).attr('data-rank-id') || $.trim(child.innerText);}}))"))
+        })
+        .subset2(rule_lst, "impl")$.values$remove(paste("rule", number, sep = "_"))
+        o$destroy()
+      })
+      session$onFlushed(function() {
+        shinyjs::runjs(glue::glue("Shiny.setInputValue('{ns(\"rules_order\")}:sortablejs.rank_list', $.map($('#{ns(\"rules_list\")}').children(), function(child) {{return $(child).attr('data-rank-id') || $.trim(child.innerText);}}))"))
+      })
     })
     
     output$auto_settings <-

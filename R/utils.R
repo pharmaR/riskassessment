@@ -764,3 +764,11 @@ build_comm_plotly <- function(data = NULL, pkg_name = NULL) {
   }
   
 }
+
+remove_shiny_inputs <- function(id, .input, ns = NS(NULL)) {
+  invisible(
+    lapply(grep(id, names(.input), value = TRUE), function(i) {
+      .subset2(.input, "impl")$.values$remove(ns(i))
+    })
+  )
+}
