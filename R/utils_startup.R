@@ -82,7 +82,7 @@ create_credentials_db <- function(db_name, admin_role = ""){
     password = "QWERTY1",
     # password will automatically be hashed
     admin = TRUE,
-    expire = as.character(Sys.Date()),
+    expire = as.character(get_Date()),
     role = admin_role,
     stringsAsFactors = FALSE
   )
@@ -113,7 +113,7 @@ create_credentials_db <- function(db_name, admin_role = ""){
   # update expire date here to current date + 365 days
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   dat <- shinymanager::read_db_decrypt(con, name = "credentials", passphrase = passphrase) %>%
-    dplyr::mutate(expire = as.character(Sys.Date() + 365))
+    dplyr::mutate(expire = as.character(get_Date() + 365))
   
   shinymanager::write_db_encrypt(
     con,
