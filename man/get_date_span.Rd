@@ -4,7 +4,7 @@
 \alias{get_date_span}
 \title{The 'Get Date Span' function}
 \usage{
-get_date_span(start, end = Sys.Date())
+get_date_span(start, end = get_Date())
 }
 \arguments{
 \item{start}{starting date}

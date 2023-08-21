@@ -328,7 +328,7 @@ reweightViewServer <- function(id, user, decision_list, credentials, trigger_eve
     output$download_database_btn <- downloadHandler(
       
       filename = function() {
-        glue::glue("datase_backup-{Sys.Date()}.sqlite")
+        glue::glue("datase_backup-{get_Date()}.sqlite")
       },
       content = function(file) {
         con <- DBI::dbConnect(RSQLite::SQLite(), golem::get_golem_options('assessment_db_name'))

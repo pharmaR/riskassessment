@@ -13,7 +13,7 @@ test_that("Reactivity of reportPreview", {
   )
   
   # set up new app driver object
-  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"))
+  app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"), load_timeout = 90*1000)
   app$wait_for_idle()
   
   # set pkg_name to dplyr
@@ -61,7 +61,7 @@ test_that("Reactivity of reportPreview", {
     rvest::html_text() %>% 
     paste(collapse = ", ")
   
-  str_expect <- "Vignettes, Report Bugs, Source Control, License, NEWS file, Website, Documentation, Dependencies, NEWS current, Maintainer, Bugs Closure Rate, First Version Release*, Reverse Dependencies, Latest Version Release*, Monthly downloads trend*, Package Downloads"
+  str_expect <- "Vignettes, Report Bugs, Source Control, License, NEWS file, Website, Documentation, Dependencies, NEWS current, Maintainer, Bugs Closure Rate, Test Coverage, First Version Release*, Reverse Dependencies, Latest Version Release*, Monthly downloads trend*, Package Downloads"
   expect_equal(maint_info, str_expect)
   
   app$stop()
