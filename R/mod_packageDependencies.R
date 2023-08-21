@@ -55,6 +55,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     suggests <- reactiveVal(value = NULL)
     revdeps  <- reactiveVal(value = NULL)
     rev_pkg  <- reactiveVal(value = NULL)
+    toggle <- reactiveVal(0L)
+
     
     observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
       req(selected_pkg$name())
@@ -93,7 +95,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       suggests(pkgref()$suggests[[1]] %>% dplyr::as_tibble())
     })
     
-    pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), depends()), {
+    pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), depends(), toggle()), {
       req(selected_pkg$name())
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
@@ -110,11 +112,15 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
           mutate(package = stringr::str_replace(package, "\n", " ")) %>%
           mutate(name = stringr::str_extract(package, "\\w+"))
         
-      purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), cran_pkgs)) %>% 
+      out_df <- purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), cran_pkgs)) %>% 
         right_join(pkginfo, by = "name") %>% 
         select(package, type, name, version, score) %>%
         arrange(name, type) %>% 
         distinct()
+      
+      if(toggle() == 1L) out_df <- filter(out_df, type != "Suggests")
+      
+      return(out_df)
       }
     })
     
@@ -156,13 +162,13 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                  )
                 ),
                 column(2,
-                       actionButton(
-                         inputId =  ns("hide_suggests"),
-                         label = "Hide Suggests",
-                         icon = icon("fas fa-eye-slash", class = "fa-solid", lib = "font-awesome"),
-                         size = "xs",
-                         style = "height:30px; padding-top:1px;"
-                       )
+                 actionButton(
+                   inputId =  ns("hide_suggests"),
+                   label = "Hide Suggests",
+                   icon = icon("fas fa-eye-slash", class = "fa-solid", lib = "font-awesome"),
+                   size = "xs",
+                   style = "height:30px; padding-top:1px;"
+                 )
                 ),
                 column(2,
                  actionButton(
@@ -189,7 +195,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                       # Hiding name from DT table. target contains index for "name"
                       # The - 1 is because js uses 0 index instead of 1 like R
                       target <- which(names(data_table()) %in% c("name")) - 1
-                      
+
                       formattable::as.datatable(
                         formattable::formattable(
                           data_table(),
@@ -379,6 +385,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         
       }
 
+    })
+    
+    observeEvent(input$hide_suggests, {
+      req(pkg_df(), loaded2_db())
+      toggle(1L - isolate(toggle()))
     })
   }) # moduleServer
 }
