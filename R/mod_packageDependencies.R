@@ -51,9 +51,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     }
     
     tabready <- reactiveVal(value = NULL)
-    depends <- reactiveVal(value = NULL)
-    revdeps <- reactiveVal(value = NULL)
-    rev_pkg <- reactiveVal(value = NULL)
+    depends  <- reactiveVal(value = NULL)
+    suggests <- reactiveVal(value = NULL)
+    revdeps  <- reactiveVal(value = NULL)
+    rev_pkg  <- reactiveVal(value = NULL)
     
     observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
       req(selected_pkg$name())
@@ -89,6 +90,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         }
       )
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
+      suggests(pkgref()$suggests[[1]] %>% dplyr::as_tibble())
     })
     
     pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), depends()), {
@@ -103,14 +105,15 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         rlang::warn(msg)
         dplyr::tibble(package = character(0), type = character(0), name = character(0))
       } else {
-        pkginfo <- depends() %>%
+        pkginfo <- dplyr::bind_rows(depends(), suggests()) %>%
           as_tibble() %>%
-          mutate(package = stringr::str_replace(package, "\n", "")) %>%
+          mutate(package = stringr::str_replace(package, "\n", " ")) %>%
           mutate(name = stringr::str_extract(package, "\\w+"))
         
       purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), cran_pkgs)) %>% 
         right_join(pkginfo, by = "name") %>% 
         select(package, type, name, version, score) %>%
+        arrange(name, type) %>% 
         distinct()
       }
     })
@@ -134,32 +137,41 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     
     # Render Output UI for Package Dependencies.
     output$package_dependencies_ui <- renderUI({
-      req(depends())
       
       # Lets the user know that a package needs to be selected.
       if (identical(selected_pkg$name(), character(0))) {
         showHelperMessage()
       } else {
+        req(depends())
         fluidPage(
           shiny::
             tagList(
               br(),
-              h4(glue::glue("Package Dependencies: {nrow(depends())}"), style = "text-align: left;"),
+              h4(glue::glue("Package Dependencies: {nrow(depends())} Suggests: {nrow(suggests())}"), style = "text-align: left;"),
               br(),
               fluidRow(
-                column(6, 
+                column(4, 
                  tags$strong(
                   glue::glue("First-order dependencies for package: ", {selected_pkg$name()})
                  )
                 ),
-                column(3,
+                column(2,
+                       actionButton(
+                         inputId =  ns("hide_suggests"),
+                         label = "Hide Suggests",
+                         icon = icon("fas fa-eye-slash", class = "fa-solid", lib = "font-awesome"),
+                         size = "xs",
+                         style = "height:30px; padding-top:1px;"
+                       )
+                ),
+                column(2,
                  actionButton(
                    inputId =  ns("update_all_packages"),
                    label = "Upload all",
                    icon = icon("fas fa-upload", class = "fa-regular", lib = "font-awesome"),
                    size = "xs",
                    style = "height:30px; padding-top:1px;"
-                 )
+                  )
                 )
               ),
               br(),
