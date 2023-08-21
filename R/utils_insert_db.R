@@ -221,7 +221,7 @@ insert_riskmetric_to_db <- function(pkg_name,
     desc_file <- glue::glue("source/{pkg_name}/DESCRIPTION")
     sug_vctr <- desc::desc_get_list(key = 'Suggests', file = desc_file) %>% sort()
   } else {
-    sug_vctr <- unlist(tools::package_dependencies(pkg_name, available.packages(),
+    sug_vctr <- unlist(tools::package_dependencies(pkg_name, available.packages(contrib.url(repos = "http://cran.us.r-project.org")),
                        which=c("Suggests"), recursive=FALSE)) %>% unname() %>% sort()
   }
   
