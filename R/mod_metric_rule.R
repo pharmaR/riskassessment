@@ -7,13 +7,13 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
-mod_metric_rule_ui <- function(id, number, metric_lst, decision_lst){
+mod_metric_rule_ui <- function(id, number, metric_lst, decision_lst, .inputs = list()){
   ns <- NS(paste(id, number, sep = "_"))
   div(`data-rank-id` = paste("rule", number, sep = "_"), style = "display: flex; align-items: center;",
       icon("grip-vertical", class = "rule_handle"),
-      selectInput(ns("metric"), NULL, metric_lst),
-      textInput(ns("filter"), NULL, placeholder = "~ is.na(.x)"),
-      selectInput(ns("decision"), NULL, decision_lst),
+      selectInput(ns("metric"), NULL, metric_lst, .inputs$metric),
+      textInput(ns("filter"), NULL, .inputs$filter %||% "", placeholder = "~ is.na(.x)"),
+      selectInput(ns("decision"), NULL, decision_lst, .inputs$decision),
       actionLink(ns("remove_rule"), NULL, style = 'float: right;', shiny::icon("times"))
   )
 }
@@ -28,10 +28,6 @@ mod_metric_rule_server <- function(id, number, rule_lst){
  
     input_observer <- 
       observe({
-        req(input$metric)
-        req(input$filter)
-        req(input$decision)
-        
         rule_lst[[paste("rule", number, sep = "_")]] <- 
           list(
             metric = input$metric,

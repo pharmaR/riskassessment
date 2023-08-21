@@ -772,3 +772,5 @@ remove_shiny_inputs <- function(id, .input, ns = NS(NULL)) {
     })
   )
 }
+
+`%||%` <- function(lhs, rhs) if (is.null(lhs)) rhs else lhs

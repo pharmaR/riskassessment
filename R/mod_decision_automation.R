@@ -118,6 +118,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     rule_lst <- reactiveValues()
     metric_lst <- dbSelect("SELECT name, long_name FROM metric") %>%
       with(purrr::set_names(name, long_name))
+    risk_rule_div <- reactiveVal(FALSE)
 
     dec_table <- reactiveVal({
       dbSelect("SELECT decision, color, lower_limit, upper_limit FROM decision_categories") %>%
@@ -276,7 +277,6 @@ mod_decision_automation_server <- function(id, user, credentials){
     
     output$decision_rule_div <- renderUI({
       req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
-      
       tagList(
         div(
           style = "display: flex",
@@ -297,7 +297,8 @@ mod_decision_automation_server <- function(id, user, credentials){
         ),
         br(),
         div(
-          id = ns("rules_list")
+          id = ns("rules_list"),
+          rule_divs()
         ),
         div(style = "margin-left: 1.5%; margin-right: 1.5%", 
             actionButton(ns("add_rule"), width = "100%", "Add Rule")
@@ -311,7 +312,7 @@ mod_decision_automation_server <- function(id, user, credentials){
           dec_divs()
         ),
         div(style = "margin-left: 1.5%; margin-right: 1.5%", 
-          actionButton(ns("submit_auto"), width = "100%", "Apply Decision Rules")
+            submit_auto()
         ),
         sortable::sortable_js(
           ns("rules_list"),
@@ -324,23 +325,75 @@ mod_decision_automation_server <- function(id, user, credentials){
       )
     })
     
+    rule_number <- reactiveVal(0)
     observeEvent(input$add_rule, {
-      number <- input$add_rule
-      insertUI(paste0("#", ns("rules_list")), "beforeEnd", mod_metric_rule_ui(ns("rule"), number, metric_lst, decision_lst))
-      mod_metric_rule_server("rule", number, rule_lst)
-      o <- observeEvent(rule_lst[[paste("rule", number, sep = "_")]], {
-        req(isTRUE(rule_lst[[paste("rule", number, sep = "_")]] == "remove"))
-        removeUI(glue::glue('[data-rank-id=rule_{number}]'))
-        remove_shiny_inputs(paste("rule", number, sep = "_"), input, ns = ns)
+      rule_number(rule_number() + 1)
+      insertUI(paste0("#", ns("rules_list")), "beforeEnd", mod_metric_rule_ui(ns("rule"), rule_number(), metric_lst, decision_lst))
+      mod_metric_rule_server("rule", rule_number(), rule_lst)
+      o <- observeEvent(rule_lst[[paste("rule", rule_number(), sep = "_")]], {
+        req(isTRUE(rule_lst[[paste("rule", rule_number(), sep = "_")]] == "remove"))
+        removeUI(glue::glue('[data-rank-id=rule_{rule_number()}]'))
+        remove_shiny_inputs(paste("rule", rule_number(), sep = "_"), input, ns = ns)
         session$onFlushed(function() {
           shinyjs::runjs(glue::glue("Shiny.setInputValue('{ns(\"rules_order\")}:sortablejs.rank_list', $.map($('#{ns(\"rules_list\")}').children(), function(child) {{return $(child).attr('data-rank-id') || $.trim(child.innerText);}}))"))
         })
-        .subset2(rule_lst, "impl")$.values$remove(paste("rule", number, sep = "_"))
+        .subset2(rule_lst, "impl")$.values$remove(paste("rule", rule_number(), sep = "_"))
         o$destroy()
       })
       session$onFlushed(function() {
         shinyjs::runjs(glue::glue("Shiny.setInputValue('{ns(\"rules_order\")}:sortablejs.rank_list', $.map($('#{ns(\"rules_list\")}').children(), function(child) {{return $(child).attr('data-rank-id') || $.trim(child.innerText);}}))"))
       })
+    })
+    
+    observeEvent(input$auto_include, {
+      risk_rule_div(!is.null(input$auto_include))
+    }, ignoreNULL = FALSE, ignoreInit = TRUE)
+    
+    observeEvent(risk_rule_div(), {
+      if (risk_rule_div()) {
+        insertUI(paste0("#", ns("rules_list")), "beforeEnd",
+                 div(`data-rank-id` = "risk_score_rule", style = "display: flex; align-items: center;",
+                     icon("grip-vertical", class = "rule_handle"),
+                     h4("Risk Score Rule"),
+                     actionLink(ns("remove_rule"), NULL, style = 'float: right;', shiny::icon("times"))
+                 ))
+      } else {
+        removeUI('[data-rank-id=risk_score_rule]')
+      }
+      session$onFlushed(function() {
+        shinyjs::runjs(glue::glue("Shiny.setInputValue('{ns(\"rules_order\")}:sortablejs.rank_list', $.map($('#{ns(\"rules_list\")}').children(), function(child) {{return $(child).attr('data-rank-id') || $.trim(child.innerText);}}))"))
+      })
+    })
+    
+    rule_divs <- reactive({
+      purrr::map(input$rules_order, ~ {
+        if (.x == "risk_score_rule") {
+          div(`data-rank-id` = "risk_score_rule", style = "display: flex; align-items: center;",
+              icon("grip-vertical", class = "rule_handle"),
+              h4("Risk Score Rule"),
+              actionLink(ns("remove_rule"), NULL, style = 'float: right;', shiny::icon("times"))
+          )
+        } else {
+          number <- strsplit(.x, "_")[[1]][2]
+          mod_metric_rule_ui(ns("rule"), number, metric_lst, decision_lst, rule_lst[[.x]])
+        }
+      })
+    })
+    
+    submit_auto <- reactive({
+      disable_l <- FALSE
+      if (any(grepl("^rule_\\d+$", input$rules_order))) {
+        for (.x in input$rules_order) {
+          if (.x != "risk_score_rule") {
+            if (!isTruthy(rule_lst[[.x]]$filter)) {
+              disable_l <- TRUE
+              break
+            }
+          }
+        }
+      }
+      actionButton(ns("submit_auto"), width = "100%", "Apply Decision Rules") %>%
+        tagAppendAttributes(class = if (disable_l) "shinyjs-disabled")
     })
     
     output$auto_settings <-
