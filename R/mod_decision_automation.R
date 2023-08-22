@@ -307,8 +307,6 @@ mod_decision_automation_server <- function(id, user, credentials){
     
     observeEvent(input$auto_include, {
       if (is.null(input$auto_include)) {
-        # .subset2(rule_lst, "impl")$.values$remove("risk_score_rule")
-        # removeUI('[data-rank-id=risk_score_rule]')
         rule_lst[["risk_score_rule"]] <- "remove"
       } else if (is.null(rule_lst[["risk_score_rule"]])) {
         rule_lst[["risk_score_rule"]] <- list(metric = NA_character_, filter = "Risk Score Rules", decision = NA_character_)

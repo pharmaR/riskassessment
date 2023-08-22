@@ -30,10 +30,12 @@ configure_db <- function(dbname, config) {
   purrr::walk(config[["decisions"]]$categories, ~ dbUpdate("INSERT INTO decision_categories (decision) VALUES ({.x})", dbname))
   
   # Set decision rules
-  if (!is.null(config[["decisions"]]$rules)) 
+  if (!is.null(config[["decisions"]]$rules)) {
     purrr::iwalk(config[["decisions"]]$rules, ~ dbUpdate("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = {.y}", dbname))
-  else
+    dbUpdate("INSERT INTO rules (filter) VALUES ('Risk Score Rules')")
+  } else {
     message("No decision rules applied from configuration")
+  }
   
   # Set decision category colors
   col_lst <- set_colors(config[["decisions"]]$categories)
