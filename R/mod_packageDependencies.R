@@ -24,6 +24,7 @@ packageDependenciesUI <- function(id) {
 #' @importFrom shiny removeModal showModal tagList
 #' @importFrom shinyjs click
 #' @importFrom stringr str_extract str_replace
+#' @importFrom shinyWidgets materialSwitch
 #'
 #' @keywords internal
 #'
@@ -56,7 +57,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     revdeps  <- reactiveVal(value = NULL)
     rev_pkg  <- reactiveVal(value = NULL)
     pkg_updates <- reactiveValues()
-    toggle <- reactiveVal(0L)
+    toggle <- reactiveVal(1L)
 
     observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
       req(selected_pkg$name())
@@ -162,12 +163,12 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                  )
                 ),
                 column(2,
-                 actionButton(
+                 shinyWidgets::materialSwitch(
                    inputId =  ns("hide_suggests"),
                    label = "Hide Suggests",
-                   icon = icon("fas fa-eye-slash", class = "fa-solid", lib = "font-awesome"),
-                   size = "xs",
-                   style = "height:30px; padding-top:1px;"
+                   value = FALSE,
+                   inline = TRUE,
+                   status = "success"
                  )
                 ),
                 column(2,
