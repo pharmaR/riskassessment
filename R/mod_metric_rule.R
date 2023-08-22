@@ -39,6 +39,7 @@ mod_metric_rule_server <- function(id, number, rule_lst){
     
     rules_observer <-
       observeEvent(rule_lst[[paste("rule", number, sep = "_")]], {
+        req(!isTRUE(rule_lst[[paste("rule", number, sep = "_")]] == "remove"))
         
         updateSelectInput(session, "metric", selected = rule_lst[[paste("rule", number, sep = "_")]]$metric)
         updateTextInput(session, "filter", value = rule_lst[[paste("rule", number, sep = "_")]]$filter)
@@ -46,12 +47,14 @@ mod_metric_rule_server <- function(id, number, rule_lst){
       })
     
     remove_observer <-
-      observeEvent(input$remove_rule, {
+      observe({
+        req(input$remove_rule > 0 | isTRUE(rule_lst[[paste("rule", number, sep = "_")]] == "remove"))
         rule_lst[[paste("rule", number, sep = "_")]] <- "remove"
         input_observer$destroy()
         rules_observer$destroy()
         remove_observer$destroy()
-      })
+      }) %>%
+      bindEvent(input$remove_rule, rule_lst[[paste("rule", number, sep = "_")]])
   })
 }
     

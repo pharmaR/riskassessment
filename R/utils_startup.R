@@ -29,7 +29,8 @@ create_db <- function(db_name){
     "create_package_metrics_table.sql",
     "create_community_usage_metrics_table.sql",
     "create_comments_table.sql",
-    "create_roles_table.sql"
+    "create_roles_table.sql",
+    "create_rules_table.sql"
   )
   
   # Append path to the queries.

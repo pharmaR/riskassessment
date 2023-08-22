@@ -110,3 +110,45 @@ process_dec_tbl <- function(db_name = golem::get_golem_options('assessment_db_na
     purrr::map(purrr::discard, is.na) %>%
     purrr::compact()
 }
+
+process_rule_tbl <- function(db_name = golem::get_golem_options('assessment_db_name')) {
+  if (is.null(db_name))
+    return(list())
+  
+   rule_tbl <- dbSelect("SELECT m.name metric, r.filter, d.decision FROM rules r LEFT JOIN metric m ON r.metric_id = m.id LEFT JOIN decision_categories d ON r.decision_id = d.id", db_name)
+   rule_tbl %>%
+     purrr::pmap(~ list(...)) %>%
+     purrr::set_names(ifelse(is.na(purrr::map_chr(., ~ .x$metric)), rep("risk_score_rule", length(.)), paste("rule", seq_along(.), sep = "_")))
+}
+
+create_rule_divs <- function(rule_lst, metric_lst, decision_lst, ns = NS(NULL)) {
+  purrr::imap(rule_lst, ~ {
+    if (.y == "risk_score_rule") {
+      div(`data-rank-id` = "risk_score_rule", style = "display: flex; align-items: center;",
+          icon("grip-vertical", class = "rule_handle"),
+          h4("Risk Score Rule"),
+          # actionLink(ns("remove_rule"), NULL, style = 'float: right;', shiny::icon("times"))
+      )
+    } else {
+      if (isTRUE(.x == "remove")) return(NULL)
+      
+      number <- strsplit(.y, "_")[[1]][2]
+      mod_metric_rule_ui(ns("rule"), number, metric_lst, decision_lst, .x)
+    }
+  }) %>%
+    purrr::compact()
+}
+
+create_rule_obs <- function(rv, rule_lst, .input, ns = NS(NULL), session = getDefaultReactiveDomain()) {
+  o <- observeEvent(rule_lst[[rv]], {
+    req(isTRUE(rule_lst[[rv]] == "remove"))
+    removeUI(glue::glue('[data-rank-id={rv}]'))
+    remove_shiny_inputs(rv, .input, ns = ns)
+    session$onFlushed(function() {
+      shinyjs::runjs(glue::glue("Shiny.setInputValue('{ns(\"rules_order\")}:sortablejs.rank_list', $.map($('#{ns(\"rules_list\")}').children(), function(child) {{return $(child).attr('data-rank-id') || $.trim(child.innerText);}}))"))
+    })
+    .subset2(rule_lst, "impl")$.values$remove(rv)
+    o$destroy()
+  })
+}
+
