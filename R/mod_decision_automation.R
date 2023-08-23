@@ -481,7 +481,8 @@ mod_decision_automation_server <- function(id, user, credentials){
         br(),
         div(
           id = ns("rules_list"),
-          rule_divs()
+          rule_divs(),
+          style = "margin-left: 2%; margin-right: 2%"
         ),
         div(style = "margin-left: 1.5%; margin-right: 1.5%", 
             actionButton(ns("add_rule"), width = "100%", "Add Rule")

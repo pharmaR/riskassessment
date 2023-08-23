@@ -1,0 +1,23 @@
+.modal-body .btn.action-button:not(.btn-circle-sm) {
+  font-family: 'Arial Black';
+  font-size: medium;
+}
+
+div[data-rank-id] {
+  display: flex;
+  border: 1px solid black;
+  margin-bottom: 5px;
+  padding-top: 5px;
+  border-radius: 10px;
+}
+
+div[data-rank-id] div{
+  margin-bottom: 0;
+}
+
+div[data-rank-id] > div:not(.shiny-input-container) {
+  display: flex;
+  align-items: center;
+  margin-right: 5px;
+  margin-left: 5px;
+}
