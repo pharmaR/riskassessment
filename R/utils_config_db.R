@@ -50,7 +50,7 @@ configure_db <- function(dbname, config) {
   purrr::walk(config[["credentials"]]$roles, ~ dbUpdate("INSERT INTO roles (user_role) VALUES ({.x})", dbname))
   
   # Set privileges
-  update_statements <- purrr::imap(config[["credentials"]]$privileges, ~ glue::glue("UPDATE roles SET {.x} = 1 WHERE user_role = '{.y}'")) %>%
+  update_statements <- purrr::imap(config[["credentials"]]$privileges, ~ if (.y %in% config[["credentials"]]$roles) glue::glue("UPDATE roles SET {.x} = 1 WHERE user_role = '{.y}'")) %>%
     unlist(use.names = FALSE)
   purrr::iwalk(update_statements, ~ dbUpdate(.x, dbname))
 }
