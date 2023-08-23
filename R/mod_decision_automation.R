@@ -307,14 +307,14 @@ mod_decision_automation_server <- function(id, user, credentials){
     
     observeEvent(input$auto_include, {
       if (is.null(input$auto_include)) {
-        rule_lst[["risk_score_rule"]] <- "remove"
+        if (!is.null(rule_lst[["risk_score_rule"]]))
+          rule_lst[["risk_score_rule"]] <- "remove"
       } else if (is.null(rule_lst[["risk_score_rule"]])) {
         rule_lst[["risk_score_rule"]] <- list(metric = NA_character_, filter = "Risk Score Rules", decision = NA_character_)
         insertUI(paste0("#", ns("rules_list")), "beforeEnd",
-                 div(`data-rank-id` = "risk_score_rule", style = "display: flex; align-items: center;",
-                     icon("grip-vertical", class = "rule_handle"),
-                     h4("Risk Score Rule"),
-                     # actionLink(ns("remove_rule"), NULL, style = 'float: right;', shiny::icon("times"))
+                 div(`data-rank-id` = "risk_score_rule",
+                     div(icon("grip-lines-vertical", class = c("rule_handle", "fa-xl"))),
+                     div(h4("Risk Score Rule"), style = "margin-bottom: 5px; padding-left: 10px;")
                  ))
         create_rule_obs("risk_score_rule", rule_lst, .input = input, ns = ns)
       }

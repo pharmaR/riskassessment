@@ -124,10 +124,9 @@ process_rule_tbl <- function(db_name = golem::get_golem_options('assessment_db_n
 create_rule_divs <- function(rule_lst, metric_lst, decision_lst, ns = NS(NULL)) {
   purrr::imap(rule_lst, ~ {
     if (.y == "risk_score_rule") {
-      div(`data-rank-id` = "risk_score_rule", style = "display: flex; align-items: center;",
-          icon("grip-vertical", class = "rule_handle"),
-          h4("Risk Score Rule"),
-          # actionLink(ns("remove_rule"), NULL, style = 'float: right;', shiny::icon("times"))
+      div(`data-rank-id` = "risk_score_rule",
+          div(icon("grip-lines-vertical", class = c("rule_handle", "fa-xl"))),
+          div(h4("Risk Score Rule"), style = "margin-bottom: 5px; padding-left: 10px;")
       )
     } else {
       if (isTRUE(.x == "remove")) return(NULL)
