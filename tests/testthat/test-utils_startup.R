@@ -20,7 +20,7 @@ test_that("database creation", {
     })
   
   expect_equal(DBI::dbListTables(con),
-               c("comments", "community_usage_metrics", "decision_categories", "metric", "package", "package_metrics", "roles", "sqlite_sequence"))
+               c("comments", "community_usage_metrics", "decision_categories", "metric", "package", "package_metrics", "roles", "rules", "sqlite_sequence"))
   pkg <- DBI::dbGetQuery(con, "SELECT * FROM package")
   expect_equal(nrow(pkg), 0)
   expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", 
