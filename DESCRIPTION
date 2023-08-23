@@ -67,7 +67,8 @@ Imports:
     shinyWidgets,
     stringr,
     shinyAce,
-    jsTreeR
+    jsTreeR,
+    sortable
 Suggests: 
     chromote,
     fontawesome,
