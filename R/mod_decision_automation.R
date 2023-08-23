@@ -65,6 +65,8 @@ mod_decision_automation_ui <- function(id){
   tagList(
     tags$head(tags$style(HTML(c(dec_root, dec_css)))),
     uiOutput(ns("auto_classify")),
+    DT::dataTableOutput(ns("rule_table")),
+    fluidRow(style = "height: 2rem"),
     DT::dataTableOutput(ns("auto_table"))
   )
 }
@@ -392,6 +394,29 @@ mod_decision_automation_server <- function(id, user, credentials){
       
     })
     
+    output$rule_table <-
+      DT::renderDataTable({
+        req(!rlang::is_empty(risk_rule_update()))
+        
+        DT::datatable({
+          risk_rule_update() %>% 
+            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "filter", "decision")]))
+        },
+        escape = FALSE,
+        class = "cell-border",
+        selection = 'none',
+        colnames = c("Metric", "Conditional", "Decision"),
+        rownames = FALSE,
+        options = list(
+          dom = "t",
+          searching = FALSE,
+          sScrollX = "100%",
+          iDisplayLength = -1,
+          ordering = FALSE
+        ))
+        
+      })
+    
     output$auto_table <-
       DT::renderDataTable({
         req(!rlang::is_empty(auto_decision_update()))
@@ -417,7 +442,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     
     output$empty_auto <- 
       renderUI({
-        if (rlang::is_empty(auto_decision_update())) {
+        if (rlang::is_empty(risk_rule_update())) {
           tagList(
             br(),
             p("Decision automation is not enabled. Click on the gear to the right if you wish to add.")
@@ -576,7 +601,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     
     output$modal_rule_table <- 
       DT::renderDataTable({
-        out_lst <- purrr::compact(reactiveValuesToList(rule_lst))
+        out_lst <- purrr::compact(reactiveValuesToList(rule_lst)[isolate(input$rules_order)])
         DT::datatable({
           out_lst %>% 
             purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "filter", "decision")]))
