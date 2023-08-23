@@ -111,7 +111,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         pkginfo <- dplyr::bind_rows(depends(), suggests()) %>%
           as_tibble() %>%
           mutate(package = stringr::str_replace(package, "\n", " ")) %>%
-          mutate(name = stringr::str_extract(package, "\\w+"))
+          # a syntactically valid name:
+          # consists of letters, numbers and the dot or underline characters 
+          # and starts with a letter or the dot not followed by a number. 
+          # Names such as '".2way"' are not valid
+          mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
         
       out_df <- purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), cran_pkgs)) %>% 
         right_join(pkginfo, by = "name") %>% 
