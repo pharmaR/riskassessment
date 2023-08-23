@@ -1,4 +1,4 @@
-#' Assign decision rules
+#' Assign decision rules based on risk score
 #' 
 #' Automates the decision for a package based upon the provided rules
 #' 
@@ -8,7 +8,7 @@
 #' @return A character string of the decision made
 #' 
 #' @noRd
-assign_decisions <- function(decision_list, package) {
+assign_risk_score_decision <- function(decision_list, package) {
   score <- get_pkg_info(package)$score
   decision <- paste0(names(decision_list)[purrr::map_lgl(decision_list, ~ .x[1] < score && score <= .x[2])], "")
   decision_id <- dbSelect("SELECT id FROM decision_categories WHERE decision = {decision}")
@@ -26,6 +26,39 @@ assign_decisions <- function(decision_list, package) {
   }
   
   return(decision)
+}
+
+assign_decisions <- function(rule_lst, package) {
+  decision <- ""
+  if (any(purrr::map_lgl(rule_lst, ~ !is.na(.x$metric))))
+    assessments <- get_assess_blob(package)
+  for (rule in rule_lst) {
+    if (decision != "") break
+    
+    if (is.na(rule$metric)) {
+      decision <- assign_risk_score_decision(rule$rules, package)
+    } else if (rlang::is_function(rule$mapper) | rlang::is_formula(rule$mapper)) {
+      fn <- purrr::possibly(rule$mapper, otherwise = FALSE)
+      decision <- if (fn(assessments[[rule$metric]][[1]])) rule$decision else ""
+      decision_id <- dbSelect("SELECT id FROM decision_categories WHERE decision = {decision}")
+      if (decision != "") {
+        dbUpdate("UPDATE package SET decision_id = {decision_id},
+                        decision_by = 'Auto Assigned', decision_date = {get_Date()}
+                         WHERE name = {package}")
+        loggit::loggit("INFO",
+                       glue::glue("decision for the package {package} was assigned {decision} by decision automation rules"))
+        comment <- glue::glue("Decision was assigned '{decision}' by decision rules because the {rule$metric} assessment returned TRUE for `{rule$filter}`")
+        dbUpdate(
+          "INSERT INTO comments
+          VALUES ({package}, 'Auto Assigned', 'admin',
+          {comment}, 'o', {getTimeStamp()})")
+      }
+    } else {
+      warning(glue::glue("Unable to apply rule for {rule$metric}."))
+      decision <- ""
+    }
+  }
+  decision
 }
 
 #' Get colors for decision categories
@@ -117,7 +150,12 @@ process_rule_tbl <- function(db_name = golem::get_golem_options('assessment_db_n
   
    rule_tbl <- dbSelect("SELECT m.name metric, r.filter, d.decision FROM rules r LEFT JOIN metric m ON r.metric_id = m.id LEFT JOIN decision_categories d ON r.decision_id = d.id", db_name)
    rule_tbl %>%
-     purrr::pmap(~ list(...)) %>%
+     purrr::pmap(~ {
+       out <- list(...)
+       if (!is.na(out$metric))
+         out$mapper <- evalSetTimeLimit(parse(text = out$filter))
+       out
+       }) %>%
      purrr::set_names(ifelse(is.na(purrr::map_chr(., ~ .x$metric)), rep("risk_score_rule", length(.)), paste("rule", seq_along(.), sep = "_")))
 }
 
@@ -151,3 +189,10 @@ create_rule_obs <- function(rv, rule_lst, .input, ns = NS(NULL), session = getDe
   })
 }
 
+evalSetTimeLimit <- function(expr, cpu = .25, elapsed = Inf) {
+  setTimeLimit(cpu = cpu, elapsed = elapsed, transient = TRUE)
+  on.exit({
+    setTimeLimit(cpu = Inf, elapsed = Inf, transient = FALSE)
+  })
+  try(eval(expr), silent = TRUE)
+}

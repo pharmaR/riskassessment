@@ -32,10 +32,12 @@ mod_metric_rule_server <- function(id, number, rule_lst){
           list(
             metric = input$metric,
             filter = input$filter,
-            decision = input$decision
+            decision = input$decision,
+            mapper = evalSetTimeLimit(parse(text = input$filter))
           )
       }) %>%
-      bindEvent(input$metric, input$filter, input$decision)
+      bindEvent(input$metric, input$filter, input$decision,
+                ignoreInit = TRUE)
     
     rules_observer <-
       observeEvent(rule_lst[[paste("rule", number, sep = "_")]], {

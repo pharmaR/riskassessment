@@ -88,6 +88,8 @@ mod_decision_automation_ui_2 <- function(id){
 #' @importFrom purrr compact
 #' @importFrom shinyWidgets tooltipOptions
 #' @importFrom colourpicker colourInput updateColourInput
+#' @importFrom rlang is_formula is_function
+#' @importFrom sortable sortable_js sortable_options sortable_js_capture_input
 mod_decision_automation_server <- function(id, user, credentials){
   if (missing(credentials))
     credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
@@ -353,6 +355,23 @@ mod_decision_automation_server <- function(id, user, credentials){
       })
     })
     
+    disable_auto_submit <- reactiveVal(TRUE)
+    observeEvent(reactiveValuesToList(rule_lst), {
+      disable_auto_submit(FALSE)
+      rule_list <- reactiveValuesToList(rule_lst)
+      for (rule in rule_list) {
+        if (isTRUE(rule == "remove")) {
+          disable_auto_submit(TRUE)
+          break
+        }
+        if (rule$filter == "risk_score_rule") next
+        if (rlang::is_formula(rule$mapper) | rlang::is_function(rule$mapper)) {
+          disable_auto_submit(TRUE)
+          break
+        }
+      }
+    })
+    
     #### Outputs ####
     purrr::walk(c("auto_dropdown", "auto_dropdown2"), ~
                   observeEvent(input[[.x]], {
@@ -560,8 +579,7 @@ mod_decision_automation_server <- function(id, user, credentials){
         out_lst <- purrr::compact(reactiveValuesToList(rule_lst))
         DT::datatable({
           out_lst %>% 
-            purrr::map_dfr(~ dplyr::as_tibble(.x) %>% 
-                             dplyr::select(metric, filter, decision))
+            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "filter", "decision")]))
         },
         escape = FALSE,
         class = "cell-border",
@@ -704,7 +722,8 @@ mod_decision_automation_server <- function(id, user, credentials){
       }
       
       
-      rule_lst[["risk_score_rule"]][["rules"]] <- out_lst
+      if (length(out_lst) != 0)
+        rule_lst[["risk_score_rule"]][["rules"]] <- out_lst
       risk_rule_update(reactiveValuesToList(rule_lst)[input$rules_order])
       rule_out <-
         purrr::map(risk_rule_update(), ~ {
