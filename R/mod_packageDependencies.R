@@ -56,18 +56,20 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     suggests <- reactiveVal(value = NULL)
     revdeps  <- reactiveVal(value = NULL)
     rev_pkg  <- reactiveVal(value = NULL)
+    toggled  <- reactiveVal(value = 0L)
     pkg_updates <- reactiveValues()
-    toggle <- reactiveVal(1L)
 
     observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
       req(selected_pkg$name())
       req(selected_pkg$name() != "-")
+      toggled(0L) # set materialSwitch off
       
       if (parent$input$tabs == "Package Metrics" & parent$input$metric_type == "dep") {
         tabready(1L)
       } else {
         tabready(0L)
       }
+     
     })
     
     pkgref <- eventReactive(list(selected_pkg$name(), changes(), tabready()), {
@@ -96,12 +98,12 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       suggests(pkgref()$suggests[[1]] %>% dplyr::as_tibble())
     })
     
-    pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), depends(), toggle()), {
+    pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), depends(), toggled()), {
       req(selected_pkg$name())
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
       req(depends())
-      
+
       if (nrow(depends()) == 0) {
         # packages like curl, magrittr will appear here instead of in tryCatch() above
         msg <- paste("Detailed dependency information is not available for package", selected_pkg$name())
@@ -117,17 +119,16 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
           # Names such as '".2way"' are not valid
           mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
         
-      out_df <- purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), cran_pkgs)) %>% 
+      if(toggled() == 1L) 
+        pkginfo <- filter(pkginfo, type != "Suggests")
+        
+      purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), cran_pkgs)) %>% 
         right_join(pkginfo, by = "name") %>% 
         select(package, type, name, version, score) %>%
         arrange(name, type) %>% 
         distinct()
-      
-      if(toggle() == 1L) out_df <- filter(out_df, type != "Suggests")
-      
-      return(out_df)
       }
-    })
+    }, ignoreInit = TRUE)
     
     data_table <- eventReactive(pkg_df(), {
       cbind(
@@ -170,7 +171,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                  shinyWidgets::materialSwitch(
                    inputId =  ns("hide_suggests"),
                    label = "Hide Suggests",
-                   value = FALSE,
+                   value = toggled(),
                    inline = TRUE,
                    status = "success"
                  )
@@ -195,7 +196,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
               fluidRow(
                 column(
                   width = 8,
-                  if (nrow(depends()) == 0) {
+                  if (nrow(data_table()) == 0) {
                     renderText("No dependency information is available")
                   } else {
                     DT::renderDataTable(server = FALSE, {
@@ -388,7 +389,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
 
     observeEvent(input$hide_suggests, {
       req(pkg_df(), loaded2_db())
-      toggle(1L - isolate(toggle()))
+      if(input$hide_suggests == TRUE | toggled() == 1L) toggled(1L - isolate(toggled()))
     })
     
   }) # moduleServer
