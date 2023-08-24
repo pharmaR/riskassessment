@@ -540,15 +540,6 @@ mod_decision_automation_server <- function(id, user, credentials){
           actionButton(ns("auto_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
         ),
         br(),
-        div(
-          id = ns("rules_list"),
-          rule_divs(),
-          style = "margin-left: 2%; margin-right: 2%"
-        ),
-        div(style = "margin-left: 1.5%; margin-right: 1.5%", 
-            actionButton(ns("add_rule"), width = "100%", "Add Rule")
-        ),
-        br(),
         div(style = "margin-left: 1.5%; margin-right: 1.5%",
           checkboxGroupInput(ns("auto_include"), label = NULL, decision_lst,
                            selected = isolate(auto_current()), inline = TRUE)
@@ -556,6 +547,21 @@ mod_decision_automation_server <- function(id, user, credentials){
         div(style = "margin-left: 5%; margin-right: 2.5%",
           dec_divs()
         ),
+        br(),
+        div(style = "margin-left: 2%; margin-right: 2%",
+          div(
+            style = "display: flex;",
+            span("Rule List", style = "font-size: large; font-weight: bold"),
+            actionButton(ns("add_rule"), label = icon("plus"), class = "btn-square-sm", style = "margin-left: auto;")
+          ),
+          br(),
+          div(
+            id = ns("rules_list"),
+            rule_divs(),
+            style = "margin-left: 2%; margin-right: 2%"
+          )
+        ),
+        br(),
         div(style = "margin-left: 1.5%; margin-right: 1.5%", 
             actionButton(ns("submit_auto"), width = "100%", "Apply Decision Rules")
         ),
