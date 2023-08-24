@@ -172,8 +172,7 @@ create_rule_divs <- function(rule_lst, metric_lst, decision_lst, ns = NS(NULL)) 
     } else {
       if (isTRUE(.x == "remove")) return(NULL)
       
-      number <- strsplit(.y, "_")[[1]][2]
-      mod_risk_rule_ui(ns(.y))
+      mod_risk_rule_ui(ns(.y), .y)
     }
   }) %>%
     purrr::compact()
