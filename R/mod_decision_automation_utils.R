@@ -111,16 +111,19 @@ get_text_color <- function(hex) {
 #' @importFrom stringr str_replace_all regex
 #' 
 #' @noRd
-risk_lbl <- function(x, input = TRUE) {
+risk_lbl <- function(x, type = c("input", "attribute", "module")) {
+  type <- match.arg(type)
   lbl <- x %>% tolower() %>% 
     paste("cat", .) %>%
     stringr::str_replace_all(" +", "_") %>%
     stringr::str_replace_all(stringr::regex("[^a-zA-Z0-9_-]"), "")
   
-  if (input)
-    paste(lbl, "attr", sep = "_")
-  else
-    lbl
+  switch(
+    type,
+    input = lbl,
+    attribute = paste(lbl, "attr", sep = "_"),
+    module = paste(lbl, "mod", sep = "_")
+  )
 }
 
 #' Process decision category table
@@ -161,16 +164,16 @@ process_rule_tbl <- function(db_name = golem::get_golem_options('assessment_db_n
 
 create_rule_divs <- function(rule_lst, metric_lst, decision_lst, ns = NS(NULL)) {
   purrr::imap(rule_lst, ~ {
-    if (.y == "risk_score_rule") {
-      div(`data-rank-id` = "risk_score_rule",
-          div(icon("grip-lines-vertical", class = c("rule_handle", "fa-xl"))),
-          div(h4("Risk Score Rule"), style = "margin-bottom: 5px; padding-left: 10px;")
-      )
+    if (isTRUE(.x == "remove")) return(NULL)
+    
+    if (grepl("^rule_\\d+$", .y)) {
+      number <- strsplit(.y, "_")[[1]][2]
+      mod_metric_rule_ui(ns("rule"), number, metric_lst, decision_lst, .x)
     } else {
       if (isTRUE(.x == "remove")) return(NULL)
       
       number <- strsplit(.y, "_")[[1]][2]
-      mod_metric_rule_ui(ns("rule"), number, metric_lst, decision_lst, .x)
+      mod_risk_rule_ui(ns(.y))
     }
   }) %>%
     purrr::compact()

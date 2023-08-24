@@ -11,13 +11,13 @@ mod_decision_automation_ui <- function(id){
   decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
   color_lst <- if (!is.null(golem::get_golem_options("assessment_db_name"))) get_colors(golem::get_golem_options("assessment_db_name")) else c(`Low Risk` = "#06B756", `Medium Risk` = "#A99D04", `High Risk` = "#A63E24")
   dec_num <- length(decision_lst)
-  dec_root <- glue::glue("--{risk_lbl(decision_lst, input = FALSE)}-color: {color_lst};") %>%
+  dec_root <- glue::glue("--{risk_lbl(decision_lst, type = 'attribute')}-color: {color_lst};") %>%
     glue::glue_collapse(sep = "\n") %>%
     {glue::glue(":root {{
                 {.}
                 }}")}
   dec_css <- purrr::imap_chr(decision_lst, function(.x, .y) {
-    lbl <- risk_lbl(.x, input = FALSE)
+    lbl <- risk_lbl(.x, type = 'attribute')
 
     if (.y == 1) {
       glue::glue("
@@ -122,7 +122,7 @@ mod_decision_automation_server <- function(id, user, credentials){
       col_width <- (100/length(decision_lst)) %>% min(50) %>% max(25)
       purrr::map2(decision_lst, color_lst, ~ div(
         style = glue::glue("width: {col_width}%"),
-        colourpicker::colourInput(ns(glue::glue("{risk_lbl(.x, input = FALSE)}_col")),
+        colourpicker::colourInput(ns(glue::glue("{risk_lbl(.x, type = 'attribute')}_col")),
                                   .x, .y)
       ))
     })
@@ -132,7 +132,7 @@ mod_decision_automation_server <- function(id, user, credentials){
         col_divs({
           purrr::map2(decision_lst, color_updated(), ~ div(
             style = glue::glue("width: {col_width}%"),
-            colourpicker::colourInput(ns(glue::glue("{risk_lbl(.x, input = FALSE)}_col")),
+            colourpicker::colourInput(ns(glue::glue("{risk_lbl(.x, type = 'attribute')}_col")),
                                       .x, .y)
           ))
         })
@@ -141,7 +141,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     
     observeEvent(input$col_reset, {
       purrr::walk2(decision_lst, color_current(), ~ {
-        colourpicker::updateColourInput(session, glue::glue("{risk_lbl(.x, input = FALSE)}_col"), value = .y)
+        colourpicker::updateColourInput(session, glue::glue("{risk_lbl(.x, type = 'attribute')}_col"), value = .y)
       })
     })
     
@@ -182,7 +182,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     
     dec_divs <- reactiveVal({
       purrr::map(decision_lst, ~ div(
-        risk = risk_lbl(.x, input = FALSE),
+        risk = risk_lbl(.x, type = 'attribute'),
         class = if (!.x %in% names(auto_decision_initial)) "shinyjs-hide",
         style = "width: 100%",
         sliderInput(ns(risk_lbl(.x)), 
@@ -194,7 +194,7 @@ mod_decision_automation_server <- function(id, user, credentials){
       observeEvent(input[[.x]], {
         dec_divs({
           purrr::map(decision_lst, ~ div(
-            risk = risk_lbl(.x, input = FALSE),
+            risk = risk_lbl(.x, type = 'attribute'),
             class = if (!.x %in% auto_current()) "shinyjs-hide",
             style = "width: 100%",
             sliderInput(ns(risk_lbl(.x)), 
@@ -218,18 +218,22 @@ mod_decision_automation_server <- function(id, user, credentials){
             values <- value_lst[2:3]
           }
           
-          shinyjs::show(selector = glue::glue("[risk={risk_lbl(.x, input = FALSE)}"))
+          shinyjs::show(selector = glue::glue("[risk={risk_lbl(.x, type = 'attribute')}"))
           auto_decision[[.x]] <- values
         })
       
       if (!rlang::is_empty(grp_removed))
         purrr::walk(grp_removed, ~ {
-          shinyjs::hide(selector = glue::glue("[risk={risk_lbl(.x, input = FALSE)}"))
+          shinyjs::hide(selector = glue::glue("[risk={risk_lbl(.x, type = 'attribute')}"))
           auto_decision[[.x]] <- NULL
         })
       
-      auto_current(input$auto_include)
     }, ignoreNULL = FALSE, ignoreInit = TRUE)
+    
+    observeEvent(input$auto_include, {
+      auto_current(input$auto_include)
+    }, ignoreNULL = FALSE, ignoreInit = TRUE,
+    priority = -100)
     
     purrr::iwalk(decision_lst, function(.x, .y) {
       this_lbl <- risk_lbl(.x)
@@ -292,9 +296,11 @@ mod_decision_automation_server <- function(id, user, credentials){
     rule_number <- reactiveVal(length(risk_rule_initial))
     
     purrr::iwalk(risk_rule_initial, ~ {
-      if (.y != "risk_score_rule") {
+      if (grepl("^rule_\\d+$", .y)) {
         number <- strsplit(.y, "_")[[1]][2]
         mod_metric_rule_server("rule", number, rule_lst)
+      } else {
+        mode_risk_rule_server(.y, reactive(glue::glue("~ {auto_decision[[.x$decision]][1]} <= .x & .x <= {auto_decision[[.x$decision]][2]}")), rule_lst)
       }
       create_rule_obs(.y, rule_lst, .input = input, ns = ns)
     })
@@ -310,17 +316,28 @@ mod_decision_automation_server <- function(id, user, credentials){
     })
     
     observeEvent(input$auto_include, {
-      if (is.null(input$auto_include)) {
-        if (!is.null(rule_lst[["risk_score_rule"]]))
-          rule_lst[["risk_score_rule"]] <- "remove"
-      } else if (is.null(rule_lst[["risk_score_rule"]])) {
-        rule_lst[["risk_score_rule"]] <- list(metric = NA_character_, filter = "Risk Score Rules", decision = NA_character_)
-        insertUI(paste0("#", ns("rules_list")), "beforeEnd",
-                 div(`data-rank-id` = "risk_score_rule",
-                     div(icon("grip-lines-vertical", class = c("rule_handle", "fa-xl"))),
-                     div(h4("Risk Score Rule"), style = "margin-bottom: 5px; padding-left: 10px;")
-                 ))
-        create_rule_obs("risk_score_rule", rule_lst, .input = input, ns = ns)
+      grp_added <- setdiff(input$auto_include, auto_current())
+      grp_removed <- setdiff(auto_current(), input$auto_include)
+      
+      if (!rlang::is_empty(grp_added)) {
+        purrr::walk(grp_added, ~ {
+          if (!is.null(rule_lst[[risk_lbl(.x, type = "module")]])) return(NULL)
+
+          insertUI(paste0("#", ns("rules_list")), "beforeEnd", mod_risk_rule_ui(ns(risk_lbl(.x, type = "module")), risk_lbl(.x, type = "module")))
+          out_return <- mod_risk_rule_server(risk_lbl(.x, type = "module"), reactive(glue::glue("~ {auto_decision[[.x]][1]} <= .x & .x <= {auto_decision[[.x]][2]}")), .x, rule_lst)
+          observeEvent(out_return(), {
+            updateCheckboxGroupInput(session, "auto_include", selected = setdiff(input$auto_include, out_return()))
+          }, once = TRUE)
+          create_rule_obs(risk_lbl(.x, type = "module"), rule_lst, .input = input, ns = ns)
+        })
+      }
+
+      if (!rlang::is_empty(grp_removed)) {
+        purrr::walk(grp_removed, ~ {
+          if (is.null(rule_lst[[risk_lbl(.x, type = "module")]])) return(NULL)
+
+          rule_lst[[risk_lbl(.x, type = "module")]] <- "remove"
+        })
       }
       session$onFlushed(function() {
         shinyjs::runjs(glue::glue("Shiny.setInputValue('{ns(\"rules_order\")}:sortablejs.rank_list', $.map($('#{ns(\"rules_list\")}').children(), function(child) {{return $(child).attr('data-rank-id') || $.trim(child.innerText);}}))"))
@@ -552,7 +569,7 @@ mod_decision_automation_server <- function(id, user, credentials){
         )
       )
     })
-    
+
     output$auto_settings <-
       renderUI({
         req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
@@ -766,10 +783,10 @@ mod_decision_automation_server <- function(id, user, credentials){
       shinyjs::runjs("document.body.setAttribute('data-bs-overflow', 'auto');")
     })
     
-    observeEvent(purrr::walk(decision_lst, ~input[[glue::glue("{risk_lbl(.x, input = FALSE)}_col")]]), {
+    observeEvent(purrr::walk(decision_lst, ~input[[glue::glue("{risk_lbl(.x, type = 'attribute')}_col")]]), {
       color_updated({
         decision_lst %>%
-          purrr::map_chr(~ input[[glue::glue("{risk_lbl(.x, input = FALSE)}_col")]]) %>%
+          purrr::map_chr(~ input[[glue::glue("{risk_lbl(.x, type = 'attribute')}_col")]]) %>%
           purrr::set_names(decision_lst)
       })
     }, ignoreInit = TRUE)
@@ -780,11 +797,11 @@ mod_decision_automation_server <- function(id, user, credentials){
       
       selected_colors <- 
         decision_lst %>%
-        purrr::map_chr(~ input[[glue::glue("{risk_lbl(.x, input = FALSE)}_col")]]) %>%
+        purrr::map_chr(~ input[[glue::glue("{risk_lbl(.x, type = 'attribute')}_col")]]) %>%
         purrr::set_names(decision_lst)
       purrr::iwalk(selected_colors, ~ {
         dbUpdate("UPDATE decision_categories SET color = {.x} WHERE decision = {.y}")
-        shinyjs::runjs(glue::glue("document.documentElement.style.setProperty('--{risk_lbl(.y, input = FALSE)}-color', '{.x}');"))
+        shinyjs::runjs(glue::glue("document.documentElement.style.setProperty('--{risk_lbl(.y, type = 'attribute')}-color', '{.x}');"))
         })
       loggit::loggit("INFO", glue::glue("The decision category display colors were modified by {user$name} ({user$role})"))
       color_current(selected_colors)
