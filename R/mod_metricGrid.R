@@ -41,6 +41,9 @@ metricGridServer <- function(id, metrics) {
     
     
     # observeEvent(req(nrow(metrics()) > 0), {
+    #   print("........")
+    #   print(metrics())
+    #   print("..")
     #   apply(metrics(), 1, function(m)
     #     print(glue::glue("title: {m['title']},
     #                      value: {m['value']},

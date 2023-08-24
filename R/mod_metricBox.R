@@ -26,7 +26,7 @@ metricBoxUI <- function(id) {
 #' @importFrom glue glue
 #' @keywords internal
 #'
-metricBoxServer <- function(id, title, desc, value, score = NULL,
+metricBoxServer <- function(id, title, desc, value, score = "NULL",
                             is_perc = FALSE, is_url = FALSE,
                             succ_icon = "check", unsucc_icon = "times",
                             icon_class = "text-success", type = "information"
@@ -46,7 +46,7 @@ metricBoxServer <- function(id, title, desc, value, score = NULL,
       # logic for assessment values
       if (value %in% c("pkg_metric_error", "NA", NA)) {
         value <- "Not found"
-        # if(!is.null(score)) {score <- "NA"} # Shouldn't be needed
+        # if(score != "NULL") {score <- "NA"} # Shouldn't be needed
       } else if (is_perc) {
         value <- glue::glue("{round(as.numeric(value), 1)}%")
       } else if (is_url) {
@@ -75,7 +75,7 @@ metricBoxServer <- function(id, title, desc, value, score = NULL,
       body_p_style <- glue::glue("font-size: {auto_font_out}vw")
 
       # build the html card
-      if(is.null(score) | !is_true) { # use icon version
+      if(score == "NULL" | !is_true) { # use icon version
         
         # maintain icon logic
         icon_name <- succ_icon # succ_icon should never show in practice
@@ -124,17 +124,19 @@ metricBoxServer <- function(id, title, desc, value, score = NULL,
               class = "col-md-4 text-center border-info",
               img(src=glue::glue("www/scores/rm-gauge-{score}.png"),
               style = "width: 128px; padding-top: 40%; font-size:60px; padding-left: 20%;")
-              # div(style = "width: 128px; padding-top: 40%; font-size:60px; padding-left: 20%;", 
-              #   flexdashboard::gauge(score, 
-              #       min = 0, 
-              #       max = 1, 
+              
+              # div(style = "width: 128px; padding-top: 40%; font-size:60px; padding-left: 20%;",
+              #   flexdashboard::gauge(score,
+              #       min = 0,
+              #       max = 100,
               #       sectors = flexdashboard::gaugeSectors(
-              #         success = c(0, 33), 
+              #         success = c(0, 33),
               #         warning = c(34, 66),
               #         danger = c(67, 100)
               #       )
               #   )
               # )
+              
             ),
             div(
               class = "col-md-8",
