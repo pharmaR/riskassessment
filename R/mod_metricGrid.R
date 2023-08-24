@@ -21,6 +21,7 @@ metricGridUI <- function(id) {
 metricGridServer <- function(id, metrics) {
   moduleServer(id, function(input, output, session) {
     
+    # metric <- dbSelect("select * from metric", db_name = "database.sqlite") #
     metric <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
     
     output$grid <- renderUI({
@@ -38,6 +39,16 @@ metricGridServer <- function(id, metrics) {
       )
     })
     
+    
+    # observeEvent(req(nrow(metrics()) > 0), {
+    #   apply(metrics(), 1, function(metric)
+    #     print(glue::glue("title: {metric['title']},
+    #                      value: {metric['value']},
+    #                      class: {class(metric['value'])},
+    #                      score: {riskmetric::metric_score(metric['value'])} "))
+    #   )
+    # })
+    
     observeEvent(req(nrow(metrics()) > 0), {
       apply(metrics(), 1, function(metric)
         metricBoxServer(id = metric['name'],
@@ -46,6 +57,8 @@ metricGridServer <- function(id, metrics) {
             value = dplyr::case_when(metric['name'] != 'has_bug_reports_url' ~ metric['value'],
                                      metric['value'] == "1" ~ 'TRUE',
                                      TRUE ~ 'FALSE'),
+            # score = "55",
+            # score = round(100 * riskmetric::metric_score(metric['value'])),
             is_perc = metric['is_perc'] == 1,
             is_url = metric['is_url'] == 1,
             succ_icon = metric['succ_icon'],

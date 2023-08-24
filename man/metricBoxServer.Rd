@@ -9,6 +9,7 @@ metricBoxServer(
   title,
   desc,
   value,
+  score = NULL,
   is_perc = FALSE,
   is_url = FALSE,
   succ_icon = "check",

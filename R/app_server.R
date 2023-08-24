@@ -185,6 +185,7 @@ app_server <- function(input, output, session) {
     
     # Collect all the metric names and values associated to package_id.
     get_mm_data(selected_pkg$id())
+    # get_mm_data("tidyCDISC", "database.sqlite")
   })
   
   

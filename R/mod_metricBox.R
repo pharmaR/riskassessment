@@ -26,10 +26,11 @@ metricBoxUI <- function(id) {
 #' @importFrom glue glue
 #' @keywords internal
 #'
-metricBoxServer <- function(id, title, desc, value,
+metricBoxServer <- function(id, title, desc, value, score = NULL,
                             is_perc = FALSE, is_url = FALSE,
                             succ_icon = "check", unsucc_icon = "times",
-                            icon_class = "text-success", type = "information") {
+                            icon_class = "text-success", type = "information"
+                            ) {
   moduleServer(id, function(input, output, session) {
 
     metric <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
@@ -41,9 +42,11 @@ metricBoxServer <- function(id, title, desc, value,
       # A str length of 41 chars tends to wrap to two rows and look quite nice
       val_max_nchar <- 31
       is_true <- !(value %in% c(0, "pkg_metric_error", "NA", "", "FALSE", NA))
-
+      
+      # logic for assessment values
       if (value %in% c("pkg_metric_error", "NA", NA)) {
         value <- "Not found"
+        if(!is.null(score)) {score <- "na"}
       } else if (is_perc) {
         value <- glue::glue("{round(as.numeric(value), 1)}%")
       } else if (is_url) {
@@ -56,17 +59,7 @@ metricBoxServer <- function(id, title, desc, value,
         value <- ifelse(value == "TRUE", "Yes", "No")
       }
 
-      icon_name <- succ_icon
-      if (!is_true) {
-        icon_name <- unsucc_icon
-        icon_class <- "text-warning"
-      }
-
-      if (is_perc) {
-        icon_name <- "percent"
-        icon_class <- "text-info"
-      }
-
+      
       # add asterisk to title if it is not in the metric table
       # skip databaseView cards
       title = if_else(stringr::str_extract(session$ns(id), "\\w+") != "databaseView" 
@@ -78,33 +71,77 @@ metricBoxServer <- function(id, title, desc, value,
         txt_max = val_max_nchar,
         size_min = .85, size_max = 1.5
       ) # , num_bins = 3
+      
       body_p_style <- glue::glue("font-size: {auto_font_out}vw")
 
-      html_component <- div(
-        class = "card mb-3 text-center border-info", style = card_style,
-        div(
-          class = "row no-gutters;",
+      # build the html card
+      if(is.null(score) | !is_true) { # use icon version
+        
+        # maintain icon logic
+        icon_name <- succ_icon # succ_icon should never show in practice
+        if (!is_true) {
+          icon_name <- unsucc_icon
+          icon_class <- "text-warning"
+        }
+        if (is_perc) {
+          icon_name <- "percent"
+          icon_class <- "text-info"
+        }
+        
+        html_component <- div(
+          class = "card mb-3 text-center border-info", style = card_style,
           div(
-            class = "col-md-4 text-center border-info",
-            icon(icon_name,
-              class = icon_class, verify_fa = FALSE,
-              style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
-            )
-          ),
-          div(
-            class = "col-md-8",
-            h5(
-              class = "card-header bg-transparent", style = "font-size: 1vw",
-              title
+            class = "row no-gutters;",
+            div(
+              class = "col-md-4 text-center border-info",
+              icon(icon_name,
+                   class = icon_class, verify_fa = FALSE,
+                   style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
+              )
             ),
             div(
-              class = "card-body text-info",
-              p(class = "card-title", style = body_p_style, value)
-            )
-          ),
-          div(class = "card-footer bg-transparent", desc)
+              class = "col-md-8",
+              h5(
+                class = "card-header bg-transparent", style = "font-size: 1vw",
+                title
+              ),
+              div(
+                class = "card-body text-info",
+                p(class = "card-title", style = body_p_style, value)
+              )
+            ),
+            div(class = "card-footer bg-transparent", desc)
+          )
         )
-      )
+      
+      } else { # use image version (displaying riskmetric gauge)
+        
+        html_component <- div(
+          class = "card mb-3 text-center border-info", style = card_style,
+          div(
+            class = "row no-gutters;",
+            div(
+              class = "col-md-4 text-center border-info",
+              img(src=glue::glue("www/scores/rm-gauge-{score}.png", width = "16"))
+            ),
+            div(
+              class = "col-md-8",
+              h5(
+                class = "card-header bg-transparent", style = "font-size: 1vw",
+                title
+              ),
+              div(
+                class = "card-body text-info",
+                p(class = "card-title", style = body_p_style, value)
+              )
+            ),
+            div(class = "card-footer bg-transparent", desc)
+          )
+        )
+        
+        
+      }
+      
       
       if (type == "danger" & !is.na(type)) {
         html_component %>% 

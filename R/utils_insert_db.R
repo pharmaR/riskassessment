@@ -205,9 +205,11 @@ insert_riskmetric_to_db <- function(pkg_name,
       TRUE ~ as.character(riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])])
     )
     
+    metric_score <- riskmetric_score[[metric$name]][1]
+    
     dbUpdate(
-      "INSERT INTO package_metrics (package_id, metric_id, value, encode) 
-      VALUES ({package_id}, {metric$id}, {metric_value}, $pkg_assess)", db_name,
+      "INSERT INTO package_metrics (package_id, metric_id, value, metric_score, encode) 
+      VALUES ({package_id}, {metric$id}, {metric_value}, {metric_score}, $pkg_assess)", db_name,
       params = list(pkg_assess = assessment_serialized[metric$name,])
     )
   }

@@ -173,7 +173,7 @@ get_se_comments <- function(pkg_name, db_name = golem::get_golem_options('assess
 get_mm_data <- function(pkg_id, db_name = golem::get_golem_options('assessment_db_name')){
   dbSelect(
     "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
-                    metric.is_url, package_metrics.value
+                    metric.is_url, package_metrics.value, package_metrics.metric_score,
                     FROM metric
                     INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
                     WHERE package_metrics.package_id = {pkg_id} AND 
@@ -181,6 +181,7 @@ get_mm_data <- function(pkg_id, db_name = golem::get_golem_options('assessment_d
     dplyr::mutate(
       title = long_name,
       desc = description,
+      score = metric_score,
       succ_icon = rep(x = 'check', times = nrow(.)), 
       unsucc_icon = rep(x = 'times', times = nrow(.)),
       icon_class = rep(x = 'text-success', times = nrow(.)),
