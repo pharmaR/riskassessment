@@ -46,7 +46,7 @@ metricBoxServer <- function(id, title, desc, value, score = NULL,
       # logic for assessment values
       if (value %in% c("pkg_metric_error", "NA", NA)) {
         value <- "Not found"
-        if(!is.null(score)) {score <- "na"}
+        # if(!is.null(score)) {score <- "NA"} # Shouldn't be needed
       } else if (is_perc) {
         value <- glue::glue("{round(as.numeric(value), 1)}%")
       } else if (is_url) {
@@ -83,10 +83,10 @@ metricBoxServer <- function(id, title, desc, value, score = NULL,
           icon_name <- unsucc_icon
           icon_class <- "text-warning"
         }
-        if (is_perc) {
-          icon_name <- "percent"
-          icon_class <- "text-info"
-        }
+        # if (is_perc) {
+        #   icon_name <- "percent"
+        #   icon_class <- "text-info"
+        # }
         
         html_component <- div(
           class = "card mb-3 text-center border-info", style = card_style,
@@ -122,7 +122,8 @@ metricBoxServer <- function(id, title, desc, value, score = NULL,
             class = "row no-gutters;",
             div(
               class = "col-md-4 text-center border-info",
-              img(src=glue::glue("www/scores/rm-gauge-{score}.png", width = "16"))
+              img(src=glue::glue("www/scores/rm-gauge-{score}.png"),
+                  style = "width: 128px; padding-top: 40%; font-size:60px; padding-left: 20%;")
             ),
             div(
               class = "col-md-8",

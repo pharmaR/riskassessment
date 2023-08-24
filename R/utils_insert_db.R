@@ -205,7 +205,10 @@ insert_riskmetric_to_db <- function(pkg_name,
       TRUE ~ as.character(riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])])
     )
     
-    metric_score <- riskmetric_score[[metric$name]][1]
+    metric_score <- case_when(
+      is.na(riskmetric_score[[metric$name]][1]) ~ "NA",
+      TRUE ~ as.character(100 * (1 - round(riskmetric_score[[metric$name]][1], 2))) # rounding
+    )
     
     dbUpdate(
       "INSERT INTO package_metrics (package_id, metric_id, value, metric_score, encode) 
