@@ -123,7 +123,18 @@ metricBoxServer <- function(id, title, desc, value, score = NULL,
             div(
               class = "col-md-4 text-center border-info",
               img(src=glue::glue("www/scores/rm-gauge-{score}.png"),
-                  style = "width: 128px; padding-top: 40%; font-size:60px; padding-left: 20%;")
+              style = "width: 128px; padding-top: 40%; font-size:60px; padding-left: 20%;")
+              # div(style = "width: 128px; padding-top: 40%; font-size:60px; padding-left: 20%;", 
+              #   flexdashboard::gauge(score, 
+              #       min = 0, 
+              #       max = 1, 
+              #       sectors = flexdashboard::gaugeSectors(
+              #         success = c(0, 33), 
+              #         warning = c(34, 66),
+              #         danger = c(67, 100)
+              #       )
+              #   )
+              # )
             ),
             div(
               class = "col-md-8",
