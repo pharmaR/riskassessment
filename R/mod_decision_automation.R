@@ -285,11 +285,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     
     #### Metric Rules ####
     risk_rule_initial <- process_rule_tbl(golem::get_golem_options('assessment_db_name'))
-    risk_rule_update <- reactiveVal(purrr::imap(risk_rule_initial, ~ {
-      if (.y == "risk_score_rule")
-        .x$rules <- auto_decision_initial
-      .x
-    }))
+    risk_rule_update <- reactiveVal(risk_rule_initial)
     rule_lst <- do.call(reactiveValues, risk_rule_initial)
     rule_number <- reactiveVal(length(risk_rule_initial))
 
@@ -380,13 +376,25 @@ mod_decision_automation_server <- function(id, user, credentials){
       purrr::iwalk(risk_rule_update(), ~ {
         if (.y %in% input$rules_order) return(NULL)
         
-        if (.y != "risk_score_rule") {
+        if (grepl("^rule_\\d+$", .y)) {
           number <- strsplit(.y, "_")[[1]][2]
           mod_metric_rule_server("rule", number, rule_lst)
+          create_rule_obs(.y, rule_lst, .input = input, ns = ns)
+        } else {
+          out_return <- mod_risk_rule_server(risk_lbl(.x$decision, type = "module"), reactive(glue::glue("~ {auto_decision[[.x$decision]][1]} <= .x & .x <= {auto_decision[[.x$decision]][2]}")), .x$decision, rule_lst)
+          risk_module_observer <-
+            observeEvent(out_return(), {
+              updateCheckboxGroupInput(session, "auto_include", selected = setdiff(input$auto_include, out_return()))
+            })
+          o <- observeEvent(rule_lst[[risk_lbl(.x$decision, type = "module")]], {
+            req(isTRUE(rule_lst[[risk_lbl(.x$decision, type = "module")]] == "remove"))
+            risk_module_observer$destroy()
+            o$destroy()
+          })
+          create_rule_obs(risk_lbl(.x$decision, type = "module"), rule_lst, .input = input, ns = ns)
         }
-        create_rule_obs(.y, rule_lst, .input = input, ns = ns)
       })
-    })
+    }, priority = 100)
     
     disable_auto_submit <- reactiveVal(TRUE)
     observeEvent(reactiveValuesToList(rule_lst), {
@@ -397,7 +405,6 @@ mod_decision_automation_server <- function(id, user, credentials){
           disable_auto_submit(TRUE)
           break
         }
-        if (rule$filter == "risk_score_rule") next
         if (rlang::is_formula(rule$mapper) | rlang::is_function(rule$mapper)) {
           disable_auto_submit(TRUE)
           break
@@ -596,30 +603,7 @@ mod_decision_automation_server <- function(id, user, credentials){
         )
       })
     
-    output$modal_dec_cat_table <- 
-      DT::renderDataTable({
-        out_lst <- purrr::compact(reactiveValuesToList(auto_decision))
-        
-        DT::datatable({
-          out_lst %>%
-            purrr::imap_dfr(~ dplyr::tibble(decision = .y, ll = .x[[1]], ul = .x[[2]])) %>%
-            dplyr::arrange(ll,)
-        },
-        escape = FALSE,
-        class = "cell-border",
-        selection = 'none',
-        colnames = c("Decision Category", "Lower Limit", "Upper Limit"),
-        rownames = FALSE,
-        options = list(
-          dom = "t",
-          searching = FALSE,
-          sScrollX = "100%",
-          iDisplayLength = -1,
-          ordering = FALSE
-        ))
-      })
-    
-    output$modal_rule_table <- 
+    output$modal_table <- 
       DT::renderDataTable({
         out_lst <- purrr::compact(reactiveValuesToList(rule_lst)[isolate(input$rules_order)])
         DT::datatable({
@@ -698,14 +682,7 @@ mod_decision_automation_server <- function(id, user, credentials){
             width = 12,
             'Please confirm your chosen decision rules: ',
             br(),
-            if (!rlang::is_empty(purrr::compact(reactiveValuesToList(rule_lst)))) {
-              tagList(
-                DT::DTOutput(ns("modal_rule_table")),
-                if (!rlang::is_empty(purrr::compact(reactiveValuesToList(auto_decision)))) DT::DTOutput(ns("modal_dec_cat_table"))
-              )
-            } else {
-              h2("Disable Decision Automation")
-            },
+            if (!rlang::is_empty(purrr::compact(reactiveValuesToList(rule_lst)))) DT::DTOutput(ns("modal_table")) else h2("Disable Decision Automation"),
             br(),
             br(),
             em('Note: Once submitted, these rules will be applied to all new packages loaded into the app or when any metric re-weighting is performed.')

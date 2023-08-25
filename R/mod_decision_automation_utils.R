@@ -161,7 +161,7 @@ process_rule_tbl <- function(db_name = golem::get_golem_options('assessment_db_n
        out <- list(...) %>%
          within(mapper <- evalSetTimeLimit(parse(text = filter)))
      }) %>%
-     purrr::set_names(ifelse(is.na(purrr::map_chr(., ~ .x$metric)), rep("risk_score_rule", length(.)), paste("rule", seq_along(.), sep = "_")))
+     purrr::set_names(ifelse(is.na(purrr::map_chr(., ~ .x$metric)), purrr::map_chr(., ~ risk_lbl(.x$decision, type = "module")), paste("rule", seq_along(.), sep = "_")))
 }
 
 create_rule_divs <- function(rule_lst, metric_lst, decision_lst, ns = NS(NULL)) {

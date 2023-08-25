@@ -96,6 +96,14 @@ mod_risk_rule_server <- function(id, filter, decision, rule_lst){
     output$filter <- renderText(filter())
     output$decision <- renderText(decision)
     
+    rule_lst[[risk_lbl(decision, type = "module")]] <- 
+      list(
+        metric = NA_character_,
+        filter = "",
+        decision = decision,
+        mapper = evalSetTimeLimit(parse(text = ""))
+      )
+    
     input_observer <- 
       observeEvent(filter(), {
         req(filter())
