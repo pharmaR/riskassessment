@@ -90,73 +90,54 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
         #   icon_class <- "text-info"
         # }
         
-        html_component <- div(
-          class = "card mb-3 text-center border-info", style = card_style,
-          div(
-            class = "row no-gutters;",
-            div(
-              class = "col-md-4 text-center border-info",
-              icon(icon_name,
-                   class = icon_class, verify_fa = FALSE,
-                   style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
-              )
-            ),
-            div(
-              class = "col-md-8",
-              h5(
-                class = "card-header bg-transparent", style = "font-size: 1vw",
-                title
-              ),
-              div(
-                class = "card-body text-info",
-                p(class = "card-title", style = body_p_style, value)
-              )
-            ),
-            div(class = "card-footer bg-transparent", desc)
-          )
+        display_obj <- icon(icon_name,
+             class = icon_class, verify_fa = FALSE,
+             style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
         )
-      
       } else { # use image version (displaying riskmetric gauge)
-        
-        html_component <- div(
-          class = "card mb-3 text-center border-info", style = card_style,
-          div(
-            class = "row no-gutters;",
-            div(
-              class = "col-md-4 text-center border-info",
-              img(src=glue::glue("www/scores/rm-gauge-{score}.png"),
-              style = "width: 128px; padding-top: 40%; font-size:60px; padding-left: 20%;")
-              
-              # div(style = "width: 128px; padding-top: 40%; font-size:60px; padding-left: 20%;",
-              #   flexdashboard::gauge(score,
-              #       min = 0,
-              #       max = 100,
-              #       sectors = flexdashboard::gaugeSectors(
-              #         success = c(0, 33),
-              #         warning = c(34, 66),
-              #         danger = c(67, 100)
-              #       )
-              #   )
-              # )
-              
-            ),
-            div(
-              class = "col-md-8",
-              h5(
-                class = "card-header bg-transparent", style = "font-size: 1vw",
-                title
-              ),
-              div(
-                class = "card-body text-info",
-                p(class = "card-title", style = body_p_style, value)
-              )
-            ),
-            div(class = "card-footer bg-transparent", desc)
+        # display_obj <- img(src=glue::glue("www/scores/rm-gauge-{score}.png"),
+        #     style = "width: 128px; padding-top: 40%; font-size:60px; padding-left: 20%;")
+        display_obj <- 
+          div(style = "padding-top: 30%; padding-left: 10%;",
+             metric_gauge(score = score)
           )
-        )
         
-        
+        # display_obj <- div(style = "width: 128px; padding-top: 40%; font-size:60px; padding-left: 20%;",
+        #     flexdashboard::gauge(score,
+        #                          min = 0,
+        #                          max = 100,
+        #                          sectors = flexdashboard::gaugeSectors(
+        #                            success = c(0, 33),
+        #                            warning = c(34, 66),
+        #                            danger = c(67, 100)
+        #                          )
+        #     )
+        # )
       }
+        
+      html_component <- div(
+        class = "card mb-3 text-center border-info", style = card_style,
+        div(
+          class = "row no-gutters;",
+          div(
+            class = "col-md-4 text-center border-info",
+            display_obj
+          ),
+          div(
+            class = "col-md-8",
+            h5(
+              class = "card-header bg-transparent", style = "font-size: 1vw",
+              title
+            ),
+            div(
+              class = "card-body text-info",
+              p(class = "card-title", style = body_p_style, value)
+            )
+          ),
+          div(class = "card-footer bg-transparent", desc)
+        )
+      )
+      
       
       
       if (type == "danger" & !is.na(type)) {
