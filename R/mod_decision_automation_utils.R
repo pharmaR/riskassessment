@@ -2,38 +2,23 @@
 #' 
 #' Automates the decision for a package based upon the provided rules
 #' 
-#' @param decision_list A named list containing the lower and upper bounds for the risk
+#' @param rule_list A named list containing the decision rules
 #' @param package A character string of the name of the package
 #' 
 #' @return A character string of the decision made
 #' 
 #' @noRd
-assign_risk_score_decision <- function(decision_list, package) {
-  score <- get_pkg_info(package)$score
-  decision <- paste0(names(decision_list)[purrr::map_lgl(decision_list, ~ .x[1] < score && score <= .x[2])], "")
-  decision_id <- dbSelect("SELECT id FROM decision_categories WHERE decision = {decision}")
-  if (decision != "") {
-    dbUpdate("UPDATE package SET decision_id = {decision_id},
-                        decision_by = 'Auto Assigned', decision_date = {get_Date()}
-                         WHERE name = {package}")
-    loggit::loggit("INFO",
-                   glue::glue("decision for the package {package} was assigned {decision} by decision automation rules"))
-    comment <- glue::glue("Decision was assigned '{decision}' by decision rules because the risk score was between {decision_list[[decision]][1]} and {decision_list[[decision]][2]}")
-    dbUpdate(
-      "INSERT INTO comments
-          VALUES ({package}, 'Auto Assigned', 'admin',
-          {comment}, 'o', {getTimeStamp()})")
-  }
-  
-  return(decision)
-}
-
-assign_decisions <- function(rule_lst, package) {
+#' 
+#' @importFrom purrr map_lgl possibly
+#' @importFrom rlang is_function is_formula
+#' @importFrom glue glue
+#' @importFrom loggit loggit
+assign_decisions <- function(rule_list, package) {
   decision <- ""
-  if (any(purrr::map_lgl(rule_lst, ~ !is.na(.x$metric))))
+  if (any(purrr::map_lgl(rule_list, ~ !is.na(.x$metric))))
     assessments <- get_assess_blob(package)
   
-  for (rule in rule_lst) {
+  for (rule in rule_list) {
     if (decision != "") break
     
     fn <- purrr::possibly(rule$mapper, otherwise = FALSE)
@@ -131,14 +116,17 @@ risk_lbl <- function(x, type = c("input", "attribute", "module")) {
 }
 
 #' Process decision category table
-#' 
-#' Process the decision category table from the assessment database for use within the application
-#' 
+#'
+#' Process the decision category table from the assessment database for use
+#' within the application
+#'
 #' @param db_name character name (and file path) of the assessment database
-#' 
+#'
 #' @return A named list containing the lower and upper bounds for the risk
-#' 
+#'
 #' @noRd
+#' 
+#' @importFrom purrr pmap set_names map compact
 process_dec_tbl <- function(db_name = golem::get_golem_options('assessment_db_name')) {
   if (is.null(db_name))
     return(list())
@@ -151,6 +139,18 @@ process_dec_tbl <- function(db_name = golem::get_golem_options('assessment_db_na
     purrr::compact()
 }
 
+#' Process decision rules table
+#'
+#' Process the decision rules table from the assessment database for use within
+#' the application
+#'
+#' @param db_name character name (and file path) of the assessment database
+#'
+#' @return A named list containing the ordered decision rules
+#'
+#' @noRd
+#' 
+#' @importFrom purrr pmap set_names map_chr
 process_rule_tbl <- function(db_name = golem::get_golem_options('assessment_db_name')) {
   if (is.null(db_name))
     return(list())
@@ -164,6 +164,18 @@ process_rule_tbl <- function(db_name = golem::get_golem_options('assessment_db_n
      purrr::set_names(ifelse(is.na(purrr::map_chr(., ~ .x$metric)), purrr::map_chr(., ~ risk_lbl(.x$decision, type = "module")), paste("rule", seq_along(.), sep = "_")))
 }
 
+#' Create rule divs
+#' 
+#' Helper function to create the UI's associated with rule, metric, and decision category lists
+#' 
+#' @param rule_lst The ordered list of rules to create UI's for
+#' @param metric_lst The named list of `{rismetric}` assessments
+#' @param decision_lst The vector of allowable decision categories
+#' @param ns The namespace the UI is being created inside of
+#' 
+#' @noRd
+#' 
+#' @importFrom purrr imap compact
 create_rule_divs <- function(rule_lst, metric_lst, decision_lst, ns = NS(NULL)) {
   purrr::imap(rule_lst, ~ {
     if (isTRUE(.x == "remove")) return(NULL)
@@ -180,6 +192,24 @@ create_rule_divs <- function(rule_lst, metric_lst, decision_lst, ns = NS(NULL)) 
     purrr::compact()
 }
 
+#' Create rule observer
+#'
+#' Helper function to create the "remove" rule observer that cleans up the
+#' environment including the reactive rule list, moduels inputs and module
+#' observers
+#'
+#' @param rv The reactive value associated with the module
+#' @param rule_lst the reactive values that contains `rv`
+#' @param .input The shiny input object from the environment the module was
+#'   called inside of
+#' @param ns The namespace of the module
+#' @param session The session object passed to function given to `shinyServer`.
+#'   Default is `getDefaultReactiveDomain()`
+#'
+#' @noRd
+#' 
+#' @importFrom shinyjs runjs
+#' @importFrom glue glue
 create_rule_obs <- function(rv, rule_lst, .input, ns = NS(NULL), session = getDefaultReactiveDomain()) {
   o <- observeEvent(rule_lst[[rv]], {
     req(isTRUE(rule_lst[[rv]] == "remove"))
@@ -193,6 +223,18 @@ create_rule_obs <- function(rv, rule_lst, .input, ns = NS(NULL), session = getDe
   })
 }
 
+#' Set evaluation time limit
+#'
+#' Sets a time limit on evaluation of an expression. This is a helper function
+#' to allow users to add their own formulas or functions, which should have a
+#' short evaluation time frame. This helps keep the application from getting
+#' boggged down or for malicious code to be submitted.
+#'
+#' @param expr The expression to be evaluated
+#' @param cpu,elapsed double (of length one). Set a limit on the total or
+#'   elapsed cpu time in seconds, respectively.
+#'
+#' @noRd
 evalSetTimeLimit <- function(expr, cpu = .25, elapsed = Inf) {
   setTimeLimit(cpu = cpu, elapsed = elapsed, transient = TRUE)
   on.exit({

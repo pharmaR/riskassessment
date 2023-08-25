@@ -783,6 +783,18 @@ get_time <- function() {
     Sys.time()
 }
 
+#' Remove shiny inputs
+#'
+#' Removes shiny inputs associated with a specific `id`. Useful when removing
+#' inputs from a dynamic module.
+#'
+#' @param id An ID string that corresponds with the ID used to call the module's
+#'   UI function
+#' @param .input The shiny input object from the environment the module was
+#'   called inside of
+#' @param ns The namespace of the module
+#'
+#' @noRd
 remove_shiny_inputs <- function(id, .input, ns = NS(NULL)) {
   invisible(
     lapply(grep(id, names(.input), value = TRUE), function(i) {
@@ -791,4 +803,9 @@ remove_shiny_inputs <- function(id, .input, ns = NS(NULL)) {
   )
 }
 
+#' If NULL
+#'
+#' Function to substitute left-hand side with right-hand side if NULL
+#' 
+#' @noRd
 `%||%` <- function(lhs, rhs) if (is.null(lhs)) rhs else lhs
