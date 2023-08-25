@@ -546,6 +546,7 @@ mod_decision_automation_server <- function(id, user, credentials){
             actionButton(ns("add_rule"), label = icon("plus"), class = "btn-square-sm", style = "margin-left: auto;")
           ),
           br(),
+          uiOutput(ns("no_rules"), style = "margin-left: 2%; margin-right: 2%"),
           div(
             id = ns("rules_list"),
             rule_divs(),
@@ -565,6 +566,11 @@ mod_decision_automation_server <- function(id, user, credentials){
           )
         )
       )
+    })
+    output$no_rules <- renderUI({
+      req(rlang::is_empty(input$rules_order))
+      
+      p("No rules to display")
     })
 
     output$auto_settings <-
