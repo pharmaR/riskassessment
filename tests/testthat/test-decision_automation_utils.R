@@ -22,22 +22,27 @@ test_that("set_colors works", {
 test_that("risk_lbl works", {
   expect_equal(
     risk_lbl("Low"),
-    "cat_low_attr"
+    "cat_low"
   )
   
   expect_equal(
     risk_lbl("Low Risk"),
-    "cat_low_risk_attr"
+    "cat_low_risk"
   )
   
   expect_equal(
     risk_lbl("It's Low     Risk"),
-    "cat_its_low_risk_attr"
+    "cat_its_low_risk"
   )
   
   expect_equal(
-    risk_lbl("Low Risk", FALSE),
-    "cat_low_risk"
+    risk_lbl("Low Risk", type = "attribute"),
+    "cat_low_risk_attr"
+  )
+  
+  expect_equal(
+    risk_lbl("Low Risk", type = "module"),
+    "cat_low_risk_mod"
   )
 })
 
