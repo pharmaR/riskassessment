@@ -162,7 +162,7 @@ get_se_comments <- function(pkg_name, db_name = golem::get_golem_options('assess
 #' Pull the maint metrics data for a specific package id, and create 
 #' necessary columns for Cards UI
 #' 
-#' @param pkg_id integer package id
+#' @param pkg_name character name of package
 #' @param db_name character name (and file path) of the database
 #' 
 #' @import dplyr
@@ -170,14 +170,16 @@ get_se_comments <- function(pkg_name, db_name = golem::get_golem_options('assess
 #' 
 #' @returns a data frame
 #' @noRd
-get_mm_data <- function(pkg_id, db_name = golem::get_golem_options('assessment_db_name')){
+get_metric_data <- function(pkg_name, metric_class = 'maintenance', db_name = golem::get_golem_options('assessment_db_name')){
+
   dbSelect(
     "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
                     metric.is_url, package_metrics.value, package_metrics.metric_score
                     FROM metric
                     INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
-                    WHERE package_metrics.package_id = {pkg_id} AND 
-                    metric.class = 'maintenance' ;", db_name) %>%
+                    INNER JOIN package on package_metrics.package_id = package.id
+                    WHERE package.name = {pkg_name} AND 
+                    metric.class = {metric_class} ;", db_name) %>%
     dplyr::mutate(
       title = long_name,
       desc = description,

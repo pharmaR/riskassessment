@@ -41,7 +41,8 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
 
       # A str length of 41 chars tends to wrap to two rows and look quite nice
       val_max_nchar <- 31
-      is_true <- !(value %in% c(0, "pkg_metric_error", "NA", "", "FALSE", NA))
+      is_true <- !(value %in% c("pkg_metric_error", "NA", "", "FALSE", NA))
+      
       
       # logic for assessment values
       if (value %in% c("pkg_metric_error", "NA", NA)) {
@@ -73,12 +74,13 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
       ) # , num_bins = 3
       
       body_p_style <- glue::glue("font-size: {auto_font_out}vw")
-
+      
       # build the html card
       if(score == "NULL" | !is_true) { # use icon version
         
         # maintain icon logic
-        icon_name <- succ_icon # succ_icon should never show in practice
+        # succ_icon should only show up for non-riskmetric cards
+        icon_name <- succ_icon 
         if (!is_true) {
           icon_name <- unsucc_icon
           icon_class <- "text-warning"

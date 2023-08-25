@@ -183,11 +183,9 @@ app_server <- function(input, output, session) {
     req(selected_pkg$name())
     req(selected_pkg$name() != "-")
     
-    # Collect all the metric names and values associated to package_id.
-    get_mm_data(selected_pkg$id())
-    # get_mm_data("tidyCDISC", "database.sqlite")
+    # Collect all the metric names and values associated to package name.
+    get_metric_data(selected_pkg$name(), metric_class = "maintenance")
   })
-  
   
   # Gather community usage metrics information.
   community_usage_metrics <- reactive({

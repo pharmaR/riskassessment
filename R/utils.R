@@ -356,35 +356,78 @@ build_comm_cards <- function(data){
             is_perc = 0,
             is_url = 0)
   
+  
+  # pull in some riskmetric data
+  # comm <- get_metric_data("tidyCDISC", metric_class = 'community', "database.sqlite")
+  comm <- get_metric_data(data$id[1], metric_class = 'community', golem::get_golem_options('assessment_db_name'))
+  
+  
+  # get downloads in the last year
   downloads_last_year <- data %>%
     dplyr::arrange(year, month) %>% # insurance
     dplyr::filter(row_number() >= (n() - 11)) %>%
     dplyr::distinct(year, month, downloads)
   
-  cards <- cards %>%
-    dplyr::add_row(name = 'downloads_last_year',
-            title = 'Package Downloads',
-            desc = 'Number of downloads in last 12 months',
-            value = format(sum(downloads_last_year$downloads), big.mark = ","),
-            score = "NULL",
-            succ_icon = 'box-open',
-            icon_class = "text-info",
-            is_perc = 0,
-            is_url = 0)
+  # old
+  # cards <- cards %>%
+  #   dplyr::add_row(name = 'downloads_last_year',
+  #           title = 'Package Downloads',
+  #           desc = 'Number of downloads in last 12 months',
+  #           value = format(sum(downloads_last_year$downloads), big.mark = ","),
+  #           score = "NULL",
+  #           succ_icon = 'box-open',
+  #           icon_class = "text-info",
+  #           is_perc = 0,
+  #           is_url = 0)
   
+  
+  # new
+  comm_d1 <- comm %>% filter(name == "downloads_1yr")
+  cards <- cards %>%
+    dplyr::add_row(name = comm_d1[['name']],
+                   title = comm_d1[['title']],
+                   desc = comm_d1[['desc']],
+                   value = format(as.numeric(comm_d1[['value']]), big.mark = ","),
+                     # altneratively, last 12 months from plot (doesn't include current month)
+                     # format(sum(downloads_last_year$downloads), big.mark = ","),
+                   score = comm_d1[['score']],
+                   succ_icon = comm_d1[['succ_icon']],
+                   icon_class = comm_d1[['icon_class']],
+                   is_perc = comm_d1[['is_perc']] == 1,
+                   is_url = comm_d1[['is_url']] == 1)
+  
+  
+  
+  # get reverse dependency info
   rev_deps <- get_assess_blob(data$id[1])$reverse_dependencies[[1]]
   
+  comm_rev <- comm %>% filter(name == "reverse_dependencies")
+  # new
   cards <- cards %>%
-    dplyr::add_row(name = 'reverse_dependencies',
-                   title = 'Reverse Dependencies',
-                   desc = 'Number of Reverse Dependencies',
-                   value = format(length(rev_deps), big.mark = ","),
-                   score = "NULL", # TODO: Need to pull db data simiilar to get_mm_data()
-  succ_icon = 'sitemap',
-  icon_class = "text-info",
-  is_perc = 0,
-  is_url = 0)
+    dplyr::add_row(name = comm_rev[['name']],
+                   title = comm_rev[['title']],
+                   desc = comm_rev[['desc']],
+                   value = format(as.numeric(comm_rev[['value']]), big.mark = ","),
+                   score = comm_rev[['score']],
+                   succ_icon = comm_rev[['succ_icon']],
+                   icon_class = comm_rev[['icon_class']],
+                   is_perc = comm_rev[['is_perc']] == 1,
+                   is_url = comm_rev[['is_url']] == 1)
+  
+  # old
+  # cards <- cards %>%
+  #   dplyr::add_row(name = 'reverse_dependencies',
+  #                  title = 'Reverse Dependencies',
+  #                  desc = 'Number of Reverse Dependencies',
+  #                  value = format(length(rev_deps), big.mark = ","),
+  #                  score = "NULL", # TODO: Need to pull db data simiilar to get_mm_data()
+  #                 succ_icon = 'sitemap',
+  #                 icon_class = "text-info",
+  #                 is_perc = 0,
+  #                 is_url = 0)
 
+  
+  # Get Monthly download trend
   trend_downloads <- dplyr::as_tibble(data) %>% 
     dplyr::arrange(year, month) %>%
     dplyr::mutate(day_month_year = glue::glue('1-{month}-{year}')) %>%

@@ -79,7 +79,7 @@ test_that("utils_get_db functions other than dbSelect", {
   })
   
   test_that("get_mm_data works", {
-    mmdata <- get_mm_data(pkg_id, db_name = app_db_loc)
+    mmdata <- get_metric_data(pkg_name, metric_class = "maintenance", db_name = app_db_loc)
     expect_s3_class(mmdata, "data.frame")
     expect_equal(names(mmdata), c("name", "is_perc", "is_url", "value", "title", "desc", "succ_icon", "unsucc_icon", "icon_class"))
     expect_equal(mmdata$name[1], "has_vignettes")
