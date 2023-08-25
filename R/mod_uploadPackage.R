@@ -528,7 +528,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
                                              "padding-right" = "4px",
                                              "font-weight" = "bold",
                                              "color" = "white",
-                                             "background-color" = glue::glue("var(--{risk_lbl(x, input = FALSE)}-color)")))
+                                             "background-color" = glue::glue("var(--{risk_lbl(x, type = 'attribute')}-color)")))
           )
         ),
         escape = FALSE,

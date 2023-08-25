@@ -102,7 +102,7 @@ mod_risk_rule_server <- function(id, filter, decision, rule_lst){
         
         rule_lst[[risk_lbl(decision, type = "module")]] <- 
           list(
-            metric = "Risk Score",
+            metric = NA_character_,
             filter = filter(),
             decision = decision,
             mapper = evalSetTimeLimit(parse(text = filter()))

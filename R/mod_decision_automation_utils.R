@@ -30,34 +30,39 @@ assign_risk_score_decision <- function(decision_list, package) {
 
 assign_decisions <- function(rule_lst, package) {
   decision <- ""
+  browser()
   if (any(purrr::map_lgl(rule_lst, ~ !is.na(.x$metric))))
     assessments <- get_assess_blob(package)
+  
   for (rule in rule_lst) {
     if (decision != "") break
     
+    fn <- purrr::possibly(rule$mapper, otherwise = FALSE)
     if (is.na(rule$metric)) {
-      decision <- assign_risk_score_decision(rule$rules, package)
+      decision <- if (fn(get_pkg_info(package)$score)) rule$decision else ""
+      measure <- "Risk Score"
     } else if (rlang::is_function(rule$mapper) | rlang::is_formula(rule$mapper)) {
-      fn <- purrr::possibly(rule$mapper, otherwise = FALSE)
       decision <- if (fn(assessments[[rule$metric]][[1]])) rule$decision else ""
-      decision_id <- dbSelect("SELECT id FROM decision_categories WHERE decision = {decision}")
-      if (decision != "") {
-        dbUpdate("UPDATE package SET decision_id = {decision_id},
-                        decision_by = 'Auto Assigned', decision_date = {get_Date()}
-                         WHERE name = {package}")
-        loggit::loggit("INFO",
-                       glue::glue("decision for the package {package} was assigned {decision} by decision automation rules"))
-        comment <- glue::glue("Decision was assigned '{decision}' by decision rules because the {rule$metric} assessment returned TRUE for `{rule$filter}`")
-        dbUpdate(
-          "INSERT INTO comments
-          VALUES ({package}, 'Auto Assigned', 'admin',
-          {comment}, 'o', {getTimeStamp()})")
-      }
+      measure <- glue::glue("{rule$metric} assessment")
     } else {
       warning(glue::glue("Unable to apply rule for {rule$metric}."))
       decision <- ""
     }
+    if (decision == "") next
+    
+    decision_id <- dbSelect("SELECT id FROM decision_categories WHERE decision = {decision}")
+    dbUpdate("UPDATE package SET decision_id = {decision_id},
+                        decision_by = 'Auto Assigned', decision_date = {get_Date()}
+                         WHERE name = {package}")
+    loggit::loggit("INFO",
+                   glue::glue("decision for the package {package} was assigned {decision} by decision automation rules"))
+    comment <- glue::glue("Decision was assigned '{decision}' by decision rules because the {measure} returned TRUE for `{rule$filter}`")
+    dbUpdate(
+      "INSERT INTO comments
+          VALUES ({package}, 'Auto Assigned', 'admin',
+          {comment}, 'o', {getTimeStamp()})")
   }
+  
   decision
 }
 
@@ -154,11 +159,9 @@ process_rule_tbl <- function(db_name = golem::get_golem_options('assessment_db_n
    rule_tbl <- dbSelect("SELECT m.name metric, r.filter, d.decision FROM rules r LEFT JOIN metric m ON r.metric_id = m.id LEFT JOIN decision_categories d ON r.decision_id = d.id", db_name)
    rule_tbl %>%
      purrr::pmap(~ {
-       out <- list(...)
-       if (!is.na(out$metric))
-         out$mapper <- evalSetTimeLimit(parse(text = out$filter))
-       out
-       }) %>%
+       out <- list(...) %>%
+         within(mapper <- evalSetTimeLimit(parse(text = filter)))
+     }) %>%
      purrr::set_names(ifelse(is.na(purrr::map_chr(., ~ .x$metric)), rep("risk_score_rule", length(.)), paste("rule", seq_along(.), sep = "_")))
 }
 
@@ -172,7 +175,7 @@ create_rule_divs <- function(rule_lst, metric_lst, decision_lst, ns = NS(NULL)) 
     } else {
       if (isTRUE(.x == "remove")) return(NULL)
       
-      mod_risk_rule_ui(ns(.y), .y)
+      mod_risk_rule_ui(ns(risk_lbl(.x$decision, type = "module")), risk_lbl(.x$decision, type = "module"))
     }
   }) %>%
     purrr::compact()

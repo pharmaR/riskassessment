@@ -294,15 +294,25 @@ mod_decision_automation_server <- function(id, user, credentials){
     }))
     rule_lst <- do.call(reactiveValues, risk_rule_initial)
     rule_number <- reactiveVal(length(risk_rule_initial))
-    
+
     purrr::iwalk(risk_rule_initial, ~ {
       if (grepl("^rule_\\d+$", .y)) {
         number <- strsplit(.y, "_")[[1]][2]
         mod_metric_rule_server("rule", number, rule_lst)
+        create_rule_obs(.y, rule_lst, .input = input, ns = ns)
       } else {
-        mode_risk_rule_server(.y, reactive(glue::glue("~ {auto_decision[[.x$decision]][1]} <= .x & .x <= {auto_decision[[.x$decision]][2]}")), rule_lst)
+        out_return <- mod_risk_rule_server(risk_lbl(.x$decision, type = "module"), reactive(glue::glue("~ {auto_decision[[.x$decision]][1]} <= .x & .x <= {auto_decision[[.x$decision]][2]}")), .x$decision, rule_lst)
+        risk_module_observer <-
+          observeEvent(out_return(), {
+            updateCheckboxGroupInput(session, "auto_include", selected = setdiff(input$auto_include, out_return()))
+          })
+        o <- observeEvent(rule_lst[[risk_lbl(.x$decision, type = "module")]], {
+          req(isTRUE(rule_lst[[risk_lbl(.x$decision, type = "module")]] == "remove"))
+          risk_module_observer$destroy()
+          o$destroy()
+        })
+        create_rule_obs(risk_lbl(.x$decision, type = "module"), rule_lst, .input = input, ns = ns)
       }
-      create_rule_obs(.y, rule_lst, .input = input, ns = ns)
     })
     
     observeEvent(input$add_rule, {
@@ -325,9 +335,15 @@ mod_decision_automation_server <- function(id, user, credentials){
 
           insertUI(paste0("#", ns("rules_list")), "beforeEnd", mod_risk_rule_ui(ns(risk_lbl(.x, type = "module")), risk_lbl(.x, type = "module")))
           out_return <- mod_risk_rule_server(risk_lbl(.x, type = "module"), reactive(glue::glue("~ {auto_decision[[.x]][1]} <= .x & .x <= {auto_decision[[.x]][2]}")), .x, rule_lst)
-          observeEvent(out_return(), {
-            updateCheckboxGroupInput(session, "auto_include", selected = setdiff(input$auto_include, out_return()))
-          }, once = TRUE)
+          risk_module_observer <-
+            observeEvent(out_return(), {
+              updateCheckboxGroupInput(session, "auto_include", selected = setdiff(input$auto_include, out_return()))
+            })
+          o <- observeEvent(rule_lst[[risk_lbl(.x, type = "module")]], {
+            req(isTRUE(rule_lst[[risk_lbl(.x, type = "module")]] == "remove"))
+            risk_module_observer$destroy()
+            o$destroy()
+          })
           create_rule_obs(risk_lbl(.x, type = "module"), rule_lst, .input = input, ns = ns)
         })
       }
@@ -627,7 +643,7 @@ mod_decision_automation_server <- function(id, user, credentials){
         out_lst <- purrr::compact(reactiveValuesToList(rule_lst)[isolate(input$rules_order)])
         DT::datatable({
           out_lst %>% 
-            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "filter", "decision")]))
+            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "filter", "decision")]) %>% dplyr::mutate(metric = if (is.na(metric)) "Risk Score" else metric))
         },
         escape = FALSE,
         class = "cell-border",
@@ -770,8 +786,6 @@ mod_decision_automation_server <- function(id, user, credentials){
       }
       
       
-      if (length(out_lst) != 0)
-        rule_lst[["risk_score_rule"]][["rules"]] <- out_lst
       risk_rule_update(reactiveValuesToList(rule_lst)[input$rules_order])
       rule_out <-
         purrr::map(risk_rule_update(), ~ {
