@@ -66,8 +66,6 @@ mod_decision_automation_ui <- function(id){
     tags$head(tags$style(HTML(c(dec_root, dec_css)))),
     uiOutput(ns("auto_classify")),
     DT::dataTableOutput(ns("rule_table")),
-    fluidRow(style = "height: 2rem"),
-    DT::dataTableOutput(ns("auto_table"))
   )
 }
 
@@ -433,7 +431,7 @@ mod_decision_automation_server <- function(id, user, credentials){
         
         DT::datatable({
           risk_rule_update() %>% 
-            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "filter", "decision")]))
+            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "filter", "decision")]) %>% dplyr::mutate(metric = if (is.na(metric)) "Risk Score" else metric))
         },
         escape = FALSE,
         class = "cell-border",
@@ -448,29 +446,6 @@ mod_decision_automation_server <- function(id, user, credentials){
           ordering = FALSE
         ))
         
-      })
-    
-    output$auto_table <-
-      DT::renderDataTable({
-        req(!rlang::is_empty(auto_decision_update()))
-        
-        DT::datatable({
-          auto_decision_update() %>%
-            purrr::imap_dfr(~ dplyr::tibble(decision = .y, ll = .x[[1]], ul = .x[[2]])) %>%
-            dplyr::arrange(ll,)
-        },
-        escape = FALSE,
-        class = "cell-border",
-        selection = 'none',
-        colnames = c("Decision Category", "Lower Limit", "Upper Limit"),
-        rownames = FALSE,
-        options = list(
-          dom = "t",
-          searching = FALSE,
-          sScrollX = "100%",
-          iDisplayLength = -1,
-          ordering = FALSE
-        ))
       })
     
     output$empty_auto <- 

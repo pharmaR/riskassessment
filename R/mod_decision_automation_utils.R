@@ -30,7 +30,6 @@ assign_risk_score_decision <- function(decision_list, package) {
 
 assign_decisions <- function(rule_lst, package) {
   decision <- ""
-  browser()
   if (any(purrr::map_lgl(rule_lst, ~ !is.na(.x$metric))))
     assessments <- get_assess_blob(package)
   
