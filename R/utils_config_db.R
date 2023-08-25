@@ -33,7 +33,7 @@ configure_db <- function(dbname, config) {
   if (!is.null(config[["decisions"]]$rules)) {
     purrr::iwalk(config[["decisions"]]$rules, ~ {
       dbUpdate("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = {.y}", dbname)
-      dbUpdate("INSERT INTO rules (filter, decision_id) VALUES ('~ {.x[1]} <= .x & .x <= {.x[length(.x)]}', {match(.y, config[['decisions']]$categories)});")
+      dbUpdate("INSERT INTO rules (filter, decision_id) VALUES ('~ {.x[1]} <= .x & .x <= {.x[length(.x)]}', {match(.y, config[['decisions']]$categories)});", dbname)
       })
     
   } else {
