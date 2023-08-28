@@ -62,7 +62,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
       req(selected_pkg$name())
       req(selected_pkg$name() != "-")
-      toggled(0L) # set materialSwitch off
       
       if (parent$input$tabs == "Package Metrics" & parent$input$metric_type == "dep") {
         tabready(1L)
@@ -110,6 +109,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         msg <- paste("Detailed dependency information is not available for package", selected_pkg$name())
         rlang::warn(msg)
         pkginfo <- suggests() %>%  as_tibble() 
+        toggled(0L) # set materialSwitch off
+        
       } else {
         pkginfo <- dplyr::bind_rows(depends(), suggests()) %>% as_tibble()
       }
