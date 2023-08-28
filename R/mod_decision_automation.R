@@ -750,17 +750,21 @@ mod_decision_automation_server <- function(id, user, credentials){
       
       
       risk_rule_update(reactiveValuesToList(rule_lst)[input$rules_order])
-      rule_out <-
-        purrr::map(risk_rule_update(), ~ {
-          metric_id <- dbSelect("select id from metric where name == {.x$metric}")[[1]] %>% 
-            ifelse(test = length(.) == 0, yes = 0)
-          decision_id <- dbSelect("select id from decision_categories where decision == {.x$decision}")[[1]]%>% 
-            ifelse(test = length(.) == 0, yes = 0)
-          glue::glue_sql("({metric_id}, {.x$filter}, {decision_id})", .con = DBI::dbConnect(RSQLite::SQLite()))
-        }) %>%
-        glue::glue_collapse(", ")
-      dbUpdate("DELETE FROM rules")
-      dbUpdate(glue::glue("INSERT INTO rules (metric_id, filter, decision_id) VALUES {rule_out};"))
+      if (rlang::is_empty(risk_rule_update())) {
+        dbUpdate("DELETE FROM rules")
+      } else {
+        rule_out <-
+          purrr::map(risk_rule_update(), ~ {
+            metric_id <- dbSelect("select id from metric where name == {.x$metric}")[[1]] %>% 
+              ifelse(test = length(.) == 0, yes = 0)
+            decision_id <- dbSelect("select id from decision_categories where decision == {.x$decision}")[[1]]%>% 
+              ifelse(test = length(.) == 0, yes = 0)
+            glue::glue("({metric_id}, '{.x$filter}', {decision_id})")
+          }) %>%
+          glue::glue_collapse(", ")
+        dbUpdate("DELETE FROM rules")
+        dbUpdate(glue::glue("INSERT INTO rules (metric_id, filter, decision_id) VALUES {rule_out};"))
+      }
       
       removeModal()
       shinyjs::runjs("document.body.setAttribute('data-bs-overflow', 'auto');")
