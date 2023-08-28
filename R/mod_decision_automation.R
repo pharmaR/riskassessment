@@ -380,6 +380,7 @@ mod_decision_automation_server <- function(id, user, credentials){
           number <- strsplit(.y, "_")[[1]][2]
           mod_metric_rule_server("rule", number, rule_lst)
           create_rule_obs(.y, rule_lst, .input = input, ns = ns)
+          rule_lst[[.y]] <- .x
         } else {
           out_return <- mod_risk_rule_server(risk_lbl(.x$decision, type = "module"), reactive(glue::glue("~ {auto_decision[[.x$decision]][1]} <= .x & .x <= {auto_decision[[.x$decision]][2]}")), .x$decision, rule_lst)
           risk_module_observer <-
@@ -393,6 +394,10 @@ mod_decision_automation_server <- function(id, user, credentials){
           })
           create_rule_obs(risk_lbl(.x$decision, type = "module"), rule_lst, .input = input, ns = ns)
         }
+      })
+      
+      session$onFlushed(function() {
+        shinyjs::runjs(glue::glue("Shiny.setInputValue('{ns(\"rules_order\")}:sortablejs.rank_list', $.map($('#{ns(\"rules_list\")}').children(), function(child) {{return $(child).attr('data-rank-id') || $.trim(child.innerText);}}))"))
       })
     }, priority = 100)
     
