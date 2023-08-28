@@ -410,7 +410,7 @@ mod_decision_automation_server <- function(id, user, credentials){
           disable_auto_submit(TRUE)
           break
         }
-        if (rlang::is_formula(rule$mapper) | rlang::is_function(rule$mapper)) {
+        if (!rlang::is_formula(rule$mapper) & !rlang::is_function(rule$mapper)) {
           disable_auto_submit(TRUE)
           break
         }
@@ -690,12 +690,16 @@ mod_decision_automation_server <- function(id, user, credentials){
             if (!rlang::is_empty(purrr::compact(reactiveValuesToList(rule_lst)))) DT::DTOutput(ns("modal_table")) else h2("Disable Decision Automation"),
             br(),
             br(),
-            em('Note: Once submitted, these rules will be applied to all new packages loaded into the app or when any metric re-weighting is performed.')
+            if (disable_auto_submit()) 
+              em('Error: The conditionals must be formulas or functions.', style = "color: red;")
+            else
+              em('Note: Once submitted, these rules will be applied to all new packages loaded into the app or when any metric re-weighting is performed.')
           )
         ),
         br(),
         footer = tagList(
-          actionButton(ns('confirm_submit_auto'), 'Submit'),
+          actionButton(ns('confirm_submit_auto'), 'Submit') %>%
+            tagAppendAttributes(class = if (disable_auto_submit()) "shinyjs-disabled"),
           actionButton(ns('cancel'), 'Cancel')
         )))
     })
@@ -734,6 +738,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     
     observeEvent(input$confirm_submit_auto, {
       req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
+      req(!disable_auto_submit())
       
       out_lst <- purrr::compact(reactiveValuesToList(auto_decision))
       dbUpdate("UPDATE decision_categories SET lower_limit = NULL, upper_limit = NULL")
