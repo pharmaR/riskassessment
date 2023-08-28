@@ -443,7 +443,7 @@ mod_decision_automation_server <- function(id, user, credentials){
         
         DT::datatable({
           risk_rule_update() %>% 
-            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "filter", "decision")]) %>% dplyr::mutate(metric = if (is.na(metric)) "Risk Score" else metric))
+            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "filter", "decision")]) %>% dplyr::mutate(metric = if (is.na(metric)) "Risk Score" else names(metric_lst)[match(metric, metric_lst)]))
         },
         escape = FALSE,
         class = "cell-border",
@@ -613,7 +613,7 @@ mod_decision_automation_server <- function(id, user, credentials){
         out_lst <- purrr::compact(reactiveValuesToList(rule_lst)[isolate(input$rules_order)])
         DT::datatable({
           out_lst %>% 
-            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "filter", "decision")]) %>% dplyr::mutate(metric = if (is.na(metric)) "Risk Score" else metric))
+            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "filter", "decision")]) %>% dplyr::mutate(metric = if (is.na(metric)) "Risk Score" else names(metric_lst)[match(metric, metric_lst)]))
         },
         escape = FALSE,
         class = "cell-border",
