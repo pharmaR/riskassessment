@@ -96,6 +96,8 @@ mod_risk_rule_server <- function(id, filter, decision, rule_lst){
     output$filter <- renderText(filter())
     output$decision <- renderText(decision)
     
+    # This is necessary to initialize the reactive value when `filter()` is
+    # NULL. This happens when the rules are reset.
     rule_lst[[risk_lbl(decision, type = "module")]] <- 
       list(
         metric = NA_character_,
