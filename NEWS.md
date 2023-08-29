@@ -1,6 +1,7 @@
 # riskassessment (development version)
 * Fixed tests showing "Package Downloads" community usage card as non-metric (#621)
 * Adding "Suggests" pkgs to Dependencies tab (#624)
+* Started showing `metric_score`s for each assessment's card, using html meter
 
 # riskassessment 2.0.0
 
