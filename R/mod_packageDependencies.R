@@ -22,7 +22,7 @@ packageDependenciesUI <- function(id) {
 #' @importFrom purrr map_df
 #' @importFrom rlang warn
 #' @importFrom shiny removeModal showModal tagList
-#' @importFrom shinyjs click toggle
+#' @importFrom shinyjs click 
 #' @importFrom stringr str_extract str_replace
 #' @importFrom shinyWidgets materialSwitch
 #'
@@ -108,9 +108,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         # packages like curl, magrittr will appear here instead of in tryCatch() above
         msg <- paste("Detailed dependency information is not available for package", selected_pkg$name())
         rlang::warn(msg)
+        if (toggled() == 1L) {
+        return(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
+          } else {
         pkginfo <- suggests() %>%  as_tibble() 
-        toggled(0L) # set materialSwitch off
-        
+          } 
       } else {
         pkginfo <- dplyr::bind_rows(depends(), suggests()) %>% as_tibble()
       }
@@ -199,16 +201,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
               fluidRow(
                 column(
                   width = 8,
-                  if (nrow(data_table()) == 0) {
-                    renderText("No dependency information is available")
-                  } else {
                     DT::renderDataTable(server = FALSE, {
                       # Hiding name from DT table. target contains index for "name"
                       # The - 1 is because js uses 0 index instead of 1 like R
                       target <- which(names(data_table()) %in% c("name")) - 1
                       
-                      shinyjs::toggle(id = "hide_suggests", condition = (nrow(depends()) > 0))
-
                       formattable::as.datatable(
                         formattable::formattable(
                           data_table(),
@@ -256,7 +253,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                       ) %>%
                         DT::formatStyle(names(data_table()), textAlign = "center")
                     })
-                  } # if_else
                 ) # column
               ), # fluidRow
               br(),
