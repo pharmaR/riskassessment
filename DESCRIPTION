@@ -64,10 +64,10 @@ Imports:
     shinydashboard,
     shinyjs,
     shinymanager,
+    shinyTree,
     shinyWidgets,
     stringr,
     shinyAce,
-    jsTreeR
 Suggests: 
     chromote,
     fontawesome,
