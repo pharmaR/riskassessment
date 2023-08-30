@@ -7,49 +7,17 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
-#' @importFrom jsTreeR jstreeOutput
 #' @importFrom shinyAce aceEditor
 mod_pkg_explorer_ui <- function(id){
   ns <- NS(id)
-  div(
-    conditionalPanel(
-        condition = "output.show_tree",
-            br(),
-            h4("File Browser", style = "text-align: center;"),
-            br(), br(),
-            fluidRow(
-                column(4,
-                   wellPanel(
-                     jsTreeR::jstreeOutput(ns("dirtree"))
-                   )
-                ),
-                column(8,
-                 conditionalPanel(
-                   condition = "output.is_child",
-                   shinyAce::aceEditor(ns("editor"), value = "", height = "62vh",
-                                       mode = "txt", readOnly = TRUE, theme = "tomorrow",
-                                       fontSize = 14, wordWrap = FALSE, showLineNumbers = FALSE,
-                                       highlightActiveLine = TRUE, tabSize = 2, showInvisibles = FALSE
-                                                           ),
-                   htmlOutput(ns("filepath")),
-                   ns = ns
-                 )
-               )
-              ),
-            br(), br(),
-            uiOutput(ns("comments_for_se")),
-        ns = ns
-      ),
-    uiOutput(ns("pkg_explorer_ui")),
-    id = id
-  )
+  uiOutput(ns("pkg_explorer_ui"))
 }
 
 #' pkg_explorer Server Functions
 #' 
-#' @importFrom jsTreeR renderJstree jstree jstreeUpdate
 #' @importFrom shinyAce updateAceEditor
 #' @importFrom utils untar
+#' @importFrom shinyTree shinyTree renderTree updateTree get_selected
 #'
 #' @noRd 
 mod_pkg_explorer_server <- function(id, selected_pkg,
@@ -70,19 +38,43 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
         showHelperMessage()
       } else if (!file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")))) {
         showHelperMessage(message = glue::glue("Source code not available for {{{selected_pkg$name()}}}"))
+      } else {
+        div(
+            br(),
+            h4("File Browser", style = "text-align: center;"),
+            br(), br(),
+            fluidRow(
+              column(4,
+                     wellPanel(
+                       {
+                         treeTag <- 
+                           shinyTree::shinyTree(ns("dirtree"), theme = "proton", types = '{"default":{"icon":"fa fa-folder"},"file":{"icon":"fa fa-file"}}')
+                         treeTag[[1]]$children[[3]] <- NULL
+                         treeTag
+                       }
+                     )
+              ),
+              column(8,
+                     conditionalPanel(
+                       condition = "output.is_file",
+                       shinyAce::aceEditor(ns("editor"), value = "", height = "62vh",
+                                           mode = "txt", readOnly = TRUE, theme = "tomorrow",
+                                           fontSize = 14, wordWrap = FALSE, showLineNumbers = FALSE,
+                                           highlightActiveLine = TRUE, tabSize = 2, showInvisibles = FALSE
+                       ),
+                       htmlOutput(ns("filepath")),
+                       ns = ns
+                     )
+              )
+            ),
+            br(), br(),
+            div(id = ns("comments_for_se"), fluidRow(
+              if ("general_comment" %in% credentials$privileges[[user$role]]) addCommentUI(id = ns("add_comment")),
+              viewCommentsUI(id = ns("view_comments")))),
+          id = id
+        )
       }
     })
-    
-    output$comments_for_se <- renderUI({
-      fluidRow( 
-        if ("general_comment" %in% credentials$privileges[[user$role]]) addCommentUI(id = ns("add_comment")),
-        viewCommentsUI(id = ns("view_comments")))
-    })
-    
-    output$show_tree <- reactive({
-      !identical(selected_pkg$name(), character(0)) && file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")))
-    })
-    outputOptions(output, "show_tree", suspendWhenHidden = FALSE)
     
     observe({
       req(selected_pkg$name() != "-")
@@ -105,33 +97,26 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
     
     nodes <- reactive({
       req(pkgdir())
-      makeNodes(list.files(pkgdir(), recursive = TRUE, include.dirs = TRUE))
+      make_nodes(list.files(pkgdir(), recursive = TRUE))
     })
     
-    types <- list(
-      root = list(icon = "fa fa-folder"),
-      child = list(icon = "fa fa-file")
-    )
-    
-    output$dirtree <- jsTreeR::renderJstree({
-      jsTreeR::jstree(isolate(nodes()), types = types, multiple = FALSE, theme = "proton")
-    })
-    
+    output$dirtree <- shinyTree::renderTree(isolate(nodes()))
     observeEvent(nodes(), {
-      jsTreeR::jstreeUpdate(session, ns("dirtree"), nodes())
-    }, ignoreInit = TRUE)
-    
-    output$is_child <- reactive({
-      return(length(input$dirtree_selected) > 0 && input$dirtree_selected[[1]]$type == "child")
+      shinyTree::updateTree(session, "dirtree", nodes())
     })
-    outputOptions(output, "is_child", suspendWhenHidden = FALSE)
     
-    observeEvent(input$dirtree_selected, {
+    is_file <- reactive({
+      length(input$dirtree) > 0 && isTRUE(attr(get_list_element(shinyTree::get_selected(input$dirtree, "slices")[[1]], isolate(nodes())), "sttype") == "file")
+    })
+    output$is_file <- is_file
+    outputOptions(output, "is_file", suspendWhenHidden = FALSE)
+    
+    observeEvent(input$dirtree, {
       s <- ""
       e <- "txt"
-      if (length(input$dirtree_selected) > 0 && input$dirtree_selected[[1]]$type == "child") {
-        filename <- input$dirtree_selected[[1]]$text
-        filepath <- input$dirtree_selected[[1]]$data
+      if (is_file()) {
+        filepath <- get_selected_path(shinyTree::get_selected(input$dirtree, "slices")[[1]])
+        filename <- basename(filepath)
         e <- tolower(tools::file_ext(filepath))
         if (e %in% accepted_extensions || filename %in% accepted_filenames) {
           s <- readLines(file.path(pkgdir(), filepath))
@@ -145,11 +130,11 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
     })
     
     output$filepath <- renderUI({
-      s <- if (length(input$dirtree_selected) > 0 && input$dirtree_selected[[1]]$type == "child")
-        input$dirtree_selected[[1]]$data else ""
+      s <- if (is_file())
+        get_selected_path(shinyTree::get_selected(input$dirtree, "slices")[[1]]) else ""
       HTML(sprintf('<h5>%s</h5>', s))
     }) %>%
-      bindEvent(input$dirtree_selected)
+      bindEvent(input$dirtree)
     
     
     # Call module to create comments and save the output.
