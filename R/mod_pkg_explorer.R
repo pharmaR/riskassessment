@@ -89,7 +89,11 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
       if (dir.exists(src_dir)) {
         pkgdir(src_dir)
       } else {
-        utils::untar(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")), exdir = "source")
+        withProgress(
+          utils::untar(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")), exdir = "source"),
+          message = glue::glue("Unpacking {selected_pkg$name()}_{selected_pkg$version()}.tar.gz"),
+          value = 1
+        )
         pkgdir(src_dir)
       }
     }) %>% 
