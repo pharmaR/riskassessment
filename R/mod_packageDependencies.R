@@ -160,9 +160,16 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         showHelperMessage()
       } else {
         req(depends())
+        cards <- reactive({
+          build_dep_cards(data = loaded2_db())
+        }) %>% bindEvent(loaded2_db())
+        # Create metric grid card.
+        metricGridServer(id = 'metricGrid', metrics = cards) 
+        
         fluidPage(
           shiny::
             tagList(
+              div(id = "dep_infoboxes", metricGridUI(NS(id, 'metricGrid'))),
               br(),
               h4(glue::glue("Package Dependencies: {nrow(depends())} Suggests: {nrow(suggests())}"), style = "text-align: left;"),
               br(),

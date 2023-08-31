@@ -782,3 +782,110 @@ get_time <- function() {
   else
     Sys.time()
 }
+
+#' The 'Build Dependency Cards' function
+#' 
+#' @param data a data.frame
+#' 
+#' @import dplyr
+#' @importFrom glue glue
+#' @importFrom purrr map_df
+#' @importFrom tidyr complete
+#' @keywords internal
+#' 
+build_dep_cards <- function(data){
+  
+  cards <- dplyr::tibble(
+    name = character(),
+    title = character(),
+    desc = character(),
+    value = character(),
+    succ_icon = character(),
+    icon_class = character(),
+    is_perc = numeric(),
+    is_url = numeric()
+  )
+  
+  if (nrow(data) == 0)
+    return(cards)
+  
+  # Get the Number of packages in the db
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'pkg_cnt',
+      title = 'Package Count',
+      desc = 'Number of Packages Uploaded to DB',
+      value = paste(nrow(data)),
+      succ_icon = 'upload',
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
+  
+  # Get the Count (and %) of pkgs by Type of dependency
+  blob_df <- purrr::map_df(data$name, ~get_assess_blob(., db_name = golem::get_golem_options('assessment_db_name')))
+  
+  # remove any dependencies rows with 'pkg_metric_error' in them
+  cls <- purrr::map(blob_df$dependencies, ~attr(., "class"))
+  bad_rows <- suppressWarnings(stringr::str_which(as.vector(cls), stringr::fixed("pkg_metric_error")))
+  deps <- as.data.frame(bind_rows(as.vector(blob_df$dependencies[-bad_rows])), fix.empty.names = TRUE)
+  sugg <- as.data.frame(bind_rows(as.vector(blob_df$suggests)))
+  
+  both <- bind_rows(deps, sugg) %>% 
+    mutate(package = stringr::str_replace(package, "\n", "")) %>%
+    mutate(name = stringr::str_extract(package, "\\w+")) %>% 
+    group_by(type) %>% 
+    distinct(name, .keep_all = TRUE) %>% 
+    ungroup() %>%
+    mutate(base = if_else(name %in% c(rownames(installed.packages(priority = "base"))), "Base", "Tidyverse")) %>% 
+    mutate(type = factor(type, levels = c("Imports", "Depends", "LinkingTo", "Suggests"), ordered = TRUE))
+  
+  type_cat_rows <-
+    both %>%
+    tidyr::complete(type) %>%
+    mutate(cnt = ifelse(is.na(name), 0, 1)) %>%
+    group_by(type) %>%
+    summarize(type_cat_sum = sum(cnt)) %>%
+    ungroup() %>%
+    mutate(type_cat_pct = 100 * (type_cat_sum / nrow(both)),
+           type_cat_disp = glue::glue('{type}: {type_cat_sum} ({format(type_cat_pct, digits = 1)}%)')) %>%
+    arrange(type) %>%
+    pull(type_cat_disp) %>%
+    paste(., collapse = "\n")
+  
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'type_cat_count',
+      title = 'Type Summary',
+      desc = 'Package Dependencies by Type',
+      value = type_cat_rows,
+      succ_icon = 'boxes-stacked',
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
+  
+  base_cat_rows <-
+    both %>%
+    group_by(base) %>%
+    summarize(base_cat_sum = n()) %>% 
+    ungroup() %>%
+    filter(base == "Base") %>% 
+    mutate(base_cat_pct = format(100 * (base_cat_sum / nrow(both)), digits = 2)) %>% 
+    pull(base_cat_pct) %>%
+    paste(., collapse = "\n")
+
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'base_cat_count',
+      title = 'Base R Summary',
+      desc = 'Percentage of Base R Packages',
+      value = base_cat_rows,
+      succ_icon = 'boxes-stacked',
+      icon_class = "text-info",
+      is_perc = 1,
+      is_url = 0
+    )
+  
+  cards
+}
