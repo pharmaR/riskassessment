@@ -790,7 +790,7 @@ get_time <- function() {
 #' @import dplyr
 #' @importFrom glue glue
 #' @importFrom purrr map_df
-#' @importFrom tidyr complete
+#' @importFrom rlang is_empty
 #' @keywords internal
 #' 
 build_dep_cards <- function(data){
@@ -825,10 +825,14 @@ build_dep_cards <- function(data){
   # Get the Count (and %) of pkgs by Type of dependency
   blob_df <- purrr::map_df(data$name, ~get_assess_blob(., db_name = golem::get_golem_options('assessment_db_name')))
   
-  # remove any dependencies rows with 'pkg_metric_error' in them
+  # remove any dependencies rows with 'pkg_metric_error' in them, if they exist
   cls <- purrr::map(blob_df$dependencies, ~attr(., "class"))
   bad_rows <- suppressWarnings(stringr::str_which(as.vector(cls), stringr::fixed("pkg_metric_error")))
-  deps <- as.data.frame(bind_rows(as.vector(blob_df$dependencies[-bad_rows])), fix.empty.names = TRUE)
+  if(rlang::is_empty(bad_rows)) {
+    deps <- as.data.frame(bind_rows(as.vector(blob_df$dependencies)), fix.empty.names = TRUE)
+  } else {
+    deps <- as.data.frame(bind_rows(as.vector(blob_df$dependencies[-bad_rows])), fix.empty.names = TRUE)
+  }
   sugg <- as.data.frame(bind_rows(as.vector(blob_df$suggests)))
   
   both <- bind_rows(deps, sugg) %>% 
@@ -838,11 +842,16 @@ build_dep_cards <- function(data){
     distinct(name, .keep_all = TRUE) %>% 
     ungroup() %>%
     mutate(base = if_else(name %in% c(rownames(installed.packages(priority = "base"))), "Base", "Tidyverse")) %>% 
+    mutate(base = factor(base, levels = c("Base", "Tidyverse"), labels = c("Base", "Tidyverse"))) %>% 
     mutate(type = factor(type, levels = c("Imports", "Depends", "LinkingTo", "Suggests"), ordered = TRUE))
   
+  # base R replacement for tidyr::complete(type)
+  x <- tibble("type" = levels(both$type))
+  y <- full_join(x, both, by = "type") %>% 
+    mutate(type = factor(type, ordered = TRUE))
+
   type_cat_rows <-
-    both %>%
-    tidyr::complete(type) %>%
+    y %>%
     mutate(cnt = ifelse(is.na(name), 0, 1)) %>%
     group_by(type) %>%
     summarize(type_cat_sum = sum(cnt)) %>%
@@ -865,10 +874,14 @@ build_dep_cards <- function(data){
       is_url = 0
     )
   
+  x <- tibble("base" = levels(both$base))
+  y <- full_join(x, both, by = "base")
+  
   base_cat_rows <-
-    both %>%
+    y %>%
+    mutate(cnt = ifelse(is.na(name), 0, 1)) %>%
     group_by(base) %>%
-    summarize(base_cat_sum = n()) %>% 
+    summarize(base_cat_sum = sum(cnt)) %>%
     ungroup() %>%
     filter(base == "Base") %>% 
     mutate(base_cat_pct = format(100 * (base_cat_sum / nrow(both)), digits = 2)) %>% 
