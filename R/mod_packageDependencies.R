@@ -21,7 +21,7 @@ packageDependenciesUI <- function(id) {
 #' @importFrom glue glue
 #' @importFrom purrr map_df
 #' @importFrom rlang warn
-#' @importFrom shiny removeModal showModal tagList
+#' @importFrom shiny removeModal showModal tagList bindCache bindEvent
 #' @importFrom shinyjs click 
 #' @importFrom stringr str_extract str_replace
 #' @importFrom shinyWidgets materialSwitch
@@ -162,7 +162,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         req(depends())
         cards <- reactive({
           build_dep_cards(data = loaded2_db())
-        }) %>% bindEvent(loaded2_db())
+        }) %>% shiny::bindCache(loaded2_db()) %>% shiny::bindEvent(loaded2_db())
         # Create metric grid card.
         metricGridServer(id = 'metricGrid', metrics = cards) 
         
