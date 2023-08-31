@@ -14,8 +14,6 @@ mod_pkg_explorer_ui <- function(id){
   div(
     conditionalPanel(
         condition = "output.show_tree",
-            br(),
-            h4("File Browser", style = "text-align: center;"),
             br(), br(),
             fluidRow(
                 column(4,
@@ -55,12 +53,11 @@ mod_pkg_explorer_ui <- function(id){
 mod_pkg_explorer_server <- function(id, selected_pkg,
                                     accepted_extensions = c("r", "rmd", "rd", "txt", "md","csv", "tsv", "json", "xml", "yaml", "yml", "dcf", "html", "js", "css", "c", "cpp", "h", "java", "scala", "py", "perl", "sh", "sql"),
                                     accepted_filenames = c("DESCRIPTION", "NAMESPACE", "LICENSE", "LICENSE.note", "NEWS", "README", "CHANGES", "MD5"),
-                                    create_dir = reactiveVal(TRUE),
+                                    pkgdir = reactiveVal(),
+                                    creating_dir = reactiveVal(TRUE),
                                     user, credentials) {
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-    
-    pkgdir <- reactiveVal()
     
     output$pkg_explorer_ui <- renderUI({
       
@@ -85,23 +82,12 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
     outputOptions(output, "show_tree", suspendWhenHidden = FALSE)
     
     observe({
-      req(selected_pkg$name() != "-")
-      req(create_dir())
-      req(file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz"))))
-      
       shinyjs::addClass(id, class = "jstree-disable", asis = TRUE)
       session$onFlushed(function() {
         shinyjs::removeClass(id, class = "jstree-disable", asis = TRUE)
       })
-      src_dir <- file.path("source", selected_pkg$name())
-      if (dir.exists(src_dir)) {
-        pkgdir(src_dir)
-      } else {
-        utils::untar(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")), exdir = "source")
-        pkgdir(src_dir)
-      }
-    }) %>% 
-      bindEvent(selected_pkg$name(), create_dir())
+    }, priority = 100) %>%
+      bindEvent(selected_pkg$name(), creating_dir())
     
     nodes <- reactive({
       req(pkgdir())
