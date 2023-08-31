@@ -13,23 +13,24 @@ mod_code_explorer_ui <- function(id){
     column(3,
            wellPanel(
              selectInput(ns("exported_function"), "exported function", choices = NULL),
+             selectInput(ns("file_type"), "File Type", choices = c("Test Code" = "test", "Source Code" = "source", "Man Page" = "man")),
              checkboxInput(ns("always_show_files"), "always show files", value = FALSE),
              conditionalPanel(
-               condition = "input.tabs == 'test code'",
+               condition = "input.file_type == 'test'",
                selectInput(ns("test_files"), "test files",
                            choices = NULL, selectize = FALSE, size = 15
                ),
                ns = ns
              ),
              conditionalPanel(
-               condition = "input.tabs == 'source code' & (output.has_several_source_files | input.always_show_files)",
+               condition = "input.file_type == 'source' & (output.has_several_source_files | input.always_show_files)",
                selectInput(ns("source_files"), "source files",
                            choices = NULL, selectize = FALSE, size = 3
                ),
                ns = ns
              ),
              conditionalPanel(
-               condition = "input.tabs == 'man page' & (output.has_several_man_files | input.always_show_files)",
+               condition = "input.file_type == 'man' & (output.has_several_man_files | input.always_show_files)",
                selectInput(ns("man_files"), "man files",
                            choices = NULL, selectize = FALSE, size = 3
                ),
@@ -38,10 +39,23 @@ mod_code_explorer_ui <- function(id){
            )
     ),
     column(9,
-           tabsetPanel(id = ns("tabs"),
-                       tabPanel("test code", br(), htmlOutput(ns("test_code"))),
-                       tabPanel("source code", br(), htmlOutput(ns("source_code"))),
-                       tabPanel("man page", br(), htmlOutput(ns("man_page")))
+           div(
+             conditionalPanel(
+               condition = "input.file_type == 'test'",
+               htmlOutput(ns("test_code")),
+               ns = ns
+             ),
+             conditionalPanel(
+               condition = "input.file_type == 'source'",
+               htmlOutput(ns("source_code")),
+               ns = ns
+             ),
+             conditionalPanel(
+               condition = "input.file_type == 'man'",
+               htmlOutput(ns("man_page")),
+               ns = ns
+             ),
+             style = "height: 62vh"
            )
     )
   )
