@@ -39,7 +39,7 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
         showHelperMessage(message = glue::glue("Source code not available for {{{selected_pkg$name()}}}"))
       } else {
         div(
-            br(), br(),
+            br(),
             fluidRow(
               column(4,
                      wellPanel(
@@ -92,7 +92,7 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
     })
     
     is_file <- reactive({
-      length(input$dirtree) > 0 && isTRUE(attr(get_list_element(shinyTree::get_selected(input$dirtree, "slices")[[1]], isolate(nodes())), "sttype") == "file")
+      length(input$dirtree) > 0 && length(shinyTree::get_selected(input$dirtree, "slices")) > 0 && isTRUE(attr(get_list_element(shinyTree::get_selected(input$dirtree, "slices")[[1]], isolate(nodes())), "sttype") == "file")
     })
     output$is_file <- is_file
     outputOptions(output, "is_file", suspendWhenHidden = FALSE)

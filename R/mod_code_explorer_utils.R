@@ -123,3 +123,21 @@ get_files <- function(funcname, type = c("test", "source", "man"), ...) {
     man = get_man_files(funcname, ...)
   )
 }
+
+renderCode <- function(lines, hlindex) {
+  tags$table(class = "code-table",
+             tags$tbody(
+               lapply(seq_along(lines), function(i) {
+                 tags$tr(class = if (i %in% hlindex) "highlight" else "plain",
+                         tags$td(class = "number", i),
+                         tags$td(class = "code", tags$pre(class = "language-r", lines[i]))
+                 )
+               })
+             ),
+             tags$script(HTML("
+        document.querySelectorAll('.code pre').forEach(bl => {
+          hljs.highlightBlock(bl);
+        }); 
+      "))
+  )
+}

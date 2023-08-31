@@ -1,5 +1,8 @@
 /* code table formatting */
 
+table.code-table {
+  width: 100%;
+}
 
 table.code-table tbody {
   border-style: solid;

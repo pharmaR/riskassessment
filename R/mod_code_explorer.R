@@ -9,56 +9,7 @@
 #' @importFrom shiny NS tagList 
 mod_code_explorer_ui <- function(id){
   ns <- NS(id)
-  fluidRow(
-    column(3,
-           wellPanel(
-             selectInput(ns("exported_function"), "exported function", choices = NULL),
-             selectInput(ns("file_type"), "File Type", choices = c("Test Code" = "test", "Source Code" = "source", "Man Page" = "man")),
-             checkboxInput(ns("always_show_files"), "always show files", value = FALSE),
-             conditionalPanel(
-               condition = "input.file_type == 'test'",
-               selectInput(ns("test_files"), "test files",
-                           choices = NULL, selectize = FALSE, size = 15
-               ),
-               ns = ns
-             ),
-             conditionalPanel(
-               condition = "input.file_type == 'source' & (output.has_several_source_files | input.always_show_files)",
-               selectInput(ns("source_files"), "source files",
-                           choices = NULL, selectize = FALSE, size = 3
-               ),
-               ns = ns
-             ),
-             conditionalPanel(
-               condition = "input.file_type == 'man' & (output.has_several_man_files | input.always_show_files)",
-               selectInput(ns("man_files"), "man files",
-                           choices = NULL, selectize = FALSE, size = 3
-               ),
-               ns = ns
-             )
-           )
-    ),
-    column(9,
-           div(
-             conditionalPanel(
-               condition = "input.file_type == 'test'",
-               htmlOutput(ns("test_code")),
-               ns = ns
-             ),
-             conditionalPanel(
-               condition = "input.file_type == 'source'",
-               htmlOutput(ns("source_code")),
-               ns = ns
-             ),
-             conditionalPanel(
-               condition = "input.file_type == 'man'",
-               htmlOutput(ns("man_page")),
-               ns = ns
-             ),
-             style = "height: 62vh"
-           )
-    )
-  )
+  uiOutput(ns("func_explorer_ui"))
 }
 
 #' code_explorer Server Functions
@@ -71,12 +22,71 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
-    exported_functions <- eventReactive(pkgdir(), {
-      get_exported_functions(pkgdir())
+    output$func_explorer_ui <- renderUI({
+      # Lets the user know that a package needs to be selected.
+      if(identical(selected_pkg$name(), character(0))) {
+        showHelperMessage()
+      } else if (!file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")))) {
+        showHelperMessage(message = glue::glue("Source code not available for {{{selected_pkg$name()}}}"))
+      } else {
+        div(
+          br(),
+          fluidRow(
+            column(3,
+                   wellPanel(
+                     selectInput(ns("exported_function"), "Exported Function", choices = exported_functions()),
+                     selectInput(ns("file_type"), "File Type", choices = c("Test Code" = "test", "Source Code" = "source", "Man Page" = "man")),
+                     checkboxInput(ns("always_show_files"), "Always Show Files", value = FALSE),
+                     conditionalPanel(
+                       condition = "input.file_type == 'test'",
+                       selectInput(ns("test_files"), "Test Files",
+                                   choices = NULL, selectize = FALSE, size = 12
+                       ),
+                       ns = ns
+                     ),
+                     conditionalPanel(
+                       condition = "input.file_type == 'source' & (output.has_several_source_files | input.always_show_files)",
+                       selectInput(ns("source_files"), "Source Files",
+                                   choices = NULL, selectize = FALSE, size = 3
+                       ),
+                       ns = ns
+                     ),
+                     conditionalPanel(
+                       condition = "input.file_type == 'man' & (output.has_several_man_files | input.always_show_files)",
+                       selectInput(ns("man_files"), "Man Files",
+                                   choices = NULL, selectize = FALSE, size = 3
+                       ),
+                       ns = ns
+                     )
+                   )
+            ),
+            column(9,
+                   div(
+                     conditionalPanel(
+                       condition = "input.file_type == 'test'",
+                       htmlOutput(ns("test_code")),
+                       ns = ns
+                     ),
+                     conditionalPanel(
+                       condition = "input.file_type == 'source'",
+                       htmlOutput(ns("source_code")),
+                       ns = ns
+                     ),
+                     conditionalPanel(
+                       condition = "input.file_type == 'man'",
+                       htmlOutput(ns("man_page")),
+                       ns = ns
+                     ),
+                     style = "height: 62vh; overflow: auto; border: 1px solid var(--bs-border-color-translucent);"
+                   )
+            )
+          )
+        )
+      }
     })
     
-    observeEvent(exported_functions(), {
-      updateSelectInput(session, "exported_function", choices = exported_functions())
+    exported_functions <- eventReactive(pkgdir(), {
+      get_exported_functions(pkgdir())
     })
     
     parse_data <- eventReactive(exported_functions(), {
@@ -86,13 +96,14 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
       )
     })
     
+    test_files <- reactiveVal()
     source_files <- reactiveVal()
     man_files <- reactiveVal()
     observeEvent(input$exported_function, {
       req(input$exported_function)
-      test_files <- get_files(input$exported_function, "test", parse_data())
-      updateSelectInput(session, "test_files", choices = test_files,
-                        selected = if (!rlang::is_empty(test_files)) test_files[1] else NULL)
+      test_files(get_files(input$exported_function, "test", parse_data()))
+      updateSelectInput(session, "test_files", choices = test_files(),
+                        selected = if (!rlang::is_empty(test_files())) test_files()[1] else NULL)
       
       source_files(get_files(input$exported_function, "source", parse_data()))
       updateSelectInput(session, "source_files", choices = source_files(),
@@ -113,25 +124,8 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
     })
     outputOptions(output, "has_several_man_files", suspendWhenHidden = FALSE)
     
-    renderCode <- function(lines, hlindex) {
-      tags$table(class = "code-table",
-                 tags$tbody(
-                   lapply(seq_along(lines), function(i) {
-                     tags$tr(class = if (i %in% hlindex) "highlight" else "plain",
-                             tags$td(class = "number", i),
-                             tags$td(class = "code", tags$pre(class = "language-r", lines[i]))
-                     )
-                   })
-                 ),
-                 tags$script(HTML("
-        document.querySelectorAll('.code pre').forEach(bl => {
-          hljs.highlightBlock(bl);
-        }); 
-      "))
-      )
-    }
-    
     output$test_code <- renderUI({
+      if (rlang::is_empty(test_files())) return(HTML("No files to display"))
       req(input$test_files)
       lines <- readLines(file.path(pkgdir(), "tests", "testthat", input$test_files))
       highlight_index <- parse_data() %>% 
@@ -141,6 +135,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
     })
     
     output$source_code <- renderUI({
+      if (rlang::is_empty(source_files())) return(HTML("No files to display"))
       req(input$source_files)
       lines <- readLines(file.path(pkgdir(), "R", input$source_files))
       highlight_index <- parse_data() %>% 
@@ -150,6 +145,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
     })
     
     output$man_page <- renderUI({
+      if (rlang::is_empty(man_files())) return(HTML("No files to display"))
       req(input$man_files)
       out_dir <- tempdir()
       tools::Rd2HTML(file.path(pkgdir(), "man", input$man_files), out = file.path(out_dir, "man.html"))
