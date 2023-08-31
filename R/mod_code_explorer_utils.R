@@ -1,3 +1,12 @@
+#' Get Exported Functions
+#' 
+#' Scrapes NAMESPACE for exported functions and returns them as a list
+#' 
+#' @param pkgdir The package directory to evaluate
+#' 
+#' @return A character vector of the function names
+#' 
+#' @noRd
 get_exported_functions <- function(pkgdir) {
   s <- readLines(file.path(pkgdir, "NAMESPACE"))
   sexp <- s[grepl("export", s)]
@@ -7,6 +16,20 @@ get_exported_functions <- function(pkgdir) {
   sort(setdiff(sexp, simp))
 }
 
+#' Get Parsed Data
+#' 
+#' Parses the files to determine which contain the function(s) of interest
+#' 
+#' @param type The type of files to parse
+#' @param pkgdir The package directory
+#' @param funcnames The list of functions to evaluate
+#' 
+#' @return A `tibble` object containing the type of file, file name, function,
+#'   and line the function appears on
+#' 
+#' @noRd
+#' 
+#' @importFrom utils getParseData
 get_parse_data <- function(type = c("test", "source"), pkgdir, funcnames = NULL) {
   type <- match.arg(type)
   dirpath <- switch (type,
@@ -14,7 +37,7 @@ get_parse_data <- function(type = c("test", "source"), pkgdir, funcnames = NULL)
     source = file.path(pkgdir, "R")
   )
   filenames <- list.files(dirpath, ".+\\.[R|r]$")
-  bind_rows(lapply(filenames, function(filename) {
+  dplyr::bind_rows(lapply(filenames, function(filename) {
     d <- parse(file.path(dirpath, filename)) %>% 
       utils::getParseData() %>% 
       dplyr::filter(token %in% c("SYMBOL_FUNCTION_CALL", "SYMBOL"))
@@ -33,6 +56,14 @@ get_parse_data <- function(type = c("test", "source"), pkgdir, funcnames = NULL)
   }))
 }
 
+#' Get test files
+#' 
+#' Returns the test files from the parsed data corresponding to the function of interest
+#' 
+#' @param funcname The name of the function to evaluate
+#' @param parse_data The parsed data returns from `get_parse_data()`
+#' 
+#' @noRd
 get_test_files <- function(funcname, parse_data) {
   parse_data %>%
     dplyr::filter(type == "test",
@@ -41,6 +72,14 @@ get_test_files <- function(funcname, parse_data) {
     unique()
 }
 
+#' Get source files
+#' 
+#' Returns the source files from the parsed data corresponding to the function of interest
+#' 
+#' @param funcname The name of the function to evaluate
+#' @param parse_data The parsed data returns from `get_parse_data()`
+#' 
+#' @noRd
 get_source_files <- function(funcname, parse_data) {
   parse_data %>%
     dplyr::filter(type == "source", 
@@ -49,6 +88,14 @@ get_source_files <- function(funcname, parse_data) {
     unique()
 }
 
+#' Get man files
+#' 
+#' Returns the man files from the package directory corresponding to the function of interest
+#' 
+#' @param funcname The name of the function to evaluate
+#' @param pkgdir The package directory
+#' 
+#' @noRd
 get_man_files <- function(funcname, pkgdir) {
   man_files <- list.files(file.path(pkgdir, "man"), ".+\\.Rd$")
   i <- sapply(man_files, function(f) {
@@ -58,6 +105,15 @@ get_man_files <- function(funcname, pkgdir) {
   man_files[i]
 }
 
+#' Get file
+#' 
+#' A wrapper function to get the different types of files
+#' 
+#' @param funcname The name of the function to evaluate
+#' @param type The type of files to retrieve
+#' @param ... Additional arguments passed to the get files function type
+#' 
+#' @noRd
 get_files <- function(funcname, type = c("test", "source", "man"), ...) {
   type <- match.arg(type)
   switch(

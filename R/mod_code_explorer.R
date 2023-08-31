@@ -50,6 +50,9 @@ mod_code_explorer_ui <- function(id){
 #' code_explorer Server Functions
 #'
 #' @noRd 
+#' 
+#' @importFrom tools Rd2HTML
+#' @importFrom purrr map_dfr
 mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), creating_dir = reactiveVal(TRUE), user, credentials){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
@@ -63,9 +66,9 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
     })
     
     parse_data <- eventReactive(exported_functions(), {
-      bind_rows(
-        get_parse_data("test", pkgdir(), exported_functions()),
-        get_parse_data("source", pkgdir(), exported_functions())
+      purrr::map_dfr(
+        c("test", "source"),
+        ~ get_parse_data(.x, pkgdir(), exported_functions())
       )
     })
     
@@ -134,8 +137,9 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
     
     output$man_page <- renderUI({
       req(input$man_files)
-      tools::Rd2HTML(file.path(pkgdir(), "man", input$man_files), out = "man.html")
-      HTML(paste(readLines("man.html"), collapse = "\n"))
+      out_dir <- tempdir()
+      tools::Rd2HTML(file.path(pkgdir(), "man", input$man_files), out = file.path(out_dir, "man.html"))
+      HTML(paste(readLines(file.path(out_dir, "man.html")), collapse = "\n"))
     })
     
   })
