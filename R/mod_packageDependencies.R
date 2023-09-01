@@ -37,6 +37,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       dbSelect("SELECT name, version, score FROM package")
     })
     
+    cards <- reactive({
+      req(loaded2_db())
+      build_dep_cards(data = loaded2_db())
+    }) %>% shiny::bindCache(changes()) %>% shiny::bindEvent(changes())
+    
     # used for adding action buttons to data_table
     shinyInput <- function(FUN, len, id, ...) {
       inputs <- character(len)
@@ -160,9 +165,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         showHelperMessage()
       } else {
         req(depends())
-        cards <- reactive({
-          build_dep_cards(data = loaded2_db())
-        }) %>% shiny::bindCache(loaded2_db()) %>% shiny::bindEvent(loaded2_db())
         # Create metric grid card.
         metricGridServer(id = 'metricGrid', metrics = cards) 
         
