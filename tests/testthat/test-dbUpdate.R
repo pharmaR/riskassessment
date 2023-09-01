@@ -12,19 +12,19 @@ test_that("both dbUpdate and dbSelect work", {
     app_db_loc
   )
   
-  con <- DBI::dbConnect(RSQLite::SQLite(), app_db_loc)
+  con <- RSQLite::dbConnect(RSQLite::SQLite(), app_db_loc)
   
   # 1. table 'package' exists?
-  testthat::expect_true(DBI::dbExistsTable(con, "package"))
+  testthat::expect_true(RSQLite::dbExistsTable(con, "package"))
   
   # executing each query
-  #col_list <- purrr::map(.x = tbls, .f =DBI::dbListFields, conn = con)
-  cols <- DBI::dbListFields(con, "package")
+  #col_list <- purrr::map(.x = tbls, .f =RSQLite::dbListFields, conn = con)
+  cols <- RSQLite::dbListFields(con, "package")
   
   # 2. description is the 5th column in table 'package'
   testthat::expect_equal(5, which(cols == "description"))
   
-  DBI::dbDisconnect(con)
+  RSQLite::dbDisconnect(con)
   
   query <- "select * FROM [package] limit 1"
   tbl1 <- dbSelect(query, app_db_loc)

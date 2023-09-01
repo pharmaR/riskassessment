@@ -42,7 +42,6 @@ Imports:
     bslib (>= 0.3.0),
     config (>= 0.3.1),
     cranlogs,
-    DBI,
     desc,
     dplyr,
     DT,

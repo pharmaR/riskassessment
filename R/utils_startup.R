@@ -5,7 +5,7 @@
 #' @param db_name A string denoting the name of the database
 #' 
 #' @import dplyr
-#' @importFrom DBI dbConnect dbDisconnect dbSendStatement dbClearResult
+#' @importFrom RSQLite dbConnect dbDisconnect dbSendStatement dbClearResult
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
 #' @keywords internal
@@ -15,7 +15,7 @@ create_db <- function(db_name){
     stop("db_name must follow SQLite naming conventions (e.g. 'database.sqlite')")
   
   # Create an empty database.
-  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
+  con <- RSQLite::dbConnect(RSQLite::SQLite(), db_name)
   
   # Set the path to the queries.
   path <- app_sys("sql_queries") #file.path('sql_queries')
@@ -39,20 +39,20 @@ create_db <- function(db_name){
   sapply(queries, function(x){
     
     tryCatch({
-      rs <- DBI::dbSendStatement(
+      rs <- RSQLite::dbSendStatement(
         con,
         paste(scan(x, sep = "\n", what = "character"), collapse = ""))
     }, error = function(err) {
       message <- paste("dbSendStatement",err)
       message(message, .loggit = FALSE)
       loggit::loggit("ERROR", message)
-      DBI::dbDisconnect(con)
+      RSQLite::dbDisconnect(con)
     })
     
-    DBI::dbClearResult(rs)
+    RSQLite::dbClearResult(rs)
   })
   
-  DBI::dbDisconnect(con)
+  RSQLite::dbDisconnect(con)
   invisible(db_name)
 }
 
@@ -66,7 +66,7 @@ create_db <- function(db_name){
 #' @param admin_role A string denoting the initialized privileges of the admin
 #' 
 #' @import dplyr
-#' @importFrom DBI dbConnect dbDisconnect
+#' @importFrom RSQLite dbConnect dbDisconnect
 #' @importFrom RSQLite SQLite
 #' @importFrom shinymanager read_db_decrypt write_db_encrypt
 #' @keywords internal
@@ -95,7 +95,7 @@ create_credentials_db <- function(db_name, admin_role = ""){
   )
   
   # set pwd_mngt$must_change to TRUE
-  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
+  con <- RSQLite::dbConnect(RSQLite::SQLite(), db_name)
   pwd <- shinymanager::read_db_decrypt(
     con, name = "pwd_mngt",
     passphrase = passphrase) %>%
@@ -108,10 +108,10 @@ create_credentials_db <- function(db_name, admin_role = ""){
     name = "pwd_mngt",
     passphrase = passphrase
   )
-  DBI::dbDisconnect(con)
+  RSQLite::dbDisconnect(con)
   
   # update expire date here to current date + 365 days
-  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
+  con <- RSQLite::dbConnect(RSQLite::SQLite(), db_name)
   dat <- shinymanager::read_db_decrypt(con, name = "credentials", passphrase = passphrase) %>%
     dplyr::mutate(expire = as.character(get_Date() + 365))
   
@@ -122,7 +122,7 @@ create_credentials_db <- function(db_name, admin_role = ""){
     passphrase = passphrase
   )
   
-  DBI::dbDisconnect(con)
+  RSQLite::dbDisconnect(con)
   invisible(db_name)
 }
 

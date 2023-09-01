@@ -21,7 +21,7 @@ reweightViewUI <- function(id) {
 #' @import dplyr
 #' @importFrom DT datatable formatStyle styleEqual renderDataTable
 #' @importFrom shinyjs enable disable delay
-#' @importFrom DBI dbConnect dbDisconnect
+#' @importFrom RSQLite dbConnect dbDisconnect
 #' @importFrom RSQLite SQLite sqliteCopyDatabase
 #' 
 #' @keywords internal
@@ -334,11 +334,11 @@ reweightViewServer <- function(id, user, decision_list, credentials, trigger_eve
         glue::glue("datase_backup-{get_Date()}.sqlite")
       },
       content = function(file) {
-        con <- DBI::dbConnect(RSQLite::SQLite(), golem::get_golem_options('assessment_db_name'))
-        cbk <- DBI::dbConnect(RSQLite::SQLite(), file)
+        con <- RSQLite::dbConnect(RSQLite::SQLite(), golem::get_golem_options('assessment_db_name'))
+        cbk <- RSQLite::dbConnect(RSQLite::SQLite(), file)
         RSQLite::sqliteCopyDatabase(con, cbk)
-        DBI::dbDisconnect(con)
-        DBI::dbDisconnect(cbk)
+        RSQLite::dbDisconnect(con)
+        RSQLite::dbDisconnect(cbk)
         
         showModal(tags$div(
           id = "confirmation_id",
