@@ -132,7 +132,8 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
         filter(file == input$test_files & func == input$exported_function) %>% 
         pull(line)
       renderCode(lines, highlight_index)
-    })
+    }) %>%
+      bindEvent(input$test_files, ignoreNULL = FALSE)
     
     output$source_code <- renderUI({
       if (rlang::is_empty(source_files())) return(HTML("No files to display"))
@@ -142,7 +143,8 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
         filter(file == input$source_files & func == input$exported_function) %>% 
         pull(line)
       renderCode(lines, highlight_index)
-    })
+    }) %>%
+      bindEvent(input$source_files, ignoreNULL = FALSE)
     
     output$man_page <- renderUI({
       if (rlang::is_empty(man_files())) return(HTML("No files to display"))
@@ -150,7 +152,8 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
       out_dir <- tempdir()
       tools::Rd2HTML(file.path(pkgdir(), "man", input$man_files), out = file.path(out_dir, "man.html"))
       HTML(paste(readLines(file.path(out_dir, "man.html")), collapse = "\n"))
-    })
+    }) %>%
+      bindEvent(input$man_files, ignoreNULL = FALSE)
     
   })
 }
