@@ -37,11 +37,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       dbSelect("SELECT name, version, score FROM package")
     })
     
-    cards <- reactive({
-      req(loaded2_db())
-      build_dep_cards(data = loaded2_db())
-    }) %>% shiny::bindCache(changes()) %>% shiny::bindEvent(changes())
-    
     # used for adding action buttons to data_table
     shinyInput <- function(FUN, len, id, ...) {
       inputs <- character(len)
@@ -101,6 +96,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
       suggests(pkgref()$suggests[[1]] %>% dplyr::as_tibble())
     })
+    
+    cards <- reactive({
+      req(pkgref())
+      build_dep_cards(data = dplyr::bind_rows(depends(), suggests()), loaded = loaded2_db()$name)
+    }) %>% shiny::bindCache(pkgref()) %>% shiny::bindEvent(pkgref())
     
     pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), depends(), toggled()), {
       req(selected_pkg$name())
@@ -172,8 +172,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
           shiny::
             tagList(
               div(id = "dep_infoboxes", metricGridUI(NS(id, 'metricGrid'))),
-              br(),
-              h4(glue::glue("Package Dependencies: {nrow(depends())} Suggests: {nrow(suggests())}"), style = "text-align: left;"),
               br(),
               fluidRow(
                 column(4, 

@@ -786,6 +786,7 @@ get_time <- function() {
 #' The 'Build Dependency Cards' function
 #' 
 #' @param data a data.frame
+#' @param loaded a vector of package names loaded to db 
 #' 
 #' @import dplyr
 #' @importFrom glue glue
@@ -793,7 +794,7 @@ get_time <- function() {
 #' @importFrom rlang is_empty
 #' @keywords internal
 #' 
-build_dep_cards <- function(data){
+build_dep_cards <- function(data, loaded){
   
   cards <- dplyr::tibble(
     name = character(),
@@ -809,36 +810,28 @@ build_dep_cards <- function(data){
   if (nrow(data) == 0)
     return(cards)
   
-  # Get the Count (and %) of pkgs by Type of dependency
-  blob_df <- purrr::map_df(data$name, ~get_assess_blob(., db_name = golem::get_golem_options('assessment_db_name')))
-  
-  # remove any dependencies rows with 'pkg_metric_error' in them, if they exist
-  cls <- purrr::map(blob_df$dependencies, ~attr(., "class"))
-  bad_rows <- suppressWarnings(stringr::str_which(as.vector(cls), stringr::fixed("pkg_metric_error")))
-  if(rlang::is_empty(bad_rows)) {
-    deps <- as.data.frame(bind_rows(as.vector(blob_df$dependencies)), fix.empty.names = TRUE)
-  } else {
-    deps <- as.data.frame(bind_rows(as.vector(blob_df$dependencies[-bad_rows])), fix.empty.names = TRUE)
-  }
-  sugg <- as.data.frame(bind_rows(as.vector(blob_df$suggests)))
-  
-  both <- bind_rows(deps, sugg) %>% 
-    mutate(package = stringr::str_replace(package, "\n", "")) %>%
-    mutate(name = stringr::str_extract(package, "\\w+")) %>% 
-    group_by(type) %>% 
-    distinct(name, .keep_all = TRUE) %>% 
-    ungroup() %>%
+  both <- data %>% 
+    mutate(package = stringr::str_replace(package, "\n", "")) %>% 
+    mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")) %>% 
     mutate(base = if_else(name %in% c(rownames(installed.packages(priority = "base"))), "Base", "Tidyverse")) %>% 
     mutate(base = factor(base, levels = c("Base", "Tidyverse"), labels = c("Base", "Tidyverse"))) %>% 
-    mutate(type = factor(type, levels = c("Imports", "Depends", "LinkingTo", "Suggests"), ordered = TRUE))
-  
-  # Get the Number of packages in the db
+    mutate(type = factor(type, levels = c("Imports", "Depends", "LinkingTo", "Suggests"), ordered = TRUE)) %>%  
+    mutate(upld = if_else(name %in% loaded, 1, 0)) 
+
+upld_cat_rows <-
+  both %>%
+  summarize(upld_cat_sum = sum(upld)) %>%
+  mutate(upld_cat_pct = 100 * (upld_cat_sum / nrow(both)),
+         upld_cat_disp = glue::glue('{upld_cat_sum} ({format(upld_cat_pct, digits = 1)}%)')) %>%
+  pull(upld_cat_disp) 
+
+  # Get the Number of uploaded dependencies in the db
   cards <- cards %>%
     dplyr::add_row(
       name = 'pkg_cnt',
-      title = 'Dependency Count',
-      desc = 'Number of Unique Dependencies',
-      value = paste(nrow(both)),
+      title = 'Dependencies Uploaded',
+      desc = 'Number of dependencies uploaded to db',
+      value = upld_cat_rows,
       succ_icon = 'upload',
       icon_class = "text-info",
       is_perc = 0,

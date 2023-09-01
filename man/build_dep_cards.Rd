@@ -4,10 +4,12 @@
 \alias{build_dep_cards}
 \title{The 'Build Dependency Cards' function}
 \usage{
-build_dep_cards(data)
+build_dep_cards(data, loaded)
 }
 \arguments{
 \item{data}{a data.frame}
+
+\item{loaded}{a vector of package names loaded to db}
 }
 \description{
 The 'Build Dependency Cards' function
