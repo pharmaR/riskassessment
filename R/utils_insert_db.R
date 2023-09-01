@@ -146,6 +146,8 @@ upload_package_to_db <- function(name, version, title, description,
 #' @import dplyr
 #' @importFrom riskmetric pkg_ref pkg_assess pkg_score
 #' @importFrom glue glue 
+#' @importFrom desc desc_get_list
+#' @importFrom tools package_dependencies
 #' 
 #' @returns nothing
 #' @noRd
@@ -181,8 +183,9 @@ insert_riskmetric_to_db <- function(pkg_name,
     loggit::loggit("WARN", paste("Package", pkg_name, "not found."))
     return()
   }
-  
+
   assessment_serialized <- data.frame(pkg_assess = I(lapply(riskmetric_assess, serialize, connection = NULL)))
+  
   # Insert all the metrics (columns of class "pkg_score") into the db.
   # TODO: Are pkg_score and pkg_metric_error mutually exclusive?
   for(row in 1:nrow(metric_weights_df)) {
@@ -211,6 +214,33 @@ insert_riskmetric_to_db <- function(pkg_name,
       params = list(pkg_assess = assessment_serialized[metric$name,])
     )
   }
+
+  # get suggests and add it to package_metrics table
+  src_dir <- file.path("source", pkg_name)
+  if (dir.exists(src_dir)) {
+    desc_file <- glue::glue("source/{pkg_name}/DESCRIPTION")
+    sug_vctr <- desc::desc_get_list(key = 'Suggests', file = desc_file) %>% sort()
+  } else {
+    sug_vctr <- unlist(tools::package_dependencies(pkg_name, available.packages(contrib.url(repos = "http://cran.us.r-project.org")),
+                       which=c("Suggests"), recursive=FALSE)) %>% unname() %>% sort()
+  }
+  
+  tbl_suggests <- tibble("package" = sug_vctr, type = "Suggests") 
+  attr(tbl_suggests, "class") <- c('pkg_metric_dependencies', 'pkg_metric', 'data.frame')
+  lst_suggests <- list(suggests = tbl_suggests)
+  mostattributes(lst_suggests) <- attributes(riskmetric_assess$dependencies)
+  attr(lst_suggests, "label") <- "Package Suggests"
+  
+  suggests_serialized   <- data.frame(pkg_assess = I(lapply(list("suggests" = lst_suggests), serialize, connection = NULL)))
+  
+  metric_id <- dbSelect("select id from metric where name = 'suggests'", db_name)
+  metric_value <- as.character(length(sug_vctr))
+  
+  dbUpdate(
+    "INSERT INTO package_metrics (package_id, metric_id, value, encode) 
+      VALUES ({package_id}, {metric_id$id}, {metric_value}, $pkg_assess)", db_name,
+    params = list(pkg_assess = suggests_serialized["suggests",])
+  )
   
   dbUpdate(
     "UPDATE package

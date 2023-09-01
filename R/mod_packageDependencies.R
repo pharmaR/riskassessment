@@ -22,8 +22,9 @@ packageDependenciesUI <- function(id) {
 #' @importFrom purrr map_df
 #' @importFrom rlang warn
 #' @importFrom shiny removeModal showModal tagList
-#' @importFrom shinyjs click
+#' @importFrom shinyjs click 
 #' @importFrom stringr str_extract str_replace
+#' @importFrom shinyWidgets materialSwitch
 #'
 #' @keywords internal
 #'
@@ -51,11 +52,13 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     }
     
     tabready <- reactiveVal(value = NULL)
-    depends <- reactiveVal(value = NULL)
-    revdeps <- reactiveVal(value = NULL)
-    rev_pkg <- reactiveVal(value = NULL)
+    depends  <- reactiveVal(value = NULL)
+    suggests <- reactiveVal(value = NULL)
+    revdeps  <- reactiveVal(value = NULL)
+    rev_pkg  <- reactiveVal(value = NULL)
+    toggled  <- reactiveVal(value = 0L)
     pkg_updates <- reactiveValues()
-    
+
     observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
       req(selected_pkg$name())
       req(selected_pkg$name() != "-")
@@ -65,6 +68,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       } else {
         tabready(0L)
       }
+     
     })
     
     pkgref <- eventReactive(list(selected_pkg$name(), changes(), tabready()), {
@@ -90,31 +94,46 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         }
       )
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
+      suggests(pkgref()$suggests[[1]] %>% dplyr::as_tibble())
     })
     
-    pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), depends()), {
+    pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), depends(), toggled()), {
       req(selected_pkg$name())
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
       req(depends())
-      
+      req(suggests())
+
       if (nrow(depends()) == 0) {
         # packages like curl, magrittr will appear here instead of in tryCatch() above
         msg <- paste("Detailed dependency information is not available for package", selected_pkg$name())
         rlang::warn(msg)
-        dplyr::tibble(package = character(0), type = character(0), name = character(0))
+        if (toggled() == 1L) {
+        return(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
+          } else {
+        pkginfo <- suggests() %>%  as_tibble() 
+          } 
       } else {
-        pkginfo <- depends() %>%
-          as_tibble() %>%
-          mutate(package = stringr::str_replace(package, "\n", "")) %>%
-          mutate(name = stringr::str_extract(package, "\\w+"))
+        pkginfo <- dplyr::bind_rows(depends(), suggests()) %>% as_tibble()
+      }
+      pkginfo <- pkginfo %>% 
+          mutate(package = stringr::str_replace(package, "\n", " ")) %>%
+          # a syntactically valid name:
+          # consists of letters, numbers and the dot or underline characters 
+          # and starts with a letter or the dot not followed by a number. 
+          # Names such as '".2way"' are not valid
+          mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
+        
+      if(toggled() == 1L) 
+        pkginfo <- filter(pkginfo, type != "Suggests")
         
       purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), cran_pkgs)) %>% 
         right_join(pkginfo, by = "name") %>% 
         select(package, type, name, version, score) %>%
+        arrange(name, type) %>% 
         distinct()
-      }
-    })
+      
+    }, ignoreInit = TRUE)
     
     data_table <- eventReactive(pkg_df(), {
       cbind(
@@ -135,25 +154,34 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     
     # Render Output UI for Package Dependencies.
     output$package_dependencies_ui <- renderUI({
-      req(depends())
       
       # Lets the user know that a package needs to be selected.
       if (identical(selected_pkg$name(), character(0))) {
         showHelperMessage()
       } else {
+        req(depends())
         fluidPage(
           shiny::
             tagList(
               br(),
-              h4(glue::glue("Package Dependencies: {nrow(depends())}"), style = "text-align: left;"),
+              h4(glue::glue("Package Dependencies: {nrow(depends())} Suggests: {nrow(suggests())}"), style = "text-align: left;"),
               br(),
               fluidRow(
-                column(6, 
+                column(4, 
                  tags$strong(
                   glue::glue("First-order dependencies for package: ", {selected_pkg$name()})
                  )
                 ),
-                column(3,
+                column(2,
+                 shinyWidgets::materialSwitch(
+                   inputId =  ns("hide_suggests"),
+                   label = "Hide Suggests",
+                   value = toggled(),
+                   inline = TRUE,
+                   status = "success"
+                 )
+                ),
+                column(2,
                  if (pkg_updates$render_upload) {
                    actionButton(
                      inputId =  ns("update_all_packages"),
@@ -173,9 +201,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
               fluidRow(
                 column(
                   width = 8,
-                  if (nrow(depends()) == 0) {
-                    renderText("No dependency information is available")
-                  } else {
                     DT::renderDataTable(server = FALSE, {
                       # Hiding name from DT table. target contains index for "name"
                       # The - 1 is because js uses 0 index instead of 1 like R
@@ -228,7 +253,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                       ) %>%
                         DT::formatStyle(names(data_table()), textAlign = "center")
                     })
-                  } # if_else
                 ) # column
               ), # fluidRow
               br(),
@@ -344,9 +368,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       } else {
         pkg_updates$render_upload <- FALSE
       }
-
     })
-
+    
     observeEvent(input$update_all_packages, {
       req(pkg_df(), loaded2_db(), pkg_updates)
 
@@ -364,5 +387,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         )
       )
     })
+
+    observeEvent(input$hide_suggests, {
+      req(pkg_df(), loaded2_db())
+      if(input$hide_suggests == TRUE | toggled() == 1L) toggled(1L - isolate(toggled()))
+    })
+    
   }) # moduleServer
 }
