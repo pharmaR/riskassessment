@@ -2361,20 +2361,6 @@
       ],
       "Hash": "4c00b64347509091f39c01c52f8d9e4c"
     },
-    "shinydashboard": {
-      "Package": "shinydashboard",
-      "Version": "0.7.2",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "R",
-        "htmltools",
-        "promises",
-        "shiny",
-        "utils"
-      ],
-      "Hash": "e418b532e9bb4eb22a714b9a9f1acee7"
-    },
     "shinyjs": {
       "Package": "shinyjs",
       "Version": "2.1.0",

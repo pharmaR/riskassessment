@@ -61,7 +61,6 @@ Imports:
     RSQLite,
     rvest,
     shiny (>= 1.7.1),
-    shinydashboard,
     shinyjs,
     shinymanager,
     shinyTree,
