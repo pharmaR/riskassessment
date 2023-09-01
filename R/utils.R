@@ -809,19 +809,6 @@ build_dep_cards <- function(data){
   if (nrow(data) == 0)
     return(cards)
   
-  # Get the Number of packages in the db
-  cards <- cards %>%
-    dplyr::add_row(
-      name = 'pkg_cnt',
-      title = 'Package Count',
-      desc = 'Number of Packages Uploaded to DB',
-      value = paste(nrow(data)),
-      succ_icon = 'upload',
-      icon_class = "text-info",
-      is_perc = 0,
-      is_url = 0
-    )
-  
   # Get the Count (and %) of pkgs by Type of dependency
   blob_df <- purrr::map_df(data$name, ~get_assess_blob(., db_name = golem::get_golem_options('assessment_db_name')))
   
@@ -845,6 +832,18 @@ build_dep_cards <- function(data){
     mutate(base = factor(base, levels = c("Base", "Tidyverse"), labels = c("Base", "Tidyverse"))) %>% 
     mutate(type = factor(type, levels = c("Imports", "Depends", "LinkingTo", "Suggests"), ordered = TRUE))
   
+  # Get the Number of packages in the db
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'pkg_cnt',
+      title = 'Dependency Count',
+      desc = 'Number of Unique Dependencies',
+      value = paste(nrow(both)),
+      succ_icon = 'upload',
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
   # base R replacement for tidyr::complete(type)
   x <- tibble("type" = levels(both$type))
   y <- full_join(x, both, by = "type") %>% 
