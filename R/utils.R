@@ -875,9 +875,10 @@ upld_cat_rows <-
     group_by(base) %>%
     summarize(base_cat_sum = sum(cnt)) %>%
     ungroup() %>%
+    mutate(base_cat_pct = 100 * (base_cat_sum / nrow(both)),
+           base_cat_disp = glue::glue('{base}: {base_cat_sum} ({format(base_cat_pct, digits = 1)}%)')) %>%
     filter(base == "Base") %>% 
-    mutate(base_cat_pct = format(100 * (base_cat_sum / nrow(both)), digits = 2)) %>% 
-    pull(base_cat_pct) %>%
+    pull(base_cat_disp) %>%
     paste(., collapse = "\n")
 
   cards <- cards %>%
@@ -888,7 +889,7 @@ upld_cat_rows <-
       value = base_cat_rows,
       succ_icon = 'boxes-stacked',
       icon_class = "text-info",
-      is_perc = 1,
+      is_perc = 0,
       is_url = 0
     )
   
