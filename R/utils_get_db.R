@@ -163,6 +163,7 @@ get_se_comments <- function(pkg_name, db_name = golem::get_golem_options('assess
 #' necessary columns for Cards UI
 #' 
 #' @param pkg_name character name of package
+#' @param metric_class character, corresponding to values desired from the metric table's metric_class var
 #' @param db_name character name (and file path) of the database
 #' 
 #' @import dplyr
