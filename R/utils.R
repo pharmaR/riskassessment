@@ -25,29 +25,74 @@ showHelperMessage <- function(message = "Please select a package"){
 #' @keywords internal
 #'
 metric_gauge <- function(score) { # could add id arg here
-  tagList(
+  
+  tag_obj <- tagList(
     div(style = "width: 78px; text-align:center;",
         div(
-          tags$label(style = "font-size:35px", # `for` = id,
-                     if(toupper(score) %in% c("NA", "NULL")) "NA" else as.character(as.numeric(score) *.01)
+          tags$label(style = "font-size:32px", # `for` = id,
+                     if(toupper(score) %in% c("NA", "NULL")) "NA" else {
+                       # flip the label display of the score to mimic the package score...
+                       HTML(case_when(
+                         round(as.numeric(score), 2) == 0 ~ "1 &#10060;",
+                         round(as.numeric(score), 2) == 1 ~ "0 <span style='color:#009000;'>&#10004;</span>",
+                         TRUE ~ as.character(1 - round(as.numeric(score), 2))
+                       ))
+                     }
           )
         ),
         div(
           tags$meter( # id = id,
             min = 0,
-            max = 100,
-            optimum = 0,
-            low = 33,
-            high = 67,
+            max = 1,
+            optimum = 1,
+            low = .3333,
+            high = .6666,
             value = 
               if(toupper(score) %in% c("NA", "NULL")) 0 
-            else ifelse(as.numeric(score) %in% 0:8, 8, as.numeric(score)),
+            else ifelse(between(round(as.numeric(score), 2), 0, .08), .08, round(as.numeric(score), 2)),
             style = "height: 30px; width: 100%;"
           )
         )
     )
-  )
+  ) %>% htmltools::renderTags() # convert tagList to HTML because we can't decode '&'
+  
+  # Decode "&amp;" and convert back to HTML
+  tag_obj["html"] %>% stringr::str_replace_all("&amp;", "&") %>% HTML
 }
+# old
+# metric_gauge <- function(score) { # could add id arg here
+#   tagList(
+#     div(style = "width: 78px; text-align:center;",
+#         div(
+#           tags$label(style = "font-size:35px", # `for` = id,
+#             if(toupper(score) %in% c("NA", "NULL")) "NA" else {
+#               case_when(
+#                 as.numeric(score) == 0 ~ '0 &#9989;',
+#                 as.numeric(score) == 100 ~ '1 &#10060;',
+#                 TRUE ~ as.character(as.numeric(score) *.01)
+#               )
+#             }
+#           )
+#         ),
+#         div(
+#           tags$meter( # id = id,
+#             min = 0,
+#             max = 100,
+#             optimum = 0,
+#             low = 33,
+#             high = 67,
+#             value = 
+#               if(toupper(score) %in% c("NA", "NULL")) 0 
+#             else ifelse(as.numeric(score) %in% 0:8, 8, as.numeric(score)),
+#             style = "height: 30px; width: 100%;"
+#           )
+#         )
+#     )
+#   ) %>% htmltools::renderTags() # convert tagList to HTML because we can't decode '&'
+#   
+#   # Decode "&amp;" and convert back to HTML
+#   tag_obj["html"] %>% stringr::str_replace_all("&amp;", "&") %>% HTML
+# }
 
 #' Get the package general information from CRAN/local
 #' 

@@ -210,7 +210,7 @@ insert_riskmetric_to_db <- function(pkg_name,
     
     metric_score <- case_when(
       is.na(riskmetric_score[[metric$name]][1]) ~ "NA",
-      TRUE ~ as.character(100 * (1 - round(riskmetric_score[[metric$name]][1], 2))) # rounding
+      TRUE ~ as.character(riskmetric_score[[metric$name]][1]) # rounding
     )
     
     dbUpdate(
