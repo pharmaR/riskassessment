@@ -58,6 +58,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     rev_pkg  <- reactiveVal(value = NULL)
     toggled  <- reactiveVal(value = 0L)
     pkg_updates <- reactiveValues()
+    cards    <- reactiveVal(value = NULL)
 
     observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
       req(selected_pkg$name())
@@ -95,12 +96,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       )
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
       suggests(pkgref()$suggests[[1]] %>% dplyr::as_tibble())
+      cards(build_dep_cards(data = dplyr::bind_rows(depends(), suggests()), loaded = loaded2_db()$name))
     })
-    
-    cards <- reactive({
-      req(pkgref())
-      build_dep_cards(data = dplyr::bind_rows(depends(), suggests()), loaded = loaded2_db()$name)
-    }) %>% shiny::bindEvent(pkgref())
     
     pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), depends(), toggled()), {
       req(selected_pkg$name())
