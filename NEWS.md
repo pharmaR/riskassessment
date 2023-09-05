@@ -1,7 +1,9 @@
 # riskassessment (development version)
 * Fixed tests showing "Package Downloads" community usage card as non-metric (#621)
 * Adding "Suggests" pkgs to Dependencies tab (#624)
-* Started showing `metric_score`s for each assessment's card, using html meter
+* Migrated from `{jsTreeR}` to `{shinyTree}` (#585)
+* Fix bug with the logo's hyperlink not functioning in the expected zone (#633)
+* Started showing `metric_score`s for each assessment's card, using html meter (#634)
 
 # riskassessment 2.0.0
 
