@@ -15,29 +15,34 @@ mod_pkg_explorer_ui <- function(id){
     conditionalPanel(
         condition = "output.show_tree",
             br(),
+        introJSUI(NS(id, "introJS")),
             h4("File Browser", style = "text-align: center;"),
             br(), br(),
             fluidRow(
                 column(4,
+                       div(
+                         id = "file_explorer_jstree",
                    wellPanel(
                      jsTreeR::jstreeOutput(ns("dirtree"))
-                   )
+                   ))
                 ),
                 column(8,
                  conditionalPanel(
                    condition = "output.is_child",
+                   div(id = "file_explorer_viewer",
                    shinyAce::aceEditor(ns("editor"), value = "", height = "62vh",
                                        mode = "txt", readOnly = TRUE, theme = "tomorrow",
                                        fontSize = 14, wordWrap = FALSE, showLineNumbers = FALSE,
                                        highlightActiveLine = TRUE, tabSize = 2, showInvisibles = FALSE
-                                                           ),
+                                                           )),
                    htmlOutput(ns("filepath")),
                    ns = ns
                  )
                )
               ),
             br(), br(),
-            uiOutput(ns("comments_for_se")),
+        div(id = "file_explorer_comments",
+            uiOutput(ns("comments_for_se"))),
         ns = ns
       ),
     uiOutput(ns("pkg_explorer_ui")),
@@ -143,6 +148,8 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
       }
       shinyAce::updateAceEditor(session, "editor", value = s, mode = e)
     })
+    
+    introJSServer("introJS", text = reactive(package_explorer_steps), user, credentials)
     
     output$filepath <- renderUI({
       s <- if (length(input$dirtree_selected) > 0 && input$dirtree_selected[[1]]$type == "child")

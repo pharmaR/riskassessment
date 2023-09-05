@@ -72,6 +72,16 @@ upload_pkg_comp <-  data.frame(
       position = c("bottom", "top")
 )
 
+# Package Explorer
+package_explorer_steps <-  data.frame(
+  element = c("#package_explorer_jstree", "#package_explorer_viewer","#package_explorer_comments"),
+  intro = c(
+    "Explore the file tree on selecting a package",
+    "File viewer on selecting a file",
+    "Enter comments for a file"
+  ),
+  position = c("right", "right","top")
+)
 
 # Maintenance metrics.
 mm_steps <- 
