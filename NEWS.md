@@ -1,5 +1,6 @@
 # riskassessment (development version)
 * Fixed tests showing "Package Downloads" community usage card as non-metric (#621)
+* Add introJS for package explorer tab(#581)
 
 # riskassessment 2.0.0
 
