@@ -21,7 +21,7 @@ packageDependenciesUI <- function(id) {
 #' @importFrom glue glue
 #' @importFrom purrr map_df
 #' @importFrom rlang warn
-#' @importFrom shiny removeModal showModal tagList bindCache bindEvent
+#' @importFrom shiny removeModal showModal tagList bindEvent
 #' @importFrom shinyjs click 
 #' @importFrom stringr str_extract str_replace
 #' @importFrom shinyWidgets materialSwitch
@@ -100,7 +100,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     cards <- reactive({
       req(pkgref())
       build_dep_cards(data = dplyr::bind_rows(depends(), suggests()), loaded = loaded2_db()$name)
-    }) %>% shiny::bindCache(pkgref()) %>% shiny::bindEvent(pkgref())
+    }) %>% shiny::bindEvent(pkgref())
     
     pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), depends(), toggled()), {
       req(selected_pkg$name())
