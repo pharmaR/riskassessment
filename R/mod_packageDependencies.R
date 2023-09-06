@@ -115,7 +115,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       req(tabready() == 1L)
       req(depends())
       req(suggests())
-      browser()
 
       if (nrow(depends()) == 0) {
         # packages like curl, magrittr will appear here instead of in tryCatch() above
