@@ -154,6 +154,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         mutate(Actions = if_else(identical(package, character(0)) | name %in% c(rownames(installed.packages(priority = "base"))), "", Actions))
     })
     
+    # Create metric grid card.
+    metricGridServer(id = 'metricGrid', metrics = cards) 
+    
     # Render Output UI for Package Dependencies.
     output$package_dependencies_ui <- renderUI({
       
@@ -162,8 +165,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         showHelperMessage()
       } else {
         req(depends())
-        # Create metric grid card.
-        metricGridServer(id = 'metricGrid', metrics = cards) 
         
         fluidPage(
           shiny::
