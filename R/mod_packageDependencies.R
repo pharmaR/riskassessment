@@ -28,7 +28,7 @@ packageDependenciesUI <- function(id) {
 #'
 #' @keywords internal
 #'
-packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
+packageDependenciesServer <- function(id, selected_pkg, user, changes, parent, trigger_events) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     cran_pkgs <- as.data.frame(available.packages("https://cran.rstudio.com/src/contrib")[, 1:2])
@@ -322,14 +322,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     observeEvent(input$confirm, {
       shiny::removeModal()
       
-      updateSelectizeInput(
-        session = parent, "upload_package-pkg_lst",
-        choices = c(pkgname()), selected = pkgname()
-      )
+      trigger_events$upload_pkgs <- pkgname()
       
       session$onFlushed(function() {
-        shinyjs::click(id = "upload_package-add_pkgs", asis = TRUE)
-        
         rev_pkg(1L)
       })
     })
