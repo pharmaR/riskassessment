@@ -219,7 +219,16 @@ insert_riskmetric_to_db <- function(pkg_name,
   src_dir <- file.path("source", pkg_name)
   if (dir.exists(src_dir)) {
     desc_file <- glue::glue("source/{pkg_name}/DESCRIPTION")
-    sug_vctr <- desc::desc_get_list(key = 'Suggests', file = desc_file) %>% sort()
+    tryCatch(
+      expr = {
+        sug_vctr <- desc::desc_get_list(key = 'Suggests', file = desc_file) %>% sort()
+      },
+      error = function(e) {
+        msg <- paste("Suggests not found for package", pkg_name)
+        rlang::warn(msg)
+        sug_vctr <- character(0)
+      }
+    )
   } else {
     sug_vctr <- unlist(tools::package_dependencies(pkg_name, available.packages(contrib.url(repos = "http://cran.us.r-project.org")),
                        which=c("Suggests"), recursive=FALSE)) %>% unname() %>% sort()
