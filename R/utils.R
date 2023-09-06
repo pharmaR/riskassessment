@@ -26,7 +26,7 @@ showHelperMessage <- function(message = "Please select a package"){
 #'
 metric_gauge <- function(score) { # could add id arg here
   
-  tag_obj <- tagList(
+  tagList(
     div(style = "width: 78px; text-align:center;",
         div(
           tags$label(style = "font-size:32px", # `for` = id,
@@ -54,10 +54,7 @@ metric_gauge <- function(score) { # could add id arg here
           )
         )
     )
-  ) %>% htmltools::renderTags() # convert tagList to HTML because we can't decode '&'
-  
-  # Decode "&amp;" and convert back to HTML
-  tag_obj["html"] %>% stringr::str_replace_all("&amp;", "&") %>% HTML
+  ) 
 }
 
 #' Get the package general information from CRAN/local
