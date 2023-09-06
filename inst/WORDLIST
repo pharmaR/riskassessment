@@ -1,5 +1,4 @@
 AppDriver
-Appsilon
 Aravind
 CMD
 Chromote
@@ -89,6 +88,7 @@ showComments
 showHelperMessage
 sql
 sqlite
+tagList
 tibble
 transactional
 ui

@@ -85,34 +85,16 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
           icon_name <- unsucc_icon
           icon_class <- "text-warning"
         }
-        # if (is_perc) {
-        #   icon_name <- "percent"
-        #   icon_class <- "text-info"
-        # }
         
         display_obj <- icon(icon_name,
              class = icon_class, verify_fa = FALSE,
              style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
         )
-      } else { # use image version (displaying riskmetric gauge)
-        # display_obj <- img(src=glue::glue("www/scores/rm-gauge-{score}.png"),
-        #     style = "width: 128px; padding-top: 40%; font-size:60px; padding-left: 20%;")
+      } else { # use html version (displaying riskmetric score on a meter)
         display_obj <- 
           div(style = "padding-top: 30%; padding-left: 10%;",
              metric_gauge(score = score)
           )
-        
-        # display_obj <- div(style = "width: 128px; padding-top: 40%; font-size:60px; padding-left: 20%;",
-        #     flexdashboard::gauge(score,
-        #                          min = 0,
-        #                          max = 100,
-        #                          sectors = flexdashboard::gaugeSectors(
-        #                            success = c(0, 33),
-        #                            warning = c(34, 66),
-        #                            danger = c(67, 100)
-        #                          )
-        #     )
-        # )
       }
         
       html_component <- div(

@@ -21,7 +21,6 @@ metricGridUI <- function(id) {
 metricGridServer <- function(id, metrics) {
   moduleServer(id, function(input, output, session) {
     
-    # metric <- dbSelect("select * from metric", db_name = "database.sqlite") #
     metric_tbl <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
     
     output$grid <- renderUI({
@@ -39,17 +38,6 @@ metricGridServer <- function(id, metrics) {
       )
     })
     
-    
-    # observeEvent(req(nrow(metrics()) > 0), {
-    #   print("........")
-    #   # print(metrics())
-    #   # print("..")
-    #   apply(metrics(), 1, function(m)
-    #     print(glue::glue("title: {m['title']},
-    #                      value: {m['value']},
-    #                      score: {m['score']} "))
-    #   )
-    # })
     
     observeEvent(req(nrow(metrics()) > 0), {
       apply(metrics(), 1, function(m)

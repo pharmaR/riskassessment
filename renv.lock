@@ -1342,34 +1342,6 @@
       ],
       "Hash": "5aab57a3bd297eee1c1d862735972182"
     },
-    "jsTreeR": {
-      "Package": "jsTreeR",
-      "Version": "2.3.2",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "jsTreeR",
-      "RemoteUsername": "stla",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "43aa8c6b791da190773892880501b82aa89239fe",
-      "Requirements": [
-        "R",
-        "R.utils",
-        "base64enc",
-        "fontawesome",
-        "htmltools",
-        "htmlwidgets",
-        "jquerylib",
-        "miniUI",
-        "rstudioapi",
-        "shiny",
-        "shinyAce",
-        "stats",
-        "tools",
-        "utils"
-      ],
-      "Hash": "98f3051daf0059490f3bab242875cfee"
-    },
     "jsonlite": {
       "Package": "jsonlite",
       "Version": "1.8.0",
@@ -2355,6 +2327,22 @@
         "utils"
       ],
       "Hash": "99b2ee37c4f174539b1b0d920b00d16c"
+    },
+    "shinyTree": {
+      "Package": "shinyTree",
+      "Version": "0.3.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "htmlwidgets",
+        "jsonlite",
+        "methods",
+        "promises",
+        "shiny",
+        "stringr"
+      ],
+      "Hash": "0493a0d70f834cb251fe4523eb17b82c"
     },
     "shinyWidgets": {
       "Package": "shinyWidgets",

@@ -25,28 +25,39 @@ showHelperMessage <- function(message = "Please select a package"){
 #' @keywords internal
 #'
 metric_gauge <- function(score) { # could add id arg here
-  tagList(
+  
+  tag_obj <- tagList(
     div(style = "width: 78px; text-align:center;",
         div(
-          tags$label(style = "font-size:35px", # `for` = id,
-                     if(toupper(score) %in% c("NA", "NULL")) "NA" else as.character(as.numeric(score) *.01)
+          tags$label(style = "font-size:32px", # `for` = id,
+                     if(toupper(score) %in% c("NA", "NULL")) "NA" else {
+                       # flip the label display of the score to mimic the package score...
+                       HTML(case_when(
+                         round(as.numeric(score), 2) == 0 ~ "1 &#10060;",
+                         round(as.numeric(score), 2) == 1 ~ "0 <span style='color:#009000;'>&#10004;</span>",
+                         TRUE ~ as.character(1 - round(as.numeric(score), 2))
+                       ))
+                     }
           )
         ),
         div(
           tags$meter( # id = id,
             min = 0,
-            max = 100,
-            optimum = 0,
-            low = 33,
-            high = 67,
+            max = 1,
+            optimum = 1,
+            low = .3333,
+            high = .6666,
             value = 
               if(toupper(score) %in% c("NA", "NULL")) 0 
-            else ifelse(as.numeric(score) %in% 0:8, 8, as.numeric(score)),
+            else ifelse(between(round(as.numeric(score), 2), 0, .08), .08, round(as.numeric(score), 2)),
             style = "height: 30px; width: 100%;"
           )
         )
     )
-  )
+  ) %>% htmltools::renderTags() # convert tagList to HTML because we can't decode '&'
+  
+  # Decode "&amp;" and convert back to HTML
+  tag_obj["html"] %>% stringr::str_replace_all("&amp;", "&") %>% HTML
 }
 
 #' Get the package general information from CRAN/local
@@ -391,7 +402,6 @@ build_comm_cards <- function(data){
   
   
   # pull in some riskmetric data
-  # comm <- get_metric_data("tidyCDISC", metric_class = 'community', "database.sqlite")
   comm <- get_metric_data(data$id[1], metric_class = 'community', golem::get_golem_options('assessment_db_name'))
   
   
@@ -400,18 +410,6 @@ build_comm_cards <- function(data){
     dplyr::arrange(year, month) %>% # insurance
     dplyr::filter(row_number() >= (n() - 11)) %>%
     dplyr::distinct(year, month, downloads)
-  
-  # old
-  # cards <- cards %>%
-  #   dplyr::add_row(name = 'downloads_last_year',
-  #           title = 'Package Downloads',
-  #           desc = 'Number of downloads in last 12 months',
-  #           value = format(sum(downloads_last_year$downloads), big.mark = ","),
-  #           score = "NULL",
-  #           succ_icon = 'box-open',
-  #           icon_class = "text-info",
-  #           is_perc = 0,
-  #           is_url = 0)
   
   
   # new
@@ -446,18 +444,6 @@ build_comm_cards <- function(data){
                    icon_class = comm_rev[['icon_class']],
                    is_perc = comm_rev[['is_perc']] == 1,
                    is_url = comm_rev[['is_url']] == 1)
-  
-  # old
-  # cards <- cards %>%
-  #   dplyr::add_row(name = 'reverse_dependencies',
-  #                  title = 'Reverse Dependencies',
-  #                  desc = 'Number of Reverse Dependencies',
-  #                  value = format(length(rev_deps), big.mark = ","),
-  #                  score = "NULL", # TODO: Need to pull db data simiilar to get_mm_data()
-  #                 succ_icon = 'sitemap',
-  #                 icon_class = "text-info",
-  #                 is_perc = 0,
-  #                 is_url = 0)
 
   
   # Get Monthly download trend
