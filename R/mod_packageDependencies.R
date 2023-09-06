@@ -82,7 +82,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     
     observeEvent(pkgref(), {
       req(pkgref())
-      
       tryCatch(
         expr = {
           depends(pkgref()$dependencies[[1]] %>% dplyr::as_tibble())
@@ -105,6 +104,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
           suggests(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
         }
       )
+      # this is so the dependencies is also a 0x2 tibble like suggests
+      if (is_empty(pkgref()$dependencies[[1]])) depends(dplyr::tibble(package = character(0), type = character(0)))
+        
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
       cards(build_dep_cards(data = dplyr::bind_rows(depends(), suggests()), loaded = loaded2_db()$name))
     })
