@@ -94,8 +94,18 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
           depends(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
         }
       )
+      tryCatch(
+        expr = {
+          suggests(pkgref()$suggests[[1]] %>% dplyr::as_tibble())
+        },
+        error = function(e) {
+          msg <- paste("Detailed suggests information is not available for package", selected_pkg$name())
+          rlang::warn(msg)
+          rlang::warn(paste("info:", e))
+          suggests(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
+        }
+      )
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
-      suggests(pkgref()$suggests[[1]] %>% dplyr::as_tibble())
       cards(build_dep_cards(data = dplyr::bind_rows(depends(), suggests()), loaded = loaded2_db()$name))
     })
     
@@ -105,15 +115,16 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       req(tabready() == 1L)
       req(depends())
       req(suggests())
+      browser()
 
       if (nrow(depends()) == 0) {
         # packages like curl, magrittr will appear here instead of in tryCatch() above
         msg <- paste("Detailed dependency information is not available for package", selected_pkg$name())
         rlang::warn(msg)
-        if (toggled() == 1L) {
+        if (toggled() == 1L || nrow(suggests()) == 0) {
         return(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
           } else {
-        pkginfo <- suggests() %>%  as_tibble() 
+            pkginfo <- suggests() %>%  as_tibble() 
           } 
       } else {
         pkginfo <- dplyr::bind_rows(depends(), suggests()) %>% as_tibble()
