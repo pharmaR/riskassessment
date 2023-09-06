@@ -807,8 +807,8 @@ build_dep_cards <- function(data, loaded){
     is_url = numeric()
   )
   
-  if (nrow(data) == 0)
-    return(cards)
+  # if (nrow(data) == 0)
+  #   return(cards)
   
   both <- data %>% 
     mutate(package = stringr::str_replace(package, "\n", "")) %>% 
