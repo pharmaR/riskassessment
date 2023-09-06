@@ -20,7 +20,7 @@ packageDependenciesUI <- function(id) {
 #' @importFrom formattable as.datatable csscolor formattable formatter style
 #' @importFrom glue glue
 #' @importFrom purrr map_df
-#' @importFrom rlang warn
+#' @importFrom rlang warn is_empty
 #' @importFrom shiny removeModal showModal tagList bindEvent
 #' @importFrom shinyjs click 
 #' @importFrom stringr str_extract str_replace
@@ -105,7 +105,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         }
       )
       # this is so the dependencies is also a 0x2 tibble like suggests
-      if (is_empty(pkgref()$dependencies[[1]])) depends(dplyr::tibble(package = character(0), type = character(0)))
+      if (rlang::is_empty(pkgref()$dependencies[[1]])) depends(dplyr::tibble(package = character(0), type = character(0)))
         
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
       cards(build_dep_cards(data = dplyr::bind_rows(depends(), suggests()), loaded = loaded2_db()$name))
