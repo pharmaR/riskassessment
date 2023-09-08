@@ -69,7 +69,7 @@ app_ui <- function(request) {
                 title = "Source Explorer",
                 br(),
                 selectInput("explorer_type", NULL,
-                            choices = c("File Browser" = "fb",
+                            choices = c("Package Browser" = "fb",
                                         "Function Explorer" = "fe")) %>%
                   tagAppendAttributes(class = "metric_select"),
                 conditionalPanel(

@@ -18,3 +18,8 @@
   text-transform: uppercase;
   letter-spacing: 3px;
 }
+
+.shiny-input-container.exported_function div.item {
+  word-wrap: break-word;
+  width: 90%;
+}

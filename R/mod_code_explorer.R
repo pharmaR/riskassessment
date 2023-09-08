@@ -34,25 +34,26 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
           fluidRow(
             column(3,
                    wellPanel(
-                     selectInput(ns("exported_function"), "Exported Function", choices = exported_functions()),
-                     selectInput(ns("file_type"), "File Type", choices = c("Test Code" = "test", "Source Code" = "source", "Man Page" = "man")),
+                     selectInput(ns("exported_function"), "Exported Function", choices = exported_functions()) %>%
+                       tagAppendAttributes(class = "exported_function"),
+                     selectInput(ns("file_type"), "File Type", choices = c("Testing Files" = "test", "R Source Code" = "source", "Help Documentation" = "man")),
                      conditionalPanel(
                        condition = "input.file_type == 'test'",
-                       selectInput(ns("test_files"), "Test Files",
+                       selectInput(ns("test_files"), NULL,
                                    choices = NULL, selectize = FALSE, size = 12
                        ),
                        ns = ns
                      ),
                      conditionalPanel(
                        condition = "input.file_type == 'source'",
-                       selectInput(ns("source_files"), "Source Files",
+                       selectInput(ns("source_files"), NULL,
                                    choices = NULL, selectize = FALSE, size = 12
                        ),
                        ns = ns
                      ),
                      conditionalPanel(
                        condition = "input.file_type == 'man'",
-                       selectInput(ns("man_files"), "Man Files",
+                       selectInput(ns("man_files"), NULL,
                                    choices = NULL, selectize = FALSE, size = 12
                        ),
                        ns = ns

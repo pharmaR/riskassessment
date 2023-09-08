@@ -8,7 +8,7 @@
 #' 
 #' @noRd
 get_exported_functions <- function(pkgdir) {
-  s <- readLines(file.path(pkgdir, "NAMESPACE"), warn = FALSE)
+  s <- readLines(file.path(pkgdir, "NAMESPACE"))
   sexp <- s[grepl("export", s)]
   sexp <- gsub("^export\\((.*)\\)$", "\\1", sexp)
   simp <- s[grepl("importFrom", s)]
