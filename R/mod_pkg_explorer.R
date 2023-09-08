@@ -86,9 +86,10 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
       make_nodes(list.files(pkgdir(), recursive = TRUE))
     })
     
-    output$dirtree <- shinyTree::renderTree(isolate(nodes()))
+    output$dirtree <- shinyTree::renderTree(nodes())
+    
     observeEvent(nodes(), {
-      shinyTree::updateTree(session, "dirtree", nodes())
+      shinyjs::runjs(paste0('Shiny.setInputValue(\"', ns("dirtree"), '\", null)'))
     })
     
     is_file <- reactive({
