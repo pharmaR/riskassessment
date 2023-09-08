@@ -36,7 +36,6 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
                    wellPanel(
                      selectInput(ns("exported_function"), "Exported Function", choices = exported_functions()),
                      selectInput(ns("file_type"), "File Type", choices = c("Test Code" = "test", "Source Code" = "source", "Man Page" = "man")),
-                     checkboxInput(ns("always_show_files"), "Always Show Files", value = FALSE),
                      conditionalPanel(
                        condition = "input.file_type == 'test'",
                        selectInput(ns("test_files"), "Test Files",
@@ -45,16 +44,16 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
                        ns = ns
                      ),
                      conditionalPanel(
-                       condition = "input.file_type == 'source' & (output.has_several_source_files | input.always_show_files)",
+                       condition = "input.file_type == 'source'",
                        selectInput(ns("source_files"), "Source Files",
-                                   choices = NULL, selectize = FALSE, size = 3
+                                   choices = NULL, selectize = FALSE, size = 12
                        ),
                        ns = ns
                      ),
                      conditionalPanel(
-                       condition = "input.file_type == 'man' & (output.has_several_man_files | input.always_show_files)",
+                       condition = "input.file_type == 'man'",
                        selectInput(ns("man_files"), "Man Files",
-                                   choices = NULL, selectize = FALSE, size = 3
+                                   choices = NULL, selectize = FALSE, size = 12
                        ),
                        ns = ns
                      )
@@ -113,16 +112,6 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
       updateSelectInput(session, "man_files", choices = man_files(),
                         selected = if (!rlang::is_empty(man_files())) man_files()[1] else NULL)
     })
-    
-    output$has_several_source_files <- reactive({
-      return(length(source_files()) > 1)
-    })
-    outputOptions(output, "has_several_source_files", suspendWhenHidden = FALSE)
-    
-    output$has_several_man_files <- reactive({
-      return(length(man_files()) > 1)
-    })
-    outputOptions(output, "has_several_man_files", suspendWhenHidden = FALSE)
     
     output$test_code <- renderUI({
       if (rlang::is_empty(test_files())) return(HTML("No files to display"))
