@@ -8,11 +8,11 @@
 #' 
 #' @noRd
 get_exported_functions <- function(pkgdir) {
-  s <- readLines(file.path(pkgdir, "NAMESPACE"))
+  s <- readLines(file.path(pkgdir, "NAMESPACE"), warn = FALSE)
   sexp <- s[grepl("export", s)]
-  sexp <- gsub("export\\((\\w+)\\)", "\\1", sexp)
+  sexp <- gsub("^export\\((.*)\\)$", "\\1", sexp)
   simp <- s[grepl("importFrom", s)]
-  simp <- gsub(".+,\\s*(\\w+)\\)", "\\1", simp)
+  simp <- gsub("^importFrom\\(.+,\\s*(.*)\\)$", "\\1", simp)
   sort(setdiff(sexp, simp))
 }
 
