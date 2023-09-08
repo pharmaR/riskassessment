@@ -62,21 +62,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
             ),
             column(9,
                    div(
-                     conditionalPanel(
-                       condition = "input.file_type == 'test'",
-                       htmlOutput(ns("test_code")),
-                       ns = ns
-                     ),
-                     conditionalPanel(
-                       condition = "input.file_type == 'source'",
-                       htmlOutput(ns("source_code")),
-                       ns = ns
-                     ),
-                     conditionalPanel(
-                       condition = "input.file_type == 'man'",
-                       htmlOutput(ns("man_page")),
-                       ns = ns
-                     ),
+                     uiOutput(ns("file_output"), class = "file_browser"),
                      style = "height: 62vh; overflow: auto; border: 1px solid var(--bs-border-color-translucent);"
                    )
             )
@@ -114,7 +100,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
                         selected = if (!rlang::is_empty(man_files())) man_files()[1] else NULL)
     })
     
-    output$test_code <- renderUI({
+    test_code <- reactive({
       if (rlang::is_empty(test_files())) return(HTML("No files to display"))
       req(input$test_files)
       lines <- readLines(file.path(pkgdir(), "tests", "testthat", input$test_files))
@@ -125,7 +111,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
     }) %>%
       bindEvent(input$test_files, input$exported_function, ignoreNULL = FALSE)
     
-    output$source_code <- renderUI({
+    source_code <- reactive({
       if (rlang::is_empty(source_files())) return(HTML("No files to display"))
       req(input$source_files)
       lines <- readLines(file.path(pkgdir(), "R", input$source_files))
@@ -136,14 +122,22 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
     }) %>%
       bindEvent(input$source_files, input$exported_function, ignoreNULL = FALSE)
     
-    output$man_page <- renderUI({
+    man_page <- reactive({
       if (rlang::is_empty(man_files())) return(HTML("No files to display"))
       req(input$man_files)
       out_dir <- tempdir()
-      tools::Rd2HTML(file.path(pkgdir(), "man", input$man_files), out = file.path(out_dir, "man.html"))
-      HTML(paste(readLines(file.path(out_dir, "man.html")), collapse = "\n"))
+      tools::Rd2HTML(file.path(pkgdir(), "man", input$man_files), package = selected_pkg$name(), out = file.path(out_dir, "man.html"))
+      includeHTML(file.path(out_dir, "man.html"))
     }) %>%
       bindEvent(input$man_files, input$exported_function, ignoreNULL = FALSE)
+    
+    output$file_output <- renderUI({
+      switch (input$file_type,
+              test = test_code(),
+              source = source_code(),
+              man = man_page()
+      )
+    })
     
   })
 }
