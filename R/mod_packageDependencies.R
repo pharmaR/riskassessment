@@ -122,7 +122,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
         # packages like curl, magrittr will appear here instead of in tryCatch() above
         msg <- paste("Detailed dependency information is not available for package", selected_pkg$name())
         rlang::warn(msg)
-        if (toggled() == 1L || nrow(suggests()) == 0) {
+        if (toggled() == 0L || nrow(suggests()) == 0) {
         return(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
           } else {
             pkginfo <- suggests() %>%  as_tibble() 
@@ -138,7 +138,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
           # Names such as '".2way"' are not valid
           mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
         
-      if(toggled() == 1L) 
+      if(toggled() == 0L) 
         pkginfo <- filter(pkginfo, type != "Suggests")
         
       purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), cran_pkgs)) %>% 
@@ -191,8 +191,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
                 ),
                 column(2,
                  shinyWidgets::materialSwitch(
-                   inputId =  ns("hide_suggests"),
-                   label = "Hide Suggests",
+                   inputId =  ns("incl_suggests"),
+                   label = "Include Suggests",
                    value = toggled(),
                    inline = TRUE,
                    status = "success"
@@ -405,9 +405,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       )
     })
 
-    observeEvent(input$hide_suggests, {
+    observeEvent(input$incl_suggests, {
       req(pkg_df(), loaded2_db())
-      if(input$hide_suggests == TRUE | toggled() == 1L) toggled(1L - isolate(toggled()))
+      if(input$incl_suggests == TRUE | toggled() == 1L) toggled(1L - isolate(toggled()))
     })
     
   }) # moduleServer
