@@ -807,10 +807,7 @@ build_dep_cards <- function(data, loaded){
     is_url = numeric()
   )
   
-  # if (nrow(data) == 0)
-  #   return(cards)
-  
-  both <- data %>% 
+  deps <- data %>% 
     mutate(package = stringr::str_replace(package, "\n", "")) %>% 
     mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")) %>% 
     mutate(base = if_else(name %in% c(rownames(installed.packages(priority = "base"))), "Base", "Tidyverse")) %>% 
@@ -818,8 +815,6 @@ build_dep_cards <- function(data, loaded){
     mutate(type = factor(type, levels = c("Imports", "Depends", "LinkingTo", "Suggests"), ordered = TRUE)) %>%  
     mutate(upld = if_else(name %in% loaded, 1, 0)) 
 
-  deps <- filter(both, type %in% c("Imports", "Depends", "LinkingTo") )
-  
 upld_cat_rows <-
   deps %>%
   summarize(upld_cat_sum = sum(upld)) %>%
@@ -832,7 +827,7 @@ upld_cat_rows <-
     dplyr::add_row(
       name = 'pkg_cnt',
       title = 'Dependencies Uploaded',
-      desc = 'Number of non-suggests dependencies',
+      desc = 'Number of dependencies uploaded',
       value = upld_cat_rows,
       succ_icon = 'upload',
       icon_class = "text-info",
@@ -840,8 +835,8 @@ upld_cat_rows <-
       is_url = 0
     )
   # base R replacement for tidyr::complete(type)
-  x <- tibble("type" = levels(both$type))
-  y <- full_join(x, both, by = "type") %>% 
+  x <- tibble("type" = levels(deps$type))
+  y <- full_join(x, deps, by = "type") %>% 
     mutate(type = factor(type, ordered = TRUE))
 
   type_cat_rows <-
@@ -850,7 +845,7 @@ upld_cat_rows <-
     group_by(type) %>%
     summarize(type_cat_sum = sum(cnt)) %>%
     ungroup() %>%
-    mutate(type_cat_pct = 100 * (type_cat_sum / nrow(both)),
+    mutate(type_cat_pct = 100 * (type_cat_sum / nrow(deps)),
            type_cat_disp = glue::glue('{type}: {type_cat_sum} ({format(type_cat_pct, digits = 1)}%)')) %>%
     arrange(type) %>%
     pull(type_cat_disp) %>%
@@ -868,8 +863,8 @@ upld_cat_rows <-
       is_url = 0
     )
   
-  x <- tibble("base" = levels(both$base))
-  y <- full_join(x, both, by = "base")
+  x <- tibble("base" = levels(deps$base))
+  y <- full_join(x, deps, by = "base")
   
   base_cat_rows <-
     y %>%
@@ -877,7 +872,7 @@ upld_cat_rows <-
     group_by(base) %>%
     summarize(base_cat_sum = sum(cnt)) %>%
     ungroup() %>%
-    mutate(base_cat_pct = 100 * (base_cat_sum / nrow(both)),
+    mutate(base_cat_pct = 100 * (base_cat_sum / nrow(deps)),
            base_cat_disp = glue::glue('{base_cat_sum} ({format(base_cat_pct, digits = 1)}%)')) %>%
     filter(base == "Base") %>% 
     pull(base_cat_disp) %>%

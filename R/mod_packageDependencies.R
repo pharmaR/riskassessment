@@ -21,7 +21,7 @@ packageDependenciesUI <- function(id) {
 #' @importFrom glue glue
 #' @importFrom purrr map_df
 #' @importFrom rlang warn is_empty
-#' @importFrom shiny removeModal showModal tagList bindEvent
+#' @importFrom shiny removeModal showModal tagList 
 #' @importFrom shinyjs click 
 #' @importFrom stringr str_extract str_replace
 #' @importFrom shinyWidgets materialSwitch
@@ -80,7 +80,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       get_assess_blob(selected_pkg$name())
     })
     
-    observeEvent(pkgref(), {
+    observeEvent(list(pkgref(), toggled()), {
       req(pkgref())
       tryCatch(
         expr = {
@@ -108,7 +108,12 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       if (rlang::is_empty(pkgref()$dependencies[[1]])) depends(dplyr::tibble(package = character(0), type = character(0)))
         
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
-      cards(build_dep_cards(data = dplyr::bind_rows(depends(), suggests()), loaded = loaded2_db()$name))
+      # send either depends() or both to build_dep_cards(), depending on toggled()
+      if (toggled() == 0L) {
+        cards(build_dep_cards(data = depends(), loaded = loaded2_db()$name))
+      } else {
+        cards(build_dep_cards(data = dplyr::bind_rows(depends(), suggests()), loaded = loaded2_db()$name))
+      }
     })
     
     pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), depends(), toggled()), {
