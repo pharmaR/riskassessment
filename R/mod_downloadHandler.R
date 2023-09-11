@@ -51,7 +51,8 @@ mod_downloadHandler_include_ui <- function(id){
         NS(id, "report_includes"), label = NULL, inline = FALSE,
         choices = my_choices, selected = my_choices
       )
-    )
+    ),
+    actionButton(NS(id, "set_cookie"), "Set Cookie")
   )
 }
 
@@ -62,17 +63,28 @@ mod_downloadHandler_include_ui <- function(id){
 #' @param id Internal parameters for {shiny}.
 #'
 #' @noRd 
-mod_downloadHandler_include_server <- function(id) {
+mod_downloadHandler_include_server <- function(id, pkg_name) {
   moduleServer(id, function(input, output, session) {
-    observe({
-      # print("#####################################")
-      # print("input$report_includes:")
-      # print(input$report_includes)
-      # shinyWidgets::updatePrettyCheckboxGroup("report_includes",)
+    ns <- session$ns
+    
+    my_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
+                    "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
+                    "Source Explorer Comments")
+    
+    observeEvent(input$set_cookie, {
+      session$userData$report_includes <- paste(input$report_includes, collapse = ",")
+    }, ignoreInit = TRUE)
+    
+      observeEvent(pkg_name(), {
+      req(input$report_includes)
 
-      # selected = ifelse(is.null(input$report_includes) | input$report_includes != my_choices,
-      #                   isolate(input$report_includes), my_choices)
-    })
+      shinyWidgets::updatePrettyCheckboxGroup(
+        inputId = "report_includes",
+        choices = my_choices,
+        selected = unlist(strsplit(session$userData$report_includes,","))
+      )
+    }, ignoreInit = TRUE)
+    
     return(reactive(input$report_includes))
   })
 }
