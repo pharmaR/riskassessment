@@ -818,11 +818,13 @@ build_dep_cards <- function(data, loaded){
     mutate(type = factor(type, levels = c("Imports", "Depends", "LinkingTo", "Suggests"), ordered = TRUE)) %>%  
     mutate(upld = if_else(name %in% loaded, 1, 0)) 
 
+  deps <- filter(both, type %in% c("Imports", "Depends", "LinkingTo") )
+  
 upld_cat_rows <-
-  both %>%
+  deps %>%
   summarize(upld_cat_sum = sum(upld)) %>%
-  mutate(upld_cat_pct = 100 * (upld_cat_sum / nrow(both)),
-         upld_cat_disp = glue::glue('{upld_cat_sum} ({format(upld_cat_pct, digits = 1)}%)')) %>%
+  mutate(upld_cat_pct = 100 * (upld_cat_sum / nrow(deps)),
+         upld_cat_disp = glue::glue('{upld_cat_sum} of {nrow(deps)} ({format(upld_cat_pct, digits = 1)}%)')) %>%
   pull(upld_cat_disp) 
 
   # Get the Number of uploaded dependencies in the db
@@ -830,7 +832,7 @@ upld_cat_rows <-
     dplyr::add_row(
       name = 'pkg_cnt',
       title = 'Dependencies Uploaded',
-      desc = 'Number of dependencies uploaded to db',
+      desc = 'Number of non-suggests dependencies',
       value = upld_cat_rows,
       succ_icon = 'upload',
       icon_class = "text-info",
@@ -876,7 +878,7 @@ upld_cat_rows <-
     summarize(base_cat_sum = sum(cnt)) %>%
     ungroup() %>%
     mutate(base_cat_pct = 100 * (base_cat_sum / nrow(both)),
-           base_cat_disp = glue::glue('{base}: {base_cat_sum} ({format(base_cat_pct, digits = 1)}%)')) %>%
+           base_cat_disp = glue::glue('{base_cat_sum} ({format(base_cat_pct, digits = 1)}%)')) %>%
     filter(base == "Base") %>% 
     pull(base_cat_disp) %>%
     paste(., collapse = "\n")
@@ -885,7 +887,7 @@ upld_cat_rows <-
     dplyr::add_row(
       name = 'base_cat_count',
       title = 'Base R Summary',
-      desc = 'Percentage of Base R Packages',
+      desc = 'Percent of Packages from Base R',
       value = base_cat_rows,
       succ_icon = 'boxes-stacked',
       icon_class = "text-info",
