@@ -12,8 +12,8 @@ packageDependenciesUI <- function(id) {
 #' @param id a module id name
 #' @param selected_pkg placeholder
 #' @param user placeholder
-#' @param changes a reactive value integer count
 #' @param parent the parent (calling module) session information
+#' @param trigger_events a reactive values object to trigger actions here or elsewhere
 #'
 #' @import dplyr
 #' @importFrom DT formatStyle renderDataTable
@@ -28,12 +28,12 @@ packageDependenciesUI <- function(id) {
 #'
 #' @keywords internal
 #'
-packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
+packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_events) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     cran_pkgs <- as.data.frame(available.packages("https://cran.rstudio.com/src/contrib")[, 1:2])
     
-    loaded2_db <- eventReactive(list(selected_pkg$name(), changes()), {
+    loaded2_db <- eventReactive(selected_pkg$name(), {
       dbSelect("SELECT name, version, score FROM package")
     })
     
@@ -55,7 +55,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     depends  <- reactiveVal(value = NULL)
     suggests <- reactiveVal(value = NULL)
     revdeps  <- reactiveVal(value = NULL)
-    rev_pkg  <- reactiveVal(value = NULL)
+    rev_pkg  <- reactiveVal(value = 0L)
     toggled  <- reactiveVal(value = 0L)
     pkg_updates <- reactiveValues()
 
@@ -71,7 +71,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
      
     })
     
-    pkgref <- eventReactive(list(selected_pkg$name(), changes(), tabready()), {
+    pkgref <- eventReactive(list(selected_pkg$name(), tabready()), {
       req(selected_pkg$name())
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
@@ -322,14 +322,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     observeEvent(input$confirm, {
       shiny::removeModal()
       
-      updateSelectizeInput(
-        session = parent, "upload_package-pkg_lst",
-        choices = c(pkgname()), selected = pkgname()
-      )
+      trigger_events$upload_pkgs <- pkgname()
       
       session$onFlushed(function() {
-        shinyjs::click(id = "upload_package-add_pkgs", asis = TRUE)
-        
         rev_pkg(1L)
       })
     })
@@ -339,25 +334,22 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
       shiny::removeModal()
     })
     
-    names_vect <- eventReactive(list(rev_pkg(), changes()), {
+    names_vect <- eventReactive(rev_pkg(), {
       req(rev_pkg() == 1L)
       dbSelect("SELECT name FROM package")$name
     })
     
-    observeEvent(names_vect(),
-     {
-       pkg_name <- names_vect()[length(names_vect())]
-       
-       updateSelectizeInput(
-         session = parent,
-         inputId = "sidebar-select_pkg",
-         choices = c("-", loaded2_db()$name),
-         selected = pkg_name
-       )
-     },
-     ignoreInit = TRUE
-    )
-
+    observeEvent(names_vect(), {
+      req(names_vect())
+      pkg_name <- names_vect()[length(names_vect())]
+      updateSelectizeInput(
+        session = parent,
+        inputId = "sidebar-select_pkg",
+        choices = c("-", names_vect()),
+        selected = pkg_name
+      )
+    })
+    
     observe({
       if (nrow(pkg_df()) > 0) {
         pkg_updates$pkgs_update <- pkg_df() %>%
@@ -372,6 +364,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, changes, parent) {
     
     observeEvent(input$update_all_packages, {
       req(pkg_df(), loaded2_db(), pkg_updates)
+      rev_pkg(0L)
 
       pkgname(pkg_updates$pkgs_update$name)
       shiny::showModal(
