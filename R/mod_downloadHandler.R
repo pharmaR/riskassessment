@@ -52,7 +52,7 @@ mod_downloadHandler_include_ui <- function(id){
         choices = my_choices, selected = my_choices
       )
     ),
-    actionButton(NS(id, "set_cookie"), "Set Cookie")
+    actionButton(NS(id, "save_choices"), "Save Choices")
   )
 }
 
@@ -71,13 +71,23 @@ mod_downloadHandler_include_server <- function(id, pkg_name) {
                     "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
                     "Source Explorer Comments")
     
-    observeEvent(input$set_cookie, {
+    observeEvent(input$save_choices, {
+      browser()
       session$userData$report_includes <- paste(input$report_includes, collapse = ",")
+      
+      cookies::set_cookie(
+        cookie_name = "selected_choices",
+        cookie_value = input$report_includes[1]
+      )
     }, ignoreInit = TRUE)
     
       observeEvent(pkg_name(), {
       req(input$report_includes)
 
+      value <- cookies::get_cookie("selected_choices")
+      cat(value, "\n")
+      
+      # Make sure "elements to include" don't reset from pkg to pkg.
       shinyWidgets::updatePrettyCheckboxGroup(
         inputId = "report_includes",
         choices = my_choices,
