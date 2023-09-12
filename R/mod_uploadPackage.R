@@ -225,6 +225,20 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
       uploaded_pkgs00(uploaded_packages)
     })
     
+    observeEvent(trigger_events$upload_pkgs, {
+      req(trigger_events$upload_pkgs)
+      
+      np <- length(trigger_events$upload_pkgs)
+      uploaded_packages <-
+        dplyr::tibble(
+          package = trigger_events$upload_pkgs,
+          version = rep('0.0.0', np),
+          status = rep('', np)
+        )
+      
+      uploaded_pkgs00(uploaded_packages)
+    })
+    
     observeEvent(input$rem_pkg_btn, {
       req("delete_package" %in% credentials$privileges[[user$role]]) 
       
