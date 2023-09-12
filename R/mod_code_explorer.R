@@ -116,7 +116,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
       req(input$source_files)
       lines <- readLines(file.path(pkgdir(), "R", input$source_files))
       highlight_index <- parse_data() %>% 
-        filter(file == input$source_files & func == input$exported_function) %>% 
+        filter(file == input$source_files & func %in% c(input$exported_function, gsub("^(\\%.*\\%)$", "`\\1`", input$exported_function))) %>% 
         pull(line)
       renderCode(lines, highlight_index)
     }) %>%

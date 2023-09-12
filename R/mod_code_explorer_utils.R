@@ -10,9 +10,9 @@
 get_exported_functions <- function(pkgdir) {
   s <- readLines(file.path(pkgdir, "NAMESPACE"))
   sexp <- s[grepl("export", s)]
-  sexp <- gsub("^export\\((.*)\\)$", "\\1", sexp)
+  sexp <- gsub("^export\\(\"?(.*?)\"?\\)$", "\\1", sexp)
   simp <- s[grepl("importFrom", s)]
-  simp <- gsub("^importFrom\\(.+,\\s*(.*)\\)$", "\\1", simp)
+  simp <- gsub("^importFrom\\(.+,\\s*\"?(.*?)\"?\\)$", "\\1", simp)
   sort(setdiff(sexp, simp))
 }
 
@@ -40,7 +40,7 @@ get_parse_data <- function(type = c("test", "source"), pkgdir, funcnames = NULL)
   dplyr::bind_rows(lapply(filenames, function(filename) {
     d <- parse(file.path(dirpath, filename)) %>% 
       utils::getParseData() %>% 
-      dplyr::filter(token %in% c("SYMBOL_FUNCTION_CALL", "SYMBOL"))
+      dplyr::filter(token %in% c("SYMBOL_FUNCTION_CALL", "SYMBOL", "SPECIAL"))
     d <- d %>% 
       dplyr::mutate(
         type = type,
@@ -51,6 +51,7 @@ get_parse_data <- function(type = c("test", "source"), pkgdir, funcnames = NULL)
       dplyr::select(type, file, func, line, token) %>% 
       dplyr::distinct()
     if (!is.null(funcnames))
+      if (type == "source") funcnames <- unique(c(funcnames, gsub("^(\\%.*\\%)$", "`\\1`", funcnames)))
       d <- d %>% dplyr::filter(func %in% funcnames)
     d
   }))
@@ -81,9 +82,10 @@ get_test_files <- function(funcname, parse_data) {
 #' 
 #' @noRd
 get_source_files <- function(funcname, parse_data) {
+  funcname_special <- gsub("^(\\%.*\\%)$", "`\\1`", funcname)
   parse_data %>%
     dplyr::filter(type == "source", 
-                  func == funcname) %>% 
+                  func %in% c(funcname, funcname_special)) %>% 
     dplyr::pull(file) %>% 
     unique()
 }
@@ -98,9 +100,10 @@ get_source_files <- function(funcname, parse_data) {
 #' @noRd
 get_man_files <- function(funcname, pkgdir) {
   man_files <- list.files(file.path(pkgdir, "man"), ".+\\.Rd$")
+  funcname_regex <- gsub("\\%", "\\\\\\\\\\%", funcname)
   i <- sapply(man_files, function(f) {
     s <- readLines(file.path(pkgdir, "man", f))
-    any(grepl(sprintf("name\\{%s\\}|alias\\{%s\\}", funcname, funcname), s))
+    any(grepl(sprintf("name\\{%s\\}|alias\\{%s\\}", funcname_regex, funcname_regex), s))
   })
   man_files[i]
 }
