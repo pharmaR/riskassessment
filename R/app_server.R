@@ -27,7 +27,8 @@ app_server <- function(input, output, session) {
     bindEvent(credential_config$roles, credential_config$privileges)
   trigger_events <- reactiveValues(
     reset_pkg_upload = 0,
-    reset_sidebar = 0
+    reset_sidebar = 0,
+    upload_pkgs = NULL,
   )
   
   
@@ -264,8 +265,8 @@ app_server <- function(input, output, session) {
   dependencies_data <- packageDependenciesServer('packageDependencies',
                                                selected_pkg,
                                                user,
-                                               changes,
-                                               parent = session)
+                                               parent = session,
+                                               trigger_events)
   
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)
