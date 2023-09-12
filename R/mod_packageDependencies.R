@@ -20,8 +20,8 @@ packageDependenciesUI <- function(id) {
 #' @importFrom formattable as.datatable csscolor formattable formatter style
 #' @importFrom glue glue
 #' @importFrom purrr map_df
-#' @importFrom rlang warn
-#' @importFrom shiny removeModal showModal tagList
+#' @importFrom rlang warn is_empty
+#' @importFrom shiny removeModal showModal tagList 
 #' @importFrom shinyjs click 
 #' @importFrom stringr str_extract str_replace
 #' @importFrom shinyWidgets materialSwitch
@@ -58,6 +58,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_ev
     rev_pkg  <- reactiveVal(value = 0L)
     toggled  <- reactiveVal(value = 0L)
     pkg_updates <- reactiveValues()
+    cards    <- reactiveVal(value = NULL)
 
     observeEvent(list(parent$input$tabs, parent$input$metric_type, selected_pkg$name()), {
       req(selected_pkg$name())
@@ -79,9 +80,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_ev
       get_assess_blob(selected_pkg$name())
     })
     
-    observeEvent(pkgref(), {
+    observeEvent(list(pkgref(), toggled()), {
       req(pkgref())
-      
       tryCatch(
         expr = {
           depends(pkgref()$dependencies[[1]] %>% dplyr::as_tibble())
@@ -93,8 +93,27 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_ev
           depends(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
         }
       )
+      tryCatch(
+        expr = {
+          suggests(pkgref()$suggests[[1]] %>% dplyr::as_tibble())
+        },
+        error = function(e) {
+          msg <- paste("Detailed suggests information is not available for package", selected_pkg$name())
+          rlang::warn(msg)
+          rlang::warn(paste("info:", e))
+          suggests(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
+        }
+      )
+      # this is so the dependencies is also a 0x2 tibble like suggests
+      if (rlang::is_empty(pkgref()$dependencies[[1]])) depends(dplyr::tibble(package = character(0), type = character(0)))
+        
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
-      suggests(pkgref()$suggests[[1]] %>% dplyr::as_tibble())
+      # send either depends() or both to build_dep_cards(), depending on toggled()
+      if (toggled() == 0L) {
+        cards(build_dep_cards(data = depends(), loaded = loaded2_db()$name, toggled = 0L))
+      } else {
+        cards(build_dep_cards(data = dplyr::bind_rows(depends(), suggests()), loaded = loaded2_db()$name, toggled = 1L))
+      }
     })
     
     pkg_df <- eventReactive(list(selected_pkg$name(), tabready(), depends(), toggled()), {
@@ -108,10 +127,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_ev
         # packages like curl, magrittr will appear here instead of in tryCatch() above
         msg <- paste("Detailed dependency information is not available for package", selected_pkg$name())
         rlang::warn(msg)
-        if (toggled() == 1L) {
+        if (toggled() == 0L || nrow(suggests()) == 0) {
         return(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
           } else {
-        pkginfo <- suggests() %>%  as_tibble() 
+            pkginfo <- suggests() %>%  as_tibble() 
           } 
       } else {
         pkginfo <- dplyr::bind_rows(depends(), suggests()) %>% as_tibble()
@@ -124,7 +143,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_ev
           # Names such as '".2way"' are not valid
           mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
         
-      if(toggled() == 1L) 
+      if(toggled() == 0L) 
         pkginfo <- filter(pkginfo, type != "Suggests")
         
       purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), cran_pkgs)) %>% 
@@ -152,6 +171,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_ev
         mutate(Actions = if_else(identical(package, character(0)) | name %in% c(rownames(installed.packages(priority = "base"))), "", Actions))
     })
     
+    # Create metric grid card.
+    metricGridServer(id = 'metricGrid', metrics = cards) 
+    
     # Render Output UI for Package Dependencies.
     output$package_dependencies_ui <- renderUI({
       
@@ -160,11 +182,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_ev
         showHelperMessage()
       } else {
         req(depends())
+        
         fluidPage(
           shiny::
             tagList(
-              br(),
-              h4(glue::glue("Package Dependencies: {nrow(depends())} Suggests: {nrow(suggests())}"), style = "text-align: left;"),
+              div(id = "dep_infoboxes", metricGridUI(NS(id, 'metricGrid'))),
               br(),
               fluidRow(
                 column(4, 
@@ -174,8 +196,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_ev
                 ),
                 column(2,
                  shinyWidgets::materialSwitch(
-                   inputId =  ns("hide_suggests"),
-                   label = "Hide Suggests",
+                   inputId =  ns("incl_suggests"),
+                   label = "Include Suggests",
                    value = toggled(),
                    inline = TRUE,
                    status = "success"
@@ -381,9 +403,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_ev
       )
     })
 
-    observeEvent(input$hide_suggests, {
+    observeEvent(input$incl_suggests, {
       req(pkg_df(), loaded2_db())
-      if(input$hide_suggests == TRUE | toggled() == 1L) toggled(1L - isolate(toggled()))
+      if(input$incl_suggests == TRUE | toggled() == 1L) toggled(1L - isolate(toggled()))
     })
     
   }) # moduleServer
