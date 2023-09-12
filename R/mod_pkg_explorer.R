@@ -84,7 +84,8 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
     nodes <- reactive({
       req(pkgdir())
       make_nodes(list.files(pkgdir(), recursive = TRUE))
-    })
+    }) %>%
+      bindEvent(pkgdir(), selected_pkg$name())
     
     output$dirtree <- shinyTree::renderTree(nodes())
     
