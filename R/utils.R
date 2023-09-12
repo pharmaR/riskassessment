@@ -782,3 +782,126 @@ get_time <- function() {
   else
     Sys.time()
 }
+
+#' The 'Build Dependency Cards' function
+#' 
+#' @param data a data.frame
+#' @param loaded a vector of package names loaded to db 
+#' 
+#' @import dplyr
+#' @importFrom glue glue
+#' @importFrom purrr map_df
+#' @importFrom rlang is_empty
+#' @keywords internal
+#' 
+build_dep_cards <- function(data, loaded, toggled){
+  
+  cards <- dplyr::tibble(
+    name = character(),
+    title = character(),
+    desc = character(),
+    value = character(),
+    succ_icon = character(),
+    icon_class = character(),
+    is_perc = numeric(),
+    is_url = numeric()
+  )
+  
+  deps <- data %>% 
+    mutate(package = stringr::str_replace(package, "\n", "")) %>% 
+    mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")) %>% 
+    mutate(base = if_else(name %in% c(rownames(installed.packages(priority = "base"))), "Base", "Tidyverse")) %>% 
+    mutate(base = factor(base, levels = c("Base", "Tidyverse"), labels = c("Base", "Tidyverse"))) %>% 
+    mutate(upld = if_else(name %in% loaded, 1, 0)) 
+  
+if (toggled == 0L) {
+  deps <- deps %>% 
+  mutate(type = factor(type, levels = c("Imports", "Depends", "LinkingTo"), ordered = TRUE))  
+} else {
+  deps <- deps %>% 
+  mutate(type = factor(type, levels = c("Imports", "Depends", "LinkingTo", "Suggests"), ordered = TRUE)) 
+}
+
+upld_cat_rows <-
+  deps %>%
+  summarize(upld_cat_sum = sum(upld)) %>%
+  mutate(upld_cat_pct  = 100 * (upld_cat_sum / nrow(deps))) %>% 
+  mutate(upld_cat_disp = if_else(is.nan(upld_cat_pct),
+         glue::glue('{upld_cat_sum} ( 0%)'),
+         glue::glue('{upld_cat_sum} of {nrow(deps)} ({format(upld_cat_pct, digits = 1)}%)'))) %>% 
+  pull(upld_cat_disp) 
+
+  # Get the Number of uploaded dependencies in the db
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'pkg_cnt',
+      title = 'Dependencies Uploaded',
+      desc = 'Number of dependencies uploaded',
+      value = upld_cat_rows,
+      succ_icon = 'upload',
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
+  # base R replacement for tidyr::complete(type)
+  x <- tibble("type" = levels(deps$type))
+  y <- full_join(x, deps, by = "type") %>% 
+    mutate(type = factor(type, ordered = TRUE))
+
+  type_cat_rows <-
+    y %>%
+    mutate(cnt = ifelse(is.na(name), 0, 1)) %>%
+    group_by(type) %>%
+    summarize(type_cat_sum = sum(cnt)) %>%
+    ungroup() %>%
+    mutate(type_cat_pct  = 100 * (type_cat_sum / nrow(deps))) %>% 
+    mutate(type_cat_disp = if_else(is.nan(type_cat_pct),
+           glue::glue('{type}: {type_cat_sum} ( 0%)'),
+           glue::glue('{type}: {type_cat_sum} ({format(type_cat_pct, digits = 1)}%)'))) %>% 
+    arrange(type) %>%
+    pull(type_cat_disp) %>%
+    paste(., collapse = " \n")
+  
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'type_cat_count',
+      title = 'Type Summary',
+      desc = 'Package Dependencies by Type',
+      value = type_cat_rows,
+      succ_icon = 'boxes-stacked',
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
+  
+  x <- tibble("base" = levels(deps$base))
+  y <- full_join(x, deps, by = "base")
+  
+  base_cat_rows <-
+    y %>%
+    mutate(cnt = ifelse(is.na(name), 0, 1)) %>%
+    group_by(base) %>%
+    summarize(base_cat_sum = sum(cnt)) %>%
+    ungroup() %>%
+    mutate(base_cat_pct = 100 * (base_cat_sum / nrow(deps))) %>% 
+    mutate(base_cat_disp = if_else(is.nan(base_cat_pct),
+           glue::glue('{base_cat_sum} ( 0%)       '),
+           glue::glue('{base_cat_sum} ({format(base_cat_pct, digits = 1)}%)'))) %>% 
+    filter(base == "Base") %>% 
+    pull(base_cat_disp) %>%
+    paste(., collapse = "\n")
+
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'base_cat_count',
+      title = 'Base R Summary',
+      desc = 'Percent of Packages from Base R',
+      value = base_cat_rows,
+      succ_icon = 'boxes-stacked',
+      icon_class = "text-info",
+      is_perc = 0,
+      is_url = 0
+    )
+  
+  cards
+}
