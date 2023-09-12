@@ -104,8 +104,10 @@ get_source_files <- function(funcname, parse_data) {
 #' @noRd
 get_man_files <- function(funcname, pkgdir) {
   man_files <- list.files(file.path(pkgdir, "man"), ".+\\.Rd$")
-  funcname_regex <- gsub("`", "`?", funcname)
-  funcname_regex <- gsub("\\%", "\\\\\\\\\\%", funcname_regex)
+  funcname_regex <- 
+    gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", funcname) %>%
+    gsub(pattern = "`", replacement = "`?") %>%
+    gsub(pattern = "\\%", replacement = "\\\\\\\\\\%")
   i <- sapply(man_files, function(f) {
     s <- readLines(file.path(pkgdir, "man", f))
     any(grepl(sprintf("name\\{%s\\}|alias\\{%s\\}", funcname_regex, funcname_regex), s))
