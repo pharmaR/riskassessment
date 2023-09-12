@@ -24,6 +24,7 @@ utils::globalVariables(
     'Actions',
     'Author',
     'base', 
+    'base_cat_disp',
     'base_cat_pct',
     'base_cat_sum',
     'cnt',
@@ -65,7 +66,12 @@ utils::globalVariables(
     'succ_icon',
     'type',
     'type_cat_disp',
+    'type_cat_pct',
     'type_cat_sum',
+    'upld',
+    'upld_cat_disp',
+    'upld_cat_pct',
+    'upld_cat_sum',
     'upper_limit',
     'user_role',
     'Version',
@@ -75,6 +81,7 @@ utils::globalVariables(
     'X2'
   )
 )
+
 
 # report_include_choices <- c("Report Author", "Report Date", "Risk Score", 
 #   "Overall Comment", "Package Summary", "Maintenance Metrics",
