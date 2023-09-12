@@ -28,7 +28,7 @@ metricBoxUI <- function(id) {
 #'
 metricBoxServer <- function(id, title, desc, value, score = "NULL",
                             is_perc = FALSE, is_url = FALSE,
-                            succ_icon = "check", unsucc_icon = "times",
+                            succ_icon = "check", unsucc_icon = "triangle-exclamation",
                             icon_class = "text-success", type = "information"
                             ) {
   moduleServer(id, function(input, output, session) {

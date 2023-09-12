@@ -13,7 +13,7 @@ metricBoxServer(
   is_perc = FALSE,
   is_url = FALSE,
   succ_icon = "check",
-  unsucc_icon = "times",
+  unsucc_icon = "triangle-exclamation",
   icon_class = "text-success",
   type = "information"
 )
