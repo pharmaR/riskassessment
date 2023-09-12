@@ -827,7 +827,7 @@ upld_cat_rows <-
   summarize(upld_cat_sum = sum(upld)) %>%
   mutate(upld_cat_pct  = 100 * (upld_cat_sum / nrow(deps))) %>% 
   mutate(upld_cat_disp = if_else(is.nan(upld_cat_pct),
-         glue::glue('{upld_cat_sum} of {nrow(deps)}       '),
+         glue::glue('{upld_cat_sum} ( 0%)'),
          glue::glue('{upld_cat_sum} of {nrow(deps)} ({format(upld_cat_pct, digits = 1)}%)'))) %>% 
   pull(upld_cat_disp) 
 
@@ -856,7 +856,7 @@ upld_cat_rows <-
     ungroup() %>%
     mutate(type_cat_pct  = 100 * (type_cat_sum / nrow(deps))) %>% 
     mutate(type_cat_disp = if_else(is.nan(type_cat_pct),
-           glue::glue('{type}: {type_cat_sum} of {nrow(deps)}'),
+           glue::glue('{type}: {type_cat_sum} ( 0%)'),
            glue::glue('{type}: {type_cat_sum} ({format(type_cat_pct, digits = 1)}%)'))) %>% 
     arrange(type) %>%
     pull(type_cat_disp) %>%
@@ -885,8 +885,8 @@ upld_cat_rows <-
     ungroup() %>%
     mutate(base_cat_pct = 100 * (base_cat_sum / nrow(deps))) %>% 
     mutate(base_cat_disp = if_else(is.nan(base_cat_pct),
-           glue::glue('{base_cat_sum} of {nrow(deps)}       '),
-           glue::glue('{base_cat_sum} of {nrow(deps)} ({format(base_cat_pct, digits = 1)}%)'))) %>% 
+           glue::glue('{base_cat_sum} ( 0%)       '),
+           glue::glue('{base_cat_sum} ({format(base_cat_pct, digits = 1)}%)'))) %>% 
     filter(base == "Base") %>% 
     pull(base_cat_disp) %>%
     paste(., collapse = "\n")
