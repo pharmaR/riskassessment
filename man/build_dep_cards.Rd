@@ -4,7 +4,7 @@
 \alias{build_dep_cards}
 \title{The 'Build Dependency Cards' function}
 \usage{
-build_dep_cards(data, loaded)
+build_dep_cards(data, loaded, toggled)
 }
 \arguments{
 \item{data}{a data.frame}

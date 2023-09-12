@@ -794,7 +794,7 @@ get_time <- function() {
 #' @importFrom rlang is_empty
 #' @keywords internal
 #' 
-build_dep_cards <- function(data, loaded){
+build_dep_cards <- function(data, loaded, toggled){
   
   cards <- dplyr::tibble(
     name = character(),
@@ -812,14 +812,23 @@ build_dep_cards <- function(data, loaded){
     mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")) %>% 
     mutate(base = if_else(name %in% c(rownames(installed.packages(priority = "base"))), "Base", "Tidyverse")) %>% 
     mutate(base = factor(base, levels = c("Base", "Tidyverse"), labels = c("Base", "Tidyverse"))) %>% 
-    mutate(type = factor(type, levels = c("Imports", "Depends", "LinkingTo", "Suggests"), ordered = TRUE)) %>%  
     mutate(upld = if_else(name %in% loaded, 1, 0)) 
+  
+if (toggled == 0L) {
+  deps <- deps %>% 
+  mutate(type = factor(type, levels = c("Imports", "Depends", "LinkingTo"), ordered = TRUE))  
+} else {
+  deps <- deps %>% 
+  mutate(type = factor(type, levels = c("Imports", "Depends", "LinkingTo", "Suggests"), ordered = TRUE)) 
+}
 
 upld_cat_rows <-
   deps %>%
   summarize(upld_cat_sum = sum(upld)) %>%
-  mutate(upld_cat_pct = 100 * (upld_cat_sum / nrow(deps)),
-         upld_cat_disp = glue::glue('{upld_cat_sum} of {nrow(deps)} ({format(upld_cat_pct, digits = 1)}%)')) %>%
+  mutate(upld_cat_pct  = 100 * (upld_cat_sum / nrow(deps))) %>% 
+  mutate(upld_cat_disp = if_else(is.nan(upld_cat_pct),
+         glue::glue('{upld_cat_sum} of {nrow(deps)}       '),
+         glue::glue('{upld_cat_sum} of {nrow(deps)} ({format(upld_cat_pct, digits = 1)}%)'))) %>% 
   pull(upld_cat_disp) 
 
   # Get the Number of uploaded dependencies in the db
@@ -845,11 +854,13 @@ upld_cat_rows <-
     group_by(type) %>%
     summarize(type_cat_sum = sum(cnt)) %>%
     ungroup() %>%
-    mutate(type_cat_pct = 100 * (type_cat_sum / nrow(deps)),
-           type_cat_disp = glue::glue('{type}: {type_cat_sum} ({format(type_cat_pct, digits = 1)}%)')) %>%
+    mutate(type_cat_pct  = 100 * (type_cat_sum / nrow(deps))) %>% 
+    mutate(type_cat_disp = if_else(is.nan(type_cat_pct),
+           glue::glue('{type}: {type_cat_sum} of {nrow(deps)}'),
+           glue::glue('{type}: {type_cat_sum} ({format(type_cat_pct, digits = 1)}%)'))) %>% 
     arrange(type) %>%
     pull(type_cat_disp) %>%
-    paste(., collapse = "\n")
+    paste(., collapse = " \n")
   
   cards <- cards %>%
     dplyr::add_row(
@@ -872,8 +883,10 @@ upld_cat_rows <-
     group_by(base) %>%
     summarize(base_cat_sum = sum(cnt)) %>%
     ungroup() %>%
-    mutate(base_cat_pct = 100 * (base_cat_sum / nrow(deps)),
-           base_cat_disp = glue::glue('{base_cat_sum} ({format(base_cat_pct, digits = 1)}%)')) %>%
+    mutate(base_cat_pct = 100 * (base_cat_sum / nrow(deps))) %>% 
+    mutate(base_cat_disp = if_else(is.nan(base_cat_pct),
+           glue::glue('{base_cat_sum} of {nrow(deps)}       '),
+           glue::glue('{base_cat_sum} of {nrow(deps)} ({format(base_cat_pct, digits = 1)}%)'))) %>% 
     filter(base == "Base") %>% 
     pull(base_cat_disp) %>%
     paste(., collapse = "\n")

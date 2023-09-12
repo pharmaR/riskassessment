@@ -110,9 +110,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_ev
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
       # send either depends() or both to build_dep_cards(), depending on toggled()
       if (toggled() == 0L) {
-        cards(build_dep_cards(data = depends(), loaded = loaded2_db()$name))
+        cards(build_dep_cards(data = depends(), loaded = loaded2_db()$name, toggled = 0L))
       } else {
-        cards(build_dep_cards(data = dplyr::bind_rows(depends(), suggests()), loaded = loaded2_db()$name))
+        cards(build_dep_cards(data = dplyr::bind_rows(depends(), suggests()), loaded = loaded2_db()$name, toggled = 1L))
       }
     })
     
