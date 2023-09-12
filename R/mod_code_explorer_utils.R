@@ -10,9 +10,11 @@
 get_exported_functions <- function(pkgdir) {
   s <- readLines(file.path(pkgdir, "NAMESPACE"))
   sexp <- s[grepl("export", s)]
-  sexp <- gsub("^export\\(\"?(.*?)\"?\\)$", "\\1", sexp)
+  sexp <- gsub("^export\\((.*)\\)$", "\\1", sexp)
+  sexp <- gsub("\"", "`", sexp)
   simp <- s[grepl("importFrom", s)]
-  simp <- gsub("^importFrom\\(.+,\\s*\"?(.*?)\"?\\)$", "\\1", simp)
+  simp <- gsub("^importFrom\\(.+,\\s*(.*)\\)$", "\\1", simp)
+  simp <- gsub("\"", "`", simp)
   sort(setdiff(sexp, simp))
 }
 
@@ -50,9 +52,10 @@ get_parse_data <- function(type = c("test", "source"), pkgdir, funcnames = NULL)
       ) %>% 
       dplyr::select(type, file, func, line, token) %>% 
       dplyr::distinct()
-    if (!is.null(funcnames))
-      if (type == "source") funcnames <- unique(c(funcnames, gsub("^(\\%.*\\%)$", "`\\1`", funcnames)))
+    if (!is.null(funcnames)) {
+      funcnames <- unique(c(funcnames, gsub("`", "", funcnames)))
       d <- d %>% dplyr::filter(func %in% funcnames)
+    }
     d
   }))
 }
@@ -66,9 +69,10 @@ get_parse_data <- function(type = c("test", "source"), pkgdir, funcnames = NULL)
 #' 
 #' @noRd
 get_test_files <- function(funcname, parse_data) {
+  func_list <- unique(c(funcname, gsub("`", "", funcname)))
   parse_data %>%
     dplyr::filter(type == "test",
-                  func == funcname) %>% 
+                  func %in% func_list) %>% 
     dplyr::pull(file) %>% 
     unique()
 }
@@ -82,10 +86,10 @@ get_test_files <- function(funcname, parse_data) {
 #' 
 #' @noRd
 get_source_files <- function(funcname, parse_data) {
-  funcname_special <- gsub("^(\\%.*\\%)$", "`\\1`", funcname)
+  func_list <- unique(c(funcname, gsub("`", "", funcname)))
   parse_data %>%
     dplyr::filter(type == "source", 
-                  func %in% c(funcname, funcname_special)) %>% 
+                  func %in% func_list) %>% 
     dplyr::pull(file) %>% 
     unique()
 }
@@ -100,7 +104,8 @@ get_source_files <- function(funcname, parse_data) {
 #' @noRd
 get_man_files <- function(funcname, pkgdir) {
   man_files <- list.files(file.path(pkgdir, "man"), ".+\\.Rd$")
-  funcname_regex <- gsub("\\%", "\\\\\\\\\\%", funcname)
+  funcname_regex <- gsub("`", "`?", funcname)
+  funcname_regex <- gsub("\\%", "\\\\\\\\\\%", funcname_regex)
   i <- sapply(man_files, function(f) {
     s <- readLines(file.path(pkgdir, "man", f))
     any(grepl(sprintf("name\\{%s\\}|alias\\{%s\\}", funcname_regex, funcname_regex), s))
