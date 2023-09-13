@@ -4,6 +4,7 @@
 * Migrated from `{jsTreeR}` to `{shinyTree}` (#585)
 * Fix bug with the logo's hyperlink not functioning in the expected zone (#633)
 * Summarize Package Dependencies (#618)
+* Integrated the function explorer provided by our GSK contributors (#498)
 
 # riskassessment 2.0.0
 
