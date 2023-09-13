@@ -123,7 +123,7 @@ if(any(c('Maintenance Metrics', 'Maintenance Comments') %in% params$report_inclu
 ```
 
 
-```{r maintenance_metrics_table}
+```{r maintenance_metrics_table, warning=FALSE, message=FALSE, error=FALSE}
 if('Maintenance Metrics' %in% params$report_includes){
   params$maint_metrics %>%
     dplyr::mutate(
@@ -131,9 +131,15 @@ if('Maintenance Metrics' %in% params$report_includes){
       `Metric Description` = desc,
       `Metric Value` = dplyr::case_when(!(name %in% c('has_bug_reports_url', 'news_current')) ~ value,
                                  value %in% c("TRUE","1") ~ 'Yes',
-                                 TRUE ~ 'No')
-    ) %>%
-    dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
+                                 TRUE ~ 'No'),
+      `Metric Score` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ "NA",
+          # flip the label display of the score to mimic the package score...
+          round(as.numeric(score), 2) == 0 ~ "1.0",
+          round(as.numeric(score), 2) == 1 ~ "0.0",
+          TRUE ~ as.character(1 - round(as.numeric(score), 2))
+        )
+      ) %>%
+      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
     knitr::kable(format = 'pandoc')
 }
 ```
@@ -171,9 +177,15 @@ if (!cm_ind) {
       dplyr::mutate(
         `Metric Name` = title,
         `Metric Description` = desc,
-        `Metric Value` = value
+        `Metric Value` = value,
+        `Metric Score` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ "NA",
+          # flip the label display of the score to mimic the package score...
+          round(as.numeric(score), 2) == 0 ~ "1.0",
+          round(as.numeric(score), 2) == 1 ~ "0.0",
+          TRUE ~ as.character(1 - round(as.numeric(score), 2))
+        )
       ) %>%
-      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
+      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
       knitr::kable(format = 'latex', booktabs = TRUE)
     
     if (!requireNamespace("kableExtra", quietly = TRUE)) comm_out_tab else comm_out_tab %>% kableExtra::kable_styling(position = "left")
