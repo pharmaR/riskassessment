@@ -1,6 +1,6 @@
 Package: riskassessment
 Title: A web app designed to interface with the `riskmetric` package
-Version: 2.0.0.9007
+Version: 2.0.0.9008
 Authors@R: c( 
     person("Aaron", "Clark", role = c("aut", "cre"), email = "aaron.clark@biogen.com"),
     person("Robert", "Krajcik", role = "aut", email = "robert.krajcik@biogen.com"),
@@ -85,5 +85,5 @@ Language: en-US
 Depends: 
     R (>= 2.10)
 VignetteBuilder: knitr
-Remotes:  
+Remotes: 
     pharmaR/riskmetric
