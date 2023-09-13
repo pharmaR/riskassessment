@@ -61,6 +61,7 @@ mod_downloadHandler_include_ui <- function(id){
 #' @description A shiny Module.
 #'
 #' @param id Internal parameters for {shiny}.
+#' @param pkg_name the name of the package passed by mod_reportPreview
 #'
 #' @noRd 
 mod_downloadHandler_include_server <- function(id, pkg_name) {
@@ -71,36 +72,54 @@ mod_downloadHandler_include_server <- function(id, pkg_name) {
                     "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
                     "Source Explorer Comments")
     
-    observeEvent(input$save_choices, {
-      browser()
-      session$userData$report_includes <- paste(input$report_includes, collapse = ",")
+    user_data <- reactiveVal(value = 0L)
+
+    # retrieve user data, if it exists.  Otherwise use my_choices, above.
+    observe({
+     req(user_data() == 0L)
+     if (file.exists('./inst/report_includes.txt')) {
+       session$userData$report_includes <- readLines("./inst/report_includes.txt")
+     } else {
+       session$userData$report_includes <- paste(my_choices, collapse = ",")  
+     }
+    user_data(1L)
+    }, priority = 2)
       
-      cookies::set_cookie(
-        cookie_name = "selected_choices",
-        cookie_value = input$report_includes[1]
-      )
+    # save user selections to userData$report_includes, and write to txt file
+    observeEvent(input$save_choices, {
+      session$userData$report_includes <- paste(input$report_includes, collapse = ",")
     }, ignoreInit = TRUE)
     
-      observeEvent(pkg_name(), {
-      req(input$report_includes)
+    observeEvent(pkg_name(), {
+      req(pkg_name() != "-")
+      req(user_data() == 1L)
 
-      value <- cookies::get_cookie("selected_choices")
-      cat(value, "\n")
-      
       # Make sure "elements to include" don't reset from pkg to pkg.
       shinyWidgets::updatePrettyCheckboxGroup(
         inputId = "report_includes",
         choices = my_choices,
         selected = unlist(strsplit(session$userData$report_includes,","))
       )
-    }, ignoreInit = TRUE)
+    })
     
+    # run this once to set the choices for the first package selected
+    observeEvent(input$report_includes, {
+      shinyWidgets::updatePrettyCheckboxGroup(
+        inputId = "report_includes",
+        choices = my_choices,
+        selected = unlist(strsplit(session$userData$report_includes,","))
+      )
+    }, once = TRUE)
+    
+    # save userData$report_includes to txt file at session end
+    onStop(function() {
+      writeLines(session$userData$report_includes, "./inst/report_includes.txt")
+    })
+
     return(reactive(input$report_includes))
   })
 }
   
-
-    
 #' downloadHandler Server Functions
 #'
 #' @noRd 
