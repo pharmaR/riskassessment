@@ -27,6 +27,8 @@ metricBoxServer(
 
 \item{value}{metric value.}
 
+\item{score}{metric score, as a character value}
+
 \item{is_perc}{logical is the value is a percentage?}
 
 \item{is_url}{logical is the value a url}

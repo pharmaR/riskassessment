@@ -13,6 +13,7 @@ metricBoxUI <- function(id) {
 #' @param title title.
 #' @param desc description.
 #' @param value metric value.
+#' @param score metric score, as a character value
 #' @param is_perc logical is the value is a percentage?
 #' @param is_url  logical is the value a url
 #' @param succ_icon icon used if is_true.
