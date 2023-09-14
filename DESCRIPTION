@@ -67,9 +67,9 @@ Imports:
     shinyTree,
     shinyWidgets,
     stringr,
-    shinyAce
+    shinyAce,
+    chromote (>= 0.1.1.9001)
 Suggests: 
-    chromote,
     fontawesome,
     kableExtra,
     knitr,
@@ -85,5 +85,6 @@ Language: en-US
 Depends: 
     R (>= 2.10)
 VignetteBuilder: knitr
-Remotes: 
-    pharmaR/riskmetric
+Remotes:  
+    pharmaR/riskmetric,
+    rstudio/chromote
