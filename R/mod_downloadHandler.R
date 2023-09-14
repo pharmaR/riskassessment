@@ -35,14 +35,16 @@ mod_downloadHandler_filetype_ui <- function(id){
 #' @description A shiny Module.
 #'
 #' @param id Internal parameters for {shiny}.
+#' @param my_choices a char vector of report options
 #'
 #' @noRd 
-mod_downloadHandler_include_ui <- function(id){
+mod_downloadHandler_include_ui <- function(id, my_choices){
   # will want to change this to input_UI so we can include additional items
   # such as "Include comments" check boxes for summary, maint-metrics, comm usage, and overall comments
+  # note: my_choices is shared between the ui and the server
   my_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
-    "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
-    "Source Explorer Comments")
+                  "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
+                  "Source Explorer Comments")
   div(
     strong(p("Elements to include:")),
     div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
@@ -62,15 +64,12 @@ mod_downloadHandler_include_ui <- function(id){
 #'
 #' @param id Internal parameters for {shiny}.
 #' @param pkg_name the name of the package passed by mod_reportPreview
+#' @param my_choices a char vector of report options
 #'
 #' @noRd 
-mod_downloadHandler_include_server <- function(id, pkg_name) {
+mod_downloadHandler_include_server <- function(id, pkg_name, my_choices) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    
-    my_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
-                    "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
-                    "Source Explorer Comments")
     
     user_data <- reactiveVal(value = 0L)
 
