@@ -32,12 +32,12 @@ configure_db <- function(dbname, config) {
   # Set decision rules
   if (!is.null(config[["decisions"]]$rules)) {
     dec_rules <- parse_rules(config[["decisions"]])
-    purrr::iwalk(config[["decisions"]]$rules, ~ {
-      if (.y %in% config[["decision"]]$categories) {
+    purrr::iwalk(dec_rules, ~ {
+      if (.y %in% config[["decisions"]]$categories) {
       dbUpdate("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = {.y}", dbname)
       dbUpdate("INSERT INTO rules (filter, decision_id) VALUES ('~ {.x[1]} <= .x & .x <= {.x[length(.x)]}', {match(.y, config[['decisions']]$categories)});", dbname)
-      } else if (grepl("^rule_\d+$", .y)) {
-        dbUpdate("INSERT INTO rules (metric_id, filter, decision_id) VALUE ({.x$metric_id}, {.x$filter}, {.x$metric_id})")
+      } else if (grepl("^rule_\\d+$", .y)) {
+        dbUpdate("INSERT INTO rules (metric_id, filter, decision_id) VALUES ({.x$metric_id}, {.x$filter}, {.x$decision_id})", dbname)
       }
       })
     
@@ -136,9 +136,10 @@ check_dec_rules <- function(decision_categories, decision_rules) {
 #' 
 #' @noRd
 check_metric_weights <- function(metric_weights) {
-  allowed_lst <- c('has_vignettes', 'has_news', 'news_current', 'has_bug_reports_url', 'has_website', 'has_maintainer', 'has_source_control', 'export_help', 'bugs_status', 'license', 'covr_coverage', 'downloads_1yr')
-  if (!all(names(metric_weights) %in% allowed_lst))
-    stop(glue::glue("The metric weights must be a subset of the following: {paste(allowed_lst, collapse = ', ')}"))
+  config_active <- Sys.getenv("GOLEM_CONFIG_ACTIVE", Sys.getenv("R_CONFIG_ACTIVE", "default"))
+  
+  if (!all(names(metric_weights) %in% metric_lst))
+    stop(glue::glue("The metric weights must be a subset of the following: {paste(metric_lst, collapse = ', ')}"))
   
   if (length(names(metric_weights)) != length(unique(names(metric_weights))))
     stop("The metric weights must be unique")
@@ -146,7 +147,13 @@ check_metric_weights <- function(metric_weights) {
   if (!all(purrr::map_lgl(metric_weights, ~ is.null(.x) || is.numeric(.x) && length(.x) == 1 && .x >= 0)))
     stop("The weights must be single, non-negative, numeric values")
   
-  get_golem_config()
+  if (config_active != "default") {
+    default_config <- get_golem_config("metric_weights", "default", file = app_sys("db-config.yml"))
+    common_weights <- intersect(default_config, metric_weights)
+    if (length(common_weights) > 0) {
+      warning(glue::glue("The following weights were applied from the default configuration:\n{purrr::imap_chr(common_weights, ~ paste(.y, .x, sep = ': ')) %>% paste(collapse = '\n')}"))
+    }
+  }
 }
 
 #' Check credential configuration file
@@ -180,9 +187,6 @@ check_credentials <- function(credentials_lst) {
 }
 
 parse_rules <- function(dec_config) {
-  metric_lst <- dbSelect("SELECT name, long_name FROM metric") %>%
-    with(purrr::set_names(name, long_name))
-  
   rule_lst <- dec_config[["rules"]] %>%
     `[`(names(.) %in% dec_config[["categories"]] | grepl("^rule_\\d+$", names(.))) %>%
     purrr::imap( ~ if (.y %in% dec_config[["categories"]]) {
@@ -190,5 +194,8 @@ parse_rules <- function(dec_config) {
     } else {
       .x$decision_id <- match(.x$decision, dec_config[["categories"]])
       .x$metric_id <- match(.x$metric, metric_lst)
+      .x
     })
+  
+  rule_lst
 }

@@ -49,6 +49,10 @@ example:
       Insignificant Risk:
         - 0
         - .1
+      rule_2:
+        metric: has_vignettes
+        filter: ~ .x == 0
+        decision: Major Risk
       Severe Risk:
         - .7
         - 1
