@@ -6,6 +6,7 @@
 * Summarize Package Dependencies (#618)
 * Integrated the function explorer provided by our GSK contributors (#498)
 * Remove suggests from riskcalc weights table (#646)
+* Added correct remotes reference in `DESCRIPTION` file for pharmar/riskmetric & rstudio/chromote
 * Build Report Updates (#526)
 
 # riskassessment 2.0.0
