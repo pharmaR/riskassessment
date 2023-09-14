@@ -54,7 +54,7 @@ usethis::use_package("knitr", type = "Suggests")
 # usethis::use_package("rjson")
 # 
 usethis::use_dev_package("riskmetric")#, min_version = "0.2.2") 
-usethis::use_dev_package("chromote")#, min_version = "0.2.2") 
+usethis::use_dev_package("chromote",type = "suggests")#, min_version = "0.2.2") 
 
 # # usethis::use_package("IDEAFilter") # install.packages("IDEAFilter") #‘0.1.0.9000’
 # usethis::use_dev_package("IDEAFilter") # devtools::install_github("Biogen-Inc/IDEAFilter")
