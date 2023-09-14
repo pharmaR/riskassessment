@@ -54,7 +54,7 @@ mod_downloadHandler_include_ui <- function(id, my_choices){
         choices = my_choices, selected = my_choices
       )
     ),
-    actionButton(NS(id, "save_choices"), "Save Choices")
+    actionButton(NS(id, "srore_prefs"), "Store Preferences")
   )
 }
 
@@ -85,7 +85,7 @@ mod_downloadHandler_include_server <- function(id, pkg_name, my_choices) {
     }, priority = 2)
       
     # save user selections to userData$report_includes, and write to txt file
-    observeEvent(input$save_choices, {
+    observeEvent(input$srore_prefs, {
       session$userData$report_includes <- paste(input$report_includes, collapse = ",")
     }, ignoreInit = TRUE)
     
