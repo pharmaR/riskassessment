@@ -31,9 +31,14 @@ configure_db <- function(dbname, config) {
   
   # Set decision rules
   if (!is.null(config[["decisions"]]$rules)) {
+    dec_rules <- parse_rules(config[["decisions"]])
     purrr::iwalk(config[["decisions"]]$rules, ~ {
+      if (.y %in% config[["decision"]]$categories) {
       dbUpdate("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = {.y}", dbname)
       dbUpdate("INSERT INTO rules (filter, decision_id) VALUES ('~ {.x[1]} <= .x & .x <= {.x[length(.x)]}', {match(.y, config[['decisions']]$categories)});", dbname)
+      } else if (grepl("^rule_\d+$", .y)) {
+        dbUpdate("INSERT INTO rules (metric_id, filter, decision_id) VALUE ({.x$metric_id}, {.x$filter}, {.x$metric_id})")
+      }
       })
     
   } else {
@@ -89,30 +94,38 @@ check_dec_cat <- function(decision_categories) {
 #' 
 #' @noRd
 check_dec_rules <- function(decision_categories, decision_rules) {
-  if (!all(names(decision_rules) %in% decision_categories))
-    stop("All decision rule categories should be included in the list of decision categories")
+  return()
+  metric_lst <- dbSelect("SELECT name, long_name FROM metric") %>%
+    with(purrr::set_names(name, long_name))
+  
+  if (!all(names(decision_rules) %in% decision_categories | grepl("^rule_\\d+$", names(decision_rules))))
+    stop("All decision rules should be either named after a decision category or following the convention `rule_{d}`")
   
   if (length(names(decision_rules)) != length(unique(names(decision_rules))))
-    stop("The decision categories must be unique for the decision rules")
+    stop("The rule names must be unique")
   
-  if (!all(purrr::map_lgl(decision_rules, ~ is.numeric(unlist(.x)))))
+  if (any(names(decision_rules) %in% decision_categories)) {
+    dec_cat_rules <- decision_rules[names(decision_rules) %in% decision_categories]
+  
+  if (!all(purrr::map_lgl(dec_cat_rules, ~ is.numeric(unlist(.x)))))
     stop("The rules must be numeric values")
   
-  if (!all(purrr::map_lgl(decision_rules, ~ length(unlist(.x)) <= 2)))
+  if (!all(purrr::map_lgl(dec_cat_rules, ~ length(unlist(.x)) <= 2)))
     stop("At most two values can be provided for a decision rule")
   
-  dec_lst <- unlist(decision_rules[decision_categories])
+  dec_lst <- unlist(dec_cat_rules[decision_categories])
   if (!all(dec_lst >= 0 & dec_lst <= 1))
     stop("All rules must be between 0 and 1")
   
   if (!all(dec_lst == sort(dec_lst)))
     stop("The rules should be ascending in order of the categories")
   
-  if (decision_categories[1] %in% names(decision_rules) && unlist(decision_rules[[decision_categories[1]]])[1] != 0)
+  if (decision_categories[1] %in% names(dec_cat_rules) && unlist(decision_rules[[decision_categories[1]]])[1] != 0)
     stop("Rules for the first decision category must have a lower bound of 0")
   
   if (decision_categories[length(decision_categories)] %in% names(decision_rules) && unlist(decision_rules[[decision_categories[length(decision_categories)]]])[2] != 1)
     stop("Rules for the last decision category must have an upper bound of 1")
+  }
 }
 
 #' Check metric weights
@@ -132,6 +145,8 @@ check_metric_weights <- function(metric_weights) {
   
   if (!all(purrr::map_lgl(metric_weights, ~ is.null(.x) || is.numeric(.x) && length(.x) == 1 && .x >= 0)))
     stop("The weights must be single, non-negative, numeric values")
+  
+  get_golem_config()
 }
 
 #' Check credential configuration file
@@ -162,4 +177,18 @@ check_credentials <- function(credentials_lst) {
   valid_privileges <- unique(unlist(credentials_lst$privileges[credentials_lst$roles], use.names = FALSE))
   if (!all(used_privileges %in% valid_privileges))
     warning(glue::glue("The following privilege(s) is(are) not assigned to any 'role' in the credentials configuration: {paste(used_privileges[!used_privileges %in% valid_privileges], collapse = ', ')}"))
+}
+
+parse_rules <- function(dec_config) {
+  metric_lst <- dbSelect("SELECT name, long_name FROM metric") %>%
+    with(purrr::set_names(name, long_name))
+  
+  rule_lst <- dec_config[["rules"]] %>%
+    `[`(names(.) %in% dec_config[["categories"]] | grepl("^rule_\\d+$", names(.))) %>%
+    purrr::imap( ~ if (.y %in% dec_config[["categories"]]) {
+      .x
+    } else {
+      .x$decision_id <- match(.x$decision, dec_config[["categories"]])
+      .x$metric_id <- match(.x$metric, metric_lst)
+    })
 }
