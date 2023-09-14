@@ -54,7 +54,7 @@ mod_downloadHandler_include_ui <- function(id, my_choices){
         choices = my_choices, selected = my_choices
       )
     ),
-    actionButton(NS(id, "srore_prefs"), "Store Preferences")
+    actionButton(NS(id, "store_prefs"), "Store Preferences")
   )
 }
 
@@ -65,6 +65,8 @@ mod_downloadHandler_include_ui <- function(id, my_choices){
 #' @param id Internal parameters for {shiny}.
 #' @param pkg_name the name of the package passed by mod_reportPreview
 #' @param my_choices a char vector of report options
+#' 
+#' @importFrom shiny showModal modalDialog
 #'
 #' @noRd 
 mod_downloadHandler_include_server <- function(id, pkg_name, my_choices) {
@@ -85,8 +87,11 @@ mod_downloadHandler_include_server <- function(id, pkg_name, my_choices) {
     }, priority = 2)
       
     # save user selections to userData$report_includes, and write to txt file
-    observeEvent(input$srore_prefs, {
+    observeEvent(input$store_prefs, {
       session$userData$report_includes <- paste(input$report_includes, collapse = ",")
+      shiny::showModal(shiny::modalDialog(title = "User preferences saved",
+                                          footer = modalButton("Dismiss"), 
+                                          easyClose = TRUE))
     }, ignoreInit = TRUE)
     
     observeEvent(pkg_name(), {
