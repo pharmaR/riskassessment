@@ -35,53 +35,54 @@ mod_downloadHandler_filetype_ui <- function(id){
 #' @description A shiny Module.
 #'
 #' @param id Internal parameters for {shiny}.
-#' @param my_choices a char vector of report options
 #'
 #' @noRd 
-mod_downloadHandler_include_ui <- function(id, my_choices){
+mod_downloadHandler_include_ui <- function(id){
   # will want to change this to input_UI so we can include additional items
   # such as "Include comments" check boxes for summary, maint-metrics, comm usage, and overall comments
-  # note: my_choices is shared between the ui and the server
-  my_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
-                  "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
-                  "Source Explorer Comments")
-  div(
-    strong(p("Elements to include:")),
-    div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
-      # checkboxGroupInput(
-      shinyWidgets::prettyCheckboxGroup(
-        NS(id, "report_includes"), label = NULL, inline = FALSE,
-        choices = my_choices, selected = my_choices
-      )
-    ),
-    actionButton(NS(id, "store_prefs"), "Store Preferences")
-  )
+  uiOutput(NS(id, "mod_downloadHandler_incl_output"))
 }
-
-#' downloadHandler Inlcude Server Function
+#' downloadHandler Include Server Function
 #'
 #' @description A shiny Module.
 #'
 #' @param id Internal parameters for {shiny}.
 #' @param pkg_name the name of the package passed by mod_reportPreview
-#' @param my_choices a char vector of report options
 #' 
 #' @importFrom shiny showModal modalDialog
 #'
 #' @noRd 
-mod_downloadHandler_include_server <- function(id, pkg_name, my_choices) {
+mod_downloadHandler_include_server <- function(id, pkg_name) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
+    rpt_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
+                     "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
+                     "Source Explorer Comments")
+    
     user_data <- reactiveVal(value = 0L)
-
+    
+    output$mod_downloadHandler_incl_output <- renderUI({
+      div(
+        strong(p("Elements to include:")),
+        div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
+            # checkboxGroupInput(
+            shinyWidgets::prettyCheckboxGroup(
+              ns("report_includes"), label = NULL, inline = FALSE,
+              choices = rpt_choices, selected = rpt_choices
+            )
+        ),
+        actionButton(ns("store_prefs"), "Store Preferences")
+      )
+    })
+    
     # retrieve user data, if it exists.  Otherwise use my_choices, above.
     observe({
      req(user_data() == 0L)
      if (file.exists('./inst/report_includes.txt')) {
        session$userData$report_includes <- readLines("./inst/report_includes.txt")
      } else {
-       session$userData$report_includes <- paste(my_choices, collapse = ",")  
+       session$userData$report_includes <- paste(rpt_choices, collapse = ",")  
      }
     user_data(1L)
     }, priority = 2)
@@ -101,7 +102,7 @@ mod_downloadHandler_include_server <- function(id, pkg_name, my_choices) {
       # Make sure "elements to include" don't reset from pkg to pkg.
       shinyWidgets::updatePrettyCheckboxGroup(
         inputId = "report_includes",
-        choices = my_choices,
+        choices = rpt_choices,
         selected = unlist(strsplit(session$userData$report_includes,","))
       )
     })
@@ -110,7 +111,7 @@ mod_downloadHandler_include_server <- function(id, pkg_name, my_choices) {
     observeEvent(input$report_includes, {
       shinyWidgets::updatePrettyCheckboxGroup(
         inputId = "report_includes",
-        choices = my_choices,
+        choices = rpt_choices,
         selected = unlist(strsplit(session$userData$report_includes,","))
       )
     }, once = TRUE)

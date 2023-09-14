@@ -43,10 +43,6 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
   
   moduleServer(id, function(input, output, session) {
     
-    my_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
-                    "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
-                    "Source Explorer Comments")
-    
     # IntroJS.
     introJSServer(id = "introJS", text = reactive(rp_steps), user, credentials)
 
@@ -74,9 +70,9 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                   mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
                 ),
                 column(8, 
-                   mod_downloadHandler_include_ui(NS(id, "downloadHandler"), my_choices)
+                   mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
                  )
-              )
+              ),
             ),
             
             br(), br(),
@@ -98,7 +94,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     
 
     # return vector of elements to include in the report
-    report_includes <- mod_downloadHandler_include_server("downloadHandler", selected_pkg$name, my_choices)
+    report_includes <- mod_downloadHandler_include_server("downloadHandler", selected_pkg$name)
     
     
     
