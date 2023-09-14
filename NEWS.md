@@ -5,6 +5,7 @@
 * Fix bug with the logo's hyperlink not functioning in the expected zone (#633)
 * Summarize Package Dependencies (#618)
 * Integrated the function explorer provided by our GSK contributors (#498)
+* Remove suggests from riskcalc weights table (#646)
 * Started showing `metric_score`s for each assessment's card, using an html meter (#634)
 
 
