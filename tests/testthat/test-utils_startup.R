@@ -27,7 +27,10 @@ test_that("database creation", {
                              "score", "weighted_score", "decision_id", "decision_by", "decision_date", "date_added"))
   metric <- DBI::dbGetQuery(con, "SELECT * FROM metric")
   expect_equal(nrow(metric), 15) 
-  expect_equal(names(metric), c("id", "name", "long_name", "is_perc", "is_url", "description", "class", "weight"))
+  expect_equal(names(metric), c("id", "name", "long_name", "is_perc", "is_url", "is_riskmetric", "description", "class", "weight"))
+  #This expectation is to ensure that the internal data element metric_lst is
+  #maintaining uniformity with the metric table
+  expect_equal(metric_lst, metric[metric$is_riskmetric == 1, "name"])
   pkg_metric <- DBI::dbGetQuery(con, "SELECT * FROM package_metrics")
   expect_equal(nrow(pkg_metric), 0)
   expect_equal(names(pkg_metric), c("id", "package_id", "metric_id", "value", "encode"))
