@@ -16,12 +16,12 @@ test_that("check_dec_rules works", {
   dec_cat <- c("Low", "Medium", "High")
   expect_error(
     check_dec_rules(dec_cat, list("Low" = list(0, .1), "Very High" = list(.7, 1))),
-    "All decision rule categories should be included in the list of decision categories"
+    "All decision rules should be either named after a decision category or following the convention `rule_\\{d\\}`"
   )
   
   expect_error(
     check_dec_rules(dec_cat, list("Low" = list(0, .1), "Low" = list(0, .1))),
-    "The decision categories must be unique for the decision rules"
+    "The rule names must be unique"
   )
   
   expect_error(
@@ -56,11 +56,9 @@ test_that("check_dec_rules works", {
 })
 
 test_that("check_metric_weights works", {
-  
-  allowed_lst <- c('has_vignettes', 'has_news', 'news_current', 'has_bug_reports_url', 'has_website', 'has_maintainer', 'has_source_control', 'export_help', 'bugs_status', 'license', 'covr_coverage', 'downloads_1yr')
   expect_error(
     check_metric_weights(list(has_vignette = -2, has_vignette = 0)),
-    glue::glue("The metric weights must be a subset of the following: {paste(allowed_lst, collapse = ', ')}")
+    glue::glue("The metric weights must be a subset of the following: {paste(metric_lst, collapse = ', ')}")
   )
   
   expect_error(

@@ -94,7 +94,7 @@ check_dec_cat <- function(decision_categories) {
 #' 
 #' @noRd
 check_dec_rules <- function(decision_categories, decision_rules) {
-  return()
+  
   config_active <- Sys.getenv("GOLEM_CONFIG_ACTIVE", Sys.getenv("R_CONFIG_ACTIVE", "default"))
   decision_categories_combined <- 
     if (config_active != "default") unique(c(decision_categories, get_db_config("decisions", "default")[["categories"]])) else decision_categories
