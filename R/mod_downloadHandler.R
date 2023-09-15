@@ -85,7 +85,7 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
      req(counter() == 0L)
      req(parent$input$tabs == "Build Report")
      
-     user_file(glue::glue("./inst/report_downloads/report_preferences_{user$role}.txt"))
+     user_file(glue::glue("./inst/report_downloads/report_prefs_{user$name}_{user$role}.txt"))
      if (file.exists(user_file())) {
        session$userData$report_includes <- readLines(user_file())
      } else {
