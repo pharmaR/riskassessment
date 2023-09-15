@@ -36,6 +36,7 @@ auth
 biopharmaceutical
 bs
 bslib's
+chromote
 cmd
 config
 configs
@@ -81,6 +82,7 @@ repo's
 repo’s
 riskcalc
 riskmetric
+rstudio
 serverless
 shinyapps
 shinylogs
