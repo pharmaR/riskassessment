@@ -13,34 +13,34 @@ test_that("database creation", {
   
   expect_equal(db, "tmp.sqlite")
   
-  con <- RSQLite::dbConnect(RSQLite::SQLite(), db)
+  con <- DBI::dbConnect(RSQLite::SQLite(), db)
   on.exit({
-    RSQLite::dbDisconnect(con)
+    DBI::dbDisconnect(con)
     unlink(db)
     })
   
-  expect_equal(RSQLite::dbListTables(con),
+  expect_equal(DBI::dbListTables(con),
                c("comments", "community_usage_metrics", "decision_categories", "metric", "package", "package_metrics", "roles", "sqlite_sequence"))
-  pkg <- RSQLite::dbGetQuery(con, "SELECT * FROM package")
+  pkg <- DBI::dbGetQuery(con, "SELECT * FROM package")
   expect_equal(nrow(pkg), 0)
   expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", 
                              "score", "weighted_score", "decision_id", "decision_by", "decision_date", "date_added"))
-  metric <- RSQLite::dbGetQuery(con, "SELECT * FROM metric")
+  metric <- DBI::dbGetQuery(con, "SELECT * FROM metric")
   expect_equal(nrow(metric), 15) 
   expect_equal(names(metric), c("id", "name", "long_name", "is_perc", "is_url", "description", "class", "weight"))
-  pkg_metric <- RSQLite::dbGetQuery(con, "SELECT * FROM package_metrics")
+  pkg_metric <- DBI::dbGetQuery(con, "SELECT * FROM package_metrics")
   expect_equal(nrow(pkg_metric), 0)
   expect_equal(names(pkg_metric), c("id", "package_id", "metric_id", "value", "encode"))
-  com_metric <- RSQLite::dbGetQuery(con, "SELECT * FROM community_usage_metrics")
+  com_metric <- DBI::dbGetQuery(con, "SELECT * FROM community_usage_metrics")
   expect_equal(nrow(com_metric), 0)
   expect_equal(names(com_metric), c("id", "month", "year", "downloads", "version"))
-  comments <- RSQLite::dbGetQuery(con, "SELECT * FROM comments")
+  comments <- DBI::dbGetQuery(con, "SELECT * FROM comments")
   expect_equal(nrow(comments), 0)
   expect_equal(names(comments), c("id", "user_name", "user_role", "comment", "comment_type", "added_on"))
-  decisions <- RSQLite::dbGetQuery(con, "SELECT * FROM decision_categories")
+  decisions <- DBI::dbGetQuery(con, "SELECT * FROM decision_categories")
   expect_equal(nrow(decisions), 0)
   expect_equal(names(decisions), c("id", "decision", "color", "lower_limit", "upper_limit"))
-  roles <- RSQLite::dbGetQuery(con, "SELECT * FROM roles")
+  roles <- DBI::dbGetQuery(con, "SELECT * FROM roles")
   expect_equal(nrow(roles), 0)
   expect_equal(names(roles), c("id", "user_role", used_privileges))
 })
@@ -60,13 +60,13 @@ test_that("database creation", {
   
   expect_equal(db, "tmp.sqlite")
   
-  con <- RSQLite::dbConnect(RSQLite::SQLite(), db)
+  con <- DBI::dbConnect(RSQLite::SQLite(), db)
   on.exit({
-    RSQLite::dbDisconnect(con)
+    DBI::dbDisconnect(con)
     unlink(db)
   })
   
-  expect_equal(RSQLite::dbListTables(con),
+  expect_equal(DBI::dbListTables(con),
                c("credentials", "logs", "pwd_mngt"))
   creds <- shinymanager::read_db_decrypt(con, name = "credentials", passphrase = passphrase)
   expect_equal(creds$user, "ADMIN")
@@ -91,13 +91,13 @@ test_that("database creation", {
   
   expect_equal(db, "tmp.sqlite")
   
-  con <- RSQLite::dbConnect(RSQLite::SQLite(), db)
+  con <- DBI::dbConnect(RSQLite::SQLite(), db)
   on.exit({
-    RSQLite::dbDisconnect(con)
+    DBI::dbDisconnect(con)
     unlink(db)
   })
   
-  expect_equal(RSQLite::dbListTables(con),
+  expect_equal(DBI::dbListTables(con),
                c("credentials", "logs", "pwd_mngt"))
   creds <- shinymanager::read_db_decrypt(con, name = "credentials", passphrase = passphrase)
   expect_equal(creds$user, c("admin", "lead", "reviewer", "viewer"))

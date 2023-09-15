@@ -6,10 +6,10 @@
 #' @param command a string
 #' @param db_name character name (and file path) of the database
 #' @param .envir Environment to evaluate each expression in
-#' @param params A list of bindings, named or unnamed. Default is `NULL`, if present parameters will be passed to `RSQLite::dbBind()`
+#' @param params A list of bindings, named or unnamed. Default is `NULL`, if present parameters will be passed to `DBI::dbBind()`
 #'
 #' @import dplyr
-#' @importFrom RSQLite dbConnect dbSendStatement dbClearResult dbDisconnect
+#' @importFrom DBI dbConnect dbSendStatement dbClearResult dbDisconnect
 #'   dbGetRowsAffected
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
@@ -19,31 +19,31 @@
 #' @noRd
 dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_name'), .envir = parent.frame(), params = NULL){
   errFlag <- FALSE
-  con <- RSQLite::dbConnect(RSQLite::SQLite(), db_name)
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   tryCatch({
-    rs <- RSQLite::dbSendStatement(con, glue::glue_sql(command, .envir = .envir, .con = con))
+    rs <- DBI::dbSendStatement(con, glue::glue_sql(command, .envir = .envir, .con = con))
     if (!is.null(params))
-      RSQLite::dbBind(rs, params)
+      DBI::dbBind(rs, params)
   }, error = function(err) {
     message <- glue::glue("command: {command} resulted in {err}")
     message(message, .loggit = FALSE)
     loggit::loggit("ERROR", message, echo = FALSE)
-    RSQLite::dbDisconnect(con)
+    DBI::dbDisconnect(con)
     errFlag <<- TRUE
   },
   finally = {
     if (errFlag) return(invisible(NULL)) 
   })
 
-  nr <- RSQLite::dbGetRowsAffected(rs)
-  RSQLite::dbClearResult(rs)
+  nr <- DBI::dbGetRowsAffected(rs)
+  DBI::dbClearResult(rs)
   
   if (nr == 0) {
     message <- glue::glue("zero rows were affected by the command: {command}")
     message(message, .loggit = FALSE)
   }
-  RSQLite::dbDisconnect(con)
+  DBI::dbDisconnect(con)
 }
 
 #' Call function to get and upload info from CRAN/local to db.
@@ -358,10 +358,10 @@ db_trash_collection <- function(db_name = golem::get_golem_options('assessment_d
 }
 
 set_credentials_table <- function(credentials, db_name = golem::get_golem_options('credentials_db_name'), passphrase) {
-  con <- RSQLite::dbConnect(RSQLite::SQLite(), db_name)
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   out <- shinymanager::write_db_encrypt(conn = con, value = credentials, name = "credentials", passphrase = passphrase)
   
-  RSQLite::dbDisconnect(con)
+  DBI::dbDisconnect(con)
   invisible(out)
 }

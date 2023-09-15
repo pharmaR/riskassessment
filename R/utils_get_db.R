@@ -6,7 +6,7 @@
 #' @param .envir Environment to evaluate each expression in
 #' 
 #' @import dplyr
-#' @importFrom RSQLite dbConnect dbSendQuery dbFetch dbClearResult dbDisconnect
+#' @importFrom DBI dbConnect dbSendQuery dbFetch dbClearResult dbDisconnect
 #' @importFrom RSQLite SQLite
 #' @importFrom loggit loggit
 #' @importFrom glue glue glue_sql
@@ -16,11 +16,11 @@
 #' @noRd
 dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_name'), .envir = parent.frame()){
   errFlag <- FALSE
-  con <- RSQLite::dbConnect(RSQLite::SQLite(), db_name)
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   tryCatch(
     expr = {
-      rs <- RSQLite::dbSendQuery(con, glue::glue_sql(query, .envir = .envir, .con = con))
+      rs <- DBI::dbSendQuery(con, glue::glue_sql(query, .envir = .envir, .con = con))
     },
     warning = function(warn) {
       message <- glue::glue("warning:\n {query} \nresulted in\n {warn}")
@@ -32,16 +32,16 @@ dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_na
       message <- glue::glue("error:\n {query} \nresulted in\n {err}")
       message(message, .loggit = FALSE)
       loggit::loggit("ERROR", message, echo = FALSE)
-      RSQLite::dbDisconnect(con)
+      DBI::dbDisconnect(con)
       errFlag <<- TRUE
     },
     finally = {
       if (errFlag) return(NULL) 
     })
   
-  dat <- RSQLite::dbFetch(rs)
-  RSQLite::dbClearResult(rs)
-  RSQLite::dbDisconnect(con)
+  dat <- DBI::dbFetch(rs)
+  DBI::dbClearResult(rs)
+  DBI::dbDisconnect(con)
   
   return(dat)
 }
@@ -339,11 +339,11 @@ get_roles_table <- function(db_name = golem::get_golem_options('assessment_db_na
 }
 
 get_credentials_table <- function(db_name = golem::get_golem_options('credentials_db_name'), passphrase) {
-  con <- RSQLite::dbConnect(RSQLite::SQLite(), db_name)
+  con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   tbl <- shinymanager::read_db_decrypt(conn = con, name = "credentials", passphrase = passphrase)
   
-  RSQLite::dbDisconnect(con)
+  DBI::dbDisconnect(con)
   tbl
 }
 

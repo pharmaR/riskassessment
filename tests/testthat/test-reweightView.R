@@ -24,16 +24,16 @@ test_that("reweightView works", {
   app$wait_for_idle()
   app$click(selector = "#confirmation_id button")
   
-  con1 <- RSQLite::dbConnect(RSQLite::SQLite(), app_db_loc)
-  con2 <- RSQLite::dbConnect(RSQLite::SQLite(), db_backup)
+  con1 <- DBI::dbConnect(RSQLite::SQLite(), app_db_loc)
+  con2 <- DBI::dbConnect(RSQLite::SQLite(), db_backup)
   
-  expect_equal(RSQLite::dbListTables(con2), RSQLite::dbListTables(con1))
+  expect_equal(DBI::dbListTables(con2), DBI::dbListTables(con1))
   
-  db1 <- purrr::map(RSQLite::dbListTables(con1), ~ RSQLite::dbGetQuery(con1, glue::glue("SELECT * FROM {.x}")))
-  db2 <- purrr::map(RSQLite::dbListTables(con2), ~ RSQLite::dbGetQuery(con2, glue::glue("SELECT * FROM {.x}")))
+  db1 <- purrr::map(DBI::dbListTables(con1), ~ DBI::dbGetQuery(con1, glue::glue("SELECT * FROM {.x}")))
+  db2 <- purrr::map(DBI::dbListTables(con2), ~ DBI::dbGetQuery(con2, glue::glue("SELECT * FROM {.x}")))
   expect_equal(db2, db1)
-  RSQLite::dbDisconnect(con1)
-  RSQLite::dbDisconnect(con2)
+  DBI::dbDisconnect(con1)
+  DBI::dbDisconnect(con2)
 
   expect_equal(app$get_value(input = "reweightInfo-metric_name"), curr_new_wts[1,1])
   app$set_inputs(`reweightInfo-metric_weight` = -30)
