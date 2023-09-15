@@ -108,7 +108,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     )
     
     decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
-    metric_lst <- dbSelect("SELECT name, long_name FROM metric") %>%
+    metric_lst <- dbSelect("SELECT name, long_name FROM metric WHERE is_riskmetric == 1") %>%
       with(purrr::set_names(name, long_name))
     
     #### Color List ####
