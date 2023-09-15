@@ -443,7 +443,7 @@ mod_decision_automation_server <- function(id, user, credentials){
         
         DT::datatable({
           risk_rule_update() %>% 
-            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "filter", "decision")]) %>% dplyr::mutate(metric = if (is.na(metric)) "Risk Score" else names(metric_lst)[match(metric, metric_lst)]))
+            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "condition", "decision")]) %>% dplyr::mutate(metric = if (is.na(metric)) "Risk Score" else names(metric_lst)[match(metric, metric_lst)]))
         },
         escape = FALSE,
         class = "cell-border",
@@ -613,7 +613,7 @@ mod_decision_automation_server <- function(id, user, credentials){
         out_lst <- purrr::compact(reactiveValuesToList(rule_lst)[isolate(input$rules_order)])
         DT::datatable({
           out_lst %>% 
-            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "filter", "decision")]) %>% dplyr::mutate(metric = if (is.na(metric)) "Risk Score" else names(metric_lst)[match(metric, metric_lst)]))
+            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "condition", "decision")]) %>% dplyr::mutate(metric = if (is.na(metric)) "Risk Score" else names(metric_lst)[match(metric, metric_lst)]))
         },
         escape = FALSE,
         class = "cell-border",
@@ -764,11 +764,11 @@ mod_decision_automation_server <- function(id, user, credentials){
               ifelse(test = length(.) == 0, yes = 0)
             decision_id <- dbSelect("select id from decision_categories where decision == {.x$decision}")[[1]]%>% 
               ifelse(test = length(.) == 0, yes = 0)
-            glue::glue("({metric_id}, '{.x$filter}', {decision_id})")
+            glue::glue("({metric_id}, '{.x$condition}', {decision_id})")
           }) %>%
           glue::glue_collapse(", ")
         dbUpdate("DELETE FROM rules")
-        dbUpdate(glue::glue("INSERT INTO rules (metric_id, filter, decision_id) VALUES {rule_out};"))
+        dbUpdate(glue::glue("INSERT INTO rules (metric_id, condition, decision_id) VALUES {rule_out};"))
       }
       
       removeModal()

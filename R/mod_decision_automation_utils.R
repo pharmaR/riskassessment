@@ -41,7 +41,7 @@ assign_decisions <- function(rule_list, package) {
                          WHERE name = {package}")
     loggit::loggit("INFO",
                    glue::glue("decision for the package {package} was assigned {decision} by decision automation rules"))
-    comment <- glue::glue("Decision was assigned '{decision}' by decision rules because the {measure} returned TRUE for `{rule$filter}`")
+    comment <- glue::glue("Decision was assigned '{decision}' by decision rules because the {measure} returned TRUE for `{rule$condition}`")
     dbUpdate(
       "INSERT INTO comments
           VALUES ({package}, 'Auto Assigned', 'admin',
@@ -156,11 +156,11 @@ process_rule_tbl <- function(db_name = golem::get_golem_options('assessment_db_n
   if (is.null(db_name))
     return(list())
   
-   rule_tbl <- dbSelect("SELECT m.name metric, r.filter, d.decision FROM rules r LEFT JOIN metric m ON r.metric_id = m.id LEFT JOIN decision_categories d ON r.decision_id = d.id", db_name)
+   rule_tbl <- dbSelect("SELECT m.name metric, r.condition, d.decision FROM rules r LEFT JOIN metric m ON r.metric_id = m.id LEFT JOIN decision_categories d ON r.decision_id = d.id", db_name)
    rule_tbl %>%
      purrr::pmap(~ {
        out <- list(...) %>%
-         within(mapper <- evalSetTimeLimit(parse(text = filter)))
+         within(mapper <- evalSetTimeLimit(parse(text = condition)))
      }) %>%
      purrr::set_names(ifelse(is.na(purrr::map_chr(., ~ .x$metric)), purrr::map_chr(., ~ risk_lbl(.x$decision, type = "module")), paste("rule", seq_along(.), sep = "_")))
 }

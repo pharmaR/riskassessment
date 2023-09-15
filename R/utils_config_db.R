@@ -35,9 +35,9 @@ configure_db <- function(dbname, config) {
     purrr::iwalk(dec_rules, ~ {
       if (.y %in% config[["decisions"]]$categories) {
       dbUpdate("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = {.y}", dbname)
-      dbUpdate("INSERT INTO rules (filter, decision_id) VALUES ('~ {.x[1]} <= .x & .x <= {.x[length(.x)]}', {match(.y, config[['decisions']]$categories)});", dbname)
+      dbUpdate("INSERT INTO rules (condition, decision_id) VALUES ('~ {.x[1]} <= .x & .x <= {.x[length(.x)]}', {match(.y, config[['decisions']]$categories)});", dbname)
       } else if (grepl("^rule_\\d+$", .y)) {
-        dbUpdate("INSERT INTO rules (metric_id, filter, decision_id) VALUES ({.x$metric_id}, {.x$filter}, {.x$decision_id})", dbname)
+        dbUpdate("INSERT INTO rules (metric_id, condition, decision_id) VALUES ({.x$metric_id}, {.x$condition}, {.x$decision_id})", dbname)
       }
       })
     
@@ -131,16 +131,16 @@ check_dec_rules <- function(decision_categories, decision_rules) {
   if (any(grepl("^rule_\\d$", names(decision_rules)))) {
     dec_metric_rules <- decision_rules[grepl("^rule_\\d$", names(decision_rules))]
     
-    if (!all(purrr::map(dec_metric_rules, ~ c("metric", "filter", "decision") %in% names(.x)) %>% unlist(use.names = FALSE)))
-      stop("Rules for metrics must contain the following three elements: 'metric', 'filter', & 'decision'")
+    if (!all(purrr::map(dec_metric_rules, ~ c("metric", "condition", "decision") %in% names(.x)) %>% unlist(use.names = FALSE)))
+      stop("Rules for metrics must contain the following three elements: 'metric', 'condition', & 'decision'")
 
     if (!all(purrr::map_chr(dec_metric_rules, ~ as.character(.x$metric)) %in% metric_lst))
       stop("Rules for metrics must have a valid value for the 'metric' element: ", paste(metric_lst, collapse = ", "))
     
-    mappers <- purrr::map(dec_metric_rules, ~ evalSetTimeLimit(parse(text = .x$filter))) %>%
+    mappers <- purrr::map(dec_metric_rules, ~ evalSetTimeLimit(parse(text = .x$condition))) %>%
       purrr::map_lgl(~ rlang::is_formula(.x) || rlang::is_function(.x))
     if (!all(mappers))
-      stop("Rules for metrics must have a valid formula or function for the 'filter' element")
+      stop("Rules for metrics must have a valid formula or function for the 'condition' element")
     
     if (!all(purrr::map_chr(dec_metric_rules, ~ as.character(.x$decision)) %in% decision_categories_combined))
       stop("Rules for metrics must have a valid value for the 'decision' element: ", paste(decision_categories, collapse = ", "))
