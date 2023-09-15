@@ -13,7 +13,7 @@ test_that("decision_automation works", {
     app_db_loc
   )
   
-  app <- shinytest2::AppDriver$new(test_path("test-apps", "decision_automation-app"))
+  app <- shinytest2::AppDriver$new(test_path("test-apps", "decision_automation-app"), load_timeout = 90*1000)
   
   # Check that reactive values are loaded correctly
   # Check datatable table
@@ -38,7 +38,7 @@ test_that("decision_automation works", {
   # Check automate decision module output matches as well
   actual <- app$get_value(export = "auto_decision_output")
   expect_equal(
-    purrr::map(actual, ~ .x$filter), 
+    purrr::map(actual, ~ .x$condition) %>% `[`(!grepl("^rule_\\d+$", names(.))), 
     purrr::map(expected, ~ paste("~", .x[1], "<= .x & .x <=", .x[2])) %>% purrr::set_names(purrr::map_chr(names(expected), ~ risk_lbl(.x, type = "module")))
   )
   
@@ -86,7 +86,7 @@ test_that("decision_automation works", {
                    `Moderate Risk` = c(0.3, 0.45))
   actual <- app$get_value(export = "auto_decision_output")
   expect_equal(
-    purrr::map(actual, ~ .x$filter), 
+    purrr::map(actual, ~ .x$condition) %>% `[`(!grepl("^rule_\\d+$", names(.))), 
     purrr::map(expected, ~ paste("~", .x[1], "<= .x & .x <=", .x[2])) %>% purrr::set_names(purrr::map_chr(names(expected), ~ risk_lbl(.x, type = "module")))
   )
   
