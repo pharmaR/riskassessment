@@ -79,7 +79,7 @@ uploadPackageUI <- function(id) {
 #' 
 uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events) {
   if (missing(credentials))
-    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
+    credentials <- get_db_config("credentials")
   moduleServer(id, function(input, output, session) {
     
     observe({

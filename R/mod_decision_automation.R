@@ -92,7 +92,7 @@ mod_decision_automation_ui_2 <- function(id){
 #' @importFrom sortable sortable_js sortable_options sortable_js_capture_input
 mod_decision_automation_server <- function(id, user, credentials){
   if (missing(credentials))
-    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
+    credentials <- get_db_config("credentials")
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     

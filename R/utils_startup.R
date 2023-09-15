@@ -139,7 +139,7 @@ create_credentials_dev_db <- function(db_name){
   if (missing(db_name) || is.null(db_name) || typeof(db_name) != "character" || length(db_name) != 1 || !grepl("\\.sqlite$", db_name))
     stop("db_name must follow SQLite naming conventions (e.g. 'credentials.sqlite')")
   
-  credential_config <- get_golem_config("credentials", file = app_sys("db-config.yml"))
+  credential_config <- get_db_config("credentials")
   # Init the credentials table for credentials database
   if (is.null(credential_config)) {
     credentials <- data.frame(
@@ -187,7 +187,7 @@ create_credentials_dev_db <- function(db_name){
 initialize_raa <- function(assess_db, cred_db, decision_cat) {
   if (isTRUE(getOption("shiny.testmode"))) return(NULL)
   
-  db_config <- get_golem_config(NULL, file = app_sys("db-config.yml"))
+  db_config <- get_db_config(NULL)
   used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json", "metric_weights")
   if (any(!names(db_config) %in% used_configs)) {
     names(db_config) %>%
@@ -195,8 +195,8 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
       purrr::walk(~ warning(glue::glue("Unknown database configuration '{.x}' found in db-config.yml")))
   }
   
-  assessment_db <- if (missing(assess_db)) get_golem_config("assessment_db", file = app_sys("db-config.yml")) else assess_db
-  credentials_db <- if (missing(cred_db)) get_golem_config("credential_db", file = app_sys("db-config.yml")) else cred_db
+  assessment_db <- if (missing(assess_db)) get_db_config("assessment_db") else assess_db
+  credentials_db <- if (missing(cred_db)) get_db_config("credential_db") else cred_db
   
   if (is.null(assessment_db) || typeof(assessment_db) != "character" || length(assessment_db) != 1 || !grepl("\\.sqlite$", assessment_db))
     stop("assess_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
@@ -204,7 +204,7 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
     stop("cred_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
   
   # Start logging info.
-  loggit_file <- get_golem_config("loggit_json", file = app_sys("db-config.yml"))
+  loggit_file <- get_db_config("loggit_json")
   if (isRunning()) loggit::set_logfile(loggit_file)
 
   # https://github.com/rstudio/fontawesome/issues/99
@@ -226,7 +226,7 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
     create_credentials_db(credentials_db, admin_role)
   }
   
-  decision_categories <- if (missing(decision_cat)) get_golem_config('decisions', file = app_sys("db-config.yml"))[["categories"]] else decision_cat
+  decision_categories <- if (missing(decision_cat)) get_db_config('decisions')[["categories"]] else decision_cat
   decisions <- suppressMessages(dbSelect("SELECT decision FROM decision_categories", assessment_db))
   check_dec_cat(decision_categories)
   if (nrow(decisions) == 0) {

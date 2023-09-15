@@ -18,7 +18,7 @@ set_colors <- function(decision_categories) {
 }
 
 configure_db <- function(dbname, config) {
-  if (missing(config)) config <- get_golem_config(NULL, file = app_sys("db-config.yml"))
+  if (missing(config)) config <- get_db_config(NULL)
 
   # Perform checks before configuring database
   check_decision_config(config[["decisions"]])
@@ -167,7 +167,7 @@ check_metric_weights <- function(metric_weights) {
     stop("The weights must be single, non-negative, numeric values")
   
   if (config_active != "default") {
-    default_config <- get_golem_config("metric_weights", "default", file = app_sys("db-config.yml"))
+    default_config <- get_db_config("metric_weights", "default")
     common_weights <- intersect(default_config, metric_weights)
     if (length(common_weights) > 0) {
       warning(glue::glue("The following weights were applied from the default configuration:\n{purrr::imap_chr(common_weights, ~ paste(.y, .x, sep = ': ')) %>% paste(collapse = '\n')}"))
