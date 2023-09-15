@@ -36,7 +36,7 @@ reportPreviewUI <- function(id) {
 #' 
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                                 com_metrics_raw, mm_comments, cm_comments, #se_comments,
-                                downloads_plot_data, user, credentials, app_version,
+                                downloads_plot_data, user, parent, credentials, app_version,
                                 metric_weights) {
   if (missing(credentials))
     credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
@@ -94,7 +94,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     
 
     # return vector of elements to include in the report
-    report_includes <- mod_downloadHandler_include_server("downloadHandler", selected_pkg$name)
+    report_includes <- mod_downloadHandler_include_server("downloadHandler", selected_pkg$name, user, parent)
     
     
     

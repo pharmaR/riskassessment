@@ -14,6 +14,7 @@ reportPreviewServer(
   cm_comments,
   downloads_plot_data,
   user,
+  parent,
   credentials,
   app_version,
   metric_weights

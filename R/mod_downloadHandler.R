@@ -48,11 +48,14 @@ mod_downloadHandler_include_ui <- function(id){
 #'
 #' @param id Internal parameters for {shiny}.
 #' @param pkg_name the name of the package passed by mod_reportPreview
+#' @param user char vector containing name and role
+#' @param parent the parent (calling module) session information
 #' 
 #' @importFrom shiny showModal modalDialog
+#' @importFrom glue glue
 #'
 #' @noRd 
-mod_downloadHandler_include_server <- function(id, pkg_name) {
+mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
@@ -60,7 +63,8 @@ mod_downloadHandler_include_server <- function(id, pkg_name) {
                      "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
                      "Source Explorer Comments")
     
-    user_data <- reactiveVal(value = 0L)
+    counter <- reactiveVal(value = 0L)
+    user_file <- reactiveVal(value = NULL)
     
     output$mod_downloadHandler_incl_output <- renderUI({
       div(
@@ -78,17 +82,22 @@ mod_downloadHandler_include_server <- function(id, pkg_name) {
     
     # retrieve user data, if it exists.  Otherwise use my_choices, above.
     observe({
-     req(user_data() == 0L)
-     if (file.exists('./inst/report_includes.txt')) {
-       session$userData$report_includes <- readLines("./inst/report_includes.txt")
+     req(counter() == 0L)
+     req(parent$input$tabs == "Build Report")
+     
+     user_file(glue::glue("./inst/report_downloads/report_preferences_{user$role}.txt"))
+     if (file.exists(user_file())) {
+       session$userData$report_includes <- readLines(user_file())
      } else {
        session$userData$report_includes <- paste(rpt_choices, collapse = ",")  
      }
-    user_data(1L)
+    counter(counter() + 1L)
+
     }, priority = 2)
       
-    # save user selections to userData$report_includes, and write to txt file
+    # save user selections to userData$report_includes, and notify user
     observeEvent(input$store_prefs, {
+     
       session$userData$report_includes <- paste(input$report_includes, collapse = ",")
       shiny::showModal(shiny::modalDialog(title = "User preferences saved",
                                           footer = modalButton("Dismiss"), 
@@ -97,7 +106,7 @@ mod_downloadHandler_include_server <- function(id, pkg_name) {
     
     observeEvent(pkg_name(), {
       req(pkg_name() != "-")
-      req(user_data() == 1L)
+      req(counter() > 0L)
 
       # Make sure "elements to include" don't reset from pkg to pkg.
       shinyWidgets::updatePrettyCheckboxGroup(
@@ -116,9 +125,10 @@ mod_downloadHandler_include_server <- function(id, pkg_name) {
       )
     }, once = TRUE)
     
-    # save userData$report_includes to txt file at session end
+    # save session$userData$report_includes to txt file at session end
     onStop(function() {
-      writeLines(session$userData$report_includes, "./inst/report_includes.txt")
+      if (isolate(counter()) > 0)
+      writeLines(session$userData$report_includes, isolate(user_file()))
     })
 
     return(reactive(input$report_includes))
