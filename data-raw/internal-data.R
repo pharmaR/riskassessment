@@ -85,7 +85,7 @@ color_palette <- c("#06B756","#2FBC06","#67BA04","#81B50A","#96AB0A","#A99D04","
 
 used_privileges <- c("admin", "weight_adjust", "auto_decision_adjust", "final_decision", "revert_decision", "add_package", "delete_package", "overall_comment", "general_comment")
 
-metric_lst <- c('has_vignettes', 'has_news', 'news_current', 'has_bug_reports_url', 'has_website', 'has_maintainer', 'has_source_control', 'export_help', 'bugs_status', 'license', 'covr_coverage', 'downloads_1yr')
+metric_lst <- c('has_vignettes', 'has_news', 'news_current', 'has_bug_reports_url', 'has_website', 'has_maintainer', 'has_source_control', 'export_help', 'bugs_status', 'license', 'covr_coverage', 'downloads_1yr', 'dependencies', 'reverse_dependencies')
 
 usethis::use_data(
   # app_version, 

@@ -178,16 +178,16 @@ create_credentials_dev_db <- function(db_name){
 #' 
 #' @param assess_db A string denoting the name of the assessment database.
 #' @param cred_db A string denoting the name of the credentials database.
-#' @param decision_cat A character vector denoting the decision categories in ascending order of risk
+#' @param configuration a list dictating the configuration of the databases
 #'
 #' @return There is no return value. The function is run for its side effects.
 #' @importFrom loggit set_logfile
 #'
 #' @export
-initialize_raa <- function(assess_db, cred_db, decision_cat) {
+initialize_raa <- function(assess_db, cred_db, configuration) {
   if (isTRUE(getOption("shiny.testmode"))) return(NULL)
   
-  db_config <- get_db_config(NULL)
+  db_config <- if(missing(configuration)) get_db_config(NULL) else configuration
   used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json", "metric_weights")
   if (any(!names(db_config) %in% used_configs)) {
     names(db_config) %>%
@@ -226,7 +226,7 @@ initialize_raa <- function(assess_db, cred_db, decision_cat) {
     create_credentials_db(credentials_db, admin_role)
   }
   
-  decision_categories <- if (missing(decision_cat)) get_db_config('decisions')[["categories"]] else decision_cat
+  decision_categories <- db_config[["decisions"]][["categories"]]
   decisions <- suppressMessages(dbSelect("SELECT decision FROM decision_categories", assessment_db))
   check_dec_cat(decision_categories)
   if (nrow(decisions) == 0) {
