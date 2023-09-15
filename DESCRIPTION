@@ -86,5 +86,4 @@ Depends:
     R (>= 2.10)
 VignetteBuilder: knitr
 Remotes: 
-    pharmaR/riskmetric,
-    rstudio/chromote
+    pharmaR/riskmetric
