@@ -15,47 +15,7 @@ showHelperMessage <- function(message = "Please select a package"){
         padding-top: 50px;")
 }
 
-#' Metric Gauge
-#' 
-#' An HTML meter element, used for displaying metric scores in the app
-#' 
-#' @param score a whole number between 0 and 100
-#' @importFrom dplyr case_when
-#' @return tagList object
-#' @keywords internal
-#'
-metric_gauge <- function(score) { # could add id arg here
-  
-  tagList(
-    div(style = "width: 78px; text-align:center;",
-        div(
-          tags$label(style = "font-size:32px", # `for` = id,
-                     if(toupper(score) %in% c("NA", "NULL")) "NA" else {
-                       # flip the label display of the score to mimic the package score...
-                       HTML(case_when(
-                         round(as.numeric(score), 2) == 0 ~ "1 &#10060;",
-                         round(as.numeric(score), 2) == 1 ~ "0 <span style='color:#009000;'>&#10004;</span>",
-                         TRUE ~ as.character(1 - round(as.numeric(score), 2))
-                       ))
-                     }
-          )
-        ),
-        div(
-          tags$meter( # id = id,
-            min = 0,
-            max = 1,
-            optimum = 1,
-            low = .3333,
-            high = .6666,
-            value = 
-              if(toupper(score) %in% c("NA", "NULL")) 0 
-            else ifelse(between(round(as.numeric(score), 2), 0, .08), .08, round(as.numeric(score), 2)),
-            style = "height: 30px; width: 100%;"
-          )
-        )
-    )
-  ) 
-}
+
 
 #' Get the package general information from CRAN/local
 #' 
