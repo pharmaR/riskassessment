@@ -95,10 +95,11 @@ check_dec_cat <- function(decision_categories) {
 #' @noRd
 check_dec_rules <- function(decision_categories, decision_rules) {
   return()
-  metric_lst <- dbSelect("SELECT name, long_name FROM metric") %>%
-    with(purrr::set_names(name, long_name))
+  config_active <- Sys.getenv("GOLEM_CONFIG_ACTIVE", Sys.getenv("R_CONFIG_ACTIVE", "default"))
+  decision_categories_combined <- 
+    if (config_active != "default") unique(c(decision_categories, get_db_config("decisions", "default")[["categories"]])) else decision_categories
   
-  if (!all(names(decision_rules) %in% decision_categories | grepl("^rule_\\d+$", names(decision_rules))))
+  if (!all(names(decision_rules) %in% decision_categories_combined | grepl("^rule_\\d+$", names(decision_rules))))
     stop("All decision rules should be either named after a decision category or following the convention `rule_{d}`")
   
   if (length(names(decision_rules)) != length(unique(names(decision_rules))))
@@ -125,6 +126,24 @@ check_dec_rules <- function(decision_categories, decision_rules) {
   
   if (decision_categories[length(decision_categories)] %in% names(decision_rules) && unlist(decision_rules[[decision_categories[length(decision_categories)]]])[2] != 1)
     stop("Rules for the last decision category must have an upper bound of 1")
+  }
+  
+  if (any(grepl("^rule_\\d$", names(decision_rules)))) {
+    dec_metric_rules <- decision_rules[grepl("^rule_\\d$", names(decision_rules))]
+    
+    if (!all(purrr::map(dec_metric_rules, ~ c("metric", "filter", "decision") %in% names(.x)) %>% unlist(use.names = FALSE)))
+      stop("Rules for metrics must contain the following three elements: 'metric', 'filter', & 'decision'")
+
+    if (!all(purrr::map_chr(dec_metric_rules, ~ as.character(.x$metric)) %in% metric_lst))
+      stop("Rules for metrics must have a valid value for the 'metric' element: ", paste(metric_lst, collapse = ", "))
+    
+    mappers <- purrr::map(dec_metric_rules, ~ evalSetTimeLimit(parse(text = .x$filter))) %>%
+      purrr::map_lgl(~ rlang::is_formula(.x) || rlang::is_function(.x))
+    if (!all(mappers))
+      stop("Rules for metrics must have a valid formula or function for the 'filter' element")
+    
+    if (!all(purrr::map_chr(dec_metric_rules, ~ as.character(.x$decision)) %in% decision_categories_combined))
+      stop("Rules for metrics must have a valid value for the 'decision' element: ", paste(decision_categories, collapse = ", "))
   }
 }
 
@@ -187,15 +206,26 @@ check_credentials <- function(credentials_lst) {
 }
 
 parse_rules <- function(dec_config) {
+  config_active <- Sys.getenv("GOLEM_CONFIG_ACTIVE", Sys.getenv("R_CONFIG_ACTIVE", "default"))
+  
+  if (config_active != "default") {
+    default_config <- get_db_config("decisions", "default")[["rules"]]
+    common_rules <- intersect(default_config, dec_config[["rules"]])
+    if (length(common_rules) > 0) {
+      warning(glue::glue("The following rules were applied from the default configuration:\n{purrr::imap_chr(common_rules, ~ paste(.y, .x, sep = ': ')) %>% paste(collapse = '\n')}"))
+    }
+  }
+  
   rule_lst <- dec_config[["rules"]] %>%
     `[`(names(.) %in% dec_config[["categories"]] | grepl("^rule_\\d+$", names(.))) %>%
     purrr::imap( ~ if (.y %in% dec_config[["categories"]]) {
       .x
-    } else {
+    } else if (.x$decision %in% dec_config[["categories"]]) {
       .x$decision_id <- match(.x$decision, dec_config[["categories"]])
       .x$metric_id <- match(.x$metric, metric_lst)
       .x
-    })
+    }) %>%
+    purrr::compact()
   
   rule_lst
 }
