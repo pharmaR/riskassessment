@@ -53,6 +53,7 @@ mod_downloadHandler_include_ui <- function(id){
 #' 
 #' @importFrom shiny showModal modalDialog
 #' @importFrom glue glue
+#' @importFrom shinyWidgets prettyCheckboxGroup updatePrettyCheckboxGroup
 #'
 #' @noRd 
 mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
