@@ -1,3 +1,20 @@
+test_that("set_colors works", {
+  expect_equal(
+    set_colors(1:3),
+    c(`1` = "#06B756", `2` = "#A99D04", `3` = "#A63E24")
+  )
+  
+  expect_equal(
+    set_colors(1:20),
+    c(`1` = "#06B756", `2` = "#2FBC06", `3` = "#67BA04", `4` = "#81B50A", 
+      `5` = "#96AB0A", `6` = "#A99D04", `7` = "#A99D04", `8` = "#B78D07", 
+      `9` = "#BE7900", `10` = "#BE6200", `11` = "#B24F22", `12` = "#A63E24", 
+      `13` = "#A63E24", `14` = "#A63E24", `15` = "#A63E24", `16` = "#A63E24", 
+      `17` = "#A63E24", `18` = "#A63E24", `19` = "#A63E24", `20` = "#A63E24"
+    )
+  )
+})
+
 test_that("check_dec_cat works", {
   expect_error(
     check_dec_cat("Low"),
@@ -119,5 +136,23 @@ test_that("check_credentials works", {
   expect_equal(
     check_credentials(list(roles = c("admin", "lead", "reviewer"), privileges = list(admin = used_privileges))),
     NULL
+  )
+})
+
+test_that("parse_rules works", {
+  expect_equal(
+    parse_rules(get_db_config("decisions")),
+    list()
+  )
+  
+  expect_equal(
+    parse_rules(get_db_config("decisions", "example")),
+    list(`Insignificant Risk` = list(0L, 0.1), 
+         rule_2 = list(metric = "has_vignettes", 
+                       condition = "~ .x == 0", 
+                       decision = "Major Risk", 
+                       decision_id = 4L, 
+                       metric_id = 1L), 
+         `Severe Risk` = list(0.7, 1L))
   )
 })

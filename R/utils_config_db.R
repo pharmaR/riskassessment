@@ -1,5 +1,3 @@
-
-
 #' Set colors for decision categories
 #' 
 #' Gets the correct color palette based on the number of decision categories
@@ -17,6 +15,14 @@ set_colors <- function(decision_categories) {
   color_palette[round(purrr::map_dbl(cat_list, min, 11))] %>% purrr::set_names(decision_categories)
 }
 
+#' Configure database
+#' 
+#' Utilizes a configuration file to configure a database
+#' 
+#' @param dbname name of the database
+#' @param config a list of configurations
+#' 
+#' @noRd
 configure_db <- function(dbname, config) {
   if (missing(config)) config <- get_db_config(NULL)
 

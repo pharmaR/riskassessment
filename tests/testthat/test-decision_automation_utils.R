@@ -21,23 +21,6 @@ test_that("get_text_color works", {
   expect_equal(get_text_color("#A63E24"), "#ffffff")
 })
 
-test_that("set_colors works", {
-  expect_equal(
-    set_colors(1:3),
-    c(`1` = "#06B756", `2` = "#A99D04", `3` = "#A63E24")
-  )
-  
-  expect_equal(
-    set_colors(1:20),
-    c(`1` = "#06B756", `2` = "#2FBC06", `3` = "#67BA04", `4` = "#81B50A", 
-      `5` = "#96AB0A", `6` = "#A99D04", `7` = "#A99D04", `8` = "#B78D07", 
-      `9` = "#BE7900", `10` = "#BE6200", `11` = "#B24F22", `12` = "#A63E24", 
-      `13` = "#A63E24", `14` = "#A63E24", `15` = "#A63E24", `16` = "#A63E24", 
-      `17` = "#A63E24", `18` = "#A63E24", `19` = "#A63E24", `20` = "#A63E24"
-    )
-  )
-})
-
 test_that("risk_lbl works", {
   expect_equal(
     risk_lbl("Low"),
