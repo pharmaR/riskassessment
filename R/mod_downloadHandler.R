@@ -71,7 +71,6 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
       div(
         strong(p("Elements to include:")),
         div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
-            # checkboxGroupInput(
             shinyWidgets::prettyCheckboxGroup(
               ns("report_includes"), label = NULL, inline = FALSE,
               choices = rpt_choices, selected = rpt_choices
@@ -81,11 +80,11 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
       )
     })
     
-    # retrieve user data, if it exists.  Otherwise use my_choices, above.
     observe({
      req(counter() == 0L)
      req(parent$input$tabs == "Build Report")
      
+    # retrieve user data, if it exists.  Otherwise use rpt_choices above.
      user_file(glue::glue("./inst/report_downloads/report_prefs_{user$name}_{user$role}.txt"))
      if (file.exists(user_file())) {
        session$userData$report_includes <- readLines(user_file())
@@ -96,7 +95,7 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
 
     }, priority = 2)
       
-    # save user selections to userData$report_includes, and notify user
+    # save user selections to session$userData$report_includes, and notify user
     observeEvent(input$store_prefs, {
      
       session$userData$report_includes <- paste(input$report_includes, collapse = ",")
@@ -109,7 +108,7 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
       req(pkg_name() != "-")
       req(counter() > 0L)
 
-      # Make sure "elements to include" don't reset from pkg to pkg.
+      # Make sure "elements to include" don't reset across packages.
       shinyWidgets::updatePrettyCheckboxGroup(
         inputId = "report_includes",
         choices = rpt_choices,
