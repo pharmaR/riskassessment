@@ -27,7 +27,7 @@ assign_decisions <- function(rule_list, package) {
       measure <- "Risk Score"
     } else if (rlang::is_function(rule$mapper) | rlang::is_formula(rule$mapper)) {
       test <- try(fn(assessments[[rule$metric]][[1]]), silent = TRUE)
-      decision <- if (is.logical(test) && length(test) == 1 && test) rule$decision else ""
+      decision <- if (is.logical(test) && length(test) == 1 && !is.na(test) && test) rule$decision else ""
       measure <- glue::glue("{rule$metric} assessment")
     } else {
       warning(glue::glue("Unable to apply rule for {rule$metric}."))
