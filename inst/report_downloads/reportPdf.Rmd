@@ -125,12 +125,13 @@ if(any(c('Maintenance Metrics', 'Maintenance Comments') %in% params$report_inclu
 
 ```{r maintenance_metrics_table, warning=FALSE, message=FALSE, error=FALSE, results='HIDE', echo=FALSE}
 if('Maintenance Metrics' %in% params$report_includes){
-  maint_out_tab <- params$maint_metrics %>%
+  # maint_out_tab <- 
+    params$maint_metrics %>%
     dplyr::mutate(
       `Metric Name` = title,
       `Metric Description` = desc,
       `Metric Value` = dplyr::case_when(
-        name %in% c('has_website', 'has_source_control') ~ glue::glue("URL: {value}"),
+        name %in% c('has_website', 'has_source_control') & nchar(value) > 5 ~ 'Yes',
           # stringr::str_wrap(sub("\\s+$", "", gsub('(.{20})', '\\1 ', value)), 20), # text-wrap
         value %in% c("TRUE","1") ~ 'Yes',
         !(name %in% c('has_bug_reports_url', 'news_current')) ~ value,
@@ -145,13 +146,12 @@ if('Maintenance Metrics' %in% params$report_includes){
       ) %>%
       dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
     knitr::kable(format = 'pandoc') #, escape = FALSE)
-      #format = 'latex', booktabs = TRUE
-      #format = 'pandoc'
+      # knitr::kable(format = 'latex', booktabs = TRUE, escape = FALSE)
   
-  if (!requireNamespace("kableExtra", quietly = TRUE)) maint_out_tab else maint_out_tab #%>%  kableExtra::kable_styling(position = "left")  #%>% kableExtra::column_spec(3, width = "3cm")
-  # 
+  # if (!requireNamespace("kableExtra", quietly = TRUE)) maint_out_tab else maint_out_tab %>%  kableExtra::column_spec(2, width = "3cm") #kableExtra::kable_styling(position = "left")  #%>%
+    
 
-  
+  # tried to cut the url in half but that didn't work either
   # x <- "https://github.com/Biogen-Inc/tidyCDISC/"
   # stringr::str_wrap(x, 20)
   # cut_string <- function(x, len = NULL){
@@ -207,7 +207,7 @@ if (!cm_ind) {
       dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
       knitr::kable(format = 'latex', booktabs = TRUE)
     
-    if (!requireNamespace("kableExtra", quietly = TRUE)) comm_out_tab else comm_out_tab %>% kableExtra::kable_styling(position = "left") %>% kableExtra::column_spec(2, width = "3cm")
+    if (!requireNamespace("kableExtra", quietly = TRUE)) comm_out_tab else comm_out_tab %>% kableExtra::kable_styling(position = "left") #%>% kableExtra::column_spec(2, width = "3cm")
   }
 }
 ```
