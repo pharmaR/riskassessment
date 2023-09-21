@@ -553,8 +553,10 @@ mod_decision_automation_server <- function(id, user, credentials){
         br(),
         div(style = "margin-left: 2%; margin-right: 2%",
           div(
-            style = "display: flex;",
+            style = "display: flex; align-items: center;",
             span("Rule List", style = "font-size: large; font-weight: bold"),
+            icon("circle-info", class = "fa-xs", style = "margin: 5px;",
+                 title = "Decision rules will be applied in the order below and will return at the first decision made."),
             actionButton(ns("add_rule"), label = icon("plus"), class = "btn-square-sm", style = "margin-left: auto;")
           ),
           br(),
