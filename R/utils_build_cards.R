@@ -18,7 +18,7 @@ metric_gauge <- function(score) { # could add id arg here
                        HTML(case_when(
                          round(as.numeric(score), 2) == 0 ~ "1 &#10060;",
                          round(as.numeric(score), 2) == 1 ~ "0 <span style='color:#009000;'>&#10004;</span>",
-                         TRUE ~ as.character(1 - round(as.numeric(score), 2))
+                         TRUE ~ as.character(round(1 - as.numeric(score), 2))
                        ))
                      }
           )
