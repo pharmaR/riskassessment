@@ -77,7 +77,11 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
       body_p_style <- glue::glue("font-size: {auto_font_out}vw")
       
       # build the html card
-      if(score == "NULL" | any(value %in% "Not found")) { # use icon version
+      if(score == "NULL" | # usually for non-riskmetric cards (like on comm or database tab)
+         # riskmetric cards, both value and score must be missing to show an icon
+         # if value is missing, but score isn't, then we need to show a meter
+         # if score is missing, but value isn't, we need to show an NA meter
+         (score == "NA" | is.na(score)) & any(value %in% "Not found")) { # use icon version
         
         # maintain icon logic
         # succ_icon should only show up for non-riskmetric cards
