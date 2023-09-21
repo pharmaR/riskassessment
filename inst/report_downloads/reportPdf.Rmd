@@ -131,7 +131,7 @@ if('Maintenance Metrics' %in% params$report_includes){
       `Metric Name` = title,
       `Metric Description` = desc,
       `Metric Value` = dplyr::case_when(
-        name %in% c('has_website', 'has_source_control') & nchar(value) > 5 ~ 'Yes',
+        # name %in% c('has_website', 'has_source_control') & nchar(value) > 5 ~ 'Yes',
           # stringr::str_wrap(sub("\\s+$", "", gsub('(.{20})', '\\1 ', value)), 20), # text-wrap
         value %in% c("TRUE","1") ~ 'Yes',
         !(name %in% c('has_bug_reports_url', 'news_current')) ~ value,
