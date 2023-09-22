@@ -8,6 +8,7 @@
 * Remove suggests from riskcalc weights table (#646)
 * Added correct remotes reference in `DESCRIPTION` file for pharmar/riskmetric & rstudio/chromote
 * Updated `{shinytest2}` and `{chromote}` to more recent versions for testing
+* Started showing `metric_score`s for each assessment's card, using an html meter (#634)
 * Build Report Updates (#526)
 
 # riskassessment 2.0.0
