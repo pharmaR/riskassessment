@@ -49,14 +49,13 @@ mod_downloadHandler_include_ui <- function(id){
 #' @param id Internal parameters for {shiny}.
 #' @param pkg_name the name of the package passed by mod_reportPreview
 #' @param user char vector containing name and role
-#' @param parent the parent (calling module) session information
 #' 
 #' @importFrom shiny showModal modalDialog
 #' @importFrom glue glue
 #' @importFrom shinyWidgets prettyCheckboxGroup updatePrettyCheckboxGroup
 #'
 #' @noRd 
-mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
+mod_downloadHandler_include_server <- function(id, pkg_name, user) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
@@ -94,7 +93,7 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
         div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
             shinyWidgets::prettyCheckboxGroup(
               ns("report_includes"), label = NULL, inline = FALSE,
-              choices = rpt_choices, selected = isolate(rept_incl()) %||% rpt_choices
+              choices = rpt_choices, selected = input$report_includes %||% rpt_choices
             )
         ),
         actionButton(ns("store_prefs"), "Store Preferences")
@@ -107,22 +106,22 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
       session$userData$report_includes <- paste(input$report_includes, collapse = ",")
       rept_incl(session$userData$report_includes)
       writeLines(session$userData$report_includes, isolate(user_file()))
-      
-      shinyWidgets::updatePrettyCheckboxGroup(
-        inputId = "report_includes",
-        choices = rpt_choices,
-        selected = unlist(strsplit(session$userData$report_includes,","))
-      )
-      
+
       shiny::showModal(shiny::modalDialog(title = "User preferences saved",
+                                          "Report preferences stored for user", 
                                           footer = modalButton("Dismiss"), 
                                           easyClose = TRUE))
     }, ignoreInit = TRUE)
     
     observeEvent(rept_incl(), {
       req(rept_incl())
-      cat("observeEvent for session$userData$report_includes. \n")    
-      # Make sure "elements to include" don't reset across packages.
+      cat("observeEvent for rept_incl(). \n")
+      
+      shinyWidgets::updatePrettyCheckboxGroup(
+        inputId = "report_includes",
+        choices = rpt_choices,
+        selected = unlist(strsplit(rept_incl(),","))
+      )
     })
     
     observeEvent(pkg_name(), {
