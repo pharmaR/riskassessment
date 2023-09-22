@@ -33,7 +33,7 @@ test_that("database creation", {
   expect_equal(sort(metric_lst), sort(metric[metric$is_riskmetric == 1, "name"]))
   pkg_metric <- DBI::dbGetQuery(con, "SELECT * FROM package_metrics")
   expect_equal(nrow(pkg_metric), 0)
-  expect_equal(names(pkg_metric), c("id", "package_id", "metric_id", "value", "encode"))
+  expect_equal(names(pkg_metric), c("id", "package_id", "metric_id", "value", "metric_score", "encode"))
   com_metric <- DBI::dbGetQuery(con, "SELECT * FROM community_usage_metrics")
   expect_equal(nrow(com_metric), 0)
   expect_equal(names(com_metric), c("id", "month", "year", "downloads", "version"))
