@@ -60,22 +60,26 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
+    `%||%` <- function(lhs, rhs) if (is.null(lhs)) rhs else lhs
+    
     rpt_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
                      "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
                      "Source Explorer Comments")
     
     counter <- reactiveVal(value = 0L)
     user_file <- reactiveVal(value = NULL)
+    rept_incl <- reactiveVal(value = NULL)
     
     observe({
       req(counter() == 0L)
       req(user$name)
-      cat("in observe... parent$input$tabs:", parent$input$tabs, "\n")
+      cat("in observe...\n")
       
       # retrieve user data, if it exists.  Otherwise use rpt_choices above.
       user_file(system.file("report_downloads", glue::glue("report_prefs_{user$name}.txt"), package = "riskassessment"))
       if (file.exists(user_file())) {
         session$userData$report_includes <- readLines(user_file())
+        cat(session$userData$report_includes, "\n")
       } else {
         session$userData$report_includes <- paste(rpt_choices, collapse = ",")  
       }
@@ -84,12 +88,13 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
     }, priority = 2)
       
     output$mod_downloadHandler_incl_output <- renderUI({
+      cat("output mod_downloadhandler. is input$report_includes NULL?", is.null(input$report_includes), "\n")
       div(
         strong(p("Elements to include:")),
         div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
             shinyWidgets::prettyCheckboxGroup(
               ns("report_includes"), label = NULL, inline = FALSE,
-              choices = rpt_choices, selected = rpt_choices
+              choices = rpt_choices, selected = isolate(rept_incl()) %||% rpt_choices
             )
         ),
         actionButton(ns("store_prefs"), "Store Preferences")
@@ -98,19 +103,35 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
     
     # save user selections to session$userData$report_includes, and notify user
     observeEvent(input$store_prefs, {
-     
+      cat("observeEvent for input$store_prefs. saving to session$userData$report_includes. \n")
       session$userData$report_includes <- paste(input$report_includes, collapse = ",")
+      rept_incl(session$userData$report_includes)
       writeLines(session$userData$report_includes, isolate(user_file()))
+      
+      shinyWidgets::updatePrettyCheckboxGroup(
+        inputId = "report_includes",
+        choices = rpt_choices,
+        selected = unlist(strsplit(session$userData$report_includes,","))
+      )
+      
       shiny::showModal(shiny::modalDialog(title = "User preferences saved",
                                           footer = modalButton("Dismiss"), 
                                           easyClose = TRUE))
     }, ignoreInit = TRUE)
     
+    observeEvent(rept_incl(), {
+      req(rept_incl())
+      cat("observeEvent for session$userData$report_includes. \n")    
+      # Make sure "elements to include" don't reset across packages.
+    })
+    
     observeEvent(pkg_name(), {
       req(counter() > 0L)
+      req(pkg_name())
+      # req(pkg_name() != "-")
       req(session$userData$report_includes)
-      cat("observeEvent for pkg_name \n")
-      
+      cat("observeEvent for pkg_name2:", pkg_name(), "updating report_includes \n")
+
       # Make sure "elements to include" don't reset across packages.
       shinyWidgets::updatePrettyCheckboxGroup(
         inputId = "report_includes",
@@ -123,7 +144,7 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
     observeEvent(input$report_includes, {
       req(session$userData$report_includes)
       cat("observeEvent for input$report_includes \n")
-      
+
       shinyWidgets::updatePrettyCheckboxGroup(
         inputId = "report_includes",
         choices = rpt_choices,
