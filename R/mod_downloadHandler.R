@@ -99,6 +99,7 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
     observeEvent(input$store_prefs, {
      
       session$userData$report_includes <- paste(input$report_includes, collapse = ",")
+      writeLines(session$userData$report_includes, isolate(user_file()))
       shiny::showModal(shiny::modalDialog(title = "User preferences saved",
                                           footer = modalButton("Dismiss"), 
                                           easyClose = TRUE))
@@ -125,12 +126,6 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
       )
     }, once = TRUE)
     
-    # save session$userData$report_includes to txt file at session end
-    onStop(function() {
-      if (isolate(counter()) > 0)
-      writeLines(session$userData$report_includes, isolate(user_file()))
-    })
-
     return(reactive(input$report_includes))
   })
 }
