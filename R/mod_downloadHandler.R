@@ -73,7 +73,7 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
       cat("in observe... parent$input$tabs:", parent$input$tabs, "\n")
       
       # retrieve user data, if it exists.  Otherwise use rpt_choices above.
-      user_file(glue::glue("./inst/report_downloads/report_prefs_{user$name}.txt"))
+      user_file(system.file("report_downloads", glue::glue("report_prefs_{user$name}.txt"), package = "riskassessment"))
       if (file.exists(user_file())) {
         session$userData$report_includes <- readLines(user_file())
       } else {
