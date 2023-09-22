@@ -67,6 +67,22 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
     counter <- reactiveVal(value = 0L)
     user_file <- reactiveVal(value = NULL)
     
+    observe({
+      req(counter() == 0L)
+      req(user$name)
+      cat("in observe... parent$input$tabs:", parent$input$tabs, "\n")
+      
+      # retrieve user data, if it exists.  Otherwise use rpt_choices above.
+      user_file(glue::glue("./inst/report_downloads/report_prefs_{user$name}.txt"))
+      if (file.exists(user_file())) {
+        session$userData$report_includes <- readLines(user_file())
+      } else {
+        session$userData$report_includes <- paste(rpt_choices, collapse = ",")  
+      }
+      counter(counter() + 1L)
+      
+    }, priority = 2)
+      
     output$mod_downloadHandler_incl_output <- renderUI({
       div(
         strong(p("Elements to include:")),
@@ -80,21 +96,6 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
       )
     })
     
-    observe({
-     req(counter() == 0L)
-     req(parent$input$tabs == "Build Report")
-     
-    # retrieve user data, if it exists.  Otherwise use rpt_choices above.
-     user_file(glue::glue("./inst/report_downloads/report_prefs_{user$name}_{user$role}.txt"))
-     if (file.exists(user_file())) {
-       session$userData$report_includes <- readLines(user_file())
-     } else {
-       session$userData$report_includes <- paste(rpt_choices, collapse = ",")  
-     }
-    counter(counter() + 1L)
-
-    }, priority = 2)
-      
     # save user selections to session$userData$report_includes, and notify user
     observeEvent(input$store_prefs, {
      
@@ -106,9 +107,10 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
     }, ignoreInit = TRUE)
     
     observeEvent(pkg_name(), {
-      req(pkg_name() != "-")
       req(counter() > 0L)
-
+      req(session$userData$report_includes)
+      cat("observeEvent for pkg_name \n")
+      
       # Make sure "elements to include" don't reset across packages.
       shinyWidgets::updatePrettyCheckboxGroup(
         inputId = "report_includes",
@@ -119,6 +121,9 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user, parent) {
     
     # run this once to set the choices for the first package selected
     observeEvent(input$report_includes, {
+      req(session$userData$report_includes)
+      cat("observeEvent for input$report_includes \n")
+      
       shinyWidgets::updatePrettyCheckboxGroup(
         inputId = "report_includes",
         choices = rpt_choices,
