@@ -123,21 +123,48 @@ if(any(c('Maintenance Metrics', 'Maintenance Comments') %in% params$report_inclu
 ```
 
 
-```{r maintenance_metrics_table}
+```{r maintenance_metrics_table, warning=FALSE, message=FALSE, error=FALSE, results='HIDE', echo=FALSE}
 if('Maintenance Metrics' %in% params$report_includes){
-  params$maint_metrics %>%
+  # maint_out_tab <- 
+    params$maint_metrics %>%
     dplyr::mutate(
       `Metric Name` = title,
       `Metric Description` = desc,
-      `Metric Value` = dplyr::case_when(!(name %in% c('has_bug_reports_url', 'news_current')) ~ value,
-                                 value %in% c("TRUE","1") ~ 'Yes',
-                                 TRUE ~ 'No')
-    ) %>%
-    dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
-    knitr::kable(format = 'pandoc')
+      `Metric Value` = dplyr::case_when(
+        value %in% c("pkg_metric_error", "NA", NA) ~ "Not found",
+        # name %in% c('has_website', 'has_source_control') & nchar(value) > 5 ~ 'Yes',
+          # stringr::str_wrap(sub("\\s+$", "", gsub('(.{20})', '\\1 ', value)), 20), # text-wrap
+        value %in% c("TRUE","1") ~ 'Yes',
+        !(name %in% c('has_bug_reports_url', 'news_current')) ~ value,
+        TRUE ~ 'No'
+       ),
+      `Metric Score` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ "NA",
+          # flip the label display of the score to mimic the package score...
+          round(as.numeric(score), 2) == 0 ~ "1.0",
+          round(as.numeric(score), 2) == 1 ~ "0.0",
+          TRUE ~ as.character(round(1 - as.numeric(score), 2))
+        )
+      ) %>%
+      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
+    knitr::kable(format = 'pandoc') #, escape = FALSE)
+      # knitr::kable(format = 'latex', booktabs = TRUE, escape = FALSE)
+  
+  # if (!requireNamespace("kableExtra", quietly = TRUE)) maint_out_tab else maint_out_tab %>%  kableExtra::column_spec(2, width = "3cm") #kableExtra::kable_styling(position = "left")  #%>%
+    
+
+  # tried to cut the url in half but that didn't work either
+  # x <- "https://github.com/Biogen-Inc/tidyCDISC/"
+  # stringr::str_wrap(x, 20)
+  # cut_string <- function(x, len = NULL){
+  #   if(is.null(len)) len <- floor(nchar(x)/2)
+  #   paste(strsplit(sub("\\s+$", "", gsub('(.{20})', '\\1 ', x)), " ")[[1]], collapse = "\n")
+  # }
+  # cut_string(x = "https://github.com/Biogen-Inc/tidyCDISC/")
+  
 }
 ```
 
+* Metrics whose score is `NA` will not impact the package {riskmetric} score
 
 ```{r maintenance_metrics_comments}
 if('Maintenance Comments' %in% params$report_includes){
@@ -171,15 +198,23 @@ if (!cm_ind) {
       dplyr::mutate(
         `Metric Name` = title,
         `Metric Description` = desc,
-        `Metric Value` = value
+        `Metric Value` = ifelse(value %in% c("pkg_metric_error", "NA", NA), "Not found", value),
+        `Metric Score` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ "NA",
+          # flip the label display of the score to mimic the package score...
+          round(as.numeric(score), 2) == 0 ~ "1.0",
+          round(as.numeric(score), 2) == 1 ~ "0.0",
+          TRUE ~ as.character(round(1 - as.numeric(score), 2))
+        )
       ) %>%
-      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
+      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
       knitr::kable(format = 'latex', booktabs = TRUE)
     
-    if (!requireNamespace("kableExtra", quietly = TRUE)) comm_out_tab else comm_out_tab %>% kableExtra::kable_styling(position = "left")
+    if (!requireNamespace("kableExtra", quietly = TRUE)) comm_out_tab else comm_out_tab %>% kableExtra::kable_styling(position = "left") #%>% kableExtra::column_spec(2, width = "3cm")
   }
 }
 ```
+
+* Metrics whose score is `NA` will not impact the package {riskmetric} score
 
 
 ```{r community_metrics_plot_title, eval=cm_ind}
