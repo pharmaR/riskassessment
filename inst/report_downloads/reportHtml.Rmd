@@ -61,7 +61,7 @@ createCard <- function(title, desc, value, score = "NULL",
   
   # A str length of 41 chars tends to wrap to two rows and look quite nice
   val_max_nchar <- 31
-  is_true <- !(value %in% c(0, "pkg_metric_error", "NA", "", 'FALSE', NA))
+  # is_true <- !(value %in% c(0, "pkg_metric_error", "NA", "", 'FALSE', NA))
   
   if(value %in% c("pkg_metric_error", "NA", NA))
     value <- "Not found"
@@ -100,11 +100,17 @@ createCard <- function(title, desc, value, score = "NULL",
   body_p_style = glue::glue('font-size: {auto_font_out}vw')
       
   
-  if(score == "NULL" | !is_true) { # use icon version
+  # build the html card
+      if(score == "NULL" | # usually for non-riskmetric cards (like on comm or database tab)
+         # riskmetric cards, both value and score must be missing to show an icon
+         # if value is missing, but score isn't, then we need to show a meter
+         # if score is missing, but value isn't, we need to show an NA meter
+         (score == "NA" | is.na(score)) & any(value %in% "Not found")) { # use icon version
+    
     # maintain icon logic
     # succ_icon should only show up for non-riskmetric cards
     icon_name <- succ_icon 
-    if (!is_true) {
+    if (value == "Not found") {
       icon_name <- unsucc_icon
       icon_class <- "text-warning"
     }
