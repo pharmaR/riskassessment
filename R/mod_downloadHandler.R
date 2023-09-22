@@ -77,10 +77,10 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user) {
       # retrieve user data, if it exists.  Otherwise use rpt_choices above.
       user_file(system.file("report_downloads", glue::glue("report_prefs_{user$name}.txt"), package = "riskassessment"))
       if (file.exists(user_file())) {
-        session$userData$report_includes <- readLines(user_file())
-        cat(session$userData$report_includes, "\n")
+        rept_incl(readLines(user_file()))
+        cat(rept_incl(), "\n")
       } else {
-        session$userData$report_includes <- paste(rpt_choices, collapse = ",")  
+        rept_incl(paste(rpt_choices, collapse = ","))  
       }
       counter(counter() + 1L)
       
@@ -100,12 +100,11 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user) {
       )
     })
     
-    # save user selections to session$userData$report_includes, and notify user
+    # save user selections to rept_incl(), and notify user
     observeEvent(input$store_prefs, {
-      cat("observeEvent for input$store_prefs. saving to session$userData$report_includes. \n")
-      session$userData$report_includes <- paste(input$report_includes, collapse = ",")
-      rept_incl(session$userData$report_includes)
-      writeLines(session$userData$report_includes, isolate(user_file()))
+      cat("observeEvent for input$store_prefs. saving to rept_incl(). \n")
+      rept_incl(paste(input$report_includes, collapse = ","))
+      writeLines(rept_incl(), isolate(user_file()))
 
       shiny::showModal(shiny::modalDialog(title = "User preferences saved",
                                           "Report preferences stored for user", 
@@ -125,29 +124,27 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user) {
     })
     
     observeEvent(pkg_name(), {
-      req(counter() > 0L)
-      req(pkg_name())
-      # req(pkg_name() != "-")
-      req(session$userData$report_includes)
+      req(counter() > 0L, pkg_name(), rept_incl())
+      req(pkg_name() != "-")
       cat("observeEvent for pkg_name2:", pkg_name(), "updating report_includes \n")
 
       # Make sure "elements to include" don't reset across packages.
       shinyWidgets::updatePrettyCheckboxGroup(
         inputId = "report_includes",
         choices = rpt_choices,
-        selected = unlist(strsplit(session$userData$report_includes,","))
+        selected = unlist(strsplit(rept_incl(),","))
       )
     })
     
     # run this once to set the choices for the first package selected
     observeEvent(input$report_includes, {
-      req(session$userData$report_includes)
+      req(rept_incl())
       cat("observeEvent for input$report_includes \n")
 
       shinyWidgets::updatePrettyCheckboxGroup(
         inputId = "report_includes",
         choices = rpt_choices,
-        selected = unlist(strsplit(session$userData$report_includes,","))
+        selected = unlist(strsplit(rept_incl(),","))
       )
     }, once = TRUE)
     
