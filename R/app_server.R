@@ -171,6 +171,25 @@ app_server <- function(input, output, session) {
   }) %>%
     bindEvent(selected_pkg$decision(), selected_pkg$overall_comment_added())
   
+  
+  rpt_choices <- c(
+    "Report Author", "Report Date", "Risk Score", "Overall Comment", 
+    "Package Summary", "Maintenance Metrics", "Maintenance Comments", 
+    "Community Usage Metrics", "Community Usage Comments", "Source Explorer Comments"
+    )
+  session$userData$user_report <- reactiveValues()
+  observe({
+    req(user$name)
+
+    # retrieve user data, if it exists.  Otherwise use rpt_choices above.
+    session$userData$user_report$user_file <- system.file("report_downloads", glue::glue("report_prefs_{user$name}.txt"), package = "riskassessment")
+    if (file.exists(session$userData$user_report$user_file)) {
+      session$userData$user_report$report_includes <- readLines(session$userData$user_report$user_file)
+    } else {
+      session$userData$user_report$report_includes <- rpt_choices
+    }
+  })
+  
   # Load server of the assessment criteria module.
   assessmentInfoServer("assessmentInfo", metric_weights = metric_weights)
   

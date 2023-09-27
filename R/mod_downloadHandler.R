@@ -64,36 +64,15 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user) {
     rpt_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
                      "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
                      "Source Explorer Comments")
+      
     
-    counter <- reactiveVal(value = 0L)
-    user_file <- reactiveVal(value = NULL)
-    rept_incl <- reactiveVal(value = NULL)
-    
-    observe({
-      req(counter() == 0L)
-      req(user$name)
-      cat("in observe...\n")
-      
-      # retrieve user data, if it exists.  Otherwise use rpt_choices above.
-      user_file(system.file("report_downloads", glue::glue("report_prefs_{user$name}.txt"), package = "riskassessment"))
-      if (file.exists(user_file())) {
-        rept_incl(readLines(user_file()))
-        cat(rept_incl(), "\n")
-      } else {
-        rept_incl(paste(rpt_choices, collapse = ","))  
-      }
-      counter(counter() + 1L)
-      
-    }, priority = 2)
-      
     output$mod_downloadHandler_incl_output <- renderUI({
-      cat("output mod_downloadhandler. is input$report_includes NULL?", is.null(input$report_includes), "\n")
       div(
         strong(p("Elements to include:")),
         div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
             shinyWidgets::prettyCheckboxGroup(
               ns("report_includes"), label = NULL, inline = FALSE,
-              choices = rpt_choices, selected = input$report_includes %||% rpt_choices
+              choices = rpt_choices, selected = isolate(session$userData$user_report$report_includes) %||% rpt_choices
             )
         ),
         actionButton(ns("store_prefs"), "Store Preferences")
@@ -102,9 +81,10 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user) {
     
     # save user selections to rept_incl(), and notify user
     observeEvent(input$store_prefs, {
-      cat("observeEvent for input$store_prefs. saving to rept_incl(). \n")
-      rept_incl(paste(input$report_includes, collapse = ","))
-      writeLines(rept_incl(), isolate(user_file()))
+      writeLines(
+        session$userData$user_report$report_includes,
+        session$userData$user_report$user_file
+        )
 
       shiny::showModal(shiny::modalDialog(title = "User preferences saved",
                                           "Report preferences stored for user", 
@@ -112,41 +92,17 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user) {
                                           easyClose = TRUE))
     }, ignoreInit = TRUE)
     
-    observeEvent(rept_incl(), {
-      req(rept_incl())
-      cat("observeEvent for rept_incl(). \n")
-      
+    observeEvent(session$userData$user_report$report_includes, {
       shinyWidgets::updatePrettyCheckboxGroup(
-        inputId = "report_includes",
-        choices = rpt_choices,
-        selected = unlist(strsplit(rept_incl(),","))
+        session,
+        "report_includes",
+        selected = session$userData$user_report$report_includes
       )
     })
     
-    observeEvent(pkg_name(), {
-      req(counter() > 0L, pkg_name(), rept_incl())
-      req(pkg_name() != "-")
-      cat("observeEvent for pkg_name2:", pkg_name(), "updating report_includes \n")
-
-      # Make sure "elements to include" don't reset across packages.
-      shinyWidgets::updatePrettyCheckboxGroup(
-        inputId = "report_includes",
-        choices = rpt_choices,
-        selected = unlist(strsplit(rept_incl(),","))
-      )
-    })
-    
-    # run this once to set the choices for the first package selected
     observeEvent(input$report_includes, {
-      req(rept_incl())
-      cat("observeEvent for input$report_includes \n")
-
-      shinyWidgets::updatePrettyCheckboxGroup(
-        inputId = "report_includes",
-        choices = rpt_choices,
-        selected = unlist(strsplit(rept_incl(),","))
-      )
-    }, once = TRUE)
+      session$userData$user_report$report_includes <- input$report_includes
+    })
     
     return(reactive(input$report_includes))
   })
