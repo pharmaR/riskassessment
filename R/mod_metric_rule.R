@@ -10,11 +10,19 @@
 mod_metric_rule_ui <- function(id, number, metric_lst, decision_lst, .inputs = list()){
   ns <- NS(paste(id, number, sep = "_"))
   div(`data-rank-id` = paste("rule", number, sep = "_"),
-      div(icon("grip-lines-vertical", class = c("rule_handle", "fa-xl"))),
-      selectInput(ns("metric"), NULL, metric_lst, .inputs$metric),
-      textInput(ns("condition"), NULL, .inputs$condition %||% "", placeholder = "~ is.na(.x)"),
-      selectInput(ns("decision"), NULL, decision_lst, .inputs$decision),
-      div(actionLink(ns("remove_rule"), NULL, style = 'float: right;', shiny::icon("times", class = "fa-xl")))
+      div(
+        class = "icon",
+        icon("grip-lines-vertical", class = c("rule_handle", "fa-xl"))
+      ),
+      div(
+        selectInput(ns("metric"), NULL, metric_lst, .inputs$metric),
+        textInput(ns("condition"), NULL, .inputs$condition %||% "", placeholder = "~ is.na(.x)"),
+        selectInput(ns("decision"), NULL, decision_lst, .inputs$decision)
+      ),
+      div(
+        class = "icon",
+        actionLink(ns("remove_rule"), NULL, style = 'float: right;', shiny::icon("times", class = "fa-xl"))
+      )
   )
 }
 
