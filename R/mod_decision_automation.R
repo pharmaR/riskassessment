@@ -555,9 +555,12 @@ mod_decision_automation_server <- function(id, user, credentials){
           div(
             style = "display: flex; align-items: center;",
             span("Rule List", style = "font-size: large; font-weight: bold"),
-            icon("circle-info", class = "fa-xs", style = "margin: 5px;",
-                 title = "Decision rules will be applied in the order below and will return at the first decision made."),
             actionButton(ns("add_rule"), label = icon("plus"), class = "btn-square-sm", style = "margin-left: auto;")
+          ),
+          tags$details(
+            style = "margin-left: 2%; margin-right: 2%",
+            tags$summary("Additional Details"),
+            HTML("<p align='justify'>First, choose a assessment to use for the rule logic. Then write an R formula/function to evaluate <code>.x</code>, where <code>.x</code> represents the <code>{riskmetric}</code> assessment value. The condition should return a logical (<code>TRUE</code> / <code>FALSE</code>). Next, input which decision category should be assigned when your condition returns <code>TRUE</code>. Decision rules can be dragged and sorted. Every time a new package is uploaded, the user-defined rules will execute in the order seen and will return results when the first condition is met.</p>")
           ),
           br(),
           uiOutput(ns("no_rules"), style = "margin-left: 2%; margin-right: 2%"),
