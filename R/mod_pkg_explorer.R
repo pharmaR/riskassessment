@@ -23,12 +23,11 @@ mod_pkg_explorer_ui <- function(id){
 mod_pkg_explorer_server <- function(id, selected_pkg,
                                     accepted_extensions = c("r", "rmd", "rd", "txt", "md","csv", "tsv", "json", "xml", "yaml", "yml", "dcf", "html", "js", "css", "c", "cpp", "h", "java", "scala", "py", "perl", "sh", "sql"),
                                     accepted_filenames = c("DESCRIPTION", "NAMESPACE", "LICENSE", "LICENSE.note", "NEWS", "README", "CHANGES", "MD5"),
-                                    create_dir = reactiveVal(TRUE),
+                                    pkgdir = reactiveVal(),
+                                    creating_dir = reactiveVal(TRUE),
                                     user, credentials) {
   moduleServer( id, function(input, output, session){
     ns <- session$ns
-    
-    pkgdir <- reactiveVal()
     
     output$pkg_explorer_ui <- renderUI({
       
@@ -41,8 +40,6 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
       } else {
         div(
             br(),
-            h4("File Browser", style = "text-align: center;"),
-            br(), br(),
             fluidRow(
               column(4,
                      wellPanel(
@@ -77,40 +74,27 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
     })
     
     observe({
-      req(selected_pkg$name() != "-")
-      req(create_dir())
-      req(file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz"))))
-      
       shinyjs::addClass(id, class = "jstree-disable", asis = TRUE)
       session$onFlushed(function() {
         shinyjs::removeClass(id, class = "jstree-disable", asis = TRUE)
       })
-      src_dir <- file.path("source", selected_pkg$name())
-      if (dir.exists(src_dir)) {
-        pkgdir(src_dir)
-      } else {
-        withProgress(
-          utils::untar(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")), exdir = "source"),
-          message = glue::glue("Unpacking {selected_pkg$name()}_{selected_pkg$version()}.tar.gz"),
-          value = 1
-        )
-        pkgdir(src_dir)
-      }
-    }) %>% 
-      bindEvent(selected_pkg$name(), create_dir())
-    
+    }, priority = 100) %>%
+      bindEvent(selected_pkg$name(), creating_dir())
+
     nodes <- reactive({
       req(pkgdir())
       make_nodes(list.files(pkgdir(), recursive = TRUE))
-    })
+    }) %>%
+      bindEvent(pkgdir(), selected_pkg$name())
     
-    output$dirtree <- shinyTree::renderTree(isolate(nodes()))
+    output$dirtree <- shinyTree::renderTree(nodes())
+    
     observeEvent(nodes(), {
-      shinyTree::updateTree(session, "dirtree", nodes())
+      shinyjs::runjs(paste0('Shiny.setInputValue(\"', ns("dirtree"), '\", null)'))
     })
     
     is_file <- reactive({
-      length(input$dirtree) > 0 && isTRUE(attr(get_list_element(shinyTree::get_selected(input$dirtree, "slices")[[1]], isolate(nodes())), "sttype") == "file")
+      length(input$dirtree) > 0 && length(shinyTree::get_selected(input$dirtree, "slices")) > 0 && isTRUE(attr(get_list_element(shinyTree::get_selected(input$dirtree, "slices")[[1]], isolate(nodes())), "sttype") == "file")
     })
     output$is_file <- is_file
     outputOptions(output, "is_file", suspendWhenHidden = FALSE)

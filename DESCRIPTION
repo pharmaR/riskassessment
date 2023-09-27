@@ -1,6 +1,6 @@
 Package: riskassessment
 Title: A web app designed to interface with the `riskmetric` package
-Version: 2.0.0.9004
+Version: 2.0.0.9011
 Authors@R: c( 
     person("Aaron", "Clark", role = c("aut", "cre"), email = "aaron.clark@biogen.com"),
     person("Robert", "Krajcik", role = "aut", email = "robert.krajcik@biogen.com"),
@@ -54,7 +54,7 @@ Imports:
     plotly,
     purrr,
     rintrojs,
-    riskmetric (>= 0.1.1),
+    riskmetric (>= 0.2.2),
     rlang,
     rmarkdown,
     RSQLite,
@@ -65,9 +65,9 @@ Imports:
     shinyTree,
     shinyWidgets,
     stringr,
-    shinyAce,
+    shinyAce
 Suggests: 
-    chromote,
+    chromote (>= 0.1.1.9001),
     fontawesome,
     kableExtra,
     knitr,
@@ -83,3 +83,5 @@ Language: en-US
 Depends: 
     R (>= 2.10)
 VignetteBuilder: knitr
+Remotes: 
+    pharmaR/riskmetric

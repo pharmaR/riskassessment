@@ -27,7 +27,8 @@ app_server <- function(input, output, session) {
     bindEvent(credential_config$roles, credential_config$privileges)
   trigger_events <- reactiveValues(
     reset_pkg_upload = 0,
-    reset_sidebar = 0
+    reset_sidebar = 0,
+    upload_pkgs = NULL,
   )
   
   
@@ -183,10 +184,9 @@ app_server <- function(input, output, session) {
     req(selected_pkg$name())
     req(selected_pkg$name() != "-")
     
-    # Collect all the metric names and values associated to package_id.
-    get_mm_data(selected_pkg$id())
+    # Collect all the metric names and values associated to package name.
+    get_metric_data(selected_pkg$name(), metric_class = "maintenance")
   })
-  
   
   # Gather community usage metrics information.
   community_usage_metrics <- reactive({
@@ -197,9 +197,36 @@ app_server <- function(input, output, session) {
   })
   
   create_src_dir <- eventReactive(input$tabs, input$tabs == "Source Explorer")
+  pkgdir <- reactiveVal()
+  observe({
+    req(selected_pkg$name() != "-")
+    req(create_src_dir())
+    req(file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz"))))
+    
+    src_dir <- file.path("source", selected_pkg$name())
+    if (dir.exists(src_dir)) {
+      pkgdir(src_dir)
+    } else {
+      withProgress(
+        utils::untar(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")), exdir = "source"),
+        message = glue::glue("Unpacking {selected_pkg$name()}_{selected_pkg$version()}.tar.gz"),
+        value = 1
+      )
+      pkgdir(src_dir)
+    }
+  }) %>% 
+    bindEvent(selected_pkg$name(), create_src_dir())
+  
   
   mod_pkg_explorer_server("pkg_explorer", selected_pkg,
-                          create_dir = create_src_dir,
+                          pkgdir = pkgdir,
+                          creating_dir = create_src_dir,
+                          user = user,
+                          credentials = credential_config)
+  
+  mod_code_explorer_server("code_explorer", selected_pkg,
+                          pkgdir = pkgdir,
+                          creating_dir = create_src_dir,
                           user = user,
                           credentials = credential_config)
   
@@ -237,8 +264,8 @@ app_server <- function(input, output, session) {
   dependencies_data <- packageDependenciesServer('packageDependencies',
                                                selected_pkg,
                                                user,
-                                               changes,
-                                               parent = session)
+                                               parent = session,
+                                               trigger_events)
   
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)

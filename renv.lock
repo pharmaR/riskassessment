@@ -455,14 +455,9 @@
     },
     "chromote": {
       "Package": "chromote",
-      "Version": "0.1.1.9001",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "chromote",
-      "RemoteUsername": "rstudio",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "c4cad74f45134f701e404bc023372d9118504522",
+      "Version": "0.1.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
       "Requirements": [
         "R6",
         "curl",
@@ -475,7 +470,7 @@
         "rlang",
         "websocket"
       ],
-      "Hash": "6c31f4b7bf7c826f9985140df3982c59"
+      "Hash": "14c8f71bf7b112634b154f8a6a0867e1"
     },
     "cli": {
       "Package": "cli",
@@ -505,6 +500,16 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "96c01552bfd5661b9bbdefbc762f4bcd"
+    },
+    "codetools": {
+      "Package": "codetools",
+      "Version": "0.2-18",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "019388fc48e48b3da0d3a76ff94608a8"
     },
     "colorspace": {
       "Package": "colorspace",
@@ -1037,6 +1042,17 @@
       "Source": "Repository",
       "Repository": "CRAN",
       "Hash": "f3aefccc1cc50de6338146b62f115de8"
+    },
+    "globals": {
+      "Package": "globals",
+      "Version": "0.16.2",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "codetools"
+      ],
+      "Hash": "baa9585ab4ce47a9f4618e671778cc6f"
     },
     "glue": {
       "Package": "glue",
@@ -2365,7 +2381,7 @@
     },
     "shinytest2": {
       "Package": "shinytest2",
-      "Version": "0.1.0",
+      "Version": "0.3.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -2373,9 +2389,11 @@
         "callr",
         "checkmate",
         "chromote",
+        "cpp11",
         "crayon",
         "ellipsis",
         "fs",
+        "globals",
         "httr",
         "jsonlite",
         "pingr",
@@ -2385,7 +2403,7 @@
         "testthat",
         "withr"
       ],
-      "Hash": "1f5b10b1567c31c131b98bb44ab4ea20"
+      "Hash": "04e60b31d4afef1d221ede5fafb0c6f6"
     },
     "sourcetools": {
       "Package": "sourcetools",
