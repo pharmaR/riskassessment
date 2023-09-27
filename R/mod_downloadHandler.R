@@ -66,6 +66,23 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user) {
                      "Source Explorer Comments")
       
     
+    user_file <- reactiveVal(value = NULL)
+    rept_incl <- reactiveVal(value = NULL)
+    
+    observeEvent(user$name, {
+      req(user$name)
+
+      # retrieve user data, if it exists.  Otherwise use rpt_choices above.
+      user_file(system.file("report_downloads", glue::glue("report_prefs_{user$name}.txt"), package = "riskassessment"))
+      if (file.exists(user_file())) {
+        rept_incl(readLines(user_file()))
+      } else {
+        rept_incl(paste(rpt_choices, collapse = ","))  
+      }
+      session$userData$user_report$report_includes <- reactive(rept_incl())
+      
+    }, priority = 2, once = TRUE)
+    
     output$mod_downloadHandler_incl_output <- renderUI({
       div(
         strong(p("Elements to include:")),
@@ -82,9 +99,8 @@ mod_downloadHandler_include_server <- function(id, pkg_name, user) {
     # save user selections to rept_incl(), and notify user
     observeEvent(input$store_prefs, {
       writeLines(
-        session$userData$user_report$report_includes,
-        session$userData$user_report$user_file
-        )
+        session$userData$user_report$report_includes, isolate(user_file())
+      )
 
       shiny::showModal(shiny::modalDialog(title = "User preferences saved",
                                           "Report preferences stored for user", 
