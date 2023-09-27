@@ -9,6 +9,7 @@
 * Added correct remotes reference in `DESCRIPTION` file for pharmar/riskmetric & rstudio/chromote
 * Updated `{shinytest2}` and `{chromote}` to more recent versions for testing
 * Started showing `metric_score`s for each assessment's card, using an html meter (#634)
+* Removed some unneeded/unused dependencies
 
 
 # riskassessment 2.0.0
