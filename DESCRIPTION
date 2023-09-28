@@ -1,6 +1,6 @@
 Package: riskassessment
 Title: A web app designed to interface with the `riskmetric` package
-Version: 2.0.0.9011
+Version: 2.0.0.9012
 Authors@R: c( 
     person("Aaron", "Clark", role = c("aut", "cre"), email = "aaron.clark@biogen.com"),
     person("Robert", "Krajcik", role = "aut", email = "robert.krajcik@biogen.com"),
@@ -41,7 +41,6 @@ RoxygenNote: 7.2.0
 Imports: 
     bslib (>= 0.3.0),
     config (>= 0.3.1),
-    colourpicker,
     cranlogs,
     DBI,
     desc,
@@ -61,7 +60,6 @@ Imports:
     RSQLite,
     rvest,
     shiny (>= 1.7.1),
-    shinydashboard,
     shinyjs,
     shinymanager,
     shinyTree,

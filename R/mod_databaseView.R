@@ -9,7 +9,6 @@ setColorPalette <- colorRampPalette(c("#06B756FF","#2FBC06FF","#67BA04FF","#81B5
 #' @param id a module id name
 #' 
 #' 
-#' @importFrom shinydashboard box
 #' @importFrom DT dataTableOutput
 #' 
 #' @keywords internal
@@ -23,34 +22,50 @@ databaseViewUI <- function(id) {
         column(
           width = 8, offset = 2, align = "center",
           tags$section(
-            shinydashboard::box(width = 12,
-                                title = h3("Uploaded Packages", style = "margin-top: 5px"),
-                                br(),
-                                metricGridUI(NS(id, 'metricGrid')),
-                                DT::dataTableOutput(NS(id, "packages_table")),
-                                br(),
-                                h5("Report Configurations"),
-                                br(),
-                                fluidRow(
-                                  column(5,
-                                         mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
-                                         mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
-                                  ),
-                                  column(7, 
-                                         mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
-                                  )
-                                )))
+            div(class = "box",
+              div(class = "box-header",
+                h3(class = "box-title",
+                h3("Uploaded Packages", style = "margin-top: 5px")
+                )
+              ),
+              div(class = "box-body",
+                br(),
+                metricGridUI(NS(id, 'metricGrid')),
+                DT::dataTableOutput(NS(id, "packages_table")),
+                br(),
+                h5("Report Configurations"),
+                br(),
+                fluidRow(
+                  column(5,
+                         mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
+                         mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
+                  ),
+                  column(7, 
+                         mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
+                  )
+                )
+              )
+            ) %>%
+              column(width = 12)
+          )
         )),
       tabPanel(
         "Decision Categories",
         column(
           width = 8, offset = 2, align = "center",
           tags$section(
-            shinydashboard::box(width = 12,
-                                title = h3("Decision Categories", style = "margin-top: 5px"),
-                                mod_decision_automation_ui_2("automate")
-                                ))
-      ))
+            div(class = "box",
+              div(class = "box-header",
+                h3(class = "box-title",
+                h3("Decision Categories", style = "margin-top: 5px")
+                )
+              ),
+              mod_decision_automation_ui_2("automate") %>%
+                div(class = "box-body")
+            ) %>%
+              column(width = 12)
+            )
+        ))
     )
   )
 }
