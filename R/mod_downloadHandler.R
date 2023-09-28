@@ -64,24 +64,7 @@ mod_downloadHandler_include_server <- function(id, user) {
     rpt_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
                      "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
                      "Source Explorer Comments")
-      
-    
-    user_file <- reactiveVal(value = NULL)
 
-    observeEvent(user$name, {
-      req(user$name)
-
-      # retrieve user data, if it exists.  Otherwise use rpt_choices above.
-      user_file(system.file("report_downloads", glue::glue("report_prefs_{user$name}.txt"), package = "riskassessment"))
-      if (file.exists(user_file())) {
-        rept_incl <- readLines(user_file())
-      } else {
-        rept_incl <- rpt_choices
-      }
-      session$userData$user_report$report_includes <- reactive(rept_incl)
-      
-    }, priority = 2, once = TRUE)
-    
     output$mod_downloadHandler_incl_output <- renderUI({
       div(
         strong(p("Elements to include:")),
@@ -98,7 +81,8 @@ mod_downloadHandler_include_server <- function(id, user) {
     # save user selections and notify user
     observeEvent(input$store_prefs, {
       writeLines(
-        session$userData$user_report$report_includes, isolate(user_file())
+        session$userData$user_report$report_includes, 
+        session$userData$user_report$user_file
       )
 
       shiny::showModal(shiny::modalDialog(title = "User preferences saved",
