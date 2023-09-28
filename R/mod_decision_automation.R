@@ -86,8 +86,7 @@ mod_decision_automation_ui_2 <- function(id){
 #' @noRd
 #' 
 #' @importFrom purrr compact
-#' @importFrom shinyWidgets tooltipOptions
-#' @importFrom colourpicker colourInput updateColourInput
+#' @importFrom shinyWidgets tooltipOptions colorPickr updateColorPickr
 mod_decision_automation_server <- function(id, user, credentials){
   if (missing(credentials))
     credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
@@ -248,8 +247,9 @@ mod_decision_automation_server <- function(id, user, credentials){
       col_width <- (100/length(decision_lst)) %>% min(50) %>% max(25)
       purrr::map2(decision_lst, color_updated(), ~ div(
         style = glue::glue("width: {col_width}%"),
-        colourpicker::colourInput(ns(glue::glue("{risk_lbl(.x, input = FALSE)}_col")),
-                                  .x, .y)
+        shinyWidgets::colorPickr(ns(glue::glue("{risk_lbl(.x, input = FALSE)}_col")),
+                                  .x, .y,
+                                 theme = "nano")
       ))
     })
     
@@ -406,7 +406,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     
     observeEvent(input$col_reset, {
       purrr::walk2(decision_lst, color_current(), ~ {
-        colourpicker::updateColourInput(session, glue::glue("{risk_lbl(.x, input = FALSE)}_col"), value = .y)
+        shinyWidgets::updateColorPickr(session, glue::glue("{risk_lbl(.x, input = FALSE)}_col"), value = .y)
       })
     })
     
