@@ -15,11 +15,13 @@
 #' @importFrom loggit loggit
 assign_decisions <- function(rule_list, package) {
   decision <- ""
+  dec_rule <- ""
   if (any(purrr::map_lgl(rule_list, ~ !is.na(.x$metric))))
     assessments <- get_assess_blob(package)
   
-  for (rule in rule_list) {
+  for (i in seq_along(rule_list)) {
     if (decision != "") break
+    rule <- rule_list[[i]]
     
     fn <- purrr::possibly(rule$mapper, otherwise = FALSE)
     if (is.na(rule$metric)) {
@@ -34,13 +36,14 @@ assign_decisions <- function(rule_list, package) {
       decision <- ""
     }
     if (decision == "") next
+    dec_rule <- paste("Rule", i)
     
     decision_id <- dbSelect("SELECT id FROM decision_categories WHERE decision = {decision}")
     dbUpdate("UPDATE package SET decision_id = {decision_id},
                         decision_by = 'Auto Assigned', decision_date = {get_Date()}
                          WHERE name = {package}")
     loggit::loggit("INFO",
-                   glue::glue("decision for the package {package} was assigned {decision} by decision automation rules"))
+                   glue::glue("decision for the package {package} was assigned {decision} because the {measure} returned TRUE for `{rule$condition}`"))
     comment <- glue::glue("Decision was assigned '{decision}' by decision rules because the {measure} returned TRUE for `{rule$condition}`")
     dbUpdate(
       "INSERT INTO comments
@@ -48,7 +51,7 @@ assign_decisions <- function(rule_list, package) {
           {comment}, 'o', {getTimeStamp()})")
   }
   
-  decision
+  list(decision = decision, decision_rule = dec_rule)
 }
 
 #' Get colors for decision categories

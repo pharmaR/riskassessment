@@ -308,8 +308,10 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
       uploaded_packages <- uploaded_pkgs00()
       uploaded_pkgs00(NULL)
       uploaded_packages$score <- NA_real_
-      if (!rlang::is_empty(auto_list()))
+      if (!rlang::is_empty(auto_list())) {
         uploaded_packages$decision <- ""
+        uploaded_packages$decision_rule <- ""
+      }
       np <- nrow(uploaded_packages)
       
       if (!isTRUE(getOption("shiny.testmode"))) {
@@ -435,8 +437,9 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
               insert_community_metrics_to_db(uploaded_packages$package[i])
               uploaded_packages$score[i] <- get_pkg_info(uploaded_packages$package[i])$score
               if (!rlang::is_empty(auto_list())) {
-                uploaded_packages$decision[i] <-
-                  assign_decisions(auto_list(), uploaded_packages$package[i])
+                assigned_decision <- assign_decisions(auto_list(), uploaded_packages$package[i])
+                uploaded_packages$decision[i] <- assigned_decision$decision
+                uploaded_packages$decision_rule[i] <- assigned_decision$decision_rule
               }
             }
           }
@@ -549,6 +552,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
         class = "cell-border",
         selection = 'none',
         rownames = FALSE,
+        colnames = gsub("_", " ", names(uploaded_pkgs())),
         options = list(
           searching = FALSE,
           columnDefs = list(list(className = 'dt-center', targets = "_all")),
