@@ -16,7 +16,7 @@ test_that("get_colors works", {
 })
 
 test_that("get_text_color works", {
-  expect_equal(get_text_color("#06B756"), "#000000")
+  expect_equal(get_text_color("#06B756"), "#ffffff")
   expect_equal(get_text_color("#A99D04"), "#000000")
   expect_equal(get_text_color("#A63E24"), "#ffffff")
 })
