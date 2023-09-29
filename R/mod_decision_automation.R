@@ -442,14 +442,18 @@ mod_decision_automation_server <- function(id, user, credentials){
         req(!rlang::is_empty(risk_rule_update()))
         
         DT::datatable({
-          risk_rule_update() %>% 
-            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "condition", "decision")]) %>% dplyr::mutate(metric = if (is.na(metric)) "Risk Score" else names(metric_lst)[match(metric, metric_lst)]))
+          tbl <-
+            risk_rule_update() %>% 
+            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "condition", "decision")]) %>% dplyr::mutate(metric = if (is.na(metric)) "Risk Score" else names(metric_lst)[match(metric, metric_lst)])) %>%
+            as.data.frame()
+          rownames(tbl) <- paste("Rule", 1:nrow(tbl))
+          tbl
         },
         escape = FALSE,
         class = "cell-border",
         selection = 'none',
-        colnames = c("Metric", "Conditional", "Decision"),
-        rownames = FALSE,
+        colnames = c("Metric/Score", "Conditional", "Decision"),
+        rownames = TRUE,
         options = list(
           dom = "t",
           searching = FALSE,
@@ -629,7 +633,7 @@ mod_decision_automation_server <- function(id, user, credentials){
         escape = FALSE,
         class = "cell-border",
         selection = 'none',
-        colnames = c("Metric", "Conditional", "Decision"),
+        colnames = c("Metric/Score", "Conditional", "Decision"),
         rownames = FALSE,
         options = list(
           dom = "t",
