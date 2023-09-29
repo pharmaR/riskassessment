@@ -182,7 +182,7 @@ app_server <- function(input, output, session) {
     req(user$name)
 
     # retrieve user data, if it exists.  Otherwise use rpt_choices above.
-    session$userData$user_report$user_file <- system.file("report_downloads", glue::glue("report_prefs_{user$name}.txt"), package = "riskassessment")
+    session$userData$user_report$user_file <- file.path(system.file("report_downloads", package = "riskassessment"), glue::glue("report_prefs_{user$name}.txt"))
     if (file.exists(session$userData$user_report$user_file)) {
       session$userData$user_report$report_includes <- readLines(session$userData$user_report$user_file)
     } else {
