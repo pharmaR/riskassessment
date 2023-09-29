@@ -81,14 +81,20 @@ mod_risk_rule_ui <- function(id, data_rank_id){
   ns <- NS(id)
   if (missing(data_rank_id)) data_rank_id <- id
   div(`data-rank-id` = data_rank_id, style = "padding-bottom: 5px",
-      div(icon("grip-lines-vertical", class = c("rule_handle", "fa-xl"))),
+      div(
+        class = "icon",
+        icon("grip-lines-vertical", class = c("rule_handle", "fa-xl"))
+      ),
       tagList(
         textOutput(ns("metric")),
         textOutput(ns("condition")),
         textOutput(ns("decision"))
       ) %>%
         purrr::map(~ tagAppendAttributes(.x, class = c("form-control", "shiny-input-container"))),
-      div(actionLink(ns("remove_rule"), NULL, style = 'float: right;', shiny::icon("times", class = "fa-xl")))
+      div(
+        class = "icon",
+        actionLink(ns("remove_rule"), NULL, style = 'float: right;', shiny::icon("times", class = "fa-xl"))
+      )
   )
 }
 

@@ -31,6 +31,10 @@ div[data-rank-id] div.shiny-input-container {
   width: 33.33%;
 }
 
+div[data-rank-id] div.shiny-bound-output {
+  margin: 0;
+}
+
 div[data-rank-id] div.selectize-input div.item {
   white-space: nowrap;
   overflow: hidden;

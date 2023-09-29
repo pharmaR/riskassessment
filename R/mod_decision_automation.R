@@ -585,9 +585,15 @@ mod_decision_automation_server <- function(id, user, credentials){
       )
     })
     output$no_rules <- renderUI({
-      req(rlang::is_empty(input$rules_order))
-      
-      p("No rules to display")
+      if (rlang::is_empty(input$rules_order))
+        p("No rules to display")
+      else
+        div(
+          style = "display: inline-flex; width: 100%; padding-left: 4%; padding-right: 4%",
+          h5("Metric/Score", style = "width: 33%; text-align: center;"),
+          h5("Conditional", style = "width: 33%; text-align: center;"),
+          h5("Decision", style = "width: 33%; text-align: center;")
+        )
     })
 
     output$auto_settings <-
