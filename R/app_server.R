@@ -269,7 +269,6 @@ app_server <- function(input, output, session) {
                       # se_comments = src_explorer_data$comments, # not an arg
                       downloads_plot_data = community_data$downloads_plot_data,
                       user = user,
-                      parent = session,
                       credential_config,
                       app_version = golem::get_golem_options('app_version'),
                       metric_weights = metric_weights)

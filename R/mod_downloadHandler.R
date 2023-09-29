@@ -47,8 +47,6 @@ mod_downloadHandler_include_ui <- function(id){
 #' @description A shiny Module.
 #'
 #' @param id Internal parameters for {shiny}.
-#' @param pkg_name the name of the package passed by mod_reportPreview
-#' @param user char vector containing name and role
 #' 
 #' @importFrom shiny showModal modalDialog
 #' @importFrom glue glue
