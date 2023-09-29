@@ -171,12 +171,6 @@ app_server <- function(input, output, session) {
   }) %>%
     bindEvent(selected_pkg$decision(), selected_pkg$overall_comment_added())
   
-  
-  rpt_choices <- c(
-    "Report Author", "Report Date", "Risk Score", "Overall Comment", 
-    "Package Summary", "Maintenance Metrics", "Maintenance Comments", 
-    "Community Usage Metrics", "Community Usage Comments", "Source Explorer Comments"
-    )
   session$userData$user_report <- reactiveValues()
   observe({
     req(user$name)
