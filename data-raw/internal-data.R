@@ -97,3 +97,7 @@ usethis::use_data(
   test_pkg_lst, test_pkg_refs, test_pkg_info, test_pkg_assess, test_pkg_cum,
   color_palette, used_privileges,
   internal = TRUE, overwrite = TRUE)
+
+rpt_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
+                 "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
+                 "Source Explorer Comments")
