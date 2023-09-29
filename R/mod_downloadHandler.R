@@ -61,10 +61,6 @@ mod_downloadHandler_include_server <- function(id) {
     
     `%||%` <- function(lhs, rhs) if (is.null(lhs)) rhs else lhs
     
-    rpt_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
-                     "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
-                     "Source Explorer Comments")
-
     output$mod_downloadHandler_incl_output <- renderUI({
       div(
         strong(p("Elements to include:")),
