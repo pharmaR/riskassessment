@@ -55,7 +55,7 @@ mod_downloadHandler_include_ui <- function(id){
 #' @importFrom shinyWidgets prettyCheckboxGroup updatePrettyCheckboxGroup
 #'
 #' @noRd 
-mod_downloadHandler_include_server <- function(id, user) {
+mod_downloadHandler_include_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
