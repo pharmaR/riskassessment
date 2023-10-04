@@ -10,6 +10,7 @@ setColorPalette <- colorRampPalette(c("#06B756FF","#2FBC06FF","#67BA04FF","#81B5
 #' 
 #' 
 #' @importFrom DT dataTableOutput
+#' @importFrom shinyWidgets prettyToggle
 #' 
 #' @keywords internal
 databaseViewUI <- function(id) {
@@ -31,6 +32,18 @@ databaseViewUI <- function(id) {
               div(class = "box-body",
                 br(),
                 metricGridUI(NS(id, 'metricGrid')),
+                br(),
+                div(style = "font-size: 25px;", align = "left",
+                    shinyWidgets::prettyToggle(NS(id, "dt_sel"), 
+                                               label_on  = "All Rows Selected",
+                                               label_off = "Select All Rows",
+                                               icon_on = icon("check"),
+                                               width = "100%",
+                                               status_off = "primary",
+                                               status_on = "primary",
+                                               outline = TRUE,
+                                               inline = TRUE,
+                                               bigger = TRUE)),
                 DT::dataTableOutput(NS(id, "packages_table")),
                 br(),
                 h5("Report Configurations"),
@@ -148,6 +161,8 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     # Create metric grid cards, containing database stats.
     metricGridServer(id = 'metricGrid', metrics = cards)
     
+    tableProxy <- DT::dataTableProxy('packages_table')
+    
     # Create table for the db dashboard.
     output$packages_table <- DT::renderDataTable(server = FALSE, {  # This allows for downloading entire data set
       
@@ -164,7 +179,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
         )
         )
       })
-      
+
       formattable::as.datatable(
         formattable::formattable(
           my_data_table(),
@@ -213,6 +228,15 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
         , style="default"
       ) %>%
         DT::formatStyle(names(table_data()), textAlign = 'center')
+    })
+    
+    
+    observeEvent(input$dt_sel, {
+      if (isTRUE(input$dt_sel)) {
+        DT::selectRows(tableProxy, input$packages_table_rows_current)
+      } else {
+        DT::selectRows(tableProxy, NULL)
+      }
     })
     
     observeEvent(input$select_button, {
