@@ -28,8 +28,8 @@ test_that("decision_automation works", {
   app$wait_for_idle()
   
   # Check module automate decision reactive
-  expected <- list(`Insignificant Risk` = c(0, 0.1), 
-                   `Severe Risk` = c(0.7, 1))
+  expected <- list(`Severe Risk` = c(0.7, 1),
+                   `Insignificant Risk` = c(0, 0.1))
   actual <- app$get_value(export = "automate-auto_decision")
   app$wait_for_idle()
   
@@ -38,7 +38,7 @@ test_that("decision_automation works", {
   # Check automate decision module output matches as well
   actual <- app$get_value(export = "auto_decision_output")
   expect_equal(
-    purrr::map(actual, ~ .x$condition) %>% `[`(!grepl("^rule_\\d+$", names(.))), 
+    purrr::map(actual, ~ .x$condition) %>% `[`(!grepl("^rule_\\d+$|^rule_else$", names(.))), 
     purrr::map(expected, ~ paste("~", .x[1], "<= .x & .x <=", .x[2])) %>% purrr::set_names(purrr::map_chr(names(expected), ~ risk_lbl(.x, type = "module")))
   )
   
@@ -86,7 +86,7 @@ test_that("decision_automation works", {
                    `Moderate Risk` = c(0.3, 0.45))
   actual <- app$get_value(export = "auto_decision_output")
   expect_equal(
-    purrr::map(actual, ~ .x$condition) %>% `[`(!grepl("^rule_\\d+$", names(.))), 
+    purrr::map(actual, ~ .x$condition) %>% `[`(!grepl("^rule_\\d+$|^rule_else$", names(.))), 
     purrr::map(expected, ~ paste("~", .x[1], "<= .x & .x <=", .x[2])) %>% purrr::set_names(purrr::map_chr(names(expected), ~ risk_lbl(.x, type = "module")))
   )
   

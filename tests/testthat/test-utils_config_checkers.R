@@ -147,12 +147,15 @@ test_that("parse_rules works", {
   
   expect_equal(
     parse_rules(get_db_config("decisions", "example")),
-    list(`Insignificant Risk` = list(0L, 0.1), 
+    list(`Severe Risk` = list(0.7, 1L), 
          rule_2 = list(metric = "has_vignettes", 
                        condition = "~ .x == 0", 
                        decision = "Major Risk", 
                        decision_id = 4L, 
                        metric_id = 1L), 
-         `Severe Risk` = list(0.7, 1L))
+         `Insignificant Risk` = list(0L, 0.1), 
+         rule_else = list(decision = "Insignificant Risk", 
+                          decision_id = 1L, 
+                          metric_id = integer(0)))
   )
 })
