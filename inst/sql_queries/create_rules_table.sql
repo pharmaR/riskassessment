@@ -1,5 +1,6 @@
 CREATE TABLE IF NOT EXISTS rules (
    id                        INTEGER PRIMARY KEY AUTOINCREMENT,
+   rule_type                 CHAR,
    metric_id                 INT DEFAULT 0 NOT NULL,
    condition                 CHAR,
    decision_id               INT DEFAULT 0 NOT NULL,

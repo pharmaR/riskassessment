@@ -24,17 +24,24 @@ assign_decisions <- function(rule_list, package) {
     rule <- rule_list[[i]]
     
     fn <- purrr::possibly(rule$mapper, otherwise = FALSE)
-    if (is.na(rule$metric)) {
+    if (rule$type == "overall_score") {
       decision <- if (fn(get_pkg_info(package)$score)) rule$decision else ""
-      measure <- "Risk Score"
-    } else if (rlang::is_function(rule$mapper) | rlang::is_formula(rule$mapper)) {
+      log_message <- glue::glue("Decision for the package {package} was assigned {decision} because the risk score returned TRUE for `{rule$condition}`")
+      db_message <- glue::glue("Decision was assigned '{decision}' by decision rules because the risk score returned TRUE for `{rule$condition}`")
+    } else if (rule$type == "assessment" && (rlang::is_function(rule$mapper) | rlang::is_formula(rule$mapper))) {
       test <- try(fn(assessments[[rule$metric]][[1]]), silent = TRUE)
       decision <- if (is.logical(test) && length(test) == 1 && !is.na(test) && test) rule$decision else ""
-      measure <- glue::glue("{rule$metric} assessment")
+      log_message <- glue::glue("Decision for the package {package} was assigned {decision} because the {rule$metric} assessment returned TRUE for `{rule$condition}`")
+      db_message <- glue::glue("Decision was assigned '{decision}' by decision rules because the {rule$metric} assessment returned TRUE for `{rule$condition}`")
+    } else if (rule$type == "else") {
+      decision <- rule$decision
+      log_message <- glue::glue("Decision for the package {package} was assigned {decision} by default because all conditions were passed by the decision rules.")
+      db_message <- glue::glue("Decision was assigned {decision} by default because all conditions were passed by the decision rules.")
     } else {
       warning(glue::glue("Unable to apply rule for {rule$metric}."))
       decision <- ""
     }
+    
     if (decision == "") next
     dec_rule <- paste("Rule", i)
     
@@ -42,13 +49,11 @@ assign_decisions <- function(rule_list, package) {
     dbUpdate("UPDATE package SET decision_id = {decision_id},
                         decision_by = 'Auto Assigned', decision_date = {get_Date()}
                          WHERE name = {package}")
-    loggit::loggit("INFO",
-                   glue::glue("decision for the package {package} was assigned {decision} because the {measure} returned TRUE for `{rule$condition}`"))
-    comment <- glue::glue("Decision was assigned '{decision}' by decision rules because the {measure} returned TRUE for `{rule$condition}`")
+    loggit::loggit("INFO", log_message)
     dbUpdate(
       "INSERT INTO comments
           VALUES ({package}, 'Auto Assigned', 'admin',
-          {comment}, 'o', {getTimeStamp()})")
+          {db_message}, 'o', {getTimeStamp()})")
   }
   
   list(decision = decision, decision_rule = dec_rule)
@@ -160,13 +165,16 @@ process_rule_tbl <- function(db_name = golem::get_golem_options('assessment_db_n
   if (is.null(db_name))
     return(list())
   
-   rule_tbl <- dbSelect("SELECT m.name metric, r.condition, d.decision FROM rules r LEFT JOIN metric m ON r.metric_id = m.id LEFT JOIN decision_categories d ON r.decision_id = d.id", db_name)
+   rule_tbl <- dbSelect("SELECT r.rule_type type, m.name metric, r.condition, d.decision FROM rules r LEFT JOIN metric m ON r.metric_id = m.id LEFT JOIN decision_categories d ON r.decision_id = d.id", db_name)
    rule_tbl %>%
      purrr::pmap(~ {
        out <- list(...) %>%
          within(mapper <- evalSetTimeLimit(parse(text = condition)))
      }) %>%
-     purrr::set_names(ifelse(is.na(purrr::map_chr(., ~ .x$metric)), purrr::map_chr(., ~ risk_lbl(.x$decision, type = "module")), paste("rule", seq_along(.), sep = "_")))
+     purrr::set_names(purrr::imap_chr(., ~ switch(.x$type,
+                                                  assessment = paste("rule", .y, sep = "_"), 
+                                                  overall_score = risk_lbl(.x$decision, type = "module"), 
+                                                  `else` = "rule_else")))
 }
 
 #' Create rule divs
@@ -185,12 +193,10 @@ create_rule_divs <- function(rule_lst, metric_lst, decision_lst, ns = NS(NULL)) 
   purrr::imap(rule_lst, ~ {
     if (isTRUE(.x == "remove")) return(NULL)
     
-    if (grepl("^rule_\\d+$", .y)) {
+    if (.x$type == "assessment") {
       number <- strsplit(.y, "_")[[1]][2]
       mod_metric_rule_ui(ns("rule"), number, metric_lst, decision_lst, .x)
-    } else {
-      if (isTRUE(.x == "remove")) return(NULL)
-      
+    } else if (.x$type == "overall_score") {
       mod_risk_rule_ui(ns(risk_lbl(.x$decision, type = "module")), risk_lbl(.x$decision, type = "module"))
     }
   }) %>%

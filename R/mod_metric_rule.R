@@ -38,6 +38,7 @@ mod_metric_rule_server <- function(id, number, rule_lst){
       observe({
         rule_lst[[paste("rule", number, sep = "_")]] <- 
           list(
+            type = "assessment",
             metric = input$metric,
             condition = input$condition,
             decision = input$decision,
@@ -114,6 +115,7 @@ mod_risk_rule_server <- function(id, condition, decision, rule_lst){
     # NULL. This happens when the rules are reset.
     rule_lst[[risk_lbl(decision, type = "module")]] <- 
       list(
+        type = "overall_score",
         metric = NA_character_,
         condition = "",
         decision = decision,
@@ -126,6 +128,7 @@ mod_risk_rule_server <- function(id, condition, decision, rule_lst){
         
         rule_lst[[risk_lbl(decision, type = "module")]] <- 
           list(
+            type = "overall_score",
             metric = NA_character_,
             condition = condition(),
             decision = decision,
@@ -146,7 +149,36 @@ mod_risk_rule_server <- function(id, condition, decision, rule_lst){
     out_return
   })
 }
+
+mod_else_rule_ui <- function(id, decision_lst, .inputs = list()) {
+  ns <- NS(id)
+  
+  div(
+    style = "float: right; display: inline-flex",
+    h5("ELSE", style = "padding-right: 5px"),
+    selectInput(ns("decision"), NULL, c("No Decision" = "nd", decision_lst), .inputs$decision)
+  )
+}
+
+mod_else_rule_server <- function(id, rule_lst) {
+  moduleServer( id, function(input, output, session){
+    ns <- session$ns
     
+    observe({
+      rule_lst[["rule_else"]] <- 
+        list(
+          type = "else",
+          metric = NA_character_,
+          condition = "ELSE",
+          decision = if (input$decision == "nd") NULL else input$decision,
+          mapper = ~ .
+        )
+    }) %>%
+      bindEvent(input$decision)
+    
+  })
+}
+
 ## To be copied in the UI
 # mod_metric_rule_ui("metric_rule_1")
     

@@ -290,13 +290,14 @@ mod_decision_automation_server <- function(id, user, credentials){
     risk_rule_update <- reactiveVal(risk_rule_initial)
     rule_lst <- do.call(reactiveValues, risk_rule_initial)
     rule_number <- reactiveVal(length(risk_rule_initial))
+    rule_else_decision <- mod_else_rule_server("else_rule", rule_lst)
 
     purrr::iwalk(risk_rule_initial, ~ {
-      if (grepl("^rule_\\d+$", .y)) {
+      if (.x$type == "assessment") {
         number <- strsplit(.y, "_")[[1]][2]
         mod_metric_rule_server("rule", number, rule_lst)
         create_rule_obs(.y, rule_lst, .input = input, ns = ns)
-      } else {
+      } else if (.x$type == "overall_score") {
         out_return <- mod_risk_rule_server(risk_lbl(.x$decision, type = "module"), reactive(glue::glue("~ {auto_decision[[.x$decision]][1]} <= .x & .x <= {auto_decision[[.x$decision]][2]}")), .x$decision, rule_lst)
         risk_module_observer <-
           observeEvent(out_return(), {
@@ -365,10 +366,10 @@ mod_decision_automation_server <- function(id, user, credentials){
     
     observeEvent(input$auto_reset, {
       purrr::walk(input$rules_order, ~ {
-        if (!.x %in% names(risk_rule_update())) {
-          rule_lst[[.x]] <- "remove"
-        } else {
+        if (.x %in% names(risk_rule_update())) {
           removeUI(glue::glue('[data-rank-id={.x}]'))
+        } else {
+          rule_lst[[.x]] <- "remove"
         }
       })
       
@@ -378,12 +379,12 @@ mod_decision_automation_server <- function(id, user, credentials){
       purrr::iwalk(risk_rule_update(), ~ {
         if (.y %in% input$rules_order) return(NULL)
         
-        if (grepl("^rule_\\d+$", .y)) {
+        if (.x$type == "assessment") {
           number <- strsplit(.y, "_")[[1]][2]
           mod_metric_rule_server("rule", number, rule_lst)
           create_rule_obs(.y, rule_lst, .input = input, ns = ns)
           rule_lst[[.y]] <- .x
-        } else {
+        } else if (.x$type == "overall_score") {
           out_return <- mod_risk_rule_server(risk_lbl(.x$decision, type = "module"), reactive(glue::glue("~ {auto_decision[[.x$decision]][1]} <= .x & .x <= {auto_decision[[.x$decision]][2]}")), .x$decision, rule_lst)
           risk_module_observer <-
             observeEvent(out_return(), {
@@ -395,6 +396,8 @@ mod_decision_automation_server <- function(id, user, credentials){
             o$destroy()
           })
           create_rule_obs(risk_lbl(.x$decision, type = "module"), rule_lst, .input = input, ns = ns)
+        } else if (.x$type == "else") {
+          rule_lst[["rule_else"]] <- .x
         }
       })
       
@@ -446,7 +449,13 @@ mod_decision_automation_server <- function(id, user, credentials){
         DT::datatable({
           tbl <-
             risk_rule_update() %>% 
-            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "condition", "decision")]) %>% dplyr::mutate(metric = if (is.na(metric)) "Risk Score" else names(metric_lst)[match(metric, metric_lst)])) %>%
+            purrr::map_dfr(~ {
+              .x$name <- switch(.x$type, 
+                                assessment = names(metric_lst)[match(.x$metric, metric_lst)], 
+                                overall_score = "Risk Score", 
+                                `else` = NA_character_)
+              .x[c("name", "condition", "decision")]
+            }) %>%
             as.data.frame()
           rownames(tbl) <- paste("Rule", 1:nrow(tbl))
           tbl
@@ -574,7 +583,8 @@ mod_decision_automation_server <- function(id, user, credentials){
             id = ns("rules_list"),
             rule_divs(),
             style = "margin-left: 2%; margin-right: 2%"
-          )
+          ),
+          uiOutput(ns("else_rule"), style = "margin-left: 2%; margin-right: 2%")
         ),
         br(),
         div(style = "margin-left: 1.5%; margin-right: 1.5%", 
@@ -600,6 +610,11 @@ mod_decision_automation_server <- function(id, user, credentials){
           h5("Conditional", style = "width: 33%; text-align: center;"),
           h5("Decision", style = "width: 33%; text-align: center;")
         )
+    })
+    output$else_rule <- renderUI({
+      req(!rlang::is_empty(input$rules_order))
+      
+      mod_else_rule_ui(ns("else_rule"), decision_lst, rule_lst[["rule_else"]])
     })
 
     output$auto_settings <-
@@ -628,9 +643,17 @@ mod_decision_automation_server <- function(id, user, credentials){
     output$modal_table <- 
       DT::renderDataTable({
         out_lst <- purrr::compact(reactiveValuesToList(rule_lst)[isolate(input$rules_order)])
+        if (!is.null(rule_lst[["rule_else"]][["decision"]]))
+          out_lst[["rule_else"]] <- rule_lst[["rule_else"]]
+        
         DT::datatable({
-          out_lst %>% 
-            purrr::map_dfr(~ dplyr::as_tibble(.x[c("metric", "condition", "decision")]) %>% dplyr::mutate(metric = if (is.na(metric)) "Risk Score" else names(metric_lst)[match(metric, metric_lst)]))
+          purrr::map_dfr(out_lst, ~ {
+            .x$name <- switch(.x$type, 
+                              assessment = names(metric_lst)[match(.x$metric, metric_lst)], 
+                              overall_score = "Risk Score", 
+                              `else` = NA_character_)
+            .x[c("name", "condition", "decision")]
+          })
         },
         escape = FALSE,
         class = "cell-border",
@@ -770,22 +793,25 @@ mod_decision_automation_server <- function(id, user, credentials){
         loggit::loggit("INFO", glue::glue("The following decision rules were implemented by {user$name} ({user$role}): {paste(rules, collapse = '; ')}."))
       }
       
-      
-      risk_rule_update(reactiveValuesToList(rule_lst)[input$rules_order])
-      if (rlang::is_empty(risk_rule_update())) {
+      rules_updates <- reactiveValuesToList(rule_lst)[input$rules_order]
+      if (rlang::is_empty(rules_updates)) {
+        risk_rule_update(rules_updates)
         dbUpdate("DELETE FROM rules")
       } else {
+        if (!is.null(rule_lst[["rule_else"]][["decision"]]))
+          rules_updates[["rule_else"]] <- rule_lst[["rule_else"]]
+        risk_rule_update(rules_updates)
         rule_out <-
           purrr::map(risk_rule_update(), ~ {
             metric_id <- dbSelect("select id from metric where name == {.x$metric}")[[1]] %>% 
               ifelse(test = length(.) == 0, yes = 0)
             decision_id <- dbSelect("select id from decision_categories where decision == {.x$decision}")[[1]]%>% 
               ifelse(test = length(.) == 0, yes = 0)
-            glue::glue("({metric_id}, '{.x$condition}', {decision_id})")
+            glue::glue("('{.x$type}', {metric_id}, '{.x$condition}', {decision_id})")
           }) %>%
           glue::glue_collapse(", ")
         dbUpdate("DELETE FROM rules")
-        dbUpdate(glue::glue("INSERT INTO rules (metric_id, condition, decision_id) VALUES {rule_out};"))
+        dbUpdate(glue::glue("INSERT INTO rules (rule_type, metric_id, condition, decision_id) VALUES {rule_out};"))
       }
       
       removeModal()
