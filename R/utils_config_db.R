@@ -41,9 +41,11 @@ configure_db <- function(dbname, config) {
     purrr::iwalk(dec_rules, ~ {
       if (.y %in% config[["decisions"]]$categories) {
       dbUpdate("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[length(.x)]} WHERE decision = {.y}", dbname)
-      dbUpdate("INSERT INTO rules (condition, decision_id) VALUES ('~ {.x[1]} <= .x & .x <= {.x[length(.x)]}', {match(.y, config[['decisions']]$categories)});", dbname)
+      dbUpdate("INSERT INTO rules (rule_type, condition, decision_id) VALUES ('overall_score', '~ {.x[1]} <= .x & .x <= {.x[length(.x)]}', {match(.y, config[['decisions']]$categories)});", dbname)
       } else if (grepl("^rule_\\d+$", .y)) {
-        dbUpdate("INSERT INTO rules (metric_id, condition, decision_id) VALUES ({.x$metric_id}, {.x$condition}, {.x$decision_id})", dbname)
+        dbUpdate("INSERT INTO rules (rule_type, metric_id, condition, decision_id) VALUES ('assessment', {.x$metric_id}, {.x$condition}, {.x$decision_id})", dbname)
+      } else if (.y == "rule_else") {
+        dbUpdate("INSERT INTO rules (rule_type, condition, decision_id) VALUES ('else', 'ELSE', {.x$decision_id})", dbname)
       }
       })
     
@@ -105,7 +107,7 @@ check_dec_rules <- function(decision_categories, decision_rules) {
   decision_categories_combined <- 
     if (config_active != "default") unique(c(decision_categories, get_db_config("decisions", "default")[["categories"]])) else decision_categories
   
-  if (!all(names(decision_rules) %in% decision_categories_combined | grepl("^rule_\\d+$", names(decision_rules))))
+  if (!all(names(decision_rules) %in% decision_categories_combined | grepl("^rule_\\d+$|^rule_else$", names(decision_rules))))
     stop("All decision rules should be either named after a decision category or following the convention `rule_{d}`")
   
   if (length(names(decision_rules)) != length(unique(names(decision_rules))))
@@ -150,6 +152,16 @@ check_dec_rules <- function(decision_categories, decision_rules) {
     
     if (!all(purrr::map_chr(dec_metric_rules, ~ as.character(.x$decision)) %in% decision_categories_combined))
       stop("Rules for metrics must have a valid value for the 'decision' element: ", paste(decision_categories, collapse = ", "))
+  }
+  
+  if (any(names(decision_rules) == "rule_else")) {
+    dec_else_rule <- decision_rules[["rule_else"]]
+    
+    if (!"decision" %in% names(dec_else_rule))
+      stop("The ELSE condition rule must have a 'decision' element")
+    
+    if (!as.character(dec_else_rule$decision) %in% decision_categories_combined)
+      stop("The ELSE condition rule must have a valid value for the 'decision' element", paste(decision_categories, collapse = ", "))
   }
 }
 
@@ -223,7 +235,7 @@ parse_rules <- function(dec_config) {
   }
   
   rule_lst <- dec_config[["rules"]] %>%
-    `[`(names(.) %in% dec_config[["categories"]] | grepl("^rule_\\d+$", names(.))) %>%
+    `[`(names(.) %in% dec_config[["categories"]] | grepl("^rule_\\d+$|^rule_else$", names(.))) %>%
     purrr::imap( ~ if (.y %in% dec_config[["categories"]]) {
       .x
     } else if (.x$decision %in% dec_config[["categories"]]) {
