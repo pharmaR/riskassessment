@@ -216,7 +216,10 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
           dom = 'Blftpr',
           pageLength = 15,
           lengthMenu = list(c(15, 60, 120, -1), c('15', '60', '120', "All")),
-          columnDefs = list(list(className = 'dt-center', targets = "_all")),
+          columnDefs = list(
+            list(className = 'dt-center', targets = "_all"),
+            list(targets = 8, searchable = FALSE) # make sure 'Explore Metrics' column filter is disabled
+            ),
           buttons = list(
             list(extend = "excel", text = shiny::HTML('<i class="fas fa-download"></i> Excel'),
                  exportOptions = list(columns = c(0:6)), # which columns to download
