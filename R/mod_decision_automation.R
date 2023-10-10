@@ -647,8 +647,11 @@ mod_decision_automation_server <- function(id, user, credentials){
     output$modal_table <- 
       DT::renderDataTable({
         out_lst <- purrr::compact(reactiveValuesToList(rule_lst)[isolate(input$rules_order)])
-        if (!is.null(rule_lst[["rule_else"]][["decision"]]))
+        if (!is.null(rule_lst[["rule_else"]][["decision"]])) {
           out_lst[["rule_else"]] <- rule_lst[["rule_else"]]
+        } else {
+          out_lst[["rule_else"]] <- list(type = "else", condition = "ELSE", decision = "No Decision")
+        }
         
         DT::datatable({
           purrr::map_dfr(out_lst, ~ {
