@@ -56,11 +56,11 @@ test_that("Reactivity of database view table", {
   app$wait_for_value(export = "databaseView-table_data", 
                      ignore = tbl_actual, timeout = 30 * 1000 )
   
-  tbl_expect <- structure(list(name = c("tidyr", "dplyr"), 
-                               decision = c("-", "Low Risk"),
-                               decision_by = c('-', "test_user"),
-                               decision_date = c("-", "2023-07-20"),
-                               last_comment = c("-", "-")), 
+  tbl_expect <- structure(list(name = c("","tidyr", "dplyr"), 
+                               decision = c("","-", "Low Risk"),
+                               decision_by = c("",'-', "test_user"),
+                               decision_date = c("","-", "2023-07-20"),
+                               last_comment = c("","-", "-")), 
                           class = "data.frame", row.names = c(NA, -2L))
   tbl_actual <-
     app$get_value(export = "databaseView-table_data")
