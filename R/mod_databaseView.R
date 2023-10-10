@@ -122,11 +122,22 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       )
       
       db_pkg_overview %>%
-        dplyr::mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>%
-        dplyr::mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
-        dplyr::mutate(decision    = if_else(is.na(decision)    | decision    == "", "-", decision)) %>%
-        dplyr::mutate(decision_by = if_else(is.na(decision_by) | decision_by == "", "-", decision_by)) %>% 
-        dplyr::mutate(decision_date = ifelse(is.na(decision_date) | decision_date == "NA", "-", decision_date)) %>% 
+        dplyr::mutate(date_added = as.Date(date_added)) %>% # new
+        dplyr::mutate(score = as.numeric(score)) %>% # new
+        
+        dplyr::mutate(decision    = if_else(is.na(decision)    | decision    == "", "-", decision)) %>% # keep
+        dplyr::mutate(decision = factor(decision)) %>% # new
+        
+        dplyr::mutate(decision_by = if_else(is.na(decision_by) | decision_by == "", "-", decision_by)) %>% # keep
+        dplyr::mutate(decision_by = factor(decision_by)) %>% # new
+        
+        # dplyr::mutate(decision_date = ifelse(is.na(decision_date) | decision_date == "NA", "-", decision_date)) %>% # old
+        dplyr::mutate(decision_date = as.Date(decision_date)) %>% # new
+        
+        dplyr::mutate(last_comment = lubridate::as_datetime(last_comment)) %>% # new
+        # dplyr::mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>% # old
+        # dplyr::mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>% # old
+        
         dplyr::select(name, date_added, version, score, decision, decision_by, decision_date, last_comment)
     })
     
@@ -142,7 +153,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     # Database cards (saved to share with db report): Package Count,
     #   Count (%) by Decision made, Count (%) by Decision
     cards <- eventReactive(table_data(), {
-      build_db_cards(data = table_data() %>% mutate(decision = factor(decision, levels = decision_lst)))
+      build_db_cards(data = table_data())
     })
     
     # Create metric grid cards, containing database stats.
@@ -164,9 +175,9 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
         )
         )
       })
-      
+      # DT::datatable(
       formattable::as.datatable(
-        formattable::formattable(
+      formattable::formattable(
           my_data_table(),
           list(
             score = formattable::formatter(
@@ -186,9 +197,9 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                                 "padding-right" = "4px",
                                 "font-weight" = "bold",
                                 "color" = ifelse(x %in% decision_lst, "white", "inherit"),
-                                "background-color" = 
-                                  ifelse(x %in% decision_lst, 
-                                         glue::glue("var(--{risk_lbl(x, input = FALSE)}-color)"), 
+                                "background-color" =
+                                  ifelse(x %in% decision_lst,
+                                         glue::glue("var(--{risk_lbl(x, input = FALSE)}-color)"),
                                          "transparent")))
           )),
         selection = list(mode = 'multiple'),
