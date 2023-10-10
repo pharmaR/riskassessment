@@ -65,7 +65,8 @@ Imports:
     shinyTree,
     shinyWidgets,
     stringr,
-    shinyAce
+    shinyAce,
+    sortable
 Suggests: 
     chromote (>= 0.1.1.9001),
     fontawesome,

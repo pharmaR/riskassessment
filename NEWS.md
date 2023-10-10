@@ -11,6 +11,7 @@
 * Started showing `metric_score`s for each assessment's card, using an html meter (#634)
 * Removed some unneeded/unused dependencies
 * Added default `{DT}` based filter to Database Overview tab (#586)
+* Allow user to create decision automation rules for individual metrics (#483)
 
 
 # riskassessment 2.0.0
