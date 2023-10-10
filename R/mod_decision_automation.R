@@ -463,7 +463,7 @@ mod_decision_automation_server <- function(id, user, credentials){
         escape = FALSE,
         class = "cell-border",
         selection = 'none',
-        colnames = c("Metric/Score", "Conditional", "Decision"),
+        colnames = c("Metric", "Conditional", "Decision"),
         rownames = TRUE,
         options = list(
           dom = "t",
@@ -554,7 +554,7 @@ mod_decision_automation_server <- function(id, user, credentials){
         br(),
         div(
           style = "display: flex;",
-          span("Automate Decisions by Metric Value or Risk Score", style = "font-size: x-large; font-weight: bold"),
+          span("Decision Automation", style = "font-size: x-large; font-weight: bold"),
           actionButton(ns("auto_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
         ),
         br(),
@@ -569,12 +569,12 @@ mod_decision_automation_server <- function(id, user, credentials){
         div(style = "margin-left: 2%; margin-right: 2%",
           div(
             style = "display: flex; align-items: center;",
-            span("Rule List", style = "font-size: large; font-weight: bold"),
+            span("Decision Rules", style = "font-size: large; font-weight: bold"),
             actionButton(ns("add_rule"), label = icon("plus"), class = "btn-square-sm", style = "margin-left: auto;")
           ),
           tags$details(
             style = "margin-left: 2%; margin-right: 2%",
-            tags$summary("Additional Details"),
+            tags$summary("Details"),
             HTML("<p align='justify'>First, choose a assessment to use for the rule logic. Then write an R formula/function to evaluate <code>.x</code>, where <code>.x</code> represents the <code>{riskmetric}</code> assessment value. The condition should return a logical (<code>TRUE</code> / <code>FALSE</code>). Next, input which decision category should be assigned when your condition returns <code>TRUE</code>. Decision rules can be dragged and sorted. Every time a new package is uploaded, the user-defined rules will execute in the order seen and will return results when the first condition is met.</p>")
           ),
           br(),
@@ -606,7 +606,7 @@ mod_decision_automation_server <- function(id, user, credentials){
       else
         div(
           style = "display: inline-flex; width: 100%; padding-left: 4%; padding-right: 4%",
-          h5("Metric/Score", style = "width: 33%; text-align: center;"),
+          h5("Metric", style = "width: 33%; text-align: center;"),
           h5("Conditional", style = "width: 33%; text-align: center;"),
           h5("Decision", style = "width: 33%; text-align: center;")
         )
@@ -658,7 +658,7 @@ mod_decision_automation_server <- function(id, user, credentials){
         escape = FALSE,
         class = "cell-border",
         selection = 'none',
-        colnames = c("Metric/Score", "Conditional", "Decision"),
+        colnames = c("Metric", "Conditional", "Decision"),
         rownames = FALSE,
         options = list(
           dom = "t",
