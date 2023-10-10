@@ -727,7 +727,7 @@ mod_decision_automation_server <- function(id, user, credentials){
             width = 12,
             'Please confirm your chosen decision rules: ',
             br(),
-            if (!rlang::is_empty(purrr::compact(reactiveValuesToList(rule_lst)))) DT::DTOutput(ns("modal_table")) else h2("Disable Decision Automation"),
+            if (!rlang::is_empty(input$rules_order)) DT::DTOutput(ns("modal_table")) else h2("Disable Decision Automation"),
             br(),
             br(),
             if (disable_auto_submit()) 
@@ -785,18 +785,11 @@ mod_decision_automation_server <- function(id, user, credentials){
       purrr::iwalk(out_lst, ~ dbUpdate("UPDATE decision_categories SET lower_limit = {.x[1]}, upper_limit = {.x[2]} WHERE decision = {.y}"))
       auto_decision_update(out_lst)
       
-      if (length(out_lst) == 0) {
-        loggit::loggit("INFO", glue::glue("Decision automation rules have been disabled by {user$name} ({user$role})."))
-      } else {
-        rules <- out_lst %>%
-          purrr::imap_chr(~ glue::glue("{.y} = ({.x[[1]]}, {.x[[2]]}]"))
-        loggit::loggit("INFO", glue::glue("The following decision rules were implemented by {user$name} ({user$role}): {paste(rules, collapse = '; ')}."))
-      }
-      
       rules_updates <- reactiveValuesToList(rule_lst)[input$rules_order]
       if (rlang::is_empty(rules_updates)) {
         risk_rule_update(rules_updates)
         dbUpdate("DELETE FROM rules")
+        loggit::loggit("INFO", glue::glue("Decision automation rules have been disabled by {user$name} ({user$role})."))
       } else {
         if (!is.null(rule_lst[["rule_else"]][["decision"]]))
           rules_updates[["rule_else"]] <- rule_lst[["rule_else"]]
@@ -812,6 +805,7 @@ mod_decision_automation_server <- function(id, user, credentials){
           glue::glue_collapse(", ")
         dbUpdate("DELETE FROM rules")
         dbUpdate(glue::glue("INSERT INTO rules (rule_type, metric_id, condition, decision_id) VALUES {rule_out};"))
+        loggit::loggit("INFO", glue::glue("Decision automation rules were updated/implemented by {user$name} ({user$role})."))
       }
       
       removeModal()
