@@ -557,11 +557,15 @@ mod_decision_automation_server <- function(id, user, credentials){
           span("Decision Automation", style = "font-size: x-large; font-weight: bold"),
           actionButton(ns("auto_reset"), label = icon("refresh"), class = "btn-circle-sm", style = "margin-left: auto;")
         ),
-        br(),
-        div(style = "margin-left: 1.5%; margin-right: 1.5%",
+        div(
+          style = "margin-left: 2%; margin-right: 2%",
+          span("By Package Risk Score", style = "font-size: large; font-weight: bold"),
+          br(), br(),
+          div(style = "margin-left: 1.5%; margin-right: 1.5%",
           checkboxGroupInput(ns("auto_include"), label = NULL, decision_lst,
                            selected = isolate(auto_current()), inline = TRUE)
         ),
+      ),
         div(style = "margin-left: 5%; margin-right: 2.5%",
           dec_divs()
         ),
