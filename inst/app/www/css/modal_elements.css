@@ -1,0 +1,44 @@
+.modal-body .btn.action-button:not(.btn-circle-sm) {
+  font-family: 'Arial Black';
+  font-size: medium;
+}
+
+div[data-rank-id] {
+  display: flex;
+  border: 1px solid black;
+  margin-bottom: 5px;
+  padding-top: 5px;
+  border-radius: 10px;
+}
+
+div[data-rank-id] div{
+  margin-bottom: 0;
+}
+
+div[data-rank-id] > div {
+  display: flex;
+  align-items: center;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+div[data-rank-id] > div:not(.icon) {
+  align-items: unset;
+  width: 100%;
+}
+
+div[data-rank-id] div.shiny-input-container {
+  width: 33.33%;
+}
+
+div[data-rank-id] div.shiny-bound-output {
+  margin: 0;
+}
+
+div[data-rank-id] div.selectize-input div.item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 90%;
+  vertical-align: bottom;
+}
