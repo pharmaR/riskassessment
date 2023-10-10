@@ -26,6 +26,7 @@ params:
   com_metrics: NA
   com_metrics_raw: NA
   downloads_plot_data: NA
+  metric_tbl: NA
 ---
 
 <!-- ![](raa-image.png){style="position:float-right; width:63px; height:52px;"} -->
@@ -122,21 +123,30 @@ tagList(br(), h2('Maintenance Metrics'))
 ```
 
 
-```{r maintenance_metrics_table}
+```{r maintenance_metrics_table, warning=FALSE, message=FALSE, error=FALSE}
 if('Maintenance Metrics' %in% params$report_includes){
   params$maint_metrics %>%
     dplyr::mutate(
       `Metric Name` = title,
       `Metric Description` = desc,
-      `Metric Value` = dplyr::case_when(!(name %in% c('has_bug_reports_url', 'news_current')) ~ value,
+      `Metric Value` = dplyr::case_when(
+        value %in% c("pkg_metric_error", "NA", NA) ~ "Not found",
+        !(name %in% c('has_bug_reports_url', 'news_current')) ~ value,
                                  value %in% c("TRUE","1") ~ 'Yes',
-                                 TRUE ~ 'No')
+                                 TRUE ~ 'No'),
+      `Metric Score` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ "NA",
+          # flip the label display of the score to mimic the package score...
+          round(as.numeric(score), 2) == 0 ~ "1.0",
+          round(as.numeric(score), 2) == 1 ~ "0.0",
+          TRUE ~ as.character(round(1 - as.numeric(score), 2))
+      )
     ) %>%
-    dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
+    dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
     knitr::kable(format = 'pandoc')
 }
 ```
 
+* Metrics whose score is `NA` will not impact the package {riskmetric} score
 
 ```{r maintenance_metrics_comments}
 if('Maintenance Comments' %in% params$report_includes){
@@ -170,14 +180,21 @@ if (!cm_ind) {
       dplyr::mutate(
         `Metric Name` = title,
         `Metric Description` = desc,
-        `Metric Value` = value
+        `Metric Value` = ifelse(value %in% c("pkg_metric_error", "NA", NA), "Not found", value),
+        `Metric Score` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ "NA",
+          # flip the label display of the score to mimic the package score...
+          round(as.numeric(score), 2) == 0 ~ "1.0",
+          round(as.numeric(score), 2) == 1 ~ "0.0",
+          TRUE ~ as.character(round(1 - as.numeric(score), 2))
+        )
       ) %>%
-      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`) %>%
+      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
       knitr::kable(format = 'pandoc')
   }
 }
 ```
 
+* Metrics whose score is `NA` will not impact the package {riskmetric} score
 
 ```{r community_metrics_plot_title, eval=cm_ind}
 if('Community Usage Metrics' %in% params$report_includes){

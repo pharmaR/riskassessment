@@ -26,11 +26,10 @@
 
 #raa-logo img {
   position: absolute;
-  top: 0px;
-  right: 0px;
-  padding-top: 2.75em;
-  padding-right: .75em;
-  height: 9em;
+  top: 2.75em;
+  right: .75em;
+  height: 6.25em;
+  z-index: 1;
 }
 
 #upload_package-rem_pkg_btn {

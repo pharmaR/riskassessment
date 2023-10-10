@@ -455,14 +455,9 @@
     },
     "chromote": {
       "Package": "chromote",
-      "Version": "0.1.1.9001",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "chromote",
-      "RemoteUsername": "rstudio",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "c4cad74f45134f701e404bc023372d9118504522",
+      "Version": "0.1.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
       "Requirements": [
         "R6",
         "curl",
@@ -475,7 +470,7 @@
         "rlang",
         "websocket"
       ],
-      "Hash": "6c31f4b7bf7c826f9985140df3982c59"
+      "Hash": "14c8f71bf7b112634b154f8a6a0867e1"
     },
     "cli": {
       "Package": "cli",
@@ -506,6 +501,16 @@
       "Repository": "CRAN",
       "Hash": "96c01552bfd5661b9bbdefbc762f4bcd"
     },
+    "codetools": {
+      "Package": "codetools",
+      "Version": "0.2-18",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "019388fc48e48b3da0d3a76ff94608a8"
+    },
     "colorspace": {
       "Package": "colorspace",
       "Version": "2.0-3",
@@ -519,24 +524,6 @@
         "stats"
       ],
       "Hash": "bb4341986bc8b914f0f0acf2e4a3f2f7"
-    },
-    "colourpicker": {
-      "Package": "colourpicker",
-      "Version": "1.2.0",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "R",
-        "ggplot2",
-        "htmltools",
-        "htmlwidgets",
-        "jsonlite",
-        "miniUI",
-        "shiny",
-        "shinyjs",
-        "utils"
-      ],
-      "Hash": "ca4d99d106687d68392ffe270081bfc0"
     },
     "commonmark": {
       "Package": "commonmark",
@@ -1056,6 +1043,17 @@
       "Repository": "CRAN",
       "Hash": "f3aefccc1cc50de6338146b62f115de8"
     },
+    "globals": {
+      "Package": "globals",
+      "Version": "0.16.2",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "codetools"
+      ],
+      "Hash": "baa9585ab4ce47a9f4618e671778cc6f"
+    },
     "glue": {
       "Package": "glue",
       "Version": "1.6.2",
@@ -1342,34 +1340,6 @@
       ],
       "Hash": "5aab57a3bd297eee1c1d862735972182"
     },
-    "jsTreeR": {
-      "Package": "jsTreeR",
-      "Version": "2.3.2",
-      "Source": "GitHub",
-      "RemoteType": "github",
-      "RemoteHost": "api.github.com",
-      "RemoteRepo": "jsTreeR",
-      "RemoteUsername": "stla",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "43aa8c6b791da190773892880501b82aa89239fe",
-      "Requirements": [
-        "R",
-        "R.utils",
-        "base64enc",
-        "fontawesome",
-        "htmltools",
-        "htmlwidgets",
-        "jquerylib",
-        "miniUI",
-        "rstudioapi",
-        "shiny",
-        "shinyAce",
-        "stats",
-        "tools",
-        "utils"
-      ],
-      "Hash": "98f3051daf0059490f3bab242875cfee"
-    },
     "jsonlite": {
       "Package": "jsonlite",
       "Version": "1.8.0",
@@ -1554,18 +1524,6 @@
         "tools"
       ],
       "Hash": "18e9c28c1d3ca1560ce30658b22ce104"
-    },
-    "miniUI": {
-      "Package": "miniUI",
-      "Version": "0.1.1.1",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "htmltools",
-        "shiny",
-        "utils"
-      ],
-      "Hash": "fec5f52652d60615fdb3957b3d74324a"
     },
     "modelr": {
       "Package": "modelr",
@@ -2356,6 +2314,22 @@
       ],
       "Hash": "99b2ee37c4f174539b1b0d920b00d16c"
     },
+    "shinyTree": {
+      "Package": "shinyTree",
+      "Version": "0.3.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "htmlwidgets",
+        "jsonlite",
+        "methods",
+        "promises",
+        "shiny",
+        "stringr"
+      ],
+      "Hash": "0493a0d70f834cb251fe4523eb17b82c"
+    },
     "shinyWidgets": {
       "Package": "shinyWidgets",
       "Version": "0.7.0",
@@ -2372,20 +2346,6 @@
         "shiny"
       ],
       "Hash": "4c00b64347509091f39c01c52f8d9e4c"
-    },
-    "shinydashboard": {
-      "Package": "shinydashboard",
-      "Version": "0.7.2",
-      "Source": "Repository",
-      "Repository": "RSPM",
-      "Requirements": [
-        "R",
-        "htmltools",
-        "promises",
-        "shiny",
-        "utils"
-      ],
-      "Hash": "e418b532e9bb4eb22a714b9a9f1acee7"
     },
     "shinyjs": {
       "Package": "shinyjs",
@@ -2421,7 +2381,7 @@
     },
     "shinytest2": {
       "Package": "shinytest2",
-      "Version": "0.1.0",
+      "Version": "0.3.1",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -2429,9 +2389,11 @@
         "callr",
         "checkmate",
         "chromote",
+        "cpp11",
         "crayon",
         "ellipsis",
         "fs",
+        "globals",
         "httr",
         "jsonlite",
         "pingr",
@@ -2441,7 +2403,7 @@
         "testthat",
         "withr"
       ],
-      "Hash": "1f5b10b1567c31c131b98bb44ab4ea20"
+      "Hash": "04e60b31d4afef1d221ede5fafb0c6f6"
     },
     "sourcetools": {
       "Package": "sourcetools",

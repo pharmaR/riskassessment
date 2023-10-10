@@ -67,7 +67,19 @@ app_ui <- function(request) {
               tabPanel(
                 id = "src_explorer_id",
                 title = "Source Explorer",
-                mod_pkg_explorer_ui("pkg_explorer")
+                br(),
+                selectInput("explorer_type", NULL,
+                            choices = c("Package Browser" = "fb",
+                                        "Function Explorer" = "fe")) %>%
+                  tagAppendAttributes(class = "metric_select"),
+                conditionalPanel(
+                  "input.explorer_type == 'fb'",
+                  mod_pkg_explorer_ui("pkg_explorer")
+                ),
+                conditionalPanel(
+                  "input.explorer_type == 'fe'",
+                  mod_code_explorer_ui("code_explorer")
+                )
               ),
               tabPanel(
                 id = "reportPreview_tab_id",

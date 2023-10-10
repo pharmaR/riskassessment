@@ -29,6 +29,7 @@ params:
   com_metrics: NA
   com_metrics_raw: NA
   downloads_plot_data: NA
+  metric_tbl: NA
 ---
 
 <style type="text/css">
@@ -52,15 +53,19 @@ knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 
 
 ```{r functions, echo=FALSE, include=FALSE, message=FALSE, warning=FALSE}
-createCard <- function(title, desc, value, is_perc = FALSE, is_url = FALSE,
-                       succ_icon = "check",  unsucc_icon = "times",
-                       icon_class = "text-success"){
+
+createCard <- function(title, desc, value, score = "NULL",
+                       is_perc = FALSE, is_url = FALSE,
+                       succ_icon = "check",  unsucc_icon = "triangle-exclamation",
+                       icon_class = "text-success", type = "information"){
+  
   # A str length of 41 chars tends to wrap to two rows and look quite nice
   val_max_nchar <- 31
-  is_true <- !(value %in% c(0, "pkg_metric_error", "NA", "", 'FALSE'))
-
-  if(value %in% c("pkg_metric_error", "NA"))
+  # is_true <- !(value %in% c(0, "pkg_metric_error", "NA", "", 'FALSE', NA))
+  
+  if(value %in% c("pkg_metric_error", "NA", NA))
     value <- "Not found"
+  # if(score != "NULL") {score <- "NA"} # Shouldn't be needed
   else if(is_perc)
     value <- glue::glue('{round(as.numeric(value), 1)}%')
   else if(is_url)
@@ -72,28 +77,62 @@ createCard <- function(title, desc, value, is_perc = FALSE, is_url = FALSE,
   else if(value %in% c('TRUE', 'FALSE'))
     value <- ifelse(value == 'TRUE', 'Yes', 'No')
 
-  icon_name <- succ_icon
-
-  if(!is_true){
-    icon_name <- unsucc_icon
-    icon_class <- "text-warning"
-  }
-
-  if(is_perc){
-    icon_name <- "percent"
-    icon_class <- "text-info"
-  }
+  # icon_name <- succ_icon
+  # 
+  # if(!is_true){
+  #   icon_name <- unsucc_icon
+  #   icon_class <- "text-warning"
+  # }
+  # 
+  # if(is_perc){
+  #   icon_name <- "percent"
+  #   icon_class <- "text-info"
+  # }
+  
+  # add asterisk to title if it is not in the metric table
+  # There are no databaseView cards here.
+  title = if_else(!title %in% metric_tbl$long_name, paste0(title, "*"), title)
+  
 # overflow-y: scroll;
   card_style <- "max-width: 400px; max-height: 250px; padding-left: 5%; padding-right: 5%;" 
   auto_font_out <- auto_font(value, txt_max = val_max_nchar,
                              size_min = .85, size_max = 1.5)
   body_p_style = glue::glue('font-size: {auto_font_out}vw')
       
-  div(class="card mb-3 text-center border-info", style=card_style,
+  
+  # build the html card
+      if(score == "NULL" | # usually for non-riskmetric cards (like on comm or database tab)
+         # riskmetric cards, both value and score must be missing to show an icon
+         # if value is missing, but score isn't, then we need to show a meter
+         # if score is missing, but value isn't, we need to show an NA meter
+         (score == "NA" | is.na(score)) & any(value %in% "Not found")) { # use icon version
+    
+    # maintain icon logic
+    # succ_icon should only show up for non-riskmetric cards
+    icon_name <- succ_icon 
+    if (value == "Not found") {
+      icon_name <- unsucc_icon
+      icon_class <- "text-warning"
+    }
+
+    display_obj <- icon(icon_name,
+         class = icon_class, verify_fa = FALSE,
+         style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
+    )
+  } else { # use html version (displaying riskmetric score on a meter)
+    display_obj <- 
+      div(style = "padding-top: 30%; padding-left: 10%;",
+         metric_gauge(score = score)
+      )
+  }
+  
+  html_component <- div(class="card mb-3 text-center border-info", style=card_style,
       div(class ="row no-gutters",
           div(class="col-md-4 text-center border-info",
-              icon(icon_name, class=icon_class, verify_fa = FALSE,
-                   style="padding-top: 40%; font-size:60px; padding-left: 20%;")),
+              display_obj
+              # icon(icon_name, class=icon_class, verify_fa = FALSE,
+              #      style="padding-top: 40%; font-size:60px; padding-left: 20%;")
+              ),
           div(class="col-md-8",
               h5(class="card-header bg-transparent", style="font-size: 1vw",
                  title),
@@ -102,13 +141,21 @@ createCard <- function(title, desc, value, is_perc = FALSE, is_url = FALSE,
           div(class="card-footer bg-transparent", desc)
       )
   )
+  
+  if (type == "danger" & !is.na(type)) {
+    html_component %>% 
+      shiny::tagAppendAttributes(class = "text-danger", .cssSelector = "i") %>% 
+      shiny::tagAppendAttributes(class = "text-danger", .cssSelector = "p")
+  } else {
+    html_component
+  }
 }
 
 # For HTML Report, creates card GRID based on metrics data
 createGrid <- function(metrics){
 
   col_width <- 3
-
+  
   fluidRow(style = "padding-right: 10px", class = "card-group",
            column(width = 4, {
              lapply(X = seq(1, nrow(metrics), col_width), function(i){
@@ -117,10 +164,14 @@ createGrid <- function(metrics){
                           value = dplyr::case_when(metrics$name[i] != 'has_bug_reports_url' ~ metrics$value[i],
                                metrics$value[i] == "1" ~ 'TRUE',
                                TRUE ~ 'FALSE'),
+                          score = metrics$score[i],
                           is_perc = metrics$is_perc[i] == 1,
                           is_url = metrics$is_url[i] == 1,
                           succ_icon = metrics$succ_icon[i],
-                          icon_class = metrics$icon_class[i])
+                          icon_class = metrics$icon_class[i]
+                          ,type = dplyr::if_else(metrics$name[i] == "downloads_trend" & metrics$value[i] < 0, "danger", "information")
+                            # metrics$type[i] # doesn't exist in table
+                          )
              })
            }),
            column(width = 4, {
@@ -130,10 +181,14 @@ createGrid <- function(metrics){
                           value = dplyr::case_when(metrics$name[i] != 'has_bug_reports_url' ~ metrics$value[i],
                                metrics$value[i] == "1" ~ 'TRUE',
                                TRUE ~ 'FALSE'),
+                          score = metrics$score[i],
                           is_perc = metrics$is_perc[i] == 1,
                           is_url = metrics$is_url[i] == 1,
                           succ_icon = metrics$succ_icon[i],
-                          icon_class = metrics$icon_class[i])
+                          icon_class = metrics$icon_class[i]
+                          ,type = dplyr::if_else(metrics$name[i] == "downloads_trend" & metrics$value[i] < 0, "danger", "information")
+                            # metrics$type[i] # doesn't exist in table
+                          )
              })
            }),
            column(width = 4, {
@@ -143,13 +198,20 @@ createGrid <- function(metrics){
                           value = dplyr::case_when(metrics$name[i] != 'has_bug_reports_url' ~ metrics$value[i],
                                metrics$value[i] == "1" ~ 'TRUE',
                                TRUE ~ 'FALSE'),
+                          score = metrics$score[i],
                           is_perc = metrics$is_perc[i] == 1,
                           is_url = metrics$is_url[i] == 1,
                           succ_icon = metrics$succ_icon[i],
-                          icon_class = metrics$icon_class[i])
+                          icon_class = metrics$icon_class[i]
+                          ,type = dplyr::if_else(metrics$name[i] == "downloads_trend" & metrics$value[i] < 0, "danger", "information")
+                            # metrics$type[i] # doesn't exist in table
+                          )
              })
-           })
-  )
+           }),
+        if(any(!(metrics$title %in% metric_tbl$long_name))) {
+        tags$em("* Provided for additional context. Not a {riskmetric} assessment, so this measure will not impact the risk score.")
+        }
+    )
 }
 ```
 
@@ -231,6 +293,7 @@ tagList(
     tagList(
       br(),
       createGrid(metrics = params$maint_metrics),
+      
       br()
     )
   } else "",

@@ -41,7 +41,7 @@ usethis::use_mit_license()
 # # usethis::use_package("shinyBS")
 usethis::use_package("fontawesome", type = "Suggests")
 usethis::use_package("kableExtra", type = "Suggests")
-# usethis::use_package("knitr", type = "Suggests")
+usethis::use_package("knitr", type = "Suggests")
 # usethis::use_package("tinytex", type = "Suggests")
 # usethis::use_package("pkgdown", type = "Suggests")#, min_version = "1.6.1")
 # usethis::use_package("rlang")
@@ -53,6 +53,9 @@ usethis::use_package("kableExtra", type = "Suggests")
 # usethis::use_package("tippy")
 # usethis::use_package("rjson")
 # 
+usethis::use_dev_package("riskmetric")#, min_version = "0.2.2") 
+usethis::use_dev_package("chromote",type = "suggests")#, min_version = "0.2.2") 
+
 # # usethis::use_package("IDEAFilter") # install.packages("IDEAFilter") #‘0.1.0.9000’
 # usethis::use_dev_package("IDEAFilter") # devtools::install_github("Biogen-Inc/IDEAFilter")
 # 
@@ -185,6 +188,7 @@ usethis::use_data_raw( name = "adsl", open = FALSE ) # not run.
 usethis::use_test( "app" )
 usethis::use_test( "auto_font" )
 usethis::use_test( "generate_comm_data" )
+usethis::use_test( "metric_gauge" )
 
 # Documentation
 ## Vignettes 

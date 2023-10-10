@@ -99,7 +99,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
         n_pkgs <- length(pkgs())
         
         if (n_pkgs > 1) {
-          report_datetime <- stringr::str_replace_all(stringr::str_replace(Sys.time(), " ", "_"), ":", "-")
+          report_datetime <- stringr::str_replace_all(stringr::str_replace(get_time(), " ", "_"), ":", "-")
           glue::glue('RiskAssessment-Report-{report_datetime}.zip')
         } else {
           pkg_ver <- dbSelect("SELECT version FROM package WHERE name = {pkgs()}")
@@ -231,10 +231,12 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               se_comments <- get_se_comments(this_pkg)
               
               # gather maint metrics & community metric data
-              mm_data <- get_mm_data(pkg_list$id)
+              mm_data <- get_metric_data(this_pkg, metric_class = "maintenance")
               comm_data <- get_comm_data(this_pkg)
               comm_cards <- build_comm_cards(comm_data)
               downloads_plot <- build_comm_plotly(comm_data)
+              metric_tbl <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
+              
               
               # Render the report, passing parameters to the rmd file.
               rmarkdown::render(
@@ -256,7 +258,8 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                               maint_metrics = mm_data,
                               com_metrics = comm_cards,
                               com_metrics_raw = comm_data,
-                              downloads_plot_data = downloads_plot
+                              downloads_plot_data = downloads_plot,
+                              metric_tbl = metric_tbl
                 )
               )
               fs <- c(fs, path)  # Save all the reports/

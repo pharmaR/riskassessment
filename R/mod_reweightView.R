@@ -21,7 +21,6 @@ reweightViewUI <- function(id) {
 #' @import dplyr
 #' @importFrom DT datatable formatStyle styleEqual renderDataTable
 #' @importFrom shinyjs enable disable delay
-#' @importFrom shinydashboard box
 #' @importFrom DBI dbConnect dbDisconnect
 #' @importFrom RSQLite SQLite sqliteCopyDatabase
 #' 
@@ -88,59 +87,63 @@ reweightViewServer <- function(id, user, decision_list, credentials, trigger_eve
       tagList(
         tags$section(
           br(), br(),
-          shinydashboard::box(width = 12, status = "primary",
-              title = h2("View/Change Weights", style = "margin-top: 5px", align = "center"),
-              solidHeader = TRUE,
-              br(),
-              fluidRow(
-                column(width = 5, offset = 5, align = "left",
-                       h3("Set new weights:"),
-                )),
-              fluidRow(
-                column(width = 2, offset = 5, align = "left",
-                       selectInput(NS(id, "metric_name"), "Select metric", curr_new_wts()$name, selected = curr_new_wts()$name[1]) ),
-                column(width = 2, align = "left",
-                       numericInput(NS(id, "metric_weight"), "Choose new weight", min = 0, value = curr_new_wts()$new_weight[1]) ),
-                column(width = 1,
-                       br(),
-                       actionButton(NS(id, "update_weight"), "Confirm", class = "btn-secondary") ) ),
-              br(), br(), 
-              fluidRow(
-                column(width = 3, offset = 1, align = "center",
-                       
-                       br(), br(), br(), 
-                       tags$hr(class = "hr_sep"),
-                       br(), br(),
-                       
-                       h3("Download database"),
-                       downloadButton(NS(id, "download_database_btn"),
-                                      "Download",
-                                      class = "btn-secondary"),
-                       
-                       br(), br(), br(), 
-                       tags$hr(class = "hr_sep"),
-                       br(), br(),
-                       
-                       h3("Apply new weights and re-calculate risk for each package"),
-                       actionButton(NS(id, "update_pkg_risk"), "Update", class = "btn-secondary")
-                       
-                ),
-                column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
-                       offset = 1,
-                       h3("Current Risk Score Weights by Metric", align = "center"),
-                       DT::dataTableOutput(NS(id, "weights_table")))
+          div(class = c("box", "box-primary", "box-solid"),
+              h3(class = "box-title",
+                 h2("View/Change Weights", style = "margin-top: 5px", align = "center")
               ),
-              br(), br(), br(),
-              fluidRow(
-                column(width = 1),
-                column(width = 10,
-                       h5(em("Note: Changing the weights of the metrics will not update the
+              div(class = "box-body",
+                  br(),
+                  fluidRow(
+                    column(width = 5, offset = 5, align = "left",
+                           h3("Set new weights:"),
+                    )),
+                  fluidRow(
+                    column(width = 2, offset = 5, align = "left",
+                           selectInput(NS(id, "metric_name"), "Select metric", curr_new_wts()$name, selected = curr_new_wts()$name[1]) ),
+                    column(width = 2, align = "left",
+                           numericInput(NS(id, "metric_weight"), "Choose new weight", min = 0, value = curr_new_wts()$new_weight[1]) ),
+                    column(width = 1,
+                           br(),
+                           actionButton(NS(id, "update_weight"), "Confirm", class = "btn-secondary") ) ),
+                  br(), br(), 
+                  fluidRow(
+                    column(width = 3, offset = 1, align = "center",
+                           
+                           br(), br(), br(), 
+                           tags$hr(class = "hr_sep"),
+                           br(), br(),
+                           
+                           h3("Download database"),
+                           downloadButton(NS(id, "download_database_btn"),
+                                          "Download",
+                                          class = "btn-secondary"),
+                           
+                           br(), br(), br(), 
+                           tags$hr(class = "hr_sep"),
+                           br(), br(),
+                           
+                           h3("Apply new weights and re-calculate risk for each package"),
+                           actionButton(NS(id, "update_pkg_risk"), "Update", class = "btn-secondary")
+                           
+                    ),
+                    column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
+                           offset = 1,
+                           h3("Current Risk Score Weights by Metric", align = "center"),
+                           DT::dataTableOutput(NS(id, "weights_table")))
+                  ),
+                  br(), br(), br(),
+                  fluidRow(
+                    column(width = 1),
+                    column(width = 10,
+                           h5(em("Note: Changing the weights of the metrics will not update the
                risk of the packages on the database until 'Update' button is selected.
                ")), align = "center"),
-                column(width = 1)
-              ),
-              br(), br()
-          )
+                    column(width = 1)
+                  ),
+                  br(), br()
+              )
+          ) %>%
+            column(width = 12)
         )
       )
     })
@@ -328,7 +331,7 @@ reweightViewServer <- function(id, user, decision_list, credentials, trigger_eve
     output$download_database_btn <- downloadHandler(
       
       filename = function() {
-        glue::glue("datase_backup-{Sys.Date()}.sqlite")
+        glue::glue("datase_backup-{get_Date()}.sqlite")
       },
       content = function(file) {
         con <- DBI::dbConnect(RSQLite::SQLite(), golem::get_golem_options('assessment_db_name'))

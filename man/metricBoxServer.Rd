@@ -9,10 +9,11 @@ metricBoxServer(
   title,
   desc,
   value,
+  score = "NULL",
   is_perc = FALSE,
   is_url = FALSE,
   succ_icon = "check",
-  unsucc_icon = "times",
+  unsucc_icon = "triangle-exclamation",
   icon_class = "text-success",
   type = "information"
 )
@@ -26,6 +27,8 @@ metricBoxServer(
 
 \item{value}{metric value.}
 
+\item{score}{metric score, as a character value}
+
 \item{is_perc}{logical is the value is a percentage?}
 
 \item{is_url}{logical is the value a url}
@@ -35,6 +38,8 @@ metricBoxServer(
 \item{unsucc_icon}{icon used if not is_true.}
 
 \item{icon_class}{string type of icon}
+
+\item{type}{string to color the icon ("information" or "danger")}
 }
 \description{
 Server logic for the 'Metric Box' module
