@@ -2,7 +2,8 @@ default:
   assessment_db: database.sqlite
   loggit_json: loggit.json
   credential_db: credentials.sqlite
-  report_prefs: report_downloads
+  report_prefs:
+    directory: report_preferences
   credentials:
     roles:
       - admin
