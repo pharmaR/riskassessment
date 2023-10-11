@@ -57,8 +57,6 @@ mod_downloadHandler_include_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     
-    `%||%` <- function(lhs, rhs) if (is.null(lhs)) rhs else lhs
-    
     output$mod_downloadHandler_incl_output <- renderUI({
       div(
         strong(p("Elements to include:")),
