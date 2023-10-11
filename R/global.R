@@ -12,6 +12,7 @@
 #'
 #' 
 #' @import dplyr
+#' @import riskmetric
 #' @importFrom stats lm predict
 #' @importFrom utils download.file tail untar
 #' 

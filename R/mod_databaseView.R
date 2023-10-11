@@ -188,7 +188,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                                 "color" = ifelse(x %in% decision_lst, "white", "inherit"),
                                 "background-color" = 
                                   ifelse(x %in% decision_lst, 
-                                         glue::glue("var(--{risk_lbl(x, input = FALSE)}-color)"), 
+                                         glue::glue("var(--{risk_lbl(x, type = 'attribute')}-color)"), 
                                          "transparent")))
           )),
         selection = list(mode = 'multiple'),
