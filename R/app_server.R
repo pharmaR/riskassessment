@@ -174,9 +174,11 @@ app_server <- function(input, output, session) {
   session$userData$user_report <- reactiveValues()
   observe({
     req(user$name)
-
+    default_dir <- get_db_config("report_prefs", "default")[["directory"]]
+    if(!file.exists(default_dir)) dir.create(file.path(getwd(), default_dir)) 
+    
     # retrieve user data, if it exists.  Otherwise use rpt_choices above.
-    session$userData$user_report$user_file <- file.path(system.file("report_downloads", package = "riskassessment"), glue::glue("report_prefs_{user$name}.txt"))
+    session$userData$user_report$user_file <- file.path(default_dir, glue::glue("report_prefs_{user$name}.txt"))
     if (file.exists(session$userData$user_report$user_file)) {
       session$userData$user_report$report_includes <- readLines(session$userData$user_report$user_file)
     } else {
