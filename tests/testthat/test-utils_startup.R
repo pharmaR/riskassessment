@@ -20,17 +20,20 @@ test_that("database creation", {
     })
   
   expect_equal(DBI::dbListTables(con),
-               c("comments", "community_usage_metrics", "decision_categories", "metric", "package", "package_metrics", "roles", "sqlite_sequence"))
+               c("comments", "community_usage_metrics", "decision_categories", "metric", "package", "package_metrics", "roles", "rules", "sqlite_sequence"))
   pkg <- DBI::dbGetQuery(con, "SELECT * FROM package")
   expect_equal(nrow(pkg), 0)
   expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", 
                              "score", "weighted_score", "decision_id", "decision_by", "decision_date", "date_added"))
   metric <- DBI::dbGetQuery(con, "SELECT * FROM metric")
   expect_equal(nrow(metric), 15) 
-  expect_equal(names(metric), c("id", "name", "long_name", "is_perc", "is_url", "description", "class", "weight"))
+  expect_equal(names(metric), c("id", "name", "long_name", "is_perc", "is_url", "is_riskmetric", "description", "class", "weight"))
+  #This expectation is to ensure that the internal data element metric_lst is
+  #maintaining uniformity with the metric table
+  expect_equal(sort(metric_lst), sort(metric[metric$is_riskmetric == 1, "name"]))
   pkg_metric <- DBI::dbGetQuery(con, "SELECT * FROM package_metrics")
   expect_equal(nrow(pkg_metric), 0)
-  expect_equal(names(pkg_metric), c("id", "package_id", "metric_id", "value", "encode"))
+  expect_equal(names(pkg_metric), c("id", "package_id", "metric_id", "value", "metric_score", "encode"))
   com_metric <- DBI::dbGetQuery(con, "SELECT * FROM community_usage_metrics")
   expect_equal(nrow(com_metric), 0)
   expect_equal(names(com_metric), c("id", "month", "year", "downloads", "version"))
@@ -111,13 +114,12 @@ test_that("database creation", {
 #### initialize_raa tests ####
 
 test_that("database initialization", {
-  expect_error(initialize_raa())
-  expect_error(initialize_raa(assess_db = "tmp_assess.sqlite"),
+  expect_error(initialize_raa(cred_db = "tmp_assess.txt"),
                "cred_db must follow SQLite naming conventions.*")
-  expect_error(initialize_raa(cred_db = "tmp_cred.sqlite"),
+  expect_error(initialize_raa(assess_db = "tmp_cred.txt"),
                "assess_db must follow SQLite naming conventions.*")
   
-  db_lst <- initialize_raa("tmp_assess.sqlite", "tmp_cred.sqlite", c("Low Risk", "Medium Risk", "High Risk"))
+  db_lst <- initialize_raa("tmp_assess.sqlite", "tmp_cred.sqlite")
   on.exit(unlink(db_lst))
   expect_true(file.exists(db_lst[1]))
   expect_true(file.exists(db_lst[2]))

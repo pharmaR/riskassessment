@@ -54,7 +54,7 @@ test_that("Test that generate_comm_data() works", {
     union(expand.grid(1:12, mid_years))%>%
     union(expand.grid(yearn_mnths, max(dat$year)))
   colnames(all_combos) <- c("month", "year")
-  expect_equal(dat %>% distinct(year, month) %>% as.data.frame, all_combos)
+  expect_equal(dat %>% select(month, year) %>% distinct(), all_combos, ignore_attr = TRUE)
 })
 
 test_that("Test that showComments() works", {

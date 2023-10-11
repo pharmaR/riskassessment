@@ -79,7 +79,7 @@ uploadPackageUI <- function(id) {
 #' 
 uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events) {
   if (missing(credentials))
-    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
+    credentials <- get_db_config("credentials")
   moduleServer(id, function(input, output, session) {
     
     observe({
@@ -308,8 +308,10 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
       uploaded_packages <- uploaded_pkgs00()
       uploaded_pkgs00(NULL)
       uploaded_packages$score <- NA_real_
-      if (!rlang::is_empty(auto_list()))
+      if (!rlang::is_empty(auto_list())) {
         uploaded_packages$decision <- ""
+        uploaded_packages$decision_rule <- ""
+      }
       np <- nrow(uploaded_packages)
       
       if (!isTRUE(getOption("shiny.testmode"))) {
@@ -435,8 +437,9 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
               insert_community_metrics_to_db(uploaded_packages$package[i])
               uploaded_packages$score[i] <- get_pkg_info(uploaded_packages$package[i])$score
               if (!rlang::is_empty(auto_list())) {
-                uploaded_packages$decision[i] <-
-                  assign_decisions(auto_list(), uploaded_packages$package[i])
+                assigned_decision <- assign_decisions(auto_list(), uploaded_packages$package[i])
+                uploaded_packages$decision[i] <- assigned_decision$decision
+                uploaded_packages$decision_rule[i] <- assigned_decision$decision_rule
               }
             }
           }
@@ -542,13 +545,14 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
                                              "padding-right" = "4px",
                                              "font-weight" = "bold",
                                              "color" = "white",
-                                             "background-color" = glue::glue("var(--{risk_lbl(x, input = FALSE)}-color)")))
+                                             "background-color" = glue::glue("var(--{risk_lbl(x, type = 'attribute')}-color)")))
           )
         ),
         escape = FALSE,
         class = "cell-border",
         selection = 'none',
         rownames = FALSE,
+        colnames = gsub("_", " ", names(uploaded_pkgs())),
         options = list(
           searching = FALSE,
           columnDefs = list(list(className = 'dt-center', targets = "_all")),

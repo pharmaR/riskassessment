@@ -4,7 +4,7 @@
 devtools::load_all()
 old <- options()
 options(golem.app.prod = FALSE)
-db_config <- get_golem_config(NULL, file = app_sys("db-config.yml"))
+db_config <- get_db_config(NULL)
 shiny::shinyOptions(golem_options = list(pre_auth_user = "admin",
                                          decision_categories = db_config$decisions$categories))
 
@@ -68,7 +68,7 @@ options(shiny.testmode = NULL)
 options(shinytest2.timeout = NULL)
 
 Sys.setenv("GOLEM_CONFIG_ACTIVE" = "example")
-db_config <- get_golem_config(NULL, file = app_sys("db-config.yml"))
+db_config <- get_db_config(NULL)
 shiny::shinyOptions(golem_options = list(pre_auth_user = "admin",
                                          decision_categories = db_config$decisions$categories))
 dec_auto_db <- "./inst/testdata/decision_automation_ex1.sqlite"

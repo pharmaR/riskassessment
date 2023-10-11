@@ -91,6 +91,7 @@ showComments
 showHelperMessage
 sql
 sqlite
+tagList
 tibble
 transactional
 ui
