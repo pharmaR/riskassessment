@@ -99,7 +99,7 @@ databaseViewUI <- function(id) {
 #' @importFrom shinyjs enable disable
 #' @importFrom rmarkdown render
 #' @importFrom glue glue
-#' @importFrom DT renderDataTable formatStyle
+#' @importFrom DT dataTableProxy renderDataTable formatStyle selectRows dataTableOutput
 #' @importFrom formattable formattable as.datatable formatter style csscolor
 #'   icontext
 #' @keywords internal
