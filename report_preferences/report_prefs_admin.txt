@@ -1,7 +1,0 @@
-Report Author
-Report Date
-Risk Score
-Package Summary
-Maintenance Metrics
-Community Usage Metrics
-Source Explorer Comments
