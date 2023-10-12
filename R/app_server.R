@@ -174,7 +174,7 @@ app_server <- function(input, output, session) {
   session$userData$user_report <- reactiveValues()
   observe({
     req(user$name)
-    default_dir <- get_db_config("report_prefs", "default")[["directory"]]
+    default_dir <- get_db_config("report_prefs")[["directory"]]
     if(!file.exists(default_dir)) dir.create(default_dir)
     
     # retrieve user data, if it exists.  Otherwise use rpt_choices above.
