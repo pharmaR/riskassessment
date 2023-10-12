@@ -233,7 +233,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     
     observeEvent(input$dt_sel, {
       if (isTRUE(input$dt_sel)) {
-        DT::selectRows(tableProxy, input$packages_table_rows_current)
+        DT::selectRows(tableProxy, input$packages_table_rows_all)
       } else {
         DT::selectRows(tableProxy, NULL)
       }
