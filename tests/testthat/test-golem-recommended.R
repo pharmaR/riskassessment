@@ -50,6 +50,31 @@ test_that(
   }
 )
 
+test_that(
+  "db-config works",
+  {
+    config_file <- app_sys("db-config.yml")
+    skip_if(config_file == "")
+    
+    expect_equal(
+      get_db_config(
+        "assessment_db",
+        config = "default",
+        file = config_file
+      ),
+      "database.sqlite"
+    )
+    expect_equal(
+      get_golem_config(
+        "assessment_db",
+        config = "example",
+        file = config_file
+      ),
+      "database_ex.sqlite"
+    )
+  }
+)
+
 
 # Configure this test to fit your need.
 # testServer() function makes it possible to test code in server functions and modules, without needing to run the full Shiny application

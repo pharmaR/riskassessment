@@ -29,7 +29,7 @@ mod_user_roles_ui <- function(id){
 #' @noRd 
 mod_user_roles_server <- function(id, user, credentials, trigger_events){
   if (missing(credentials))
-    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
+    credentials <- get_db_config("credentials")
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     

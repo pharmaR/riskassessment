@@ -116,7 +116,7 @@ sidebarUI <- function(id) {
 #' 
 sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) {
   if (missing(credentials))
-    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
+    credentials <- get_db_config("credentials")
   moduleServer(id, function(input, output, session) {
     
     # Required for shinyhelper to work.

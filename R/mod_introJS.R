@@ -33,7 +33,7 @@ introJSUI <- function(id) {
 #' @keywords internal
 introJSServer <- function(id, text, user, credentials) {
   if (missing(credentials))
-    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
+    credentials <- get_db_config("credentials")
   moduleServer(id, function(input, output, session) {
     
     steps <- reactive({

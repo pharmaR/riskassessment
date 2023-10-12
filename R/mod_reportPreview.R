@@ -39,7 +39,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                                 downloads_plot_data, user, credentials, app_version,
                                 metric_weights) {
   if (missing(credentials))
-    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
+    credentials <- get_db_config("credentials")
   
   moduleServer(id, function(input, output, session) {
     

@@ -57,3 +57,29 @@ box-shadow: 0 0 0 0.25rem rgb(51, 153, 255, 50%);
   opacity: 50%;
   pointer-events: none;
 }
+
+.progress-bar {
+  --bs-progress-bar-bg-lighter: color-mix(in srgb, var(--bs-progress-bar-bg), #eee 40%);
+  background-color: unset;
+  border-radius: 1em;
+  background-image: linear-gradient(
+    -45deg, 
+    var(--bs-progress-bar-bg) 25%, 
+    var(--bs-progress-bar-bg-lighter) 25%, 
+    var(--bs-progress-bar-bg-lighter) 50%, 
+    var(--bs-progress-bar-bg) 50%,
+    var(--bs-progress-bar-bg) 75%,
+    var(--bs-progress-bar-bg-lighter) 75%,
+    var(--bs-progress-bar-bg-lighter)
+  );
+  background-size: 50px 50px;
+  animation: animatedBackground 2s linear infinite;
+}
+
+
+
+@keyframes animatedBackground {
+  0% { background-position: 0 0; }
+  100% { background-position: 50px 50px; }
+}
+

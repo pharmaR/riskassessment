@@ -258,7 +258,7 @@ get_metric_weights <- function(db_name = golem::get_golem_options('assessment_db
 #'
 #' @returns a data frame
 #' @noRd
-get_assess_blob<- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
+get_assess_blob <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
   db_table <- dbSelect("SELECT metric.name, package_metrics.encode FROM package 
                        INNER JOIN package_metrics ON package.id = package_metrics.package_id
                        INNER JOIN metric ON package_metrics.metric_id = metric.id
