@@ -20,6 +20,5 @@ test_that("data should contain every possible year month combo from month of fir
     union(expand.grid(1:12, mid_years))%>%
     union(expand.grid(yearn_mnths, max(dat$year)))
   colnames(all_combos) <- c("month", "year")
-  expect_equal(dat %>% distinct(month, year) %>% as.data.frame, all_combos, ignore_attr = TRUE)
   expect_equal(dat %>% select(month, year) %>% distinct(), all_combos, ignore_attr = TRUE)
 })
