@@ -11,6 +11,7 @@
 * Started showing `metric_score`s for each assessment's card, using an html meter (#634)
 * Removed some unneeded/unused dependencies
 * Allow user to create decision automation rules for individual metrics (#483)
+* Add introjs button for code and package explorer,autoselect first element in package explorer tree(#581)
 
 
 # riskassessment 2.0.0
