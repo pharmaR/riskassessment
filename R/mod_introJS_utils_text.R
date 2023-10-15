@@ -23,7 +23,7 @@ sidebar_steps <-
 # appui tab widgets
 apptab_steps <- data.frame(
   element = c(
-  "[data-value=assessment-criteria-tab]", "[data-value=database-tab]"),
+    "[data-value=assessment-criteria-tab]", "[data-value=database-tab]"),
   intro = c("Discover the package assessment process & criteria",
             "Review the R packages that already exist in the database"),
   position = c(rep("bottom", 2))
@@ -64,14 +64,13 @@ upload_pkg_dec_adj <- data.frame(
   position = "left"
 )
 upload_pkg_comp <-  data.frame(
-      element = c("#upload_summary_div", "#upload_package-upload_pkgs_table"),
-      intro = c(
-        "Text description of packages uploaded. Counts by type: 'Total', 'New', 'Undiscovered', 'Duplicate'.",
-        "Confirm uploaded packages list, filter by type"
-      ),
-      position = c("bottom", "top")
+  element = c("#upload_summary_div", "#upload_package-upload_pkgs_table"),
+  intro = c(
+    "Text description of packages uploaded. Counts by type: 'Total', 'New', 'Undiscovered', 'Duplicate'.",
+    "Confirm uploaded packages list, filter by type"
+  ),
+  position = c("bottom", "top")
 )
-
 
 # Maintenance metrics.
 mm_steps <- 
@@ -82,6 +81,31 @@ mm_steps <-
       "Have something to share within your organization? Add a comment and keep track of the on-going conversation for this package's maintainence metrics"
     ),
     position = c(rep("left", 2))
+  )
+
+# Package Explorer
+pe_steps <- 
+  data.frame(
+    element = c("#file_tree", "#file_editor","#comments_for_se"),
+    intro = c(
+      "The file tree shows all the files inside.Click to view.",
+      "Text inside selected file from package if viewable",
+      "Add comments for any files"
+    ),
+    position = c(rep("right", 3))
+  )
+
+# Function Explorer
+fe_steps <- 
+  data.frame(
+    element = c("#function_list", "#file_type","#file_list","#file_viewer"),
+    intro = c(
+      "Exported Functions.Click to view",
+      "Select type/source of function",
+      "File in which selected function is found",
+      "File viewer with selected function highlighted"
+    ),
+    position = c(rep("right", 3),"top")
   )
 
 

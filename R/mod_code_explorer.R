@@ -29,14 +29,17 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
       } else if (!file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")))) {
         showHelperMessage(message = glue::glue("Source code not available for {{{selected_pkg$name()}}}"))
       } else {
-        div(
+        div(introJSUI(NS(id, "introJS")),
           br(),
           fluidRow(
             column(3,
                    wellPanel(
+                     div(id = "function_list",
                      selectInput(ns("exported_function"), "Exported Function", choices = exported_functions()) %>%
-                       tagAppendAttributes(class = "exported_function"),
-                     selectInput(ns("file_type"), "File Type", choices = c("Testing Files" = "test", "R Source Code" = "source", "Help Documentation" = "man")),
+                       tagAppendAttributes(class = "exported_function")),
+                     div(id = "file_type",
+                         selectInput(ns("file_type"), "File Type", choices = c("Testing Files" = "test", "R Source Code" = "source", "Help Documentation" = "man"))),
+                     div(id = "file_list",
                      conditionalPanel(
                        condition = "input.file_type == 'test'",
                        selectInput(ns("test_files"), NULL,
@@ -59,9 +62,10 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
                        ns = ns
                      )
                    )
+                   )
             ),
             column(9,
-                   div(
+                   div(id = "file_viewer",
                      uiOutput(ns("file_output"), class = "file_browser"),
                      style = "height: 62vh; overflow: auto; border: 1px solid var(--bs-border-color-translucent);"
                    )
@@ -132,6 +136,8 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
       includeHTML(file.path(out_dir, "man.html"))
     }) %>%
       bindEvent(input$man_files, input$exported_function, ignoreNULL = FALSE)
+    
+    introJSServer("introJS", text = reactive(fe_steps), user, credentials)
     
     output$file_output <- renderUI({
       switch (input$file_type,
