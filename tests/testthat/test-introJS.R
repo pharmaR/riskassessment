@@ -81,6 +81,34 @@ test_that("The introJS module works as expected for admins", {
   steps <- app$get_value(export = "maintenanceMetrics-introJS-steps")
   expect_equal(maintenance_metrics, steps)
   
+  app$click("pkg_explorer-introJS-help")
+  app$wait_for_idle()
+  
+  pkg_explorer <- dplyr::bind_rows(pe_steps, apptab_admn, apptab_steps, sidebar_steps)
+  
+  # Verify that all elements exist and are visible
+  el_pos <- purrr::map(pkg_explorer$element, getBoundingClientRect, appDriver = app)
+  introjs_bullets <- app$get_js("$('.introjs-bullets ul li').length")
+  expect(length(el_pos) == introjs_bullets, "One or more Upload Package introJS elements are missing.")
+  expect(all(purrr::map_lgl(el_pos, ~ any(.x > 0))), "One or more elements are not visible")
+  steps <- app$get_value(export = "pkg_explorer-introJS-steps")
+  expect_equal(pkg_explorer, steps)
+  
+  app$click(selector = ".introjs-skipbutton")
+  
+  app$click("code_explorer-introJS-help")
+  app$wait_for_idle()
+  
+  code_explorer <- dplyr::bind_rows(fe_steps, apptab_admn, apptab_steps, sidebar_steps)
+  
+  # Verify that all elements exist and are visible
+  el_pos <- purrr::map(code_explorer$element, getBoundingClientRect, appDriver = app)
+  introjs_bullets <- app$get_js("$('.introjs-bullets ul li').length")
+  expect(length(el_pos) == introjs_bullets, "One or more Upload Package introJS elements are missing.")
+  expect(all(purrr::map_lgl(el_pos, ~ any(.x > 0))), "One or more elements are not visible")
+  steps <- app$get_value(export = "code_explorer-introJS-steps")
+  expect_equal(code_explorer, steps)
+  
   app$click(selector = ".introjs-skipbutton")
   
   app$set_inputs(tabs = "Package Metrics",
