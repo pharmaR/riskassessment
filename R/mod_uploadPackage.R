@@ -82,7 +82,7 @@ uploadPackageUI <- function(id) {
 #' @importFrom rlang inform is_empty
 #' @importFrom shiny icon
 #' @importFrom shinyjs runjs
-#' @importFrom utils adist download.file
+#' @importFrom utils adist available.packages download.file read.csv
 #' 
 #' @keywords internal
 #' 
@@ -136,7 +136,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
         if (isTRUE(getOption("shiny.testmode"))) {
           cran_pkgs(test_pkg_lst)
         } else {
-          cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+          cran_pkgs(utils::available.packages("https://cran.rstudio.com/src/contrib")[,1])
         }
       }
     },
@@ -199,7 +199,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
       if(is.null(input$uploaded_file$datapath))
         uploaded_pkgs00(validate('Please upload a nonempty CSV file.'))
       
-      uploaded_packages <- read.csv(input$uploaded_file$datapath, stringsAsFactors = FALSE)
+      uploaded_packages <- utils::read.csv(input$uploaded_file$datapath, stringsAsFactors = FALSE)
       np <- nrow(uploaded_packages)
       if(np == 0)
         uploaded_pkgs00(validate('Please upload a nonempty CSV file.'))
@@ -357,7 +357,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
         if (isTRUE(getOption("shiny.testmode"))) {
           cran_pkgs(test_pkg_lst)
         } else {
-          cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+          cran_pkgs(utils::available.packages("https://cran.rstudio.com/src/contrib")[,1])
         }
       }
       
