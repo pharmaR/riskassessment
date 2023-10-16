@@ -70,11 +70,20 @@ uploadPackageUI <- function(id) {
 #' @param user a username
 #' @param auto_list a list of decision automation rules
 #' @param trigger_events a reactive values object to trigger actions here or elsewhere
+#' @param parent the parent (calling module) session information
 #' 
+#' @importFrom DT datatable dataTableOutput formatStyle renderDataTable
+#' @importFrom formattable as.datatable csscolor formattable formatter style
+#' @importFrom glue glue
+#' @importFrom golem get_golem_options
+#' @importFrom loggit loggit
+#' @importFrom purrr map map_chr map_lgl 
 #' @importFrom riskmetric pkg_ref
-#' @importFrom rintrojs introjs
-#' @importFrom utils read.csv available.packages download.file
-#' @importFrom rvest read_html html_nodes html_text
+#' @importFrom rlang inform is_empty
+#' @importFrom shiny icon
+#' @importFrom shinyjs runjs
+#' @importFrom utils adist download.file
+#' 
 #' @keywords internal
 #' 
 uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events, parent) {
