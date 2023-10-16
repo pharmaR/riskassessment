@@ -42,6 +42,7 @@ config
 configs
 covr
 cran
+databaseView
 dev
 docx
 dropdown
@@ -80,6 +81,7 @@ renv
 repo
 repo's
 repo’s
+reportDownload
 riskcalc
 riskmetric
 rstudio
@@ -100,3 +102,4 @@ userid
 viewComment
 www
 ’s
+ 
