@@ -33,6 +33,7 @@ databaseViewUI <- function(id) {
                 br(),
                 metricGridUI(NS(id, 'metricGrid')),
                 br(),
+                DT::dataTableOutput(NS(id, "packages_table")),
                 div(style = "font-size: 25px;", align = "left",
                     shinyWidgets::prettyToggle(NS(id, "dt_sel"), 
                                                label_on  = "All Rows Selected",
@@ -44,8 +45,6 @@ databaseViewUI <- function(id) {
                                                outline = TRUE,
                                                inline = TRUE,
                                                bigger = TRUE)),
-                DT::dataTableOutput(NS(id, "packages_table")),
-                br(),
                 h5("Report Configurations"),
                 br(),
                 fluidRow(
