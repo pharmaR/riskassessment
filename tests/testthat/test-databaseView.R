@@ -18,16 +18,7 @@ test_that("Reactivity of database view table", {
   
   app$set_inputs(apptabs = "database-tab")
   
-  #### Test that the `table_data` loads correctly ####
-  tbl_expect <-
-    structure(list(name = "dplyr", date_added = "2023-07-20", version = "1.1.2",
-                   score = 0.27, decision = "-", decision_by = "-", decision_date = "-",
-                   last_comment = "-"), 
-              class = "data.frame", row.names = c(NA, -1L))
-  tbl_actual <-
-    app$get_value(export = "databaseView-table_data")
-  
-  expect_equal(tbl_actual, tbl_expect)
+  app$expect_values(export = "databaseView-table_data")
   
   #### Test that`table_data` updates in response to `changes` ####
   app$set_inputs(`sidebar-select_pkg` = "dplyr", timeout_ = 60 * 1000)
@@ -35,15 +26,7 @@ test_that("Reactivity of database view table", {
   app$wait_for_idle()
   app$click("sidebar-submit_confirmed_decision")
   
-  tbl_expect <-
-    structure(list(name = "dplyr", date_added = "2023-07-20", version = "1.1.2", score = 0.27, 
-                   decision = "Low Risk", decision_by = "test_user", decision_date = "2023-07-20",
-                   last_comment = "-"), 
-              class = "data.frame", row.names = c(NA, -1L))
-  tbl_actual <-
-    app$get_value(export = "databaseView-table_data")
-  
-  expect_equal(tbl_actual, tbl_expect)
+  app$expect_values(export = "databaseView-table_data")
   
   #### Test that`table_data` updates in response to `uploaded_pkgs` ####
   tbl_actual <-
@@ -56,27 +39,21 @@ test_that("Reactivity of database view table", {
   app$wait_for_value(export = "databaseView-table_data", 
                      ignore = tbl_actual, timeout = 30 * 1000 )
   
-  tbl_expect <- structure(list(name = c("tidyr", "dplyr"), 
-                               decision = c("-", "Low Risk"),
-                               decision_by = c('-', "test_user"),
-                               decision_date = c("-", "2023-07-20"),
-                               last_comment = c("-", "-")), 
-                          class = "data.frame", row.names = c(NA, -2L))
-  tbl_actual <-
-    app$get_value(export = "databaseView-table_data")
-  
-  expect_equal(tbl_actual %>% dplyr::select(1,5,6,7,8) %>% dplyr::arrange(1), tbl_expect)
+  app$expect_values(export = "databaseView-table_data")
   
   #### Test that `packages_table` is loaded correctly ####
   tbl_actual <-
-    app$get_value(export = "databaseView-table_data") # has tidyr first, then dplyr
+    app$get_value(export = "databaseView-table_data") %>% # has tidyr first, then dplyr
+    mutate(across(everything(), as.character))
   
   packages_table <-
     app$get_html("#databaseView-packages_table") %>%
     rvest::minimal_html() %>%
     rvest::html_table() %>%
     `[[`(1) %>% 
-    select_if(!names(.) %in% c('Explore Metrics')) # added only to packages_table
+    select(-'Explore Metrics') %>% # added only to packages_table
+    filter(Package != "") %>%
+    mutate(across(everything(), ~ na_if(as.character(.x), "")))
   
   expect_equal(packages_table, tbl_actual, 
                ignore_attr = TRUE)
