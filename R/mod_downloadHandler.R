@@ -53,9 +53,10 @@ mod_downloadHandler_include_ui <- function(id){
 #' @importFrom shinyWidgets prettyCheckboxGroup updatePrettyCheckboxGroup
 #'
 #' @noRd 
-mod_downloadHandler_include_server <- function(id) {
+mod_downloadHandler_include_server <- function(id, pkg_name) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
+    browser()
     
     output$mod_downloadHandler_incl_output <- renderUI({
       div(
@@ -84,6 +85,17 @@ mod_downloadHandler_include_server <- function(id) {
     }, ignoreInit = TRUE)
     
     observeEvent(session$userData$user_report$report_includes, {
+      shinyWidgets::updatePrettyCheckboxGroup(
+        session,
+        "report_includes",
+        selected = session$userData$user_report$report_includes
+      )
+    })
+    
+    observeEvent(pkg_name(), {
+      req(pkg_name() != "-")
+      # req(session$userData$user_report$report_includes)
+      cat("observeEvent for pkg_name(), which is", pkg_name(), "\n")
       shinyWidgets::updatePrettyCheckboxGroup(
         session,
         "report_includes",
