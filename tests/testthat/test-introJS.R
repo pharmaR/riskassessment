@@ -81,6 +81,12 @@ test_that("The introJS module works as expected for admins", {
   steps <- app$get_value(export = "maintenanceMetrics-introJS-steps")
   expect_equal(maintenance_metrics, steps)
   
+  app$click(selector = ".introjs-skipbutton")
+  
+  app$set_inputs(tabs = "Source Explorer",
+                 explorer_type = "fb")
+  
+  
   app$click("pkg_explorer-introJS-help")
   app$wait_for_idle()
   
@@ -95,6 +101,9 @@ test_that("The introJS module works as expected for admins", {
   expect_equal(pkg_explorer, steps)
   
   app$click(selector = ".introjs-skipbutton")
+  
+  app$set_inputs(tabs = "Source Explorer",
+                 explorer_type = "fe")
   
   app$click("code_explorer-introJS-help")
   app$wait_for_idle()
