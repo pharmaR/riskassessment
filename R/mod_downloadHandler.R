@@ -56,18 +56,17 @@ mod_downloadHandler_include_ui <- function(id){
 mod_downloadHandler_include_server <- function(id, pkg_name) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    browser()
-    
+
     output$mod_downloadHandler_incl_output <- renderUI({
       div(
+        # actionButton(ns("store_prefs"), "Store Preferences"),
         strong(p("Elements to include:")),
         div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
             shinyWidgets::prettyCheckboxGroup(
               ns("report_includes"), label = NULL, inline = FALSE,
               choices = rpt_choices, selected = isolate(session$userData$user_report$report_includes) %||% rpt_choices
             )
-        ),
-        actionButton(ns("store_prefs"), "Store Preferences")
+        )
       )
     })
     
