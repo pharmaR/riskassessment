@@ -77,10 +77,21 @@ uploadPackageUI <- function(id) {
 #' @importFrom rvest read_html html_nodes html_text
 #' @keywords internal
 #' 
-uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events) {
+uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events, parent) {
   if (missing(credentials))
     credentials <- get_db_config("credentials")
   moduleServer(id, function(input, output, session) {
+    
+    ns <- session$ns
+    
+    # used for adding action buttons to a dataframe
+    shinyInput <- function(FUN, len, id, ...) {
+      inputs <- character(len)
+      for (i in seq_len(len)) {
+        inputs[i] <- as.character(FUN(paste0(id, i), ...))
+      }
+      inputs
+    }
     
     observe({
       req(user$role)
@@ -333,7 +344,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
             br(),
             h5("Notify when  URLs are reachable?"),
             footer = tagList(
-              actionButton(session$ns("check_urls"), "Yes"),
+              actionButton(ns("check_urls"), "Yes"),
               modalButton("No")
             )
           ))
@@ -524,9 +535,24 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
     output$upload_pkgs_table <- DT::renderDataTable({
       req(nrow(uploaded_pkgs()) > 0)
       
+      uploaded_pkgs_ext <- reactive({
+        cbind(uploaded_pkgs(), 
+              data.frame(
+                Actions = shinyInput(actionButton, nrow(uploaded_pkgs()),
+                                     'button_',
+                                     size = "xs",
+                                     style='height:24px; padding-top:1px;',
+                                     label = icon("arrow-right", class="fa-regular", lib = "font-awesome"),
+                                     onclick = paste0('Shiny.onInputChange(\"' , ns("select_button"), '\", this.id)')
+                )
+              )
+        ) %>% # keep action button for 'new' or 'duplicate' only
+        mutate(Actions = if_else(!status %in% c('new', 'duplicate'), "", Actions))
+      })
+      
       formattable::as.datatable(
         formattable::formattable(
-          uploaded_pkgs(),
+          uploaded_pkgs_ext(),
           list(
             score = formattable::formatter(
               "span",
@@ -552,7 +578,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
         class = "cell-border",
         selection = 'none',
         rownames = FALSE,
-        colnames = gsub("_", " ", names(uploaded_pkgs())),
+        colnames = gsub("_", " ", c(names(uploaded_pkgs()), "Explore Metrics")),
         options = list(
           searching = FALSE,
           columnDefs = list(list(className = 'dt-center', targets = "_all")),
@@ -599,6 +625,35 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
         fluidRow(column(align = 'center', width = 12,
                         downloadButton(NS(id, "download_sample"), "Download")))
       ))
+    })
+    
+    observeEvent(input$select_button, {
+      req(uploaded_pkgs())
+      
+      selectedRow <- as.numeric(strsplit(input$select_button, "_")[[1]][2])
+      
+      # grab the package name
+      pkg_name <- uploaded_pkgs()[selectedRow, 1]
+      
+      # update sidebar-select_pkg
+      updateSelectizeInput(
+        session = parent,
+        inputId = "sidebar-select_pkg",
+        choices = c("-", dbSelect('SELECT name FROM package')$name),
+        selected = pkg_name
+      )
+      
+      # select maintenance metrics panel
+      updateTabsetPanel(session = parent, 
+                        inputId = 'tabs', 
+                        selected = "Package Metrics"
+      )
+      
+      # jump over to risk-assessment-tab so we can see the maintenance metrics
+      updateTabsetPanel(session = parent, 
+                        inputId = 'apptabs', 
+                        selected = "risk-assessment-tab"
+      )
     })
     
     uploaded_pkgs
