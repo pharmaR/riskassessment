@@ -84,15 +84,6 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
     
     ns <- session$ns
     
-    # used for adding action buttons to a dataframe
-    shinyInput <- function(FUN, len, id, ...) {
-      inputs <- character(len)
-      for (i in seq_len(len)) {
-        inputs[i] <- as.character(FUN(paste0(id, i), ...))
-      }
-      inputs
-    }
-    
     observe({
       req(user$role)
       req(credentials$privileges)

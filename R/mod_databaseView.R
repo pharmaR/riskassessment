@@ -98,15 +98,6 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
     color_lst <- get_colors(golem::get_golem_options("assessment_db_name"))
     
-    # used for adding action buttons to table_data
-    shinyInput <- function(FUN, len, id, ...) {
-      inputs <- character(len)
-      for (i in seq_len(len)) {
-        inputs[i] <- as.character(FUN(paste0(id, i), ...))
-      }
-      inputs
-    }
-    
     # Update table_data if a package has been uploaded
     table_data <- eventReactive({uploaded_pkgs(); changes()}, {
      
