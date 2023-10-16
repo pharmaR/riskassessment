@@ -85,8 +85,9 @@ test_that("The introJS module works as expected for admins", {
   
   app$set_inputs(tabs = "Source Explorer",
                  explorer_type = "fb")
+
   app$set_inputs(`sidebar-select_pkg` = "tidyr")
-  app$wait_for_idle()
+  app$wait_for_idle() #fix test by using dropdown
   
   app$click("pkg_explorer-introJS-help")
   app$wait_for_idle()
