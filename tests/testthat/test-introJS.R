@@ -106,6 +106,9 @@ test_that("The introJS module works as expected for admins", {
   app$set_inputs(tabs = "Source Explorer",
                  explorer_type = "fe")
   
+  app$set_inputs(`sidebar-select_pkg` = "tidyr")
+  app$wait_for_idle()
+  
   app$click("code_explorer-introJS-help")
   app$wait_for_idle()
   
