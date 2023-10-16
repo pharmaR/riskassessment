@@ -18,7 +18,7 @@ test_that("Reactivity of database view table", {
   
   app$set_inputs(apptabs = "database-tab")
   
-  app$expect_values(export = "databaseView-table_data")
+  app$expect_values(export = "databaseView-table_data", screenshot_args = FALSE)
   
   #### Test that`table_data` updates in response to `changes` ####
   app$set_inputs(`sidebar-select_pkg` = "dplyr", timeout_ = 60 * 1000)
@@ -26,7 +26,7 @@ test_that("Reactivity of database view table", {
   app$wait_for_idle()
   app$click("sidebar-submit_confirmed_decision")
   
-  app$expect_values(export = "databaseView-table_data")
+  app$expect_values(export = "databaseView-table_data", screenshot_args = FALSE)
   
   #### Test that`table_data` updates in response to `uploaded_pkgs` ####
   tbl_actual <-
@@ -39,7 +39,7 @@ test_that("Reactivity of database view table", {
   app$wait_for_value(export = "databaseView-table_data", 
                      ignore = tbl_actual, timeout = 30 * 1000 )
   
-  app$expect_values(export = "databaseView-table_data")
+  app$expect_values(export = "databaseView-table_data", screenshot_args = FALSE)
   
   #### Test that `packages_table` is loaded correctly ####
   tbl_actual <-
