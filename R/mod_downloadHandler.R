@@ -258,6 +258,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               mm_comments <- get_mm_comments(this_pkg)
               cm_comments <- get_cm_comments(this_pkg)
               se_comments <- get_se_comments(this_pkg)
+              fe_comments <- get_fe_comments(this_pkg)
               
               # gather maint metrics & community metric data
               mm_data <- get_metric_data(this_pkg, metric_class = "maintenance")
@@ -284,6 +285,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                               mm_comments = mm_comments,
                               cm_comments = cm_comments,
                               se_comments = se_comments,
+                              fe_comments = fe_comments,
                               maint_metrics = mm_data,
                               com_metrics = comm_cards,
                               com_metrics_raw = comm_data,

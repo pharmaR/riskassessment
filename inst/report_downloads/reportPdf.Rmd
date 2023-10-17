@@ -24,6 +24,7 @@ params:
   mm_comments: NA
   cm_comments: NA
   se_comments: NA
+  fe_comments: NA
   maint_metrics: NA
   com_metrics: NA
   com_metrics_raw: NA
@@ -272,7 +273,7 @@ if(any(c('Source Explorer Comments') %in% params$report_includes)) {
   tagList(br(),
           h2('Source Explorer'),
           br(),
-          h6("Source code visals not available."))
+          h6("Source code visuals not available."))
 }
 ```
 
@@ -285,6 +286,32 @@ if('Source Explorer Comments' %in% params$report_includes){
     HTML(outputComments(
       pkg_name = params$pkg$name,
       comments = params$se_comments))
+  )
+}
+```
+
+
+
+`r if(any(c('Function Explorer Comments') %in% params$report_includes)) {"\\newpage"}`
+
+```{r function_explorer}
+if(any(c('Function Explorer Comments') %in% params$report_includes)) {
+  tagList(br(),
+          h2('Function Explorer'),
+          br(),
+          h6("Function code visuals not available."))
+}
+```
+
+
+```{r function_explorer_comments}
+if('Function Explorer Comments' %in% params$report_includes){
+  tagList(
+    br(),
+    h2('Comments'),
+    HTML(outputComments(
+      pkg_name = params$pkg$name,
+      comments = params$fe_comments))
   )
 }
 ```

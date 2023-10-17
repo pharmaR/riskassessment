@@ -181,9 +181,24 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                     column(width = 12,
                            h5("Source Explorer",
                               style = "text-align: center; padding-bottom: 50px;"),
-                           showHelperMessage(message = "Source code visals not available."),
-                           if('Source Explorer Comments' %in% report_includes())
-                             viewCommentsUI(NS(id, 'se_comments')) else ""
+                           showHelperMessage(message = "Source code visuals not available."),
+                           viewCommentsUI(NS(id, 'se_comments'))
+                    )
+                  )
+                )
+              } else "",
+              
+              
+              if(any(c('Function Explorer Comments') %in% report_includes())) {
+                tagList(
+                  br(), br(),
+                  hr(),
+                  fluidRow(
+                    column(width = 12,
+                           h5("Function Explorer",
+                              style = "text-align: center; padding-bottom: 50px;"),
+                           showHelperMessage(message = "Function code visuals not available."),
+                           viewCommentsUI(NS(id, 'fe_comments'))
                     )
                   )
                 )
@@ -369,6 +384,17 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                        comments = se_comments, # not a arg
                        pkg_name = selected_pkg$name,
                        label = 'Source Explorer Comments')
+    
+    # grab comments here since it's not being passed as an arg to module
+    fe_comments <- eventReactive(list(selected_pkg$name()), {
+      get_fe_comments(selected_pkg$name()) # see utils
+    })
+    
+    # View Comm Usage comments.
+    viewCommentsServer(id = 'fe_comments',
+                       comments = fe_comments, # not a arg
+                       pkg_name = selected_pkg$name,
+                       label = 'Function Explorer Comments')
     
     # Maintenance metrics cards.
     metricGridServer("mm_metricGrid", metrics = maint_metrics)
