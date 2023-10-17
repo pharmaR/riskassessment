@@ -171,6 +171,21 @@ app_server <- function(input, output, session) {
   }) %>%
     bindEvent(selected_pkg$decision(), selected_pkg$overall_comment_added())
   
+  session$userData$user_report <- reactiveValues()
+  observe({
+    req(user$name)
+    default_dir <- get_db_config("report_prefs")[["directory"]]
+    if(!file.exists(default_dir)) dir.create(default_dir)
+    
+    # retrieve user data, if it exists.  Otherwise use rpt_choices above.
+    session$userData$user_report$user_file <- file.path(default_dir, glue::glue("report_prefs_{user$name}.txt"))
+    if (file.exists(session$userData$user_report$user_file)) {
+      session$userData$user_report$report_includes <- readLines(session$userData$user_report$user_file)
+    } else {
+      session$userData$user_report$report_includes <- rpt_choices
+    }
+  })
+  
   # Load server of the assessment criteria module.
   assessmentInfoServer("assessmentInfo", metric_weights = metric_weights)
   
