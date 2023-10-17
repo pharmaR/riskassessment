@@ -12,7 +12,8 @@
 * Removed some unneeded/unused dependencies
 * Added default `{DT}` based filter to Database Overview tab (#586)
 * Allow user to create decision automation rules for individual metrics (#483)
-
+* Add checkbox to databaseView to select all packages for reportDownload handler (#649)
+* Build Report Updates (#526)
 
 # riskassessment 2.0.0
 

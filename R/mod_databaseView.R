@@ -10,6 +10,7 @@ setColorPalette <- colorRampPalette(c("#06B756FF","#2FBC06FF","#67BA04FF","#81B5
 #' 
 #' 
 #' @importFrom DT dataTableOutput
+#' @importFrom shinyWidgets prettyToggle
 #' 
 #' @keywords internal
 databaseViewUI <- function(id) {
@@ -31,8 +32,19 @@ databaseViewUI <- function(id) {
               div(class = "box-body",
                 br(),
                 metricGridUI(NS(id, 'metricGrid')),
-                DT::dataTableOutput(NS(id, "packages_table")),
                 br(),
+                DT::dataTableOutput(NS(id, "packages_table")),
+                div(style = "font-size: 25px;", align = "left",
+                    shinyWidgets::prettyToggle(NS(id, "dt_sel"), 
+                                               label_on  = "All Rows Selected",
+                                               label_off = "Select All Rows",
+                                               icon_on = icon("check"),
+                                               width = "100%",
+                                               status_off = "primary",
+                                               status_on = "primary",
+                                               outline = TRUE,
+                                               inline = TRUE,
+                                               bigger = TRUE)),
                 h5("Report Configurations"),
                 br(),
                 fluidRow(
@@ -86,7 +98,7 @@ databaseViewUI <- function(id) {
 #' @importFrom shinyjs enable disable
 #' @importFrom rmarkdown render
 #' @importFrom glue glue
-#' @importFrom DT renderDataTable formatStyle
+#' @importFrom DT dataTableProxy renderDataTable formatStyle selectRows dataTableOutput
 #' @importFrom formattable formattable as.datatable formatter style csscolor
 #'   icontext
 #' @keywords internal
@@ -159,6 +171,8 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     # Create metric grid cards, containing database stats.
     metricGridServer(id = 'metricGrid', metrics = cards)
     
+    tableProxy <- DT::dataTableProxy('packages_table')
+    
     # Create table for the db dashboard.
     output$packages_table <- DT::renderDataTable(server = FALSE, {  # This allows for downloading entire data set
       
@@ -175,7 +189,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
         )
         )
       })
-      # DT::datatable(
+
       formattable::as.datatable(
       formattable::formattable(
           my_data_table(),
@@ -233,6 +247,15 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
         DT::formatStyle(names(table_data()), textAlign = 'center')
     })
     
+    
+    observeEvent(input$dt_sel, {
+      if (isTRUE(input$dt_sel)) {
+        DT::selectRows(tableProxy, input$packages_table_rows_all)
+      } else {
+        DT::selectRows(tableProxy, NULL)
+      }
+    })
+    
     observeEvent(input$select_button, {
       req(table_data())
       
@@ -271,6 +294,10 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
           dplyr::pull(name)
       }
     })
+    
+    # return vector of elements to include in the report
+    pkg_name <- reactiveVal("-")
+    report_includes <- mod_downloadHandler_include_server("downloadHandler", pkg_name)
     
     mod_downloadHandler_server("downloadHandler", pkgs, user, metric_weights)
   })
