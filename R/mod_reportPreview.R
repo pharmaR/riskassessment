@@ -63,7 +63,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             
             div(id = "dwnld_rp",
               fluidRow(
-                  column(3, h5("Report Configurations"),),
+                  column(4, h5("Report Configurations"),),
                   column(3, mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)),
                   column(3, actionButton("reportPreview-downloadHandler-store_prefs", "Store Preferences"))
               ),
