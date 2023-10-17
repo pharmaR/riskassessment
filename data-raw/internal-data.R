@@ -87,6 +87,10 @@ used_privileges <- c("admin", "weight_adjust", "auto_decision_adjust", "final_de
 
 metric_lst <- c('has_vignettes', 'has_news', 'news_current', 'has_bug_reports_url', 'has_website', 'has_maintainer', 'has_source_control', 'export_help', 'bugs_status', 'license', 'covr_coverage', 'downloads_1yr', 'dependencies', 'reverse_dependencies')
 
+rpt_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
+                 "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
+                 "Source Explorer Comments")
+
 usethis::use_data(
   # app_version, 
   # database_name, #credentials_name,
@@ -97,5 +101,6 @@ usethis::use_data(
   riskcalc_text, template,
   privileges_tbl,
   test_pkg_lst, test_pkg_refs, test_pkg_info, test_pkg_assess, test_pkg_cum,
-  color_palette, used_privileges, metric_lst,
+  color_palette, used_privileges, metric_lst, rpt_choices,
   internal = TRUE, overwrite = TRUE)
+

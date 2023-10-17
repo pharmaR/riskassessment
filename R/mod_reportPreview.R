@@ -31,6 +31,7 @@ reportPreviewUI <- function(id) {
 #' @importFrom DT dataTableOutput renderDataTable
 #' @importFrom glue glue
 #' @importFrom rlang is_empty
+#' @importFrom shiny actionButton
 #' @importFrom shinyjs enable disable show hide disabled
 #' @keywords internal
 #' 
@@ -62,17 +63,21 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             br(), br(),
             
             div(id = "dwnld_rp",
-              h5("Report Configurations"),
+              fluidRow(
+                  column(4, h5("Report Configurations"),),
+                  column(3, mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)),
+                  column(3, shiny::actionButton("reportPreview-downloadHandler-store_prefs", "Store Preferences", 
+                                   icon = icon("fas fa-floppy-disk", class = "fa-reqular", lib = "font-awesome")))
+              ),
               br(),
               fluidRow(
                 column(4,
-                  mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
-                  mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
+                  mod_downloadHandler_filetype_ui(NS(id, "downloadHandler"))
                 ),
                 column(8, 
                    mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
                  )
-              )
+              ),
             ),
             
             br(), br(),
@@ -92,14 +97,9 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       }
     })
     
-    
-    
-    
-    
-    
-    
+
     # return vector of elements to include in the report
-    report_includes <- mod_downloadHandler_include_server("downloadHandler")
+    report_includes <- mod_downloadHandler_include_server("downloadHandler", selected_pkg$name)
     
     
     
