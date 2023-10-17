@@ -11,7 +11,7 @@
 * Started showing `metric_score`s for each assessment's card, using an html meter (#634)
 * Removed some unneeded/unused dependencies
 * Allow user to create decision automation rules for individual metrics (#483)
-* Add Explore Metrics button from Upload Packages tab (#653)
+* Add "Explore Metrics" button to Uploaded Pkgs Summary tab on Upload Packages tab (#653)
 
 
 # riskassessment 2.0.0
