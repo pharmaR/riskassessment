@@ -69,7 +69,6 @@ uploadPackageUI <- function(id) {
 #' @param id a module id
 #' @param user a username
 #' @param auto_list a list of decision automation rules
-#' @param trigger_events a reactive values object to trigger actions here or elsewhere
 #' @param parent the parent (calling module) session information
 #' 
 #' @importFrom DT datatable dataTableOutput formatStyle renderDataTable
@@ -86,7 +85,7 @@ uploadPackageUI <- function(id) {
 #' 
 #' @keywords internal
 #' 
-uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events, parent) {
+uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
   if (missing(credentials))
     credentials <- get_db_config("credentials")
   moduleServer(id, function(input, output, session) {
@@ -163,7 +162,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
 
     uploaded_pkgs00 <- reactiveVal()
     
-    observeEvent(trigger_events$reset_pkg_upload, {
+    observeEvent(session$userData$trigger_events$reset_pkg_upload, {
       uploaded_pkgs(data.frame())
     })
 
@@ -236,13 +235,13 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
       uploaded_pkgs00(uploaded_packages)
     })
     
-    observeEvent(trigger_events$upload_pkgs, {
-      req(trigger_events$upload_pkgs)
+    observeEvent(session$userData$trigger_events$upload_pkgs, {
+      req(session$userData$trigger_events$upload_pkgs)
       
-      np <- length(trigger_events$upload_pkgs)
+      np <- length(session$userData$trigger_events$upload_pkgs)
       uploaded_packages <-
         dplyr::tibble(
-          package = trigger_events$upload_pkgs,
+          package = session$userData$trigger_events$upload_pkgs,
           version = rep('0.0.0', np),
           status = rep('', np)
         )

@@ -269,8 +269,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     })
     
     # return vector of elements to include in the report
-    pkg_name <- reactiveVal("-")
-    report_includes <- mod_downloadHandler_include_server("downloadHandler", pkg_name)
+    report_includes <- mod_downloadHandler_include_server("downloadHandler")
     
     mod_downloadHandler_server("downloadHandler", pkgs, user, metric_weights)
   })

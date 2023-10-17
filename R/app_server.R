@@ -25,7 +25,7 @@ app_server <- function(input, output, session) {
     role_opts[["nonadmin"]] <- as.list(setdiff(credential_config$roles, unlist(role_opts$admin)))
   }) %>%
     bindEvent(credential_config$roles, credential_config$privileges)
-  trigger_events <- reactiveValues(
+  session$userData$trigger_events <- reactiveValues(
     reset_pkg_upload = 0,
     reset_sidebar = 0,
     upload_pkgs = NULL,
@@ -153,17 +153,17 @@ app_server <- function(input, output, session) {
     user$role <- trimws(res_auth$role)
   })
   
-  mod_user_roles_server("userRoles", user, credential_config, trigger_events)
+  mod_user_roles_server("userRoles", user, credential_config)
   
   # Load server of the reweightView module.
-  metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules, credential_config, trigger_events)
+  metric_weights <- reweightViewServer("reweightInfo", user, auto_decision$rules, credential_config)
   
   # Load server of the uploadPackage module.
   auto_decision <- mod_decision_automation_server("automate", user, credential_config)
-  uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules, credential_config, trigger_events, parent = session)
+  uploaded_pkgs <- uploadPackageServer("upload_package", user, auto_decision$rules, credential_config, parent = session)
   
   # Load server of the sidebar module.
-  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs, credential_config, trigger_events)
+  selected_pkg <- sidebarServer("sidebar", user, uploaded_pkgs, credential_config)
 
   changes <- reactiveVal(0)
   observe({
@@ -279,8 +279,7 @@ app_server <- function(input, output, session) {
   dependencies_data <- packageDependenciesServer('packageDependencies',
                                                selected_pkg,
                                                user,
-                                               parent = session,
-                                               trigger_events)
+                                               parent = session)
   
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)
