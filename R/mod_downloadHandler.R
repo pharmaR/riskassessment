@@ -40,45 +40,74 @@ mod_downloadHandler_filetype_ui <- function(id){
 mod_downloadHandler_include_ui <- function(id){
   # will want to change this to input_UI so we can include additional items
   # such as "Include comments" check boxes for summary, maint-metrics, comm usage, and overall comments
-  my_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
-    "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
-    "Source Explorer Comments")
-  div(
-    strong(p("Elements to include:")),
-    div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
-      # checkboxGroupInput(
-      shinyWidgets::prettyCheckboxGroup(
-        NS(id, "report_includes"), label = NULL, inline = FALSE,
-        choices = my_choices, selected = my_choices
-      )
-    )
-  )
+  uiOutput(NS(id, "mod_downloadHandler_incl_output"))
 }
-
-#' downloadHandler Inlcude Server Function
+#' downloadHandler Include Server Function
 #'
 #' @description A shiny Module.
 #'
 #' @param id Internal parameters for {shiny}.
+#' 
+#' @importFrom shiny showModal modalDialog
+#' @importFrom glue glue
+#' @importFrom shinyWidgets prettyCheckboxGroup updatePrettyCheckboxGroup
 #'
 #' @noRd 
-mod_downloadHandler_include_server <- function(id) {
+mod_downloadHandler_include_server <- function(id, pkg_name) {
   moduleServer(id, function(input, output, session) {
-    observe({
-      # print("#####################################")
-      # print("input$report_includes:")
-      # print(input$report_includes)
-      # shinyWidgets::updatePrettyCheckboxGroup("report_includes",)
+    ns <- session$ns
 
-      # selected = ifelse(is.null(input$report_includes) | input$report_includes != my_choices,
-      #                   isolate(input$report_includes), my_choices)
+    output$mod_downloadHandler_incl_output <- renderUI({
+      div(
+        strong(p("Elements to include:")),
+        div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
+            shinyWidgets::prettyCheckboxGroup(
+              ns("report_includes"), label = NULL, inline = FALSE,
+              choices = rpt_choices, selected = isolate(session$userData$user_report$report_includes) %||% rpt_choices
+            )
+        )
+      )
     })
+    
+    # save user selections and notify user
+    observeEvent(input$store_prefs, {
+      writeLines(
+        session$userData$user_report$report_includes, 
+        session$userData$user_report$user_file
+      )
+
+      shiny::showModal(shiny::modalDialog(title = "User preferences saved",
+                                          "Report preferences stored for user", 
+                                          footer = modalButton("Dismiss"), 
+                                          easyClose = TRUE))
+    }, ignoreInit = TRUE)
+    
+    observeEvent(session$userData$user_report$report_includes, {
+      shinyWidgets::updatePrettyCheckboxGroup(
+        session,
+        "report_includes",
+        selected = session$userData$user_report$report_includes
+      )
+    })
+    
+    observeEvent(pkg_name(), {
+      req(pkg_name() != "-")
+      req(session$userData$user_report$report_includes)
+      shinyWidgets::updatePrettyCheckboxGroup(
+        session,
+        "report_includes",
+        selected = session$userData$user_report$report_includes
+      )
+    })
+    
+    observeEvent(input$report_includes, {
+      session$userData$user_report$report_includes <- input$report_includes
+    })
+    
     return(reactive(input$report_includes))
   })
 }
   
-
-    
 #' downloadHandler Server Functions
 #'
 #' @noRd 
