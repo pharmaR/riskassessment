@@ -41,7 +41,8 @@ addCommentServer <- function(id, metric_abrv, user, credentials, pkg_name) {
       metric_name <- switch(metric_abrv,
                             mm = "Maintenance Metrics",
                             cum = "Community Usage Metrics",
-                            se = "Source Explorer")
+                            se = "Source Explorer",
+                            fe = "Function Explorer")
       
       textAreaInput(
         session$ns("add_comment"),

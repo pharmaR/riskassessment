@@ -22,6 +22,7 @@ params:
   mm_comments: NA
   cm_comments: NA
   se_comments: NA
+  fe_comments: NA
   maint_metrics: NA
   com_metrics: NA
   com_metrics_raw: NA
@@ -146,7 +147,7 @@ if('Maintenance Metrics' %in% params$report_includes){
 }
 ```
 
-* Metrics whose score is `NA` will not impact the package {riskmetric} score
+`r if ('Maintenance Metrics' %in% params$report_includes) {"* Metrics whose score is NA will not impact the package {riskmetric} score"}`
 
 ```{r maintenance_metrics_comments}
 if('Maintenance Comments' %in% params$report_includes){
@@ -194,7 +195,7 @@ if (!cm_ind) {
 }
 ```
 
-* Metrics whose score is `NA` will not impact the package {riskmetric} score
+`r if ('Community Usage Metrics' %in% params$report_includes) {"* Metrics whose score is NA will not impact the package {riskmetric} score"}`
 
 ```{r community_metrics_plot_title, eval=cm_ind}
 if('Community Usage Metrics' %in% params$report_includes){
@@ -249,12 +250,27 @@ tagList(
   br(),
   h2('Source Explorer'),
   br(),
-  h6("Source code visals not available."),
+  h6("Source code visuals not available."),
   br(),
   h2('Comments'),
   HTML(outputComments(
     pkg_name = params$pkg$name,
     comments = params$se_comments)))
+}
+```
+
+```{r function_explorer_metrics}
+if(any(c('Function Explorer Comments') %in% params$report_includes)) {
+tagList(
+  br(),
+  h2('Function Explorer'),
+  br(),
+  h6("Function code visuals not available."),
+  br(),
+  h2('Comments'),
+  HTML(outputComments(
+    pkg_name = params$pkg$name,
+    comments = params$fe_comments)))
 }
 ```
 

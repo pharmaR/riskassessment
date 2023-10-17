@@ -10,10 +10,12 @@
 * Updated `{shinytest2}` and `{chromote}` to more recent versions for testing
 * Started showing `metric_score`s for each assessment's card, using an html meter (#634)
 * Removed some unneeded/unused dependencies
+* Added default `{DT}` based filter to Database Overview tab (#586)
 * Allow user to create decision automation rules for individual metrics (#483)
 * Add checkbox to databaseView to select all packages for reportDownload handler (#649)
 * Build Report Updates (#526)
 * Add "Explore Metrics" button to Uploaded Pkgs Summary tab on Upload Packages tab (#653)
+* Add comment module to the Function Explorer (#643)
 
 # riskassessment 2.0.0
 

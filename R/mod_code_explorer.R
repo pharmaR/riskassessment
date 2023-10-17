@@ -66,7 +66,11 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
                      style = "height: 62vh; overflow: auto; border: 1px solid var(--bs-border-color-translucent);"
                    )
             )
-          )
+          ),
+          br(), br(),
+          div(id = ns("comments_for_fe"), fluidRow(
+            if ("general_comment" %in% credentials$privileges[[user$role]]) addCommentUI(id = ns("add_comment")),
+            viewCommentsUI(id = ns("view_comments"))))
         )
       }
     })
@@ -140,6 +144,23 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
               man = man_page()
       )
     })
+    
+    
+    # Call module to create comments and save the output.
+    comment_added <- addCommentServer(id = "add_comment",
+                                      metric_abrv = 'fe',
+                                      user = user,
+                                      credentials = credentials,
+                                      pkg_name = selected_pkg$name)
+    
+    comments <- eventReactive(list(comment_added(), selected_pkg$name()), {
+      get_fe_comments(selected_pkg$name()) # see utils
+    })
+    
+    # View comments.
+    viewCommentsServer(id = "view_comments",
+                       comments = comments,
+                       pkg_name = selected_pkg$name)
     
   })
 }
