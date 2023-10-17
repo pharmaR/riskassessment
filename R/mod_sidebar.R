@@ -167,6 +167,8 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
         selected = date_added
       )
       
+      session$userData$trigger_events$update_report_pref_inclusions <- session$userData$trigger_events$update_report_pref_inclusions + 1
+      
     })
     
     # Display the review status of the selected package.

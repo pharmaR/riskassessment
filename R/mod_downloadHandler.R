@@ -82,7 +82,7 @@ mod_downloadHandler_include_server <- function(id, trigger_events) {
                                           easyClose = TRUE))
     }, ignoreInit = TRUE)
     
-    observeEvent(session$userData$trigger_events$update_report_includes, {
+    observeEvent(session$userData$trigger_events$update_report_pref_inclusions, {
       shinyWidgets::updatePrettyCheckboxGroup(
         session,
         "report_includes",

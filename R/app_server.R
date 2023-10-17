@@ -29,6 +29,7 @@ app_server <- function(input, output, session) {
     reset_pkg_upload = 0,
     reset_sidebar = 0,
     upload_pkgs = NULL,
+    update_report_pref_inclusions = 0
   )
   
   
@@ -184,6 +185,11 @@ app_server <- function(input, output, session) {
     } else {
       session$userData$user_report$report_includes <- rpt_choices
     }
+  })
+  
+  observeEvent(input$apptabs, {
+    req(input$apptabs %in% c("risk-assessment-tab", "database-tab"))
+    session$userData$trigger_events$update_report_pref_inclusions <- session$userData$trigger_events$update_report_pref_inclusions + 1
   })
   
   # Load server of the assessment criteria module.
