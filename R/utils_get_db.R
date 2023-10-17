@@ -156,6 +156,28 @@ get_se_comments <- function(pkg_name, db_name = golem::get_golem_options('assess
     purrr::map(rev)
 }
 
+#' The 'Get Function Explorer Comments' function
+#' 
+#' Retrieve the Function Explorer comments for a specific package
+#' 
+#' @param pkg_name character name of the package
+#' @param db_name character name (and file path) of the database
+#' 
+#' @importFrom glue glue
+#' @importFrom purrr map
+#' 
+#' @returns a data frame
+#' @noRd
+get_fe_comments <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
+  dbSelect(
+    "SELECT user_name, user_role, comment, added_on
+       FROM comments
+       WHERE id = {pkg_name} AND comment_type = 'fe'"
+    , db_name
+  ) %>%
+    purrr::map(rev)
+}
+
 
 #' The 'Get Maintenance Metrics Data' function
 #' 

@@ -25,6 +25,7 @@ params:
   mm_comments: NA
   cm_comments: NA
   se_comments: NA
+  fe_comments: NA
   maint_metrics: NA
   com_metrics: NA
   com_metrics_raw: NA
@@ -366,7 +367,7 @@ tagList(
       br(), br(),
       h5("Source Explorer", style = "text-align: center;"),
       br(),
-      h6("Source code visals not available."),
+      h6("Source code visuals not available."),
       br()
     )
   } else "",
@@ -378,6 +379,30 @@ tagList(
         HTML(showComments(
           pkg_name = params$pkg$name,
           comments = params$se_comments))
+      )
+    )
+  } else ""
+)
+```
+
+
+```{r function_explorer}
+tagList(
+  if(any(c('Function Explorer Comments') %in% params$report_includes)) {
+    tagList(
+      br(),
+      hr(),
+      br(), br(),
+      h5("Function Explorer", style = "text-align: center;"),
+      br(),
+      h6("Function code visuals not available."),
+      br(),
+      br(),
+      h5('Comments', style = "padding-bottom:10px;"),
+      wellPanel(
+        HTML(showComments(
+          pkg_name = params$pkg$name,
+          comments = params$fe_comments))
       )
     )
   } else ""
