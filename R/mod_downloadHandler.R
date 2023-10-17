@@ -91,8 +91,8 @@ mod_downloadHandler_include_server <- function(id, trigger_events) {
     })
     
     observeEvent(input$report_includes, {
-      session$userData$user_report$report_includes <- input$report_includes
-    })
+      session$userData$user_report$report_includes <- input$report_includes %||% ""
+    }, ignoreNULL = FALSE, ignoreInit = TRUE)
     
     return(reactive(input$report_includes))
   })
