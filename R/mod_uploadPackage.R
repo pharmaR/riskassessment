@@ -70,17 +70,28 @@ uploadPackageUI <- function(id) {
 #' @param user a username
 #' @param auto_list a list of decision automation rules
 #' @param trigger_events a reactive values object to trigger actions here or elsewhere
+#' @param parent the parent (calling module) session information
 #' 
+#' @importFrom DT datatable dataTableOutput formatStyle renderDataTable
+#' @importFrom formattable as.datatable csscolor formattable formatter style
+#' @importFrom glue glue
+#' @importFrom golem get_golem_options
+#' @importFrom loggit loggit
+#' @importFrom purrr map map_chr map_lgl 
 #' @importFrom riskmetric pkg_ref
-#' @importFrom rintrojs introjs
-#' @importFrom utils read.csv available.packages download.file
-#' @importFrom rvest read_html html_nodes html_text
+#' @importFrom rlang inform is_empty
+#' @importFrom shiny icon
+#' @importFrom shinyjs runjs
+#' @importFrom utils adist available.packages download.file read.csv
+#' 
 #' @keywords internal
 #' 
-uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events) {
+uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events, parent) {
   if (missing(credentials))
     credentials <- get_db_config("credentials")
   moduleServer(id, function(input, output, session) {
+    
+    ns <- session$ns
     
     observe({
       req(user$role)
@@ -125,7 +136,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
         if (isTRUE(getOption("shiny.testmode"))) {
           cran_pkgs(test_pkg_lst)
         } else {
-          cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+          cran_pkgs(utils::available.packages("https://cran.rstudio.com/src/contrib")[,1])
         }
       }
     },
@@ -188,7 +199,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
       if(is.null(input$uploaded_file$datapath))
         uploaded_pkgs00(validate('Please upload a nonempty CSV file.'))
       
-      uploaded_packages <- read.csv(input$uploaded_file$datapath, stringsAsFactors = FALSE)
+      uploaded_packages <- utils::read.csv(input$uploaded_file$datapath, stringsAsFactors = FALSE)
       np <- nrow(uploaded_packages)
       if(np == 0)
         uploaded_pkgs00(validate('Please upload a nonempty CSV file.'))
@@ -333,7 +344,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
             br(),
             h5("Notify when  URLs are reachable?"),
             footer = tagList(
-              actionButton(session$ns("check_urls"), "Yes"),
+              actionButton(ns("check_urls"), "Yes"),
               modalButton("No")
             )
           ))
@@ -346,7 +357,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
         if (isTRUE(getOption("shiny.testmode"))) {
           cran_pkgs(test_pkg_lst)
         } else {
-          cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+          cran_pkgs(utils::available.packages("https://cran.rstudio.com/src/contrib")[,1])
         }
       }
       
@@ -524,9 +535,24 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
     output$upload_pkgs_table <- DT::renderDataTable({
       req(nrow(uploaded_pkgs()) > 0)
       
+      uploaded_pkgs_ext <- reactive({
+        cbind(uploaded_pkgs(), 
+              data.frame(
+                Actions = shinyInput(actionButton, nrow(uploaded_pkgs()),
+                                     'button_',
+                                     size = "xs",
+                                     style='height:24px; padding-top:1px;',
+                                     label = icon("arrow-right", class="fa-regular", lib = "font-awesome"),
+                                     onclick = paste0('Shiny.setInputValue(\"' , ns("select_button"), '\", this.id, {priority: \"event\"})')
+                )
+              )
+        ) %>% # keep action button for 'new' or 'duplicate' only
+        mutate(Actions = if_else(!status %in% c('new', 'duplicate'), "", Actions))
+      })
+      
       formattable::as.datatable(
         formattable::formattable(
-          uploaded_pkgs(),
+          uploaded_pkgs_ext(),
           list(
             score = formattable::formatter(
               "span",
@@ -552,7 +578,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
         class = "cell-border",
         selection = 'none',
         rownames = FALSE,
-        colnames = gsub("_", " ", names(uploaded_pkgs())),
+        colnames = gsub("_", " ", c(names(uploaded_pkgs()), "Explore Metrics")),
         options = list(
           searching = FALSE,
           columnDefs = list(list(className = 'dt-center', targets = "_all")),
@@ -599,6 +625,35 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
         fluidRow(column(align = 'center', width = 12,
                         downloadButton(NS(id, "download_sample"), "Download")))
       ))
+    })
+    
+    observeEvent(input$select_button, {
+      req(uploaded_pkgs())
+      
+      selectedRow <- as.numeric(strsplit(input$select_button, "_")[[1]][2])
+      
+      # grab the package name
+      pkg_name <- uploaded_pkgs()[selectedRow, 1]
+      
+      # update sidebar-select_pkg
+      updateSelectizeInput(
+        session = parent,
+        inputId = "sidebar-select_pkg",
+        choices = c("-", dbSelect('SELECT name FROM package')$name),
+        selected = pkg_name
+      )
+      
+      # select maintenance metrics panel
+      updateTabsetPanel(session = parent, 
+                        inputId = 'tabs', 
+                        selected = "Package Metrics"
+      )
+      
+      # jump over to risk-assessment-tab so we can see the maintenance metrics
+      updateTabsetPanel(session = parent, 
+                        inputId = 'apptabs', 
+                        selected = "risk-assessment-tab"
+      )
     })
     
     uploaded_pkgs

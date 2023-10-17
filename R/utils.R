@@ -523,3 +523,21 @@ remove_shiny_inputs <- function(id, .input, ns = NS(NULL)) {
 #' 
 #' @noRd
 `%||%` <- function(lhs, rhs) if (is.null(lhs)) rhs else lhs
+
+
+#' shinyInput
+#' 
+#' Function used for adding action buttons to a data.frame
+#' 
+#' @param FUN the name of the function (e.g. "actionButton")
+#' @param len the number of rows in the data.frame
+#' @param id  the row id number
+#' 
+#' @noRd
+shinyInput <- function(FUN, len, id, ...) {
+  inputs <- character(len)
+  for (i in seq_len(len)) {
+    inputs[i] <- as.character(FUN(paste0(id, i), ...))
+  }
+  inputs
+}
