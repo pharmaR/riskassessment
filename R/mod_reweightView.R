@@ -246,7 +246,7 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
       req("weight_adjust" %in% credentials$privileges[[user$role]])
       removeModal()
       
-      session$userData$trigger_events[["reset_pkg_upload"]] <- trigger_events[["reset_pkg_upload"]] + 1
+      session$userData$trigger_events[["reset_pkg_upload"]] <- session$userData$trigger_events[["reset_pkg_upload"]] + 1
       
       # Update the weights in the `metric` table to reflect recent changes
       # First, which weights are different than the originals?
@@ -265,7 +265,7 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
           dplyr::mutate(new_weight = weight)
       )
       
-      session$userData$trigger_events$reset_sidebar <- trigger_events$reset_sidebar + 1
+      session$userData$trigger_events$reset_sidebar <- session$userData$trigger_events$reset_sidebar + 1
       
       # update for each package
       all_pkgs <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")

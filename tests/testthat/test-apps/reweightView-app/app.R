@@ -15,15 +15,14 @@ server <- function(input, output, session) {
   
   auto_json <- list()
   auto_list <- reactiveVal(auto_json)
-  trigger_events <- reactiveValues()
-  
+
   exportTestValues(
     metric_weights = {
       metric_weights()
     }
   )
   
-  metric_weights <- riskassessment:::reweightViewServer("reweightInfo", user, auto_list,, trigger_events)
+  metric_weights <- riskassessment:::reweightViewServer("reweightInfo", user, auto_list)
 }
 
 shinyApp(ui, server)
