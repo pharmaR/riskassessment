@@ -147,7 +147,7 @@ if('Maintenance Metrics' %in% params$report_includes){
 }
 ```
 
-* Metrics whose score is `NA` will not impact the package {riskmetric} score
+`r if ('Maintenance Metrics' %in% params$report_includes) {"* Metrics whose score is NA will not impact the package {riskmetric} score"}`
 
 ```{r maintenance_metrics_comments}
 if('Maintenance Comments' %in% params$report_includes){
@@ -195,7 +195,7 @@ if (!cm_ind) {
 }
 ```
 
-* Metrics whose score is `NA` will not impact the package {riskmetric} score
+`r if ('Community Usage Metrics' %in% params$report_includes) {"* Metrics whose score is NA will not impact the package {riskmetric} score"}`
 
 ```{r community_metrics_plot_title, eval=cm_ind}
 if('Community Usage Metrics' %in% params$report_includes){
