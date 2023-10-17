@@ -110,15 +110,6 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
     color_lst <- get_colors(golem::get_golem_options("assessment_db_name"))
     
-    # used for adding action buttons to table_data
-    shinyInput <- function(FUN, len, id, ...) {
-      inputs <- character(len)
-      for (i in seq_len(len)) {
-        inputs[i] <- as.character(FUN(paste0(id, i), ...))
-      }
-      inputs
-    }
-    
     # Update table_data if a package has been uploaded
     table_data <- eventReactive({uploaded_pkgs(); changes()}, {
      
@@ -173,7 +164,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                                size = "xs",
                                style='height:24px; padding-top:1px;',
                                label = icon("arrow-right", class="fa-regular", lib = "font-awesome"),
-                               onclick = paste0('Shiny.onInputChange(\"' , ns("select_button"), '\", this.id)')
+                               onclick = paste0('Shiny.setInputValue(\"' , ns("select_button"), '\", this.id, {priority: \"event\"})')
           )
         )
         )

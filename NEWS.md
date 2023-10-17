@@ -13,6 +13,7 @@
 * Allow user to create decision automation rules for individual metrics (#483)
 * Add checkbox to databaseView to select all packages for reportDownload handler (#649)
 * Build Report Updates (#526)
+* Add "Explore Metrics" button to Uploaded Pkgs Summary tab on Upload Packages tab (#653)
 
 # riskassessment 2.0.0
 
