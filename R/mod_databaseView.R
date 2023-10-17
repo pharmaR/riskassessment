@@ -125,11 +125,22 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       )
       
       db_pkg_overview %>%
-        dplyr::mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>%
-        dplyr::mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
-        dplyr::mutate(decision    = if_else(is.na(decision)    | decision    == "", "-", decision)) %>%
-        dplyr::mutate(decision_by = if_else(is.na(decision_by) | decision_by == "", "-", decision_by)) %>% 
-        dplyr::mutate(decision_date = ifelse(is.na(decision_date) | decision_date == "NA", "-", decision_date)) %>% 
+        dplyr::mutate(date_added = as.Date(date_added)) %>% # new
+        dplyr::mutate(score = as.numeric(score)) %>% # new
+        
+        dplyr::mutate(decision    = if_else(is.na(decision)    | decision    == "", "-", decision)) %>% # keep
+        dplyr::mutate(decision = factor(decision)) %>% # new
+        
+        dplyr::mutate(decision_by = if_else(is.na(decision_by) | decision_by == "", "-", decision_by)) %>% # keep
+        dplyr::mutate(decision_by = factor(decision_by)) %>% # new
+        
+        # dplyr::mutate(decision_date = ifelse(is.na(decision_date) | decision_date == "NA", "-", decision_date)) %>% # old
+        dplyr::mutate(decision_date = as.Date(decision_date)) %>% # new
+        
+        dplyr::mutate(last_comment = lubridate::as_datetime(last_comment)) %>% # new
+        # dplyr::mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>% # old
+        # dplyr::mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>% # old
+        
         dplyr::select(name, date_added, version, score, decision, decision_by, decision_date, last_comment)
     })
     
@@ -145,7 +156,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     # Database cards (saved to share with db report): Package Count,
     #   Count (%) by Decision made, Count (%) by Decision
     cards <- eventReactive(table_data(), {
-      build_db_cards(data = table_data() %>% mutate(decision = factor(decision, levels = decision_lst)))
+      build_db_cards(data = table_data())
     })
     
     # Create metric grid cards, containing database stats.
@@ -171,7 +182,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       })
 
       formattable::as.datatable(
-        formattable::formattable(
+      formattable::formattable(
           my_data_table(),
           list(
             score = formattable::formatter(
@@ -192,13 +203,17 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                                 "font-weight" = "bold",
                                 "color" = ifelse(x %in% decision_lst, "white", "inherit"),
                                 "background-color" = 
-                                  ifelse(x %in% decision_lst, 
-                                         glue::glue("var(--{risk_lbl(x, type = 'attribute')}-color)"), 
+                                  ifelse(x %in% decision_lst,
+                                         glue::glue("var(--{risk_lbl(x, type = 'attribute')}-color)"),
                                          "transparent")))
           )),
         selection = list(mode = 'multiple'),
         colnames = c("Package", "Date Uploaded", "Version", "Score", "Decision", "Decision by", "Decision Date", "Last Comment", "Explore Metrics"),
         rownames = FALSE,
+        filter = list(
+          position = "top",
+          plain = TRUE
+        ),
         extensions = "Buttons",
         options = list(
           searching = TRUE,
@@ -206,7 +221,10 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
           dom = 'Blftpr',
           pageLength = 15,
           lengthMenu = list(c(15, 60, 120, -1), c('15', '60', '120', "All")),
-          columnDefs = list(list(className = 'dt-center', targets = "_all")),
+          columnDefs = list(
+            list(className = 'dt-center', targets = "_all"),
+            list(targets = 8, searchable = FALSE) # make sure 'Explore Metrics' column filter is disabled
+            ),
           buttons = list(
             list(extend = "excel", text = shiny::HTML('<i class="fas fa-download"></i> Excel'),
                  exportOptions = list(columns = c(0:6)), # which columns to download
