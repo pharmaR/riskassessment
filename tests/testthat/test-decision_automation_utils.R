@@ -5,20 +5,20 @@ test_that("assign_decisions works", {
 test_that("get_colors works", {
   expect_equal(
     get_colors(app_sys("testdata", "skeleton.sqlite")), 
-    c("#9CFF94", "#F8D95D", "#FF765B"),
+    c("#9CFF94FF", "#FFD070FF", "#FF765BFF"),
     ignore_attr = TRUE
     )
   expect_equal(
     get_colors(app_sys("testdata", "decision_automation_ex1.sqlite")), 
-    c("#9CFF94", "#81B50A", "#34EBE5", "#BE7900", "#A63E24"), # achere
+    c("#9CFF94FF", "#D8F244FF", "#34EBE5", "#FFA87CFF", "#FF765BFF"), # achere
     ignore_attr = TRUE
   )
 })
 
 test_that("get_text_color works", {
-  expect_equal(get_text_color("#9CFF94"), "#ffffff")
+  expect_equal(get_text_color("#9CFF94"), "#000000")
   expect_equal(get_text_color("#F8D95D"), "#000000")
-  expect_equal(get_text_color("#FF765B"), "#ffffff")
+  expect_equal(get_text_color("#FF765B"), "#000000")
 })
 
 test_that("risk_lbl works", {
