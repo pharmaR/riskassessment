@@ -1,13 +1,6 @@
 # Global Risk color palettes.
-# run locally and paste hex codes
-# colorspace::darken(viridisLite::turbo(11, begin = 0.4, end = .8225), .25) # old dark palette
-# new light palette, verified as color-blind friendly here:
-# https://davidmathlogic.com/colorblind/#%239CFF94-%23B3FF87-%23BCFF43-%23D8F244-%23F2E24B-%23FFD070-%23FFBE82-%23FFA87C-%23FF8F6C-%23FF765B
-# code:
-# paste0("'",viridisLite::turbo(11, begin = 0.4, end = .8225)[2:11] %>% colorspace::lighten(.25) %>% paste(collapse = "', '"),"'")
-setColorPalette <- colorRampPalette(#c('#9CFF94FF', '#B3FF87FF', '#BCFF43FF', '#D8F244FF', '#F2E24BFF', '#FFD070FF', '#FFBE82FF', '#FFA87CFF', '#FF8F6CFF', '#FF765BFF')
-                                    color_palette) # internal data object
-# # defaults
+setColorPalette <- colorRampPalette(color_palette) # internal data object
+# defaults
 # setColorPalette(3)[1] # low risk
 # setColorPalette(3)[2] # med risk
 # setColorPalette(3)[3] # high risk
