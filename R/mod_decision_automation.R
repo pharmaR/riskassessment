@@ -9,7 +9,7 @@ mod_decision_automation_ui <- function(id){
   ns <- NS(id)
   
   decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
-  color_lst <- if (!is.null(golem::get_golem_options("assessment_db_name"))) get_colors(golem::get_golem_options("assessment_db_name")) else c(`Low Risk` = "#06B756", `Medium Risk` = "#A99D04", `High Risk` = "#A63E24")
+  color_lst <- if (!is.null(golem::get_golem_options("assessment_db_name"))) get_colors(golem::get_golem_options("assessment_db_name")) else c(`Low Risk` = "#9CFF94", `Medium Risk` = "#F8D95D", `High Risk` = "#FF765B")
   dec_num <- length(decision_lst)
   dec_root <- glue::glue("--{risk_lbl(decision_lst, type = 'attribute')}-color: {color_lst};") %>%
     glue::glue_collapse(sep = "\n") %>%
