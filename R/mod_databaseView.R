@@ -281,6 +281,11 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                         inputId = 'apptabs', 
                         selected = "risk-assessment-tab"
       )
+      
+      updateSelectInput(session = parent, 
+                        inputId = 'metric_type', 
+                        selected = "mm"
+      )
     })
     
     pkgs <- reactive({
