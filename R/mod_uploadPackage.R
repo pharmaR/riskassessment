@@ -649,9 +649,9 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       )
       
       # jump over to risk-assessment-tab so we can see the maintenance metrics
-      updateTabsetPanel(session = parent, 
-                        inputId = 'apptabs', 
-                        selected = "risk-assessment-tab"
+      updateSelectInput(session = parent, 
+                        inputId = 'metric_type', 
+                        selected = "mm"
       )
     })
     
