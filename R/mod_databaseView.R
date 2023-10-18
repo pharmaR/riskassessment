@@ -45,17 +45,24 @@ databaseViewUI <- function(id) {
                                                outline = TRUE,
                                                inline = TRUE,
                                                bigger = TRUE)),
-                h5("Report Configurations"),
-                br(),
-                fluidRow(
-                  column(5,
-                         mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
-                         mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
-                  ),
-                  column(7, 
-                         mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
-                  )
-                )
+                br(), br(),
+                div(id = "dwnld_rp",
+                    fluidRow(
+                      column(4, h5("Report Configurations"),),
+                      column(3, mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)),
+                      column(3, shiny::actionButton(NS(id, "downloadHandler-store_prefs"), "Store Preferences", 
+                                                    icon = icon("fas fa-floppy-disk", class = "fa-reqular", lib = "font-awesome")))
+                    ),
+                    br(),
+                    fluidRow(
+                      column(4,
+                             mod_downloadHandler_filetype_ui(NS(id, "downloadHandler"))
+                      ),
+                      column(8, 
+                             mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
+                      )
+                    ),
+                ),
               )
             ) %>%
               column(width = 12)
