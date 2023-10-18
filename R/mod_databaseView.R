@@ -1,5 +1,6 @@
 # Global Risk color palettes.
-setColorPalette <- colorRampPalette(color_palette) # internal data object
+# R won't let you build the package if you use the internal data here.
+setColorPalette <- colorRampPalette(c('#9CFF94FF', '#B3FF87FF', '#BCFF43FF', '#D8F244FF', '#F2E24BFF', '#FFD070FF', '#FFBE82FF', '#FFA87CFF', '#FF8F6CFF', '#FF765BFF')) # internal data object
 # defaults
 # setColorPalette(3)[1] # low risk
 # setColorPalette(3)[2] # med risk
