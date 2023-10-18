@@ -4,7 +4,7 @@
 \alias{uploadPackageServer}
 \title{Server logic for the 'Upload Package' module}
 \usage{
-uploadPackageServer(id, user, auto_list, credentials, trigger_events, parent)
+uploadPackageServer(id, user, auto_list, credentials, parent)
 }
 \arguments{
 \item{id}{a module id}
@@ -12,8 +12,6 @@ uploadPackageServer(id, user, auto_list, credentials, trigger_events, parent)
 \item{user}{a username}
 
 \item{auto_list}{a list of decision automation rules}
-
-\item{trigger_events}{a reactive values object to trigger actions here or elsewhere}
 
 \item{parent}{the parent (calling module) session information}
 }

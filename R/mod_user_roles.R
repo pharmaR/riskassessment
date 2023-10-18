@@ -27,7 +27,7 @@ mod_user_roles_ui <- function(id){
 #' user_roles Server Functions
 #'
 #' @noRd 
-mod_user_roles_server <- function(id, user, credentials, trigger_events){
+mod_user_roles_server <- function(id, user, credentials){
   if (missing(credentials))
     credentials <- get_db_config("credentials")
   moduleServer( id, function(input, output, session){
@@ -294,7 +294,7 @@ mod_user_roles_server <- function(id, user, credentials, trigger_events){
       
       user_table(get_credentials_table(passphrase = passphrase))
       
-      trigger_events[["reset_sidebar"]] <- trigger_events[["reset_sidebar"]] + 1
+      session$userData$trigger_events[["reset_sidebar"]] <- session$userData$trigger_events[["reset_sidebar"]] + 1
       
       removeModal()
       shinyjs::runjs("document.body.setAttribute('data-bs-overflow', 'auto');")

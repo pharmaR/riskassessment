@@ -15,7 +15,6 @@ reweightViewUI <- function(id) {
 #' @param id the module id
 #' @param user the user name
 #' @param decision_list the list containing the decision automation criteria
-#' @param trigger_events a reactive values object to trigger actions here or elsewhere
 #' 
 #' 
 #' @import dplyr
@@ -25,7 +24,7 @@ reweightViewUI <- function(id) {
 #' @importFrom RSQLite SQLite sqliteCopyDatabase
 #' 
 #' @keywords internal
-reweightViewServer <- function(id, user, decision_list, credentials, trigger_events) {
+reweightViewServer <- function(id, user, decision_list, credentials) {
   if (missing(credentials))
     credentials <- get_db_config("credentials")
   moduleServer(id, function(input, output, session) {
@@ -247,7 +246,7 @@ reweightViewServer <- function(id, user, decision_list, credentials, trigger_eve
       req("weight_adjust" %in% credentials$privileges[[user$role]])
       removeModal()
       
-      trigger_events[["reset_pkg_upload"]] <- trigger_events[["reset_pkg_upload"]] + 1
+      session$userData$trigger_events[["reset_pkg_upload"]] <- session$userData$trigger_events[["reset_pkg_upload"]] + 1
       
       # Update the weights in the `metric` table to reflect recent changes
       # First, which weights are different than the originals?
@@ -266,7 +265,7 @@ reweightViewServer <- function(id, user, decision_list, credentials, trigger_eve
           dplyr::mutate(new_weight = weight)
       )
       
-      trigger_events$reset_sidebar <- trigger_events$reset_sidebar + 1
+      session$userData$trigger_events$reset_sidebar <- session$userData$trigger_events$reset_sidebar + 1
       
       # update for each package
       all_pkgs <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")

@@ -13,7 +13,6 @@ packageDependenciesUI <- function(id) {
 #' @param selected_pkg placeholder
 #' @param user placeholder
 #' @param parent the parent (calling module) session information
-#' @param trigger_events a reactive values object to trigger actions here or elsewhere
 #'
 #' @import dplyr
 #' @importFrom DT formatStyle renderDataTable
@@ -28,7 +27,7 @@ packageDependenciesUI <- function(id) {
 #'
 #' @keywords internal
 #'
-packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_events) {
+packageDependenciesServer <- function(id, selected_pkg, user, parent) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     cran_pkgs <- as.data.frame(available.packages("https://cran.rstudio.com/src/contrib")[, 1:2])
@@ -332,7 +331,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_ev
     observeEvent(input$confirm, {
       shiny::removeModal()
       
-      trigger_events$upload_pkgs <- pkgname()
+      session$userData$trigger_events$upload_pkgs <- pkgname()
       
       session$onFlushed(function() {
         rev_pkg(1L)

@@ -4,7 +4,7 @@
 \alias{packageDependenciesServer}
 \title{Package Dependencies module's server logic}
 \usage{
-packageDependenciesServer(id, selected_pkg, user, parent, trigger_events)
+packageDependenciesServer(id, selected_pkg, user, parent)
 }
 \arguments{
 \item{id}{a module id name}
@@ -14,8 +14,6 @@ packageDependenciesServer(id, selected_pkg, user, parent, trigger_events)
 \item{user}{placeholder}
 
 \item{parent}{the parent (calling module) session information}
-
-\item{trigger_events}{a reactive values object to trigger actions here or elsewhere}
 }
 \description{
 Package Dependencies module's server logic

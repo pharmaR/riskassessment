@@ -69,7 +69,6 @@ uploadPackageUI <- function(id) {
 #' @param id a module id
 #' @param user a username
 #' @param auto_list a list of decision automation rules
-#' @param trigger_events a reactive values object to trigger actions here or elsewhere
 #' @param parent the parent (calling module) session information
 #' 
 #' @importFrom DT datatable dataTableOutput formatStyle renderDataTable
@@ -86,7 +85,7 @@ uploadPackageUI <- function(id) {
 #' 
 #' @keywords internal
 #' 
-uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events, parent) {
+uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
   if (missing(credentials))
     credentials <- get_db_config("credentials")
   moduleServer(id, function(input, output, session) {
@@ -163,7 +162,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
 
     uploaded_pkgs00 <- reactiveVal()
     
-    observeEvent(trigger_events$reset_pkg_upload, {
+    observeEvent(session$userData$trigger_events$reset_pkg_upload, {
       uploaded_pkgs(data.frame())
     })
 
@@ -236,13 +235,13 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
       uploaded_pkgs00(uploaded_packages)
     })
     
-    observeEvent(trigger_events$upload_pkgs, {
-      req(trigger_events$upload_pkgs)
+    observeEvent(session$userData$trigger_events$upload_pkgs, {
+      req(session$userData$trigger_events$upload_pkgs)
       
-      np <- length(trigger_events$upload_pkgs)
+      np <- length(session$userData$trigger_events$upload_pkgs)
       uploaded_packages <-
         dplyr::tibble(
-          package = trigger_events$upload_pkgs,
+          package = session$userData$trigger_events$upload_pkgs,
           version = rep('0.0.0', np),
           status = rep('', np)
         )
@@ -535,24 +534,27 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
     output$upload_pkgs_table <- DT::renderDataTable({
       req(nrow(uploaded_pkgs()) > 0)
       
-      uploaded_pkgs_ext <- reactive({
-        cbind(uploaded_pkgs(), 
-              data.frame(
-                Actions = shinyInput(actionButton, nrow(uploaded_pkgs()),
-                                     'button_',
-                                     size = "xs",
-                                     style='height:24px; padding-top:1px;',
-                                     label = icon("arrow-right", class="fa-regular", lib = "font-awesome"),
-                                     onclick = paste0('Shiny.setInputValue(\"' , ns("select_button"), '\", this.id, {priority: \"event\"})')
+      uploaded_pkgs_ext <- 
+        if(!isTruthy(sum(uploaded_pkgs()$status == 'removed') > 0)) {
+          cbind(uploaded_pkgs(), 
+                data.frame(
+                  explore_metrics = shinyInput(actionButton, nrow(uploaded_pkgs()),
+                                               'button_',
+                                               size = "xs",
+                                               style='height:24px; padding-top:1px;',
+                                               label = icon("arrow-right", class="fa-regular", lib = "font-awesome"),
+                                               onclick = paste0('Shiny.setInputValue(\"' , ns("select_button"), '\", this.id, {priority: \"event\"})')
+                  )
                 )
-              )
-        ) %>% # keep action button for 'new' or 'duplicate' only
-        mutate(Actions = if_else(!status %in% c('new', 'duplicate'), "", Actions))
-      })
+          ) %>% # keep action button for 'new' or 'duplicate' only
+            mutate(explore_metrics = if_else(!status %in% c('new', 'duplicate'), "", explore_metrics))
+        } else {
+          uploaded_pkgs()
+        }
       
       formattable::as.datatable(
         formattable::formattable(
-          uploaded_pkgs_ext(),
+          uploaded_pkgs_ext,
           list(
             score = formattable::formatter(
               "span",
@@ -578,7 +580,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
         class = "cell-border",
         selection = 'none',
         rownames = FALSE,
-        colnames = gsub("_", " ", c(names(uploaded_pkgs()), "Explore Metrics")),
+        colnames = gsub("_", " ", names(uploaded_pkgs_ext)),
         options = list(
           searching = FALSE,
           columnDefs = list(list(className = 'dt-center', targets = "_all")),
@@ -588,7 +590,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
           iDisplayLength = 10
         )
       ) %>%
-        DT::formatStyle(names(uploaded_pkgs()), textAlign = 'center')
+        DT::formatStyle(names(uploaded_pkgs_ext), textAlign = 'center')
     })
     
     # View sample dataset.
@@ -650,9 +652,9 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
       )
       
       # jump over to risk-assessment-tab so we can see the maintenance metrics
-      updateTabsetPanel(session = parent, 
-                        inputId = 'apptabs', 
-                        selected = "risk-assessment-tab"
+      updateSelectInput(session = parent, 
+                        inputId = 'metric_type', 
+                        selected = "mm"
       )
     })
     
