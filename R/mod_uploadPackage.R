@@ -562,7 +562,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
                                              "border-radius" = "4px",
                                              "padding-right" = "4px",
                                              "font-weight" = "bold",
-                                             "color" = "white",
+                                             "color" = "black",
                                              "order" = x,
                                              "background-color" = formattable::csscolor(
                                                setColorPalette(100)[round(as.numeric(x)*100)]))),
@@ -572,7 +572,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
                                              "border-radius" = "4px",
                                              "padding-right" = "4px",
                                              "font-weight" = "bold",
-                                             "color" = "white",
+                                             "color" = "black",
                                              "background-color" = glue::glue("var(--{risk_lbl(x, type = 'attribute')}-color)")))
           )
         ),
