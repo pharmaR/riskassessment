@@ -99,7 +99,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     
 
     # return vector of elements to include in the report
-    report_includes <- mod_downloadHandler_include_server("downloadHandler", selected_pkg$name)
+    report_includes <- mod_downloadHandler_include_server("downloadHandler")
     
     
     
