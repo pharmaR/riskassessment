@@ -81,7 +81,11 @@ test_pkg_cum <-
   purrr::map(generate_comm_data) %>%
   purrr::set_names(test_pkg_lst)
 
-color_palette <- c("#06B756","#2FBC06","#67BA04","#81B50A","#96AB0A","#A99D04","#B78D07","#BE7900","#BE6200","#B24F22","#A63E24")
+# New light palette, verified as color-blind friendly here:
+# https://davidmathlogic.com/colorblind/#%239CFF94-%23B3FF87-%23BCFF43-%23D8F244-%23F2E24B-%23FFD070-%23FFBE82-%23FFA87C-%23FF8F6C-%23FF765B
+# code:
+# paste0("'",viridisLite::turbo(11, begin = 0.4, end = .8225)[2:11] %>% colorspace::lighten(.25) %>% paste(collapse = "', '"),"'")
+color_palette <- c('#9CFF94FF', '#B3FF87FF', '#BCFF43FF', '#D8F244FF', '#F2E24BFF', '#FFD070FF', '#FFBE82FF', '#FFA87CFF', '#FF8F6CFF', '#FF765BFF')
 
 used_privileges <- c("admin", "weight_adjust", "auto_decision_adjust", "final_decision", "revert_decision", "add_package", "delete_package", "overall_comment", "general_comment")
 

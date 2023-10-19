@@ -1,7 +1,10 @@
 # Global Risk color palettes.
-# run locally and paste hex codes
-# colorspace::darken(viridisLite::turbo(11, begin = 0.4, end = .8225), .25)
-setColorPalette <- colorRampPalette(c("#06B756FF","#2FBC06FF","#67BA04FF","#81B50AFF","#96AB0AFF","#A99D04FF","#B78D07FF","#BE7900FF","#BE6200FF","#B24F22FF","#A63E24FF"))
+# R won't let you build the package if you use the internal data here.
+setColorPalette <- colorRampPalette(c('#9CFF94FF', '#B3FF87FF', '#BCFF43FF', '#D8F244FF', '#F2E24BFF', '#FFD070FF', '#FFBE82FF', '#FFA87CFF', '#FF8F6CFF', '#FF765BFF')) # internal data object
+# defaults
+# setColorPalette(3)[1] # low risk
+# setColorPalette(3)[2] # med risk
+# setColorPalette(3)[3] # high risk
 
 
 #' UI for 'Database View' module
@@ -197,8 +200,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
               style = x ~ formattable::style(display = "block",
                                 "border-radius" = "4px",
                                 "padding-right" = "4px",
-                                "font-weight" = "bold",
-                                "color" = "white",
+                                "color" = "black",
                                 "order" = x,
                                 "background-color" = formattable::csscolor(
                                   setColorPalette(100)[round(as.numeric(x)*100)]))),
@@ -207,8 +209,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
               style = x ~ formattable::style(display = "block",
                                 "border-radius" = "4px",
                                 "padding-right" = "4px",
-                                "font-weight" = "bold",
-                                "color" = ifelse(x %in% decision_lst, "white", "inherit"),
+                                "color" = ifelse(x %in% decision_lst, get_text_color(get_colors(golem::get_golem_options("assessment_db_name"))[x]), "inherit"),
                                 "background-color" = 
                                   ifelse(x %in% decision_lst,
                                          glue::glue("var(--{risk_lbl(x, type = 'attribute')}-color)"),
