@@ -18,3 +18,24 @@
   text-transform: uppercase;
   letter-spacing: 3px;
 }
+
+.shiny-input-container.exported_function div.item {
+  word-wrap: break-word;
+  width: 90%;
+}
+
+.file_browser h1,
+.file_browser .h1,
+.file_browser h2,
+.file_browser .h2,
+.file_browser h3,
+.file_browser .h3,
+.file_browser h4,
+.file_browser .h4,
+.file_browser h5,
+.file_browser .h5,
+.file_browser h6,
+.file_browser .h6 {
+  text-transform: none;
+  letter-spacing: unset;
+}

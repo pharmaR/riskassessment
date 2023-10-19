@@ -1,3 +1,23 @@
+# riskassessment (development version)
+* Fixed tests showing "Package Downloads" community usage card as non-metric (#621)
+* Adding "Suggests" pkgs to Dependencies tab (#624)
+* Migrated from `{jsTreeR}` to `{shinyTree}` (#585)
+* Fix bug with the logo's hyperlink not functioning in the expected zone (#633)
+* Summarize Package Dependencies (#618)
+* Integrated the function explorer provided by our GSK contributors (#498)
+* Remove suggests from riskcalc weights table (#646)
+* Added correct remotes reference in `DESCRIPTION` file for pharmar/riskmetric & rstudio/chromote
+* Updated `{shinytest2}` and `{chromote}` to more recent versions for testing
+* Started showing `metric_score`s for each assessment's card, using an html meter (#634)
+* Removed some unneeded/unused dependencies
+* Added default `{DT}` based filter to Database Overview tab (#586)
+* Allow user to create decision automation rules for individual metrics (#483)
+* Add checkbox to databaseView to select all packages for reportDownload handler (#649)
+* Build Report Updates (#526)
+* Add "Explore Metrics" button to Uploaded Pkgs Summary tab on Upload Packages tab (#653)
+* Add comment module to the Function Explorer (#643)
+* Made color palette used through the app even more colorblind-friendly and created lighter "User Guide" logo (#654)
+
 # riskassessment 2.0.0
 
 ### Enhancements

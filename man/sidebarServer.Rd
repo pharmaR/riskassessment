@@ -4,7 +4,7 @@
 \alias{sidebarServer}
 \title{Sidebar Server Logic}
 \usage{
-sidebarServer(id, user, uploaded_pkgs, credentials, trigger_events)
+sidebarServer(id, user, uploaded_pkgs, credentials)
 }
 \arguments{
 \item{id}{a module id}
@@ -12,8 +12,6 @@ sidebarServer(id, user, uploaded_pkgs, credentials, trigger_events)
 \item{user}{a username}
 
 \item{uploaded_pkgs}{a vector of packages}
-
-\item{trigger_events}{a reactive values object to trigger actions here or elsewhere}
 }
 \description{
 Also known as the 'Control Panel', and rightfully so, as it controls

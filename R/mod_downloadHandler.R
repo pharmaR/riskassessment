@@ -40,45 +40,64 @@ mod_downloadHandler_filetype_ui <- function(id){
 mod_downloadHandler_include_ui <- function(id){
   # will want to change this to input_UI so we can include additional items
   # such as "Include comments" check boxes for summary, maint-metrics, comm usage, and overall comments
-  my_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
-    "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
-    "Source Explorer Comments")
-  div(
-    strong(p("Elements to include:")),
-    div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
-      # checkboxGroupInput(
-      shinyWidgets::prettyCheckboxGroup(
-        NS(id, "report_includes"), label = NULL, inline = FALSE,
-        choices = my_choices, selected = my_choices
-      )
-    )
-  )
+  uiOutput(NS(id, "mod_downloadHandler_incl_output"))
 }
-
-#' downloadHandler Inlcude Server Function
+#' downloadHandler Include Server Function
 #'
 #' @description A shiny Module.
 #'
 #' @param id Internal parameters for {shiny}.
+#' 
+#' @importFrom shiny showModal modalDialog
+#' @importFrom glue glue
+#' @importFrom shinyWidgets prettyCheckboxGroup updatePrettyCheckboxGroup
 #'
 #' @noRd 
 mod_downloadHandler_include_server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    observe({
-      # print("#####################################")
-      # print("input$report_includes:")
-      # print(input$report_includes)
-      # shinyWidgets::updatePrettyCheckboxGroup("report_includes",)
+    ns <- session$ns
 
-      # selected = ifelse(is.null(input$report_includes) | input$report_includes != my_choices,
-      #                   isolate(input$report_includes), my_choices)
+    output$mod_downloadHandler_incl_output <- renderUI({
+      div(
+        strong(p("Elements to include:")),
+        div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
+            shinyWidgets::prettyCheckboxGroup(
+              ns("report_includes"), label = NULL, inline = FALSE,
+              choices = rpt_choices, selected = isolate(session$userData$user_report$report_includes) %||% rpt_choices
+            )
+        )
+      )
     })
+    
+    # save user selections and notify user
+    observeEvent(input$store_prefs, {
+      writeLines(
+        session$userData$user_report$report_includes, 
+        session$userData$user_report$user_file
+      )
+
+      shiny::showModal(shiny::modalDialog(title = "User preferences saved",
+                                          "Report preferences stored for user", 
+                                          footer = modalButton("Dismiss"), 
+                                          easyClose = TRUE))
+    }, ignoreInit = TRUE)
+    
+    observeEvent(session$userData$trigger_events$update_report_pref_inclusions, {
+      shinyWidgets::updatePrettyCheckboxGroup(
+        session,
+        "report_includes",
+        selected = session$userData$user_report$report_includes
+      )
+    })
+    
+    observeEvent(input$report_includes, {
+      session$userData$user_report$report_includes <- input$report_includes %||% ""
+    }, ignoreNULL = FALSE, ignoreInit = TRUE)
+    
     return(reactive(input$report_includes))
   })
 }
   
-
-    
 #' downloadHandler Server Functions
 #'
 #' @noRd 
@@ -99,7 +118,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
         n_pkgs <- length(pkgs())
         
         if (n_pkgs > 1) {
-          report_datetime <- stringr::str_replace_all(stringr::str_replace(Sys.time(), " ", "_"), ":", "-")
+          report_datetime <- stringr::str_replace_all(stringr::str_replace(get_time(), " ", "_"), ":", "-")
           glue::glue('RiskAssessment-Report-{report_datetime}.zip')
         } else {
           pkg_ver <- dbSelect("SELECT version FROM package WHERE name = {pkgs()}")
@@ -229,9 +248,10 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               mm_comments <- get_mm_comments(this_pkg)
               cm_comments <- get_cm_comments(this_pkg)
               se_comments <- get_se_comments(this_pkg)
+              fe_comments <- get_fe_comments(this_pkg)
               
               # gather maint metrics & community metric data
-              mm_data <- get_mm_data(pkg_list$id)
+              mm_data <- get_metric_data(this_pkg, metric_class = "maintenance")
               comm_data <- get_comm_data(this_pkg)
               comm_cards <- build_comm_cards(comm_data)
               downloads_plot <- build_comm_plotly(comm_data)
@@ -255,6 +275,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                               mm_comments = mm_comments,
                               cm_comments = cm_comments,
                               se_comments = se_comments,
+                              fe_comments = fe_comments,
                               maint_metrics = mm_data,
                               com_metrics = comm_cards,
                               com_metrics_raw = comm_data,

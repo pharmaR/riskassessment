@@ -156,13 +156,36 @@ get_se_comments <- function(pkg_name, db_name = golem::get_golem_options('assess
     purrr::map(rev)
 }
 
+#' The 'Get Function Explorer Comments' function
+#' 
+#' Retrieve the Function Explorer comments for a specific package
+#' 
+#' @param pkg_name character name of the package
+#' @param db_name character name (and file path) of the database
+#' 
+#' @importFrom glue glue
+#' @importFrom purrr map
+#' 
+#' @returns a data frame
+#' @noRd
+get_fe_comments <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
+  dbSelect(
+    "SELECT user_name, user_role, comment, added_on
+       FROM comments
+       WHERE id = {pkg_name} AND comment_type = 'fe'"
+    , db_name
+  ) %>%
+    purrr::map(rev)
+}
+
 
 #' The 'Get Maintenance Metrics Data' function
 #' 
 #' Pull the maint metrics data for a specific package id, and create 
 #' necessary columns for Cards UI
 #' 
-#' @param pkg_id integer package id
+#' @param pkg_name character name of package
+#' @param metric_class character, corresponding to values desired from the metric table's metric_class var
 #' @param db_name character name (and file path) of the database
 #' 
 #' @import dplyr
@@ -170,17 +193,20 @@ get_se_comments <- function(pkg_name, db_name = golem::get_golem_options('assess
 #' 
 #' @returns a data frame
 #' @noRd
-get_mm_data <- function(pkg_id, db_name = golem::get_golem_options('assessment_db_name')){
+get_metric_data <- function(pkg_name, metric_class = 'maintenance', db_name = golem::get_golem_options('assessment_db_name')){
+
   dbSelect(
     "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
-                    metric.is_url, package_metrics.value
+                    metric.is_url, package_metrics.value, package_metrics.metric_score
                     FROM metric
                     INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
-                    WHERE package_metrics.package_id = {pkg_id} AND 
-                    metric.class = 'maintenance' ;", db_name) %>%
+                    INNER JOIN package on package_metrics.package_id = package.id
+                    WHERE package.name = {pkg_name} AND 
+                    metric.class = {metric_class} ;", db_name) %>%
     dplyr::mutate(
       title = long_name,
       desc = description,
+      score = metric_score,
       succ_icon = rep(x = 'check', times = nrow(.)), 
       unsucc_icon = rep(x = 'times', times = nrow(.)),
       icon_class = rep(x = 'text-success', times = nrow(.)),
@@ -241,7 +267,7 @@ get_pkg_info <- function(pkg_name, db_name = golem::get_golem_options('assessmen
 get_metric_weights <- function(db_name = golem::get_golem_options('assessment_db_name')){
   dbSelect(
     "SELECT name, weight
-     FROM metric", db_name
+     FROM metric where name != 'suggests'", db_name
   )
 }
 
@@ -254,7 +280,7 @@ get_metric_weights <- function(db_name = golem::get_golem_options('assessment_db
 #'
 #' @returns a data frame
 #' @noRd
-get_assess_blob<- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
+get_assess_blob <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
   db_table <- dbSelect("SELECT metric.name, package_metrics.encode FROM package 
                        INNER JOIN package_metrics ON package.id = package_metrics.package_id
                        INNER JOIN metric ON package_metrics.metric_id = metric.id

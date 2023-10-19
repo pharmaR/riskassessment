@@ -1,6 +1,6 @@
 Package: riskassessment
 Title: A web app designed to interface with the `riskmetric` package
-Version: 2.0.0
+Version: 2.0.0.9014
 Authors@R: c( 
     person("Aaron", "Clark", role = c("aut", "cre"), email = "aaron.clark@biogen.com"),
     person("Robert", "Krajcik", role = "aut", email = "robert.krajcik@biogen.com"),
@@ -12,10 +12,12 @@ Authors@R: c(
     person("Marly", "Gotti", role = "aut", email = "marly.cormar@biogen.com"),
     person("Maya", "Gans", role = "aut", email = "maya.gans@biogen.com"),
     person("Aravind Reddy", "Kallem", role = "aut"),
+    person("Eduardo", "Almeida", role = "ctb", email = "eduardoalmeida7393@gmail.com"),
     person(family = "Fission Labs India Pvt Ltd", role = "aut"),
 	  person(family = "PSI special interest group Application and Implementation of Methodologies in Statistics", role = c("cph", "fnd")),
     person(family = "R Validation Hub", role = c("cph", "fnd")),
-    person(family = "GSK contributors", role = "ctb", comment = "Author of 'pharmaR/pkg_explorer' repo")
+    person(family = "GSK contributors", role = "ctb", comment = "Author of 'pharmaR/pkg_explorer' repo"),
+    person(family = "Appsilon", role = "ctb")
   )
 Description: A shiny application that allows users to define a list of R
     packages to assess metrics engineered by the `riskmetric` package.
@@ -39,7 +41,6 @@ RoxygenNote: 7.2.0
 Imports: 
     bslib (>= 0.3.0),
     config (>= 0.3.1),
-    colourpicker,
     cranlogs,
     DBI,
     desc,
@@ -53,21 +54,21 @@ Imports:
     plotly,
     purrr,
     rintrojs,
-    riskmetric (>= 0.1.1),
+    riskmetric (>= 0.2.2),
     rlang,
     rmarkdown,
     RSQLite,
     rvest,
     shiny (>= 1.7.1),
-    shinydashboard,
     shinyjs,
     shinymanager,
+    shinyTree,
     shinyWidgets,
     stringr,
     shinyAce,
-    jsTreeR
+    sortable
 Suggests: 
-    chromote,
+    chromote (>= 0.1.1.9001),
     fontawesome,
     kableExtra,
     knitr,
@@ -83,3 +84,5 @@ Language: en-US
 Depends: 
     R (>= 2.10)
 VignetteBuilder: knitr
+Remotes: 
+    pharmaR/riskmetric

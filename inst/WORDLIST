@@ -1,5 +1,4 @@
 AppDriver
-Appsilon
 Aravind
 CMD
 Chromote
@@ -37,11 +36,13 @@ auth
 biopharmaceutical
 bs
 bslib's
+chromote
 cmd
 config
 configs
 covr
 cran
+databaseView
 dev
 docx
 dropdown
@@ -80,7 +81,10 @@ renv
 repo
 repo's
 repo’s
+reportDownload
+riskcalc
 riskmetric
+rstudio
 serverless
 shinyapps
 shinylogs
@@ -89,6 +93,7 @@ showComments
 showHelperMessage
 sql
 sqlite
+tagList
 tibble
 transactional
 ui
@@ -97,3 +102,4 @@ userid
 viewComment
 www
 ’s
+ 

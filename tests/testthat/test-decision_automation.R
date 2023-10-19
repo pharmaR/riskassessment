@@ -13,7 +13,7 @@ test_that("decision_automation works", {
     app_db_loc
   )
   
-  app <- shinytest2::AppDriver$new(test_path("test-apps", "decision_automation-app"))
+  app <- shinytest2::AppDriver$new(test_path("test-apps", "decision_automation-app"), load_timeout = 90*1000)
   
   # Check that reactive values are loaded correctly
   # Check datatable table
@@ -28,8 +28,8 @@ test_that("decision_automation works", {
   app$wait_for_idle()
   
   # Check module automate decision reactive
-  expected <- list(`Insignificant Risk` = c(0, 0.1), 
-                   `Severe Risk` = c(0.7, 1))
+  expected <- list(`Severe Risk` = c(0.7, 1),
+                   `Insignificant Risk` = c(0, 0.1))
   actual <- app$get_value(export = "automate-auto_decision")
   app$wait_for_idle()
   
@@ -37,8 +37,11 @@ test_that("decision_automation works", {
   
   # Check automate decision module output matches as well
   actual <- app$get_value(export = "auto_decision_output")
-  expect_equal(actual[sort(names(actual))], expected[sort(names(expected))])
-
+  expect_equal(
+    purrr::map(actual, ~ .x$condition) %>% `[`(!grepl("^rule_\\d+$|^rule_else$", names(.))), 
+    purrr::map(expected, ~ paste("~", .x[1], "<= .x & .x <=", .x[2])) %>% purrr::set_names(purrr::map_chr(names(expected), ~ risk_lbl(.x, type = "module")))
+  )
+  
   # Check that inputs got set correctly on initialization
   # Check group checkbox
   expected <- c("Insignificant Risk", "Severe Risk")
@@ -49,18 +52,18 @@ test_that("decision_automation works", {
   
   # Check "Insignificant Risk" input
   expected <- 0.1
-  actual <- app$get_value(input = "automate-cat_insignificant_risk_attr")
+  actual <- app$get_value(input = "automate-cat_insignificant_risk")
   expect_equal(actual, expected)
   
   # Check "Severe Risk" input
   expected <- 0.7
-  actual <- app$get_value(input = "automate-cat_severe_risk_attr")
+  actual <- app$get_value(input = "automate-cat_severe_risk")
   expect_equal(actual, expected)
   
   
   # Set inputs for new decision rules
   app$set_inputs(`automate-auto_include` = c("Insignificant Risk", "Moderate Risk"),
-                 `automate-cat_moderate_risk_attr` = c(.3, .45))
+                 `automate-cat_moderate_risk` = c(.3, .45))
   # Submit new decision rules
   app$click(input = "automate-submit_auto")
   app$wait_for_idle()
@@ -82,11 +85,14 @@ test_that("decision_automation works", {
   expected <- list(`Insignificant Risk` = c(0, 0.1), 
                    `Moderate Risk` = c(0.3, 0.45))
   actual <- app$get_value(export = "auto_decision_output")
-  expect_equal(actual[sort(names(actual))], expected[sort(names(expected))])
+  expect_equal(
+    purrr::map(actual, ~ .x$condition) %>% `[`(!grepl("^rule_\\d+$|^rule_else$", names(.))), 
+    purrr::map(expected, ~ paste("~", .x[1], "<= .x & .x <=", .x[2])) %>% purrr::set_names(purrr::map_chr(names(expected), ~ risk_lbl(.x, type = "module")))
+  )
   
   # Check that sliders are working correctly
   app$set_inputs(`automate-auto_include` = c("Insignificant Risk", "Moderate Risk", "Severe Risk"),
-                 `automate-cat_severe_risk_attr` = .4)
+                 `automate-cat_severe_risk` = .4)
   app$wait_for_idle()
   
   # Check that Moderate Risk got adjusted

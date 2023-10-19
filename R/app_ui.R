@@ -13,7 +13,7 @@ app_ui <- function(request) {
     
     theme = app_theme(), # defined in data-raw/interanl-data.R
     
-    div(id = "raa-logo", shiny::a(img(src="www/raa-image-ug.png"), href = "https://pharmar.github.io/riskassessment/", target="_blank")),
+    div(id = "raa-logo", shiny::a(img(src="www/raa-alt-image-lt-ug2.png"), href = "https://pharmar.github.io/riskassessment/", target="_blank")),
     
     tabsetPanel(
       id = "apptabs",
@@ -67,7 +67,19 @@ app_ui <- function(request) {
               tabPanel(
                 id = "src_explorer_id",
                 title = "Source Explorer",
-                mod_pkg_explorer_ui("pkg_explorer")
+                br(),
+                selectInput("explorer_type", NULL,
+                            choices = c("Package Browser" = "fb",
+                                        "Function Explorer" = "fe")) %>%
+                  tagAppendAttributes(class = "metric_select"),
+                conditionalPanel(
+                  "input.explorer_type == 'fb'",
+                  mod_pkg_explorer_ui("pkg_explorer")
+                ),
+                conditionalPanel(
+                  "input.explorer_type == 'fe'",
+                  mod_code_explorer_ui("code_explorer")
+                )
               ),
               tabPanel(
                 id = "reportPreview_tab_id",
