@@ -98,7 +98,7 @@ createCard <- function(title, desc, value, score = "NULL",
   card_style <- "max-width: 400px; max-height: 250px; padding-left: 5%; padding-right: 5%;" 
   auto_font_out <- auto_font(value, txt_max = val_max_nchar,
                              size_min = .85, size_max = 1.5)
-  body_p_style = glue::glue('font-size: {auto_font_out}vw')
+  body_p_style = glue::glue('font-size: {auto_font_out}vw;')
       
   
   # build the html card
@@ -138,7 +138,7 @@ createCard <- function(title, desc, value, score = "NULL",
               h5(class="card-header bg-transparent", style="font-size: 1vw",
                  title),
               div(class="card-body text-info",
-                  p(class="card-title", style=body_p_style, value))),
+                  p(class="card-title", style=c(body_p_style, if (!is_url) "white-space: pre-wrap;"), value))),
           div(class="card-footer bg-transparent", desc)
       )
   )
