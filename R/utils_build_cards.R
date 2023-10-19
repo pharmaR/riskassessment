@@ -16,8 +16,8 @@ metric_gauge <- function(score) { # could add id arg here
                      if(toupper(score) %in% c("NA", "NULL")) "NA" else {
                        # flip the label display of the score to mimic the package score...
                        HTML(case_when(
-                         round(as.numeric(score), 2) == 0 ~ "1 &#10060;",
-                         round(as.numeric(score), 2) == 1 ~ "0 <span style='color:#009000;'>&#10004;</span>",
+                         round(as.numeric(score), 2) == 0 ~ "1 <span style='color:#FF765B; font-family:FontAwesome; text-shadow:-1px 0 #777, 0 1px #777, 1px 0 #777, 0 -1px #777;'>&#10060;</span>",
+                         round(as.numeric(score), 2) == 1 ~ "0 <span style='color:#9CFF94; font-family:FontAwesome; text-shadow:-1px 0 #777, 0 1px #777, 1px 0 #777, 0 -1px #777;'>&#10004;</span>",
                          TRUE ~ as.character(round(1 - as.numeric(score), 2))
                        ))
                      }
