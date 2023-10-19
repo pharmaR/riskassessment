@@ -211,7 +211,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                                 "border-radius" = "4px",
                                 "padding-right" = "4px",
                                 "font-weight" = "bold",
-                                "color" = ifelse(x %in% decision_lst, get_text_color(get_colors(golem::get_golem_options("assessment_db_name"))[.x]), "inherit"),
+                                "color" = ifelse(x %in% decision_lst, get_text_color(get_colors(golem::get_golem_options("assessment_db_name"))[x]), "inherit"),
                                 "background-color" = 
                                   ifelse(x %in% decision_lst,
                                          glue::glue("var(--{risk_lbl(x, type = 'attribute')}-color)"),
