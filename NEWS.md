@@ -1,22 +1,29 @@
-# riskassessment (development version)
-* Fixed tests showing "Package Downloads" community usage card as non-metric (#621)
-* Adding "Suggests" pkgs to Dependencies tab (#624)
-* Migrated from `{jsTreeR}` to `{shinyTree}` (#585)
-* Fix bug with the logo's hyperlink not functioning in the expected zone (#633)
-* Summarize Package Dependencies (#618)
-* Integrated the function explorer provided by our GSK contributors (#498)
-* Remove suggests from riskcalc weights table (#646)
-* Added correct remotes reference in `DESCRIPTION` file for pharmar/riskmetric & rstudio/chromote
-* Updated `{shinytest2}` and `{chromote}` to more recent versions for testing
+# riskassessment 3.0.0
+
+### Enhancements
+* Added "Suggests" pkgs to Dependencies tab (#624)
+* Summarized Package Dependencies (#618)
+* Integrated the 'Function Explorer' to offer users function-level browsing of source code, unit testing, and automatic rendering of help documentation (#498)
 * Started showing `metric_score`s for each assessment's card, using an html meter (#634)
-* Removed some unneeded/unused dependencies
 * Added default `{DT}` based filter to Database Overview tab (#586)
-* Allow user to create decision automation rules for individual metrics (#483)
-* Add checkbox to databaseView to select all packages for reportDownload handler (#649)
-* Build Report Updates (#526)
+* Allowed users to create decision automation rules for individual metrics (#483)
+* Added checkbox to databaseView to select all packages for reportDownload handler (#649)
+* Allowed users to identify and store preferred elements to include in downloaded reports (#526)
 * Add "Explore Metrics" button to Uploaded Pkgs Summary tab on Upload Packages tab (#653)
-* Add comment module to the Function Explorer (#643)
+* Added comment module to the Function Explorer (#643)
 * Made color palette used through the app even more colorblind-friendly and created lighter "User Guide" logo (#654)
+
+### Squashed Bugs
+* Fixed tests showing "Package Downloads" community usage card as non-metric (#621)
+* Fixed bug with the logo's hyperlink not functioning in the expected zone (#633)
+* Removed suggests from riskcalc weights table (#646)
+* Forced new lines in card paragraphs (#671)
+
+### For Devs
+* Migrated from `{jsTreeR}` to `{shinyTree}` (#585)
+* Removed some unneeded/unused dependencies
+* Updated `{shinytest2}` and `{chromote}` to more recent versions for testing
+* Added correct remotes reference in `DESCRIPTION` file for pharmar/riskmetric & rstudio/chromote
 
 # riskassessment 2.0.0
 
