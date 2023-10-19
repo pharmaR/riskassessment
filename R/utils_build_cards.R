@@ -344,6 +344,37 @@ build_dep_cards <- function(data, loaded, toggled){
 }
 
 
+# # test data fro build_db_cards()
+# data <- structure(list(
+#   name = c("zoo", "xts", "vcd", "tidyverse", "tidyr", 
+#           "tidymodels", "testthat", "stringr", "sp", "shiny", "samplesizeCMH", 
+#           "roxygen2", "riskmetric", "rgl", "purrr", "odbc", "editData", 
+#           "dplyr", "AalenJohansen", "A3"), 
+#   date_added = structure(c(19649, 
+#         19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 
+#         19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 
+#         19649), class = "Date"),
+#   version = c("1.8-12", "0.13.1", "1.4-11", 
+#        "2.0.0", "1.3.0", "1.1.1", "3.2.0", "1.5.0", "2.1-1", "1.7.5.1", 
+#        "0.0.0", "7.2.3", "0.2.3", "1.2.1", "1.0.2", "1.3.5", "0.1.8", 
+#        "1.1.3", "1.0", "1.0.0"),
+#   score = c(0.43, 0.21, 0.55, 0.25, 0.29, 0.29, 0.26, 0.25, 0.32, 0.34, 0.53,
+#             0.29, 0.43, 0.24, 0.24, 0.36, 0.4, 0.27, 0.76, 0.74),
+#   decision = structure(c(3L, 2L, 3L, 2L,2L, 2L, 2L, 2L, 2L, 3L, 3L,
+#                          2L, 3L, 2L,2L, 3L, 3L, 2L, 1L, 1L
+#        ), levels = c("High Risk", "Low Risk", "Medium Risk"), class = "factor"), 
+#  decision_by = structure(c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 
+#        1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L), levels = "Auto Assigned", class = "factor"), 
+#  decision_date = structure(c(19649, 19649, 19649, 19649, 19649, 
+#        19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 
+#        19649, 19649, 19649, 19649, 19649, 19649), class = "Date"), 
+#  last_comment = structure(c(1697709264, 1697709291, 1697709318, 
+#       1697709337, 1697709375, 1697709397, 1697709433, 1697709457, 
+#       1697709489, 1697709547, 1697706022, 1697709582, 1697709624, 
+#       1697709670, 1697709703, 1697709726, 1697706095, 1697706073, 
+#       1697708816, 1697708016), class = c("POSIXct", "POSIXt"), tzone = "UTC")),
+#  class = "data.frame", row.names = c(NA, -20L))
+
 #' The 'Build Database Cards' function
 #' 
 #' @param data a data.frame
@@ -412,10 +443,11 @@ build_db_cards <- function(data){
   #   decision = c("-","-","-")
   # ) %>%
   # mutate(decision = factor(decision, levels = c("Low Risk", "Medium Risk", "High Risk")))
-  
+
   decision_cat_rows <-
     data %>%
     filter(decision != "-") %>%
+    mutate(decision = factor(decision, levels = get_db_config("decisions")[["categories"]])) %>% 
     group_by(decision) %>%
     summarize(decision_cat_sum = n()) %>%
     ungroup() %>%
