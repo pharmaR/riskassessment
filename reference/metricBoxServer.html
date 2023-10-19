@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">riskassessment</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9014</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,10 +70,11 @@
   <span class="va">title</span>,
   <span class="va">desc</span>,
   <span class="va">value</span>,
+  score <span class="op">=</span> <span class="st">"NULL"</span>,
   is_perc <span class="op">=</span> <span class="cn">FALSE</span>,
   is_url <span class="op">=</span> <span class="cn">FALSE</span>,
   succ_icon <span class="op">=</span> <span class="st">"check"</span>,
-  unsucc_icon <span class="op">=</span> <span class="st">"times"</span>,
+  unsucc_icon <span class="op">=</span> <span class="st">"triangle-exclamation"</span>,
   icon_class <span class="op">=</span> <span class="st">"text-success"</span>,
   type <span class="op">=</span> <span class="st">"information"</span>
 <span class="op">)</span></code></pre></div>
@@ -89,6 +90,8 @@
 <dd><p>description.</p></dd>
 <dt>value</dt>
 <dd><p>metric value.</p></dd>
+<dt>score</dt>
+<dd><p>metric score, as a character value</p></dd>
 <dt>is_perc</dt>
 <dd><p>logical is the value is a percentage?</p></dd>
 <dt>is_url</dt>

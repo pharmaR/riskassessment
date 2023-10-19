@@ -14,7 +14,7 @@ missing, and initializes the credentials database if missing."><!-- mathjax --><
     
     <a class="navbar-brand me-2" href="../index.html">riskassessment</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">2.0.0.9014</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,7 +71,7 @@ missing, and initializes the credentials database if missing.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">initialize_raa</span><span class="op">(</span><span class="va">assess_db</span>, <span class="va">cred_db</span>, <span class="va">decision_cat</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">initialize_raa</span><span class="op">(</span><span class="va">assess_db</span>, <span class="va">cred_db</span>, <span class="va">configuration</span><span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -80,8 +80,8 @@ missing, and initializes the credentials database if missing.</p>
 <dd><p>A string denoting the name of the assessment database.</p></dd>
 <dt>cred_db</dt>
 <dd><p>A string denoting the name of the credentials database.</p></dd>
-<dt>decision_cat</dt>
-<dd><p>A character vector denoting the decision categories in ascending order of risk</p></dd>
+<dt>configuration</dt>
+<dd><p>a list dictating the configuration of the databases</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>

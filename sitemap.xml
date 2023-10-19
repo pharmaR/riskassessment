@@ -79,6 +79,9 @@
     <loc>https://pharmar.github.io/riskassessment/reference/build_db_cards.html</loc>
   </url>
   <url>
+    <loc>https://pharmar.github.io/riskassessment/reference/build_dep_cards.html</loc>
+  </url>
+  <url>
     <loc>https://pharmar.github.io/riskassessment/reference/communityMetricsServer.html</loc>
   </url>
   <url>
@@ -140,6 +143,9 @@
   </url>
   <url>
     <loc>https://pharmar.github.io/riskassessment/reference/metricGridUI.html</loc>
+  </url>
+  <url>
+    <loc>https://pharmar.github.io/riskassessment/reference/metric_gauge.html</loc>
   </url>
   <url>
     <loc>https://pharmar.github.io/riskassessment/reference/packageDependenciesServer.html</loc>
