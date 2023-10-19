@@ -1,4 +1,6 @@
-# riskassessment (development version)
+# riskassessment 3.0.0
+
+### Enhancements
 * Fixed tests showing "Package Downloads" community usage card as non-metric (#621)
 * Adding "Suggests" pkgs to Dependencies tab (#624)
 * Migrated from `{jsTreeR}` to `{shinyTree}` (#585)
@@ -17,6 +19,7 @@
 * Add "Explore Metrics" button to Uploaded Pkgs Summary tab on Upload Packages tab (#653)
 * Add comment module to the Function Explorer (#643)
 * Made color palette used through the app even more colorblind-friendly and created lighter "User Guide" logo (#654)
+* Force new lines in card paragraphs (#671)
 
 # riskassessment 2.0.0
 
