@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# The `{riskassessment}` application <a href='https://pharmar.github.io/riskassessment/'><img src="man/figures/hex-riskassessment-aspconfig.png" align="right" height="172" style="float:right; height:172px;"/></a>
+# The `{riskassessment}` application <a href='https://bit.ly/raa_docs'><img src="man/figures/hex-riskassessment-aspconfig.png" align="right" height="172" style="float:right; height:172px;"/></a>
 
 <!-- badges: start -->
 
@@ -18,13 +18,13 @@ status](https://codecov.io/gh/pharmaR/riskassessment/branch/master/graph/badge.s
 the utility of the [`riskmetric`](https://github.com/pharmaR/riskmetric)
 package within an organizational context. We’re honored to announce this
 app was recently awarded the title for “Best App” at [Shiny Conf
-2023](https://youtu.be/gsWc_oSTb9c) (see [Recognition](#recognition)
+2023](https://bit.ly/raa_shinyconf23) (see [Recognition](#recognition)
 section below).
 
 <br>
 
 <center>
-<a href="https://rinpharma.shinyapps.io/riskassessment/"><img src="man/figures/demo_riskassessment.png" alt="{riskassessment} app" width="25%"></a>
+<a href="https://bit.ly/demo_raa"><img src="man/figures/demo_riskassessment.png" alt="{riskassessment} app" width="25%"></a>
 </center>
 
 <br>
@@ -72,11 +72,11 @@ adoption of R within a biopharmaceutical regulatory setting.
 
 If you are new to using the `riskassessment` app, welcome! We’d highly
 encourage you to start exploring the [demo
-version](https://rinpharma.shinyapps.io/riskassessment/) of the app
-currently deployed on shinyapps.io. There, you’ll find a number of
-pre-loaded packages just waiting to be assessed. Hands on experience
-will help you become familiar with the general layout of the app as you
-poke around and explore.
+version](https://bit.ly/demo_raa) of the app currently deployed on
+shinyapps.io. There, you’ll find a number of pre-loaded packages just
+waiting to be assessed. Hands on experience will help you become
+familiar with the general layout of the app as you poke around and
+explore.
 
 With that said, you should immediately recognize that the app requires
 authentication, since it’s intended use is within an organization. There
@@ -93,7 +93,7 @@ new credentials.
 
 If you want a quick overview of the project and demo of the application,
 we highly recommend watching the following video walk through [from
-Shiny Conf 2023](https://youtu.be/gsWc_oSTb9c). At the conference,
+Shiny Conf 2023](https://bit.ly/raa_shinyconf23). At the conference,
 `riskassessment` was voted “best application” by conference attendees!
 The app was also featured at [Rstudio::Global
 2021](https://www.youtube.com/watch?v=4uVQXHpNmUQ).
@@ -101,7 +101,7 @@ The app was also featured at [Rstudio::Global
 <br>
 
 <center>
-<a href="https://youtu.be/gsWc_oSTb9c" target="_blank">
+<a href="https://bit.ly/raa_shinyconf23" target="_blank">
 <img src="man/figures/raa_shinyConf23.png" alt="riskassessment at shinyConf 2023" width="75%">
 </a>
 </center>
@@ -151,13 +151,12 @@ to your needs.
 
 ### User Guides and User Feedback
 
-<a href='https://pharmar.github.io/riskassessment/'><img src="man/figures/raa-image-ug.png" align="right" height="120" style="float:right; padding-right: 30px; height:120px;"/></a>
+<a href='https://bit.ly/raa_docs'><img src="man/figures/raa-image-ug.png" align="right" height="120" style="float:right; padding-right: 30px; height:120px;"/></a>
 
 We’re constantly improving the app and it’s documentation. Please
 explore the user guides that have been developed to date, available on
-the `riskassessment` [documentation
-site](https://pharmar.github.io/riskassessment/). Be sure to read the
-[‘Get
+the `riskassessment` [documentation site](https://bit.ly/raa_docs). Be
+sure to read the [‘Get
 Started’](https://pharmar.github.io/riskassessment/articles/riskassessment.html)
 tab and perhaps [another article or
 two](https://pharmar.github.io/riskassessment/articles/index.html)!
@@ -167,7 +166,7 @@ you encounter a problem / bug within the app, we recommend [opening a
 new issue](https://github.com/pharmaR/riskassessment/issues/new) on
 GitHub and we’ll address it promptly.
 
-<a href='https://forms.gle/ATiyNH9y25VeD2gdA'><img src="man/figures/google_forms_logo.png" align="right" height="72" style="float:right; height:172px;"/></a>
+<a href='https://bit.ly/raa_survey'><img src="man/figures/google_forms_logo.png" align="right" height="72" style="float:right; height:172px;"/></a>
 
 We also want to align with our users on big picture, strategic topics.
 Specifically, we want to hear from groups who’ve built (or are currently
@@ -180,15 +179,14 @@ calculate a package’s risk score. We’d also love to learn if companies
 leverage certain risk score thresholds to make GxP environment inclusion
 (or exclusion) decisions for a package. To facilitate the gathering of
 this information, we’ve created an [incredibly brief
-questionnaire](https://forms.gle/ATiyNH9y25VeD2gdA) to let us know where
-you’re at.
+questionnaire](https://bit.ly/raa_survey) to let us know where you’re
+at.
 
 #### Deployment
 
 As you might expect, certain deployment environments offer persistent
 storage and others do not. For example, shinyapps.io does not. That
-means that even our [demo
-app](https://rinpharma.shinyapps.io/riskassessment/) that’s hosted on
+means that even our [demo app](https://bit.ly/demo_raa) that’s hosted on
 shinyapps.io contains a a package database that can’t be permanently
 altered. That’s not advantageous since an organization needs to
 continually add new packages, publish comments, and make decisions about
@@ -211,7 +209,7 @@ In March 2023, Appsilon hosted the 2nd annual [Shiny
 Conf](https://shinyconf.appsilon.com/) which was fully virtual, boasting
 approximately 4k registrants. Aaron Clark, package maintainer and R
 Validation Hub Executive member,
-[presented](https://youtu.be/gsWc_oSTb9c) the `{riskassessment}` app
+[presented](https://bit.ly/raa_shinyconf23) the `{riskassessment}` app
 work in the “Shiny Showcase” among 20+ other app submissions. At the end
 of the conference, `{riskassessment}` was awarded the title of “Best
 App” by popular vote.
@@ -219,7 +217,7 @@ App” by popular vote.
 <br>
 
 <center>
-<a href="https://rinpharma.shinyapps.io/riskassessment/"><img src="man/figures/best_app_banner.png" alt="Shiny Conf 2023 winner" width="75%"></a>
+<a href="https://bit.ly/demo_raa"><img src="man/figures/best_app_banner.png" alt="Shiny Conf 2023 winner" width="75%"></a>
 </center>
 
 <br>
