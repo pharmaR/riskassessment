@@ -16,6 +16,7 @@
 * Build Report Updates (#526)
 * Add "Explore Metrics" button to Uploaded Pkgs Summary tab on Upload Packages tab (#653)
 * Add comment module to the Function Explorer (#643)
+* Made color palette used through the app even more colorblind-friendly and created lighter "User Guide" logo (#654)
 
 # riskassessment 2.0.0
 
