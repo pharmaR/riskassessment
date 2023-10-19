@@ -225,8 +225,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
                                 display = "block",
                                 "border-radius" = "4px",
                                 "padding-right" = "4px",
-                                "font-weight" = "bold",
-                                "color" = "white",
+                                "color" = "#000000",
                                 "order" = x,
                                 "background-color" = formattable::csscolor(
                                   setColorPalette(100)[round(as.numeric(x)*100)]

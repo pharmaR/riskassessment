@@ -29,6 +29,7 @@ mod_decision_automation_ui <- function(id){
 
 [risk={lbl}] .irs--shiny .irs-single {{
   background-color: var(--{lbl}-color);
+  color: #55595C;
 }}")
     } else if (.y == dec_num) {
       glue::glue("
@@ -46,6 +47,7 @@ mod_decision_automation_ui <- function(id){
 
 [risk={lbl}] .irs--shiny .irs-single {{
   background-color: var(--{lbl}-color);
+  color: #55595C;
 }}")
     } else {
       glue::glue("
@@ -58,6 +60,7 @@ mod_decision_automation_ui <- function(id){
 [risk={lbl}] .irs--shiny .irs-from,
 [risk={lbl}] .irs--shiny .irs-to {{
   background-color: var(--{lbl}-color);
+  color: #55595C;
 }}")
     }
   }) 
@@ -495,8 +498,7 @@ mod_decision_automation_server <- function(id, user, credentials){
               style = x ~ formattable::style(display = "block",
                                              "border-radius" = "4px",
                                              "padding-right" = "4px",
-                                             "font-weight" = "bold",
-                                             "color" = "white",
+                                             "color" = purrr::map_chr(x, get_text_color),
                                              "background-color" = x))
           )),
         colnames = c("Category", "Color", "Lower Bound", "Upper Bound"),
@@ -695,7 +697,6 @@ mod_decision_automation_server <- function(id, user, credentials){
                 style = x ~ formattable::style(display = "block",
                                                "border-radius" = "4px",
                                                "padding-right" = "4px",
-                                               "font-weight" = "bold",
                                                "color" = purrr::map_chr(x, get_text_color),
                                                "background-color" = x)),
               new_color = formattable::formatter(
@@ -703,7 +704,6 @@ mod_decision_automation_server <- function(id, user, credentials){
                 style = x ~ formattable::style(display = "block",
                                                "border-radius" = "4px",
                                                "padding-right" = "4px",
-                                               "font-weight" = "bold",
                                                "color" = purrr::map_chr(x, get_text_color),
                                                "background-color" = x))
             )),
