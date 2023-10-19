@@ -196,7 +196,7 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   }
   
   assessment_db <- if (missing(assess_db)) get_db_config("assessment_db") else assess_db
-  credentials_db <- if (missing(cred_db)) get_db_config("credential_db") else cred_db
+  credentials_db <- if (missing(cred_db)) golem::get_golem_options('credentials_db_name') else cred_db
   
   if (is.null(assessment_db) || typeof(assessment_db) != "character" || length(assessment_db) != 1 || !grepl("\\.sqlite$", assessment_db))
     stop("assess_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
