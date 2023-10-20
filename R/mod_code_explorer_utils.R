@@ -8,14 +8,10 @@
 #' 
 #' @noRd
 get_exported_functions <- function(pkgdir) {
-  s <- readLines(file.path(pkgdir, "NAMESPACE"))
-  sexp <- s[grepl("export", s)]
-  sexp <- gsub("^export\\((.*)\\)$", "\\1", sexp)
-  sexp <- gsub("\"", "`", sexp)
-  simp <- s[grepl("importFrom", s)]
-  simp <- gsub("^importFrom\\(.+,\\s*(.*)\\)$", "\\1", simp)
-  simp <- gsub("\"", "`", simp)
-  sort(setdiff(sexp, simp))
+  ns <- parseNamespaceFile(basename(pkgdir), dirname(pkgdir))
+  nsexp <- ns$exports
+  nsimp <- unlist(purrr::map(ns$imports, ~ .x[-1]))
+  sort(setdiff(nsexp, nsimp))
 }
 
 #' Get Parsed Data
