@@ -108,7 +108,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
       if (rlang::is_empty(test_files())) return(HTML("No files to display"))
       req(input$test_files)
       lines <- readLines(file.path(pkgdir(), "tests", "testthat", input$test_files))
-      func_list <- unique(c(input$exported_function, gsub("`", "", input$exported_function)))
+      func_list <- c(input$exported_function, paste0("`", input$exported_function, "`"))
       highlight_index <- parse_data() %>% 
         filter(file == input$test_files & func %in% func_list) %>% 
         pull(line)
@@ -120,7 +120,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
       if (rlang::is_empty(source_files())) return(HTML("No files to display"))
       req(input$source_files)
       lines <- readLines(file.path(pkgdir(), "R", input$source_files))
-      func_list <- unique(c(input$exported_function, gsub("`", "", input$exported_function)))
+      func_list <- c(input$exported_function, paste0("`", input$exported_function, "`"))
       highlight_index <- parse_data() %>% 
         filter(file == input$source_files & func %in% func_list) %>% 
         pull(line)

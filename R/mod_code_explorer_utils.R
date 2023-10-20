@@ -49,7 +49,7 @@ get_parse_data <- function(type = c("test", "source"), pkgdir, funcnames = NULL)
       dplyr::select(type, file, func, line, token) %>% 
       dplyr::distinct()
     if (!is.null(funcnames)) {
-      funcnames <- unique(c(funcnames, gsub("`", "", funcnames)))
+      funcnames <- unique(c(funcnames, paste0("`", funcnames, "`")))
       d <- d %>% dplyr::filter(func %in% funcnames)
     }
     d
@@ -65,7 +65,7 @@ get_parse_data <- function(type = c("test", "source"), pkgdir, funcnames = NULL)
 #' 
 #' @noRd
 get_test_files <- function(funcname, parse_data) {
-  func_list <- unique(c(funcname, gsub("`", "", funcname)))
+  func_list <- c(funcname, paste0("`", funcname, "`"))
   parse_data %>%
     dplyr::filter(type == "test",
                   func %in% func_list) %>% 
@@ -82,7 +82,7 @@ get_test_files <- function(funcname, parse_data) {
 #' 
 #' @noRd
 get_source_files <- function(funcname, parse_data) {
-  func_list <- unique(c(funcname, gsub("`", "", funcname)))
+  func_list <- c(funcname, paste0("`", funcname, "`"))
   parse_data %>%
     dplyr::filter(type == "source", 
                   func %in% func_list) %>% 
