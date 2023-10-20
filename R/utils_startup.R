@@ -84,7 +84,7 @@ create_credentials_db <- function(db_name, admin_role = ""){
     # password will automatically be hashed
     admin = TRUE,
     expire = as.character(get_Date()),
-    role = c("admin", "lead", "reviewer", "demo_viewer"),
+    role = c("admin", "lead", "reviewer", "viewer"),
     stringsAsFactors = FALSE
   )
   
