@@ -15,4 +15,8 @@ riskassessment::run_app(
     <span style='text-transform:none;'><u>demo_lead</u></span> with password <u><span style='text-transform:none;'>Lead@1</span></u> above.
   <br><br>
   To run as REVIEWER, type username
-    <span style='text-transform:none;'><u>demo_reviewer</u></span> with password <u><span style='text-transform:none;'>Reviewer@1</span></u> above.")) 
+    <span style='text-transform:none;'><u>demo_reviewer</u></span> with password <u><span style='text-transform:none;'>Reviewer@1</span></u> above.
+    <br><br>
+  To run as VIEWER, type username
+    <span style='text-transform:none;'><u>demo_viewer</u></span> with password <u><span style='text-transform:none;'>Viewer@1</span></u> above.")
+  ) 
