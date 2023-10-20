@@ -79,8 +79,8 @@ create_credentials_db <- function(db_name, admin_role = ""){
   
   # Init the credentials table for credentials database
   credentials <- data.frame(
-    user = c("ADMIN", "demo_admin", "demo_nonadmin"),
-    password = c("QWERTY1", "Admin@1", "Nonadmin@1"),
+    user = c("demo_admin", "demo_lead", "demo_reviewer", "demo_viewer"),
+    password = c("Admin@1", "Lead@1", "Reviewer@1", "Viewer@1"),
     # password will automatically be hashed
     admin = TRUE,
     expire = as.character(get_Date()),

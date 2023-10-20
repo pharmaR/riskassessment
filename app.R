@@ -3,6 +3,7 @@
 # Or use the blue button on top of this file
 
 Sys.setenv(GOLEM_CONFIG_ACTIVE = "demo")
+options(shiny.fullstacktrace = FALSE)
 pkgload::load_all(export_all = FALSE,helpers = FALSE,attach_testthat = FALSE)
 options( "golem.app.prod" = TRUE)
 riskassessment::run_app(
