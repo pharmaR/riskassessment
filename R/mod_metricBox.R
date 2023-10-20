@@ -13,6 +13,7 @@ metricBoxUI <- function(id) {
 #' @param title title.
 #' @param desc description.
 #' @param value metric value.
+#' @param score metric score, as a character value
 #' @param is_perc logical is the value is a percentage?
 #' @param is_url  logical is the value a url
 #' @param succ_icon icon used if is_true.
@@ -26,10 +27,11 @@ metricBoxUI <- function(id) {
 #' @importFrom glue glue
 #' @keywords internal
 #'
-metricBoxServer <- function(id, title, desc, value,
+metricBoxServer <- function(id, title, desc, value, score = "NULL",
                             is_perc = FALSE, is_url = FALSE,
-                            succ_icon = "check", unsucc_icon = "times",
-                            icon_class = "text-success", type = "information") {
+                            succ_icon = "check", unsucc_icon = "triangle-exclamation",
+                            icon_class = "text-success", type = "information"
+                            ) {
   moduleServer(id, function(input, output, session) {
 
     metric <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
@@ -40,10 +42,13 @@ metricBoxServer <- function(id, title, desc, value,
 
       # A str length of 41 chars tends to wrap to two rows and look quite nice
       val_max_nchar <- 31
-      is_true <- !(value %in% c(0, "pkg_metric_error", "NA", "", "FALSE", NA))
-
+      # is_true <- !(value %in% c("pkg_metric_error", "NA", "", "FALSE", NA))
+      
+      
+      # logic for assessment values
       if (value %in% c("pkg_metric_error", "NA", NA)) {
         value <- "Not found"
+        # if(score != "NULL") {score <- "NA"} # Shouldn't be needed
       } else if (is_perc) {
         value <- glue::glue("{round(as.numeric(value), 1)}%")
       } else if (is_url) {
@@ -56,17 +61,7 @@ metricBoxServer <- function(id, title, desc, value,
         value <- ifelse(value == "TRUE", "Yes", "No")
       }
 
-      icon_name <- succ_icon
-      if (!is_true) {
-        icon_name <- unsucc_icon
-        icon_class <- "text-warning"
-      }
-
-      if (is_perc) {
-        icon_name <- "percent"
-        icon_class <- "text-info"
-      }
-
+      
       # add asterisk to title if it is not in the metric table
       # skip databaseView cards
       title = if_else(stringr::str_extract(session$ns(id), "\\w+") != "databaseView" 
@@ -78,18 +73,42 @@ metricBoxServer <- function(id, title, desc, value,
         txt_max = val_max_nchar,
         size_min = .85, size_max = 1.5
       ) # , num_bins = 3
-      body_p_style <- glue::glue("font-size: {auto_font_out}vw")
-
+      
+      body_p_style <- glue::glue("font-size: {auto_font_out}vw;")
+      
+      # build the html card
+      if(score == "NULL" | # usually for non-riskmetric cards (like on comm or database tab)
+         # riskmetric cards, both value and score must be missing to show an icon
+         # if value is missing, but score isn't, then we need to show a meter
+         # if score is missing, but value isn't, we need to show an NA meter
+         (score == "NA" | is.na(score)) & any(value %in% "Not found")) { # use icon version
+        
+        # maintain icon logic
+        # succ_icon should only show up for non-riskmetric cards
+        icon_name <- succ_icon 
+        if (value == "Not found") { # !is_true
+          icon_name <- unsucc_icon
+          icon_class <- "text-warning"
+        }
+        
+        display_obj <- icon(icon_name,
+             class = icon_class, verify_fa = FALSE,
+             style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
+        )
+      } else { # use html version (displaying riskmetric score on a meter)
+        display_obj <- 
+          div(style = "padding-top: 30%; padding-left: 10%;",
+             metric_gauge(score = score)
+          )
+      }
+        
       html_component <- div(
         class = "card mb-3 text-center border-info", style = card_style,
         div(
           class = "row no-gutters;",
           div(
             class = "col-md-4 text-center border-info",
-            icon(icon_name,
-              class = icon_class, verify_fa = FALSE,
-              style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
-            )
+            display_obj
           ),
           div(
             class = "col-md-8",
@@ -99,12 +118,14 @@ metricBoxServer <- function(id, title, desc, value,
             ),
             div(
               class = "card-body text-info",
-              p(class = "card-title", style = body_p_style, value)
+              p(class = "card-title", style = c(body_p_style, if (!is_url) "white-space: pre-wrap;"), value)
             )
           ),
           div(class = "card-footer bg-transparent", desc)
         )
       )
+      
+      
       
       if (type == "danger" & !is.na(type)) {
         html_component %>% 

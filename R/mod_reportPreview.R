@@ -31,6 +31,7 @@ reportPreviewUI <- function(id) {
 #' @importFrom DT dataTableOutput renderDataTable
 #' @importFrom glue glue
 #' @importFrom rlang is_empty
+#' @importFrom shiny actionButton
 #' @importFrom shinyjs enable disable show hide disabled
 #' @keywords internal
 #' 
@@ -39,7 +40,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                                 downloads_plot_data, user, credentials, app_version,
                                 metric_weights) {
   if (missing(credentials))
-    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
+    credentials <- get_db_config("credentials")
   
   moduleServer(id, function(input, output, session) {
     
@@ -62,17 +63,21 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             br(), br(),
             
             div(id = "dwnld_rp",
-              h5("Report Configurations"),
+              fluidRow(
+                  column(4, h5("Report Configurations"),),
+                  column(3, mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)),
+                  column(3, shiny::actionButton(NS(id, "downloadHandler-store_prefs"), "Store Preferences", 
+                                   icon = icon("fas fa-floppy-disk", class = "fa-reqular", lib = "font-awesome")))
+              ),
               br(),
               fluidRow(
                 column(4,
-                  mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
-                  mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
+                  mod_downloadHandler_filetype_ui(NS(id, "downloadHandler"))
                 ),
                 column(8, 
                    mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
                  )
-              )
+              ),
             ),
             
             br(), br(),
@@ -92,12 +97,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       }
     })
     
-    
-    
-    
-    
-    
-    
+
     # return vector of elements to include in the report
     report_includes <- mod_downloadHandler_include_server("downloadHandler")
     
@@ -121,7 +121,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
               if("Report Author" %in% report_includes())
                 HTML(glue::glue("<span class='h4 txtasis'>Author (Role): {user$name} ({user$role})</span><br>")),
               if("Report Date" %in% report_includes())
-                HTML(glue::glue("<span class='h4 txtasis'>Report Date: {format(Sys.time(), '%B %d, %Y')}</span><br>")),
+                HTML(glue::glue("<span class='h4 txtasis'>Report Date: {format(get_time(), '%B %d, %Y')}</span><br>")),
               
               br(),
               
@@ -181,9 +181,24 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                     column(width = 12,
                            h5("Source Explorer",
                               style = "text-align: center; padding-bottom: 50px;"),
-                           showHelperMessage(message = "Source code visals not available."),
-                           if('Source Explorer Comments' %in% report_includes())
-                             viewCommentsUI(NS(id, 'se_comments')) else ""
+                           showHelperMessage(message = "Source code visuals not available."),
+                           viewCommentsUI(NS(id, 'se_comments'))
+                    )
+                  )
+                )
+              } else "",
+              
+              
+              if(any(c('Function Explorer Comments') %in% report_includes())) {
+                tagList(
+                  br(), br(),
+                  hr(),
+                  fluidRow(
+                    column(width = 12,
+                           h5("Function Explorer",
+                              style = "text-align: center; padding-bottom: 50px;"),
+                           showHelperMessage(message = "Function code visuals not available."),
+                           viewCommentsUI(NS(id, 'fe_comments'))
                     )
                   )
                 )
@@ -370,6 +385,17 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                        pkg_name = selected_pkg$name,
                        label = 'Source Explorer Comments')
     
+    # grab comments here since it's not being passed as an arg to module
+    fe_comments <- eventReactive(list(selected_pkg$name()), {
+      get_fe_comments(selected_pkg$name()) # see utils
+    })
+    
+    # View Comm Usage comments.
+    viewCommentsServer(id = 'fe_comments',
+                       comments = fe_comments, # not a arg
+                       pkg_name = selected_pkg$name,
+                       label = 'Function Explorer Comments')
+    
     # Maintenance metrics cards.
     metricGridServer("mm_metricGrid", metrics = maint_metrics)
     
@@ -442,7 +468,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       tagList(
         h5('{riskassessment} App Version:'), app_version,
         h5('riskmetric Version:'), paste0(packageVersion("riskmetric")),
-        h5('Generated on:'), format(Sys.time(), usetz = TRUE)
+        h5('Generated on:'), format(get_time(), usetz = TRUE)
       )
     })
 

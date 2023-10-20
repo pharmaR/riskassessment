@@ -24,11 +24,11 @@ run_app <- function(
 ) {
   # Pre-process some run-app inputs
   if(is.null(app_ver)) app_ver <- paste0(packageVersion("riskassessment"))
-  assessment_db_name <- get_golem_config('assessment_db', file = app_sys("db-config.yml"))
+  assessment_db_name <- get_db_config('assessment_db')
   if(is.null(assessment_db_name)) assessment_db_name <- "database.sqlite"
-  credentials_db_name <- get_golem_config('credential_db', file = app_sys("db-config.yml"))
+  credentials_db_name <- get_db_config('credential_db')
   if(is.null(credentials_db_name)) credentials_db_name <- "credentials.sqlite"
-  decisions <- get_golem_config('decisions', file = app_sys("db-config.yml"))
+  decisions <- get_db_config('decisions')
   decision_categories <- if(is.null(decisions) || is.null(decisions$categories)) c("Low Risk", "Medium Risk", "High Risk") else decisions$categories
   
   if(is.null(login_note)) {
@@ -41,6 +41,25 @@ run_app <- function(
     } else if(fa_v == '0.4.0') {
       login_note <- HTML(glue::glue("<em>Note:</em> HTML reports will not render with {{fontawesome}} v0.4.0. You currently have v{fa_v} installed. If the report download fails, please install a more stable version. We recommend v.0.5.0 or higher."))
     }
+  }
+  
+  # Note that this overrides other credential set up
+  login_creds <- NULL
+  pre_auth_user <- NULL
+  if (isFALSE(getOption("golem.app.prod"))) {
+    arg_lst <- as.list(match.call())
+  
+    login_creds <- list(user_id = "",
+                        user_pwd = "cxk1QEMYSpYcrNB")
+  if (!is.null(arg_lst$pre_auth_user)) {
+    pre_auth_user <- arg_lst$pre_auth_user
+    if (isTRUE(pre_auth_user) || pre_auth_user == "admin") {
+      login_creds$user_id <- "admin"
+    } else {
+      login_creds$user_id <- pre_auth_user
+    }
+    credentials_db_name <- gsub("\\.sqlite", "_dev\\.sqlite", credentials_db_name)
+  }
   }
   
   # Run the app
@@ -56,6 +75,8 @@ run_app <- function(
     golem_opts = list(app_version = app_ver,
                       credentials_db_name = credentials_db_name,
                       assessment_db_name = assessment_db_name,
+                      pre_auth_user = pre_auth_user,
+                      login_creds = login_creds,
                       decision_categories = decision_categories,
                       ...)
   )

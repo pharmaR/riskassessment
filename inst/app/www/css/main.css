@@ -26,11 +26,10 @@
 
 #raa-logo img {
   position: absolute;
-  top: 0px;
-  right: 0px;
-  padding-top: 2.75em;
-  padding-right: .75em;
-  height: 9em;
+  top: 2.75em;
+  right: .75em;
+  height: 6.25em;
+  z-index: 1;
 }
 
 #upload_package-rem_pkg_btn {
@@ -58,3 +57,37 @@ box-shadow: 0 0 0 0.25rem rgb(51, 153, 255, 50%);
   opacity: 50%;
   pointer-events: none;
 }
+
+.shiny-progress-notification .progress-bar {
+  --bs-progress-bar-bg-lighter: color-mix(in srgb, var(--bs-progress-bar-bg), #eee 40%);
+  background-color: unset;
+  border-radius: 1em;
+  background-image: linear-gradient(
+    -45deg, 
+    var(--bs-progress-bar-bg) 25%, 
+    var(--bs-progress-bar-bg-lighter) 25%, 
+    var(--bs-progress-bar-bg-lighter) 50%, 
+    var(--bs-progress-bar-bg) 50%,
+    var(--bs-progress-bar-bg) 75%,
+    var(--bs-progress-bar-bg-lighter) 75%,
+    var(--bs-progress-bar-bg-lighter)
+  );
+  background-size: 50px 50px;
+  animation: animatedBackground 2s linear infinite;
+}
+
+
+
+@keyframes animatedBackground {
+  0% { background-position: 0 0; }
+  100% { background-position: 50px 50px; }
+}
+
+meter::-webkit-meter-optimum-value {background: #9CFF94;}
+meter::-webkit-meter-suboptimum-value{background:#FFD070;}
+meter::-webkit-meter-even-less-good-value{background:#FF765B;}
+
+meter::-moz-meter-bar {background: #FF765B;}  /* color of bar*/
+meter::-moz-meter-optimum-value {background: #9CFF94;} 
+meter::-moz-meter-suboptimum-value{background:#FFD070;}  
+

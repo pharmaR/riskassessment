@@ -24,3 +24,4 @@ _\.new\.png$
 ^tarballs$
 ^source$
 ^revdep
+^revdep$
