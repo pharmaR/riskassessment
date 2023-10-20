@@ -40,7 +40,7 @@ get_parse_data <- function(type = c("test", "source"), pkgdir, funcnames = NULL)
   )
   filenames <- list.files(dirpath, ".+\\.[R|r]$")
   dplyr::bind_rows(lapply(filenames, function(filename) {
-    d <- parse(file.path(dirpath, filename)) %>% 
+    d <- base::parse(file.path(dirpath, filename)) %>% 
       utils::getParseData() %>% 
       dplyr::filter(token %in% c("SYMBOL_FUNCTION_CALL", "SYMBOL", "SPECIAL"))
     d <- d %>% 
