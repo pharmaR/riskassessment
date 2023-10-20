@@ -20,13 +20,6 @@ default:
       - Low Risk
       - Medium Risk
       - High Risk
-    rules:
-      Medium Risk:
-        - .3983
-        - .6391
-      High Risk:
-        - .6391
-        - 1
 example:
   assessment_db: database_ex.sqlite
   credential_db: credentials_ex.sqlite
@@ -84,3 +77,11 @@ demo:
   metric_weights:
     covr_coverage: 0
     has_vignettes: 2
+  decisions:
+    rules:
+      Medium Risk:
+        - .3983
+        - .6391
+      High Risk:
+        - .6391
+        - 1
