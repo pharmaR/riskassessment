@@ -80,6 +80,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
     })
     
     parse_data <- eventReactive(exported_functions(), {
+      req(FALSE)
       purrr::map_dfr(
         c("test", "source"),
         ~ get_parse_data(.x, pkgdir(), exported_functions())
