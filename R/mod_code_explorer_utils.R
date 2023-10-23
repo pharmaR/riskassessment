@@ -8,14 +8,19 @@
 #' 
 #' @noRd
 get_exported_functions <- function(pkgdir) {
-  s <- readLines(file.path(pkgdir, "NAMESPACE"))
-  sexp <- s[grepl("export", s)]
-  sexp <- gsub("^export\\((.*)\\)$", "\\1", sexp)
-  sexp <- gsub("\"", "`", sexp)
-  simp <- s[grepl("importFrom", s)]
-  simp <- gsub("^importFrom\\(.+,\\s*(.*)\\)$", "\\1", simp)
-  simp <- gsub("\"", "`", simp)
-  sort(setdiff(sexp, simp))
+  nsFile <- parse(file.path(pkgdir, "NAMESPACE"), keep.source = FALSE, srcfile = NULL)
+  nsexp <- character(); nsimp <- character()
+  for (e in nsFile) {
+    switch (as.character(e[[1L]]),
+      export = {
+        nsexp <- c(nsexp, as.character(e[-1L]))
+      },
+      importFrom = {
+        nsimp <- c(nsimp, as.character(e[-c(1L, 2L)]))
+      }
+    )
+  }
+  sort(setdiff(nsexp, nsimp))
 }
 
 #' Get Parsed Data
@@ -35,25 +40,25 @@ get_exported_functions <- function(pkgdir) {
 get_parse_data <- function(type = c("test", "source"), pkgdir, funcnames = NULL) {
   type <- match.arg(type)
   dirpath <- switch (type,
-    test = file.path(pkgdir, "tests", "testthat"),
+    test = if (file.exists(file.path(pkgdir, "tests", "testthat.R"))) file.path(pkgdir, "tests", "testthat") else file.path(pkgdir, "tests"),
     source = file.path(pkgdir, "R")
   )
   filenames <- list.files(dirpath, ".+\\.[R|r]$")
   dplyr::bind_rows(lapply(filenames, function(filename) {
     d <- parse(file.path(dirpath, filename), keep.source = TRUE) %>% 
       utils::getParseData() %>% 
-      dplyr::filter(token %in% c("SYMBOL_FUNCTION_CALL", "SYMBOL", "SPECIAL"))
+      dplyr::filter(token %in% c("SYMBOL_FUNCTION_CALL", "SYMBOL", "SPECIAL", "STR_CONST"))
     d <- d %>% 
       dplyr::mutate(
         type = type,
         file = filename,
-        func = text,
+        func = dplyr::if_else(token == "STR_CONST" & substr(text, nchar(text)-2, nchar(text)-1) == "<-", substr(text, 2, nchar(text)-1), text),
         line = line1
       ) %>% 
       dplyr::select(type, file, func, line, token) %>% 
       dplyr::distinct()
     if (!is.null(funcnames)) {
-      funcnames <- unique(c(funcnames, gsub("`", "", funcnames)))
+      funcnames <- unique(c(funcnames, paste0("`", funcnames, "`")))
       d <- d %>% dplyr::filter(func %in% funcnames)
     }
     d
@@ -69,7 +74,7 @@ get_parse_data <- function(type = c("test", "source"), pkgdir, funcnames = NULL)
 #' 
 #' @noRd
 get_test_files <- function(funcname, parse_data) {
-  func_list <- unique(c(funcname, gsub("`", "", funcname)))
+  func_list <- c(funcname, paste0("`", funcname, "`"))
   parse_data %>%
     dplyr::filter(type == "test",
                   func %in% func_list) %>% 
@@ -86,7 +91,7 @@ get_test_files <- function(funcname, parse_data) {
 #' 
 #' @noRd
 get_source_files <- function(funcname, parse_data) {
-  func_list <- unique(c(funcname, gsub("`", "", funcname)))
+  func_list <- c(funcname, paste0("`", funcname, "`"))
   parse_data %>%
     dplyr::filter(type == "source", 
                   func %in% func_list) %>% 
