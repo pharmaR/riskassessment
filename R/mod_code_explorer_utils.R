@@ -40,19 +40,19 @@ get_exported_functions <- function(pkgdir) {
 get_parse_data <- function(type = c("test", "source"), pkgdir, funcnames = NULL) {
   type <- match.arg(type)
   dirpath <- switch (type,
-    test = file.path(pkgdir, "tests", "testthat"),
+    test = if (file.exists(file.path(pkgdir, "tests", "testthat.R"))) file.path(pkgdir, "tests", "testthat") else file.path(pkgdir, "tests"),
     source = file.path(pkgdir, "R")
   )
   filenames <- list.files(dirpath, ".+\\.[R|r]$")
   dplyr::bind_rows(lapply(filenames, function(filename) {
     d <- parse(file.path(dirpath, filename)) %>% 
       utils::getParseData() %>% 
-      dplyr::filter(token %in% c("SYMBOL_FUNCTION_CALL", "SYMBOL", "SPECIAL"))
+      dplyr::filter(token %in% c("SYMBOL_FUNCTION_CALL", "SYMBOL", "SPECIAL", "STR_CONST"))
     d <- d %>% 
       dplyr::mutate(
         type = type,
         file = filename,
-        func = text,
+        func = dplyr::if_else(token == "STR_CONST" & substr(text, nchar(text)-2, nchar(text)-1) == "<-", substr(text, 2, nchar(text)-1), text),
         line = line1
       ) %>% 
       dplyr::select(type, file, func, line, token) %>% 
