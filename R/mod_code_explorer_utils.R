@@ -8,9 +8,18 @@
 #' 
 #' @noRd
 get_exported_functions <- function(pkgdir) {
-  ns <- parseNamespaceFile(basename(pkgdir), dirname(pkgdir))
-  nsexp <- ns$exports
-  nsimp <- unlist(purrr::map(ns$imports, ~ .x[-1]))
+  nsFile <- parse(file.path(pkgdir, "NAMESPACE"), keep.source = FALSE, srcfile = NULL)
+  nsexp <- character(); nsimp <- character()
+  for (e in nsFile) {
+    switch (as.character(e[[1L]]),
+      export = {
+        nsexp <- c(nsexp, as.character(e[-1L]))
+      },
+      importFrom = {
+        nsimp <- c(nsimp, as.character(e[-c(1L, 2L)]))
+      }
+    )
+  }
   sort(setdiff(nsexp, nsimp))
 }
 
