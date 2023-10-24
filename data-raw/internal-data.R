@@ -89,7 +89,7 @@ color_palette <- c('#9CFF94FF', '#B3FF87FF', '#BCFF43FF', '#D8F244FF', '#F2E24BF
 
 used_privileges <- c("admin", "weight_adjust", "auto_decision_adjust", "final_decision", "revert_decision", "add_package", "delete_package", "overall_comment", "general_comment")
 
-metric_lst <- c('has_vignettes', 'has_news', 'news_current', 'has_bug_reports_url', 'has_website', 'has_maintainer', 'has_source_control', 'export_help', 'bugs_status', 'license', 'covr_coverage', 'downloads_1yr', 'dependencies', 'reverse_dependencies')
+metric_lst <- c("1"='has_vignettes', "2"='has_news', "3"='news_current', "4"='has_bug_reports_url', "5"='has_website', "6"='has_maintainer', "7"='has_source_control', "8"='export_help', "9"='bugs_status', "10"='license', "11"='dependencies', "12"='reverse_dependencies', "13"='covr_coverage', "14"='downloads_1yr')
 
 rpt_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
                  "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
