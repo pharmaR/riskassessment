@@ -76,12 +76,20 @@ demo:
   credential_db: credentials_demo.sqlite
   metric_weights:
     covr_coverage: 0
-    has_vignettes: 2
   decisions:
     rules:
+      rule_1:
+        metric: bugs_status
+        condition: ~ metric_score(.x) <= .25
+        decision: High Risk
+      rule_2:
+        metric: dependencies
+        condition: ~ length(.x) >= 30
+        decision: High Risk
       Medium Risk:
         - .3983
         - .6391
       High Risk:
         - .6391
         - 1
+        
