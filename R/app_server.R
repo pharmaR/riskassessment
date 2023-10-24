@@ -11,7 +11,13 @@ app_server <- function(input, output, session) {
   
   old <- options()
   onStop(function() {
-    unlink("source/*", recursive = TRUE)
+    # delete all files except for placeholder, that helps shinyapps.io 
+    # deployments acknowledge the source/ folder's existence
+    do.call(unlink,  list(recursive = TRUE, setdiff(
+            list.files("./source/", full.names = TRUE),
+            "./source/dummy_placeholder_folder"))
+    )
+    # unlink("source/*", recursive = TRUE)
     options(old)
     })
   options(repos = c(CRAN = "https://cran.rstudio.com"))
