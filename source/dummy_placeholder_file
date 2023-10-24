@@ -1,0 +1,11 @@
+DO NOT DELETE THIS FILE
+
+It's here for convenience so that this demo branch is easier to deploy to 
+shinyapps.io. When deploying, having any file in the source/ directory
+will ensure that this folder persistents when deployed. Thus, it aptly 
+facilitates storage of untarred pkg sources much more consistently. Without it,
+shinyapps.io will frequenly (and successfully) remove the source/ dir, which is
+not ideal.
+
+Thank you!
+{riskassessment} dev team
