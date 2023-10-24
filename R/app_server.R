@@ -11,12 +11,8 @@ app_server <- function(input, output, session) {
   
   old <- options()
   onStop(function() {
-    # delete all files except for placeholder, that helps shinyapps.io 
-    # deployments acknowledge the source/ folder's existence
-    do.call(unlink,  list(recursive = TRUE, setdiff(
-            list.files("./source/", full.names = TRUE),
-            "./source/dummy_placeholder_folder"))
-    )
+    # Exclude unlink() call for deployemnts to shinyapps.io since there is no
+    # persistent storage and the source/ folder has contents that need to persist
     # unlink("source/*", recursive = TRUE)
     options(old)
     })
