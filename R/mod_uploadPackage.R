@@ -23,7 +23,7 @@ uploadPackageUI <- function(id) {
           style = "display: flex;",
           shinyjs::disabled(
             selectizeInput(NS(id, "pkg_lst"), "Type Package Name(s)", choices = NULL, multiple = TRUE, 
-                           options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
+                           options = list(create = FALSE, showAddOptionOnCreate = FALSE, 
                                           onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_cran"), '", "load", {priority: "event"})}')))),
             actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
                          style = 'height: calc(1.5em + 1.5rem + 2px)')),
