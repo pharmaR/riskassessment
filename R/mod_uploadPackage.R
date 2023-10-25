@@ -23,7 +23,7 @@ uploadPackageUI <- function(id) {
           style = "display: flex;",
           shinyjs::disabled(
             selectizeInput(NS(id, "pkg_lst"), "Type Package Name(s)", choices = NULL, multiple = TRUE, 
-                           options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
+                           options = list(selectOnTab = TRUE, showAddOptionOnCreate = FALSE, 
                                           onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_cran"), '", "load", {priority: "event"})}')))),
             actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
                          style = 'height: calc(1.5em + 1.5rem + 2px)')),
@@ -179,7 +179,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
         id = "rem-package-group",
         style = "display: flex;",
         selectizeInput(NS(id, "rem_pkg_lst"), "Remove Package(s)", choices = NULL, multiple = TRUE,
-                       options = list(create = FALSE, showAddOptionOnCreate = FALSE, 
+                       options = list(selectOnTab = TRUE, showAddOptionOnCreate = FALSE, 
                                       onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "curr_pkgs"), '", "load", {priority: "event"})}')))),
         # note the action button moved out of alignment with 'selectizeInput' under 'renderUI'
         actionButton(NS(id, "rem_pkg_btn"), shiny::icon("trash-can")),

@@ -30,7 +30,7 @@ test_that("database creation", {
   expect_equal(names(metric), c("id", "name", "long_name", "is_perc", "is_url", "is_riskmetric", "description", "class", "weight"))
   #This expectation is to ensure that the internal data element metric_lst is
   #maintaining uniformity with the metric table
-  expect_equal(sort(metric_lst), sort(metric[metric$is_riskmetric == 1, "name"]))
+  expect_equal(metric_lst, metric[metric$is_riskmetric == 1, ] |> with(purrr::set_names(name, id)))
   pkg_metric <- DBI::dbGetQuery(con, "SELECT * FROM package_metrics")
   expect_equal(nrow(pkg_metric), 0)
   expect_equal(names(pkg_metric), c("id", "package_id", "metric_id", "value", "metric_score", "encode"))
