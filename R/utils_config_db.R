@@ -230,7 +230,7 @@ parse_rules <- function(dec_config) {
     default_config <- get_db_config("decisions", "default")[["rules"]]
     common_rules <- intersect(default_config, dec_config[["rules"]])
     if (length(common_rules) > 0) {
-      warning(glue::glue("The following rules were applied from the default configuration:\n{purrr::imap_chr(common_rules, ~ paste(.y, .x, sep = ': ')) %>% paste(collapse = '\n')}"))
+      warning(glue::glue("The following rules were applied from the default configuration:\n{purrr::imap_chr(common_rules, ~ paste(.y, paste(.x, collapse = ', '), sep = ': ')) %>% paste(collapse = '\n')}"))
     }
   }
   
