@@ -14,17 +14,18 @@
 * Made color palette used through the app even more colorblind-friendly and created lighter "User Guide" logo (#654)
 
 ### Squashed Bugs
-* Fixed tests showing "Package Downloads" community usage card as non-metric (#621)
-* Fixed bug with the logo's hyperlink not functioning in the expected zone (#633)
-* Removed suggests from riskcalc weights table (#646)
-* Forced new lines in card paragraphs (#671)
-* Ensured users couldn't create & select packages from CRAN that don't exist on Upload Packages Tab
+* Fixed the app's logo hyperlink to docs not functioning in the expected "zone" (#633)
+* Fixed tests showing "Package Downloads" community usage card as a non-metric (#621)
+* Removed "Suggests" from Riskassessment Criteria weights table (#646)
+* Forced formation of new lines in cards (#671)
+* Ensured users couldn't create & select packages from CRAN that don't exist on Upload Packages tab
 
 ### For Devs
 * Migrated from `{jsTreeR}` to `{shinyTree}` (#585)
 * Removed some unneeded/unused dependencies
 * Updated `{shinytest2}` and `{chromote}` to more recent versions for testing
 * Added correct remotes reference in `DESCRIPTION` file for pharmar/riskmetric & rstudio/chromote
+* Stopped using CRAN repo snapshot date in `renv` (#677)
 
 # riskassessment 2.0.0
 
