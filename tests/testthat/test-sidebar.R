@@ -117,6 +117,7 @@ test_that("Reactivity of sidebar", {
 
   # set select_pkg back to "-"
   app$set_inputs(`sidebar-select_pkg` = "-")
+  app$wait_for_idle()
   # expect version to be set to "-" as well
   expect_equal(app$get_value(input = "sidebar-select_ver"), "-")
   

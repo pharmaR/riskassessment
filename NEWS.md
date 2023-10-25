@@ -18,6 +18,7 @@
 * Fixed bug with the logo's hyperlink not functioning in the expected zone (#633)
 * Removed suggests from riskcalc weights table (#646)
 * Forced new lines in card paragraphs (#671)
+* Ensured users couldn't create & select packages from CRAN that don't exist on Upload Packages Tab
 
 ### For Devs
 * Migrated from `{jsTreeR}` to `{shinyTree}` (#585)
