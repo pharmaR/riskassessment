@@ -13,7 +13,6 @@ packageDependenciesUI <- function(id) {
 #' @param selected_pkg placeholder
 #' @param user placeholder
 #' @param parent the parent (calling module) session information
-#' @param trigger_events a reactive values object to trigger actions here or elsewhere
 #'
 #' @import dplyr
 #' @importFrom DT formatStyle renderDataTable
@@ -28,7 +27,7 @@ packageDependenciesUI <- function(id) {
 #'
 #' @keywords internal
 #'
-packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_events) {
+packageDependenciesServer <- function(id, selected_pkg, user, parent) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
     cran_pkgs <- as.data.frame(available.packages("https://cran.rstudio.com/src/contrib")[, 1:2])
@@ -36,20 +35,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_ev
     loaded2_db <- eventReactive(selected_pkg$name(), {
       dbSelect("SELECT name, version, score FROM package")
     })
-    
-    # used for adding action buttons to data_table
-    shinyInput <- function(FUN, len, id, ...) {
-      inputs <- character(len)
-      for (i in seq_len(len)) {
-        inputs[i] <- as.character(FUN(paste0(id, i), ...))
-        # change icon from arrow to upload if not loaded into db yet
-        pkg_name <- pkg_df()[i, 3] %>% pull()
-        if (!pkg_name %in% loaded2_db()$name) {
-          inputs[i] <- gsub("fas fa-arrow-right fa-regular", "fas fa-upload fa-solid", inputs[i])
-        }
-      }
-      inputs
-    }
     
     tabready <- reactiveVal(value = NULL)
     depends  <- reactiveVal(value = NULL)
@@ -168,7 +153,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_ev
           )
         )
       ) %>% # remove action button if there is nothing to review
-        mutate(Actions = if_else(identical(package, character(0)) | name %in% c(rownames(installed.packages(priority = "base"))), "", Actions))
+        mutate(Actions = if_else(identical(package, character(0)) | name %in% c(rownames(installed.packages(priority = "base"))), "", Actions)) %>% 
+        # if package name not yet loaded, switch the actionbutton to fa-upload
+        mutate(Actions = if_else(!name %in% loaded2_db()$name, gsub("fas fa-arrow-right fa-regular", "fas fa-upload fa-solid", Actions), Actions))
     })
     
     # Create metric grid card.
@@ -238,8 +225,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_ev
                                 display = "block",
                                 "border-radius" = "4px",
                                 "padding-right" = "4px",
-                                "font-weight" = "bold",
-                                "color" = "white",
+                                "color" = "#000000",
                                 "order" = x,
                                 "background-color" = formattable::csscolor(
                                   setColorPalette(100)[round(as.numeric(x)*100)]
@@ -344,7 +330,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent, trigger_ev
     observeEvent(input$confirm, {
       shiny::removeModal()
       
-      trigger_events$upload_pkgs <- pkgname()
+      session$userData$trigger_events$upload_pkgs <- pkgname()
       
       session$onFlushed(function() {
         rev_pkg(1L)

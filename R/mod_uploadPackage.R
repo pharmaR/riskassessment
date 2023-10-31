@@ -23,7 +23,7 @@ uploadPackageUI <- function(id) {
           style = "display: flex;",
           shinyjs::disabled(
             selectizeInput(NS(id, "pkg_lst"), "Type Package Name(s)", choices = NULL, multiple = TRUE, 
-                           options = list(create = TRUE, showAddOptionOnCreate = FALSE, 
+                           options = list(selectOnTab = TRUE, showAddOptionOnCreate = FALSE, 
                                           onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_cran"), '", "load", {priority: "event"})}')))),
             actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
                          style = 'height: calc(1.5em + 1.5rem + 2px)')),
@@ -69,18 +69,28 @@ uploadPackageUI <- function(id) {
 #' @param id a module id
 #' @param user a username
 #' @param auto_list a list of decision automation rules
-#' @param trigger_events a reactive values object to trigger actions here or elsewhere
+#' @param parent the parent (calling module) session information
 #' 
+#' @importFrom DT datatable dataTableOutput formatStyle renderDataTable
+#' @importFrom formattable as.datatable csscolor formattable formatter style
+#' @importFrom glue glue
+#' @importFrom golem get_golem_options
+#' @importFrom loggit loggit
+#' @importFrom purrr map map_chr map_lgl 
 #' @importFrom riskmetric pkg_ref
-#' @importFrom rintrojs introjs
-#' @importFrom utils read.csv available.packages download.file
-#' @importFrom rvest read_html html_nodes html_text
+#' @importFrom rlang inform is_empty
+#' @importFrom shiny icon
+#' @importFrom shinyjs runjs
+#' @importFrom utils adist available.packages download.file read.csv
+#' 
 #' @keywords internal
 #' 
-uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events) {
+uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
   if (missing(credentials))
     credentials <- get_db_config("credentials")
   moduleServer(id, function(input, output, session) {
+    
+    ns <- session$ns
     
     observe({
       req(user$role)
@@ -125,7 +135,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
         if (isTRUE(getOption("shiny.testmode"))) {
           cran_pkgs(test_pkg_lst)
         } else {
-          cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+          cran_pkgs(utils::available.packages("https://cran.rstudio.com/src/contrib")[,1])
         }
       }
     },
@@ -152,7 +162,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
 
     uploaded_pkgs00 <- reactiveVal()
     
-    observeEvent(trigger_events$reset_pkg_upload, {
+    observeEvent(session$userData$trigger_events$reset_pkg_upload, {
       uploaded_pkgs(data.frame())
     })
 
@@ -169,7 +179,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
         id = "rem-package-group",
         style = "display: flex;",
         selectizeInput(NS(id, "rem_pkg_lst"), "Remove Package(s)", choices = NULL, multiple = TRUE,
-                       options = list(create = FALSE, showAddOptionOnCreate = FALSE, 
+                       options = list(selectOnTab = TRUE, showAddOptionOnCreate = FALSE, 
                                       onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "curr_pkgs"), '", "load", {priority: "event"})}')))),
         # note the action button moved out of alignment with 'selectizeInput' under 'renderUI'
         actionButton(NS(id, "rem_pkg_btn"), shiny::icon("trash-can")),
@@ -188,7 +198,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
       if(is.null(input$uploaded_file$datapath))
         uploaded_pkgs00(validate('Please upload a nonempty CSV file.'))
       
-      uploaded_packages <- read.csv(input$uploaded_file$datapath, stringsAsFactors = FALSE)
+      uploaded_packages <- utils::read.csv(input$uploaded_file$datapath, stringsAsFactors = FALSE)
       np <- nrow(uploaded_packages)
       if(np == 0)
         uploaded_pkgs00(validate('Please upload a nonempty CSV file.'))
@@ -225,13 +235,13 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
       uploaded_pkgs00(uploaded_packages)
     })
     
-    observeEvent(trigger_events$upload_pkgs, {
-      req(trigger_events$upload_pkgs)
+    observeEvent(session$userData$trigger_events$upload_pkgs, {
+      req(session$userData$trigger_events$upload_pkgs)
       
-      np <- length(trigger_events$upload_pkgs)
+      np <- length(session$userData$trigger_events$upload_pkgs)
       uploaded_packages <-
         dplyr::tibble(
-          package = trigger_events$upload_pkgs,
+          package = session$userData$trigger_events$upload_pkgs,
           version = rep('0.0.0', np),
           status = rep('', np)
         )
@@ -333,7 +343,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
             br(),
             h5("Notify when  URLs are reachable?"),
             footer = tagList(
-              actionButton(session$ns("check_urls"), "Yes"),
+              actionButton(ns("check_urls"), "Yes"),
               modalButton("No")
             )
           ))
@@ -346,7 +356,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
         if (isTRUE(getOption("shiny.testmode"))) {
           cran_pkgs(test_pkg_lst)
         } else {
-          cran_pkgs(available.packages("https://cran.rstudio.com/src/contrib")[,1])
+          cran_pkgs(utils::available.packages("https://cran.rstudio.com/src/contrib")[,1])
         }
       }
       
@@ -524,17 +534,34 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
     output$upload_pkgs_table <- DT::renderDataTable({
       req(nrow(uploaded_pkgs()) > 0)
       
+      uploaded_pkgs_ext <- 
+        if(!isTruthy(sum(uploaded_pkgs()$status == 'removed') > 0)) {
+          cbind(uploaded_pkgs(), 
+                data.frame(
+                  explore_metrics = shinyInput(actionButton, nrow(uploaded_pkgs()),
+                                               'button_',
+                                               size = "xs",
+                                               style='height:24px; padding-top:1px;',
+                                               label = icon("arrow-right", class="fa-regular", lib = "font-awesome"),
+                                               onclick = paste0('Shiny.setInputValue(\"' , ns("select_button"), '\", this.id, {priority: \"event\"})')
+                  )
+                )
+          ) %>% # keep action button for 'new' or 'duplicate' only
+            mutate(explore_metrics = if_else(!status %in% c('new', 'duplicate'), "", explore_metrics))
+        } else {
+          uploaded_pkgs()
+        }
+      
       formattable::as.datatable(
         formattable::formattable(
-          uploaded_pkgs(),
+          uploaded_pkgs_ext,
           list(
             score = formattable::formatter(
               "span",
               style = x ~ formattable::style(display = "block",
                                              "border-radius" = "4px",
                                              "padding-right" = "4px",
-                                             "font-weight" = "bold",
-                                             "color" = "white",
+                                             "color" = "#000000",
                                              "order" = x,
                                              "background-color" = formattable::csscolor(
                                                setColorPalette(100)[round(as.numeric(x)*100)]))),
@@ -543,8 +570,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
               style = x ~ formattable::style(display = "block",
                                              "border-radius" = "4px",
                                              "padding-right" = "4px",
-                                             "font-weight" = "bold",
-                                             "color" = "white",
+                                             "color" = "#000000",
                                              "background-color" = glue::glue("var(--{risk_lbl(x, type = 'attribute')}-color)")))
           )
         ),
@@ -552,7 +578,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
         class = "cell-border",
         selection = 'none',
         rownames = FALSE,
-        colnames = gsub("_", " ", names(uploaded_pkgs())),
+        colnames = gsub("_", " ", names(uploaded_pkgs_ext)),
         options = list(
           searching = FALSE,
           columnDefs = list(list(className = 'dt-center', targets = "_all")),
@@ -562,7 +588,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
           iDisplayLength = 10
         )
       ) %>%
-        DT::formatStyle(names(uploaded_pkgs()), textAlign = 'center')
+        DT::formatStyle(names(uploaded_pkgs_ext), textAlign = 'center')
     })
     
     # View sample dataset.
@@ -599,6 +625,35 @@ uploadPackageServer <- function(id, user, auto_list, credentials, trigger_events
         fluidRow(column(align = 'center', width = 12,
                         downloadButton(NS(id, "download_sample"), "Download")))
       ))
+    })
+    
+    observeEvent(input$select_button, {
+      req(uploaded_pkgs())
+      
+      selectedRow <- as.numeric(strsplit(input$select_button, "_")[[1]][2])
+      
+      # grab the package name
+      pkg_name <- uploaded_pkgs()[selectedRow, 1]
+      
+      # update sidebar-select_pkg
+      updateSelectizeInput(
+        session = parent,
+        inputId = "sidebar-select_pkg",
+        choices = c("-", dbSelect('SELECT name FROM package')$name),
+        selected = pkg_name
+      )
+      
+      # select maintenance metrics panel
+      updateTabsetPanel(session = parent, 
+                        inputId = 'tabs', 
+                        selected = "Package Metrics"
+      )
+      
+      # jump over to risk-assessment-tab so we can see the maintenance metrics
+      updateSelectInput(session = parent, 
+                        inputId = 'metric_type', 
+                        selected = "mm"
+      )
     })
     
     uploaded_pkgs

@@ -47,7 +47,7 @@ test_that("Test that generate_comm_data() works", {
   
   expect_equal(pull(dat[1, "version"]), "0.5 - 0.5.2")
   
-  mid_years <- (min(dat$year)+1):(max(dat$year) - 1)
+  mid_years <- seq(from = min(dat$year)+1, to = max(dat$year) - 1)
   year1_mnths <- dat$month[1]:12
   yearn_mnths <- 1:dat$month[nrow(dat)]
   all_combos <- expand.grid(year1_mnths, min(dat$year)) %>%

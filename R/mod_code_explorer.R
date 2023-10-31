@@ -66,7 +66,11 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
                      style = "height: 62vh; overflow: auto; border: 1px solid var(--bs-border-color-translucent);"
                    )
             )
-          )
+          ),
+          br(), br(),
+          div(id = ns("comments_for_fe"), fluidRow(
+            if ("general_comment" %in% credentials$privileges[[user$role]]) addCommentUI(id = ns("add_comment")),
+            viewCommentsUI(id = ns("view_comments"))))
         )
       }
     })
@@ -103,8 +107,9 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
     test_code <- reactive({
       if (rlang::is_empty(test_files())) return(HTML("No files to display"))
       req(input$test_files)
-      lines <- readLines(file.path(pkgdir(), "tests", "testthat", input$test_files))
-      func_list <- unique(c(input$exported_function, gsub("`", "", input$exported_function)))
+      fp <- if (file.exists(file.path(pkgdir(), "tests", "testthat.R"))) file.path(pkgdir(), "tests", "testthat", input$test_files) else file.path(pkgdir(), "tests", input$test_files)
+      lines <- readLines(fp)
+      func_list <- c(input$exported_function, paste0("`", input$exported_function, "`"))
       highlight_index <- parse_data() %>% 
         filter(file == input$test_files & func %in% func_list) %>% 
         pull(line)
@@ -116,7 +121,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
       if (rlang::is_empty(source_files())) return(HTML("No files to display"))
       req(input$source_files)
       lines <- readLines(file.path(pkgdir(), "R", input$source_files))
-      func_list <- unique(c(input$exported_function, gsub("`", "", input$exported_function)))
+      func_list <- c(input$exported_function, paste0("`", input$exported_function, "`"))
       highlight_index <- parse_data() %>% 
         filter(file == input$source_files & func %in% func_list) %>% 
         pull(line)
@@ -140,6 +145,23 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
               man = man_page()
       )
     })
+    
+    
+    # Call module to create comments and save the output.
+    comment_added <- addCommentServer(id = "add_comment",
+                                      metric_abrv = 'fe',
+                                      user = user,
+                                      credentials = credentials,
+                                      pkg_name = selected_pkg$name)
+    
+    comments <- eventReactive(list(comment_added(), selected_pkg$name()), {
+      get_fe_comments(selected_pkg$name()) # see utils
+    })
+    
+    # View comments.
+    viewCommentsServer(id = "view_comments",
+                       comments = comments,
+                       pkg_name = selected_pkg$name)
     
   })
 }

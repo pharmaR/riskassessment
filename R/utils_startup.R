@@ -188,7 +188,7 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   if (isTRUE(getOption("shiny.testmode"))) return(NULL)
   
   db_config <- if(missing(configuration)) get_db_config(NULL) else configuration
-  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json", "metric_weights")
+  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json", "metric_weights", "report_prefs")
   if (any(!names(db_config) %in% used_configs)) {
     names(db_config) %>%
       `[`(!. %in% used_configs) %>%
@@ -196,7 +196,7 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   }
   
   assessment_db <- if (missing(assess_db)) get_db_config("assessment_db") else assess_db
-  credentials_db <- if (missing(cred_db)) get_db_config("credential_db") else cred_db
+  credentials_db <- if (missing(cred_db)) golem::get_golem_options('credentials_db_name') else cred_db
   
   if (is.null(assessment_db) || typeof(assessment_db) != "character" || length(assessment_db) != 1 || !grepl("\\.sqlite$", assessment_db))
     stop("assess_db must follow SQLite naming conventions (e.g. 'database.sqlite')")

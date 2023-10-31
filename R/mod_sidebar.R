@@ -108,13 +108,12 @@ sidebarUI <- function(id) {
 #' @param id a module id
 #' @param user a username
 #' @param uploaded_pkgs a vector of packages
-#' @param trigger_events a reactive values object to trigger actions here or elsewhere
 #' 
 #' 
 #' @importFrom shinyjs enable disable
 #' @keywords internal
 #' 
-sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) {
+sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
   if (missing(credentials))
     credentials <- get_db_config("credentials")
   moduleServer(id, function(input, output, session) {
@@ -139,7 +138,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
     # Get information about selected package.
     selected_pkg <- reactiveValues()
     
-    observeEvent(req(input$select_pkg, trigger_events$reset_sidebar), {
+    observeEvent(req(input$select_pkg, session$userData$trigger_events$reset_sidebar), {
       pkg_selected <- get_pkg_info(input$select_pkg)
 
       pkg_selected %>%
@@ -167,6 +166,8 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
         choices = date_added,
         selected = date_added
       )
+      
+      session$userData$trigger_events$update_report_pref_inclusions <- session$userData$trigger_events$update_report_pref_inclusions + 1
       
     })
     
@@ -330,7 +331,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
     })
     
     # Enable/disable sidebar decision and comment.
-    observeEvent(req(input$select_ver, trigger_events$reset_sidebar), {
+    observeEvent(req(input$select_ver, session$userData$trigger_events$reset_sidebar), {
       if (input$select_pkg != "-" && input$select_ver != "-" &&
           (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision)) &&
           "overall_comment" %in% credentials$privileges[[user$role]]) {
@@ -343,7 +344,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
       }
     }, ignoreInit = TRUE)
     
-    observeEvent(req(input$select_ver, trigger_events$reset_sidebar), {
+    observeEvent(req(input$select_ver, session$userData$trigger_events$reset_sidebar), {
       req("final_decision" %in% credentials$privileges[[user$role]])
 
       if (input$select_pkg != "-" && input$select_ver != "-" &&
@@ -368,7 +369,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials, trigger_events) 
         shinyjs::show("submit_decision")
       }
     }) %>%
-      bindEvent(selected_pkg$decision, trigger_events$reset_sidebar,
+      bindEvent(selected_pkg$decision, session$userData$trigger_events$reset_sidebar,
                 ignoreInit = TRUE)
     
     output$reset_decision_ui <- renderUI({

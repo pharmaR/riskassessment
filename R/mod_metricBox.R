@@ -74,7 +74,7 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
         size_min = .85, size_max = 1.5
       ) # , num_bins = 3
       
-      body_p_style <- glue::glue("font-size: {auto_font_out}vw")
+      body_p_style <- glue::glue("font-size: {auto_font_out}vw;")
       
       # build the html card
       if(score == "NULL" | # usually for non-riskmetric cards (like on comm or database tab)
@@ -118,7 +118,7 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
             ),
             div(
               class = "card-body text-info",
-              p(class = "card-title", style = body_p_style, value)
+              p(class = "card-title", style = c(body_p_style, if (!is_url) "white-space: pre-wrap;"), value)
             )
           ),
           div(class = "card-footer bg-transparent", desc)

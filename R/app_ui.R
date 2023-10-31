@@ -13,7 +13,7 @@ app_ui <- function(request) {
     
     theme = app_theme(), # defined in data-raw/interanl-data.R
     
-    div(id = "raa-logo", shiny::a(img(src="www/raa-image-ug.png"), href = "https://pharmar.github.io/riskassessment/", target="_blank")),
+    div(id = "raa-logo", shiny::a(img(src="www/raa-alt-image-lt-ug2.png"), href = "https://pharmar.github.io/riskassessment/", target="_blank")),
     
     tabsetPanel(
       id = "apptabs",

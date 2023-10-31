@@ -25,6 +25,7 @@ params:
   mm_comments: NA
   cm_comments: NA
   se_comments: NA
+  fe_comments: NA
   maint_metrics: NA
   com_metrics: NA
   com_metrics_raw: NA
@@ -97,7 +98,7 @@ createCard <- function(title, desc, value, score = "NULL",
   card_style <- "max-width: 400px; max-height: 250px; padding-left: 5%; padding-right: 5%;" 
   auto_font_out <- auto_font(value, txt_max = val_max_nchar,
                              size_min = .85, size_max = 1.5)
-  body_p_style = glue::glue('font-size: {auto_font_out}vw')
+  body_p_style = glue::glue('font-size: {auto_font_out}vw;')
       
   
   # build the html card
@@ -137,7 +138,7 @@ createCard <- function(title, desc, value, score = "NULL",
               h5(class="card-header bg-transparent", style="font-size: 1vw",
                  title),
               div(class="card-body text-info",
-                  p(class="card-title", style=body_p_style, value))),
+                  p(class="card-title", style=c(body_p_style, if (!is_url) "white-space: pre-wrap;"), value))),
           div(class="card-footer bg-transparent", desc)
       )
   )
@@ -366,7 +367,7 @@ tagList(
       br(), br(),
       h5("Source Explorer", style = "text-align: center;"),
       br(),
-      h6("Source code visals not available."),
+      h6("Source code visuals not available."),
       br()
     )
   } else "",
@@ -378,6 +379,30 @@ tagList(
         HTML(showComments(
           pkg_name = params$pkg$name,
           comments = params$se_comments))
+      )
+    )
+  } else ""
+)
+```
+
+
+```{r function_explorer}
+tagList(
+  if(any(c('Function Explorer Comments') %in% params$report_includes)) {
+    tagList(
+      br(),
+      hr(),
+      br(), br(),
+      h5("Function Explorer", style = "text-align: center;"),
+      br(),
+      h6("Function code visuals not available."),
+      br(),
+      br(),
+      h5('Comments', style = "padding-bottom:10px;"),
+      wellPanel(
+        HTML(showComments(
+          pkg_name = params$pkg$name,
+          comments = params$fe_comments))
       )
     )
   } else ""

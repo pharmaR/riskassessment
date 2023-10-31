@@ -1,7 +1,10 @@
 # Global Risk color palettes.
-# run locally and paste hex codes
-# colorspace::darken(viridisLite::turbo(11, begin = 0.4, end = .8225), .25)
-setColorPalette <- colorRampPalette(c("#06B756FF","#2FBC06FF","#67BA04FF","#81B50AFF","#96AB0AFF","#A99D04FF","#B78D07FF","#BE7900FF","#BE6200FF","#B24F22FF","#A63E24FF"))
+# R won't let you build the package if you use the internal data here.
+setColorPalette <- colorRampPalette(c('#9CFF94FF', '#B3FF87FF', '#BCFF43FF', '#D8F244FF', '#F2E24BFF', '#FFD070FF', '#FFBE82FF', '#FFA87CFF', '#FF8F6CFF', '#FF765BFF')) # internal data object
+# defaults
+# setColorPalette(3)[1] # low risk
+# setColorPalette(3)[2] # med risk
+# setColorPalette(3)[3] # high risk
 
 
 #' UI for 'Database View' module
@@ -10,6 +13,7 @@ setColorPalette <- colorRampPalette(c("#06B756FF","#2FBC06FF","#67BA04FF","#81B5
 #' 
 #' 
 #' @importFrom DT dataTableOutput
+#' @importFrom shinyWidgets prettyToggle
 #' 
 #' @keywords internal
 databaseViewUI <- function(id) {
@@ -31,19 +35,37 @@ databaseViewUI <- function(id) {
               div(class = "box-body",
                 br(),
                 metricGridUI(NS(id, 'metricGrid')),
+                br(),
                 DT::dataTableOutput(NS(id, "packages_table")),
-                br(),
-                h5("Report Configurations"),
-                br(),
-                fluidRow(
-                  column(5,
-                         mod_downloadHandler_filetype_ui(NS(id, "downloadHandler")),
-                         mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)
-                  ),
-                  column(7, 
-                         mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
-                  )
-                )
+                div(style = "font-size: 25px;", align = "left",
+                    shinyWidgets::prettyToggle(NS(id, "dt_sel"), 
+                                               label_on  = "All Rows Selected",
+                                               label_off = "Select All Rows",
+                                               icon_on = icon("check"),
+                                               width = "100%",
+                                               status_off = "primary",
+                                               status_on = "primary",
+                                               outline = TRUE,
+                                               inline = TRUE,
+                                               bigger = TRUE)),
+                br(), br(),
+                div(id = "dwnld_rp",
+                    fluidRow(
+                      column(4, h5("Report Configurations"),),
+                      column(3, mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)),
+                      column(3, shiny::actionButton(NS(id, "downloadHandler-store_prefs"), "Store Preferences", 
+                                                    icon = icon("fas fa-floppy-disk", class = "fa-reqular", lib = "font-awesome")))
+                    ),
+                    br(),
+                    fluidRow(
+                      column(4,
+                             mod_downloadHandler_filetype_ui(NS(id, "downloadHandler"))
+                      ),
+                      column(8, 
+                             mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
+                      )
+                    ),
+                ),
               )
             ) %>%
               column(width = 12)
@@ -86,7 +108,7 @@ databaseViewUI <- function(id) {
 #' @importFrom shinyjs enable disable
 #' @importFrom rmarkdown render
 #' @importFrom glue glue
-#' @importFrom DT renderDataTable formatStyle
+#' @importFrom DT dataTableProxy renderDataTable formatStyle selectRows dataTableOutput
 #' @importFrom formattable formattable as.datatable formatter style csscolor
 #'   icontext
 #' @keywords internal
@@ -97,15 +119,6 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     
     decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
     color_lst <- get_colors(golem::get_golem_options("assessment_db_name"))
-    
-    # used for adding action buttons to table_data
-    shinyInput <- function(FUN, len, id, ...) {
-      inputs <- character(len)
-      for (i in seq_len(len)) {
-        inputs[i] <- as.character(FUN(paste0(id, i), ...))
-      }
-      inputs
-    }
     
     # Update table_data if a package has been uploaded
     table_data <- eventReactive({uploaded_pkgs(); changes()}, {
@@ -122,11 +135,22 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       )
       
       db_pkg_overview %>%
-        dplyr::mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>%
-        dplyr::mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>%
-        dplyr::mutate(decision    = if_else(is.na(decision)    | decision    == "", "-", decision)) %>%
-        dplyr::mutate(decision_by = if_else(is.na(decision_by) | decision_by == "", "-", decision_by)) %>% 
-        dplyr::mutate(decision_date = ifelse(is.na(decision_date) | decision_date == "NA", "-", decision_date)) %>% 
+        dplyr::mutate(date_added = as.Date(date_added)) %>% # new
+        dplyr::mutate(score = as.numeric(score)) %>% # new
+        
+        dplyr::mutate(decision    = if_else(is.na(decision)    | decision    == "", "-", decision)) %>% # keep
+        dplyr::mutate(decision = factor(decision)) %>% # new
+        
+        dplyr::mutate(decision_by = if_else(is.na(decision_by) | decision_by == "", "-", decision_by)) %>% # keep
+        dplyr::mutate(decision_by = factor(decision_by)) %>% # new
+        
+        # dplyr::mutate(decision_date = ifelse(is.na(decision_date) | decision_date == "NA", "-", decision_date)) %>% # old
+        dplyr::mutate(decision_date = as.Date(decision_date)) %>% # new
+        
+        dplyr::mutate(last_comment = lubridate::as_datetime(last_comment)) %>% # new
+        # dplyr::mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>% # old
+        # dplyr::mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>% # old
+        
         dplyr::select(name, date_added, version, score, decision, decision_by, decision_date, last_comment)
     })
     
@@ -142,11 +166,13 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     # Database cards (saved to share with db report): Package Count,
     #   Count (%) by Decision made, Count (%) by Decision
     cards <- eventReactive(table_data(), {
-      build_db_cards(data = table_data() %>% mutate(decision = factor(decision, levels = decision_lst)))
+      build_db_cards(data = table_data())
     })
     
     # Create metric grid cards, containing database stats.
     metricGridServer(id = 'metricGrid', metrics = cards)
+    
+    tableProxy <- DT::dataTableProxy('packages_table')
     
     # Create table for the db dashboard.
     output$packages_table <- DT::renderDataTable(server = FALSE, {  # This allows for downloading entire data set
@@ -159,14 +185,14 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                                size = "xs",
                                style='height:24px; padding-top:1px;',
                                label = icon("arrow-right", class="fa-regular", lib = "font-awesome"),
-                               onclick = paste0('Shiny.onInputChange(\"' , ns("select_button"), '\", this.id)')
+                               onclick = paste0('Shiny.setInputValue(\"' , ns("select_button"), '\", this.id, {priority: \"event\"})')
           )
         )
         )
       })
-      
+
       formattable::as.datatable(
-        formattable::formattable(
+      formattable::formattable(
           my_data_table(),
           list(
             score = formattable::formatter(
@@ -174,8 +200,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
               style = x ~ formattable::style(display = "block",
                                 "border-radius" = "4px",
                                 "padding-right" = "4px",
-                                "font-weight" = "bold",
-                                "color" = "white",
+                                "color" = "black",
                                 "order" = x,
                                 "background-color" = formattable::csscolor(
                                   setColorPalette(100)[round(as.numeric(x)*100)]))),
@@ -184,16 +209,19 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
               style = x ~ formattable::style(display = "block",
                                 "border-radius" = "4px",
                                 "padding-right" = "4px",
-                                "font-weight" = "bold",
-                                "color" = ifelse(x %in% decision_lst, "white", "inherit"),
+                                "color" = ifelse(x %in% decision_lst, get_text_color(get_colors(golem::get_golem_options("assessment_db_name"))[x]), "inherit"),
                                 "background-color" = 
-                                  ifelse(x %in% decision_lst, 
-                                         glue::glue("var(--{risk_lbl(x, type = 'attribute')}-color)"), 
+                                  ifelse(x %in% decision_lst,
+                                         glue::glue("var(--{risk_lbl(x, type = 'attribute')}-color)"),
                                          "transparent")))
           )),
         selection = list(mode = 'multiple'),
         colnames = c("Package", "Date Uploaded", "Version", "Score", "Decision", "Decision by", "Decision Date", "Last Comment", "Explore Metrics"),
         rownames = FALSE,
+        filter = list(
+          position = "top",
+          plain = TRUE
+        ),
         extensions = "Buttons",
         options = list(
           searching = TRUE,
@@ -201,7 +229,10 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
           dom = 'Blftpr',
           pageLength = 15,
           lengthMenu = list(c(15, 60, 120, -1), c('15', '60', '120', "All")),
-          columnDefs = list(list(className = 'dt-center', targets = "_all")),
+          columnDefs = list(
+            list(className = 'dt-center', targets = "_all"),
+            list(targets = 8, searchable = FALSE) # make sure 'Explore Metrics' column filter is disabled
+            ),
           buttons = list(
             list(extend = "excel", text = shiny::HTML('<i class="fas fa-download"></i> Excel'),
                  exportOptions = list(columns = c(0:6)), # which columns to download
@@ -213,6 +244,15 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
         , style="default"
       ) %>%
         DT::formatStyle(names(table_data()), textAlign = 'center')
+    })
+    
+    
+    observeEvent(input$dt_sel, {
+      if (isTRUE(input$dt_sel)) {
+        DT::selectRows(tableProxy, input$packages_table_rows_all)
+      } else {
+        DT::selectRows(tableProxy, NULL)
+      }
     })
     
     observeEvent(input$select_button, {
@@ -242,6 +282,11 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
                         inputId = 'apptabs', 
                         selected = "risk-assessment-tab"
       )
+      
+      updateSelectInput(session = parent, 
+                        inputId = 'metric_type', 
+                        selected = "mm"
+      )
     })
     
     pkgs <- reactive({
@@ -253,6 +298,9 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
           dplyr::pull(name)
       }
     })
+    
+    # return vector of elements to include in the report
+    report_includes <- mod_downloadHandler_include_server("downloadHandler")
     
     mod_downloadHandler_server("downloadHandler", pkgs, user, metric_weights)
   })
