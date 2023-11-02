@@ -5,22 +5,21 @@ ui <- fluidPage(
   tabsetPanel(
     id = "tabs",
     tabPanel(
-      "Source Explorer",
-      id = "src_expl_tab",
+      "src_expl_tab",
       riskassessment:::mod_pkg_explorer_ui("src_explorer")
     ),
     tabPanel(
-      "Function Explorer",
-      id = "fn_expl_tab",
+      "fn_expl_tab",
       riskassessment:::mod_code_explorer_ui("fn_explorer")
     )
   )
 )
 
 server <- function(input, output, server) {
+  shinyOptions(golem_options = list(assessment_db_name = "dplyr.sqlite"))
   
-  selected_pkg <- list(name = reactiveVal("magrittr"), version = reactiveVal("2.0.3"))
-  pkgdir <- reactiveVal(file.path("source", "magrittr"))
+  selected_pkg <- list(name = reactiveVal("dplyr"), version = reactiveVal("1.1.2"))
+  pkgdir <- reactiveVal(file.path("source", "dplyr"))
   user <- reactiveValues(
     name = "tester",
     role = "admin"
