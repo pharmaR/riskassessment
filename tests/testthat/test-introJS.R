@@ -88,10 +88,10 @@ test_that("The introJS module works as expected for admins", {
 
   app$set_inputs(`sidebar-select_pkg` = "tidyr")
  
-  app$wait_for_idle() #fix test by using dropdown
+  app$wait_for_idle()  
  
-  app$wait_for_idle(2000)
- #add time for package unpacking 
+  app$wait_for_idle(9000)
+  
   
   app$click("pkg_explorer-introJS-help")
   app$wait_for_idle()
