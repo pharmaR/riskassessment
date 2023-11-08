@@ -1,4 +1,5 @@
 # riskassessment (development version)
+* Fixes bug that doesn't reset decision by and date fields when rescoring/reweighting packages (#680)
 
 # riskassessment 3.0.0
 
