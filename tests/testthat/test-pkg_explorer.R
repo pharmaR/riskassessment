@@ -32,7 +32,35 @@ test_that("pkg_explorer works", {
   }
   
   app <- shinytest2::AppDriver$new(test_path("test-apps", "explorer-app"))
+
+  expect_equal(
+    app$get_value(output = "src_explorer-is_file"),
+    FALSE
+  )
   
-  expect_true(TRUE)
+  expect_equal(
+    app$get_value(input = "src_explorer-dirtree"),
+    NULL
+  )
   
+  app$wait_for_js("$('#10_anchor').length > 0")
+  app$run_js("$('#10_anchor').click()")
+
+  # app$expect_values(input = "src_explorer-dirtree")
+
+  expect_equal(
+    app$get_value(output = "src_explorer-filepath")$html,
+    structure("<h5>DESCRIPTION</h5>", html = TRUE, class = c("html", "character"))
+  )
+  # app$expect_values(input = "src_explorer-editor")
+  
+  app$run_js("$('#300 .jstree-ocl').click()")
+  app$run_js("$('#301_anchor').click()")
+  app$wait_for_idle()
+  
+  expect_equal(
+    app$get_value(output = "src_explorer-filepath")$html,
+    structure("<h5>tests/testthat.R</h5>", html = TRUE, class = c("html", "character"))
+  )
+  # app$expect_values(input = "src_explorer-editor")
 })
