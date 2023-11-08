@@ -45,6 +45,7 @@ Other contributors:
   \item  R Validation Hub [copyright holder, funder]
   \item  GSK contributors (Author of 'pharmaR/pkg_explorer' repo) [contributor]
   \item  Appsilon [contributor]
+  \item Narayanan Iyer \email{NarayananSeshan.Iyer@pfizer.com} [contributor]
 }
 
 }
