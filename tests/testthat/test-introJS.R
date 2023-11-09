@@ -12,6 +12,23 @@ test_that("The introJS module works as expected for admins", {
     app_db_loc
   )
   
+  app_tar_loc <- test_path("test-apps", "tarballs", "tidyr_1.3.0.tar.gz")
+  if (!dir.exists(dirname(app_tar_loc))) {
+    dir.create(dirname(app_tar_loc))
+  }
+  if (!file.exists(app_tar_loc)) {
+    download.file(
+      "https://cran.r-project.org/src/contrib/tidyr_1.3.0.tar.gz", #This will need to be changed in the future
+      app_tar_loc,
+      mode = "wb"
+    )
+  }
+  
+  app_src_loc <- test_path("test-apps", "source", "tidyr")
+  if (!dir.exists(app_src_loc)) {
+    untar(app_tar_loc, exdir = dirname(app_src_loc))
+  }
+  
   getBoundingClientRect <- function(appDriver, el) {
     appDriver$get_js(glue::glue('const rect = $("{el}")[0].getBoundingClientRect(); [rect.left, rect.top, rect.bottom, rect.right]')) %>% purrr::possibly(purrr::set_names, otherwise = .)(c("left", "top", "bottom", "right"))
   }
@@ -36,7 +53,7 @@ test_that("The introJS module works as expected for admins", {
   expect(all(purrr::map_lgl(el_pos, ~ any(.x > 0))), "One or more elements are not visible")
   steps <- app$get_value(export = "upload_package-introJS-steps")
   expect_equal(upload_pkgs, steps)
-
+  
   app$click(selector = ".introjs-skipbutton")
   
   app$run_js("Shiny.setInputValue('upload_package-load_cran', 'load')")
@@ -85,11 +102,11 @@ test_that("The introJS module works as expected for admins", {
   
   app$set_inputs(tabs = "Source Explorer",
                  explorer_type = "fb")
-
+  
   app$set_inputs(`sidebar-select_pkg` = "tidyr")
- 
+  
   app$wait_for_idle()  
- 
+  
   app$wait_for_idle(9000)
   
   
