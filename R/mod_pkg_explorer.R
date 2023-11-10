@@ -42,7 +42,7 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
             br(),
             fluidRow(
               column(4,
-                     div(id = "file_tree",
+                     div(id = ns("file_tree"),
                      wellPanel(
                        {
                          treeTag <- 
@@ -53,7 +53,7 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
                      ))
               ),
               column(8,
-                     div(id = "file_editor",
+                     div(id = ns("file_editor"),
                      conditionalPanel(
                        condition = "output.is_file",
                        shinyAce::aceEditor(ns("editor"), value = "", height = "62vh",
@@ -67,7 +67,7 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
               )
             ),
             br(), br(),
-            div(id = "comments_for_se", fluidRow(
+            div(id = ns("comments_for_se"), fluidRow(
               if ("general_comment" %in% credentials$privileges[[user$role]]) addCommentUI(id = ns("add_comment")),
               viewCommentsUI(id = ns("view_comments")))),
           id = id
@@ -86,8 +86,15 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
     nodes <- reactive({
       req(pkgdir())
       s <- make_nodes(list.files(pkgdir(), recursive = TRUE)) 
-      attr(s[[1]][[1]],"stselected") = TRUE
-      attr(s[[1]],"stopened") = TRUE
+      # attr(s[[1]][[1]],"stselected") = TRUE
+      # attr(s[[1]],"stopened") = TRUE
+      if(!is.null(s[["DESCRIPTION"]])){
+      attr(s[["DESCRIPTION"]],"stselected") = TRUE
+      }
+      else {
+        f <- names(head(map(s, \(x) attr(x,"sttype") == "file"),1))
+        attr(s[[f]],"stselected") = TRUE
+      }
       s
     }) %>%
       bindEvent(pkgdir(), selected_pkg$name())

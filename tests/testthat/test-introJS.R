@@ -106,12 +106,10 @@ test_that("The introJS module works as expected for admins", {
   app$set_inputs(`sidebar-select_pkg` = "tidyr")
   
   app$wait_for_idle()  
-  
-  app$wait_for_idle(9000)
-  
-  
+
   app$click("pkg_explorer-introJS-help")
-  app$wait_for_idle()
+ 
+  
   
   pkg_explorer <- dplyr::bind_rows(pe_steps, apptab_admn, apptab_steps, sidebar_steps)
   
@@ -132,7 +130,7 @@ test_that("The introJS module works as expected for admins", {
   app$wait_for_idle()
   
   app$click("code_explorer-introJS-help")
-  app$wait_for_idle()
+  
   
   code_explorer <- dplyr::bind_rows(fe_steps, apptab_admn, apptab_steps, sidebar_steps)
   

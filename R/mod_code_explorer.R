@@ -34,12 +34,12 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
           fluidRow(
             column(3,
                    wellPanel(
-                     div(id = "function_list",
+                     div(id = ns("function_list"),
                      selectInput(ns("exported_function"), "Exported Function", choices = exported_functions()) %>%
                        tagAppendAttributes(class = "exported_function")),
-                     div(id = "file_type",
+                     div(id = ns("file_type"),
                          selectInput(ns("file_type"), "File Type", choices = c("Testing Files" = "test", "R Source Code" = "source", "Help Documentation" = "man"))),
-                     div(id = "file_list",
+                     div(id = ns("file_list"),
                      conditionalPanel(
                        condition = "input.file_type == 'test'",
                        selectInput(ns("test_files"), NULL,
@@ -65,7 +65,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
                    )
             ),
             column(9,
-                   div(id = "file_viewer",
+                   div(id = ns("file_viewer"),
                      uiOutput(ns("file_output"), class = "file_browser"),
                      style = "height: 62vh; overflow: auto; border: 1px solid var(--bs-border-color-translucent);"
                    )

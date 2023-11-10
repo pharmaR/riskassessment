@@ -86,19 +86,19 @@ mm_steps <-
 # Package Explorer
 pe_steps <- 
   data.frame(
-    element = c("#file_tree", "#file_editor","#comments_for_se"),
+    element = c("#pkg_explorer-file_tree", "#pkg_explorer-file_editor","#pkg_explorer-comments_for_se"),
     intro = c(
       "The file tree shows all the files inside.Click to view.",
       "Text inside selected file from package if viewable",
       "Add comments for any files"
     ),
-    position = c(rep("right", 3))
+    position = c("left","left","top")
   )
 
 # Function Explorer
 fe_steps <- 
   data.frame(
-    element = c("#function_list", "#file_type","#file_list","#file_viewer"),
+    element = c("#code_explorer-function_list", "#code_explorer-file_type","#code_explorer-file_list","#code_explorer-file_viewer"),
     intro = c(
       "Exported Functions.Click to view",
       "Select type/source of function",
