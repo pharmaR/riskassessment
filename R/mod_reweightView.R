@@ -298,7 +298,7 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
       pkg <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package WHERE decision_id IS NOT NULL")
       if (nrow(pkg) > 0) {
         for (i in 1:nrow(pkg)) {
-          dbUpdate("UPDATE package SET decision_id = NULL where name = {pkg$pkg_name[i]}")
+          dbUpdate("UPDATE package SET decision_id = NULL, decision_by = NULL, decision_date = NULL where name = {pkg$pkg_name[i]}")
         }
       }
       
