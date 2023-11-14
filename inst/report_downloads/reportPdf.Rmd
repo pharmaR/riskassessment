@@ -3,6 +3,7 @@ title:    "<span class='txtasis'>R Package Risk Assessment</span>"
 subtitle: "<span class='txtasis'>Report for Package: `r params$pkg[['name']]`</span>"
 author:   "<span class='txtasis'> `r if('Report Author' %in% params$report_includes) paste0('Author (Role): ', params$user_name, ' (', params$user_role, ')') else ''`</span>"
 date:     "<span class='txtasis'> `r if('Report Date' %in% params$report_includes) paste0('Report Date: ', format(Sys.time(), '%B %d, %Y')) else ''`</span>"
+geometry: "left=.5in,right=.5in,top=1.5in,bottom=1in"
 output:
   pdf_document:
     latex_engine: xelatex
