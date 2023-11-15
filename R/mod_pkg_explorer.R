@@ -85,14 +85,15 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
 
     nodes <- reactive({
       req(pkgdir())
-      s <- make_nodes(list.files(pkgdir(), recursive = TRUE)) 
+      s <- make_nodes(list.files(pkgdir(), recursive = TRUE))
+      browser()
       # attr(s[[1]][[1]],"stselected") = TRUE
       # attr(s[[1]],"stopened") = TRUE
       if(!is.null(s[["DESCRIPTION"]])){
       attr(s[["DESCRIPTION"]],"stselected") = TRUE
       }
       else {
-        f <- names(head(map(s, \(x) attr(x,"sttype") == "file"),1))
+        f <- names(head(purrr::keep(s, \(x) !is.null(attr(x, "sttype"))), 1))
         attr(s[[f]],"stselected") = TRUE
       }
       s

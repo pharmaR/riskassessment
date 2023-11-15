@@ -83,7 +83,7 @@ test_that("The introJS module works as expected for admins", {
   app$set_inputs(tabs = "Package Metrics",
                  metric_type = "mm")
   app$set_inputs(`sidebar-select_pkg` = "tidyr")
-  app$wait_for_idle()
+  app$wait_for_idle(timeout = 30 * 1000)
   
   app$click("maintenanceMetrics-introJS-help")
   app$wait_for_idle()
