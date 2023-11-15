@@ -86,9 +86,6 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
     nodes <- reactive({
       req(pkgdir())
       s <- make_nodes(list.files(pkgdir(), recursive = TRUE))
-      browser()
-      # attr(s[[1]][[1]],"stselected") = TRUE
-      # attr(s[[1]],"stopened") = TRUE
       if(!is.null(s[["DESCRIPTION"]])){
       attr(s[["DESCRIPTION"]],"stselected") = TRUE
       }
