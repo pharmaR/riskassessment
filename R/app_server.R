@@ -74,12 +74,13 @@ app_server <- function(input, output, session) {
                         title = "Credential Manager",
                         shinymanager:::admin_ui("admin")
                       ),
-                    if (res_auth$admin || "admin" %in% credential_config$privileges[[res_auth$role]])
+                    if (res_auth$admin == TRUE || "admin" %in% credential_config$privileges[[res_auth$role]])
                       tabPanel(
                         id = "privilege_id",
                         title = "Roles & Privileges",
                         mod_user_roles_ui("userRoles")
                       ),
+                    if ("weight_adjust" %in% credential_config$privileges[[res_auth$role]])
                     tabPanel(
                       id = "reweight_id",
                       title = "Assessment Reweighting",
