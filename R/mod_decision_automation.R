@@ -796,7 +796,7 @@ mod_decision_automation_server <- function(id, user, credentials){
       if (rlang::is_empty(rules_updates)) {
         risk_rule_update(rules_updates)
         dbUpdate("DELETE FROM rules")
-        loggit::loggit("INFO", glue::glue("Decision automation rules have been disabled by {user$name} ({user$role})."))
+        loggit::loggit("INFO", glue::glue("Decision automation rules have been disabled by {user$name} ({paste(user$role, collapse = ', ')})."))
       } else {
         if (!is.null(rule_lst[["rule_else"]][["decision"]]))
           rules_updates[["rule_else"]] <- rule_lst[["rule_else"]]
@@ -812,7 +812,7 @@ mod_decision_automation_server <- function(id, user, credentials){
           glue::glue_collapse(", ")
         dbUpdate("DELETE FROM rules")
         dbUpdate(glue::glue("INSERT INTO rules (rule_type, metric_id, condition, decision_id) VALUES {rule_out};"))
-        loggit::loggit("INFO", glue::glue("Decision automation rules were updated/implemented by {user$name} ({user$role})."))
+        loggit::loggit("INFO", glue::glue("Decision automation rules were updated/implemented by {user$name} ({paste(user$role, collapse = ', ')})."))
       }
       
       removeModal()
@@ -839,7 +839,7 @@ mod_decision_automation_server <- function(id, user, credentials){
         dbUpdate("UPDATE decision_categories SET color = {.x} WHERE decision = {.y}")
         shinyjs::runjs(glue::glue("document.documentElement.style.setProperty('--{risk_lbl(.y, type = 'attribute')}-color', '{.x}');"))
         })
-      loggit::loggit("INFO", glue::glue("The decision category display colors were modified by {user$name} ({user$role})"))
+      loggit::loggit("INFO", glue::glue("The decision category display colors were modified by {user$name} ({paste(user$role, collapse = ', ')})"))
       color_current(selected_colors)
       
       removeModal()

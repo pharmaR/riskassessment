@@ -119,7 +119,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
               HTML("<span class='h2 txtasis'>R Package Risk Assessment  </span><br>"),
               HTML(glue::glue("<span class='h4 txtasis'>Report for Package: {selected_pkg$name()}</span><br>")),
               if("Report Author" %in% report_includes())
-                HTML(glue::glue("<span class='h4 txtasis'>Author (Role): {user$name} ({user$role})</span><br>")),
+                HTML(glue::glue("<span class='h4 txtasis'>Author (Role): {user$name} ({paste(user$role, collapse = ', ')})</span><br>")),
               if("Report Date" %in% report_includes())
                 HTML(glue::glue("<span class='h4 txtasis'>Report Date: {format(get_time(), '%B %d, %Y')}</span><br>")),
               
@@ -289,7 +289,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       } else { # first summary!
         dbUpdate(
           "INSERT INTO comments
-          VALUES ({selected_pkg$name()}, {user$name}, {user$role},
+          VALUES ({selected_pkg$name()}, {user$name}, {paste(user$role, collapse = ', ')},
           {current_summary}, 's', {getTimeStamp()})")
         showModal(modalDialog(
           title = h2("Summary Submitted"),
@@ -315,7 +315,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
           SET comment = {input$pkg_summary}, added_on = {getTimeStamp()}
           WHERE id = {selected_pkg$name()} AND
           user_name = {user$name} AND
-          user_role = {user$role} AND
+          user_role = {paste(user$role, collapse = ', ')} AND
           comment_type = 's'"
       )
       

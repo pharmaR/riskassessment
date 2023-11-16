@@ -258,7 +258,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
       } else {
         dbUpdate(
           "INSERT INTO comments
-          VALUES ({selected_pkg$name}, {user$name}, {user$role},
+          VALUES ({selected_pkg$name}, {user$name}, {paste(user$role, collapse = ', ')},
           {current_comment}, 'o', {getTimeStamp()})")
         
         updateTextAreaInput(session, "overall_comment", value = "",
@@ -284,7 +284,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
           SET comment = {input$overall_comment}, added_on = {getTimeStamp()}
           WHERE id = {selected_pkg$name} AND
           user_name = {user$name} AND
-          user_role = {user$role} AND
+          user_role = {paste(user$role, collapse = ', ')} AND
           comment_type = 'o'"
       )
       current_comment <- trimws(input$overall_comment)
@@ -458,7 +458,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
       
       loggit::loggit("INFO",
                      glue::glue("decision for the package {selected_pkg$name} is {input$decision}
-                  by {user$name} ({user$role})"))
+                  by {user$name} ({paste(user$role, collapse = ', ')})"))
     })
     
     observeEvent(input$reset_confirmed_decision, {
@@ -484,7 +484,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
       
       loggit::loggit("INFO",
                      glue::glue("decision for the package {selected_pkg$name} is reset
-                  by {user$name} ({user$role})"))
+                  by {user$name} ({paste(user$role, collapse = ', ')})"))
     })
     
     # Output package id, name, and version.

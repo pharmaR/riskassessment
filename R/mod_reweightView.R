@@ -286,7 +286,7 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
         for (typ in c("mm","cum")) {
           dbUpdate(
             'INSERT INTO comments
-            VALUES({all_pkgs$pkg_name[i]}, {user$name}, {user$role},
+            VALUES({all_pkgs$pkg_name[i]}, {user$name}, {paste(user$role, collapse = ', ')},
             {paste0(weight_risk_comment(all_pkgs$pkg_name[i]), 
                           ifelse(all_pkgs$pkg_name[i] %in% cmt_or_dec_pkgs$pkg_name, cmt_or_dec_dropped_cmt, ""))},
             {typ}, {getTimeStamp()})'

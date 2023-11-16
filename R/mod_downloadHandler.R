@@ -269,7 +269,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                               app_version = golem::get_golem_options('app_version'),
                               metric_weights = metric_weights(),
                               user_name = user$name,
-                              user_role = user$role,
+                              user_role = paste(user$role, collapse = ', '),
                               overall_comments = overall_comments,
                               pkg_summary = pkg_summary,
                               mm_comments = mm_comments,
