@@ -188,7 +188,7 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   if (isTRUE(getOption("shiny.testmode"))) return(NULL)
   
   db_config <- if(missing(configuration)) get_db_config(NULL) else configuration
-  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json", "metric_weights", "report_prefs")
+  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json", "metric_weights", "report_prefs", "use_shinymanager")
   if (any(!names(db_config) %in% used_configs)) {
     names(db_config) %>%
       `[`(!. %in% used_configs) %>%
@@ -312,7 +312,8 @@ add_tags <- function(ui, ...) {
 #' @md
 #' @keywords internal
 add_shinymanager_auth <- function(app_ui, app_ver, login_note) {
-  if (!isTRUE(getOption("shiny.testmode"))) {
+  # Don't add shinymanager if running the application in testing mode or without credentials
+  if (!isTRUE(getOption("shiny.testmode")) && !isFALSE(get_db_config("use_shinymanager"))) {
   add_tags(shinymanager::secure_app(app_ui,
     tags_top = tags$div(
       tags$head(favicon(), tags$style(HTML(readLines(app_sys("app/www/css", "login_screen.css"))))),
