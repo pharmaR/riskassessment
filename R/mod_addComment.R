@@ -50,7 +50,7 @@ addCommentServer <- function(id, metric_abrv, user, credentials, pkg_name) {
         width = "100%",
         rows = 4,
         placeholder = glue::glue(
-          "Commenting as user: {user$name}, role: {user$role}"
+          "Commenting as user: {user$name}, role: {paste(user$role, collapse = ', ')}"
         )
       )
     })
@@ -65,7 +65,7 @@ addCommentServer <- function(id, metric_abrv, user, credentials, pkg_name) {
         
         dbUpdate(
         "INSERT INTO comments values({pkg_name()}, {user$name}, 
-        {user$role}, {comment}, {metric_abrv},
+        {paste(user$role, collapse = ', ')}, {comment}, {metric_abrv},
         {getTimeStamp()})"
         )
         
