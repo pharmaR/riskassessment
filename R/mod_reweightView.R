@@ -285,11 +285,11 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
         # insert comment for both mm and cum tabs
         for (typ in c("mm","cum")) {
           dbUpdate(
-            'INSERT INTO comments
+            "INSERT INTO comments
             VALUES({all_pkgs$pkg_name[i]}, {user$name}, {paste(user$role, collapse = ', ')},
             {paste0(weight_risk_comment(all_pkgs$pkg_name[i]), 
-                          ifelse(all_pkgs$pkg_name[i] %in% cmt_or_dec_pkgs$pkg_name, cmt_or_dec_dropped_cmt, ""))},
-            {typ}, {getTimeStamp()})'
+                          ifelse(all_pkgs$pkg_name[i] %in% cmt_or_dec_pkgs$pkg_name, cmt_or_dec_dropped_cmt, ''))},
+            {typ}, {getTimeStamp()})"
           )
         }
       }
