@@ -87,7 +87,7 @@ uploadPackageUI <- function(id) {
 #' 
 uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
   if (missing(credentials))
-    credentials <- get_db_config("credentials")
+    credentials <- get_credential_config()
   moduleServer(id, function(input, output, session) {
     
     ns <- session$ns

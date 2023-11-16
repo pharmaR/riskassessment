@@ -20,7 +20,7 @@ maintenanceMetricsUI <- function(id) {
 #' 
 maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, credentials, parent) {
   if (missing(credentials))
-    credentials <- get_db_config("credentials")
+    credentials <- get_credential_config()
   
   moduleServer(id, function(input, output, session) {
        ns <- NS(id)

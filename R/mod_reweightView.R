@@ -26,7 +26,7 @@ reweightViewUI <- function(id) {
 #' @keywords internal
 reweightViewServer <- function(id, user, decision_list, credentials) {
   if (missing(credentials))
-    credentials <- get_db_config("credentials")
+    credentials <- get_credential_config()
   moduleServer(id, function(input, output, session) {
     
     exportTestValues(

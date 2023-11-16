@@ -32,7 +32,7 @@ addCommentUI <- function(id) {
 #' 
 addCommentServer <- function(id, metric_abrv, user, credentials, pkg_name) {
   if (missing(credentials))
-    credentials <- get_db_config("credentials")
+    credentials <- get_credential_config()
   
   moduleServer(id, function(input, output, session) {
     

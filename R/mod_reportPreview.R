@@ -40,7 +40,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                                 downloads_plot_data, user, credentials, app_version,
                                 metric_weights) {
   if (missing(credentials))
-    credentials <- get_db_config("credentials")
+    credentials <- get_credential_config()
   
   moduleServer(id, function(input, output, session) {
     

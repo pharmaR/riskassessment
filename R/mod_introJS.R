@@ -33,7 +33,7 @@ introJSUI <- function(id) {
 #' @keywords internal
 introJSServer <- function(id, text, user, credentials) {
   if (missing(credentials))
-    credentials <- get_db_config("credentials")
+    credentials <- get_credential_config()
   moduleServer(id, function(input, output, session) {
     
     steps <- reactive({

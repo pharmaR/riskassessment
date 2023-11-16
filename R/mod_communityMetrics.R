@@ -25,7 +25,7 @@ communityMetricsUI <- function(id) {
 #' 
 communityMetricsServer <- function(id, selected_pkg, community_metrics, user, credentials) {
   if (missing(credentials))
-    credentials <- get_db_config("credentials")
+    credentials <- get_credential_config()
   
   moduleServer(id, function(input, output, session) {
     

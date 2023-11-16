@@ -29,7 +29,7 @@ mod_user_roles_ui <- function(id){
 #' @noRd 
 mod_user_roles_server <- function(id, user, credentials){
   if (missing(credentials))
-    credentials <- get_db_config("credentials")
+    credentials <- get_credential_config()
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     

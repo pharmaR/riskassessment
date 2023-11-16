@@ -115,7 +115,7 @@ sidebarUI <- function(id) {
 #' 
 sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
   if (missing(credentials))
-    credentials <- get_db_config("credentials")
+    credentials <- get_credential_config()
   moduleServer(id, function(input, output, session) {
     
     # Required for shinyhelper to work.
