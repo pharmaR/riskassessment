@@ -37,7 +37,7 @@ introJSServer <- function(id, text, user, credentials) {
   moduleServer(id, function(input, output, session) {
     
     steps <- reactive({
-      if(user$admin || "weight_adjust" %in% credentials$privileges[[user$role]]) {
+      if(user$admin || "weight_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) {
         apptab_steps <- bind_rows(apptab_admn, apptab_steps)
       }
       

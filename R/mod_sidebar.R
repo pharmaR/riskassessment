@@ -224,7 +224,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
     
     # Update db if comment is submitted.
     observeEvent(input$submit_overall_comment, {
-      req("overall_comment" %in% credentials$privileges[[user$role]])
+      req("overall_comment" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       
       current_comment <- trimws(input$overall_comment)
       
@@ -277,7 +277,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
     observeEvent(input$submit_overall_comment_yes, {
 
       req(selected_pkg$name)
-      req("overall_comment" %in% credentials$privileges[[user$role]])
+      req("overall_comment" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
 
       dbUpdate(
           "UPDATE comments
@@ -334,7 +334,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
     observeEvent(req(input$select_ver, session$userData$trigger_events$reset_sidebar), {
       if (input$select_pkg != "-" && input$select_ver != "-" &&
           (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision)) &&
-          "overall_comment" %in% credentials$privileges[[user$role]]) {
+          "overall_comment" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) {
         shinyjs::enable("overall_comment")
         shinyjs::enable("submit_overall_comment")
         
@@ -345,7 +345,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
     }, ignoreInit = TRUE)
     
     observeEvent(req(input$select_ver, session$userData$trigger_events$reset_sidebar), {
-      req("final_decision" %in% credentials$privileges[[user$role]])
+      req("final_decision" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
 
       if (input$select_pkg != "-" && input$select_ver != "-" &&
           (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) {
@@ -363,7 +363,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
 
       if (!(input$select_pkg == "-" && input$select_ver == "-" ||
           (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))) &&
-          "revert_decision" %in% credentials$privileges[[user$role]]) {
+          "revert_decision" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) {
         shinyjs::hide("submit_decision")
       } else {
         shinyjs::show("submit_decision")
@@ -375,7 +375,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
     output$reset_decision_ui <- renderUI({
       req(user$role)
       req(credentials$privileges)
-      req("revert_decision" %in% credentials$privileges[[user$role]])
+      req("revert_decision" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       req(!(input$select_pkg == "-" && input$select_ver == "-" ||
             (rlang::is_empty(selected_pkg$decision) || is.na(selected_pkg$decision))))
       
@@ -385,7 +385,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
     # Show a confirmation modal when submitting a decision.
     observeEvent(input$submit_decision, {
       req(input$decision)
-      req("final_decision" %in% credentials$privileges[[user$role]])
+      req("final_decision" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       
       showModal(modalDialog(
         size = "l",
@@ -412,7 +412,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
     # Show a confirmation modal when resetting a decision
     observeEvent(input$reset_decision, {
       req(input$decision)
-      req("revert_decision" %in% credentials$privileges[[user$role]])
+      req("revert_decision" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       
       showModal(modalDialog(
         size = "l",
@@ -440,7 +440,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
     
     # Update database info after decision is submitted.
     observeEvent(input$submit_confirmed_decision, {
-      req("final_decision" %in% credentials$privileges[[user$role]])
+      req("final_decision" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       
       dbUpdate("UPDATE package
           SET decision_id = {match(input$decision, golem::get_golem_options(\"decision_categories\"))}, decision_by = {user$name}, decision_date = {get_Date()}
@@ -462,7 +462,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
     })
     
     observeEvent(input$reset_confirmed_decision, {
-      req("revert_decision" %in% credentials$privileges[[user$role]])
+      req("revert_decision" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       
       dbUpdate("UPDATE package
           SET decision_id = NULL, decision_by = '', decision_date = NULL

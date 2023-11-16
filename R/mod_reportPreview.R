@@ -82,7 +82,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             
             br(), br(),
             
-            if ("overall_comment" %in% credentials$privileges[[user$role]]) 
+            if ("overall_comment" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) 
               div(id = NS(id, "pkg-summary-grp"),
                   # Compose pkg summary - either disabled, enabled, or pre-populated
                   uiOutput(NS(id, "pkg_summary_ui")),

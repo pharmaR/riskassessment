@@ -69,7 +69,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
           ),
           br(), br(),
           div(id = ns("comments_for_fe"), fluidRow(
-            if ("general_comment" %in% credentials$privileges[[user$role]]) addCommentUI(id = ns("add_comment")),
+            if ("general_comment" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) addCommentUI(id = ns("add_comment")),
             viewCommentsUI(id = ns("view_comments"))))
         )
       }

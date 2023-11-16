@@ -96,7 +96,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       req(user$role)
       req(credentials$privileges)
       
-      if ("add_package" %in% credentials$privileges[[user$role]]) {
+      if ("add_package" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) {
         shinyjs::enable("pkg_lst")
         shinyjs::enable("add_pkgs")
         shinyjs::enable("uploaded_file")
@@ -110,7 +110,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
     })
 
     output$upload_format_lnk <- renderUI({
-      req("add_package" %in% credentials$privileges[[user$role]])
+      req("add_package" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       
       actionLink(NS(id, "upload_format"), "View Sample Dataset")
     })
@@ -121,9 +121,9 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       
       dplyr::bind_rows(
         upload_pkg,
-        if ("add_package" %in% credentials$privileges[[user$role]]) upload_pkg_add,
-        if ("delete_package" %in% credentials$privileges[[user$role]]) upload_pkg_delete,
-        if ("auto_decision_adjust" %in% credentials$privileges[[user$role]]) upload_pkg_dec_adj,
+        if ("add_package" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) upload_pkg_add,
+        if ("delete_package" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) upload_pkg_delete,
+        if ("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) upload_pkg_dec_adj,
         if (nrow(uploaded_pkgs()) > 0) upload_pkg_comp
       )
     })
@@ -169,7 +169,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
     output$rem_pkg_div <- renderUI({
       req(user$role)
       req(credentials$privileges)
-      req("delete_package" %in% credentials$privileges[[user$role]])
+      req("delete_package" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       
       session$onFlushed(function() {
         shinyjs::runjs(glue::glue('$("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))'))
@@ -250,7 +250,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
     })
     
     observeEvent(input$rem_pkg_btn, {
-      req("delete_package" %in% credentials$privileges[[user$role]]) 
+      req("delete_package" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) 
       
       np <- length(input$rem_pkg_lst)
       uploaded_packages <-
