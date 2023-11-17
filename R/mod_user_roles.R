@@ -265,7 +265,7 @@ mod_user_roles_server <- function(id, user, credentials){
       
       tbl <- proxy_tbl()
       i <- match(input$delete_col, colnames(tbl))
-      tbl <- tbl[,-i]
+      tbl <- tbl[,-i, drop = FALSE]
       roles_dbtbl(tbl)
       role_changes(dplyr::mutate(role_changes(), 
                                  new_role = if_else(new_role == input$delete_col, 
