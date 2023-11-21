@@ -14,7 +14,7 @@ app_server <- function(input, output, session) {
     unlink("source/*", recursive = TRUE)
     options(old)
     })
-  options(repos = c(CRAN = "https://cran.rstudio.com"))
+  options(repos = get_db_config("package_repo"))
   
   # Collect user info.
   user <- reactiveValues()
