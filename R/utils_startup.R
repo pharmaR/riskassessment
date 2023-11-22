@@ -237,8 +237,22 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   
   if (!dir.exists("tarballs")) dir.create("tarballs")
   if (!dir.exists("source")) dir.create("source")
+  
+  check_repos(db_config[["package_repo"]])
 
   invisible(c(assessment_db, credentials_db))
+}
+
+check_repos <- function(repos) {
+  if (!is.character(repos)) stop("The 'package_repo' configuration must be a character vector.")
+  
+  good_urls <- purrr::map_lgl(repos, 
+                              ~ try(curlGetHeaders(contrib.url(.x), verify = FALSE), silent = TRUE) %>%
+                                {class(.) != "try-error" && attr(., "status") != 404})
+  
+  if (any(!good_urls)) stop(glue::glue("The following URL{if (sum(!good_urls) > 1) 's' else ''} {if (sum(!good_urls) > 1) 'were' else 'was'} not reachable: {paste(contrib.url(repos[!good_urls]), collapse = ', ')}. Please check that the repo{if (sum(!good_urls) > 1) 's' else ''} {if (sum(!good_urls) > 1) 'are' else 'is'} valid and pointing to external sources."))
+  
+  invisible(repos)
 }
 
 

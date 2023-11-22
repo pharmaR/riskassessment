@@ -323,8 +323,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       np <- nrow(uploaded_packages)
       
       if (!isTRUE(getOption("shiny.testmode"))) {
-        url_lst <- list(
-          "https://cran.rstudio.com",
+        url_lst <- c(
           "https://cran.r-project.org",
           "https://cranlogs.r-pkg.org"
         )
