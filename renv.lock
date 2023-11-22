@@ -640,13 +640,13 @@
     },
     "curl": {
       "Package": "curl",
-      "Version": "4.3.2",
+      "Version": "5.1.0",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "R"
       ],
-      "Hash": "022c42d49c28e95d69ca60446dbabf88"
+      "Hash": "9123f3ef96a2c1a93927d828b2fe7d4c"
     },
     "data.table": {
       "Package": "data.table",
@@ -2079,14 +2079,14 @@
     },
     "riskmetric": {
       "Package": "riskmetric",
-      "Version": "0.2.2",
+      "Version": "0.2.3",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteRepo": "riskmetric",
       "RemoteUsername": "pharmaR",
       "RemoteRef": "HEAD",
-      "RemoteSha": "3d1501880edc07cff5cd72129c0df0899db83029",
+      "RemoteSha": "3905c66d15dde5b6e3d021aa2bec52d883462bd9",
       "Requirements": [
         "BiocManager",
         "backports",
@@ -2105,7 +2105,7 @@
         "vctrs",
         "xml2"
       ],
-      "Hash": "01fc1e5dd36df12d0ec604862c8af197"
+      "Hash": "3d06157f3dc34c80ec908f874484eebf"
     },
     "rjson": {
       "Package": "rjson",
@@ -2119,14 +2119,14 @@
     },
     "rlang": {
       "Package": "rlang",
-      "Version": "1.0.6",
+      "Version": "1.1.2",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "CRAN",
       "Requirements": [
         "R",
         "utils"
       ],
-      "Hash": "4ed1f8336c8d52c3e750adcdc57228a7"
+      "Hash": "50a6dbdc522936ca35afc5e2082ea91b"
     },
     "rmarkdown": {
       "Package": "rmarkdown",
@@ -2795,9 +2795,9 @@
     },
     "vctrs": {
       "Package": "vctrs",
-      "Version": "0.5.2",
+      "Version": "0.6.4",
       "Source": "Repository",
-      "Repository": "RSPM",
+      "Repository": "CRAN",
       "Requirements": [
         "R",
         "cli",
@@ -2805,7 +2805,7 @@
         "lifecycle",
         "rlang"
       ],
-      "Hash": "e4ffa94ceed5f124d429a5a5f0f5b378"
+      "Hash": "266c1ca411266ba8f365fcc726444b87"
     },
     "viridisLite": {
       "Package": "viridisLite",
