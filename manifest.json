@@ -1348,26 +1348,26 @@
         "Package": "curl",
         "Type": "Package",
         "Title": "A Modern and Flexible Web Client for R",
-        "Version": "4.3.2",
+        "Version": "5.1.0",
         "Authors@R": "c(\nperson(\"Jeroen\", \"Ooms\", role = c(\"aut\", \"cre\"), email = \"jeroen@berkeley.edu\",\ncomment = c(ORCID = \"0000-0002-4035-0289\")),\nperson(\"Hadley\", \"Wickham\", , \"hadley@rstudio.com\", role = \"ctb\"),\nperson(\"RStudio\", role = \"cph\")\n)",
         "Description": "The curl() and curl_download() functions provide highly\nconfigurable drop-in replacements for base url() and download.file() with\nbetter performance, support for encryption (https, ftps), gzip compression,\nauthentication, and other 'libcurl' goodies. The core of the package implements a\nframework for performing fully customized requests where data can be processed\neither in memory, on disk, or streaming via the callback or connection\ninterfaces. Some knowledge of 'libcurl' is recommended; for a more-user-friendly\nweb client see the 'httr' package which builds on this package with http\nspecific tools and logic.",
         "License": "MIT + file LICENSE",
         "SystemRequirements": "libcurl: libcurl-devel (rpm) or\nlibcurl4-openssl-dev (deb).",
-        "URL": "https://github.com/jeroen/curl (devel) https://curl.se/libcurl/\n(upstream)",
+        "URL": "https://jeroen.r-universe.dev/curl https://curl.se/libcurl/",
         "BugReports": "https://github.com/jeroen/curl/issues",
         "Suggests": "spelling, testthat (>= 1.0.0), knitr, jsonlite, rmarkdown,\nmagrittr, httpuv (>= 1.4.4), webutils",
         "VignetteBuilder": "knitr",
         "Depends": "R (>= 3.0.0)",
-        "RoxygenNote": "7.1.1",
+        "RoxygenNote": "7.2.3",
         "Encoding": "UTF-8",
         "Language": "en-US",
         "NeedsCompilation": "yes",
-        "Packaged": "2021-06-22 11:39:40 UTC; jeroen",
+        "Packaged": "2023-09-30 07:44:16 UTC; jeroen",
         "Author": "Jeroen Ooms [aut, cre] (<https://orcid.org/0000-0002-4035-0289>),\nHadley Wickham [ctb],\nRStudio [cph]",
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
-        "Repository": "RSPM",
-        "Date/Publication": "2021-06-23 07:00:06 UTC",
-        "Built": "R 4.2.2; x86_64-w64-mingw32; 2023-08-10 19:30:22 UTC; windows",
+        "Repository": "CRAN",
+        "Date/Publication": "2023-10-02 15:20:07 UTC",
+        "Built": "R 4.2.3; x86_64-w64-mingw32; 2023-10-25 01:13:39 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -4097,7 +4097,7 @@
         "Type": "Package",
         "Title": "Risk Metrics to Evaluating R Packages",
         "Description": "Facilities for assessing R packages against a number of metrics to  help quantify their robustness.",
-        "Version": "0.2.2",
+        "Version": "0.2.3",
         "Authors@R": "c( person(\"R Validation Hub\", role = c(\"aut\"), email = \"psi.aims.r.validation@gmail.com\"), person(\"Doug\", \"Kelkhoff\", role = c(\"aut\"), email = \"doug.kelkhoff@gmail.com\"), person(\"Marly\", \"Gotti\", role = c(\"aut\")),  person(\"Eli\", \"Miller\", role = c(\"cre\", \"aut\"), email = \"eli.miller@atorusresearch.com\"),  person(\"Kevin\", \"K\", role = c(\"aut\")),  person(\"Yilong\", \"Zhang\", role = c(\"aut\")), person(\"Eric\", \"Milliman\", role = c(\"aut\")), person(\"Juliane\", \"Manitz\", role = c(\"aut\")), person(\"Mark\", \"Padgham\", role = c(\"ctb\")), person(\"PSI special interest group Application and Implementation of Methodologies in Statistics\", role = c(\"cph\")))",
         "URL": "https://pharmar.github.io/riskmetric/,\nhttps://github.com/pharmaR/riskmetric",
         "BugReports": "https://github.com/pharmaR/riskmetric/issues",
@@ -4110,18 +4110,18 @@
         "Config/testthat/edition": "3",
         "Author": "R Validation Hub [aut], Doug Kelkhoff [aut], Marly Gotti [aut], Eli Miller [cre, aut], Kevin K [aut], Yilong Zhang [aut], Eric Milliman [aut], Juliane Manitz [aut], Mark Padgham [ctb], PSI special interest group Application and Implementation of Methodologies in Statistics [cph]",
         "Maintainer": "Eli Miller <eli.miller@atorusresearch.com>",
-        "Built": "R 4.2.2; ; 2023-10-20 15:07:41 UTC; windows",
+        "Built": "R 4.2.2; ; 2023-11-22 16:23:27 UTC; windows",
         "RemoteType": "github",
         "RemoteHost": "api.github.com",
         "RemoteRepo": "riskmetric",
         "RemoteUsername": "pharmaR",
         "RemoteRef": "HEAD",
-        "RemoteSha": "3d1501880edc07cff5cd72129c0df0899db83029",
+        "RemoteSha": "3905c66d15dde5b6e3d021aa2bec52d883462bd9",
         "GithubHost": "api.github.com",
         "GithubRepo": "riskmetric",
         "GithubUsername": "pharmaR",
         "GithubRef": "HEAD",
-        "GithubSHA1": "3d1501880edc07cff5cd72129c0df0899db83029"
+        "GithubSHA1": "3905c66d15dde5b6e3d021aa2bec52d883462bd9"
       }
     },
     "rjson": {
@@ -4153,31 +4153,30 @@
       "Repository": "https://cran.rstudio.com",
       "description": {
         "Package": "rlang",
-        "Version": "1.0.6",
+        "Version": "1.1.2",
         "Title": "Functions for Base Types and Core R and 'Tidyverse' Features",
         "Description": "A toolbox for working with base types, core R features\nlike the condition system, and core 'Tidyverse' features like tidy\nevaluation.",
-        "Authors@R": "c(\nperson(\"Lionel\", \"Henry\", ,\"lionel@rstudio.com\", c(\"aut\", \"cre\")),\nperson(\"Hadley\", \"Wickham\", ,\"hadley@rstudio.com\", \"aut\"),\nperson(given = \"mikefc\",\nemail = \"mikefc@coolbutuseless.com\",\nrole = \"cph\",\ncomment = \"Hash implementation based on Mike's xxhashlite\"),\nperson(given = \"Yann\",\nfamily = \"Collet\",\nrole = \"cph\",\ncomment = \"Author of the embedded xxHash library\"),\nperson(given = \"RStudio\", role = c(\"cph\", \"fnd\"))\n)",
+        "Authors@R": "c(\nperson(\"Lionel\", \"Henry\", ,\"lionel@posit.co\", c(\"aut\", \"cre\")),\nperson(\"Hadley\", \"Wickham\", ,\"hadley@posit.co\", \"aut\"),\nperson(given = \"mikefc\",\nemail = \"mikefc@coolbutuseless.com\",\nrole = \"cph\",\ncomment = \"Hash implementation based on Mike's xxhashlite\"),\nperson(given = \"Yann\",\nfamily = \"Collet\",\nrole = \"cph\",\ncomment = \"Author of the embedded xxHash library\"),\nperson(given = \"Posit, PBC\", role = c(\"cph\", \"fnd\"))\n)",
         "License": "MIT + file LICENSE",
         "ByteCompile": "true",
         "Biarch": "true",
-        "Depends": "R (>= 3.4.0)",
+        "Depends": "R (>= 3.5.0)",
         "Imports": "utils",
         "Suggests": "cli (>= 3.1.0), covr, crayon, fs, glue, knitr, magrittr,\nmethods, pillar, rmarkdown, stats, testthat (>= 3.0.0), tibble,\nusethis, vctrs (>= 0.2.3), withr",
         "Enhances": "winch",
-        "SystemRequirements": "C++11",
         "Encoding": "UTF-8",
-        "RoxygenNote": "7.2.1.9000",
+        "RoxygenNote": "7.2.3",
         "URL": "https://rlang.r-lib.org, https://github.com/r-lib/rlang",
         "BugReports": "https://github.com/r-lib/rlang/issues",
         "Config/testthat/edition": "3",
         "Config/Needs/website": "dplyr, tidyverse/tidytemplate",
         "NeedsCompilation": "yes",
-        "Packaged": "2022-09-23 16:12:48 UTC; lionel",
-        "Author": "Lionel Henry [aut, cre],\nHadley Wickham [aut],\nmikefc [cph] (Hash implementation based on Mike's xxhashlite),\nYann Collet [cph] (Author of the embedded xxHash library),\nRStudio [cph, fnd]",
-        "Maintainer": "Lionel Henry <lionel@rstudio.com>",
-        "Repository": "RSPM",
-        "Date/Publication": "2022-09-24 05:40:02 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2022-10-19 21:03:05 UTC; windows",
+        "Packaged": "2023-10-26 16:51:17 UTC; lionel",
+        "Author": "Lionel Henry [aut, cre],\nHadley Wickham [aut],\nmikefc [cph] (Hash implementation based on Mike's xxhashlite),\nYann Collet [cph] (Author of the embedded xxHash library),\nPosit, PBC [cph, fnd]",
+        "Maintainer": "Lionel Henry <lionel@posit.co>",
+        "Repository": "CRAN",
+        "Date/Publication": "2023-11-04 06:30:03 UTC",
+        "Built": "R 4.2.3; x86_64-w64-mingw32; 2023-11-20 01:35:02 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -5381,29 +5380,28 @@
       "description": {
         "Package": "vctrs",
         "Title": "Vector Helpers",
-        "Version": "0.5.2",
-        "Authors@R": "c(person(given = \"Hadley\",\nfamily = \"Wickham\",\nrole = \"aut\",\nemail = \"hadley@rstudio.com\"),\nperson(given = \"Lionel\",\nfamily = \"Henry\",\nrole = c(\"aut\", \"cre\"),\nemail = \"lionel@rstudio.com\"),\nperson(given = \"Davis\",\nfamily = \"Vaughan\",\nrole = \"aut\",\nemail = \"davis@rstudio.com\"),\nperson(given = \"data.table team\",\nrole = \"cph\",\ncomment = \"Radix sort based on data.table's forder() and their contribution to R's order()\"),\nperson(given = \"RStudio\",\nrole = \"cph\"))",
-        "Description": "Defines new notions of prototype and size that are\nused to provide tools for consistent and well-founded type-coercion\nand size-recycling, and are in turn connected to ideas of type- and\nsize-stability useful for analysing function interfaces.",
+        "Version": "0.6.4",
+        "Authors@R": "c(\nperson(\"Hadley\", \"Wickham\", , \"hadley@posit.co\", role = \"aut\"),\nperson(\"Lionel\", \"Henry\", , \"lionel@posit.co\", role = \"aut\"),\nperson(\"Davis\", \"Vaughan\", , \"davis@posit.co\", role = c(\"aut\", \"cre\")),\nperson(\"data.table team\", role = \"cph\",\ncomment = \"Radix sort based on data.table's forder() and their contribution to R's order()\"),\nperson(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"))\n)",
+        "Description": "Defines new notions of prototype and size that are used to\nprovide tools for consistent and well-founded type-coercion and\nsize-recycling, and are in turn connected to ideas of type- and\nsize-stability useful for analysing function interfaces.",
         "License": "MIT + file LICENSE",
-        "URL": "https://vctrs.r-lib.org/",
+        "URL": "https://vctrs.r-lib.org/, https://github.com/r-lib/vctrs",
         "BugReports": "https://github.com/r-lib/vctrs/issues",
-        "Depends": "R (>= 3.3)",
-        "Imports": "cli (>= 3.4.0), glue, lifecycle (>= 1.0.3), rlang (>= 1.0.6)",
-        "Suggests": "bit64, covr, crayon, dplyr (>= 0.8.5), generics, knitr,\npillar (>= 1.4.4), pkgdown (>= 2.0.1), rmarkdown, testthat (>=\n3.0.0), tibble (>= 3.1.3), withr, xml2, waldo (>= 0.2.0),\nzeallot",
+        "Depends": "R (>= 3.5.0)",
+        "Imports": "cli (>= 3.4.0), glue, lifecycle (>= 1.0.3), rlang (>= 1.1.0)",
+        "Suggests": "bit64, covr, crayon, dplyr (>= 0.8.5), generics, knitr,\npillar (>= 1.4.4), pkgdown (>= 2.0.1), rmarkdown, testthat (>=\n3.0.0), tibble (>= 3.1.3), waldo (>= 0.2.0), withr, xml2,\nzeallot",
         "VignetteBuilder": "knitr",
-        "SystemRequirements": "C++11",
+        "Config/Needs/website": "tidyverse/tidytemplate",
+        "Config/testthat/edition": "3",
         "Encoding": "UTF-8",
         "Language": "en-GB",
         "RoxygenNote": "7.2.3",
-        "Config/testthat/edition": "3",
-        "Config/Needs/website": "tidyverse/tidytemplate",
         "NeedsCompilation": "yes",
-        "Packaged": "2023-01-21 20:11:27 UTC; davis",
-        "Author": "Hadley Wickham [aut],\nLionel Henry [aut, cre],\nDavis Vaughan [aut],\ndata.table team [cph] (Radix sort based on data.table's forder() and\ntheir contribution to R's order()),\nRStudio [cph]",
-        "Maintainer": "Lionel Henry <lionel@rstudio.com>",
-        "Repository": "RSPM",
-        "Date/Publication": "2023-01-23 11:20:02 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-01-24 12:10:54 UTC; windows",
+        "Packaged": "2023-10-12 15:19:07 UTC; davis",
+        "Author": "Hadley Wickham [aut],\nLionel Henry [aut],\nDavis Vaughan [aut, cre],\ndata.table team [cph] (Radix sort based on data.table's forder() and\ntheir contribution to R's order()),\nPosit Software, PBC [cph, fnd]",
+        "Maintainer": "Davis Vaughan <davis@posit.co>",
+        "Repository": "CRAN",
+        "Date/Publication": "2023-10-12 22:20:02 UTC",
+        "Built": "R 4.2.3; x86_64-w64-mingw32; 2023-11-20 02:24:49 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -5819,7 +5817,7 @@
       "checksum": "b7c95e12e5a6b48ee37e30faad042ad3"
     },
     ".Rprofile": {
-      "checksum": "56cee2da799fed4370ad9cf3e8eed593"
+      "checksum": "61a0f37503ae5a9f06b3f2cb76fe9c0b"
     },
     "_pkgdown.yml": {
       "checksum": "93edcbb89a7aedf046ace84f340aaf98"
@@ -5829,15 +5827,6 @@
     },
     "codecov.yml": {
       "checksum": "95dfbfc38a2669bc0c6af49bce10dc39"
-    },
-    "completion_matrix.html": {
-      "checksum": "e3ed87228eb818b3b84462761cd405cb"
-    },
-    "credentials_demo.sqlite": {
-      "checksum": "246442082c2d738e4d657936de957e83"
-    },
-    "credentials_dev.sqlite": {
-      "checksum": "4fe0c340b063b908640dfcdf3f2f9578"
     },
     "data-raw/community.csv": {
       "checksum": "96f6ded0b2073bcf999141017dcb24b9"
@@ -5849,7 +5838,7 @@
       "checksum": "d8bc4f8b18a48054030b54540ef18cb2"
     },
     "data-raw/internal-data.R": {
-      "checksum": "80fcba1c4c8c9a7f730e23b75bfeab86"
+      "checksum": "3fb8e1b438d62a80db425b2b2d2797e8"
     },
     "data-raw/maintenance.csv": {
       "checksum": "c74b66e7688f04a9631380c50099fe9e"
@@ -5866,620 +5855,8 @@
     "data-raw/upload_format.csv": {
       "checksum": "87361dd71fc97d307ae957bf2603130f"
     },
-    "database.sqlite": {
-      "checksum": "53ca7c827b19b2bbddf44e84cd52bc94"
-    },
-    "database_demo.sqlite": {
-      "checksum": "85b8f838bf09da50a1e6ed0cb54680cf"
-    },
     "DESCRIPTION": {
-      "checksum": "c6f494f69d1efc7050a0a85982a7d1a4"
-    },
-    "dev/001_start.R": {
-      "checksum": "c1dab6533942c6047ef1d16fb09dbaf4"
-    },
-    "dev/01_start.R": {
-      "checksum": "800c33dd99689841978d09b2625c6c13"
-    },
-    "dev/02_dev.R": {
-      "checksum": "2116715f23953bd22708dbf625b27afe"
-    },
-    "dev/03_deploy.R": {
-      "checksum": "7b413fcf3e7273e8b80cb6971b2190a4"
-    },
-    "dev/run_dev.R": {
-      "checksum": "a2ac3e12edab3e56866abc2c4e939187"
-    },
-    "docs/404.html": {
-      "checksum": "0cc106b16ec1154d2f3185f3a8767d7b"
-    },
-    "docs/articles/Administrative_Tools_and_Options.html": {
-      "checksum": "5dfd5eb5eb729943d0980dc1c118ad5a"
-    },
-    "docs/articles/Administrative_Tools_and_Options_V0.1.1.html": {
-      "checksum": "c8dd5052a71cbb1db20f636d7206bfca"
-    },
-    "docs/articles/Credential_Manager.html": {
-      "checksum": "8220d85468f3d70c4b732d68fb7cf6c7"
-    },
-    "docs/articles/Deployment.html": {
-      "checksum": "c2a9ebb3f113b3f7d9aa4b09ab48cf82"
-    },
-    "docs/articles/Deployment_V0.1.1.html": {
-      "checksum": "9f3faa46147130e211447f9f7fa41472"
-    },
-    "docs/articles/dev_renv.html": {
-      "checksum": "245b0d9bb4186b7035fa428487591fe2"
-    },
-    "docs/articles/dev_Using_SQLite_Command_Line.html": {
-      "checksum": "8e33a69617bc4d8e245cf688e56da9d4"
-    },
-    "docs/articles/images/account_expired_msg.png": {
-      "checksum": "41b17899c028f84ceed13e9e582e42c8"
-    },
-    "docs/articles/images/add_a_user_btn.png": {
-      "checksum": "230a3c1ea233859f9c5401aab75ac47c"
-    },
-    "docs/articles/images/add_package_privilege.png": {
-      "checksum": "3e26db3ebe696ba90b559782e2ec02c6"
-    },
-    "docs/articles/images/add_user.png": {
-      "checksum": "e7273bf7d01c8bd8918b7023ef72da3e"
-    },
-    "docs/articles/images/add_user_V0.1.1.png": {
-      "checksum": "d9eae6ee95612967d8d4feb86174518b"
-    },
-    "docs/articles/images/admin_mode_button.png": {
-      "checksum": "ecb4e83408e718071ccaaa707eb04d79"
-    },
-    "docs/articles/images/admin_mode_tables1.png": {
-      "checksum": "2af0c6b215d3af20a5773f886c062fdc"
-    },
-    "docs/articles/images/admin_mode_tables1_V0.1.1.png": {
-      "checksum": "a1db20bd8fdfcee1a1b45eda334e6136"
-    },
-    "docs/articles/images/admin_mode_tables2.png": {
-      "checksum": "2a2d790585d5a74ed28024c03e62925d"
-    },
-    "docs/articles/images/admin_mode_tables2_V0.1.1.png": {
-      "checksum": "1e68d437f1a8c88fd5ec402dab5ff724"
-    },
-    "docs/articles/images/admin_tools.png": {
-      "checksum": "a24699b36f8c4290980f9cb6186762ed"
-    },
-    "docs/articles/images/admin_tools_creds.png": {
-      "checksum": "1be2844440cde139fdda7d9be2210e4b"
-    },
-    "docs/articles/images/admin_tools_tabs.png": {
-      "checksum": "4d2068012e7cc9f2c9f5e80ae4bd6305"
-    },
-    "docs/articles/images/admin_tools_tabs_V0.1.1.png": {
-      "checksum": "91cd3b3679713f2cb969e41659eedfed"
-    },
-    "docs/articles/images/apply_new_weights.png": {
-      "checksum": "fb1a0fcbc2e55ea3399f2a3c71dc2e25"
-    },
-    "docs/articles/images/apply_new_weights_V0.1.1.png": {
-      "checksum": "65d25252211046837781ff395b0697ca"
-    },
-    "docs/articles/images/assessment_criteria.png": {
-      "checksum": "fd07a1299c469da88c5518f105a53f35"
-    },
-    "docs/articles/images/assessment_reweighting_tab.png": {
-      "checksum": "d61a92a85cff86f99fb3a5d09e146215"
-    },
-    "docs/articles/images/assessment_reweighting_tab_V0.1.1.png": {
-      "checksum": "fbceac718c516f304d8e95d40a1167d5"
-    },
-    "docs/articles/images/change_pwd2.png": {
-      "checksum": "18bd4edab9bf27c77448dd18b9ae130f"
-    },
-    "docs/articles/images/click_help.png": {
-      "checksum": "6178136bb73df78ec08f7b83088b64e9"
-    },
-    "docs/articles/images/click_help_v2.0.0.png": {
-      "checksum": "a18184d5ecb12169c101c731bef01bf9"
-    },
-    "docs/articles/images/comm_usage_metrics_v2.0.0.png": {
-      "checksum": "043fbe987388f02635e08e544a97561f"
-    },
-    "docs/articles/images/community_usage1.png": {
-      "checksum": "cd32a6af46636983eb4cf6a684484e74"
-    },
-    "docs/articles/images/community_usage2.png": {
-      "checksum": "55be2b4b4aa987ec97f02a5a281fbb3a"
-    },
-    "docs/articles/images/config_privileges.png": {
-      "checksum": "cba32d78b561c54a62842e3763f6606f"
-    },
-    "docs/articles/images/confirm_change_password.png": {
-      "checksum": "3f46b2a0dbd8392df434fe90dc089e2c"
-    },
-    "docs/articles/images/confirm_delete_users.png": {
-      "checksum": "9ea7e2dfb5bb4c7c7c7861dc0498e6d0"
-    },
-    "docs/articles/images/confirm_reset_password.png": {
-      "checksum": "452eff503c6d68b8694b09a096f835e4"
-    },
-    "docs/articles/images/confirm_update_weights.png": {
-      "checksum": "c74d523c682ccff975745953db5e199e"
-    },
-    "docs/articles/images/create_new_admin.png": {
-      "checksum": "dc250dd2cbbe3062da446567596aa5ed"
-    },
-    "docs/articles/images/create_new_admin_V0.1.1.png": {
-      "checksum": "dc250dd2cbbe3062da446567596aa5ed"
-    },
-    "docs/articles/images/database_view.png": {
-      "checksum": "5f7ac52a7ea1d817e25e357cfcafabb5"
-    },
-    "docs/articles/images/decision_automation_allcat.png": {
-      "checksum": "a169c1c2a3cb5a0309cac8e49938b15a"
-    },
-    "docs/articles/images/decision_automation_allcat_V0.1.1.png": {
-      "checksum": "23b1ac5168d69abd6feaf6f41613cccc"
-    },
-    "docs/articles/images/decision_automation_applied.png": {
-      "checksum": "582c18d06c990fceaccddb651705b7a1"
-    },
-    "docs/articles/images/decision_automation_applied_V0.1.1.png": {
-      "checksum": "1e745c89ab65ded1e3e806b5584956ba"
-    },
-    "docs/articles/images/decision_automation_color_input.png": {
-      "checksum": "3ed3643bb08f7438612ec0da67d1a86c"
-    },
-    "docs/articles/images/decision_automation_confirm.png": {
-      "checksum": "62772de5422a71c113cc86d7c63dca36"
-    },
-    "docs/articles/images/decision_automation_confirm_V0.1.1.png": {
-      "checksum": "8f9f8ed39d9d6d256829ce6d4e17f2cd"
-    },
-    "docs/articles/images/decision_automation_control_panel.png": {
-      "checksum": "6b35f66262edb6aab96cb2ce429118e7"
-    },
-    "docs/articles/images/decision_automation_control_panel_V0.1.1.png": {
-      "checksum": "cc1a0c30f3dde6c97efb57475697a081"
-    },
-    "docs/articles/images/decision_automation_gear.png": {
-      "checksum": "2fe9b6fc3161d14a628d58a8201dd72d"
-    },
-    "docs/articles/images/decision_automation_gear_V0.1.1.png": {
-      "checksum": "a2f5bcc2282432fec1aa65e09c6e2850"
-    },
-    "docs/articles/images/decision_automation_high.png": {
-      "checksum": "16edd91a4b2eaca4a30d966bc77ffec0"
-    },
-    "docs/articles/images/decision_automation_high_V0.1.1.png": {
-      "checksum": "482475b2ffc5869e1b1f665abb734727"
-    },
-    "docs/articles/images/decision_automation_modal.png": {
-      "checksum": "6202b42e8033e501593e6227e561d17c"
-    },
-    "docs/articles/images/decision_automation_submit_colors.png": {
-      "checksum": "ec4425e1b80128c8f53a2db5e49af02a"
-    },
-    "docs/articles/images/decision_slider.png": {
-      "checksum": "5829ec1a136113745018c5f38f18cd65"
-    },
-    "docs/articles/images/delete_package_privilege.png": {
-      "checksum": "600427c7fc3e7a1df374ac8e45b3ce03"
-    },
-    "docs/articles/images/delete_user_modal.png": {
-      "checksum": "067cf5bd4bc24153b6771100beca70f1"
-    },
-    "docs/articles/images/deploy_full_auto_decision_rules.png": {
-      "checksum": "5cf7aba7da9a0b47216f6c58d5e53aa4"
-    },
-    "docs/articles/images/deploy_general.png": {
-      "checksum": "4ef52ca5290ad5bfe88fe3504e373dc1"
-    },
-    "docs/articles/images/deploy_posit_rsconnect_logo.png": {
-      "checksum": "4d00cb726ec6372dfb7665a1a852788a"
-    },
-    "docs/articles/images/deploy_rocket.png": {
-      "checksum": "ac6031b4073f361eef7ed2f3abe29047"
-    },
-    "docs/articles/images/deploy_shinyproxy.png": {
-      "checksum": "648fe6f18f418bd49393b2191f014c26"
-    },
-    "docs/articles/images/download_db_btn.png": {
-      "checksum": "8462bd8cbf98a4f910dcb2b95ce77351"
-    },
-    "docs/articles/images/edit_remove_select_users.png": {
-      "checksum": "0a19c0e3ef97f36548d33875f44fa93b"
-    },
-    "docs/articles/images/edit_select_users.png": {
-      "checksum": "6031321e6315844994d6092623488483"
-    },
-    "docs/articles/images/edit_user_popup.png": {
-      "checksum": "013bab4a8e411e48de72ed03b1ba0da1"
-    },
-    "docs/articles/images/edit_user_popup_V0.1.1.png": {
-      "checksum": "ad801eeb97d461a8d505f22c5208fc46"
-    },
-    "docs/articles/images/final_decision_privilege.png": {
-      "checksum": "bdf53bb75811a9055ab2e93fe97f59ad"
-    },
-    "docs/articles/images/force_change_password.png": {
-      "checksum": "28029d9bbcbd071af36c2cadb8eb0994"
-    },
-    "docs/articles/images/general_comment_privilege.png": {
-      "checksum": "7a1aeee02f1778d1c410f4ffdd1b79c6"
-    },
-    "docs/articles/images/help_button.png": {
-      "checksum": "a5421e930e875a8d542ad46c26e6fdd7"
-    },
-    "docs/articles/images/initial_login.png": {
-      "checksum": "32dffef61d14f38b1d55cb496b0301eb"
-    },
-    "docs/articles/images/maint_metric1.png": {
-      "checksum": "6390b6e1fedec5b6f031a439d377d222"
-    },
-    "docs/articles/images/maint_metric2.png": {
-      "checksum": "dea9d616ea744eb1db2f402b442f6b0a"
-    },
-    "docs/articles/images/maint_metrics_v2.0.0.png": {
-      "checksum": "deabb1c8e1f1ce10b2f968e14441256a"
-    },
-    "docs/articles/images/metrics_dropdown_v2.0.0.png": {
-      "checksum": "686fc3152c3fc349edefb69ba65e288c"
-    },
-    "docs/articles/images/new_user_modal.png": {
-      "checksum": "11bfab343cff4801c71711d8f8be80ae"
-    },
-    "docs/articles/images/overall_comment.png": {
-      "checksum": "1d8394b228bd76abeef83b3ddbed9a40"
-    },
-    "docs/articles/images/overall_comment_privilege.png": {
-      "checksum": "3624fa8ff9271e0c25d12c66795204dd"
-    },
-    "docs/articles/images/password_reset.png": {
-      "checksum": "8868091144da39c21c2d3367fb2f7107"
-    },
-    "docs/articles/images/password_table.png": {
-      "checksum": "6a78c6f997dfe80fa55442dd9f3e01ab"
-    },
-    "docs/articles/images/progress_modal.png": {
-      "checksum": "cf7f616e1ff9296788b312612ebdd84e"
-    },
-    "docs/articles/images/renv-install-none.png": {
-      "checksum": "de4aada40ab9058f74758f124df44cfa"
-    },
-    "docs/articles/images/report_preview.png": {
-      "checksum": "188338bb4b31b90bcf65d595a12504cf"
-    },
-    "docs/articles/images/report_preview_v2.0.0.png": {
-      "checksum": "d3ceb8a50e37dffb8cb0644d0d2cbece"
-    },
-    "docs/articles/images/report_preview1.png": {
-      "checksum": "84ee9f31b09d15a770c5d57d36e1476f"
-    },
-    "docs/articles/images/report_preview2.png": {
-      "checksum": "d731f8cc54a9d856c2bf26772c2a9f83"
-    },
-    "docs/articles/images/reset_decision.png": {
-      "checksum": "7d7f0683b078f6a54cfaf8e38e082af8"
-    },
-    "docs/articles/images/revert_decision_privilege.png": {
-      "checksum": "aa1d3de593b55d99601963e422ca345b"
-    },
-    "docs/articles/images/reweighting_modal.png": {
-      "checksum": "8bdf3e57207c6c28f0f27aa86d93279b"
-    },
-    "docs/articles/images/sel_package.png": {
-      "checksum": "9cfa93028f06a4414feeebc8f914e552"
-    },
-    "docs/articles/images/sel_package_v2.0.0.png": {
-      "checksum": "19675553b78b4341b236ff2a2a82c7f6"
-    },
-    "docs/articles/images/set_update_weights.png": {
-      "checksum": "47dd2f66aedcab9de3006692f6a34e5c"
-    },
-    "docs/articles/images/set_update_weights_V0.1.1.png": {
-      "checksum": "9f02e25b848088545a89eea6058ec97b"
-    },
-    "docs/articles/images/sidebar.png": {
-      "checksum": "5ce4c8db837969174ba32e68b0675939"
-    },
-    "docs/articles/images/sidebar_v2.0.0.png": {
-      "checksum": "a6cf4833755529f4ed8c42fabb82fc86"
-    },
-    "docs/articles/images/source_explorer_v2.0.0.png": {
-      "checksum": "3d7f7f60ad48fb2e38fb1d3e3a0ebc4c"
-    },
-    "docs/articles/images/SQLite.png": {
-      "checksum": "be403e36c76a55ed2695ccefe050d9f4"
-    },
-    "docs/articles/images/start_decision_automation.png": {
-      "checksum": "adac04fb037bc69d4a183277a1e2278e"
-    },
-    "docs/articles/images/start_decision_automation_v2.0.0.png": {
-      "checksum": "d29f8241458dbb3771107d03895e6693"
-    },
-    "docs/articles/images/submit_decision.png": {
-      "checksum": "6dd3540ea73d485ff4405d70ebd1857b"
-    },
-    "docs/articles/images/top_left_tabs.png": {
-      "checksum": "55ee5f03a47becd845a83063707895a9"
-    },
-    "docs/articles/images/uploaded_pkgs.png": {
-      "checksum": "a264f98f3239e2ba32b765a8972af8de"
-    },
-    "docs/articles/images/user_succ_updated_modal.png": {
-      "checksum": "37a090cbf4818d50e33f418cae665615"
-    },
-    "docs/articles/images/users_table.png": {
-      "checksum": "095ae6e039ea9523c91e8e136a06e57f"
-    },
-    "docs/articles/images/users_table_V0.1.1.png": {
-      "checksum": "65dc88fee2397acd03c8a0143d5ab780"
-    },
-    "docs/articles/images/users_table2.png": {
-      "checksum": "cb7ec374ae84dd1e12313cdead756b21"
-    },
-    "docs/articles/images/weight_updated.png": {
-      "checksum": "a6c5fa2d05ae420752d0dad03d7b2ddd"
-    },
-    "docs/articles/images/weight_updated_V0.1.1.png": {
-      "checksum": "fe072126e8ffaa5191e4e8641e931ee6"
-    },
-    "docs/articles/images/welcome_landing.png": {
-      "checksum": "44bd2e6456342c43bb0db1e05685d637"
-    },
-    "docs/articles/images/welcome_landing_v2.0.0.png": {
-      "checksum": "4cbc35b798da5ed51b726b4bfb4dcf29"
-    },
-    "docs/articles/index.html": {
-      "checksum": "a1f77520a70105f59d428f10ada59a8f"
-    },
-    "docs/articles/riskassessment.html": {
-      "checksum": "f63648a063942b4f95079fb1f90f0471"
-    },
-    "docs/articles/User_Roles_and_Privileges.html": {
-      "checksum": "e40cff0375b387b5a2253341f1b62ea3"
-    },
-    "docs/authors.html": {
-      "checksum": "669be8cdd63e85aabeda383e511b67e6"
-    },
-    "docs/deps/bootstrap-5.1.0/bootstrap.bundle.min.js": {
-      "checksum": "715756e65b9ff107f4cf927e3e8bbf76"
-    },
-    "docs/deps/bootstrap-5.1.0/bootstrap.bundle.min.js.map": {
-      "checksum": "891e8009af42b213eae4844bc9790c2b"
-    },
-    "docs/deps/bootstrap-5.1.0/bootstrap.min.css": {
-      "checksum": "44ad4e0870f51bea392400e518fc518e"
-    },
-    "docs/deps/bootstrap-5.2.2/bootstrap.bundle.min.js": {
-      "checksum": "d2b0d31f74e62440ea1a557f126d0c64"
-    },
-    "docs/deps/bootstrap-5.2.2/bootstrap.bundle.min.js.map": {
-      "checksum": "458916405b5ef70e2e5ee10e85b09acb"
-    },
-    "docs/deps/bootstrap-5.2.2/bootstrap.min.css": {
-      "checksum": "0a648a0927419734100c21daf0ae3423"
-    },
-    "docs/deps/data-deps.txt": {
-      "checksum": "be1e8f6884e833c9b4dfa05681edbcc4"
-    },
-    "docs/deps/jquery-3.6.0/jquery-3.6.0.js": {
-      "checksum": "2849239b95f5a9a2aea3f6ed9420bb88"
-    },
-    "docs/deps/jquery-3.6.0/jquery-3.6.0.min.js": {
-      "checksum": "8fb8fee4fcc3cc86ff6c724154c49c42"
-    },
-    "docs/deps/jquery-3.6.0/jquery-3.6.0.min.map": {
-      "checksum": "6efc5d663aaacac2024153fa0d4bafcd"
-    },
-    "docs/index.html": {
-      "checksum": "5ea81af7c2dea98a16533797bc581deb"
-    },
-    "docs/LICENSE-text.html": {
-      "checksum": "298cfb764a30f1af81a2316bc2b79b2a"
-    },
-    "docs/LICENSE.html": {
-      "checksum": "97f5873bd6509be30328fdfadfd70616"
-    },
-    "docs/link.svg": {
-      "checksum": "4759f31f8a585e9af173fc579d730265"
-    },
-    "docs/news/index.html": {
-      "checksum": "f1e6aad7c0c64b08299b0205b6811f75"
-    },
-    "docs/pkgdown.js": {
-      "checksum": "9c627b6b2c41322b8f362fac07a2ae5a"
-    },
-    "docs/pkgdown.yml": {
-      "checksum": "91eac78f8010bdff839ad83208f4f1c4"
-    },
-    "docs/reference/add_shinymanager_auth.html": {
-      "checksum": "0f90e7a447ce89ecf8fa0fcfea2881e7"
-    },
-    "docs/reference/add_tags.html": {
-      "checksum": "ac47d0542780267ff3b37345f1e72489"
-    },
-    "docs/reference/addCommentServer.html": {
-      "checksum": "dcb1015fe87c33f4e996e9a8a059b2f7"
-    },
-    "docs/reference/addCommentUI.html": {
-      "checksum": "60da07e54e3b909505d643c4be41499e"
-    },
-    "docs/reference/app_theme.html": {
-      "checksum": "56b2ac68d26e06816b3f8f444fc1111d"
-    },
-    "docs/reference/assessmentInfoServer.html": {
-      "checksum": "00851b1572f5c6fe7545792e939d7f21"
-    },
-    "docs/reference/assessmentInfoUI.html": {
-      "checksum": "d41a24be7495f03e5e5c0ea7b90a0dd6"
-    },
-    "docs/reference/auto_font.html": {
-      "checksum": "6af79c0180673f84fad251d63f2ed550"
-    },
-    "docs/reference/build_comm_cards.html": {
-      "checksum": "40b5637b180927961038562a732d94c6"
-    },
-    "docs/reference/build_comm_plotly.html": {
-      "checksum": "a63420c9b6fce64ac283b6f4b9d20751"
-    },
-    "docs/reference/build_db_cards.html": {
-      "checksum": "eec7bde6ee61a00d44a758d3c2724492"
-    },
-    "docs/reference/communityMetricsServer.html": {
-      "checksum": "b6f861f603c6ea27a271d5ee21d046fc"
-    },
-    "docs/reference/communityMetricsUI.html": {
-      "checksum": "16738c6b0d599a7b6476e3938a332334"
-    },
-    "docs/reference/create_credentials_db.html": {
-      "checksum": "2052e955b0037cf2d1a7527ea93ed442"
-    },
-    "docs/reference/create_credentials_dev_db.html": {
-      "checksum": "0ef90fd9ceea55c83605df10ef103cf0"
-    },
-    "docs/reference/create_db.html": {
-      "checksum": "c57368f7879ee6740e0ba12ce7abec84"
-    },
-    "docs/reference/databaseViewServer.html": {
-      "checksum": "b758b11a1ee0526f68cf63170e491185"
-    },
-    "docs/reference/databaseViewUI.html": {
-      "checksum": "fff9edf37286fca8b8ba0401782043b3"
-    },
-    "docs/reference/figures/best_app_banner.png": {
-      "checksum": "2aac528f3ae2c961d0773a22eb51ee51"
-    },
-    "docs/reference/figures/build_comm_plotly_ex2.png": {
-      "checksum": "29b243f3558ae91b7232343b0d8f3038"
-    },
-    "docs/reference/figures/demo_riskassessment.png": {
-      "checksum": "164d7fa4f8432e26c4311a88a5872df2"
-    },
-    "docs/reference/figures/google_forms_logo.png": {
-      "checksum": "6fcc6dc16337a432d8dd1c9ceb086ca0"
-    },
-    "docs/reference/figures/hex-riskassessment-aspconfig.png": {
-      "checksum": "10aa90cc8585b47eb0b6c101df4604d3"
-    },
-    "docs/reference/figures/hex-riskmetric-aspconfig.png": {
-      "checksum": "fc90e730a530319b4f6444ceb1c66274"
-    },
-    "docs/reference/figures/r_con_update.png": {
-      "checksum": "be064c7ccb0f86fd952d349a5f9d82b0"
-    },
-    "docs/reference/figures/raa-alt-image.png": {
-      "checksum": "67cf7b41d7962259b16f205b1c78e478"
-    },
-    "docs/reference/figures/raa-image-ug.png": {
-      "checksum": "7f3066a2042a334ea7db9d1f96057a4f"
-    },
-    "docs/reference/figures/raa-image.png": {
-      "checksum": "73a5de66a3f30df8a156aa22ad0ee73c"
-    },
-    "docs/reference/figures/raa_shinyConf23.png": {
-      "checksum": "fe0ee8d91b34f5ec5c21798b099b89e0"
-    },
-    "docs/reference/figures/youtube-play-button.png": {
-      "checksum": "c7a39135eb786fb9de963899159c3f15"
-    },
-    "docs/reference/generate_comm_data.html": {
-      "checksum": "dc7ea9ac245c013294d0f69ed2b6ba0f"
-    },
-    "docs/reference/get_date_span.html": {
-      "checksum": "186a4837405113e14000e25610129ce8"
-    },
-    "docs/reference/get_latest_pkg_info.html": {
-      "checksum": "5ed06869bf167f3a2f68b54ce6f61749"
-    },
-    "docs/reference/getTimeStamp.html": {
-      "checksum": "ec39ff6c327fb23c623cf5983e2e4503"
-    },
-    "docs/reference/index.html": {
-      "checksum": "426d666fd8d7fa6793c691c569612aa3"
-    },
-    "docs/reference/initialize_raa.html": {
-      "checksum": "d87c0b2d71f9a86ea5a32259827be320"
-    },
-    "docs/reference/introJSServer.html": {
-      "checksum": "72b830e8e5b74a7c793c1b88d66c3ccc"
-    },
-    "docs/reference/introJSUI.html": {
-      "checksum": "c2060c3a36f17434447e849577a3f18b"
-    },
-    "docs/reference/maintenanceMetricsServer.html": {
-      "checksum": "7fe561945c447d3e01017c5ee6e4c55e"
-    },
-    "docs/reference/maintenanceMetricsUI.html": {
-      "checksum": "be71aaa1a58e70248fdaa4380de54b2f"
-    },
-    "docs/reference/metricBoxServer.html": {
-      "checksum": "f5a8f179934840f3e357ac3312a4cce4"
-    },
-    "docs/reference/metricBoxUI.html": {
-      "checksum": "f816200d2d30b1c7ee9f4242e21aad38"
-    },
-    "docs/reference/metricGridServer.html": {
-      "checksum": "0ef86758edbc14f8310beee72384f622"
-    },
-    "docs/reference/metricGridUI.html": {
-      "checksum": "e6715ecf7cc064ac429d264fd4f4abf8"
-    },
-    "docs/reference/packageDependenciesServer.html": {
-      "checksum": "94f14991bdab4d76d3e232e08e7a353e"
-    },
-    "docs/reference/packageDependenciesUI.html": {
-      "checksum": "06391eee97f981d05d3db388d1d33f22"
-    },
-    "docs/reference/reportPreviewServer.html": {
-      "checksum": "2e2f3b693aa47d1c8c48fa63aa2fdb11"
-    },
-    "docs/reference/reportPreviewUI.html": {
-      "checksum": "d739559eb5542b51437866763d2e84ec"
-    },
-    "docs/reference/reweightViewServer.html": {
-      "checksum": "101f12a2873e42285c62250b3d093317"
-    },
-    "docs/reference/reweightViewUI.html": {
-      "checksum": "ee269a4a893111bb13d98fdf6fb6e52c"
-    },
-    "docs/reference/riskassessment-package.html": {
-      "checksum": "2b2b305ecf86f7c8d1685a3ca4c7bb0a"
-    },
-    "docs/reference/Rplot001.png": {
-      "checksum": "9b7a75eb2a0170ac2c15ab46a66f862b"
-    },
-    "docs/reference/run_app.html": {
-      "checksum": "bfb8c59f632160b6dc56269ea96ed565"
-    },
-    "docs/reference/showComments.html": {
-      "checksum": "a7f724d23ba89ad8c635143b61da37f8"
-    },
-    "docs/reference/showHelperMessage.html": {
-      "checksum": "0d11ba38cb3caf19aa22c949df9d4741"
-    },
-    "docs/reference/sidebarServer.html": {
-      "checksum": "07b9bdba4b74f11cdec5f09885f05da5"
-    },
-    "docs/reference/sidebarUI.html": {
-      "checksum": "1a31daa88fec561d073593e3d85065f0"
-    },
-    "docs/reference/uploadPackageServer.html": {
-      "checksum": "76e042980c5af2aec8b70a2d1a7a816e"
-    },
-    "docs/reference/uploadPackageUI.html": {
-      "checksum": "5a232adec2cb4456b93674892064872d"
-    },
-    "docs/reference/viewCommentsServer.html": {
-      "checksum": "116df3711b9c90d467d659060822ed7f"
-    },
-    "docs/reference/viewCommentsUI.html": {
-      "checksum": "7a708a8fbf5facf5dc54282c98feb36e"
-    },
-    "docs/search.json": {
-      "checksum": "b0c4089d8a3c4da38b5b984de0fef7c4"
-    },
-    "docs/sitemap.xml": {
-      "checksum": "9debdf7b434ebeef10459f03dc93c293"
+      "checksum": "119a03cf0ac5cb8e63eb0f0aa49a9c6a"
     },
     "inst/app/www/css/community_metrics.css": {
       "checksum": "1961b3f85311f077befd15e45b032b7b"
@@ -6632,205 +6009,13 @@
       "checksum": "a935dd2840ae8d4dab5b90bfdc795609"
     },
     "loggit.json": {
-      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
-    },
-    "man/add_shinymanager_auth.Rd": {
-      "checksum": "3db0b47c4190ff9c611e81f22058f0b6"
-    },
-    "man/add_tags.Rd": {
-      "checksum": "5cde34d7906a311f9b4345f88bb29839"
-    },
-    "man/addCommentServer.Rd": {
-      "checksum": "fefcae9f0f6369cbf0cd06d9c11ddc37"
-    },
-    "man/addCommentUI.Rd": {
-      "checksum": "5c0f655cbfbbc0067b59740889d81127"
-    },
-    "man/app_theme.Rd": {
-      "checksum": "c2d5b701411eab1d61113267cace1b89"
-    },
-    "man/assessmentInfoServer.Rd": {
-      "checksum": "5fba0e3cf2c8730df26d37a393d05ecf"
-    },
-    "man/assessmentInfoUI.Rd": {
-      "checksum": "c29cb8223aa89868e5fe6adde26f9755"
-    },
-    "man/auto_font.Rd": {
-      "checksum": "f0c0e92b456ff235f2b26b1850ba7459"
-    },
-    "man/build_comm_cards.Rd": {
-      "checksum": "8ada5fc367f0756da07bddc73de4f8cb"
-    },
-    "man/build_comm_plotly.Rd": {
-      "checksum": "7635fb47b93876de3b7dc9a07ed5509e"
-    },
-    "man/build_db_cards.Rd": {
-      "checksum": "08bfe932343020594f0eded199dd6bca"
-    },
-    "man/build_dep_cards.Rd": {
-      "checksum": "f729d0afe6714a4b672dcaae7ebb9d15"
-    },
-    "man/communityMetricsServer.Rd": {
-      "checksum": "21a5f97f428d0da02a03215bb1196041"
-    },
-    "man/communityMetricsUI.Rd": {
-      "checksum": "1303f7168abd794b8609648dac4ca147"
-    },
-    "man/create_credentials_db.Rd": {
-      "checksum": "df0c74249ccf8c82b2570ec806653f8b"
-    },
-    "man/create_credentials_dev_db.Rd": {
-      "checksum": "7269e2d501354cf67c521300f48f6396"
-    },
-    "man/create_db.Rd": {
-      "checksum": "fddf798f33b6cdb866a73646793fae8e"
-    },
-    "man/databaseViewServer.Rd": {
-      "checksum": "8dfdc1a33ea977bba8ef5caad1bbd7a7"
-    },
-    "man/databaseViewUI.Rd": {
-      "checksum": "4ff326ad31eda198e711e2e7ba75b496"
-    },
-    "man/figures/best_app_banner.png": {
-      "checksum": "2aac528f3ae2c961d0773a22eb51ee51"
-    },
-    "man/figures/build_comm_plotly_ex2.png": {
-      "checksum": "29b243f3558ae91b7232343b0d8f3038"
-    },
-    "man/figures/demo_riskassessment.png": {
-      "checksum": "164d7fa4f8432e26c4311a88a5872df2"
-    },
-    "man/figures/google_forms_logo.png": {
-      "checksum": "6fcc6dc16337a432d8dd1c9ceb086ca0"
-    },
-    "man/figures/hex-riskassessment-aspconfig.png": {
-      "checksum": "10aa90cc8585b47eb0b6c101df4604d3"
-    },
-    "man/figures/hex-riskmetric-aspconfig.png": {
-      "checksum": "fc90e730a530319b4f6444ceb1c66274"
-    },
-    "man/figures/r_con_update.png": {
-      "checksum": "be064c7ccb0f86fd952d349a5f9d82b0"
-    },
-    "man/figures/raa-alt-image-lt.png": {
-      "checksum": "8062579150b806ba5bb30ac3fff60d75"
-    },
-    "man/figures/raa-alt-image.png": {
-      "checksum": "67cf7b41d7962259b16f205b1c78e478"
-    },
-    "man/figures/raa-image-ug.png": {
-      "checksum": "7f3066a2042a334ea7db9d1f96057a4f"
-    },
-    "man/figures/raa-image.png": {
-      "checksum": "73a5de66a3f30df8a156aa22ad0ee73c"
-    },
-    "man/figures/raa_shinyConf23.png": {
-      "checksum": "fe0ee8d91b34f5ec5c21798b099b89e0"
-    },
-    "man/figures/youtube-play-button.png": {
-      "checksum": "c7a39135eb786fb9de963899159c3f15"
-    },
-    "man/generate_comm_data.Rd": {
-      "checksum": "ca75ce731f816124fb185d674c37651f"
-    },
-    "man/get_date_span.Rd": {
-      "checksum": "00f2691524aa7fe056f2ce61d8a89bcf"
-    },
-    "man/get_latest_pkg_info.Rd": {
-      "checksum": "4ae8aa63d5ddb0b2504da9db13373a53"
-    },
-    "man/getTimeStamp.Rd": {
-      "checksum": "77e3988c8b1579a8a84839b17946dd43"
-    },
-    "man/initialize_raa.Rd": {
-      "checksum": "d9df27ee61b31f42980f5cbb5982b396"
-    },
-    "man/introJSServer.Rd": {
-      "checksum": "db65f2f3c6452da973bd55f693632dd2"
-    },
-    "man/introJSUI.Rd": {
-      "checksum": "9a51e2c968fef5d5227177fb349aa58e"
-    },
-    "man/maintenanceMetricsServer.Rd": {
-      "checksum": "c689ee25afed19421c1adbd555375973"
-    },
-    "man/maintenanceMetricsUI.Rd": {
-      "checksum": "dadb6bacde299a660998be857bed98ba"
-    },
-    "man/metric_gauge.Rd": {
-      "checksum": "fd6ff739a128821d72d47a20f6a4579a"
-    },
-    "man/metricBoxServer.Rd": {
-      "checksum": "0b57871f49533fd4566c0bc8293db2ad"
-    },
-    "man/metricBoxUI.Rd": {
-      "checksum": "0c64f831e2245ccd1abaaea45f01d99f"
-    },
-    "man/metricGridServer.Rd": {
-      "checksum": "ec1e5ac2f701eac46295846730ceebd8"
-    },
-    "man/metricGridUI.Rd": {
-      "checksum": "d4cad58aff5b89b0bf14f2aa71116138"
-    },
-    "man/packageDependenciesServer.Rd": {
-      "checksum": "cadb6ad3d87cfc4109c9c0252e5c2de2"
-    },
-    "man/packageDependenciesUI.Rd": {
-      "checksum": "7f2d4e2f22ef0eb7d28e0bccc63ca870"
-    },
-    "man/reportPreviewServer.Rd": {
-      "checksum": "58d66b644a3ef34735af585c2146c3a7"
-    },
-    "man/reportPreviewUI.Rd": {
-      "checksum": "04b74993f19da1d135c019cdf7cd1a78"
-    },
-    "man/reweightViewServer.Rd": {
-      "checksum": "6738f1b149fd4e0b4fd8586e42f3d38e"
-    },
-    "man/reweightViewUI.Rd": {
-      "checksum": "ede9cd87c429a5839a9d8804688c6375"
-    },
-    "man/riskassessment-package.Rd": {
-      "checksum": "706a2b54a4c1de630088438685b242f2"
-    },
-    "man/run_app.Rd": {
-      "checksum": "6454bd34380a2c342114a86ccf6730b0"
-    },
-    "man/showComments.Rd": {
-      "checksum": "82bf248bdf28b29b2f7190ff7c49a949"
-    },
-    "man/showHelperMessage.Rd": {
-      "checksum": "5ec399db059553150099eed0bf1afab1"
-    },
-    "man/sidebarServer.Rd": {
-      "checksum": "41b32269dfec4d69489961ff261bdce1"
-    },
-    "man/sidebarUI.Rd": {
-      "checksum": "cc1b4812f480bf63568d22f2eab6ed7f"
-    },
-    "man/uploadPackageServer.Rd": {
-      "checksum": "2e84f99754abe60712bff3e6aec87cba"
-    },
-    "man/uploadPackageUI.Rd": {
-      "checksum": "38746a55256cfa1fe9e428861f408ec4"
-    },
-    "man/viewCommentsServer.Rd": {
-      "checksum": "ba09fc9bb090b54324c89f9c2be66ba6"
-    },
-    "man/viewCommentsUI.Rd": {
-      "checksum": "92b7aa565dfc8c0316ee67803b814538"
+      "checksum": "945b17bd2b7c96fe365273e4c0221568"
     },
     "NAMESPACE": {
       "checksum": "67b7a9d9f5f94c74c6357bf0e2526e13"
     },
     "NEWS.md": {
-      "checksum": "7bcb471790e4c00b34ea3d4547963e29"
-    },
-    "patch.patch": {
-      "checksum": "61147f825404d09a5e7c157c32e3d528"
-    },
-    "patch.txt": {
-      "checksum": "50f168a95a55646a3f172865b7099ef7"
+      "checksum": "ef21b08447563c0e555da3cbe6bc0fb4"
     },
     "R/app_config.R": {
       "checksum": "44ca4933ad03b2b7d113900fe8d141bc"
@@ -6851,10 +6036,10 @@
       "checksum": "f8e2b9256371b7dc4040ed73f534b755"
     },
     "R/mod_code_explorer.R": {
-      "checksum": "75b0e401c476aa85fad5168aca9a5de9"
+      "checksum": "2d865bdc37b3854f0ab02b3eb28d4c4c"
     },
     "R/mod_code_explorer_utils.R": {
-      "checksum": "860243730c75af7529319bc9e52e7a93"
+      "checksum": "c46871417c6f6cea75ecd4b3a2eb6792"
     },
     "R/mod_communityMetrics.R": {
       "checksum": "bf874b0d12f91dad366bd08ba429284e"
@@ -6875,7 +6060,7 @@
       "checksum": "2aa4997c93af73a55c40d214c848029e"
     },
     "R/mod_introJS_utils_text.R": {
-      "checksum": "a73da827c24bf6b11b39bab97cb5ae06"
+      "checksum": "1acbb331079b099b19b65fec64308af3"
     },
     "R/mod_maintenanceMetrics.R": {
       "checksum": "d9ae95142d214e81065b6669dd02c0f0"
@@ -6893,7 +6078,7 @@
       "checksum": "87b8a819f31b5f0b61c477ac6e4e31eb"
     },
     "R/mod_pkg_explorer.R": {
-      "checksum": "8f51b32b7d5aeb829b1462c9624cc1c2"
+      "checksum": "9dc613097e7fc77a510f9cac6e3c3d10"
     },
     "R/mod_pkg_explorer_utils.R": {
       "checksum": "97305d75aa5946b93536724d24388459"
@@ -6902,13 +6087,13 @@
       "checksum": "8c43115693bd9e5ea2d952c06c6b0ead"
     },
     "R/mod_reweightView.R": {
-      "checksum": "bb5ae5aaa7afdcc47a0e310013793a81"
+      "checksum": "ee36b9ec3e5ebc5bb0b6d90ec1708b88"
     },
     "R/mod_sidebar.R": {
       "checksum": "10a568692af7e28f0ea6c608ba0c8d6f"
     },
     "R/mod_uploadPackage.R": {
-      "checksum": "3299203c30ef469d4e73b8c967ce9c97"
+      "checksum": "cd37cbe0799d3914794246bf12dcb32e"
     },
     "R/mod_user_roles.R": {
       "checksum": "e58d10e390779d9bcf51dad23eaf98c4"
@@ -6920,7 +6105,7 @@
       "checksum": "b92560482bf1cfe81c22bf15df351cff"
     },
     "R/sysdata.rda": {
-      "checksum": "cf2071cce4c1040a43d10758dae2c68e"
+      "checksum": "6e779a6b45ff6a2687f41f89d84e8c72"
     },
     "R/utils.R": {
       "checksum": "9a62837f3e86e11116d85b1fdc9af40c"
@@ -6929,7 +6114,7 @@
       "checksum": "8eb0aee3e9ff7fbb4ff21f2ce20a0082"
     },
     "R/utils_config_db.R": {
-      "checksum": "a1e93127b0284e937f3d370e29308a48"
+      "checksum": "aeb4fce8b45e4f08be70465129d32328"
     },
     "R/utils_get_db.R": {
       "checksum": "25c11e2eb6d51dafcc260776aa019a31"
@@ -6945,723 +6130,6 @@
     },
     "README.Rmd": {
       "checksum": "2943c49784b7c39fd290510770ff8ff3"
-    },
-    "remove-dev-credentials.patch": {
-      "checksum": "011ead2e715f6c32b6519882da6db2f1"
-    },
-    "report_preferences/report_prefs_admin.txt": {
-      "checksum": "03a5f001dc3ab607b5d808d2e77252be"
-    },
-    "revdep/email.yml": {
-      "checksum": "58844c60a771502db332bdab733c4f54"
-    },
-    "tarballs/IDEAFilter_0.1.2.tar.gz": {
-      "checksum": "d754ddf2550cb96099f5624e1db7e75f"
-    },
-    "tarballs/vcd_1.4-11.tar.gz": {
-      "checksum": "ee401392a5e3fcedca5c0fa1ce6d853c"
-    },
-    "tarballs/xts_0.13.1.tar.gz": {
-      "checksum": "e4ccde2aa6cc7ac68a0cfcd08a5882da"
-    },
-    "tarballs/zoo_1.8-12.tar.gz": {
-      "checksum": "9bf826a22610f5a3f8ebd063404e7183"
-    },
-    "tests/spelling.R": {
-      "checksum": "fcfd6e93a03f1bd1d0dda1112015384a"
-    },
-    "tests/testthat.R": {
-      "checksum": "9158d1de91edb382cb4531aa1d7a7191"
-    },
-    "tests/testthat/_snaps/databaseView/001.json": {
-      "checksum": "5d71b2f3f09adc7fc5d6dfd7cfd9115b"
-    },
-    "tests/testthat/_snaps/databaseView/002.json": {
-      "checksum": "f462783dae1d4fbfacf3e6e6a6eb3eb5"
-    },
-    "tests/testthat/_snaps/databaseView/003.json": {
-      "checksum": "0c2aecf535e4d2a114409aec74659bc1"
-    },
-    "tests/testthat/credentials.sqlite": {
-      "checksum": "25a648615414e15bfd291b9df19990c8"
-    },
-    "tests/testthat/database.sqlite": {
-      "checksum": "00346cd7a5a9edc410f0950180faa6dd"
-    },
-    "tests/testthat/source/magrittr/build/vignette.rds": {
-      "checksum": "084078aa68b48964d1edd278e8860b0b"
-    },
-    "tests/testthat/source/magrittr/DESCRIPTION": {
-      "checksum": "b916d6c485b3a0d2c034c50bda957582"
-    },
-    "tests/testthat/source/magrittr/inst/doc/magrittr.html": {
-      "checksum": "a54471576785915e722e83cc96735845"
-    },
-    "tests/testthat/source/magrittr/inst/doc/magrittr.R": {
-      "checksum": "786d5e98d2db43ca57b1b05b6c98e262"
-    },
-    "tests/testthat/source/magrittr/inst/doc/magrittr.Rmd": {
-      "checksum": "ae2a5f945966923225eb4b7fd50e7834"
-    },
-    "tests/testthat/source/magrittr/inst/doc/tradeoffs.html": {
-      "checksum": "d842f8208444adc942eca16846ccfa88"
-    },
-    "tests/testthat/source/magrittr/inst/doc/tradeoffs.R": {
-      "checksum": "e6000bf0b0354a95dd0de7a3768c0ad0"
-    },
-    "tests/testthat/source/magrittr/inst/doc/tradeoffs.Rmd": {
-      "checksum": "ade5c863f8b1f237fcf3642076c00d3e"
-    },
-    "tests/testthat/source/magrittr/inst/logo-hex.png": {
-      "checksum": "320671fcbeb26a1ad31a8be1b8259db1"
-    },
-    "tests/testthat/source/magrittr/inst/logo-hex.svg": {
-      "checksum": "49d0817fc5a43e2c1593194ab84fc1d1"
-    },
-    "tests/testthat/source/magrittr/inst/logo.png": {
-      "checksum": "d874c14ccdcddaeae92f28cd7c8097ca"
-    },
-    "tests/testthat/source/magrittr/inst/logo.svg": {
-      "checksum": "9c8e1ed8c5dad58b4f422ed25cb4bf6c"
-    },
-    "tests/testthat/source/magrittr/LICENSE": {
-      "checksum": "b1e40687f249a5e3b384b410b621f40a"
-    },
-    "tests/testthat/source/magrittr/man/aliases.Rd": {
-      "checksum": "d6201baf5e138c57361b9b1967215845"
-    },
-    "tests/testthat/source/magrittr/man/compound.Rd": {
-      "checksum": "4fa184155b60d0b52276216ae391479e"
-    },
-    "tests/testthat/source/magrittr/man/debug_fseq.Rd": {
-      "checksum": "b54749212b910263c3c801a002ae9406"
-    },
-    "tests/testthat/source/magrittr/man/debug_pipe.Rd": {
-      "checksum": "f167a1631d3dffb9205ec94886301b29"
-    },
-    "tests/testthat/source/magrittr/man/exposition.Rd": {
-      "checksum": "b5d5f05a8e8832bdf970bcff87fb738d"
-    },
-    "tests/testthat/source/magrittr/man/faq-pipe-gender.Rd": {
-      "checksum": "832875909ce77c2efda116437eac8129"
-    },
-    "tests/testthat/source/magrittr/man/figures/exposition-1.png": {
-      "checksum": "fd4ab3e55d76f18a21681c9d90e0a8de"
-    },
-    "tests/testthat/source/magrittr/man/figures/logo.png": {
-      "checksum": "2a60de702f54976c2e9de39fa44a72f4"
-    },
-    "tests/testthat/source/magrittr/man/freduce.Rd": {
-      "checksum": "1b42ebf4f0f9985208454a1f9c6f800a"
-    },
-    "tests/testthat/source/magrittr/man/fseq.Rd": {
-      "checksum": "2528e04ada11d08d8da41baaa3d479f7"
-    },
-    "tests/testthat/source/magrittr/man/functions.Rd": {
-      "checksum": "74c85cb379ef50b8f1c7b8186efb1e81"
-    },
-    "tests/testthat/source/magrittr/man/magrittr-package.Rd": {
-      "checksum": "86e5ff38030fc24d1786d61d48951988"
-    },
-    "tests/testthat/source/magrittr/man/pipe-eager.Rd": {
-      "checksum": "426c1d05f7211bd8cb7adf3cc9304525"
-    },
-    "tests/testthat/source/magrittr/man/pipe.Rd": {
-      "checksum": "c6cef1f6258a3061fb862eb045dcc83e"
-    },
-    "tests/testthat/source/magrittr/man/pipe_eager_lexical.Rd": {
-      "checksum": "447ded028c32a4bcdd7f5334b8acc99a"
-    },
-    "tests/testthat/source/magrittr/man/print.fseq.Rd": {
-      "checksum": "adc2d8bbc2bf764e31a81697036b84db"
-    },
-    "tests/testthat/source/magrittr/man/tee.Rd": {
-      "checksum": "6831d192911395cd3b279c65676efea7"
-    },
-    "tests/testthat/source/magrittr/MD5": {
-      "checksum": "35654173865e0a80968416df24c9bd09"
-    },
-    "tests/testthat/source/magrittr/NAMESPACE": {
-      "checksum": "6947759fe41ccdda4f5fd4759f68a4a8"
-    },
-    "tests/testthat/source/magrittr/NEWS.md": {
-      "checksum": "631d52ef319ccec69a02e519dfe0a17a"
-    },
-    "tests/testthat/source/magrittr/R/aliases.R": {
-      "checksum": "0dd7466a6ea2104983d2230d14af6517"
-    },
-    "tests/testthat/source/magrittr/R/debug_pipe.R": {
-      "checksum": "69feb260d9d9596cff7279727b7194ff"
-    },
-    "tests/testthat/source/magrittr/R/freduce.R": {
-      "checksum": "316e23f4777296ee8dfe469684f244cb"
-    },
-    "tests/testthat/source/magrittr/R/functions.R": {
-      "checksum": "a45c20797cf0f44b148a253a6d8a338a"
-    },
-    "tests/testthat/source/magrittr/R/getters.R": {
-      "checksum": "a6e5e9ab01efeaa0e1d03a78f668d706"
-    },
-    "tests/testthat/source/magrittr/R/magrittr.R": {
-      "checksum": "33c7b4d774c39ca299ebb21e684e6c92"
-    },
-    "tests/testthat/source/magrittr/R/pipe.R": {
-      "checksum": "c77c8b2e5b0b76bb7501ee0439c7c26d"
-    },
-    "tests/testthat/source/magrittr/README.md": {
-      "checksum": "b355c081f7dc2aced5ca65e9020a75ba"
-    },
-    "tests/testthat/source/magrittr/src/pipe.c": {
-      "checksum": "72eb49eb68a7128ba3b859142f1bf9cc"
-    },
-    "tests/testthat/source/magrittr/src/utils.c": {
-      "checksum": "f805d279bd107cd19da7f3fa8fb4b574"
-    },
-    "tests/testthat/source/magrittr/src/utils.h": {
-      "checksum": "edbdd325f4ab34f277befd07c0f7b460"
-    },
-    "tests/testthat/source/magrittr/tests/testthat.R": {
-      "checksum": "5e09eabe3f9582bc4a32ca84f35d8a9b"
-    },
-    "tests/testthat/source/magrittr/tests/testthat/_snaps/pipe.md": {
-      "checksum": "30319b5105d94ffc98d12192ed8afc9d"
-    },
-    "tests/testthat/source/magrittr/tests/testthat/test-aliases.R": {
-      "checksum": "7d5896a8b77e28f7e25163f1e73b3dab"
-    },
-    "tests/testthat/source/magrittr/tests/testthat/test-anonymous-functions.r": {
-      "checksum": "64337bd67479693182ac3f5b08fea829"
-    },
-    "tests/testthat/source/magrittr/tests/testthat/test-compound.R": {
-      "checksum": "0ea1983d5b233cb1307a327e3b6a92a0"
-    },
-    "tests/testthat/source/magrittr/tests/testthat/test-freduce.R": {
-      "checksum": "f6e1913c08e715fc9e15d984f45e94b0"
-    },
-    "tests/testthat/source/magrittr/tests/testthat/test-fseq.r": {
-      "checksum": "68f6eb8ce9c54a6b2e3a15846f94b4c8"
-    },
-    "tests/testthat/source/magrittr/tests/testthat/test-multiple-arguments.r": {
-      "checksum": "e8780a5936700ff4965f160284c2e40b"
-    },
-    "tests/testthat/source/magrittr/tests/testthat/test-pipe.R": {
-      "checksum": "b2947ccf703a58273791a50a8d248829"
-    },
-    "tests/testthat/source/magrittr/tests/testthat/test-single-argument.r": {
-      "checksum": "a5f494991871eb8076d4a0dea09d5004"
-    },
-    "tests/testthat/source/magrittr/tests/testthat/test-tee.r": {
-      "checksum": "0383040641b84042c281763473cda3f6"
-    },
-    "tests/testthat/source/magrittr/vignettes/magrittr.jpg": {
-      "checksum": "561cc58e6362ebd922d69884e825c808"
-    },
-    "tests/testthat/source/magrittr/vignettes/magrittr.Rmd": {
-      "checksum": "ae2a5f945966923225eb4b7fd50e7834"
-    },
-    "tests/testthat/source/magrittr/vignettes/tradeoffs.Rmd": {
-      "checksum": "ade5c863f8b1f237fcf3642076c00d3e"
-    },
-    "tests/testthat/test-addComment.R": {
-      "checksum": "12e3245ef558e7f8520bf9de06a0fec9"
-    },
-    "tests/testthat/test-apps/app.R": {
-      "checksum": "58dc68a1eda4f78e0aa37b87985b1298"
-    },
-    "tests/testthat/test-apps/credentials.sqlite": {
-      "checksum": "9e8eaecd7ee8652e1c65a6851c62855c"
-    },
-    "tests/testthat/test-apps/database.sqlite": {
-      "checksum": "31e598228b4f133ed8fea39bef7e2477"
-    },
-    "tests/testthat/test-apps/decision_automation-app/app.R": {
-      "checksum": "f0f888705348cbea8f4b8dd9f65b1735"
-    },
-    "tests/testthat/test-apps/decision_automation-app/credentials.sqlite": {
-      "checksum": "851b1d7fecbaa279d1b68b0e5d1e2b74"
-    },
-    "tests/testthat/test-apps/decision_automation-app/database.sqlite": {
-      "checksum": "a05d867047c1d43c0465cc9437a8c11d"
-    },
-    "tests/testthat/test-apps/decision_automation-app/loggit.json": {
-      "checksum": "f65507966c869d961d2b4cae64ffc89a"
-    },
-    "tests/testthat/test-apps/downloadHandler-app/app.R": {
-      "checksum": "399a243470af959410780d057d0f3ba8"
-    },
-    "tests/testthat/test-apps/downloadHandler-app/dplyr_tidyr.sqlite": {
-      "checksum": "6c7eee41080b75cf69e7334a6c2cb780"
-    },
-    "tests/testthat/test-apps/loggit.json": {
-      "checksum": "33eed30a5a295f105ff714a5be6f0ae0"
-    },
-    "tests/testthat/test-apps/nonadmin-app/app.R": {
-      "checksum": "fb937234e39e7e6db6b4184f2ffdf6eb"
-    },
-    "tests/testthat/test-apps/nonadmin-app/credentials.sqlite": {
-      "checksum": "0f11333a1b2a1d6d363ad7d2ee561af2"
-    },
-    "tests/testthat/test-apps/nonadmin-app/database.sqlite": {
-      "checksum": "0f6ca34e5b34e89393eecfc06247feb0"
-    },
-    "tests/testthat/test-apps/nonadmin-app/database_ex.sqlite": {
-      "checksum": "d41d8cd98f00b204e9800998ecf8427e"
-    },
-    "tests/testthat/test-apps/reweightView-app/app.R": {
-      "checksum": "0014b8115888a8d0a73d8f2089515873"
-    },
-    "tests/testthat/test-apps/reweightView-app/dplyr.sqlite": {
-      "checksum": "bec5394438cf92bfca3f80879827ebba"
-    },
-    "tests/testthat/test-apps/tarballs/dplyr_1.1.3.tar.gz": {
-      "checksum": "4e5aacdbe9cb21fe53f39902cdf845b5"
-    },
-    "tests/testthat/test-apps/tarballs/magrittr_2.0.3.tar.gz": {
-      "checksum": "86a110ed23536ebe26c51ff90f2a1435"
-    },
-    "tests/testthat/test-auto_font.R": {
-      "checksum": "d3722fe3e9415974e6c38d398187aab1"
-    },
-    "tests/testthat/test-communityMetrics.R": {
-      "checksum": "4c3bed82a377b0a801d376e598c47055"
-    },
-    "tests/testthat/test-databaseView.R": {
-      "checksum": "8c5c1c0c7ef567ff461cbb694c33304a"
-    },
-    "tests/testthat/test-dbSelect.R": {
-      "checksum": "e679069ec4e61435ff615868d4cef20e"
-    },
-    "tests/testthat/test-dbUpdate.R": {
-      "checksum": "291e5928d0afd06d3c9adad0cecf5b36"
-    },
-    "tests/testthat/test-decision_automation.R": {
-      "checksum": "3cc2e244a3d1cc77b328255bacc7db52"
-    },
-    "tests/testthat/test-decision_automation_utils.R": {
-      "checksum": "45848d5b5b5affe3a052ba9423466dd4"
-    },
-    "tests/testthat/test-downloadHandler.R": {
-      "checksum": "0554048b8af8b9814b58f26c03d7583d"
-    },
-    "tests/testthat/test-generate_comm_data.R": {
-      "checksum": "9f91998f1fe43971d5045bc56ad23125"
-    },
-    "tests/testthat/test-get_date_span.R": {
-      "checksum": "9decd43919cdcdb6787aa05deabb60fa"
-    },
-    "tests/testthat/test-get_pkg_info.R": {
-      "checksum": "60754d074713cd04fc47cd90c65e6f9e"
-    },
-    "tests/testthat/test-getTimeStamp.R": {
-      "checksum": "8e9651750298617e980a7f68eb7efff0"
-    },
-    "tests/testthat/test-golem-recommended.R": {
-      "checksum": "d33fdf2172f03825e9f6569cc7c8f412"
-    },
-    "tests/testthat/test-introJS.R": {
-      "checksum": "42d63ad11ad699bd1a2dca74ca4afbae"
-    },
-    "tests/testthat/test-maintenanceMetrics.R": {
-      "checksum": "cc47e54683e616eff38162b227d09f71"
-    },
-    "tests/testthat/test-metric_gauge.R": {
-      "checksum": "b1d0f02720bec7852c3af02c7031d7c2"
-    },
-    "tests/testthat/test-packageDependencies.R": {
-      "checksum": "fd39cda01f98cbe87083c9d62eb2b469"
-    },
-    "tests/testthat/test-reportPreview.R": {
-      "checksum": "d42a196c8fb753c6d04a5cf9020c258b"
-    },
-    "tests/testthat/test-reweightView.R": {
-      "checksum": "2a2e7653af7b12b29baf4911a41895af"
-    },
-    "tests/testthat/test-showHelperMessage.R": {
-      "checksum": "3babc6ce1b87e3290577dad62522cf23"
-    },
-    "tests/testthat/test-sidebar.R": {
-      "checksum": "3a93f877cc30a10b18b908fbbbe88246"
-    },
-    "tests/testthat/test-uploadPackage.R": {
-      "checksum": "e2a2f39968e13ec01eb32b0f3fce0d7b"
-    },
-    "tests/testthat/test-utils_config_checkers.R": {
-      "checksum": "945e9a28b9772912c501e9e396927dda"
-    },
-    "tests/testthat/test-utils_get_db.R": {
-      "checksum": "5d477607b8480b2095c76423d97ec6a8"
-    },
-    "tests/testthat/test-utils_insert_db.R": {
-      "checksum": "b40ee00da290e035b1544a6b61f489de"
-    },
-    "tests/testthat/test-utils_startup.R": {
-      "checksum": "745ccaf6139159faa35c5ec1cfa867ac"
-    },
-    "vignettes/Administrative_Tools_and_Options_V0.1.1.Rmd": {
-      "checksum": "13230b2654c3007369cc12953c56ccb0"
-    },
-    "vignettes/Credential_Manager.Rmd": {
-      "checksum": "072157a848af9d8af40ad1090a391fd1"
-    },
-    "vignettes/Deployment.Rmd": {
-      "checksum": "24f4141bdd7817fee269ca3e51d0eca6"
-    },
-    "vignettes/Deployment_V0.1.1.Rmd": {
-      "checksum": "ac518f46c8f264d695545ac850352894"
-    },
-    "vignettes/dev_renv.Rmd": {
-      "checksum": "4bda757662c44d39f3d2318de33c1d01"
-    },
-    "vignettes/dev_Using_SQLite_Command_Line.Rmd": {
-      "checksum": "5e19766787172400e43d5c6c1570833f"
-    },
-    "vignettes/images/account_expired_msg.png": {
-      "checksum": "41b17899c028f84ceed13e9e582e42c8"
-    },
-    "vignettes/images/add_a_user_btn.png": {
-      "checksum": "230a3c1ea233859f9c5401aab75ac47c"
-    },
-    "vignettes/images/add_package_privilege.png": {
-      "checksum": "3e26db3ebe696ba90b559782e2ec02c6"
-    },
-    "vignettes/images/add_user.png": {
-      "checksum": "e7273bf7d01c8bd8918b7023ef72da3e"
-    },
-    "vignettes/images/add_user_V0.1.1.png": {
-      "checksum": "d9eae6ee95612967d8d4feb86174518b"
-    },
-    "vignettes/images/admin_mode_button.png": {
-      "checksum": "ecb4e83408e718071ccaaa707eb04d79"
-    },
-    "vignettes/images/admin_mode_tables.png": {
-      "checksum": "99e6e2181f011f40ee2c558527fb959a"
-    },
-    "vignettes/images/admin_mode_tables1.png": {
-      "checksum": "2af0c6b215d3af20a5773f886c062fdc"
-    },
-    "vignettes/images/admin_mode_tables1_V0.1.1.png": {
-      "checksum": "a1db20bd8fdfcee1a1b45eda334e6136"
-    },
-    "vignettes/images/admin_mode_tables2.png": {
-      "checksum": "2a2d790585d5a74ed28024c03e62925d"
-    },
-    "vignettes/images/admin_mode_tables2_V0.1.1.png": {
-      "checksum": "1e68d437f1a8c88fd5ec402dab5ff724"
-    },
-    "vignettes/images/admin_tools.png": {
-      "checksum": "a24699b36f8c4290980f9cb6186762ed"
-    },
-    "vignettes/images/admin_tools_creds.png": {
-      "checksum": "1be2844440cde139fdda7d9be2210e4b"
-    },
-    "vignettes/images/admin_tools_tabs.png": {
-      "checksum": "4d2068012e7cc9f2c9f5e80ae4bd6305"
-    },
-    "vignettes/images/admin_tools_tabs_V0.1.1.png": {
-      "checksum": "91cd3b3679713f2cb969e41659eedfed"
-    },
-    "vignettes/images/admiral_dependencies_v2.0.0.png": {
-      "checksum": "69aaa5147b07ea78a73e764251978c72"
-    },
-    "vignettes/images/apply_new_weights.png": {
-      "checksum": "fb1a0fcbc2e55ea3399f2a3c71dc2e25"
-    },
-    "vignettes/images/apply_new_weights_V0.1.1.png": {
-      "checksum": "65d25252211046837781ff395b0697ca"
-    },
-    "vignettes/images/assessment_criteria.png": {
-      "checksum": "fd07a1299c469da88c5518f105a53f35"
-    },
-    "vignettes/images/assessment_reweighting_tab.png": {
-      "checksum": "d61a92a85cff86f99fb3a5d09e146215"
-    },
-    "vignettes/images/assessment_reweighting_tab_V0.1.1.png": {
-      "checksum": "fbceac718c516f304d8e95d40a1167d5"
-    },
-    "vignettes/images/change_password.png": {
-      "checksum": "5706e768c30a162850c0700411221304"
-    },
-    "vignettes/images/change_pwd.png": {
-      "checksum": "766409cb77a952d27bc32ed0974e131d"
-    },
-    "vignettes/images/change_pwd2.png": {
-      "checksum": "18bd4edab9bf27c77448dd18b9ae130f"
-    },
-    "vignettes/images/click_help_v1.0.0.png": {
-      "checksum": "6178136bb73df78ec08f7b83088b64e9"
-    },
-    "vignettes/images/click_help_v2.0.0.png": {
-      "checksum": "a18184d5ecb12169c101c731bef01bf9"
-    },
-    "vignettes/images/comm_usage_metrics_v2.0.0.png": {
-      "checksum": "043fbe987388f02635e08e544a97561f"
-    },
-    "vignettes/images/community_usage1.png": {
-      "checksum": "cd32a6af46636983eb4cf6a684484e74"
-    },
-    "vignettes/images/community_usage2.png": {
-      "checksum": "55be2b4b4aa987ec97f02a5a281fbb3a"
-    },
-    "vignettes/images/config_privileges.png": {
-      "checksum": "cba32d78b561c54a62842e3763f6606f"
-    },
-    "vignettes/images/confirm_change_password.png": {
-      "checksum": "3f46b2a0dbd8392df434fe90dc089e2c"
-    },
-    "vignettes/images/confirm_delete_users.png": {
-      "checksum": "9ea7e2dfb5bb4c7c7c7861dc0498e6d0"
-    },
-    "vignettes/images/confirm_reset_password.png": {
-      "checksum": "452eff503c6d68b8694b09a096f835e4"
-    },
-    "vignettes/images/confirm_update_weights.png": {
-      "checksum": "c74d523c682ccff975745953db5e199e"
-    },
-    "vignettes/images/create_new_admin.png": {
-      "checksum": "dc250dd2cbbe3062da446567596aa5ed"
-    },
-    "vignettes/images/create_new_admin_V0.1.1.png": {
-      "checksum": "dc250dd2cbbe3062da446567596aa5ed"
-    },
-    "vignettes/images/database_updated.png": {
-      "checksum": "59a213e8a27a9e13e016b56a20a83bfc"
-    },
-    "vignettes/images/database_view.png": {
-      "checksum": "5f7ac52a7ea1d817e25e357cfcafabb5"
-    },
-    "vignettes/images/decision_automation_allcat.png": {
-      "checksum": "a169c1c2a3cb5a0309cac8e49938b15a"
-    },
-    "vignettes/images/decision_automation_allcat_V0.1.1.png": {
-      "checksum": "23b1ac5168d69abd6feaf6f41613cccc"
-    },
-    "vignettes/images/decision_automation_applied.png": {
-      "checksum": "582c18d06c990fceaccddb651705b7a1"
-    },
-    "vignettes/images/decision_automation_applied_V0.1.1.png": {
-      "checksum": "1e745c89ab65ded1e3e806b5584956ba"
-    },
-    "vignettes/images/decision_automation_color_input.png": {
-      "checksum": "3ed3643bb08f7438612ec0da67d1a86c"
-    },
-    "vignettes/images/decision_automation_confirm.png": {
-      "checksum": "62772de5422a71c113cc86d7c63dca36"
-    },
-    "vignettes/images/decision_automation_confirm_V0.1.1.png": {
-      "checksum": "8f9f8ed39d9d6d256829ce6d4e17f2cd"
-    },
-    "vignettes/images/decision_automation_control_panel.png": {
-      "checksum": "6b35f66262edb6aab96cb2ce429118e7"
-    },
-    "vignettes/images/decision_automation_control_panel_V0.1.1.png": {
-      "checksum": "cc1a0c30f3dde6c97efb57475697a081"
-    },
-    "vignettes/images/decision_automation_gear.png": {
-      "checksum": "2fe9b6fc3161d14a628d58a8201dd72d"
-    },
-    "vignettes/images/decision_automation_gear_V0.1.1.png": {
-      "checksum": "a2f5bcc2282432fec1aa65e09c6e2850"
-    },
-    "vignettes/images/decision_automation_high.png": {
-      "checksum": "16edd91a4b2eaca4a30d966bc77ffec0"
-    },
-    "vignettes/images/decision_automation_high_V0.1.1.png": {
-      "checksum": "482475b2ffc5869e1b1f665abb734727"
-    },
-    "vignettes/images/decision_automation_modal.png": {
-      "checksum": "6202b42e8033e501593e6227e561d17c"
-    },
-    "vignettes/images/decision_automation_submit_colors.png": {
-      "checksum": "ec4425e1b80128c8f53a2db5e49af02a"
-    },
-    "vignettes/images/decision_slider.png": {
-      "checksum": "5829ec1a136113745018c5f38f18cd65"
-    },
-    "vignettes/images/default_config.png": {
-      "checksum": "e61f75841bf0cc1de3ada7dc6b5da103"
-    },
-    "vignettes/images/delete_package_privilege.png": {
-      "checksum": "600427c7fc3e7a1df374ac8e45b3ce03"
-    },
-    "vignettes/images/delete_user_modal.png": {
-      "checksum": "067cf5bd4bc24153b6771100beca70f1"
-    },
-    "vignettes/images/dependencies_v2.0.0.png": {
-      "checksum": "3696a9679c7b051b3b22275ca87ea15e"
-    },
-    "vignettes/images/deploy_full_auto_decision_rules.png": {
-      "checksum": "5cf7aba7da9a0b47216f6c58d5e53aa4"
-    },
-    "vignettes/images/deploy_general.png": {
-      "checksum": "4ef52ca5290ad5bfe88fe3504e373dc1"
-    },
-    "vignettes/images/deploy_posit_rsconnect_logo.png": {
-      "checksum": "4d00cb726ec6372dfb7665a1a852788a"
-    },
-    "vignettes/images/deploy_rocket.png": {
-      "checksum": "ac6031b4073f361eef7ed2f3abe29047"
-    },
-    "vignettes/images/deploy_shinyproxy.png": {
-      "checksum": "648fe6f18f418bd49393b2191f014c26"
-    },
-    "vignettes/images/download_db_btn.png": {
-      "checksum": "8462bd8cbf98a4f910dcb2b95ce77351"
-    },
-    "vignettes/images/edit_remove_select_users.png": {
-      "checksum": "0a19c0e3ef97f36548d33875f44fa93b"
-    },
-    "vignettes/images/edit_select_users.png": {
-      "checksum": "6031321e6315844994d6092623488483"
-    },
-    "vignettes/images/edit_user_popup.png": {
-      "checksum": "013bab4a8e411e48de72ed03b1ba0da1"
-    },
-    "vignettes/images/edit_user_popup_V0.1.1.png": {
-      "checksum": "ad801eeb97d461a8d505f22c5208fc46"
-    },
-    "vignettes/images/final_decision_privilege.png": {
-      "checksum": "bdf53bb75811a9055ab2e93fe97f59ad"
-    },
-    "vignettes/images/force_change_password.png": {
-      "checksum": "28029d9bbcbd071af36c2cadb8eb0994"
-    },
-    "vignettes/images/general_comment_privilege.png": {
-      "checksum": "7a1aeee02f1778d1c410f4ffdd1b79c6"
-    },
-    "vignettes/images/help_button.png": {
-      "checksum": "a5421e930e875a8d542ad46c26e6fdd7"
-    },
-    "vignettes/images/initial_authentication_page.png": {
-      "checksum": "ad5656c354e0ef214b6069c3912eb4f6"
-    },
-    "vignettes/images/initial_login.png": {
-      "checksum": "32dffef61d14f38b1d55cb496b0301eb"
-    },
-    "vignettes/images/maint_metric1.png": {
-      "checksum": "6390b6e1fedec5b6f031a439d377d222"
-    },
-    "vignettes/images/maint_metric2.png": {
-      "checksum": "dea9d616ea744eb1db2f402b442f6b0a"
-    },
-    "vignettes/images/maint_metrics_v2.0.0.png": {
-      "checksum": "deabb1c8e1f1ce10b2f968e14441256a"
-    },
-    "vignettes/images/metrics_dropdown_v2.0.0.png": {
-      "checksum": "686fc3152c3fc349edefb69ba65e288c"
-    },
-    "vignettes/images/new_user_modal.png": {
-      "checksum": "11bfab343cff4801c71711d8f8be80ae"
-    },
-    "vignettes/images/new_user_msg.png": {
-      "checksum": "dbbf9c74f0e568c61863fc1a8619905b"
-    },
-    "vignettes/images/overall_comment.png": {
-      "checksum": "1d8394b228bd76abeef83b3ddbed9a40"
-    },
-    "vignettes/images/overall_comment_privilege.png": {
-      "checksum": "3624fa8ff9271e0c25d12c66795204dd"
-    },
-    "vignettes/images/password_reset.png": {
-      "checksum": "8868091144da39c21c2d3367fb2f7107"
-    },
-    "vignettes/images/password_table.png": {
-      "checksum": "6a78c6f997dfe80fa55442dd9f3e01ab"
-    },
-    "vignettes/images/progress_modal.png": {
-      "checksum": "cf7f616e1ff9296788b312612ebdd84e"
-    },
-    "vignettes/images/renv-install-none.png": {
-      "checksum": "de4aada40ab9058f74758f124df44cfa"
-    },
-    "vignettes/images/report_preview.png": {
-      "checksum": "188338bb4b31b90bcf65d595a12504cf"
-    },
-    "vignettes/images/report_preview_v2.0.0.png": {
-      "checksum": "d3ceb8a50e37dffb8cb0644d0d2cbece"
-    },
-    "vignettes/images/report_preview1.png": {
-      "checksum": "84ee9f31b09d15a770c5d57d36e1476f"
-    },
-    "vignettes/images/report_preview2.png": {
-      "checksum": "d731f8cc54a9d856c2bf26772c2a9f83"
-    },
-    "vignettes/images/reset_decision.png": {
-      "checksum": "7d7f0683b078f6a54cfaf8e38e082af8"
-    },
-    "vignettes/images/revert_decision_privilege.png": {
-      "checksum": "aa1d3de593b55d99601963e422ca345b"
-    },
-    "vignettes/images/reweighting_modal.png": {
-      "checksum": "8bdf3e57207c6c28f0f27aa86d93279b"
-    },
-    "vignettes/images/sel_package_v1.0.0.png": {
-      "checksum": "9cfa93028f06a4414feeebc8f914e552"
-    },
-    "vignettes/images/sel_package_v2.0.0.png": {
-      "checksum": "19675553b78b4341b236ff2a2a82c7f6"
-    },
-    "vignettes/images/set_update_weights.png": {
-      "checksum": "47dd2f66aedcab9de3006692f6a34e5c"
-    },
-    "vignettes/images/set_update_weights_V0.1.1.png": {
-      "checksum": "9f02e25b848088545a89eea6058ec97b"
-    },
-    "vignettes/images/sidebar_v1.0.0.png": {
-      "checksum": "5ce4c8db837969174ba32e68b0675939"
-    },
-    "vignettes/images/sidebar_v2.0.0.png": {
-      "checksum": "a6cf4833755529f4ed8c42fabb82fc86"
-    },
-    "vignettes/images/source_explorer_v2.0.0.png": {
-      "checksum": "3d7f7f60ad48fb2e38fb1d3e3a0ebc4c"
-    },
-    "vignettes/images/SQLite.png": {
-      "checksum": "be403e36c76a55ed2695ccefe050d9f4"
-    },
-    "vignettes/images/start_decision_automation_v1.0.0.png": {
-      "checksum": "adac04fb037bc69d4a183277a1e2278e"
-    },
-    "vignettes/images/start_decision_automation_v2.0.0.png": {
-      "checksum": "d29f8241458dbb3771107d03895e6693"
-    },
-    "vignettes/images/submit_decision.png": {
-      "checksum": "6dd3540ea73d485ff4405d70ebd1857b"
-    },
-    "vignettes/images/subsequent_login.png": {
-      "checksum": "9380f99db70e8230eaaef097b56e93fd"
-    },
-    "vignettes/images/top_left_tabs.png": {
-      "checksum": "55ee5f03a47becd845a83063707895a9"
-    },
-    "vignettes/images/uploaded_pkgs.png": {
-      "checksum": "a264f98f3239e2ba32b765a8972af8de"
-    },
-    "vignettes/images/user_succ_updated_modal.png": {
-      "checksum": "37a090cbf4818d50e33f418cae665615"
-    },
-    "vignettes/images/users_table.png": {
-      "checksum": "095ae6e039ea9523c91e8e136a06e57f"
-    },
-    "vignettes/images/users_table_V0.1.1.png": {
-      "checksum": "65dc88fee2397acd03c8a0143d5ab780"
-    },
-    "vignettes/images/users_table2.png": {
-      "checksum": "cb7ec374ae84dd1e12313cdead756b21"
-    },
-    "vignettes/images/weight_updated.png": {
-      "checksum": "a6c5fa2d05ae420752d0dad03d7b2ddd"
-    },
-    "vignettes/images/weight_updated_V0.1.1.png": {
-      "checksum": "fe072126e8ffaa5191e4e8641e931ee6"
-    },
-    "vignettes/images/welcome_landing_v2.0.0.png": {
-      "checksum": "4cbc35b798da5ed51b726b4bfb4dcf29"
-    },
-    "vignettes/riskassessment.Rmd": {
-      "checksum": "573b95379b7682036c8176cbedd149e6"
-    },
-    "vignettes/User_Roles_and_Privileges.Rmd": {
-      "checksum": "e81a4e89d35931e1cbece8bd115a395d"
     }
   },
   "users": null
