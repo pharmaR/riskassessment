@@ -30,7 +30,7 @@ packageDependenciesUI <- function(id) {
 packageDependenciesServer <- function(id, selected_pkg, user, parent) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    cran_pkgs <- as.data.frame(available.packages("https://cran.rstudio.com/src/contrib")[, 1:2])
+    cran_pkgs <- as.data.frame(available.packages()[, 1:2])
     
     loaded2_db <- eventReactive(selected_pkg$name(), {
       dbSelect("SELECT name, version, score FROM package")

@@ -135,7 +135,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
         if (isTRUE(getOption("shiny.testmode"))) {
           cran_pkgs(test_pkg_lst)
         } else {
-          cran_pkgs(utils::available.packages("https://cran.rstudio.com/src/contrib")[,1])
+          cran_pkgs(utils::available.packages()[,1])
         }
       }
     },
@@ -356,7 +356,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
         if (isTRUE(getOption("shiny.testmode"))) {
           cran_pkgs(test_pkg_lst)
         } else {
-          cran_pkgs(utils::available.packages("https://cran.rstudio.com/src/contrib")[,1])
+          cran_pkgs(utils::available.packages()[,1])
         }
       }
       
