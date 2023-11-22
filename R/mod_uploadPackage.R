@@ -127,15 +127,13 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
         if (nrow(uploaded_pkgs()) > 0) upload_pkg_comp
       )
     })
-
-    cran_pkgs <- reactiveVal()
     
     observeEvent(input$load_cran, {
-      if (!isTruthy(cran_pkgs())) {
+      if (!isTruthy(session$userData$repo_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
-          cran_pkgs(test_pkg_lst)
+          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x)))
         } else {
-          cran_pkgs(utils::available.packages()[,1])
+          session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
         }
       }
     },
@@ -147,9 +145,9 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       pkgs_have(dbSelect("select name from package")[,1])
     })
     
-    observeEvent(cran_pkgs(), {
-      req(cran_pkgs())
-      updateSelectizeInput(session, "pkg_lst", choices = cran_pkgs(), server = TRUE)
+    observeEvent(session$userData$repo_pkgs(), {
+      req(session$userData$repo_pkgs())
+      updateSelectizeInput(session, "pkg_lst", choices = session$userData$repo_pkgs()[[1]], server = TRUE)
     })
     
     observeEvent(pkgs_have(), {
@@ -352,11 +350,11 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       req(all(good_urls))
       }
       
-      if (!isTruthy(cran_pkgs())) {
+      if (!isTruthy(session$userData$repo_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
-          cran_pkgs(test_pkg_lst)
+          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x)))
         } else {
-          cran_pkgs(utils::available.packages()[,1])
+          session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
         }
       }
       
@@ -390,10 +388,10 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
               incProgress(1, detail = 'Package {uploaded_packages$package[i]} not found')
 
               # Suggest alternative spellings using utils::adist() function
-              v <- utils::adist(uploaded_packages$package[i], cran_pkgs(), ignore.case = FALSE)
+              v <- utils::adist(uploaded_packages$package[i], session$userData$repo_pkgs()[[1]], ignore.case = FALSE)
               rlang::inform(paste("Package name",uploaded_packages$package[i],"was not found."))
 
-              suggested_nms <- paste("Suggested package name(s):",paste(head(cran_pkgs()[which(v == min(v))], 10),collapse = ", "))
+              suggested_nms <- paste("Suggested package name(s):",paste(head(session$userData$repo_pkgs()[[1]][which(v == min(v))], 10),collapse = ", "))
               rlang::inform(suggested_nms)
 
               uploaded_packages$status[i] <- HTML(paste0('<a href="#" title="', suggested_nms, '">not found</a>'))

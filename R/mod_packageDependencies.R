@@ -30,8 +30,7 @@ packageDependenciesUI <- function(id) {
 packageDependenciesServer <- function(id, selected_pkg, user, parent) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
-    cran_pkgs <- as.data.frame(available.packages()[, 1:2])
-    
+
     loaded2_db <- eventReactive(selected_pkg$name(), {
       dbSelect("SELECT name, version, score FROM package")
     })
@@ -130,8 +129,16 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
         
       if(toggled() == 0L) 
         pkginfo <- filter(pkginfo, type != "Suggests")
+      
+      if (!isTruthy(session$userData$repo_pkgs())) {
+        if (isTRUE(getOption("shiny.testmode"))) {
+          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x)))
+        } else {
+          session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
+        }
+      }
         
-      purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), cran_pkgs)) %>% 
+      purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), session$userData$repo_pkgs())) %>% 
         right_join(pkginfo, by = "name") %>% 
         select(package, type, name, version, score) %>%
         arrange(name, type) %>% 
