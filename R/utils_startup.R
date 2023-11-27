@@ -254,9 +254,34 @@ check_repos <- function(repos) {
   if (!is.character(repos)) stop("The 'package_repo' configuration must be a character vector.")
   
   # `contrib.url()` is used to insure that appropriate subpages exist for the URL.
-  good_urls <- purrr::map_lgl(repos, 
-                              ~ try(curlGetHeaders(contrib.url(.x), verify = FALSE), silent = TRUE) %>%
-                                {class(.) != "try-error" && attr(., "status") != 404})
+  good_urls <- 
+    purrr::map_lgl(contrib.url(repos), ~ {
+      dest <- tempfile()
+      op <- options(warn = -1L)
+      z <- tryCatch({
+        download.file(url = paste0(.x, "/PACKAGES.rds"), 
+                      destfile = dest, cacheOK = FALSE, 
+                      quiet = TRUE, mode = "wb")
+      }, error = identity)
+      if (inherits(z, "error")) {
+        z <- tryCatch({
+          download.file(url = paste0(repos, "/PACKAGES.gz"), 
+                        destfile = dest, cacheOK = FALSE, 
+                        quiet = TRUE, mode = "wb")
+        }, error = identity)
+      }
+      if (inherits(z, "error")) {
+        z <- tryCatch({
+          download.file(url = paste0(repos, "/PACKAGES"), 
+                        destfile = dest, cacheOK = FALSE, 
+                        quiet = TRUE, mode = "wb")
+        }, error = identity)
+      }
+      options(op)
+      unlink(dest)
+      
+      !inherits(z, "error")
+    })
   
   if (any(!good_urls)) stop(glue::glue("The following URL{if (sum(!good_urls) > 1) 's' else ''} {if (sum(!good_urls) > 1) 'were' else 'was'} not reachable: {paste(contrib.url(repos[!good_urls]), collapse = ', ')}. Please check that the repo{if (sum(!good_urls) > 1) 's' else ''} {if (sum(!good_urls) > 1) 'are' else 'is'} valid and pointing to external sources."))
   
