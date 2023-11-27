@@ -243,9 +243,17 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   invisible(c(assessment_db, credentials_db))
 }
 
+#' Check CRAN repos
+#' 
+#' Checks that the package repositories provided in the configuration file are valid
+#' 
+#' @param repos A character vector containing the package repos
+#' 
+#' @noRd
 check_repos <- function(repos) {
   if (!is.character(repos)) stop("The 'package_repo' configuration must be a character vector.")
   
+  # `contrib.url()` is used to insure that appropriate subpages exist for the URL.
   good_urls <- purrr::map_lgl(repos, 
                               ~ try(curlGetHeaders(contrib.url(.x), verify = FALSE), silent = TRUE) %>%
                                 {class(.) != "try-error" && attr(., "status") != 404})
