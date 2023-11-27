@@ -47,6 +47,7 @@ library(plotly)
 
 knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 cm_ind <- nrow(params$com_metrics) != 0
+options(tinytex.verbose = TRUE)
 ```
 <!-- Fix Package fancyhdr Warning -->
 `r {"\\setlength{\\headheight}{53.61403pt}\\addtolength{\\topmargin}{-38.61403pt}"}`
@@ -149,7 +150,8 @@ if('Maintenance Metrics' %in% params$report_includes){
         )
       ) %>%
       dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
-    knitr::kable(format = 'pandoc')
+    kableExtra::kbl(booktabs = T, linesep = "", format = "pipe") %>% 
+    kableExtra::kable_styling("condensed", latex_options = "scale_down", full_width = F)
 }
 ```
 `r if ('Maintenance Metrics' %in% params$report_includes) {"* Metrics whose score is NA will not impact the package {riskmetric} score"}`
