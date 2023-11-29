@@ -45,9 +45,9 @@ library(shiny)
 library(ggplot2)
 library(plotly)
 
+options(tinytex.verbose = TRUE)
 knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 cm_ind <- nrow(params$com_metrics) != 0
-options(tinytex.verbose = TRUE)
 ```
 <!-- Fix Package fancyhdr Warning -->
 `r {"\\setlength{\\headheight}{53.61403pt}\\addtolength{\\topmargin}{-38.61403pt}"}`
@@ -136,25 +136,27 @@ if('Maintenance Metrics' %in% params$report_includes){
       `Metric Description` = desc,
       `Metric Value` = dplyr::case_when(
         value %in% c("pkg_metric_error", "NA", NA) ~ "Not found",
-        # name %in% c('has_website', 'has_source_control') & nchar(value) > 5 ~ 'Yes',
-          # stringr::str_wrap(sub("\\s+$", "", gsub('(.{20})', '\\1 ', value)), 20), # text-wrap
         value %in% c("TRUE","1") ~ 'Yes',
         !(name %in% c('has_bug_reports_url', 'news_current')) ~ value,
         TRUE ~ 'No'
        ),
-      `Metric Score` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ "NA",
+       score = na_if(score, "NA"),        
+       score = na_if(score, "NULL"), 
+      `Metric Score` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ NA_character_,
           # flip the label display of the score to mimic the package score...
           round(as.numeric(score), 2) == 0 ~ "1.0",
           round(as.numeric(score), 2) == 1 ~ "0.0",
           TRUE ~ as.character(round(1 - as.numeric(score), 2))
         )
       ) %>%
-      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
-    kableExtra::kbl(booktabs = T, linesep = "", format = "pipe") %>% 
+    # add a space after the .com 
+    dplyr::mutate(`Metric Value` = stringr::str_replace(`Metric Value`, stringr::regex("^(.+\\.com\\/)"), "\\1 ")) %>%
+    dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
+    kableExtra::kbl(booktabs = T, linesep = "", format = "pipe")   %>% 
     kableExtra::kable_styling("condensed", latex_options = "scale_down", full_width = F)
 }
 ```
-`r if ('Maintenance Metrics' %in% params$report_includes) {"* Metrics whose score is NA will not impact the package {riskmetric} score"}`
+`r if ('Maintenance Metrics' %in% params$report_includes) {"Metrics whose score is NA will not impact the package {riskmetric} score"}`
 
 ```{r maintenance_metrics_comments}
 if('Maintenance Comments' %in% params$report_includes){
@@ -186,10 +188,11 @@ if (!cm_ind) {
   if('Community Usage Metrics' %in% params$report_includes){
     params$com_metrics %>%
       dplyr::mutate(
+        score = na_if(score, "NA"),
         `Metric Name` = title,
         `Metric Description` = desc,
         `Metric Value` = ifelse(value %in% c("pkg_metric_error", "NA", NA), "Not found", value),
-        `Metric Score` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ "NA",
+        `Metric Score` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ NA_character_,
           # flip the label display of the score to mimic the package score...
           round(as.numeric(score), 2) == 0 ~ "1.0",
           round(as.numeric(score), 2) == 1 ~ "0.0",
