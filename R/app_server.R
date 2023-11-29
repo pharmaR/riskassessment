@@ -57,7 +57,7 @@ app_server <- function(input, output, session) {
 
   
   observeEvent(res_auth$user, {
-    req(res_auth$admin == TRUE || any(c("admin", "weight_adjust") %in% credential_config$privileges[[res_auth$role]]))
+    req(res_auth$admin == TRUE || any(c("admin", "weight_adjust") %in% unlist(credential_config$privileges[res_auth$role])))
     
       appendTab("apptabs",
                 tabPanel(
@@ -74,13 +74,13 @@ app_server <- function(input, output, session) {
                         title = "Credential Manager",
                         shinymanager:::admin_ui("admin")
                       ),
-                    if (res_auth$admin == TRUE || "admin" %in% credential_config$privileges[[res_auth$role]])
+                    if (res_auth$admin == TRUE || "admin" %in% unlist(credential_config$privileges[res_auth$role]))
                       tabPanel(
                         id = "privilege_id",
                         title = "Roles & Privileges",
                         mod_user_roles_ui("userRoles")
                       ),
-                    if ("weight_adjust" %in% credential_config$privileges[[res_auth$role]])
+                    if ("weight_adjust" %in% unlist(credential_config$privileges[res_auth$role]))
                     tabPanel(
                       id = "reweight_id",
                       title = "Assessment Reweighting",
@@ -94,7 +94,7 @@ app_server <- function(input, output, session) {
   observeEvent(credential_config$privileges, {
     req(user$role)
     
-    if ("weight_adjust" %in% credential_config$privileges[[user$role]])
+    if ("weight_adjust" %in% unlist(credential_config$privileges[user$role]))
       showTab("credentials", "Assessment Reweighting")
     else
       hideTab("credentials", "Assessment Reweighting")
