@@ -353,6 +353,10 @@ mod_user_roles_server <- function(id, user, credentials){
           get_credentials_table(passphrase = passphrase)
       })
       
+      # Make sure the user roles are reflected with changes
+      if (!use_shinymanager)
+        user$role <- intersect(unlist(session$groups, use.names = FALSE), dbSelect("select user_role from roles")[[1]]) %||% c("default")
+      
       session$userData$trigger_events[["reset_sidebar"]] <- session$userData$trigger_events[["reset_sidebar"]] + 1
       
       removeModal()
