@@ -1,6 +1,6 @@
 Package: riskassessment
 Title: A web app designed to interface with the `riskmetric` package
-Version: 3.0.0.9000
+Version: 3.0.0.9003
 Authors@R: c( 
     person("Aaron", "Clark", role = c("aut", "cre"), email = "aaron.clark@biogen.com"),
     person("Robert", "Krajcik", role = "aut", email = "robert.krajcik@biogen.com"),
@@ -13,6 +13,7 @@ Authors@R: c(
     person("Maya", "Gans", role = "aut", email = "maya.gans@biogen.com"),
     person("Aravind Reddy", "Kallem", role = "aut"),
     person("Eduardo", "Almeida", role = "ctb", email = "eduardoalmeida7393@gmail.com"),
+    person("Narayanan","Iyer",role = "ctb", email = "NarayananSeshan.Iyer@pfizer.com"),
     person(family = "Fission Labs India Pvt Ltd", role = "aut"),
 	  person(family = "PSI special interest group Application and Implementation of Methodologies in Statistics", role = c("cph", "fnd")),
     person(family = "R Validation Hub", role = c("cph", "fnd")),
