@@ -70,7 +70,6 @@ outputComments <- function(pkg_name, comments, none_txt = "No comments"){
 }
 ```
 
-<br>
 
 ```{r general_pkg_info}
 tagList(
@@ -102,6 +101,7 @@ if('Overall Comment' %in% params$report_includes){
   )
 }
 ```
+
 
 ```{r pkg_summary}
 if('Package Summary' %in% params$report_includes){
@@ -152,10 +152,10 @@ if('Maintenance Metrics' %in% params$report_includes){
     # add a space after the .com 
     dplyr::mutate(`Metric Value` = stringr::str_replace(`Metric Value`, stringr::regex("^(.+\\.com\\/)"), "\\1 ")) %>%
     dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
-    kableExtra::kbl(booktabs = T, linesep = "", format = "pipe")   %>% 
-    kableExtra::kable_styling("condensed", latex_options = "scale_down", full_width = F)
+    kableExtra::kbl(booktabs = TRUE, linesep = "", format = "pipe")    
 }
 ```
+
 `r if ('Maintenance Metrics' %in% params$report_includes) {"Metrics whose score is NA will not impact the package {riskmetric} score"}`
 
 ```{r maintenance_metrics_comments}
@@ -188,7 +188,8 @@ if (!cm_ind) {
   if('Community Usage Metrics' %in% params$report_includes){
     params$com_metrics %>%
       dplyr::mutate(
-        score = na_if(score, "NA"),
+        score = na_if(score, "NA"),        
+        score = na_if(score, "NULL"), 
         `Metric Name` = title,
         `Metric Description` = desc,
         `Metric Value` = ifelse(value %in% c("pkg_metric_error", "NA", NA), "Not found", value),
@@ -200,11 +201,12 @@ if (!cm_ind) {
         )
       ) %>%
       dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
-      knitr::kable(format = 'pandoc')
+      kableExtra::kbl(booktabs = TRUE, linesep = "", format = "latex") 
   }
 }
 ```
-`r if ('Community Usage Metrics' %in% params$report_includes) {"* Metrics whose score is NA will not impact the package {riskmetric} score"}`
+
+`r if ('Community Usage Metrics' %in% params$report_includes) {"Metrics whose score is NA will not impact the package {riskmetric} score"}`
 
 
 ```{r community_metrics_plot_title, eval=cm_ind}
@@ -253,8 +255,6 @@ if('Community Usage Comments' %in% params$report_includes){
 }
 ```
 
-
-
 `r if(any(c('Source Explorer Comments') %in% params$report_includes)) {"\\newpage"}`
 
 ```{r source_explorer}
@@ -278,8 +278,6 @@ if('Source Explorer Comments' %in% params$report_includes){
   )
 }
 ```
-
-
 
 `r if(any(c('Function Explorer Comments') %in% params$report_includes)) {"\\newpage"}`
 
@@ -311,7 +309,7 @@ if('Function Explorer Comments' %in% params$report_includes){
 tagList(br(), h2('About The Report'))
 ```
 
-```{r about_report}
+```{r about_report, warning=FALSE}
 
 tagList(
   strong('{riskassessment} App Version:'), br(), getElement(params, 'app_version'), br(), br(),
@@ -321,11 +319,9 @@ tagList(
 )
 
 if('Risk Score' %in% params$report_includes) {
-  tab_out <-
     params$metric_weights %>%
-    knitr::kable(align = c('l','c'), format = 'latex', booktabs = TRUE) 
-  
-  if (!requireNamespace("kableExtra", quietly = TRUE)) tab_out else tab_out %>% kableExtra::kable_styling(position = "left")
+    kableExtra::kbl(booktabs = TRUE, linesep = "", format = "latex", align = c('l','c'), centering = F) %>% 
+    kableExtra::kable_styling(position = "left")
 }
 ```
 
