@@ -3,6 +3,7 @@
 * Fixes bug that doesn't reset decision by and date fields when re-scoring/re-weighting packages (#680)
 * Fixes bug where the privileges table was not aligned with the used privileges in the application (#697)
 * Added introjs for file browser & function explorer( #581)
+* Added non-shinymanager deployment option (#700)
 
 
 # riskassessment 3.0.0
