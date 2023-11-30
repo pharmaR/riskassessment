@@ -38,10 +38,11 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
       } else if (!file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")))) {
         showHelperMessage(message = glue::glue("Source code not available for {{{selected_pkg$name()}}}"))
       } else {
-        div(
+        div(introJSUI(NS(id, "introJS")),
             br(),
             fluidRow(
               column(4,
+                     div(id = ns("file_tree"),
                      wellPanel(
                        {
                          treeTag <- 
@@ -49,9 +50,10 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
                          treeTag[[1]]$children[[3]] <- NULL
                          treeTag
                        }
-                     )
+                     ))
               ),
               column(8,
+                     div(id = ns("file_editor"),
                      conditionalPanel(
                        condition = "output.is_file",
                        shinyAce::aceEditor(ns("editor"), value = "", height = "62vh",
@@ -61,7 +63,7 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
                        ),
                        htmlOutput(ns("filepath")),
                        ns = ns
-                     )
+                     ))
               )
             ),
             br(), br(),
@@ -83,7 +85,15 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
 
     nodes <- reactive({
       req(pkgdir())
-      make_nodes(list.files(pkgdir(), recursive = TRUE))
+      s <- make_nodes(list.files(pkgdir(), recursive = TRUE))
+      if(!is.null(s[["DESCRIPTION"]])){
+      attr(s[["DESCRIPTION"]],"stselected") = TRUE
+      }
+      else {
+        f <- names(head(purrr::keep(s, \(x) !is.null(attr(x, "sttype"))), 1))
+        attr(s[[f]],"stselected") = TRUE
+      }
+      s
     }) %>%
       bindEvent(pkgdir(), selected_pkg$name())
     
@@ -116,6 +126,8 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
       }
       shinyAce::updateAceEditor(session, "editor", value = s, mode = e)
     })
+    
+    introJSServer("introJS", text = reactive(pe_steps), user, credentials)
     
     output$filepath <- renderUI({
       s <- if (is_file())
