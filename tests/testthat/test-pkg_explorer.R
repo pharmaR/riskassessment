@@ -35,24 +35,16 @@ test_that("pkg_explorer works", {
 
   expect_equal(
     app$get_value(output = "src_explorer-is_file"),
-    FALSE
+    TRUE
   )
   
-  expect_equal(
-    app$get_value(input = "src_explorer-dirtree"),
-    NULL
-  )
-  
-  app$wait_for_js("$('#10_anchor').length > 0")
-  app$run_js("$('#10_anchor').click()")
-
-  # app$expect_values(input = "src_explorer-dirtree")
+  app$expect_values(input = "src_explorer-dirtree", screenshot_args = FALSE)
 
   expect_equal(
     app$get_value(output = "src_explorer-filepath")$html,
     structure("<h5>DESCRIPTION</h5>", html = TRUE, class = c("html", "character"))
   )
-  # app$expect_values(input = "src_explorer-editor")
+  app$expect_values(input = "src_explorer-editor", screenshot_args = FALSE)
   
   app$run_js("$('#300 .jstree-ocl').click()")
   app$run_js("$('#301_anchor').click()")
@@ -62,5 +54,5 @@ test_that("pkg_explorer works", {
     app$get_value(output = "src_explorer-filepath")$html,
     structure("<h5>tests/testthat.R</h5>", html = TRUE, class = c("html", "character"))
   )
-  # app$expect_values(input = "src_explorer-editor")
+  app$expect_values(input = "src_explorer-editor", screenshot_args = FALSE)
 })
