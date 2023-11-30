@@ -49,6 +49,7 @@ options(tinytex.verbose = TRUE)
 knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 cm_ind <- nrow(params$com_metrics) != 0
 ```
+
 <!-- Fix Package fancyhdr Warning -->
 `r {"\\setlength{\\headheight}{53.61403pt}\\addtolength{\\topmargin}{-38.61403pt}"}`
 
@@ -118,7 +119,7 @@ if('Package Summary' %in% params$report_includes){
 }
 ```
 
-`r if(any(c('Maintenance Metrics', 'Maintenance Comments') %in% params$report_includes)) {"\\newpage"}`
+`r if(any(c('Maintenance Metrics', 'Maintenance Comments') %in% params$report_includes)) {"\\newpage "}`
 
 ```{r maintenance_metrics}
 if(any(c('Maintenance Metrics', 'Maintenance Comments') %in% params$report_includes)) {
@@ -129,8 +130,7 @@ if(any(c('Maintenance Metrics', 'Maintenance Comments') %in% params$report_inclu
 
 ```{r maintenance_metrics_table, warning=FALSE, message=FALSE, error=FALSE, results='HIDE', echo=FALSE}
 if('Maintenance Metrics' %in% params$report_includes){
-  # maint_out_tab <- 
-    params$maint_metrics %>%
+ params$maint_metrics %>%
     dplyr::mutate(
       `Metric Name` = title,
       `Metric Description` = desc,
@@ -150,9 +150,9 @@ if('Maintenance Metrics' %in% params$report_includes){
         )
       ) %>%
     # add a space after the .com 
-    dplyr::mutate(`Metric Value` = stringr::str_replace(`Metric Value`, stringr::regex("^(.+\\.com\\/)"), "\\1 ")) %>%
+    # dplyr::mutate(`Metric Value` = stringr::str_replace(`Metric Value`, stringr::regex("^(.+\\.com\\/)"), "\\1 ")) 
     dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
-    kableExtra::kbl(booktabs = TRUE, linesep = "", format = "pipe")    
+    kableExtra::kbl(booktabs = TRUE, linesep = "", format = "pipe")  
 }
 ```
 
@@ -171,7 +171,7 @@ if('Maintenance Comments' %in% params$report_includes){
 ```
 
 
-`r if(any(c('Community Usage Metrics', 'Community Usage Comments') %in% params$report_includes)) {"\\newpage"}`
+`r if(any(c('Community Usage Metrics', 'Community Usage Comments') %in% params$report_includes)) {"\\newpage "}`
 
 ```{r community_metrics, warning=FALSE, message=FALSE}
 if(any(c('Community Usage Metrics', 'Community Usage Comments') %in% params$report_includes)) {
@@ -255,7 +255,7 @@ if('Community Usage Comments' %in% params$report_includes){
 }
 ```
 
-`r if(any(c('Source Explorer Comments') %in% params$report_includes)) {"\\newpage"}`
+`r if(any(c('Source Explorer Comments') %in% params$report_includes)) {"\\newpage "}`
 
 ```{r source_explorer}
 if(any(c('Source Explorer Comments') %in% params$report_includes)) {
@@ -279,7 +279,7 @@ if('Source Explorer Comments' %in% params$report_includes){
 }
 ```
 
-`r if(any(c('Function Explorer Comments') %in% params$report_includes)) {"\\newpage"}`
+`r if(any(c('Function Explorer Comments') %in% params$report_includes)) {"\\newpage "}`
 
 ```{r function_explorer}
 if(any(c('Function Explorer Comments') %in% params$report_includes)) {
@@ -303,7 +303,7 @@ if('Function Explorer Comments' %in% params$report_includes){
 }
 ```
 
-\newpage
+`r {"\\newpage "}`
 
 ```{r about_report_title}
 tagList(br(), h2('About The Report'))
