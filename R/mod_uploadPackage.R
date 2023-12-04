@@ -24,7 +24,7 @@ uploadPackageUI <- function(id) {
           shinyjs::disabled(
             selectizeInput(NS(id, "pkg_lst"), "Type Package Name(s)", choices = NULL, multiple = TRUE, 
                            options = list(selectOnTab = TRUE, showAddOptionOnCreate = FALSE, 
-                                          onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_cran"), '", "load", {priority: "event"})}')))),
+                                          onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_repo_pkgs"), '", "load", {priority: "event"})}')))),
             actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
                          style = 'height: calc(1.5em + 1.5rem + 2px)')),
           tags$script(I(glue::glue('$(window).on("load resize", function() {{
@@ -128,7 +128,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       )
     })
     
-    observeEvent(input$load_cran, {
+    observeEvent(input$load_repo_pkgs, {
       if (!isTruthy(session$userData$repo_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
           session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x)))
