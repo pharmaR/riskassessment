@@ -4,6 +4,7 @@
 * Fixes bug where the privileges table was not aligned with the used privileges in the application (#697)
 * Added introjs for file browser & function explorer( #581)
 * Added tests for the code and function explorers
+* Added repo specification to configuration file (#701)
 
 # riskassessment 3.0.0
 
