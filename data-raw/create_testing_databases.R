@@ -33,7 +33,7 @@ file.copy(
 app <- shinytest2::AppDriver$new(app_dir = test_path("test-apps"),
                                  load_timeout = 90*1000)
 
-app$run_js("Shiny.setInputValue('upload_package-load_cran', 'load')")
+app$run_js("Shiny.setInputValue('upload_package-load_repo_pkgs', 'load')")
 app$wait_for_idle()
 app$set_inputs(`upload_package-pkg_lst` = "dplyr")
 app$click("upload_package-add_pkgs", wait_ = FALSE)
