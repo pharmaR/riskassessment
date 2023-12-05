@@ -286,7 +286,7 @@ tagList(
       br(),
       hr(),
       br(), br(),
-      h5("Maintenance Metrics", style = "text-align: center;"),
+      h5("Maintenance Metrics", style = "text-align: center; page-break-before: always;"),
       br()
     )
   } else "",
@@ -320,7 +320,7 @@ tagList(
       br(),
       hr(),
       br(), br(),
-      h5("Community Usage Metrics", style = "text-align: center;"),
+      h5("Community Usage Metrics", style = "text-align: center; page-break-before: always;"),
       br()
     )
   } else "",
