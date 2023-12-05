@@ -165,7 +165,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               Report <- file.path(my_tempdir, "reportDocx.Rmd")
               if (!dir.exists(file.path(my_tempdir, "images")))
                 dir.create(file.path(my_tempdir, "images"))
-              file.copy(system.file('report_downloads', 'ReportDocx.Rmd', package = "riskassessment"),
+              file.copy(system.file('report_downloads', 'reportDocx.Rmd', package = "riskassessment"),
                         Report,
                         overwrite = TRUE)
               file.copy(system.file('report_downloads', 'header.docx', package = 'riskassessment'),
@@ -189,7 +189,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               Report <- file.path(my_tempdir, "reportPdf.Rmd")
               if (!dir.exists(file.path(my_tempdir, "images")))
                 dir.create(file.path(my_tempdir, "images"))
-              file.copy(system.file('report_downloads', 'ReportPdf.Rmd', package = "riskassessment"),
+              file.copy(system.file('report_downloads', 'reportPdf.Rmd', package = "riskassessment"),
                         Report,
                         overwrite = TRUE)
               file.copy(system.file('report_downloads', 'header.tex', package = 'riskassessment'),
