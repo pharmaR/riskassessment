@@ -98,7 +98,7 @@ pe_steps <-
 # Function Explorer
 fe_steps <- 
   data.frame(
-    element = c("#code_explorer-function_list", "#code_explorer-file_type","#code_explorer-file_list","#code_explorer-file_viewer","#code_explorer-comments_for_fe"),
+    element = c("#code_explorer-function_list", "#code_explorer-file_type_div","#code_explorer-file_list","#code_explorer-file_viewer","#code_explorer-comments_for_fe"),
     intro = c(
       "Exported Functions.Click to view",
       "Select type/source of function",
