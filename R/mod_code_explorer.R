@@ -37,7 +37,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
                      div(id = ns("function_list"),
                      selectInput(ns("exported_function"), "Exported Function", choices = exported_functions()) %>%
                        tagAppendAttributes(class = "exported_function")),
-                     div(id = ns("file_type"),
+                     div(id = ns("file_type_div"),
                          selectInput(ns("file_type"), "File Type", choices = c("Testing Files" = "test", "R Source Code" = "source", "Help Documentation" = "man"))),
                      div(id = ns("file_list"),
                      conditionalPanel(

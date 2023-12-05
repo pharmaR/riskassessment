@@ -1,4 +1,5 @@
 default:
+  package_repo: https://cran.rstudio.com
   assessment_db: database.sqlite
   loggit_json: loggit.json
   use_shinymanager: true
