@@ -188,7 +188,7 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   if (isTRUE(getOption("shiny.testmode"))) return(NULL)
   
   db_config <- if(missing(configuration)) get_db_config(NULL) else configuration
-  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json", "metric_weights", "report_prefs")
+  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json", "metric_weights", "report_prefs", "package_repo")
   if (any(!names(db_config) %in% used_configs)) {
     names(db_config) %>%
       `[`(!. %in% used_configs) %>%
@@ -237,8 +237,55 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   
   if (!dir.exists("tarballs")) dir.create("tarballs")
   if (!dir.exists("source")) dir.create("source")
+  
+  check_repos(db_config[["package_repo"]])
 
   invisible(c(assessment_db, credentials_db))
+}
+
+#' Check CRAN repos
+#' 
+#' Checks that the package repositories provided in the configuration file are valid
+#' 
+#' @param repos A character vector containing the package repos
+#' 
+#' @noRd
+check_repos <- function(repos) {
+  if (!is.character(repos)) stop("The 'package_repo' configuration must be a character vector.")
+  
+  # `contrib.url()` is used to insure that appropriate subpages exist for the URL.
+  good_urls <- 
+    purrr::map_lgl(contrib.url(repos), ~ {
+      dest <- tempfile()
+      op <- options(warn = -1L)
+      z <- tryCatch({
+        download.file(url = paste0(.x, "/PACKAGES.rds"), 
+                      destfile = dest, cacheOK = FALSE, 
+                      quiet = TRUE, mode = "wb")
+      }, error = identity)
+      if (inherits(z, "error")) {
+        z <- tryCatch({
+          download.file(url = paste0(repos, "/PACKAGES.gz"), 
+                        destfile = dest, cacheOK = FALSE, 
+                        quiet = TRUE, mode = "wb")
+        }, error = identity)
+      }
+      if (inherits(z, "error")) {
+        z <- tryCatch({
+          download.file(url = paste0(repos, "/PACKAGES"), 
+                        destfile = dest, cacheOK = FALSE, 
+                        quiet = TRUE, mode = "wb")
+        }, error = identity)
+      }
+      options(op)
+      unlink(dest)
+      
+      !inherits(z, "error")
+    })
+  
+  if (any(!good_urls)) stop(glue::glue("The following URL{if (sum(!good_urls) > 1) 's' else ''} {if (sum(!good_urls) > 1) 'were' else 'was'} not reachable: {paste(contrib.url(repos[!good_urls]), collapse = ', ')}. Please check that the repo{if (sum(!good_urls) > 1) 's' else ''} {if (sum(!good_urls) > 1) 'are' else 'is'} valid and pointing to external sources."))
+  
+  invisible(repos)
 }
 
 

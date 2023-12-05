@@ -56,7 +56,7 @@ test_that("The introJS module works as expected for admins", {
   
   app$click(selector = ".introjs-skipbutton")
   
-  app$run_js("Shiny.setInputValue('upload_package-load_cran', 'load')")
+  app$run_js("Shiny.setInputValue('upload_package-load_repo_pkgs', 'load')")
   app$wait_for_idle()
   app$set_inputs(`upload_package-pkg_lst` = "tidyr")
   app$click("upload_package-add_pkgs", wait_ = FALSE)
@@ -222,7 +222,7 @@ test_that("The introJS module works as expected for nonadmins", {
   
   app$click(selector = ".introjs-skipbutton")
   
-  app$run_js("Shiny.setInputValue('upload_package-load_cran', 'load')")
+  app$run_js("Shiny.setInputValue('upload_package-load_repo_pkgs', 'load')")
   app$wait_for_idle()
   app$set_inputs(`upload_package-pkg_lst` = "tidyr")
   app$click("upload_package-add_pkgs", wait_ = FALSE)
