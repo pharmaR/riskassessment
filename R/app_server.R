@@ -50,7 +50,10 @@ app_server <- function(input, output, session) {
       )
     )
   }
-
+  # click event on dependencies card to change dropdown to dependencies
+  observeEvent(input$`dependencies-dep_click`,{
+    updateSelectInput(session,"metric_type",selected = "dep")
+  })
   
   observeEvent(res_auth$user, {
     req(res_auth$admin == TRUE | "weight_adjust" %in% credential_config$privileges[[res_auth$role]])

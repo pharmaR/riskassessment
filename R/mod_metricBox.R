@@ -101,8 +101,18 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
              metric_gauge(score = score)
           )
       }
+      
+      if (title %in% c("Dependencies")){ # for dependencies card alone
+       link_button <-  a(s="#",class="btn stretched-link",onclick = sprintf('(function click() {
+       Shiny.setInputValue("%s", new Date().getTime());window.scrollTo(0, 0);
+      }());', NS(id,"dep_click"))) } 
+      else {
+        link_button <- NULL
+      }
+       
         
       html_component <- div(
+            link_button,
         class = "card mb-3 text-center border-info", style = card_style,
         div(
           class = "row no-gutters;",
