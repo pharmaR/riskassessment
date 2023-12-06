@@ -14,7 +14,7 @@ app_server <- function(input, output, session) {
     unlink("source/*", recursive = TRUE)
     options(old)
     })
-  options(repos = c(CRAN = "https://cran.rstudio.com"))
+  options(repos = get_db_config("package_repo"))
   
   # Collect user info.
   user <- reactiveValues()
@@ -31,6 +31,7 @@ app_server <- function(input, output, session) {
     upload_pkgs = NULL,
     update_report_pref_inclusions = 0
   )
+  session$userData$repo_pkgs <- reactiveVal()
   
   
   # this skips authentication if the application is running in test mode

@@ -24,7 +24,7 @@ uploadPackageUI <- function(id) {
           shinyjs::disabled(
             selectizeInput(NS(id, "pkg_lst"), "Type Package Name(s)", choices = NULL, multiple = TRUE, 
                            options = list(selectOnTab = TRUE, showAddOptionOnCreate = FALSE, 
-                                          onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_cran"), '", "load", {priority: "event"})}')))),
+                                          onFocus = I(paste0('function() {Shiny.setInputValue("', NS(id, "load_repo_pkgs"), '", "load", {priority: "event"})}')))),
             actionButton(NS(id, "add_pkgs"), shiny::icon("angle-right"),
                          style = 'height: calc(1.5em + 1.5rem + 2px)')),
           tags$script(I(glue::glue('$(window).on("load resize", function() {{
@@ -127,15 +127,13 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
         if (nrow(uploaded_pkgs()) > 0) upload_pkg_comp
       )
     })
-
-    cran_pkgs <- reactiveVal()
     
-    observeEvent(input$load_cran, {
-      if (!isTruthy(cran_pkgs())) {
+    observeEvent(input$load_repo_pkgs, {
+      if (!isTruthy(session$userData$repo_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
-          cran_pkgs(test_pkg_lst)
+          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x)))
         } else {
-          cran_pkgs(utils::available.packages("https://cran.rstudio.com/src/contrib")[,1])
+          session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
         }
       }
     },
@@ -147,9 +145,9 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       pkgs_have(dbSelect("select name from package")[,1])
     })
     
-    observeEvent(cran_pkgs(), {
-      req(cran_pkgs())
-      updateSelectizeInput(session, "pkg_lst", choices = cran_pkgs(), server = TRUE)
+    observeEvent(session$userData$repo_pkgs(), {
+      req(session$userData$repo_pkgs())
+      updateSelectizeInput(session, "pkg_lst", choices = session$userData$repo_pkgs()[[1]], server = TRUE)
     })
     
     observeEvent(pkgs_have(), {
@@ -325,8 +323,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       np <- nrow(uploaded_packages)
       
       if (!isTRUE(getOption("shiny.testmode"))) {
-        url_lst <- list(
-          "https://cran.rstudio.com",
+        url_lst <- c(
           "https://cran.r-project.org",
           "https://cranlogs.r-pkg.org"
         )
@@ -352,11 +349,11 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       req(all(good_urls))
       }
       
-      if (!isTruthy(cran_pkgs())) {
+      if (!isTruthy(session$userData$repo_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
-          cran_pkgs(test_pkg_lst)
+          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x)))
         } else {
-          cran_pkgs(utils::available.packages("https://cran.rstudio.com/src/contrib")[,1])
+          session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
         }
       }
       
@@ -390,10 +387,10 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
               incProgress(1, detail = 'Package {uploaded_packages$package[i]} not found')
 
               # Suggest alternative spellings using utils::adist() function
-              v <- utils::adist(uploaded_packages$package[i], cran_pkgs(), ignore.case = FALSE)
+              v <- utils::adist(uploaded_packages$package[i], session$userData$repo_pkgs()[[1]], ignore.case = FALSE)
               rlang::inform(paste("Package name",uploaded_packages$package[i],"was not found."))
 
-              suggested_nms <- paste("Suggested package name(s):",paste(head(cran_pkgs()[which(v == min(v))], 10),collapse = ", "))
+              suggested_nms <- paste("Suggested package name(s):",paste(head(session$userData$repo_pkgs()[[1]][which(v == min(v))], 10),collapse = ", "))
               rlang::inform(suggested_nms)
 
               uploaded_packages$status[i] <- HTML(paste0('<a href="#" title="', suggested_nms, '">not found</a>'))
