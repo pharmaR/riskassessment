@@ -102,10 +102,11 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
           )
       }
       
-      if (title %in% c("Dependencies")){ # for dependencies card alone
-       link_button <-  a(s="#",class="btn stretched-link",onclick = sprintf('(function click() {
-       Shiny.setInputValue("%s", new Date().getTime());window.scrollTo(0, 0);
-      }());', NS(id,"dep_click"))) } 
+      if (title %in% c("Dependencies","Reverse Dependencies")){ # for dependencies/rev dep cards alone
+       link_button <-  a(s="#",class="btn stretched-link",onclick = sprintf('(function () {
+       Shiny.setInputValue("%s", new Date().getTime());
+       window.scrollTo(0, "%s" == "dependencies" ? 0 :1000);
+      }());', NS(id,"dep_click"),id)) } 
       else {
         link_button <- NULL
       }

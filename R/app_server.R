@@ -51,7 +51,7 @@ app_server <- function(input, output, session) {
     )
   }
   # click event on dependencies card to change dropdown to dependencies
-  observeEvent(input$`dependencies-dep_click`,{
+  observeEvent(list(input$`dependencies-dep_click`, input$`reverse_dependencies-dep_click`),{
     updateSelectInput(session,"metric_type",selected = "dep")
   })
   
