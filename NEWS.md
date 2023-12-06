@@ -7,6 +7,7 @@
 * Added repo specification to configuration file (#701)
 * Added dependencies/reverse dependencies card hyperlink (#597)
 
+
 # riskassessment 3.0.0
 
 ### Enhancements
