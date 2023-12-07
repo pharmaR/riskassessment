@@ -8,9 +8,9 @@ test_that("downloadHandler works", {
   expect_equal(tools::file_ext(report), "html")
   
   ## TODO: Add tests back in when issues are figured out
-  # app$set_inputs(`downloadHandler_1-report_format` = "docx")
-  # report <- app$get_download("downloadHandler_1-download_reports")
-  # expect_equal(tools::file_ext(report), "docx")
+  app$set_inputs(`downloadHandler_1-report_format` = "docx")
+  report <- app$get_download("downloadHandler_1-download_reports")
+  expect_equal(tools::file_ext(report), "docx")
   # 
   # app$set_inputs(`downloadHandler_1-report_format` = "pdf")
   # report <- app$get_download("downloadHandler_1-download_reports")
