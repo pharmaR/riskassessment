@@ -4,12 +4,14 @@
 \alias{packageDependenciesServer}
 \title{Package Dependencies module's server logic}
 \usage{
-packageDependenciesServer(id, selected_pkg, user, parent)
+packageDependenciesServer(id, selected_pkg, loaded2_db, user, parent)
 }
 \arguments{
 \item{id}{a module id name}
 
 \item{selected_pkg}{placeholder}
+
+\item{loaded2_db}{placeholder}
 
 \item{user}{placeholder}
 

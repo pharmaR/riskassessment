@@ -21,6 +21,7 @@ reportPreviewUI <- function(id) {
 #' @param cm_comments placeholder
 #' @param downloads_plot_data placeholder
 #' @param dep_metrics placeholder
+#' @param loaded2_db placeholder
 #' @param user placeholder
 #' @param app_version placeholder
 #' @param metric_weights placeholder
@@ -38,8 +39,8 @@ reportPreviewUI <- function(id) {
 #' 
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics, 
                                 com_metrics_raw, mm_comments, cm_comments, #se_comments,
-                                downloads_plot_data, dep_metrics, user, credentials, app_version,
-                                metric_weights) {
+                                downloads_plot_data, dep_metrics, loaded2_db, user, credentials, 
+                                app_version, metric_weights) {
   if (missing(credentials))
     credentials <- get_db_config("credentials")
   
@@ -430,12 +431,9 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     # Community usage metrics cards.
     metricGridServer("cm_metricGrid", metrics = com_metrics)
     
-    loaded2_db <- dbSelect("SELECT name, version, score FROM package",
-                           db_name = golem::get_golem_options('assessment_db_name'))
-
     dep_cards <- eventReactive(dep_metrics(), {
       req(dep_metrics())
-      build_dep_cards(data = dep_metrics(), loaded = loaded2_db$name, toggled = 0L)
+      build_dep_cards(data = dep_metrics(), loaded = loaded2_db()$name, toggled = 0L)
     })
     
     # Package Dependencies metrics cards.
@@ -448,7 +446,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
         mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
       
       repo_pkgs <- as.data.frame(utils::available.packages()[,1:2])
-      purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db, repo_pkgs)) %>%
+      purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), repo_pkgs)) %>%
       right_join(pkginfo, by = "name") %>%
       select(package, type, name, version, score) %>%
       arrange(name, type) %>%

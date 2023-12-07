@@ -218,6 +218,13 @@ app_server <- function(input, output, session) {
     get_comm_data(selected_pkg$name())
   })
   
+  loaded2_db <- eventReactive(selected_pkg$name(), {
+    req(selected_pkg$name())
+    req(selected_pkg$name() != "-")
+    
+    dbSelect("SELECT name, version, score FROM package")
+  })
+  
   # Get Package Dependency metrics.
   dep_metrics  <- reactiveVal()
   
@@ -295,6 +302,7 @@ app_server <- function(input, output, session) {
   # Load server for the package dependencies tab.
   dependencies_data <- packageDependenciesServer('packageDependencies',
                                                   selected_pkg,
+                                                  loaded2_db,
                                                   user,
                                                   parent = session)
   
@@ -309,6 +317,7 @@ app_server <- function(input, output, session) {
                       # se_comments = src_explorer_data$comments, # not an arg
                       downloads_plot_data = community_data$downloads_plot_data,
                       dep_metrics =  dep_metrics,
+                      loaded2_db,
                       user = user,
                       credential_config,
                       app_version = golem::get_golem_options('app_version'),
