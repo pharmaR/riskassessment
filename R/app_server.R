@@ -219,15 +219,6 @@ app_server <- function(input, output, session) {
   })
   
   # Get Package Dependency metrics.
-  # dep_metrics <- reactive({
-  #   req(selected_pkg$name())
-  #   req(selected_pkg$name() != "-")
-  #   
-  #   get_assess_blob(selected_pkg$name())$dependencies[[1]] %>% dplyr::as_tibble() %>% 
-  #     mutate(package = stringr::str_replace(package, "\n", " ")) %>%
-  #     mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
-  # })
-  
   dep_metrics  <- reactiveVal()
   
   pkgref <- eventReactive(selected_pkg$name(), {
@@ -299,7 +290,7 @@ app_server <- function(input, output, session) {
                                            selected_pkg,
                                            community_usage_metrics,
                                            user,
-                                           credentials = credential_config)
+                                           credential_config)
 
   # Load server for the package dependencies tab.
   dependencies_data <- packageDependenciesServer('packageDependencies',
