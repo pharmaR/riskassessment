@@ -507,7 +507,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       
       tagList(
         h5(code('{riskmetric}'), 'Assessment Date:'), selected_pkg$date_added(),
-        if('Risk Score' %in% report_includes()) tagList(h5('Risk Score:'), selected_pkg$score()) else "",
+        if('Risk Score' %in% report_includes()) tagList(hr(), br(), h5('Risk Score:'), selected_pkg$score()) else "",
         h5('Package Decision:'),ifelse(is.na(selected_pkg$decision()), 'Pending',selected_pkg$decision())
       )
     })
@@ -536,6 +536,6 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     )
     
     # Call download handler server
-    mod_downloadHandler_server("downloadHandler", selected_pkg$name, user, metric_weights)
+    mod_downloadHandler_server("downloadHandler", selected_pkg$name, user, metric_weights, dep_metrics, loaded2_db)
   })
 }
