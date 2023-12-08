@@ -27,6 +27,8 @@ params:
   com_metrics: NA
   com_metrics_raw: NA
   downloads_plot_data: NA
+  dep_cards: NA
+  dep_table: NA
   metric_tbl: NA
 ---
 
@@ -128,6 +130,8 @@ tagList(br(), h2('Maintenance Metrics'))
 if('Maintenance Metrics' %in% params$report_includes){
   params$maint_metrics %>%
     dplyr::mutate(
+       score = na_if(score, "NA"),        
+       score = na_if(score, "NULL"),
       `Metric Name` = title,
       `Metric Description` = desc,
       `Metric Value` = dplyr::case_when(
@@ -179,6 +183,8 @@ if (!cm_ind) {
   if('Community Usage Metrics' %in% params$report_includes){
     params$com_metrics %>%
       dplyr::mutate(
+        score = na_if(score, "NA"),        
+        score = na_if(score, "NULL"),
         `Metric Name` = title,
         `Metric Description` = desc,
         `Metric Value` = ifelse(value %in% c("pkg_metric_error", "NA", NA), "Not found", value),
@@ -243,6 +249,45 @@ if('Community Usage Comments' %in% params$report_includes){
 }
 ```
 
+```{r package_dependencies_header}
+tagList(
+  if('Package Dependencies' %in% params$report_includes) {
+    tagList(
+      br(),
+      hr(),
+      br(), 
+      h2("Package Dependencies", style = "text-align: center;"),
+      br(),
+      br() 
+    )
+  } else ""
+)
+```
+
+```{r package_dependencies}
+if('Package Dependencies' %in% params$report_includes) {
+  params$dep_cards %>%
+    dplyr::mutate(
+       score = na_if(score, "NA"),        
+       score = na_if(score, "NULL"),
+      `Metric Name` = title,
+      `Metric Description` = desc,
+      `Metric Value` = dplyr::case_when(
+        value %in% c("pkg_metric_error", "NA", NA) ~ "Not found",
+        !(name %in% c('has_bug_reports_url', 'news_current')) ~ value,
+                                 value %in% c("TRUE","1") ~ 'Yes',
+                                 TRUE ~ 'No'),
+      `Metric Score` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ "NA",
+          # flip the label display of the score to mimic the package score...
+          round(as.numeric(score), 2) == 0 ~ "1.0",
+          round(as.numeric(score), 2) == 1 ~ "0.0",
+          TRUE ~ as.character(round(1 - as.numeric(score), 2))
+      )
+    ) %>%
+    dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
+    knitr::kable(format = 'pandoc')
+}
+```
 
 ```{r source_explorer_metrics}
 if(any(c('Source Explorer Comments') %in% params$report_includes)) {
