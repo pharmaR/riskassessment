@@ -366,16 +366,11 @@ tagList(
     tagList(
       br(),
       hr(),
-      br(), br(),
+      br(), 
       h5("Package Dependencies", style = "text-align: center;"),
-      br()
-    )
-  } else "",
-  if('Package Dependencies' %in% params$report_includes){
-    tagList(
       br(),
       createGrid(metrics = params$dep_cards),
-      br(), br(),
+      br(), 
       DT::datatable(params$dep_table,
           options = list(dom = "t", searching = FALSE, pageLength = -1,
                          lengthChange = FALSE, info = FALSE, 
