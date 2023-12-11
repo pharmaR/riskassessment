@@ -143,7 +143,9 @@ mod_user_roles_server <- function(id, user, credentials){
           role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
         }
       used_roles_admin <-
-        intersect(names(purrr::keep(credentials$privileges, ~ "admin" %in% .x)), user$role)
+        intersect(names(purrr::keep(credentials$privileges, ~ "admin" %in% .x)), user$role) %>%
+        c("default") %>%
+        unique()
 
       showModal(modalDialog(
         size = "l",
@@ -202,7 +204,9 @@ mod_user_roles_server <- function(id, user, credentials){
           role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
         }
       used_roles_admin <-
-        intersect(names(purrr::keep(credentials$privileges, ~ "admin" %in% .x)), user$role)
+        intersect(names(purrr::keep(credentials$privileges, ~ "admin" %in% .x)), user$role) %>%
+        c("default") %>%
+        unique()
       
       updateTextInput(session, "add_col", value = "")
       updateSelectInput(session, "select_edit_col", choices = if (use_shinymanager) colnames(reset_table) else setdiff(colnames(reset_table), used_roles))
@@ -244,7 +248,9 @@ mod_user_roles_server <- function(id, user, credentials){
           role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
         }
       used_roles_admin <-
-        intersect(names(purrr::keep(credentials$privileges, ~ "admin" %in% .x)), user$role)
+        intersect(names(purrr::keep(credentials$privileges, ~ "admin" %in% .x)), user$role) %>%
+        c("default") %>%
+        unique()
       
       updateTextInput(session, "add_col", value = "")
       updateSelectInput(session, "select_edit_col", choices = if (use_shinymanager) colnames(tbl) else setdiff(colnames(tbl), used_roles))
@@ -273,7 +279,9 @@ mod_user_roles_server <- function(id, user, credentials){
           role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
         }
       used_roles_admin <-
-        intersect(names(purrr::keep(credentials$privileges, ~ "admin" %in% .x)), user$role)
+        intersect(names(purrr::keep(credentials$privileges, ~ "admin" %in% .x)), user$role) %>%
+        c("default") %>%
+        unique()
       
       updateTextInput(session, "add_col", value = "")
       updateSelectInput(session, "select_edit_col", choices = if (use_shinymanager) colnames(tbl) else setdiff(colnames(tbl), used_roles))
@@ -284,7 +292,9 @@ mod_user_roles_server <- function(id, user, credentials){
     observeEvent(input$delete_col_submit, {
       o_role <- role_changes() %>% dplyr::filter(new_role == input$delete_col) %>% dplyr::pull(name = old_role)
       used_roles_admin <-
-        intersect(names(purrr::keep(credentials$privileges, ~ "admin" %in% .x)), user$role)
+        intersect(names(purrr::keep(credentials$privileges, ~ "admin" %in% .x)), user$role) %>%
+        c("default") %>%
+        unique()
       req(!o_role %in% if (use_shinymanager) user_table()$role else used_roles_admin)
       
       tbl <- proxy_tbl()
