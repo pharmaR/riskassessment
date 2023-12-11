@@ -138,7 +138,7 @@ mod_user_roles_server <- function(id, user, credentials){
       })
       used_roles <- 
         if (!use_shinymanager) {
-          user$role
+          unique(c(user$role, "default"))
         } else {
           role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
         }
@@ -199,7 +199,7 @@ mod_user_roles_server <- function(id, user, credentials){
       role_changes(dplyr::tibble(old_role = colnames(reset_table), new_role = colnames(reset_table)))
       used_roles <- 
         if (!use_shinymanager) {
-          user$role
+          unique(c(user$role, "default"))
         } else {
           role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
         }
@@ -243,7 +243,7 @@ mod_user_roles_server <- function(id, user, credentials){
       role_changes(dplyr::add_row(role_changes(), new_role = input$add_col))
       used_roles <- 
         if (!use_shinymanager) {
-          user$role
+          unique(c(user$role, "default"))
         } else {
           role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
         }
@@ -274,7 +274,7 @@ mod_user_roles_server <- function(id, user, credentials){
                                                     new_role)))
       used_roles <-  
         if (!use_shinymanager) {
-          user$role
+          unique(c(user$role, "default"))
         } else {
           role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
         }
@@ -307,7 +307,7 @@ mod_user_roles_server <- function(id, user, credentials){
                                                     new_role)))
       used_roles <- 
         if (!use_shinymanager) {
-          user$role
+          unique(c(user$role, "default"))
         } else {
           role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
         }
