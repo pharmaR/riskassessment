@@ -195,12 +195,15 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
       purrr::walk(~ warning(glue::glue("Unknown database configuration '{.x}' found in db-config.yml")))
   }
   
+  use_shinymanager <- !isFALSE(db_config[["use_shinymanager"]])
+  
   assessment_db <- if (missing(assess_db)) get_db_config("assessment_db") else assess_db
-  credentials_db <- if (missing(cred_db)) golem::get_golem_options('credentials_db_name') else cred_db
+  if (!use_shinymanager)
+    credentials_db <- if (missing(cred_db)) golem::get_golem_options('credentials_db_name') else cred_db
   
   if (is.null(assessment_db) || typeof(assessment_db) != "character" || length(assessment_db) != 1 || !grepl("\\.sqlite$", assessment_db))
     stop("assess_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
-  if (is.null(credentials_db) || typeof(credentials_db) != "character" || length(credentials_db) != 1 || !grepl("\\.sqlite$", credentials_db))
+  if (use_shinymanger && (is.null(credentials_db) || typeof(credentials_db) != "character" || length(credentials_db) != 1 || !grepl("\\.sqlite$", credentials_db)))
     stop("cred_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
   
   # Start logging info.
@@ -214,11 +217,11 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   
   check_credentials(db_config[["credentials"]])
 
-  if (isFALSE(getOption("golem.app.prod")) && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(credentials_db)) create_credentials_dev_db(credentials_db)
+  if (use_shinymanger && isFALSE(getOption("golem.app.prod")) && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(credentials_db)) create_credentials_dev_db(credentials_db)
 
   # Create package db & credentials db if it doesn't exist yet.
   if(!file.exists(assessment_db)) create_db(assessment_db)
-  if(!file.exists(credentials_db)) {
+  if(use_shinymanager && !file.exists(credentials_db)) {
     admin_role <- db_config[["credentials"]][["privileges"]] %>%
       purrr::imap(~ if ("admin" %in% .x) .y) %>%
       unlist(use.names = FALSE) %>%
@@ -240,7 +243,7 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   
   check_repos(db_config[["package_repo"]])
 
-  invisible(c(assessment_db, credentials_db))
+  invisible(c(assessment_db, if (use_shinymanager) credentials_db))
 }
 
 #' Check CRAN repos
