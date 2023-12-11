@@ -199,7 +199,7 @@ app_server <- function(input, output, session) {
   # Load server of the database view module.
   #parentSession <- .subset2(session, "parent")
   databaseViewServer("databaseView", user, uploaded_pkgs,
-                     metric_weights = metric_weights, changes, parent = session)
+                     metric_weights = metric_weights, dep_metrics, loaded2_db, changes, parent = session)
   
   # Gather maintenance metrics information.
   maint_metrics <- reactive({
