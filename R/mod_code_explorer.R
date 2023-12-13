@@ -137,7 +137,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
       if (rlang::is_empty(man_files())) return(HTML("No files to display"))
       req(input$man_files)
       out_dir <- tempdir()
-      tools::Rd2HTML(file.path(pkgdir(), "man", input$man_files), package = selected_pkg$name(), out = file.path(out_dir, "man.html"))
+      tools::Rd2HTML(file.path(pkgdir(), "man", input$man_files), package = c(selected_pkg$name(), selected_pkg$version()), out = file.path(out_dir, "man.html"))
       includeHTML(file.path(out_dir, "man.html"))
     }) %>%
       bindEvent(input$man_files, input$exported_function, ignoreNULL = FALSE)

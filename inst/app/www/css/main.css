@@ -91,3 +91,10 @@ meter::-moz-meter-bar {background: #FF765B;}  /* color of bar*/
 meter::-moz-meter-optimum-value {background: #9CFF94;} 
 meter::-moz-meter-suboptimum-value{background:#FFD070;}  
 
+h1, .h1, h2, .h2, h3, .h3 {
+  margin-top: 1.5rem;
+}
+
+h4, .h4, h5, .h5, h6, .h6 {
+  margin-top: 1rem;
+}
