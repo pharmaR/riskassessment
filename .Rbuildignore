@@ -25,3 +25,4 @@ _\.new\.png$
 ^source$
 ^revdep
 ^revdep$
+^manifest.json$
