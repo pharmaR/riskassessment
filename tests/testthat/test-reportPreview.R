@@ -54,7 +54,7 @@ test_that("Reactivity of reportPreview", {
     rvest::html_text()
   
   # first 8 should match
-  expect_equal(about[1:8], pkg_rev)
+  expect_equal(about[1:9], pkg_rev)
   
   # scrape maintenance info headers
   maint_info <- rvest::html_elements(html,".card-header") %>% 
