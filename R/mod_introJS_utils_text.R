@@ -66,8 +66,8 @@ upload_pkg_dec_adj <- data.frame(
 upload_pkg_comp <-  data.frame(
   element = c("#upload_summary_div", "#upload_package-upload_pkgs_table"),
   intro = c(
-    "Text description of packages uploaded. Counts by type: 'Total', 'New', 'Undiscovered', 'Duplicate'.",
-    "Confirm uploaded packages list, filter by type"
+    "An overall summary of packages uploaded, giving you a synopsis of your most recent upload request.",
+    "A detailed upload summary, by package, including a quick look at scores and any automated decisions made. Click the 'Explore Metrics' button to dive deeper into any one assessment!"
   ),
   position = c("bottom", "top")
 )
@@ -88,9 +88,9 @@ pe_steps <-
   data.frame(
     element = c("#pkg_explorer-file_tree", "#pkg_explorer-file_editor","#pkg_explorer-comments_for_se"),
     intro = c(
-      "The file tree shows all the files inside.Click to view.",
-      "Text inside selected file from package if viewable",
-      "Add comments for any files"
+      "This 'file tree' displays all files the author included in the R package build. Select one to preview the contents of the file or click the '+' to expand directories to explore more files. Note: not all file types can be previewed.",
+      "Review the contents of a file. Use this viewer to explore code, documentation, or tests. Note: not all file types can be previewed.",
+      "Have something to share within your organization? Add a comment and keep track of the on-going conversation for this package's file browser."
     ),
     position = c("left","left","top")
   )
@@ -100,11 +100,11 @@ fe_steps <-
   data.frame(
     element = c("#code_explorer-function_list", "#code_explorer-file_type_div","#code_explorer-file_list","#code_explorer-file_viewer","#code_explorer-comments_for_fe"),
     intro = c(
-      "Exported Functions.Click to view",
-      "Select type/source of function",
-      "File in which selected function is found",
-      "File viewer with selected function highlighted",
-      "Add comments for any functions"
+      "A list of exported functions. Click to view and select.",
+      "After selecting a function, choose which kind of files you want to preview: tests, source code, or help docs.",
+      "If multiple files are found, they'll be displayed here. Click through each to see how the function is defined & used throughout the package.",
+      "Observe function usage with this handy file viewer. The selected function will be highlighted for your convenience.",
+      "Have something to share within your organization? Add a comment and keep track of the on-going conversation for this package's exported functions."
     ),
     position = c(rep("right", 3), rep("top", 2))
   )
