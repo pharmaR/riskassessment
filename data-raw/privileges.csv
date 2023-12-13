@@ -6,5 +6,5 @@ Final Decision,final_decision,A `final decision` user can make final decision re
 Revert Decision,revert_decision,A `revert decision` user can undo final decisions made regarding packages.,
 Add Packages,add_package,A `add packages` user can add packages for consideration.,
 Delete Packages,delete_package,A `delete packages` user can remove packages from consideration.,
-Overall Commentator,overall_comment,A `overall commentator` user can add/eidt the overall comment and summary for a package.,
+Overall Commentator,overall_comment,A `overall commentator` user can add/edit the overall comment and summary for a package.,
 General Commentator,general_comment,A `general commentator` user can add maintenance and community metric comments.,

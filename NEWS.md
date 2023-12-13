@@ -5,6 +5,7 @@
 * Added introjs for file browser & function explorer( #581)
 * Added tests for the code and function explorers
 * Added repo specification to configuration file (#701)
+* Fix typo in Privileges table (#719)
 * Adjusted page margins and column wrap for pdf outputs (#651)
 
 # riskassessment 3.0.0
