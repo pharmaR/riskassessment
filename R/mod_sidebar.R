@@ -50,6 +50,8 @@ sidebarUI <- function(id) {
           shinyjs::disabled(),
       )
     ),
+    tags$label("Package Source", class = c("control-label", "h5")),
+    verbatimTextOutput(NS(id, "repo_url"), placeholder = TRUE),
     br(),
     
     fluidRow(
@@ -169,6 +171,13 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
       
       session$userData$trigger_events$update_report_pref_inclusions <- session$userData$trigger_events$update_report_pref_inclusions + 1
       
+    })
+    
+    output$repo_url <- renderText({
+      req(input$select_pkg)
+      req(input$select_pkg != "-")
+
+      selected_pkg$url
     })
     
     # Display the review status of the selected package.
@@ -494,6 +503,7 @@ sidebarServer <- function(id, user, uploaded_pkgs, credentials) {
       name = reactive(selected_pkg$name),
       version = reactive(selected_pkg$version),
       date_added = reactive(selected_pkg$date_added),
+      repo_url = reactive(selected_pkg$url),
       title = reactive(selected_pkg$title),
       decision = reactive(selected_pkg$decision),
       description = reactive(selected_pkg$description),
