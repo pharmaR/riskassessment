@@ -1,6 +1,6 @@
 test_that("downloadHandler works", {
 
-  skip("revisit this later")
+  # skip("revisit this later")
   # revisit this another time
   app <- shinytest2::AppDriver$new(test_path("test-apps", "downloadHandler-app"))
   
