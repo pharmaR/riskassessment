@@ -63,7 +63,7 @@ test_pkg_refs_compl <-
 
 test_pkg_refs <-
   test_pkg_refs_compl %>%
-  purrr::map(~ .x[c("name", "version", "source")] %>% purrr::set_names(c("name", "version", "source")))
+  purrr::map(~ .x[c("name", "version", "source", "repo_base_url")] %>% purrr::set_names(c("name", "version", "source", "repo_base_url")))
 
 test_pkg_info <-
   test_pkg_lst %>%
