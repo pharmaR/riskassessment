@@ -78,7 +78,7 @@ mm_steps <-
     element = c(".card-group", "#comments_for_mm"),
     intro = c(
       "Several ways to measuring package maintenance are assessed here. Please review each!",
-      "Have something to share within your organization? Add a comment and keep track of the on-going conversation for this package's maintainence metrics"
+      "Have something to share within your organization? Add a comment and keep track of the ongoing conversation for this package's maintainence metrics"
     ),
     position = c(rep("left", 2))
   )
@@ -90,7 +90,7 @@ pe_steps <-
     intro = c(
       "This 'file tree' displays all files the author included in the R package build. Select one to preview the contents of the file or click the '+' to expand directories to explore more files. Note: not all file types can be previewed.",
       "Review the contents of a file. Use this viewer to explore code, documentation, or tests. Note: not all file types can be previewed.",
-      "Have something to share within your organization? Add a comment and keep track of the on-going conversation for this package's file browser."
+      "Have something to share within your organization? Add a comment and keep track of the ongoing conversation for this package's file browser."
     ),
     position = c("left","left","top")
   )
@@ -104,7 +104,7 @@ fe_steps <-
       "After selecting a function, choose which kind of files you want to preview: tests, source code, or help docs.",
       "If multiple files are found, they'll be displayed here. Click through each to see how the function is defined & used throughout the package.",
       "Observe function usage with this handy file viewer. The selected function will be highlighted for your convenience.",
-      "Have something to share within your organization? Add a comment and keep track of the on-going conversation for this package's exported functions."
+      "Have something to share within your organization? Add a comment and keep track of the ongoing conversation for this package's exported functions."
     ),
     position = c(rep("right", 3), rep("top", 2))
   )
@@ -127,7 +127,7 @@ cum_steps <- data.frame(
   intro = c(
     "Several ways of measuring community usage are assessed here. Please review each!",
     "Digest the 'downloads per month' metric by selecting a pre-defined time periods or toggling the date slider at bottom of plot for custom date range",
-    "Have something to share within your organization? Add a comment and keep track of the on-going conversation for this package's community usage metrics"
+    "Have something to share within your organization? Add a comment and keep track of the ongoing conversation for this package's community usage metrics"
   ),
   position = c(rep("left", 3))
   
