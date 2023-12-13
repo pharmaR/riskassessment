@@ -14,5 +14,6 @@ CREATE TABLE IF NOT EXISTS package (
    decision_by    CHAR,
    decision_date  DATE NULL,
    date_added     DATE,
+   url            CHAR,
    FOREIGN KEY (decision_id) REFERENCES decision_categories(id)
 );
