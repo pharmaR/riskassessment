@@ -97,7 +97,8 @@ test_that("utils_get_db functions other than dbSelect", {
     expect_s3_class(pkg, "data.frame")
     expect_equal(nrow(pkg), 1) 
     expect_equal(names(pkg), c("id", "name", "version", "title", "description", "maintainer", "author", "license", "published_on", 
-                               "score", "weighted_score", "decision_id", "decision_by", "decision_date", "date_added", "decision"))
+                               "score", "weighted_score", "decision_id", "decision_by", "decision_date", "date_added", "url", 
+                               "decision"))
   })
   
   test_that("get_metric_weights works", {
