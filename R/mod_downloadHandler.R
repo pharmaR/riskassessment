@@ -239,6 +239,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                 maintainer = selected_pkg$maintainer,
                 license = selected_pkg$license,
                 published = selected_pkg$published_on,
+                repo_url = selected_pkg$url,
                 score = selected_pkg$score
               )
               
