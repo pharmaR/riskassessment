@@ -448,8 +448,8 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       repo_pkgs <- as.data.frame(utils::available.packages()[,1:2])
       purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), repo_pkgs)) %>%
       right_join(pkginfo, by = "name") %>%
-      select(package, type, name, version, score) %>%
-      arrange(name, type) %>%
+      select(package, type, version, score) %>%
+      arrange(package, type) %>%
       distinct()
     })
     
