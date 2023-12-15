@@ -277,18 +277,9 @@ if('Community Usage Comments' %in% params$report_includes){
       dplyr::mutate(`Metric Description` = stringr::str_replace_all(`Metric Description`, 'from Base', '<br/>from Base')) %>% 
       dplyr::mutate(`Metric Value` = stringr::str_replace_all(`Metric Value`, '\n' ,'<br/>')) 
 
-     html_table_width <- function(kable_output, width){
-       width_html <- paste0(paste0('<col width="', width, '">'), collapse = "\n")
-       sub('<table>', paste0('<table class="table">\n', width_html), kable_output)
-     }
-
       kableExtra::kbl(cards, format = 'html', booktabs = T, escape = F) %>% 
-        html_table_width(c(175, 150, 200, 100))
-
-      # kableExtra::column_spec(1, width_max = "1.75in") %>% 
-      # kableExtra::column_spec(2, width_max = "1.5in")  %>% 
-      # kableExtra::column_spec(3, width = "2.0in", width_min = "2.0in")  %>% 
-      # kableExtra::column_spec(4, width_max = "1.0in") 
+      kableExtra::kable_styling("basic", full_width = F, position = 'left') %>% 
+      kableExtra::column_spec(3, width = "2.5in", width_min = "2.5in")  
 
   } else ""
 ```
