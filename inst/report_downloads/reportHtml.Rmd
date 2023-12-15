@@ -132,11 +132,13 @@ createCard <- function(title, desc, value, score = "NULL",
   html_component <- div(class="card mb-3 text-center border-info", style=card_style,
       div(class ="row no-gutters",
           div(class="col-md-4 text-center border-info",
+              style = "width: calc(100% / 3) !important;",
               display_obj
               # icon(icon_name, class=icon_class, verify_fa = FALSE,
               #      style="padding-top: 40%; font-size:60px; padding-left: 20%;")
               ),
           div(class="col-md-8",
+              style = "width: calc(100% * 2 / 3) !important;",
               h5(class="card-header bg-transparent", style="font-size: 1vw",
                  title),
               div(class="card-body text-info",
@@ -288,7 +290,7 @@ tagList(
       br(),
       hr(),
       br(), br(),
-      h5("Maintenance Metrics", style = "text-align: center;"),
+      h5("Maintenance Metrics", style = "text-align: center; page-break-before: always;"),
       br()
     )
   } else "",
@@ -322,7 +324,7 @@ tagList(
       br(),
       hr(),
       br(), br(),
-      h5("Community Usage Metrics", style = "text-align: center;"),
+      h5("Community Usage Metrics", style = "text-align: center; page-break-before: always;"),
       br()
     )
   } else "",
