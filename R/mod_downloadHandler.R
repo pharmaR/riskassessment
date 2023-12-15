@@ -266,8 +266,8 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights, dep_metri
                   
               dep_table <- purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), repo_pkgs)) %>%
                   right_join(pkginfo, by = "name") %>%
-                  select(package, type, name, version, score) %>%
-                  arrange(name, type) %>%
+                  select(package, type, version, score) %>%
+                  arrange(package, type) %>%
                   distinct()
 
               # Render the report, passing parameters to the rmd file.
