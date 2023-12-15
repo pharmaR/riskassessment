@@ -7,6 +7,7 @@
 * Added repo specification to configuration file (#701)
 * Fix typo in Privileges table (#719)
 * Fixed bug where HTML reports displayed a darker green in the cards' meters
+* Only run configuration checkers when configuring the database
 
 # riskassessment 3.0.0
 
