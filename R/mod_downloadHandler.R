@@ -155,61 +155,61 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               }
               
               Report <- file.path(my_tempdir, "reportHtml.Rmd")
-              file.copy(system.file('report_downloads', 'reportHtml.Rmd', package = "riskassessment"), Report, overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'raa-image.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'reportHtml.Rmd'), Report, overwrite = TRUE)
+              file.copy(app_sys('report_downloads', 'raa-image.png'),
                         file.path(my_tempdir, 'raa-image.png'), overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'header.html', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'header.html'),
                         file.path(my_tempdir, 'header.html'), overwrite = TRUE)
             } 
             else if (input$report_format == "docx") { 
               Report <- file.path(my_tempdir, "reportDocx.Rmd")
               if (!dir.exists(file.path(my_tempdir, "images")))
                 dir.create(file.path(my_tempdir, "images"))
-              file.copy(system.file('report_downloads', 'ReportDocx.Rmd', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'reportDocx.Rmd'),
                         Report,
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'header.docx', package = 'riskassessment'),
+              file.copy(app_sys('report_downloads', 'header.docx'),
                         file.path(my_tempdir, 'header.docx'),
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'read_html.lua', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'read_html.lua'),
                         file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'images', 'user-tie.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'images', 'user-tie.png'),
                         file.path(my_tempdir, "images", "user-tie.png"),
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'images', 'user-shield.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'images', 'user-shield.png'),
                         file.path(my_tempdir, "images", "user-shield.png"),
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'images', 'calendar-alt.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'images', 'calendar-alt.png'),
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'raa-image.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'raa-image.png'),
                         file.path(my_tempdir, 'raa-image.png'), overwrite = TRUE)
             } 
             else { 
               Report <- file.path(my_tempdir, "reportPdf.Rmd")
               if (!dir.exists(file.path(my_tempdir, "images")))
                 dir.create(file.path(my_tempdir, "images"))
-              file.copy(system.file('report_downloads', 'ReportPdf.Rmd', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'reportPdf.Rmd'),
                         Report,
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'header.tex', package = 'riskassessment'),
+              file.copy(app_sys('report_downloads', 'header.tex'),
                         file.path(my_tempdir, 'header.tex'),
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'fancyhdr.sty', package = 'riskassessment'),
+              file.copy(app_sys('report_downloads', 'fancyhdr.sty'),
                         file.path(my_tempdir, 'fancyhdr.sty'),
                         overwrite = TRUE)              
-              file.copy(system.file('report_downloads', 'read_html.lua', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'read_html.lua'),
                         file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'images', 'user-tie.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'images', 'user-tie.png'),
                         file.path(my_tempdir, "images", "user-tie.png"),
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'images', 'user-shield.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'images', 'user-shield.png'),
                         file.path(my_tempdir, "images", "user-shield.png"),
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'images', 'calendar-alt.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'images', 'calendar-alt.png'),
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'raa-image.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'raa-image.png'),
                         file.path(my_tempdir, 'raa-image.png'), overwrite = TRUE)
             }
             

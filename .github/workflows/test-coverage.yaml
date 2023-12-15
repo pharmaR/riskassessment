@@ -17,6 +17,13 @@ jobs:
       RENV_CONFIG_SANDBOX_ENABLED: false
 
     steps:
+      - name: Install TexLive
+        if: runner.os == 'Linux'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-xetex
+      
       - uses: actions/checkout@v2
       
       - uses: r-lib/actions/setup-pandoc@v2
