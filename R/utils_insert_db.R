@@ -296,6 +296,95 @@ insert_community_metrics_to_db <- function(pkg_name,
   }
 }
 
+upload_pkg_lst <- function(pkg_lst, credentials, assess_db, cred_db) {
+  repos <- get_db_config("package_repo")
+  check_repos(repos)
+  
+  old_options <- options()
+  on.exit(options(old_options))
+  options(repos = repos)
+  
+  repo_pkgs <- as.data.frame(utils::available.packages()[,1:2])
+  
+  if (missing(assess_db)) assess_db <- get_db_config("assessment_db")
+  if (missing(cred_db)) cred_db <- get_db_config("credential_db")
+  
+  rule_lst <- process_rule_tbl(assess_db)
+  
+  np <- length(pkg_lst)
+  uploaded_packages <-
+    dplyr::tibble(
+      package = pkg_lst,
+      version = rep('0.0.0', np),
+      status = rep('', np),
+      score = rep(NA_real_, np)
+    )
+  
+  if (!rlang::is_empty(rule_lst)) {
+    uploaded_packages$decision <- ""
+    uploaded_packages$decision_rule <- ""
+  }
+  
+  for (i in 1:np) {
+    if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
+      ref <- riskmetric::pkg_ref(uploaded_packages$package[i],
+                                 source = "pkg_cran_remote")
+    } else {
+      ref <- list(name = uploaded_packages$package[i],
+                  source = "name_bad")
+    }
+    
+    if (ref$source %in% c("pkg_missing", "name_bad")) {
+      # Suggest alternative spellings using utils::adist() function
+      v <- utils::adist(uploaded_packages$package[i], repo_pkgs()[[1]], ignore.case = FALSE)
+      rlang::inform(paste("Package name",uploaded_packages$package[i],"was not found."))
+      
+      suggested_nms <- paste("Suggested package name(s):",paste(head(repo_pkgs()[[1]][which(v == min(v))], 10),collapse = ", "))
+      rlang::inform(suggested_nms)
+      
+      uploaded_packages$status[i] <- 'not found'
+      next
+    }
+    
+    uploaded_packages$version[i] <- as.character(ref$version)
+    
+    found <- nrow(dbSelect(
+      "SELECT name
+              FROM package
+              WHERE name = {uploaded_packages$package[i]}",
+      assess_db))
+    
+    uploaded_packages$status[i] <- ifelse(found == 0, 'new', 'duplicate')
+    
+    # Add package and metrics to the db if package is not in the db.
+    if(!found) {
+      # Get and upload pkg general info to db.
+
+      dwn_ld <- utils::download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), 
+                                     quiet = TRUE, mode = "wb")
+      if (dwn_ld != 0) {
+        warning(glue::glue("Unable to download the source files for {uploaded_packages$package[i]} from '{ref$tarball_url}'."))
+      }
+      
+      insert_pkg_info_to_db(uploaded_packages$package[i], ref_ver, assess_db)
+      
+      # Get and upload maintenance metrics to db.
+      insert_riskmetric_to_db(uploaded_packages$package[i], assess_db)
+      
+      # Get and upload community metrics to db.
+      insert_community_metrics_to_db(uploaded_packages$package[i], assess_db)
+      uploaded_packages$score[i] <- get_pkg_info(uploaded_packages$package[i], assess_db)$score
+      if (!rlang::is_empty(rule_lst)) {
+        assigned_decision <- assign_decisions(rule_lst, uploaded_packages$package[i], assess_db)
+        uploaded_packages$decision[i] <- assigned_decision$decision
+        uploaded_packages$decision_rule[i] <- assigned_decision$decision_rule
+      }
+    }
+  }
+  
+  return(uploaded_packages)
+}
+
 #' update_metric_weight
 #' 
 #' @param metric_name a metric name, as a string
