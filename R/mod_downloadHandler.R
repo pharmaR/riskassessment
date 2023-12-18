@@ -8,7 +8,7 @@
 mod_downloadHandler_button_ui <- function(id, multiple = TRUE){
   ns <- NS(id)
   tagList(
-    downloadButton(ns("download_reports"), if (multiple) "Download Report(s)" else "Download Report")
+    actionButton(ns("create_reports"), if (multiple) "Create Report(s)" else "Create Report")
   )
 }
 
@@ -107,16 +107,19 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
     
     observe({
       if(isTruthy(pkgs())) {
-        shinyjs::enable("download_reports")
+        shinyjs::enable("create_reports")
       } else {
-        shinyjs::disable("download_reports")
+        shinyjs::disable("create_reports")
       }
     })
+    download_file <- reactiveValues()
     
-    output$download_reports <- downloadHandler(
-      filename = function() {
-        n_pkgs <- length(pkgs())
-        
+    observeEvent(input$create_reports, {
+      
+      n_pkgs <- length(pkgs())
+      req(n_pkgs > 0)
+      
+      download_file$filename <- {
         if (n_pkgs > 1) {
           report_datetime <- stringr::str_replace_all(stringr::str_replace(get_time(), " ", "_"), ":", "-")
           glue::glue('RiskAssessment-Report-{report_datetime}.zip')
@@ -124,12 +127,9 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
           pkg_ver <- dbSelect("SELECT version FROM package WHERE name = {pkgs()}")
           glue::glue('{pkgs()}_{pkg_ver}_Risk_Assessment.{input$report_format}')
         }
-      },
-      content = function(file) {
-        n_pkgs <- length(pkgs())
-        
-        req(n_pkgs > 0)
-        
+      }
+      
+      download_file$filepath <- {
         shiny::withProgress(
           message = glue::glue('Downloading {ifelse(n_pkgs > 1, paste0(n_pkgs, " "), "")}Report{ifelse(n_pkgs > 1, "s", paste0(": ", pkgs()))}'),
           value = 0,
@@ -224,7 +224,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               path <- if (n_pkgs > 1) {
                 file.path(my_tempdir, file_named)
               } else {
-                file
+                NULL
               }
               
               pkg_list <- list(
@@ -259,7 +259,8 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               
               
               # Render the report, passing parameters to the rmd file.
-              rmarkdown::render(
+              out <-
+                rmarkdown::render(
                 input = Report,
                 output_file = path,
                 clean = FALSE,
@@ -287,14 +288,33 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               shiny::incProgress(1) # Increment progress bar.
             }
             # Zip all the files up. -j retains just the files in zip file.
-            if (n_pkgs > 1) zip(zipfile = file, files = fs, extras = "-j")
+            if (n_pkgs > 1) zip(zipfile = my_tempdir, files = fs, extras = "-j")
             shiny::incProgress(1) # Increment progress bar.
           })
+        if (n_pkgs > 1) paste0(my_tempdir, ".zip") else out
+      }
+    })
+    
+    observeEvent(download_file$filepath,{
+      showNotification("Reports created",
+                       action = downloadLink(ns("download_reports")),
+                       duration = NULL)
+    })
+    
+    output$download_reports <- downloadHandler(
+      filename = function() {
+        basename(download_file$filename)
+      },
+      content = function(file) {
+        file.copy(
+          from = download_file$filepath,
+          to = file
+        )
       }
     )
   })
 }
-    
+
 ## To be copied in the UI
 # mod_downloadHandler_button_ui("downloadHandler_1")
 
