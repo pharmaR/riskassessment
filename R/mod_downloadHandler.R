@@ -129,8 +129,17 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
         }
       }
       
+      progress <- shiny::Progress$new(max = n_pkgs + 2)
+      progress$set(message = glue::glue('Downloading {ifelse(n_pkgs > 1, paste0(n_pkgs, " "), "")}Report{ifelse(n_pkgs > 1, "s", paste0(": ", pkgs()))}'),
+                   value = 0)
+      on.exit(progress$close())
+      
+      updateProgress <- function(amount = 1, detail = NULL) {
+        progress$inc(amount = amount, detail = detail)
+      }
+      
       download_file$filepath <- 
-        report_creation(pkgs(), metric_weights(), input$report_format, input$report_includes, reactiveValuesToList(user))
+        report_creation(pkgs(), metric_weights(), input$report_format, input$report_includes, reactiveValuesToList(user), updateProgress)
     })
     
     observeEvent(download_file$filepath,{
