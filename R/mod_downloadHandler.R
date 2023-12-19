@@ -143,13 +143,15 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
       
       download_file$background <-
         callr::r_bg(
-          report_creation,
+          function(...) {
+            pkgload::load_all(export_all = TRUE,helpers = FALSE,attach_testthat = FALSE)
+            report_creation(...)
+            },
           list(pkg_lst = pkgs(), metric_weights = metric_weights(),
                report_format = input$report_format, report_includes = input$report_includes,
                user = reactiveValuesToList(user), 
                db_name = golem::get_golem_options('assessment_db_name'), my_tempdir = tempdir()),
-          user_profile = FALSE,
-          package = "riskassessment"
+          user_profile = FALSE
         )
     })
     
@@ -159,10 +161,8 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
       if (download_file$background$is_alive()) {
         invalidateLater(1000, session)
       } else {
-        browser()
         download_file$filepath <- download_file$background$get_result()
       }
-      cat("triggered\n")
     })
     
     observeEvent(download_file$filepath,{
