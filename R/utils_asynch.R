@@ -5,12 +5,13 @@
 #' @return The return value, if any, from executing the utility.
 #'
 #' @noRd
-report_creation <- function(pkg_lst, metric_weights, report_format, report_includes, user, updateProgress = NULL) {
+report_creation <- function(pkg_lst, metric_weights, report_format, report_includes, user, 
+                            db_name = golem::get_golem_options('assessment_db_name'), 
+                            my_tempdir = tempdir(), updateProgress = NULL) {
   n_pkgs <- length(pkg_lst)
   if (is.function(updateProgress))
     updateProgress(1)
   
-  my_tempdir <- tempdir()
   if (report_format == "html") {
     
     # https://github.com/rstudio/fontawesome/issues/99
@@ -90,7 +91,7 @@ report_creation <- function(pkg_lst, metric_weights, report_format, report_inclu
   for (i in 1:n_pkgs) {
     # Grab package name and version, then create filename and path.
     # this_pkg <- "stringr" # for testing
-    selected_pkg <- get_pkg_info(pkg_lst[i])
+    selected_pkg <- get_pkg_info(pkg_lst[i], db_name)
     this_pkg <- selected_pkg$name
     this_ver <- selected_pkg$version
     file_named <- glue::glue('{this_pkg}_{this_ver}_Risk_Assessment.{report_format}')
@@ -116,19 +117,19 @@ report_creation <- function(pkg_lst, metric_weights, report_format, report_inclu
     )
     
     # gather comments data
-    overall_comments <- get_overall_comments(this_pkg)
-    pkg_summary <- get_pkg_summary(this_pkg)
-    mm_comments <- get_mm_comments(this_pkg)
-    cm_comments <- get_cm_comments(this_pkg)
-    se_comments <- get_se_comments(this_pkg)
-    fe_comments <- get_fe_comments(this_pkg)
+    overall_comments <- get_overall_comments(this_pkg, db_name)
+    pkg_summary <- get_pkg_summary(this_pkg, db_name)
+    mm_comments <- get_mm_comments(this_pkg, db_name)
+    cm_comments <- get_cm_comments(this_pkg, db_name)
+    se_comments <- get_se_comments(this_pkg, db_name)
+    fe_comments <- get_fe_comments(this_pkg, db_name)
     
     # gather maint metrics & community metric data
-    mm_data <- get_metric_data(this_pkg, metric_class = "maintenance")
-    comm_data <- get_comm_data(this_pkg)
-    comm_cards <- build_comm_cards(comm_data)
+    mm_data <- get_metric_data(this_pkg, metric_class = "maintenance", db_name)
+    comm_data <- get_comm_data(this_pkg, db_name)
+    comm_cards <- build_comm_cards(comm_data, db_name)
     downloads_plot <- build_comm_plotly(comm_data)
-    metric_tbl <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
+    metric_tbl <- dbSelect("select * from metric", db_name = db_name)
     
     
     # Render the report, passing parameters to the rmd file.
