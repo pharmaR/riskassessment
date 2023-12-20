@@ -129,30 +129,32 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
         }
       }
       
-      # progress <- shiny::Progress$new(max = n_pkgs + 2)
-      # progress$set(message = glue::glue('Downloading {ifelse(n_pkgs > 1, paste0(n_pkgs, " "), "")}Report{ifelse(n_pkgs > 1, "s", paste0(": ", pkgs()))}'),
-      #              value = 0)
-      # on.exit(progress$close())
-      # 
-      # updateProgress <- function(amount = 1, detail = NULL) {
-      #   progress$inc(amount = amount, detail = detail)
-      # }
-      # 
-      # download_file$filepath <- 
-      #   report_creation(pkgs(), metric_weights(), input$report_format, input$report_includes, reactiveValuesToList(user), updateProgress)
-      
-      download_file$background <-
-        callr::r_bg(
-          function(...) {
-            pkgload::load_all(export_all = TRUE,helpers = FALSE,attach_testthat = FALSE)
-            report_creation(...)
+      if (n_pkgs < 4) {
+        progress <- shiny::Progress$new(max = n_pkgs + 2)
+        progress$set(message = glue::glue('Downloading {ifelse(n_pkgs > 1, paste0(n_pkgs, " "), "")}Report{ifelse(n_pkgs > 1, "s", paste0(": ", pkgs()))}'),
+                     value = 0)
+        on.exit(progress$close())
+        
+        updateProgress <- function(amount = 1, detail = NULL) {
+          progress$inc(amount = amount, detail = detail)
+        }
+        
+        download_file$filepath <-
+          report_creation(pkgs(), metric_weights(), input$report_format, input$report_includes, reactiveValuesToList(user), updateProgress = updateProgress)
+      } else {
+        download_file$background <-
+          callr::r_bg(
+            function(...) {
+              pkgload::load_all(export_all = TRUE, helpers = FALSE, attach_testthat = FALSE)
+              report_creation(...)
             },
-          list(pkg_lst = pkgs(), metric_weights = metric_weights(),
-               report_format = input$report_format, report_includes = input$report_includes,
-               user = reactiveValuesToList(user), 
-               db_name = golem::get_golem_options('assessment_db_name'), my_tempdir = tempdir()),
-          user_profile = FALSE
-        )
+            list(pkg_lst = pkgs(), metric_weights = metric_weights(),
+                 report_format = input$report_format, report_includes = input$report_includes,
+                 user = reactiveValuesToList(user), 
+                 db_name = golem::get_golem_options('assessment_db_name'), my_tempdir = tempdir()),
+            user_profile = FALSE
+          )
+      }
     })
     
     observe({
