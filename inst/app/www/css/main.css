@@ -58,6 +58,10 @@ box-shadow: 0 0 0 0.25rem rgb(51, 153, 255, 50%);
   pointer-events: none;
 }
 
+.shiny-progress-notification .progress {
+  border-radius: 1em;
+}
+
 .shiny-progress-notification .progress-bar {
   --bs-progress-bar-bg-lighter: color-mix(in srgb, var(--bs-progress-bar-bg), #eee 40%);
   background-color: unset;
