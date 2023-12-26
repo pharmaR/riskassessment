@@ -12,8 +12,6 @@ uploadPackageUI <- function(id) {
     
     introJSUI(NS(id, "introJS")),
     
-    tags$head(tags$style(".shiny-notification {font-size:30px; color:darkblue; position: fixed; width:415px; height: 150px; top: 75% ;right: 10%;")),
-    
     fluidRow(
       
       column(
