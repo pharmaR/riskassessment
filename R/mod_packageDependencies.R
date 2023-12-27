@@ -11,6 +11,7 @@ packageDependenciesUI <- function(id) {
 #'
 #' @param id a module id name
 #' @param selected_pkg placeholder
+#' @param loaded2_db placeholder
 #' @param user placeholder
 #' @param parent the parent (calling module) session information
 #'
@@ -27,14 +28,10 @@ packageDependenciesUI <- function(id) {
 #'
 #' @keywords internal
 #'
-packageDependenciesServer <- function(id, selected_pkg, user, parent) {
+packageDependenciesServer <- function(id, selected_pkg, loaded2_db, user, parent) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    loaded2_db <- eventReactive(selected_pkg$name(), {
-      dbSelect("SELECT name, version, score FROM package")
-    })
-    
     tabready <- reactiveVal(value = NULL)
     depends  <- reactiveVal(value = NULL)
     suggests <- reactiveVal(value = NULL)

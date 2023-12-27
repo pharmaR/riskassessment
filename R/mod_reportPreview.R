@@ -20,6 +20,8 @@ reportPreviewUI <- function(id) {
 #' @param mm_comments placeholder
 #' @param cm_comments placeholder
 #' @param downloads_plot_data placeholder
+#' @param dep_metrics placeholder
+#' @param loaded2_db placeholder
 #' @param user placeholder
 #' @param app_version placeholder
 #' @param metric_weights placeholder
@@ -35,10 +37,10 @@ reportPreviewUI <- function(id) {
 #' @importFrom shinyjs enable disable show hide disabled
 #' @keywords internal
 #' 
-reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
+reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics, 
                                 com_metrics_raw, mm_comments, cm_comments, #se_comments,
-                                downloads_plot_data, user, credentials, app_version,
-                                metric_weights) {
+                                downloads_plot_data, dep_metrics, loaded2_db, user, credentials, 
+                                app_version, metric_weights) {
   if (missing(credentials))
     credentials <- get_db_config("credentials")
   
@@ -172,6 +174,33 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                 )
               } else "",
               
+              if('Package Dependencies' %in% report_includes()) {
+                tagList(
+                  br(), br(),
+                  hr(),
+                  fluidRow(
+                    column(width = 12,
+                           h5("Package Dependencies",
+                              style = "text-align: center; padding-bottom: 50px;"),
+                             metricGridUI(session$ns('dep_metricGrid'))
+                    )
+                  ),
+                  br(), br(),
+                  fluidRow(
+                    column(width = 8,
+                           DT::renderDataTable({
+                             req(selected_pkg$name())
+                             
+                             dep_table()
+                             
+                           }, options = list(dom = "t", searching = FALSE, pageLength = -1, lengthChange = FALSE,
+                                             info = FALSE,
+                                             columnDefs = list(list(className = 'dt-center', targets = 2))
+                           )
+                           )
+                    ))
+                )
+              } else "",
               
               if(any(c('Source Explorer Comments') %in% report_includes())) {
                 tagList(
@@ -402,6 +431,28 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     # Community usage metrics cards.
     metricGridServer("cm_metricGrid", metrics = com_metrics)
     
+    dep_cards <- eventReactive(dep_metrics(), {
+      req(dep_metrics())
+      build_dep_cards(data = dep_metrics(), loaded = loaded2_db()$name, toggled = 0L)
+    })
+    
+    # Package Dependencies metrics cards.
+    metricGridServer("dep_metricGrid", metrics = dep_cards)
+
+    dep_table <- eventReactive(dep_metrics(), {
+      req(dep_metrics())
+      pkginfo <- dep_metrics() %>% 
+        mutate(package = stringr::str_replace(package, "\n", " ")) %>%
+        mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
+      
+      repo_pkgs <- as.data.frame(utils::available.packages()[,1:2])
+      purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), repo_pkgs)) %>%
+      right_join(pkginfo, by = "name") %>%
+      select(package, type, version, score) %>%
+      arrange(package, type) %>%
+      distinct()
+    })
+    
     output$communityMetrics_ui <- renderUI({
       req(selected_pkg$name())
       
@@ -456,7 +507,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       
       tagList(
         h5(code('{riskmetric}'), 'Assessment Date:'), selected_pkg$date_added(),
-        if('Risk Score' %in% report_includes()) tagList(h5('Risk Score:'), selected_pkg$score()) else "",
+        if('Risk Score' %in% report_includes()) tagList(hr(), br(), h5('Risk Score:'), selected_pkg$score()) else "",
         h5('Package Decision:'),ifelse(is.na(selected_pkg$decision()), 'Pending',selected_pkg$decision())
       )
     })
@@ -485,6 +536,6 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     )
     
     # Call download handler server
-    mod_downloadHandler_server("downloadHandler", selected_pkg$name, user, metric_weights)
+    mod_downloadHandler_server("downloadHandler", selected_pkg$name, user, metric_weights, dep_metrics, loaded2_db)
   })
 }
