@@ -8,6 +8,7 @@
 * Fix typo in Privileges table (#719)
 * Fixed bug where HTML reports displayed a darker green in the cards' meters
 * Only run configuration checkers when configuring the database
+* Added Package Dependencies to Reports (#721)
 
 # riskassessment 3.0.0
 
