@@ -32,6 +32,17 @@ uploadPackageUI <- function(id) {
                                              $("#{NS(id, "add_pkgs")}").css("margin-top", $("#{NS(id, "pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
                                              }})')))
         ),
+        column(
+          width = 8,
+          div(id = "chk-dependencies-grp",
+              shinyjs::hidden(
+                shiny::checkboxInput(
+                  inputId = NS(id, "assess_deps"),
+                  label = "Assess Dependencies",
+                  value = FALSE
+                )
+              ))
+        ),
         uiOutput(NS(id, "rem_pkg_div"))
       ),
       column(width = 1),
@@ -90,9 +101,19 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
     
     ns <- session$ns
     
+    subsetModal <- function(session, data, size) {
+      showModal(modalDialog({
+        renderTable(ns(data))
+      }, size = size))
+    }
+    
     observe({
       req(user$role)
       req(credentials$privileges)
+      
+      if(get_db_config("dependencies")$auto_assess$depends == TRUE) {
+        shinyjs::show("assess_deps")
+      }
       
       if ("add_package" %in% credentials$privileges[[user$role]]) {
         shinyjs::enable("pkg_lst")
@@ -367,6 +388,64 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
 
             user_ver <- uploaded_packages$version[i]
             incProgress(1, detail = glue::glue("{uploaded_packages$package[i]} {user_ver}"))
+            
+            if(input$assess_deps == TRUE) {
+              
+              pkginfo <- riskmetric::pkg_ref(uploaded_packages$package[i]) %>% 
+                riskmetric::assess_dependencies()
+              
+              pkginfo <- pkginfo %>% 
+                mutate(package = stringr::str_replace(package, "\n", " ")) %>%
+                mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
+              
+              # Get the metrics weights to be used during pkg_score.
+              metric_weights_df <- get_metric_weights(db_name = golem::get_golem_options('assessment_db_name'))
+              metric_weights <- metric_weights_df$weight
+              names(metric_weights) <- metric_weights_df$name
+              
+              metric_tbl <- NULL
+              for(j in 1:nrow(pkginfo)) {
+                metric_row <- riskmetric::pkg_ref(pkginfo$name[j]) %>% 
+                  as_tibble() %>% 
+                  riskmetric::pkg_assess() %>%
+                  riskmetric::pkg_score(weights = metric_weights)
+                metric_tbl <- bind_rows(metric_tbl, metric_row)
+              }
+
+              deps_tbl <- metric_tbl[,c(1,2,4)] %>% 
+                mutate(pkg_score = round(as.numeric(pkg_score), 2))
+
+              DT::dataTableOutput(NS(id, "deps_tbl"))
+              
+              showModal(modalDialog(
+                size = "l",
+                easyClose = TRUE,
+                footer = "",
+                h5(glue::glue("Dependencies for package ",uploaded_packages$package[i]), style = 'text-align: left'),
+                hr(),
+                br(),
+                fluidRow(
+                  column(
+                    width = 12,
+                    output$deps_tbl <- DT::renderDataTable(
+                      DT::datatable(
+                        deps_tbl,
+                        escape = FALSE,
+                        editable = FALSE,
+                        filter = 'none',
+                        selection = 'none',
+                        extensions = 'Buttons',
+                        options = list(
+                          sScrollX = "100%",
+                          aLengthMenu = list(c(10, 25, -1), list('10', '25', 'All')),
+                          iDisplayLength = 5,
+                          dom = 't'
+                        )
+                      ))
+                    ))
+              ))
+
+            }
             
 
             if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
