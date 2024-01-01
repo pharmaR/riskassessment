@@ -101,12 +101,6 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
     
     ns <- session$ns
     
-    subsetModal <- function(session, data, size) {
-      showModal(modalDialog({
-        renderTable(ns(data))
-      }, size = size))
-    }
-    
     observe({
       req(user$role)
       req(credentials$privileges)
