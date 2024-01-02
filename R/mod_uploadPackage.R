@@ -370,6 +370,8 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
         }
       }
       
+      loaded2_db <- reactive(dbSelect("SELECT name, version, score FROM package"))
+
       # Start progress bar. Need to establish a maximum increment
       # value based on the number of packages, np, and the number of
       # incProgress() function calls in the loop, plus one to show
@@ -397,25 +399,32 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
               metric_weights <- metric_weights_df$weight
               names(metric_weights) <- metric_weights_df$name
               
-              metric_tbl <- NULL
-              for(j in 1:nrow(pkginfo)) {
-                metric_row <- riskmetric::pkg_ref(pkginfo$name[j]) %>% 
+              pkg_df <- purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), session$userData$repo_pkgs())) %>% 
+                right_join(pkginfo, by = "name") %>% 
+                select(package, type, name, version, score) %>%
+                arrange(name, type) %>% 
+                distinct() %>% 
+                filter(version != "")
+
+              for(j in 1:nrow(pkg_df)) {
+                if(pkg_df$score[j] == "") {
+                metric_row <- riskmetric::pkg_ref(pkg_df$name[j]) %>% 
                   as_tibble() %>% 
                   riskmetric::pkg_assess() %>%
                   riskmetric::pkg_score(weights = metric_weights)
-                metric_tbl <- bind_rows(metric_tbl, metric_row)
+                pkg_df$score[j] <- round(as.numeric(metric_row$pkg_score), 2)
+                }
               }
 
-              deps_tbl <- metric_tbl[,c(1,2,4)] %>% 
-                mutate(pkg_score = round(as.numeric(pkg_score), 2))
+              deps_tbl <- pkg_df[,3:5]
 
               DT::dataTableOutput(NS(id, "deps_tbl"))
               
               showModal(modalDialog(
                 size = "l",
                 easyClose = TRUE,
-                footer = "",
-                h5(glue::glue("Dependencies for package ",uploaded_packages$package[i]), style = 'text-align: left'),
+                footer = modalButton("Dismss"),
+                strong(glue::glue("Dependencies for package: ",uploaded_packages$package[i]), style = 'text-align: left'),
                 hr(),
                 br(),
                 fluidRow(
@@ -431,8 +440,8 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
                         extensions = 'Buttons',
                         options = list(
                           sScrollX = "100%",
-                          aLengthMenu = list(c(10, 25, -1), list('10', '25', 'All')),
-                          iDisplayLength = 5,
+                          aLengthMenu = list(c(15, 25, -1), list('10', '25', 'All')),
+                          iDisplayLength = 15,
                           dom = 't'
                         )
                       ))
