@@ -37,7 +37,7 @@ server <- function(input, output, session) {
   
   loaded2_db <- eventReactive(pkg(), {
 
-    dbSelect("SELECT name, version, score FROM package")
+    riskassessment:::dbSelect("SELECT name, version, score FROM package")
   })
   
   # Get Package Dependency metrics.
@@ -45,17 +45,17 @@ server <- function(input, output, session) {
   
   pkgref <- eventReactive(pkg(), {
 
-    get_assess_blob(pkg())
+    riskassessment:::get_assess_blob(pkg())
   })
   
   observeEvent(pkgref(), {
     req(pkgref())
     tryCatch(
       expr = {
-        dep_metrics(pkgref()$dependencies[[1]] %>% dplyr::as_tibble())
+        dep_metrics(pkgref()$dependencies[[1]] |> dplyr::as_tibble())
       },
       error = function(e) {
-        msg <- paste("Detailed dependency information is not available for package", selected_pkg$name())
+        msg <- paste("Detailed dependency information is not available for package", pkg())
         rlang::warn(msg)
         rlang::warn(paste("info:", e))
         dep_metrics(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
