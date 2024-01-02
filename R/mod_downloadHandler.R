@@ -100,7 +100,8 @@ mod_downloadHandler_include_server <- function(id) {
   
 #' downloadHandler Server Functions
 #'
-#' @noRd 
+#' @noRd
+#' @importFrom callr r_bg
 mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
