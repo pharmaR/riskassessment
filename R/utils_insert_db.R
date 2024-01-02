@@ -376,7 +376,7 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, updateProgress = NULL) {
     
     uploaded_packages$version[i] <- as.character(ref$version)
     if (is.function(updateProgress))
-      updateProgress(1, glue::glue("{uploaded_packages$package[i]} {uploaded_packages$version[i]}"))
+      updateProgress(1, glue::glue("{uploaded_packages$package[i]} V{uploaded_packages$version[i]}"))
     
     found <- nrow(dbSelect(
       "SELECT name
