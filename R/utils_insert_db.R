@@ -296,6 +296,20 @@ insert_community_metrics_to_db <- function(pkg_name,
   }
 }
 
+#' Upload a Package List
+#' 
+#' Uploads a list of packages to the database. Designed to be used to set up the
+#' assessment database before deployment of the application.
+#'
+#' @param pkg_lst character vector of packages to upload
+#' @param assess_db character name (and file path) of the database
+#' @param repos character vector, the base URL(s) of the repositories to use
+#' @param updateProgress for internal use only, provides a function to update
+#'   progress meter in the application
+#' 
+#' @return A data frame object containing a summary of the upload process
+#' 
+#' @export
 upload_pkg_lst <- function(pkg_lst, assess_db, repos, updateProgress = NULL) {
   
   if (missing(assess_db)) {
