@@ -4,6 +4,7 @@
 #' 
 #' 
 #' @importFrom DT dataTableOutput
+#' @importFrom shinyWidgets awesomeCheckbox
 #' @keywords internal
 #' 
 uploadPackageUI <- function(id) {
@@ -36,9 +37,10 @@ uploadPackageUI <- function(id) {
           width = 8,
           div(id = "chk-dependencies-grp",
               shinyjs::hidden(
-                shiny::checkboxInput(
+                shinyWidgets::awesomeCheckbox(
                   inputId = NS(id, "assess_deps"),
                   label = "Assess Dependencies",
+                  status = "danger",
                   value = FALSE
                 )
               ))
