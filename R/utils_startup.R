@@ -203,7 +203,7 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   
   if (is.null(assessment_db) || typeof(assessment_db) != "character" || length(assessment_db) != 1 || !grepl("\\.sqlite$", assessment_db))
     stop("assess_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
-  if (use_shinymanager && (is.null(credentials_db) || typeof(credentials_db) != "character" || length(credentials_db) != 1 || !grepl("\\.sqlite$", credentials_db)))
+  if (use_shinymanager && !isTRUE(getOption("shiny.testmode")) && (is.null(credentials_db) || typeof(credentials_db) != "character" || length(credentials_db) != 1 || !grepl("\\.sqlite$", credentials_db)))
     stop("cred_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
   
   # Start logging info.
@@ -214,6 +214,11 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   # Here, we make sure user has a functional version of fontawesome
   fa_v <- packageVersion("fontawesome")
   if(fa_v == '0.4.0') warning(glue::glue("HTML reports will not render with {{fontawesome}} v0.4.0. You currently have v{fa_v} installed. If the report download failed, please install a stable version. We recommend v0.5.0 or higher."))
+  
+  check_repos(db_config[["package_repo"]])
+  
+  if (file.exists(assessment_db) & (isTRUE(getOption("shiny.testmode")) | file.exists(credentials_db)))
+    return(invisible(c(assessment_db, if (!isTRUE(getOption("shiny.testmode"))) credentials_db)))
   
   check_credentials(db_config[["credentials"]])
 
@@ -240,8 +245,6 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   
   if (!dir.exists("tarballs")) dir.create("tarballs")
   if (!dir.exists("source")) dir.create("source")
-  
-  check_repos(db_config[["package_repo"]])
 
   invisible(c(assessment_db, if (use_shinymanager) credentials_db))
 }
