@@ -21,9 +21,8 @@ test_that("upload_pkg_lst works", {
     ignore_attr = TRUE
   )
   
-  oo <- options()
   options("shiny.testmode" = TRUE)
-  on.exit(options(oo))
+  on.exit(options("shiny.testmode" = NULL))
   
   expect_warning(out <- upload_pkg_lst("dplyr", "tmp_assess.sqlite"),
                  "No value supplied for `repos`")
