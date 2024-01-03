@@ -372,8 +372,6 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
         }
       }
       
-      loaded2_db <- reactive(dbSelect("SELECT name, version, score FROM package"))
-
       # Start progress bar. Need to establish a maximum increment
       # value based on the number of packages, np, and the number of
       # incProgress() function calls in the loop, plus one to show
@@ -401,7 +399,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
               metric_weights <- metric_weights_df$weight
               names(metric_weights) <- metric_weights_df$name
               
-              pkg_df <- purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), session$userData$repo_pkgs())) %>% 
+              pkg_df <- purrr::map_df(pkginfo$name, ~get_versnScore(.x, pkgs_have(), session$userData$repo_pkgs())) %>% 
                 right_join(pkginfo, by = "name") %>% 
                 select(package, type, name, version, score) %>%
                 arrange(name, type) %>% 
@@ -417,6 +415,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
                 pkg_df$score[j] <- round(as.numeric(metric_row$pkg_score), 2)
                 }
               }
+              print(pkg_df) # diagnostic
 
               deps_tbl <- pkg_df[,3:5]
 
