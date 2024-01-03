@@ -304,13 +304,15 @@ insert_community_metrics_to_db <- function(pkg_name,
 #' @param pkg_lst character vector of packages to upload
 #' @param assess_db character name (and file path) of the database
 #' @param repos character vector, the base URL(s) of the repositories to use
+#' @param repo_pkgs for internal use only, allows the function
+#'   `available.packages()` to be run only once
 #' @param updateProgress for internal use only, provides a function to update
 #'   progress meter in the application
 #' 
 #' @return A data frame object containing a summary of the upload process
 #' 
 #' @export
-upload_pkg_lst <- function(pkg_lst, assess_db, repos, updateProgress = NULL) {
+upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, updateProgress = NULL) {
   
   if (missing(assess_db)) {
     warning("No value supplied for `assess_db`. Will try to use configuration file.")
@@ -329,7 +331,8 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, updateProgress = NULL) {
     options(repos = repos)
   }
   
-  repo_pkgs <- as.data.frame(utils::available.packages()[,1:2])
+  if (missing(repo_pkgs))
+    repo_pkgs <- as.data.frame(utils::available.packages()[,1:2])
   
   if (missing(assess_db)) assess_db <- get_db_config("assessment_db")
   
@@ -398,7 +401,7 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, updateProgress = NULL) {
     
     uploaded_packages$version[i] <- as.character(ref$version)
     if (is.function(updateProgress))
-      updateProgress(1, glue::glue("{uploaded_packages$package[i]} V{uploaded_packages$version[i]}"))
+      updateProgress(1, glue::glue("{uploaded_packages$package[i]} v{uploaded_packages$version[i]}"))
     
     found <- nrow(dbSelect(
       "SELECT name
