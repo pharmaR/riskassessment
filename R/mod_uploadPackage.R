@@ -107,7 +107,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       req(user$role)
       req(credentials$privileges)
       
-      if(get_db_config("dependencies")$auto_assess$depends == TRUE) {
+      if(!is.null(get_db_config("dependencies")) && get_db_config("dependencies")$auto_assess$depends == TRUE) {
         shinyjs::show("assess_deps")
       }
       
