@@ -359,8 +359,11 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, updateProgress = NULL) {
       updateProgress(1, glue::glue("{uploaded_packages$package[i]}"))
       
     if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
-      ref <- riskmetric::pkg_ref(uploaded_packages$package[i],
-                                 source = "pkg_cran_remote")
+      if (!isTRUE(getOption("shiny.testmode")))
+        ref <- riskmetric::pkg_ref(uploaded_packages$package[i],
+                                   source = "pkg_cran_remote")
+      else
+        ref <- test_pkg_refs[[uploaded_packages$package[i]]]
     } else {
       ref <- list(name = uploaded_packages$package[i],
                   source = "name_bad")
@@ -371,20 +374,25 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, updateProgress = NULL) {
         updateProgress(4, glue::glue("Package {uploaded_packages$package[i]} not found"))
       
       # Suggest alternative spellings using utils::adist() function
-      v <- utils::adist(uploaded_packages$package[i], repo_pkgs()[[1]], ignore.case = FALSE)
+      v <- utils::adist(uploaded_packages$package[i], repo_pkgs[[1]], ignore.case = FALSE)
       rlang::inform(paste("Package name",uploaded_packages$package[i],"was not found."))
       
-      suggested_nms <- paste("Suggested package name(s):",paste(head(repo_pkgs()[[1]][which(v == min(v))], 10),collapse = ", "))
+      suggested_nms <- paste("Suggested package name(s):",paste(head(repo_pkgs[[1]][which(v == min(v))], 10),collapse = ", "))
       rlang::inform(suggested_nms)
 
       uploaded_packages$status[i] <- if (shiny::isRunning()) HTML(paste0('<a href="#" title="', suggested_nms, '">not found</a>')) else 'not found'
       
-      if (ref$source == "pkg_missing")
-        loggit::loggit('WARN',
-                       glue::glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
+      wrn_msg <- {
+        if (ref$source == "pkg_missing")
+          glue::glue('Package {ref$name} was flagged by riskmetric as {ref$source}.')
+        else
+          glue::glue("Riskmetric can't interpret '{ref$name}' as a package reference.")
+      }
+      if (shiny::isRunning())
+        loggit::loggit('WARN', wrn_msg)
       else
-        loggit::loggit('WARN',
-                       glue::glue("Riskmetric can't interpret '{ref$name}' as a package reference."))
+        warning(wrn_msg)
+      
       next
     }
     
@@ -406,11 +414,13 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, updateProgress = NULL) {
       if (is.function(updateProgress))
         updateProgress(1)
 
-      dwn_ld <- utils::download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), 
-                                     quiet = TRUE, mode = "wb")
-      if (dwn_ld != 0) {
-        wrn_msg <- glue::glue("Unable to download the source files for {uploaded_packages$package[i]} from '{ref$tarball_url}'.")
-        if (shiny::isRunning()) loggit::loggit("INFO", wrn_msg) else warning(wrn_msg)
+      if (!isTRUE(getOption("shiny.testmode"))) {
+        dwn_ld <- utils::download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), 
+                                       quiet = TRUE, mode = "wb")
+        if (dwn_ld != 0) {
+          wrn_msg <- glue::glue("Unable to download the source files for {uploaded_packages$package[i]} from '{ref$tarball_url}'.")
+          if (shiny::isRunning()) loggit::loggit("INFO", wrn_msg) else warning(wrn_msg)
+        }
       }
       
       insert_pkg_info_to_db(uploaded_packages$package[i], uploaded_packages$version[i], assess_db)
