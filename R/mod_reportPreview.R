@@ -187,7 +187,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                   ),
                   br(), br(),
                   fluidRow(
-                    column(width = 8,
+                    column(width = 12,
                            DT::renderDataTable({
                              req(selected_pkg$name())
                              
