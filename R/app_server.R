@@ -223,10 +223,7 @@ app_server <- function(input, output, session) {
     get_comm_data(selected_pkg$name())
   })
   
-  loaded2_db <- eventReactive(selected_pkg$name(), {
-    req(selected_pkg$name())
-    req(selected_pkg$name() != "-")
-    
+  loaded2_db <- eventReactive({uploaded_pkgs(); changes()}, {
     dbSelect("SELECT name, version, score FROM package")
   })
   
