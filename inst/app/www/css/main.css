@@ -58,6 +58,10 @@ box-shadow: 0 0 0 0.25rem rgb(51, 153, 255, 50%);
   pointer-events: none;
 }
 
+.shiny-progress-notification .progress {
+  border-radius: 1em;
+}
+
 .shiny-progress-notification .progress-bar {
   --bs-progress-bar-bg-lighter: color-mix(in srgb, var(--bs-progress-bar-bg), #eee 40%);
   background-color: unset;
@@ -76,8 +80,6 @@ box-shadow: 0 0 0 0.25rem rgb(51, 153, 255, 50%);
   animation: animatedBackground 2s linear infinite;
 }
 
-
-
 @keyframes animatedBackground {
   0% { background-position: 0 0; }
   100% { background-position: 50px 50px; }
@@ -91,3 +93,64 @@ meter::-moz-meter-bar {background: #FF765B;}  /* color of bar*/
 meter::-moz-meter-optimum-value {background: #9CFF94;} 
 meter::-moz-meter-suboptimum-value{background:#FFD070;}  
 
+h1, .h1, h2, .h2, h3, .h3 {
+  margin-top: 1.5rem;
+}
+
+h4, .h4, h5, .h5, h6, .h6 {
+  margin-top: 1rem;
+}
+
+/* Pulled in from admin/styles-admin.css */
+
+.shiny-notification-error {
+  color: #fff !important;
+  background-color: #d9534f !important;
+  border: 1px solid #d9534f !important;
+}
+
+.shiny-notification-warning {
+  color: #fff !important;
+  background-color: #f39c12 !important;
+  border: 1px solid #f39c12 !important;
+}
+
+.shiny-notification-message {
+  color: #fff !important;
+  background-color: #5cb85c !important;
+  border: 1px solid #5cb85c !important;
+}
+
+.shiny-notification {
+  font-size: 120% !important;
+  font-weight: bold !important;
+  /* Our additional styles */
+  color:darkblue; 
+  position: relative;
+  width:415px; 
+  height: 150px; 
+  bottom: 8vh;
+  right: 8vh;
+  pointer-events: auto;
+}
+
+#shiny-notification-panel {
+  width: 100% !important;
+  text-align: center !important;
+  top: 0;
+  /* Our additional styles */
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.shiny-notification-close {
+  font-size: 26px;
+  color: #fff;
+  cursor: pointer;
+}
+
+.btn-margin {
+  margin-top: 27px;
+}

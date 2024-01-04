@@ -71,7 +71,12 @@ app_server <- function(input, output, session) {
                       tabPanel(
                         id = "credentials_id",
                         title = "Credential Manager",
-                        shinymanager:::admin_ui("admin")
+                        {
+                          admin_ui <- shinymanager:::admin_ui("admin")
+                          admin_ui[[1]]$children[[3]] <- NULL # shinymanager/timeout.js
+                          admin_ui[[1]]$children[[1]] <- NULL # shinymanager/styles-admin.css
+                          admin_ui
+                        }
                       ),
                     if (res_auth$admin)
                       tabPanel(

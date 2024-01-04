@@ -5,8 +5,10 @@
 * Added introjs for file browser & function explorer( #581)
 * Added tests for the code and function explorers
 * Added repo specification to configuration file (#701)
+* Fix typo in Privileges table (#719)
+* Fixed bug where HTML reports displayed a darker green in the cards' meters
+* Only run configuration checkers when configuring the database
 * Added dependencies/reverse dependencies card hyperlink (#597)
-
 
 # riskassessment 3.0.0
 
