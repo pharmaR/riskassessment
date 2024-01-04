@@ -144,7 +144,7 @@ params$maint_metrics %>%
       ),
       score = na_if(score, "NA"),
       score = na_if(score, "NULL"),
-     `Metric Score` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ NA_character_,
+     `Metric Score *` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ NA_character_,
          # flip the label display of the score to mimic the package score...
          round(as.numeric(score), 2) == 0 ~ "1.0",
          round(as.numeric(score), 2) == 1 ~ "0.0",
@@ -153,7 +153,7 @@ params$maint_metrics %>%
        ) %>%
    # add a space after the .com
    dplyr::mutate(`Metric Value` = stringr::str_replace(`Metric Value`, stringr::regex("^(.+\\.com\\/)"), "\\1 ")) %>%
-   dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
+   dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score *`) %>%
    kableExtra::kbl(format = 'latex', booktabs = T, linesep = "") %>% 
    kableExtra::kable_styling("basic", latex_options = "hold_position", full_width = F, position = 'left')  %>% 
    kableExtra::column_spec(1, width = "1.0in") %>%
@@ -163,7 +163,7 @@ params$maint_metrics %>%
 }
 ```
 
-`r if ('Maintenance Metrics' %in% params$report_includes) {"Metrics whose score is NA will not impact the package {riskmetric} score"}`
+`r if ('Maintenance Metrics' %in% params$report_includes) {"\\* Metrics whose score is NA will not impact the package {riskmetric} score"}`
 
 ```{r maintenance_metrics_comments}
 if('Maintenance Comments' %in% params$report_includes){
@@ -200,21 +200,21 @@ if (!cm_ind) {
         `Metric Name` = title,
         `Metric Description` = desc,
         `Metric Value` = ifelse(value %in% c("pkg_metric_error", "NA", NA), "Not found", value),
-        `Metric Score` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ NA_character_,
+        `Metric Score *` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ NA_character_,
           # flip the label display of the score to mimic the package score...
           round(as.numeric(score), 2) == 0 ~ "1.0",
           round(as.numeric(score), 2) == 1 ~ "0.0",
           TRUE ~ as.character(round(1 - as.numeric(score), 2))
         )
       ) %>%
-      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
+      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score *`) %>%
       kableExtra::kbl(format = 'latex', booktabs = T, linesep = "") %>% 
       kableExtra::kable_styling("basic", latex_options = "hold_position", full_width = F, position = 'left') 
   }
 }
 ```
 
-`r if ('Community Usage Metrics' %in% params$report_includes) {"Metrics whose score is NA will not impact the package {riskmetric} score"}`
+`r if ('Community Usage Metrics' %in% params$report_includes) {"\\* Metrics whose score is NA will not impact the package {riskmetric} score"}`
 
 
 ```{r community_metrics_plot_title, eval=cm_ind}
@@ -280,14 +280,14 @@ if('Community Usage Comments' %in% params$report_includes){
         `Metric Name` = title,
         `Metric Description` = desc,
         `Metric Value` = ifelse(value %in% c("pkg_metric_error", "NA", NA), "Not found", value),
-        `Metric Score` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ "NA",
+        `Metric Score *` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ "NA",
           # flip the label display of the score to mimic the package score...
           round(as.numeric(score), 2) == 0 ~ "1.0",
           round(as.numeric(score), 2) == 1 ~ "0.0",
           TRUE ~ as.character(round(1 - as.numeric(score), 2))
         )
       ) %>%
-      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) 
+      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score *`) 
      
       kableExtra::kbl(cards, format = 'latex', booktabs = T, linesep = "") %>% 
       kableExtra::kable_styling("basic", latex_options = "hold_position", full_width = F, position = 'left') %>% 
@@ -296,7 +296,7 @@ if('Community Usage Comments' %in% params$report_includes){
   } else ""
 ```
 
-`r if ('Package Dependencies' %in% params$report_includes) {"Metrics whose score is NA will not impact the package {riskmetric} score"}`
+`r if ('Package Dependencies' %in% params$report_includes) {"\\* Metrics whose score is NA will not impact the package {riskmetric} score"}`
 
 ```{r package_dependencies_table}
   if('Package Dependencies' %in% params$report_includes) {
