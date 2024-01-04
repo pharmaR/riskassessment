@@ -99,7 +99,6 @@ databaseViewUI <- function(id) {
 #' @param uploaded_pkgs a vector of uploaded package names
 #' @param metric_weights a reactive data.frame holding metric weights
 #' @param dep_metrics placeholder
-#' @param loaded2_db placeholder
 #' @param changes a reactive value integer count
 #' @param parent the parent (calling module) session information
 #'
@@ -114,7 +113,7 @@ databaseViewUI <- function(id) {
 #' @importFrom formattable formattable as.datatable formatter style csscolor
 #'   icontext
 #' @keywords internal
-databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, dep_metrics, loaded2_db, changes, parent) {
+databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, dep_metrics, changes, parent) {
   moduleServer(id, function(input, output, session) {
     
     ns = session$ns
@@ -304,7 +303,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, dep_metr
     # return vector of elements to include in the report
     report_includes <- mod_downloadHandler_include_server("downloadHandler")
     
-    mod_downloadHandler_server("downloadHandler", pkgs, user, metric_weights, dep_metrics, loaded2_db)
+    mod_downloadHandler_server("downloadHandler", pkgs, user, metric_weights, dep_metrics)
     
   })
 }

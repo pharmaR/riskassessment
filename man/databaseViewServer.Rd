@@ -10,7 +10,6 @@ databaseViewServer(
   uploaded_pkgs,
   metric_weights,
   dep_metrics,
-  loaded2_db,
   changes,
   parent
 )
@@ -25,8 +24,6 @@ databaseViewServer(
 \item{metric_weights}{a reactive data.frame holding metric weights}
 
 \item{dep_metrics}{placeholder}
-
-\item{loaded2_db}{placeholder}
 
 \item{changes}{a reactive value integer count}
 

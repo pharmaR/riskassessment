@@ -11,7 +11,6 @@ packageDependenciesUI <- function(id) {
 #'
 #' @param id a module id name
 #' @param selected_pkg placeholder
-#' @param loaded2_db placeholder
 #' @param user placeholder
 #' @param parent the parent (calling module) session information
 #'
@@ -28,7 +27,7 @@ packageDependenciesUI <- function(id) {
 #'
 #' @keywords internal
 #'
-packageDependenciesServer <- function(id, selected_pkg, loaded2_db, user, parent) {
+packageDependenciesServer <- function(id, selected_pkg, user, parent) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -91,9 +90,9 @@ packageDependenciesServer <- function(id, selected_pkg, loaded2_db, user, parent
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
       # send either depends() or both to build_dep_cards(), depending on toggled()
       if (toggled() == 0L) {
-        cards(build_dep_cards(data = depends(), loaded = loaded2_db()$name, toggled = 0L))
+        cards(build_dep_cards(data = depends(), loaded = session$userData$loaded2_db()$name, toggled = 0L))
       } else {
-        cards(build_dep_cards(data = dplyr::bind_rows(depends(), suggests()), loaded = loaded2_db()$name, toggled = 1L))
+        cards(build_dep_cards(data = dplyr::bind_rows(depends(), suggests()), loaded = session$userData$loaded2_db()$name, toggled = 1L))
       }
     })
     
@@ -135,7 +134,7 @@ packageDependenciesServer <- function(id, selected_pkg, loaded2_db, user, parent
         }
       }
         
-      purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), session$userData$repo_pkgs())) %>% 
+      purrr::map_df(pkginfo$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>% 
         right_join(pkginfo, by = "name") %>% 
         select(package, type, name, version, score) %>%
         arrange(name, type) %>% 
@@ -159,7 +158,7 @@ packageDependenciesServer <- function(id, selected_pkg, loaded2_db, user, parent
       ) %>% # remove action button if there is nothing to review
         mutate(Actions = if_else(identical(package, character(0)) | name %in% c(rownames(installed.packages(priority = "base"))), "", Actions)) %>% 
         # if package name not yet loaded, switch the actionbutton to fa-upload
-        mutate(Actions = if_else(!name %in% loaded2_db()$name, gsub("fas fa-arrow-right fa-regular", "fas fa-upload fa-solid", Actions), Actions))
+        mutate(Actions = if_else(!name %in% session$userData$loaded2_db()$name, gsub("fas fa-arrow-right fa-regular", "fas fa-upload fa-solid", Actions), Actions))
     })
     
     # Create metric grid card.
@@ -297,7 +296,7 @@ packageDependenciesServer <- function(id, selected_pkg, loaded2_db, user, parent
        pkg_name <- pkg_df()[selectedRow, 3] %>% pull()
        pkgname("-")
        
-       if (!pkg_name %in% loaded2_db()$name) {
+       if (!pkg_name %in% session$userData$loaded2_db()$name) {
          pkgname(pkg_name)
          shiny::showModal(modalDialog(
            size = "l",
@@ -322,7 +321,7 @@ packageDependenciesServer <- function(id, selected_pkg, loaded2_db, user, parent
          updateSelectizeInput(
            session = parent,
            inputId = "sidebar-select_pkg",
-           choices = c("-", loaded2_db()$name),
+           choices = c("-", session$userData$loaded2_db()$name),
            selected = pkg_name
          )
        }
@@ -375,7 +374,7 @@ packageDependenciesServer <- function(id, selected_pkg, loaded2_db, user, parent
     })
     
     observeEvent(input$update_all_packages, {
-      req(pkg_df(), loaded2_db(), pkg_updates)
+      req(pkg_df(), session$userData$loaded2_db(), pkg_updates)
       rev_pkg(0L)
 
       pkgname(pkg_updates$pkgs_update$name)
@@ -394,7 +393,7 @@ packageDependenciesServer <- function(id, selected_pkg, loaded2_db, user, parent
     })
 
     observeEvent(input$incl_suggests, {
-      req(pkg_df(), loaded2_db())
+      req(pkg_df(), session$userData$loaded2_db())
       if(input$incl_suggests == TRUE | toggled() == 1L) toggled(1L - isolate(toggled()))
     })
     

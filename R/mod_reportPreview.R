@@ -21,7 +21,6 @@ reportPreviewUI <- function(id) {
 #' @param cm_comments placeholder
 #' @param downloads_plot_data placeholder
 #' @param dep_metrics placeholder
-#' @param loaded2_db placeholder
 #' @param user placeholder
 #' @param app_version placeholder
 #' @param metric_weights placeholder
@@ -39,7 +38,7 @@ reportPreviewUI <- function(id) {
 #' 
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics, 
                                 com_metrics_raw, mm_comments, cm_comments, #se_comments,
-                                downloads_plot_data, dep_metrics, loaded2_db, user, credentials, 
+                                downloads_plot_data, dep_metrics, user, credentials, 
                                 app_version, metric_weights) {
   if (missing(credentials))
     credentials <- get_db_config("credentials")
@@ -433,7 +432,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     
     dep_cards <- eventReactive(dep_metrics(), {
       req(dep_metrics())
-      build_dep_cards(data = dep_metrics(), loaded = loaded2_db()$name, toggled = 0L)
+      build_dep_cards(data = dep_metrics(), loaded = session$userData$loaded2_db()$name, toggled = 0L)
     })
     
     # Package Dependencies metrics cards.
@@ -446,7 +445,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
         mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
       
       repo_pkgs <- as.data.frame(utils::available.packages()[,1:2])
-      purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), repo_pkgs)) %>%
+      purrr::map_df(pkginfo$name, ~get_versnScore(.x, session$userData$loaded2_db(), repo_pkgs)) %>%
       right_join(pkginfo, by = "name") %>%
       select(package, type, version, score) %>%
       arrange(package, type) %>%
@@ -536,6 +535,6 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     )
     
     # Call download handler server
-    mod_downloadHandler_server("downloadHandler", selected_pkg$name, user, metric_weights, dep_metrics, loaded2_db)
+    mod_downloadHandler_server("downloadHandler", selected_pkg$name, user, metric_weights, dep_metrics)
   })
 }

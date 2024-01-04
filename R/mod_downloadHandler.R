@@ -101,7 +101,7 @@ mod_downloadHandler_include_server <- function(id) {
 #' downloadHandler Server Functions
 #'
 #' @noRd 
-mod_downloadHandler_server <- function(id, pkgs, user, metric_weights, dep_metrics, loaded2_db){
+mod_downloadHandler_server <- function(id, pkgs, user, metric_weights, dep_metrics){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
@@ -256,15 +256,15 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights, dep_metri
               comm_cards <- build_comm_cards(comm_data)
               downloads_plot <- build_comm_plotly(comm_data)
               metric_tbl <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
-              dep_cards <- build_dep_cards(data = dep_metrics(), loaded = loaded2_db()$name, toggled = 0L)
+              dep_cards <- build_dep_cards(data = dep_metrics(), loaded = session$userData$loaded2_db()$name, toggled = 0L)
 
               pkginfo <- dep_metrics() %>% 
                   mutate(package = stringr::str_replace(package, "\n", " ")) %>%
                   mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
                 
               repo_pkgs <- as.data.frame(utils::available.packages()[,1:2])
-                  
-              dep_table <- purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), repo_pkgs)) %>%
+              
+              dep_table <- purrr::map_df(pkginfo$name, ~get_versnScore(.x, session$userData$loaded2_db(), repo_pkgs)) %>%
                   right_join(pkginfo, by = "name") %>%
                   select(package, type, version, score) %>%
                   arrange(package, type) %>%

@@ -14,7 +14,6 @@ reportPreviewServer(
   cm_comments,
   downloads_plot_data,
   dep_metrics,
-  loaded2_db,
   user,
   credentials,
   app_version,
@@ -39,8 +38,6 @@ reportPreviewServer(
 \item{downloads_plot_data}{placeholder}
 
 \item{dep_metrics}{placeholder}
-
-\item{loaded2_db}{placeholder}
 
 \item{user}{placeholder}
 
