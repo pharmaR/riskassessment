@@ -35,11 +35,6 @@ server <- function(input, output, session) {
                                           class = "data.frame", 
                                           row.names = c(NA, -12L)))
   
-  loaded2_db <- eventReactive(pkg(), {
-
-    riskassessment:::dbSelect("SELECT name, version, score FROM package")
-  })
-  
   # Get Package Dependency metrics.
   dep_metrics  <- reactiveVal()
   
@@ -48,6 +43,8 @@ server <- function(input, output, session) {
     riskassessment:::get_assess_blob(pkg())
   })
   
+  session$userData$loaded2_db <- reactive(riskassessment:::dbSelect("SELECT name, version, score FROM package"))
+
   observeEvent(pkgref(), {
     req(pkgref())
     tryCatch(
@@ -63,8 +60,8 @@ server <- function(input, output, session) {
     )
   })
   
-  riskassessment:::mod_downloadHandler_server("downloadHandler_1", pkg, user, metric_weights, dep_metrics, loaded2_db)
-  riskassessment:::mod_downloadHandler_server("downloadHandler_2", pkgs, user, metric_weights, dep_metrics, loaded2_db)
+  riskassessment:::mod_downloadHandler_server("downloadHandler_1", pkg, user, metric_weights, dep_metrics)
+  riskassessment:::mod_downloadHandler_server("downloadHandler_2", pkgs, user, metric_weights, dep_metrics)
 }
 
 shinyApp(ui, server)
