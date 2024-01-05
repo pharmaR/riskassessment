@@ -35,33 +35,9 @@ server <- function(input, output, session) {
                                           class = "data.frame", 
                                           row.names = c(NA, -12L)))
   
-  # Get Package Dependency metrics.
-  dep_metrics  <- reactiveVal()
-  
-  pkgref <- eventReactive(pkg(), {
 
-    riskassessment:::get_assess_blob(pkg())
-  })
-  
-  session$userData$loaded2_db <- reactive(riskassessment:::dbSelect("SELECT name, version, score FROM package"))
-
-  observeEvent(pkgref(), {
-    req(pkgref())
-    tryCatch(
-      expr = {
-        dep_metrics(pkgref()$dependencies[[1]] |> dplyr::as_tibble())
-      },
-      error = function(e) {
-        msg <- paste("Detailed dependency information is not available for package", pkg())
-        rlang::warn(msg)
-        rlang::warn(paste("info:", e))
-        dep_metrics(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
-      }
-    )
-  })
-  
-  riskassessment:::mod_downloadHandler_server("downloadHandler_1", pkg, user, metric_weights, dep_metrics)
-  riskassessment:::mod_downloadHandler_server("downloadHandler_2", pkgs, user, metric_weights, dep_metrics)
+  riskassessment:::mod_downloadHandler_server("downloadHandler_1", pkg, user, metric_weights)
+  riskassessment:::mod_downloadHandler_server("downloadHandler_2", pkgs, user, metric_weights)
 }
 
 shinyApp(ui, server)
