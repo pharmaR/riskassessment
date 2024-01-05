@@ -204,7 +204,7 @@ app_server <- function(input, output, session) {
   # Load server of the database view module.
   #parentSession <- .subset2(session, "parent")
   databaseViewServer("databaseView", user, uploaded_pkgs,
-                     metric_weights = metric_weights, dep_metrics, changes, parent = session)
+                     metric_weights = metric_weights, changes, parent = session)
   
   # Gather maintenance metrics information.
   maint_metrics <- reactive({
@@ -227,31 +227,6 @@ app_server <- function(input, output, session) {
     dbSelect("SELECT name, version, score FROM package")
   })
   
-  # Get Package Dependency metrics.
-  dep_metrics  <- reactiveVal()
-  
-  pkgref <- eventReactive(selected_pkg$name(), {
-    req(selected_pkg$name())
-    req(selected_pkg$name() != "-")
-
-    get_assess_blob(selected_pkg$name())
-  })
-  
-  observeEvent(pkgref(), {
-    req(pkgref())
-    tryCatch(
-      expr = {
-        dep_metrics(pkgref()$dependencies[[1]] %>% dplyr::as_tibble())
-      },
-      error = function(e) {
-        msg <- paste("Detailed dependency information is not available for package", selected_pkg$name())
-        rlang::warn(msg)
-        rlang::warn(paste("info:", e))
-        dep_metrics(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
-      }
-    )
-  })
-
   create_src_dir <- eventReactive(input$tabs, input$tabs == "Source Explorer")
   pkgdir <- reactiveVal()
   observe({
@@ -317,7 +292,6 @@ app_server <- function(input, output, session) {
                       cm_comments = community_data$comments,
                       # se_comments = src_explorer_data$comments, # not an arg
                       downloads_plot_data = community_data$downloads_plot_data,
-                      dep_metrics =  dep_metrics,
                       user = user,
                       credential_config,
                       app_version = golem::get_golem_options('app_version'),
