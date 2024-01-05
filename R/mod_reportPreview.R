@@ -537,6 +537,6 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     )
     
     # Call download handler server
-    mod_downloadHandler_server("downloadHandler", selected_pkg$name, user, metric_weights, dep_metrics)
+    mod_downloadHandler_server("downloadHandler", selected_pkg$name, user, metric_weights)
   })
 }

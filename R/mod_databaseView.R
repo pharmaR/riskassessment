@@ -301,17 +301,8 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     
     # return vector of elements to include in the report
     report_includes <- mod_downloadHandler_include_server("downloadHandler")
-    
-    observeEvent(pkgs(), {
-      cat("observeEvent for pkgs()", paste(pkgs(), collapse = ";"), "\n")
-    }, ignoreInit = TRUE)
-    
-    dep_metrics <- eventReactive(pkgs(), {
-      req(pkgs())
-      get_depends_data(pkgs()[1])
-    })
-    
-    mod_downloadHandler_server("downloadHandler", pkgs, user, metric_weights, dep_metrics)
+
+    mod_downloadHandler_server("downloadHandler", pkgs, user, metric_weights)
     
   })
 }

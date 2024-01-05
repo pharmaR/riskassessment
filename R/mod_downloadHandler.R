@@ -101,7 +101,7 @@ mod_downloadHandler_include_server <- function(id) {
 #' downloadHandler Server Functions
 #'
 #' @noRd 
-mod_downloadHandler_server <- function(id, pkgs, user, metric_weights, dep_metrics){
+mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
@@ -256,6 +256,11 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights, dep_metri
               comm_cards <- build_comm_cards(comm_data)
               downloads_plot <- build_comm_plotly(comm_data)
               metric_tbl <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
+              
+              dep_metrics <- eventReactive(this_pkg, {
+                req(this_pkg)
+                get_depends_data(this_pkg)
+              })
               
               dep_cards <- build_dep_cards(data = dep_metrics(), loaded = session$userData$loaded2_db()$name, toggled = 0L)
 
