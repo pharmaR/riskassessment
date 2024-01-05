@@ -36,6 +36,10 @@ server <- function(input, output, session) {
                                           row.names = c(NA, -12L)))
   
 
+  session$userData$loaded2_db <- reactive({
+    riskassessment:::dbSelect("select name, version, score from package")
+  })
+  
   riskassessment:::mod_downloadHandler_server("downloadHandler_1", pkg, user, metric_weights)
   riskassessment:::mod_downloadHandler_server("downloadHandler_2", pkgs, user, metric_weights)
 }
