@@ -442,12 +442,19 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     # Package Dependencies metrics cards.
     metricGridServer("dep_metricGrid", metrics = dep_cards)
 
+    
+    if (!isTruthy(session$userData$repo_pkgs())) {
+      if (isTRUE(getOption("shiny.testmode"))) {
+        session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x)))
+      } else {
+        session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
+      }
+    }
+    
     dep_table <- eventReactive(dep_metrics(), {
       req(dep_metrics())
 
-      repo_pkgs <- as.data.frame(utils::available.packages()[,1:2])
-      
-      purrr::map_df(dep_metrics()$name, ~get_versnScore(.x, session$userData$loaded2_db(), repo_pkgs)) %>%
+      purrr::map_df(dep_metrics()$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs)) %>%
       right_join(dep_metrics(), by = "name") %>%
       select(package, type, version, score) %>%
       arrange(package, type) %>%
