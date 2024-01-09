@@ -50,11 +50,19 @@ app_server <- function(input, output, session) {
       )
     )
   }
-  # click event on dependencies card to change dropdown to dependencies
-  observeEvent(list(input$`dependencies-dep_click`, input$`reverse_dependencies-dep_click`),{
-    updateSelectInput(session,"metric_type",selected = "dep")
-  })
   
+  #click event on dependencies card to change dropdown to dependencies
+  observeEvent(list(input$`dependencies-dep_click`, input$`reverse_dependencies-dep_click`),{
+   if(!is.null(c(input$`dependencies-dep_click`,
+                 input$`reverse_dependencies-dep_click`))){
+    
+     updateSelectInput(session,"metric_type",selected = "dep")
+     if(!is.null(input$`reverse_dependencies-dep_click`)){
+     runjs(' setTimeout(function() {
+                    window.scrollTo(0,document.body.scrollHeight);}, 3000); // biding time for rev-dependecies text to load
+           Shiny.setInputValue("reverse_dependencies-dep_click",null);')}}
+  })
+
   observeEvent(res_auth$user, {
     req(res_auth$admin == TRUE | "weight_adjust" %in% credential_config$privileges[[res_auth$role]])
     
