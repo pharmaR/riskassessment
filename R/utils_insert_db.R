@@ -418,9 +418,10 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, updateProgress 
         updateProgress(1)
 
       if (!isTRUE(getOption("shiny.testmode"))) {
-        dwn_ld <- utils::download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), 
-                                       quiet = TRUE, mode = "wb")
-        if (dwn_ld != 0) {
+        dwn_ld <- try(utils::download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), 
+                                           quiet = TRUE, mode = "wb"),
+                      silent = TRUE)
+        if (inherits(dwn_ld, "try-error") | dwn_ld != 0) {
           wrn_msg <- glue::glue("Unable to download the source files for {uploaded_packages$package[i]} from '{ref$tarball_url}'.")
           if (shiny::isRunning()) loggit::loggit("INFO", wrn_msg) else warning(wrn_msg)
         }
