@@ -42,7 +42,7 @@ params:
 
 ```{r setup, include=FALSE}
 library(knitr)
-library(kableExtra)
+library(flextable)
 library(shiny)
 library(ggplot2)
 library(plotly)
@@ -140,7 +140,7 @@ if('Maintenance Metrics' %in% params$report_includes){
         !(name %in% c('has_bug_reports_url', 'news_current')) ~ value,
                                  value %in% c("TRUE","1") ~ 'Yes',
                                  TRUE ~ 'No'),
-      `Metric Score *` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ "NA",
+      `Metric Score *` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ NA_character_,
           # flip the label display of the score to mimic the package score...
           round(as.numeric(score), 2) == 0 ~ "1.0",
           round(as.numeric(score), 2) == 1 ~ "0.0",
@@ -148,8 +148,9 @@ if('Maintenance Metrics' %in% params$report_includes){
       )
     ) %>%
     dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score *`) %>%
-    kableExtra::kbl(format = 'html', booktabs = T) %>% 
-    kableExtra::column_spec(4, width_min = "0.75in") 
+    flextable::flextable(cwidth = c(1.5, 2.0, 2.0, 1.25)) %>% 
+    flextable::set_table_properties(align = "left") %>% 
+    flextable::colformat_char(na_str = "NA")
 }
 ```
 
@@ -190,7 +191,7 @@ if (!cm_ind) {
         `Metric Name` = title,
         `Metric Description` = desc,
         `Metric Value` = ifelse(value %in% c("pkg_metric_error", "NA", NA), "Not found", value),
-        `Metric Score *` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ "NA",
+        `Metric Score *` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ NA_character_,
           # flip the label display of the score to mimic the package score...
           round(as.numeric(score), 2) == 0 ~ "1.0",
           round(as.numeric(score), 2) == 1 ~ "0.0",
@@ -198,8 +199,9 @@ if (!cm_ind) {
         )
       ) %>%
       dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score *`) %>%
-      kableExtra::kbl(format = 'html', booktabs = T) %>% 
-      kableExtra::column_spec(4, width_min = "0.75in") 
+      flextable::flextable(cwidth = c(1.5, 2.0, 2.0, 1.25)) %>% 
+      flextable::set_table_properties(align = "left") %>% 
+      flextable::colformat_char(na_str = "NA")
   }
 }
 ```
@@ -267,26 +269,18 @@ if('Community Usage Comments' %in% params$report_includes){
         `Metric Name` = title,
         `Metric Description` = desc,
         `Metric Value` = ifelse(value %in% c("pkg_metric_error", "NA", NA), "Not found", value),
-        `Metric Score *` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ "NA",
+        `Metric Score *` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ NA_character_,
           # flip the label display of the score to mimic the package score...
           round(as.numeric(score), 2) == 0 ~ "1.0",
           round(as.numeric(score), 2) == 1 ~ "0.0",
           TRUE ~ as.character(round(1 - as.numeric(score), 2))
         )
       ) %>%
-      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score *`) %>% 
-      dplyr::mutate(`Metric Description` = stringr::str_replace_all(`Metric Description`, 'by Type', '<br/>by Type')) %>% 
-      dplyr::mutate(`Metric Description` = stringr::str_replace_all(`Metric Description`, 'from Base', '<br/>from Base')) %>% 
-      dplyr::mutate(`Metric Value` = stringr::str_replace_all(`Metric Value`, '\n' ,'<br/>')) 
-
-      kableExtra::kbl(cards, format = 'html', booktabs = T, escape = F) %>% 
-      kableExtra::column_spec(4, width_min = "0.75in") 
-      # kableExtra::kable_styling("basic", full_width = F, position = 'left') %>% 
-      # kableExtra::column_spec(1, width_min = "1.5in") %>% 
-      # kableExtra::column_spec(2, width_min = "2.0in") %>% 
-      # kableExtra::column_spec(3, width_min = "2.5in") %>%
-      # kableExtra::column_spec(4, width_min = "1.0in")
-
+      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score *`) 
+     
+      flextable::flextable(cards, cwidth = c(1.5, 2.0, 2.0, 1.25))  %>% 
+      flextable::set_table_properties(align = "left") %>% 
+      flextable::colformat_char(na_str = "NA")
   } else ""
 ```
 
@@ -294,7 +288,8 @@ if('Community Usage Comments' %in% params$report_includes){
 
 ```{r package_dependencies_table}
   if('Package Dependencies' %in% params$report_includes) {
-    kableExtra::kbl(params$dep_table, format = 'pipe')
+    flextable::flextable(params$dep_table, cwidth = c(1.5, 1.25, 1.25, 1.25))  %>% 
+    flextable::set_table_properties(align = "left") 
   } else ""
 ```
 
