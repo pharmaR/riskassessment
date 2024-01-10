@@ -88,7 +88,7 @@ report_creation <- function(pkg_lst, metric_weights, report_format, report_inclu
   fs <- c()
   for (i in 1:n_pkgs) {
     if (is.function(updateProgress))
-      updateProgress(1, pkg_lst[i])
+      updateProgress(1, paste("Processing", pkg_lst[i]))
     # Grab package name and version, then create filename and path.
     # this_pkg <- "stringr" # for testing
     selected_pkg <- get_pkg_info(pkg_lst[i], db_name)
