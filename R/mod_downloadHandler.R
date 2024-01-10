@@ -131,8 +131,9 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
       }
       
       if (n_pkgs < 4) {
-        progress <- shiny::Progress$new(max = n_pkgs + 2)
-        progress$set(message = glue::glue('Downloading {ifelse(n_pkgs > 1, paste0(n_pkgs, " "), "")}Report{ifelse(n_pkgs > 1, "s", paste0(": ", pkgs()))}'),
+        progress <- shiny::Progress$new(max = n_pkgs + 1)
+        progress$set(message = glue::glue('Downloading {ifelse(n_pkgs > 1, paste0(n_pkgs, " "), "")}Report{ifelse(n_pkgs > 1, "s:", ":")}'),
+                     detail = if(n_pkgs == 1) pkgs(),
                      value = 0)
         on.exit(progress$close())
         

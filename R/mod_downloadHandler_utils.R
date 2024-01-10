@@ -9,8 +9,6 @@ report_creation <- function(pkg_lst, metric_weights, report_format, report_inclu
                             db_name = golem::get_golem_options('assessment_db_name'), 
                             my_tempdir = tempdir(), updateProgress = NULL) {
   n_pkgs <- length(pkg_lst)
-  if (is.function(updateProgress))
-    updateProgress(1)
   
   if (report_format == "html") {
     
@@ -89,6 +87,8 @@ report_creation <- function(pkg_lst, metric_weights, report_format, report_inclu
   
   fs <- c()
   for (i in 1:n_pkgs) {
+    if (is.function(updateProgress))
+      updateProgress(1, pkg_lst[i])
     # Grab package name and version, then create filename and path.
     # this_pkg <- "stringr" # for testing
     selected_pkg <- get_pkg_info(pkg_lst[i], db_name)
@@ -159,13 +159,11 @@ report_creation <- function(pkg_lst, metric_weights, report_format, report_inclu
         )
       )
     fs <- c(fs, path)  # Save all the reports/
-    if (is.function(updateProgress))
-      updateProgress(1)
   }
   # Zip all the files up. -j retains just the files in zip file.
   if (n_pkgs > 1) zip(zipfile = my_tempdir, files = fs, extras = "-j")
   if (is.function(updateProgress))
-    updateProgress(1)
+    updateProgress(1, "**Finished**")
   
   if (n_pkgs > 1) paste0(my_tempdir, ".zip") else out
 }
