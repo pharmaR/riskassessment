@@ -3,6 +3,26 @@
     "Version": "4.2.2",
     "Repositories": [
       {
+        "Name": "BioCsoft",
+        "URL": "https://bioconductor.org/packages/3.16/bioc"
+      },
+      {
+        "Name": "BioCann",
+        "URL": "https://bioconductor.org/packages/3.16/data/annotation"
+      },
+      {
+        "Name": "BioCexp",
+        "URL": "https://bioconductor.org/packages/3.16/data/experiment"
+      },
+      {
+        "Name": "BioCworkflows",
+        "URL": "https://bioconductor.org/packages/3.16/workflows"
+      },
+      {
+        "Name": "BioCbooks",
+        "URL": "https://bioconductor.org/packages/3.16/books"
+      },
+      {
         "Name": "CRAN",
         "URL": "https://packagemanager.posit.co/cran/2023-08-08"
       }
@@ -810,8 +830,13 @@
     "downlit": {
       "Package": "downlit",
       "Version": "0.4.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "downlit",
+      "RemoteUsername": "r-lib",
+      "RemoteRef": "v0.4.3",
+      "RemoteSha": "4429d115611e8fafd8bbd63b81e10c4a688c0af7",
       "Requirements": [
         "R",
         "brio",
@@ -825,7 +850,7 @@
         "withr",
         "yaml"
       ],
-      "Hash": "14fa1f248b60ed67e1f5418391a17b14"
+      "Hash": "dff6f789de345b220d4339105cc57b01"
     },
     "dplyr": {
       "Package": "dplyr",
