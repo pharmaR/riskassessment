@@ -431,12 +431,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     
     observe({
       if (!isTruthy(session$userData$repo_pkgs())) {
-        if (isTRUE(getOption("shiny.testmode"))) {
-          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x)) %>% 
-                                       rename("Package" = name, "Version" = version))
-        } else {
           session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
-        }
       }
     })
     

@@ -127,12 +127,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
         pkginfo <- filter(pkginfo, type != "Suggests")
       
       if (!isTruthy(session$userData$repo_pkgs())) {
-        if (isTRUE(getOption("shiny.testmode"))) {
-          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x)) %>% 
-                                       rename("Package" = name, "Version" = version))
-        } else {
           session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
-        }
       }
         
       purrr::map_df(pkginfo$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>% 

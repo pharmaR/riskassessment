@@ -131,12 +131,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
         req(n_pkgs > 0)
         
         if (!isTruthy(session$userData$repo_pkgs())) {
-          if (isTRUE(getOption("shiny.testmode"))) {
-            session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x)) %>% 
-                                         rename("Package" = name, "Version" = version))
-          } else {
             session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
-          }
         }
         
         shiny::withProgress(
@@ -272,6 +267,8 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
 
               dep_cards <- build_dep_cards(data = dep_metrics(), loaded = session$userData$loaded2_db()$name, toggled = 0L)
 
+              browser()
+              
               dep_table <- purrr::map_df(dep_metrics()$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>%
                   right_join(dep_metrics(), by = "name") %>%
                   select(package, type, version, score) %>%
