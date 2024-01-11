@@ -139,7 +139,7 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
          html_component <- shiny::tagAppendAttributes(html_component, 
                                                       onMouseOver="this.style['box-shadow'] = '2px 2px 2px black';
                                                       this.style['cursor'] = 'pointer'",
-                                    onMouseOut="this.style['box-shadow'] = '2px 2px 2px white'")
+                                    onMouseOut="this.style['box-shadow'] = 'none'")
       }
       else {
         html_component

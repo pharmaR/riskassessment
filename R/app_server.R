@@ -58,8 +58,8 @@ app_server <- function(input, output, session) {
     
      updateSelectInput(session,"metric_type",selected = "dep")
      if(!is.null(input$`reverse_dependencies-dep_click`)){
-     runjs(' setTimeout(function() {
-                    window.scrollTo(0,document.body.scrollHeight);}, 3000); // biding time for rev-dependecies text to load
+     shinyjs::runjs(' setTimeout(function() {
+                    window.scrollTo(0,document.body.scrollHeight);}, 3000); // biding time for rev-dependencies text to load
            Shiny.setInputValue("reverse_dependencies-dep_click",null);')}}
   })
 
