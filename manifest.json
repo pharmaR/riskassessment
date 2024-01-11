@@ -2678,32 +2678,40 @@
       }
     },
     "httr2": {
-      "Source": "CRAN",
-      "Repository": "https://packagemanager.posit.co/cran/2023-08-08",
+      "Source": "github",
+      "Repository": null,
       "description": {
         "Package": "httr2",
         "Title": "Perform HTTP Requests and Process the Responses",
         "Version": "0.2.3",
-        "Authors@R": "c(\nperson(\"Hadley\", \"Wickham\", , \"hadley@rstudio.com\", role = c(\"aut\", \"cre\")),\nperson(\"RStudio\", role = c(\"cph\", \"fnd\"))\n)",
-        "Description": "Tools for creating and modifying HTTP requests, then\nperforming them and processing the results. 'httr2' is a modern\nre-imagining of 'httr' that uses a pipe-based interface and solves\nmore of the problems that API wrapping packages face.",
+        "Authors@R": "c( person(\"Hadley\", \"Wickham\", , \"hadley@rstudio.com\", role = c(\"aut\", \"cre\")), person(\"RStudio\", role = c(\"cph\", \"fnd\")) )",
+        "Description": "Tools for creating and modifying HTTP requests, then performing them and processing the results. 'httr2' is a modern re-imagining of 'httr' that uses a pipe-based interface and solves more of the problems that API wrapping packages face.",
         "License": "MIT + file LICENSE",
         "URL": "https://httr2.r-lib.org, https://github.com/r-lib/httr2",
         "BugReports": "https://github.com/r-lib/httr2/issues",
         "Depends": "R (>= 3.4)",
-        "Imports": "cli (>= 3.0.0), curl, glue, magrittr, openssl, R6, rappdirs,\nrlang (>= 1.0.0), withr",
-        "Suggests": "askpass, bench, clipr, covr, docopt, httpuv, jose, jsonlite,\nknitr, purrr, rmarkdown, testthat (>= 3.0.0), tibble, webfakes,\nxml2",
+        "Imports": "cli (>= 3.0.0), curl, glue, magrittr, openssl, R6, rappdirs, rlang (>=\n1.0.0), withr",
+        "Suggests": "askpass, bench, clipr, covr, docopt, httpuv, jose, jsonlite, knitr,\npurrr, rmarkdown, testthat (>= 3.0.0), tibble, webfakes, xml2",
         "VignetteBuilder": "knitr",
         "Config/Needs/website": "tidyverse/tidytemplate",
         "Config/testthat/edition": "3",
         "Encoding": "UTF-8",
+        "Roxygen": "list(markdown = TRUE)",
         "RoxygenNote": "7.2.3",
-        "NeedsCompilation": "no",
-        "Packaged": "2023-05-08 18:56:52 UTC; hadleywickham",
-        "Author": "Hadley Wickham [aut, cre],\nRStudio [cph, fnd]",
+        "Author": "Hadley Wickham [aut, cre], RStudio [cph, fnd]",
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
-        "Repository": "RSPM",
-        "Date/Publication": "2023-05-08 19:30:02 UTC",
-        "Built": "R 4.2.0; ; 2023-11-03 20:55:13 UTC; windows"
+        "Built": "R 4.2.2; ; 2024-01-11 21:26:25 UTC; windows",
+        "RemoteType": "github",
+        "RemoteHost": "api.github.com",
+        "RemoteRepo": "httr2",
+        "RemoteUsername": "r-lib",
+        "RemoteRef": "v0.2.3",
+        "RemoteSha": "d3cfb7007002e3a60d0b82a62fe6f21c7b93e800",
+        "GithubHost": "api.github.com",
+        "GithubRepo": "httr2",
+        "GithubUsername": "r-lib",
+        "GithubRef": "v0.2.3",
+        "GithubSHA1": "d3cfb7007002e3a60d0b82a62fe6f21c7b93e800"
       }
     },
     "hunspell": {
@@ -6070,7 +6078,7 @@
       "checksum": "4d7e9b63206fcc5a9a0db1a48b4d2c7b"
     },
     ".Rprofile": {
-      "checksum": "658f2daee29650000421e6c153f7b153"
+      "checksum": "027f862022f0b8c5979b8c21990347e3"
     },
     "_pkgdown.yml": {
       "checksum": "93edcbb89a7aedf046ace84f340aaf98"

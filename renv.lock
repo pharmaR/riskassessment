@@ -1351,8 +1351,13 @@
     "httr2": {
       "Package": "httr2",
       "Version": "0.2.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "httr2",
+      "RemoteUsername": "r-lib",
+      "RemoteRef": "v0.2.3",
+      "RemoteSha": "d3cfb7007002e3a60d0b82a62fe6f21c7b93e800",
       "Requirements": [
         "R",
         "R6",
@@ -1365,7 +1370,7 @@
         "rlang",
         "withr"
       ],
-      "Hash": "193bb297368afbbb42dc85784a46b36e"
+      "Hash": "7d2d957408d274aed4e365ce163cc1a8"
     },
     "hunspell": {
       "Package": "hunspell",
