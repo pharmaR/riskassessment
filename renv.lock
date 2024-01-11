@@ -8,6 +8,9 @@
       }
     ]
   },
+  "Bioconductor": {
+    "Version": "3.16"
+  },
   "Packages": {
     "AsioHeaders": {
       "Package": "AsioHeaders",
@@ -1288,8 +1291,13 @@
     "httpuv": {
       "Package": "httpuv",
       "Version": "1.6.11",
-      "Source": "Repository",
-      "Repository": "CRAN",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "httpuv",
+      "RemoteUsername": "rstudio",
+      "RemoteRef": "v1.6.11",
+      "RemoteSha": "3d75acb3dac8984cfe1884890bf6f1d6d813c754",
       "Requirements": [
         "R",
         "R6",
@@ -1298,7 +1306,7 @@
         "promises",
         "utils"
       ],
-      "Hash": "838602f54e32c1a0f8cc80708cefcefa"
+      "Hash": "72ad55f4e25893ecef84aa69183fca57"
     },
     "httr": {
       "Package": "httr",
@@ -2174,8 +2182,8 @@
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
-      "RemoteRepo": "riskmetric",
       "RemoteUsername": "pharmaR",
+      "RemoteRepo": "riskmetric",
       "RemoteRef": "HEAD",
       "RemoteSha": "3905c66d15dde5b6e3d021aa2bec52d883462bd9",
       "Requirements": [
