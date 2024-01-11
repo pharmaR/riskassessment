@@ -258,19 +258,19 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               metric_tbl <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
               
               dep_metrics <- eventReactive(this_pkg, {
-                get_depends_data(this_pkg)
+                get_depends_data(this_pkg, db_name = golem::get_golem_options("assessment_db_name"))
               })
 
               dep_cards <- build_dep_cards(data = dep_metrics(), loaded = session$userData$loaded2_db()$name, toggled = 0L)
 
-              if (!isTruthy(session$userData$repo_pkgs())) {
-        if (isTRUE(getOption("shiny.testmode"))) {
-          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x)))
-        } else {
-          session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
-        }
-      }
-              
+                if (!isTruthy(session$userData$repo_pkgs())) {
+                  if (isTRUE(getOption("shiny.testmode"))) {
+                    session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x)))
+                  } else {
+                    session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
+                  }
+                }
+
               dep_table <- purrr::map_df(dep_metrics()$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>%
                   right_join(dep_metrics(), by = "name") %>%
                   select(package, type, version, score) %>%

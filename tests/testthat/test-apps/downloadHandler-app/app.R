@@ -36,6 +36,8 @@ server <- function(input, output, session) {
                                           row.names = c(NA, -12L)))
   
 
+  session$userData$repo_pkgs <- reactiveVal()
+  
   session$userData$loaded2_db <- reactive({
     riskassessment:::dbSelect("select name, version, score from package")
   })
