@@ -2,6 +2,7 @@ default:
   package_repo: https://cran.rstudio.com
   assessment_db: database.sqlite
   loggit_json: loggit.json
+  use_shinymanager: true
   credential_db: credentials.sqlite
   report_prefs:
     directory: report_preferences
@@ -74,3 +75,11 @@ example2:
       - GxP Compliant
       - Needs Review
       - Not GxP Compliant
+noncredentialed:
+  use_shinymanager: false
+  assessment_db: database_noncredentialed.sqlite
+  credentials:
+    roles:
+      - default
+    privileges:
+      default: [admin, weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]
