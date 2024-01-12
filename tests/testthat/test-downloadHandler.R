@@ -1,7 +1,5 @@
 test_that("downloadHandler works", {
 
-  skip_on_ci()
-  
   app <- shinytest2::AppDriver$new(test_path("test-apps", "downloadHandler-app"))
   
   expect_equal(app$get_value(input = "tabs"), "single")
