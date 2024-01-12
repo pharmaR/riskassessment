@@ -133,7 +133,11 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
         req(n_pkgs > 0)
         
         if (!isTruthy(session$userData$repo_pkgs())) {
+          if (isTRUE(getOption("shiny.testmode"))) {
+            session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x)))
+          } else {
             session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
+          }
         }
         
         shiny::withProgress(
