@@ -144,7 +144,7 @@ report_creation <- function(pkg_lst, metric_weights, report_format, report_inclu
                       app_version = golem::get_golem_options('app_version'),
                       metric_weights = metric_weights,
                       user_name = user$name,
-                      user_role = user$role,
+                      user_role = paste(user$role, collapse = ', '),
                       overall_comments = overall_comments,
                       pkg_summary = pkg_summary,
                       mm_comments = mm_comments,
