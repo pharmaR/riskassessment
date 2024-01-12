@@ -446,7 +446,8 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
         h5('Author:'), selected_pkg$author(),
         h5('Maintainer:'), selected_pkg$maintainer(),
         h5('License:'), selected_pkg$license(),
-        h5('Published:'), selected_pkg$published()
+        h5('Published:'), selected_pkg$published(),
+        h5('Source:'), selected_pkg$repo_url()
       )
     })
     

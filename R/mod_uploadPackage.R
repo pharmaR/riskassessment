@@ -431,7 +431,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
                   loggit::loggit("INFO", glue::glue("Unable to download the source files for {uploaded_packages$package[i]} from '{ref$tarball_url}'."))
                 }
               }
-              insert_pkg_info_to_db(uploaded_packages$package[i], ref_ver)
+              insert_pkg_info_to_db(uploaded_packages$package[i], pkg_ref = ref)
               # Get and upload maintenance metrics to db.
               incProgress(1, detail = deets)
               

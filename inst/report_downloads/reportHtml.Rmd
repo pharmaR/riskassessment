@@ -251,6 +251,7 @@ tagList(
   h6('Maintainer:'), params$pkg$maintainer,
   h6('License:'), params$pkg$license,
   h6('Published:'), params$pkg$published,
+  h6('Source:'), params$pkg$repo_url,
   h6(code('{riskmetric}'), 'Assessment Date:'), params$pkg$date_added,
   if('Risk Score' %in% params$report_includes) tagList(h6('Risk Score:'), params$pkg$score) else "",
   h6('Package Decision:'), ifelse(is.na(params$pkg$decision), 'Pending', params$pkg$decision)

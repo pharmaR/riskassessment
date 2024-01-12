@@ -55,8 +55,11 @@ dbUpdate <- function(command, db_name = golem::get_golem_options('assessment_db_
 #' 
 #' @returns nothing
 #' @noRd
-insert_pkg_info_to_db <- function(pkg_name, pkg_version,
+insert_pkg_info_to_db <- function(pkg_name, pkg_version, pkg_ref,
                                   db_name = golem::get_golem_options('assessment_db_name')) {
+  
+  if (!missing(pkg_ref)) pkg_version <- pkg_ref$version
+  
   tryCatch(
     expr = {
       # get latest high-level package info
@@ -72,7 +75,8 @@ insert_pkg_info_to_db <- function(pkg_name, pkg_version,
       upload_package_to_db(pkg_name, pkg_info$Version, pkg_info$Title,
                            pkg_info$Description, pkg_info$Author,
                            pkg_info$Maintainer, pkg_info$License,
-                           pkg_info$Published, db_name)
+                           pkg_info$Published, if (missing(pkg_ref)) '' else pkg_ref$repo_base_url, 
+                           db_name)
       
     },
     error = function(e) {
@@ -117,16 +121,17 @@ insert_pkg_info_to_db <- function(pkg_name, pkg_version,
 #' @returns nothing
 #' @noRd
 upload_package_to_db <- function(name, version, title, description,
-                                 authors, maintainers, license, published_on, db_name) {
+                                 authors, maintainers, license, 
+                                 published_on, repo_base_url = '', db_name) {
   tryCatch(
     expr = {
       dbUpdate(
         "INSERT or REPLACE INTO package
         (name, version, title, description, maintainer, author,
-        license, published_on, decision_by, decision_date, date_added)
+        license, published_on, decision_by, decision_date, date_added, url)
         VALUES({name}, {version}, {title}, {description},
         {maintainers}, {authors}, {license}, {published_on},
-        '', {as.Date(NA)},{get_Date()})", db_name)
+        '', {as.Date(NA)}, {get_Date()}, {repo_base_url})", db_name)
     },
     error = function(e) {
       loggit::loggit("ERROR", paste("Error in uploading the general info of the package", name, "info", e),
