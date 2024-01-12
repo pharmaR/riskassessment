@@ -188,19 +188,22 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   if (isTRUE(getOption("shiny.testmode"))) return(NULL)
   
   db_config <- if(missing(configuration)) get_db_config(NULL) else configuration
-  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json", "metric_weights", "report_prefs", "package_repo")
+  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json", "metric_weights", "report_prefs", "package_repo", "use_shinymanager")
   if (any(!names(db_config) %in% used_configs)) {
     names(db_config) %>%
       `[`(!. %in% used_configs) %>%
       purrr::walk(~ warning(glue::glue("Unknown database configuration '{.x}' found in db-config.yml")))
   }
   
+  use_shinymanager <- !isFALSE(db_config[["use_shinymanager"]])
+  
   assessment_db <- if (missing(assess_db)) get_db_config("assessment_db") else assess_db
-  credentials_db <- if (missing(cred_db)) golem::get_golem_options('credentials_db_name') else cred_db
+  if (use_shinymanager)
+    credentials_db <- if (missing(cred_db)) golem::get_golem_options('credentials_db_name') else cred_db
   
   if (is.null(assessment_db) || typeof(assessment_db) != "character" || length(assessment_db) != 1 || !grepl("\\.sqlite$", assessment_db))
     stop("assess_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
-  if (!isTRUE(getOption("shiny.testmode")) && (is.null(credentials_db) || typeof(credentials_db) != "character" || length(credentials_db) != 1 || !grepl("\\.sqlite$", credentials_db)))
+  if (use_shinymanager && !isTRUE(getOption("shiny.testmode")) && (is.null(credentials_db) || typeof(credentials_db) != "character" || length(credentials_db) != 1 || !grepl("\\.sqlite$", credentials_db)))
     stop("cred_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
   
   # Start logging info.
@@ -214,16 +217,16 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   
   check_repos(db_config[["package_repo"]])
   
-  if (file.exists(assessment_db) & (isTRUE(getOption("shiny.testmode")) | file.exists(credentials_db)))
-    return(invisible(c(assessment_db, if (!isTRUE(getOption("shiny.testmode"))) credentials_db)))
+  if (file.exists(assessment_db) && (isTRUE(getOption("shiny.testmode")) || use_shinymanager && file.exists(credentials_db)))
+    return(invisible(c(assessment_db, if (!isTRUE(getOption("shiny.testmode")) & use_shinymanager) credentials_db)))
   
   check_credentials(db_config[["credentials"]])
 
-  if (isFALSE(getOption("golem.app.prod")) && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(credentials_db)) create_credentials_dev_db(credentials_db)
+  if (use_shinymanager && isFALSE(getOption("golem.app.prod")) && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(credentials_db)) create_credentials_dev_db(credentials_db)
 
   # Create package db & credentials db if it doesn't exist yet.
   if(!file.exists(assessment_db)) create_db(assessment_db)
-  if(!file.exists(credentials_db)) {
+  if(use_shinymanager && !file.exists(credentials_db)) {
     admin_role <- db_config[["credentials"]][["privileges"]] %>%
       purrr::imap(~ if ("admin" %in% .x) .y) %>%
       unlist(use.names = FALSE) %>%
@@ -243,7 +246,7 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   if (!dir.exists("tarballs")) dir.create("tarballs")
   if (!dir.exists("source")) dir.create("source")
 
-  invisible(c(assessment_db, credentials_db))
+  invisible(c(assessment_db, if (use_shinymanager) credentials_db))
 }
 
 #' Check CRAN repos
@@ -362,7 +365,8 @@ add_tags <- function(ui, ...) {
 #' @md
 #' @keywords internal
 add_shinymanager_auth <- function(app_ui, app_ver, login_note) {
-  if (!isTRUE(getOption("shiny.testmode"))) {
+  # Don't add shinymanager if running the application in testing mode or without credentials
+  if (!isTRUE(getOption("shiny.testmode")) && !isFALSE(get_db_config("use_shinymanager"))) {
   add_tags(shinymanager::secure_app(app_ui,
     tags_top = tags$div(
       tags$head(favicon(), tags$style(HTML(readLines(app_sys("app/www/css", "login_screen.css"))))),

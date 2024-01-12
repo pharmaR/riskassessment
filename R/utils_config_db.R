@@ -30,7 +30,7 @@ configure_db <- function(dbname, config) {
   check_decision_config(config[["decisions"]])
   if (!is.null(config[["metric_weights"]]))
     check_metric_weights(config[["metric_weights"]])
-  check_credentials(config[["credentials"]])
+  config[["credentials"]] <- check_credentials(config[["credentials"]])
   
   # Set decision categories
   purrr::walk(config[["decisions"]]$categories, ~ dbUpdate("INSERT INTO decision_categories (decision) VALUES ({.x})", dbname))
@@ -215,12 +215,21 @@ check_credentials <- function(credentials_lst) {
   if (!"admin" %in% privileges)
     stop("The roles corresponding to 'admin' privileges must be specified")
   
+  if (isFALSE(get_db_config("use_shinymanger"))) {
+    if (!"default" %in% credentials_lst$roles) {
+      credentials_lst$roles <- c(credentials_lst$roles, "default")
+      warning("When using {riskassessment} without {shinymanger}, the role 'default' is mandatory. If omitted in `db-config.yml`, it will be initialized with no privileges.")
+    }
+  }
+  
   if (!all(privileges_roles %in% credentials_lst$roles))
     warning(glue::glue("The following role(s) designated under privileges is(are) not present in the 'roles' configuration: {paste(privileges_roles[!privileges_roles %in% credentials_lst$roles], collapse = ', ')}"))
   
   valid_privileges <- unique(unlist(credentials_lst$privileges[credentials_lst$roles], use.names = FALSE))
   if (!all(used_privileges %in% valid_privileges))
     warning(glue::glue("The following privilege(s) is(are) not assigned to any 'role' in the credentials configuration: {paste(used_privileges[!used_privileges %in% valid_privileges], collapse = ', ')}"))
+  
+  credentials_lst
 }
 
 parse_rules <- function(dec_config) {

@@ -41,6 +41,11 @@ app_server <- function(input, output, session) {
     res_auth[["admin"]] <- !isTRUE(golem::get_golem_options('nonadmin'))
     res_auth[["user"]] <- "test_user"
     res_auth[["role"]] <- ifelse(!isTRUE(golem::get_golem_options('nonadmin')), "admin", "reviewer")
+  } else if (isFALSE(get_db_config("use_shinymanager"))) {
+    res_auth <- reactiveValues()
+    res_auth[["admin"]] <- FALSE
+    res_auth[["user"]] <- session$user %||% "anonymous"
+    res_auth[["role"]] <- intersect(unlist(session$groups, use.names = FALSE), dbSelect("select user_role from roles")[[1]]) %||% "default"
   } else {
     # check_credentials directly on sqlite db
     res_auth <- shinymanager::secure_server(
@@ -64,7 +69,7 @@ app_server <- function(input, output, session) {
   })
 
   observeEvent(res_auth$user, {
-    req(res_auth$admin == TRUE | "weight_adjust" %in% credential_config$privileges[[res_auth$role]])
+    req(res_auth$admin == TRUE || any(c("admin", "weight_adjust") %in% unlist(credential_config$privileges[res_auth$role])))
     
       appendTab("apptabs",
                 tabPanel(
@@ -86,12 +91,13 @@ app_server <- function(input, output, session) {
                           admin_ui
                         }
                       ),
-                    if (res_auth$admin)
+                    if (res_auth$admin == TRUE || "admin" %in% unlist(credential_config$privileges[res_auth$role]))
                       tabPanel(
                         id = "privilege_id",
                         title = "Roles & Privileges",
                         mod_user_roles_ui("userRoles")
                       ),
+                    if ("weight_adjust" %in% unlist(credential_config$privileges[res_auth$role]))
                     tabPanel(
                       id = "reweight_id",
                       title = "Assessment Reweighting",
@@ -105,7 +111,7 @@ app_server <- function(input, output, session) {
   observeEvent(credential_config$privileges, {
     req(user$role)
     
-    if ("weight_adjust" %in% credential_config$privileges[[user$role]])
+    if ("weight_adjust" %in% unlist(credential_config$privileges[user$role]))
       showTab("credentials", "Assessment Reweighting")
     else
       hideTab("credentials", "Assessment Reweighting")
