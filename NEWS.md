@@ -10,6 +10,7 @@
 * Only run configuration checkers when configuring the database
 * Added dependencies/reverse dependencies card hyperlink (#597)
 * Added non-shinymanager deployment option (#700)
+* Run report building in background if several are being requested (#711)
 
 # riskassessment 3.0.0
 
