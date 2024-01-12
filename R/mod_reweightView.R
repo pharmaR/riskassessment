@@ -26,7 +26,7 @@ reweightViewUI <- function(id) {
 #' @keywords internal
 reweightViewServer <- function(id, user, decision_list, credentials) {
   if (missing(credentials))
-    credentials <- get_db_config("credentials")
+    credentials <- get_credential_config()
   moduleServer(id, function(input, output, session) {
     
     exportTestValues(
@@ -46,7 +46,7 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
       )
     
     observeEvent(input$update_weight, {
-      req("weight_adjust" %in% credentials$privileges[[user$role]])
+      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       curr_new_wts(save$data %>%
                      dplyr::mutate(new_weight = ifelse(name == isolate(input$metric_name),
                                                        isolate(input$metric_weight), new_weight)))
@@ -184,7 +184,7 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
     
     # Update metric weight dropdown so that it matches the metric name.
     observeEvent(input$metric_name, {
-      req("weight_adjust" %in% credentials$privileges[[user$role]])
+      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       
       shinyjs::disable("update_weight")
       updateNumericInput(session, "metric_weight",
@@ -199,14 +199,14 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
     # Note that another of the observeEvents will update the metric weight after
     # the selected metric name is updated.
     observeEvent(input$weights_table_rows_selected, {
-      req("weight_adjust" %in% credentials$privileges[[user$role]])
+      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       updateSelectInput(session, "metric_name",
                         selected = curr_new_wts()$name[input$weights_table_rows_selected])
     })
     
     # Save new weight into db.
     observeEvent(input$update_pkg_risk, {
-      req("weight_adjust" %in% credentials$privileges[[user$role]])
+      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       
       # if you the user goes input$back2dash, then when they return to the 
       if(n_wts_chngd() == 0){
@@ -243,7 +243,7 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
     
     # Upon confirming the risk re-calculation
     observeEvent(input$confirm_update_risk, {
-      req("weight_adjust" %in% credentials$privileges[[user$role]])
+      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       removeModal()
       
       session$userData$trigger_events[["reset_pkg_upload"]] <- session$userData$trigger_events[["reset_pkg_upload"]] + 1
@@ -285,11 +285,11 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
         # insert comment for both mm and cum tabs
         for (typ in c("mm","cum")) {
           dbUpdate(
-            'INSERT INTO comments
-            VALUES({all_pkgs$pkg_name[i]}, {user$name}, {user$role},
+            "INSERT INTO comments
+            VALUES({all_pkgs$pkg_name[i]}, {user$name}, {paste(user$role, collapse = ', ')},
             {paste0(weight_risk_comment(all_pkgs$pkg_name[i]), 
-                          ifelse(all_pkgs$pkg_name[i] %in% cmt_or_dec_pkgs$pkg_name, cmt_or_dec_dropped_cmt, ""))},
-            {typ}, {getTimeStamp()})'
+                          ifelse(all_pkgs$pkg_name[i] %in% cmt_or_dec_pkgs$pkg_name, cmt_or_dec_dropped_cmt, ''))},
+            {typ}, {getTimeStamp()})"
           )
         }
       }
