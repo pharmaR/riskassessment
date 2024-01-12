@@ -1,6 +1,4 @@
 test_that("Reactivity of reportPreview", {
-  skip_on_ci()
-  
   app_db_loc <- test_path("test-apps", "database.sqlite")
   if (file.exists(app_db_loc)) {
     file.remove(app_db_loc)
