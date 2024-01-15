@@ -99,6 +99,8 @@ mod_downloadHandler_include_server <- function(id) {
 }
   
 #' downloadHandler Server Functions
+#' 
+#' @importFrom flextable flextable set_table_properties colformat_char
 #'
 #' @noRd 
 mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
@@ -131,7 +133,11 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
         req(n_pkgs > 0)
         
         if (!isTruthy(session$userData$repo_pkgs())) {
+          if (isTRUE(getOption("shiny.testmode"))) {
+            session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x, col.names = c("Package", "Version", "Source"))))
+          } else {
             session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
+          }
         }
         
         shiny::withProgress(
