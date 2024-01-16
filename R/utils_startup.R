@@ -188,7 +188,7 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   if (isTRUE(getOption("shiny.testmode"))) return(NULL)
   
   db_config <- if(missing(configuration)) get_db_config(NULL) else configuration
-  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json", "metric_weights", "report_prefs", "package_repo", "use_shinymanager")
+  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json", "metric_weights", "report_prefs", "package_repo", "use_shinymanager", "dependencies")
   if (any(!names(db_config) %in% used_configs)) {
     names(db_config) %>%
       `[`(!. %in% used_configs) %>%
