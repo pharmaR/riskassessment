@@ -522,7 +522,7 @@ remove_shiny_inputs <- function(id, .input, ns = NS(NULL)) {
 #' Function to substitute left-hand side with right-hand side if NULL
 #' 
 #' @noRd
-`%||%` <- function(lhs, rhs) if (is.null(lhs)) rhs else lhs
+`%||%` <- function(lhs, rhs) if (rlang::is_empty(lhs)) rhs else lhs
 
 
 #' shinyInput
