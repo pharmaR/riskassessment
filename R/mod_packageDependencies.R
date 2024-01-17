@@ -64,7 +64,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
       req(pkgref())
       tryCatch(
         expr = {
-          depends(pkgref()$dependencies[[1]] %>% dplyr::as_tibble())
+          depends(pkgref()$dependencies[[1]] %>% dplyr::as_tibble() %>% 
+                    mutate(package = stringr::str_replace(package, "\n", " ")) %>%
+                    mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")))
         },
         error = function(e) {
           msg <- paste("Detailed dependency information is not available for package", selected_pkg$name())
@@ -75,7 +77,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
       )
       tryCatch(
         expr = {
-          suggests(pkgref()$suggests[[1]] %>% dplyr::as_tibble())
+          suggests(pkgref()$suggests[[1]] %>% dplyr::as_tibble()%>% 
+                     mutate(package = stringr::str_replace(package, "\n", " ")) %>%
+                     mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")))
         },
         error = function(e) {
           msg <- paste("Detailed suggests information is not available for package", selected_pkg$name())
@@ -85,7 +89,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
         }
       )
       # this is so the dependencies is also a 0x2 tibble like suggests
-      if (rlang::is_empty(pkgref()$dependencies[[1]])) depends(dplyr::tibble(package = character(0), type = character(0)))
+      if (rlang::is_empty(pkgref()$dependencies[[1]])) depends(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
         
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
       # send either depends() or both to build_dep_cards(), depending on toggled()
