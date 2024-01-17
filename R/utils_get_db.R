@@ -327,6 +327,9 @@ get_assess_blob <- function(pkg_name, db_name = golem::get_golem_options('assess
 #' @noRd
 get_versnScore <- function(pkg_name, verify_data, cran_pkgs) {
   
+  if (rlang::is_empty(pkg_name)) 
+    return(list(name = character(), version = character(), score = character()))
+  
   if (pkg_name %in% verify_data$name) { #loaded2_db()$name
     tmp_df <- verify_data %>% filter(name == pkg_name) %>% select(score, version)
     pkg_score <- tmp_df %>% pull(score) %>% as.character
