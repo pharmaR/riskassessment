@@ -36,14 +36,13 @@ uploadPackageUI <- function(id) {
         column(
           width = 8,
           div(id = "chk-dependencies-grp",
-              shinyjs::hidden(
                 shinyWidgets::awesomeCheckbox(
                   inputId = NS(id, "assess_deps"),
                   label = "Assess Dependencies",
                   status = "danger",
                   value = FALSE
                 )
-              ))
+              )
         ),
         uiOutput(NS(id, "rem_pkg_div"))
       ),
@@ -226,8 +225,6 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       uploaded_pkgs00(uploaded_packages)
     })
     
-    
-    
     observeEvent(input$add_pkgs, {
       req(input$pkg_lst)
       
@@ -318,6 +315,44 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
         h5("The needed URLs are now reachable. Please try to upload the desired packages now."),
       ))
     })
+    
+    dependencies <- reactiveValues(pkg = NULL, tbl = NULL)
+    
+    observeEvent(dependencies$tbl, {
+      req(dependencies$tbl)
+      
+      DT::dataTableOutput(NS(id, "dependencies$tbl"))
+      
+      showModal(modalDialog(
+        size = "l",
+        easyClose = TRUE,
+        footer = list(
+          actionButton(ns("confirmTbl"), "OK"),
+          modalButton("Dismss")),
+        strong(glue::glue("Dependencies for package: ",dependencies$pkg, style = 'text-align: left'),
+        hr(),
+        br(),
+        fluidRow(
+          column(
+            width = 12,
+            output$depends_tbl <- DT::renderDataTable(
+              DT::datatable(
+                dependencies$tbl,
+                escape = FALSE,
+                editable = FALSE,
+                filter = 'none',
+                selection = 'none',
+                extensions = 'Buttons',
+                options = list(
+                  aLengthMenu = list(c(15, 25, -1), list('10', '25', 'All')),
+                  pageLength = 15,
+                  dom = "ltp"
+                )
+              ))
+          ))
+      )))
+      
+    }, ignoreInit = TRUE)
     
     uploaded_pkgs <- reactiveVal(data.frame())
     # Save all the uploaded packages, marking them as 'new', 'not found', 
@@ -413,39 +448,19 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
                 pkg_df$score[j] <- round(as.numeric(metric_row$pkg_score), 2)
                 }
               }
-              print(pkg_df) # diagnostic
 
-              deps_tbl <- pkg_df[,3:5]
-
-              DT::dataTableOutput(NS(id, "deps_tbl"))
+              dependencies$pkg <- uploaded_packages$package[i]
+              dependencies$tbl <- pkg_df[,3:5]
               
-              showModal(modalDialog(
-                size = "l",
-                easyClose = TRUE,
-                footer = modalButton("Dismss"),
-                strong(glue::glue("Dependencies for package: ",uploaded_packages$package[i]), style = 'text-align: left'),
-                hr(),
-                br(),
-                fluidRow(
-                  column(
-                    width = 12,
-                    output$deps_tbl <- DT::renderDataTable(
-                      DT::datatable(
-                        deps_tbl,
-                        escape = FALSE,
-                        editable = FALSE,
-                        filter = 'none',
-                        selection = 'none',
-                        extensions = 'Buttons',
-                        options = list(
-                          sScrollX = "100%",
-                          aLengthMenu = list(c(15, 25, -1), list('10', '25', 'All')),
-                          iDisplayLength = 15,
-                          dom = 't'
-                        )
-                      ))
-                    ))
-              ))
+              observeEvent(input$confirmTbl, {
+                req(input$confirmTbl)
+              cat("response from modal:", input$confirmTbl, "\n")
+                shiny::removeModal()
+              }, ignoreInit = TRUE)
+              
+              # req(input$confirmTbl == 1L)
+
+              cat("got past the req() \n")
 
             }
             
