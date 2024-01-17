@@ -35,10 +35,10 @@ reportPreviewUI <- function(id) {
 #' @importFrom shinyjs enable disable show hide disabled
 #' @keywords internal
 #' 
-reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
+reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics, 
                                 com_metrics_raw, mm_comments, cm_comments, #se_comments,
-                                downloads_plot_data, user, credentials, app_version,
-                                metric_weights) {
+                                downloads_plot_data, user, credentials, 
+                                app_version, metric_weights) {
   if (missing(credentials))
     credentials <- get_credential_config()
   
@@ -172,6 +172,33 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                 )
               } else "",
               
+              if('Package Dependencies' %in% report_includes()) {
+                tagList(
+                  br(), br(),
+                  hr(),
+                  fluidRow(
+                    column(width = 12,
+                           h5("Package Dependencies",
+                              style = "text-align: center; padding-bottom: 50px;"),
+                             metricGridUI(session$ns('dep_metricGrid'))
+                    )
+                  ),
+                  br(), br(),
+                  fluidRow(
+                    column(width = 12,
+                           DT::renderDataTable({
+                             req(selected_pkg$name())
+                             
+                             dep_table()
+                             
+                           }, options = list(dom = "t", searching = FALSE, pageLength = -1, lengthChange = FALSE,
+                                             info = FALSE,
+                                             columnDefs = list(list(className = 'dt-center', targets = 2))
+                           )
+                           )
+                    ))
+                )
+              } else "",
               
               if(any(c('Source Explorer Comments') %in% report_includes())) {
                 tagList(
@@ -401,6 +428,38 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     
     # Community usage metrics cards.
     metricGridServer("cm_metricGrid", metrics = com_metrics)
+    
+    observe({
+      if (!isTruthy(session$userData$repo_pkgs())) {
+        if (isTRUE(getOption("shiny.testmode"))) {
+          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x, col.names = c("Package", "Version", "Source"))))
+        } else {
+          session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
+        }
+      }
+    })
+    
+    dep_metrics <- eventReactive(selected_pkg$name(), {
+      get_depends_data(selected_pkg$name())
+    })
+
+    dep_cards <- eventReactive(dep_metrics(), {
+      req(dep_metrics())
+      build_dep_cards(data = dep_metrics(), loaded = session$userData$loaded2_db()$name, toggled = 0L)
+    })
+    
+    # Package Dependencies metrics cards.
+    metricGridServer("dep_metricGrid", metrics = dep_cards)
+
+    dep_table <- eventReactive(dep_metrics(), {
+      req(dep_metrics())
+
+      purrr::map_df(dep_metrics()$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>%
+      right_join(dep_metrics(), by = "name") %>%
+      select(package, type, version, score) %>%
+      arrange(package, type) %>%
+      distinct()
+    })
     
     output$communityMetrics_ui <- renderUI({
       req(selected_pkg$name())

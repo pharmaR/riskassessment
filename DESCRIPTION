@@ -47,6 +47,7 @@ Imports:
     desc,
     dplyr,
     DT,
+    flextable,
     formattable,
     glue,
     golem (>= 0.3.2),

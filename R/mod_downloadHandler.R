@@ -99,6 +99,8 @@ mod_downloadHandler_include_server <- function(id) {
 }
   
 #' downloadHandler Server Functions
+#' 
+#' @importFrom flextable flextable set_table_properties colformat_char
 #'
 #' @noRd 
 mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
@@ -129,6 +131,14 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
         n_pkgs <- length(pkgs())
         
         req(n_pkgs > 0)
+        
+        if (!isTruthy(session$userData$repo_pkgs())) {
+          if (isTRUE(getOption("shiny.testmode"))) {
+            session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x, col.names = c("Package", "Version", "Source"))))
+          } else {
+            session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
+          }
+        }
         
         shiny::withProgress(
           message = glue::glue('Downloading {ifelse(n_pkgs > 1, paste0(n_pkgs, " "), "")}Report{ifelse(n_pkgs > 1, "s", paste0(": ", pkgs()))}'),
@@ -257,7 +267,18 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               downloads_plot <- build_comm_plotly(comm_data)
               metric_tbl <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
               
-              
+              dep_metrics <- eventReactive(this_pkg, {
+                get_depends_data(this_pkg, db_name = golem::get_golem_options("assessment_db_name"))
+              })
+
+              dep_cards <- build_dep_cards(data = dep_metrics(), loaded = session$userData$loaded2_db()$name, toggled = 0L)
+
+              dep_table <- purrr::map_df(dep_metrics()$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>%
+                  right_join(dep_metrics(), by = "name") %>%
+                  select(package, type, version, score) %>%
+                  arrange(package, type) %>%
+                  distinct()
+
               # Render the report, passing parameters to the rmd file.
               rmarkdown::render(
                 input = Report,
@@ -280,6 +301,8 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                               com_metrics = comm_cards,
                               com_metrics_raw = comm_data,
                               downloads_plot_data = downloads_plot,
+                              dep_cards = dep_cards,
+                              dep_table = dep_table,
                               metric_tbl = metric_tbl
                 )
               )
