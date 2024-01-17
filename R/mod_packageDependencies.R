@@ -31,10 +31,6 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
-    loaded2_db <- eventReactive(selected_pkg$name(), {
-      dbSelect("SELECT name, version, score FROM package")
-    })
-    
     tabready <- reactiveVal(value = NULL)
     depends  <- reactiveVal(value = NULL)
     suggests <- reactiveVal(value = NULL)
@@ -68,7 +64,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
       req(pkgref())
       tryCatch(
         expr = {
-          depends(pkgref()$dependencies[[1]] %>% dplyr::as_tibble())
+          depends(pkgref()$dependencies[[1]] %>% dplyr::as_tibble() %>% 
+                    mutate(package = stringr::str_replace(package, "\n", " ")) %>%
+                    mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")))
         },
         error = function(e) {
           msg <- paste("Detailed dependency information is not available for package", selected_pkg$name())
@@ -79,7 +77,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
       )
       tryCatch(
         expr = {
-          suggests(pkgref()$suggests[[1]] %>% dplyr::as_tibble())
+          suggests(pkgref()$suggests[[1]] %>% dplyr::as_tibble()%>% 
+                     mutate(package = stringr::str_replace(package, "\n", " ")) %>%
+                     mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")))
         },
         error = function(e) {
           msg <- paste("Detailed suggests information is not available for package", selected_pkg$name())
@@ -89,14 +89,14 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
         }
       )
       # this is so the dependencies is also a 0x2 tibble like suggests
-      if (rlang::is_empty(pkgref()$dependencies[[1]])) depends(dplyr::tibble(package = character(0), type = character(0)))
+      if (rlang::is_empty(pkgref()$dependencies[[1]])) depends(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
         
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
       # send either depends() or both to build_dep_cards(), depending on toggled()
       if (toggled() == 0L) {
-        cards(build_dep_cards(data = depends(), loaded = loaded2_db()$name, toggled = 0L))
+        cards(build_dep_cards(data = depends(), loaded = session$userData$loaded2_db()$name, toggled = 0L))
       } else {
-        cards(build_dep_cards(data = dplyr::bind_rows(depends(), suggests()), loaded = loaded2_db()$name, toggled = 1L))
+        cards(build_dep_cards(data = dplyr::bind_rows(depends(), suggests()), loaded = session$userData$loaded2_db()$name, toggled = 1L))
       }
     })
     
@@ -132,13 +132,13 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
       
       if (!isTruthy(session$userData$repo_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
-          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x)))
+          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x, col.names = c("Package", "Version", "Source"))))
         } else {
           session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
         }
       }
-        
-      purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), session$userData$repo_pkgs())) %>% 
+      
+      purrr::map_df(pkginfo$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>% 
         right_join(pkginfo, by = "name") %>% 
         select(package, type, name, version, score) %>%
         arrange(name, type) %>% 
@@ -162,7 +162,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
       ) %>% # remove action button if there is nothing to review
         mutate(Actions = if_else(identical(package, character(0)) | name %in% c(rownames(installed.packages(priority = "base"))), "", Actions)) %>% 
         # if package name not yet loaded, switch the actionbutton to fa-upload
-        mutate(Actions = if_else(!name %in% loaded2_db()$name, gsub("fas fa-arrow-right fa-regular", "fas fa-upload fa-solid", Actions), Actions))
+        mutate(Actions = if_else(!name %in% session$userData$loaded2_db()$name, gsub("fas fa-arrow-right fa-regular", "fas fa-upload fa-solid", Actions), Actions))
     })
     
     # Create metric grid card.
@@ -300,7 +300,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
        pkg_name <- pkg_df()[selectedRow, 3] %>% pull()
        pkgname("-")
        
-       if (!pkg_name %in% loaded2_db()$name) {
+       if (!pkg_name %in% session$userData$loaded2_db()$name) {
          pkgname(pkg_name)
          shiny::showModal(modalDialog(
            size = "l",
@@ -325,7 +325,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
          updateSelectizeInput(
            session = parent,
            inputId = "sidebar-select_pkg",
-           choices = c("-", loaded2_db()$name),
+           choices = c("-", session$userData$loaded2_db()$name),
            selected = pkg_name
          )
        }
@@ -378,7 +378,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
     })
     
     observeEvent(input$update_all_packages, {
-      req(pkg_df(), loaded2_db(), pkg_updates)
+      req(pkg_df(), session$userData$loaded2_db(), pkg_updates)
       rev_pkg(0L)
 
       pkgname(pkg_updates$pkgs_update$name)
@@ -397,7 +397,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
     })
 
     observeEvent(input$incl_suggests, {
-      req(pkg_df(), loaded2_db())
+      req(pkg_df(), session$userData$loaded2_db())
       if(input$incl_suggests == TRUE | toggled() == 1L) toggled(1L - isolate(toggled()))
     })
     

@@ -17,6 +17,7 @@ context for validation within regulated industries.
 Useful links:
 \itemize{
   \item \url{https://github.com/pharmaR/riskassessment}
+  \item \url{https://pharmar.github.io/riskassessment/}
   \item Report bugs at \url{https://github.com/pharmaR/riskassessment/issues}
 }
 

@@ -142,7 +142,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
     observeEvent(input$load_repo_pkgs, {
       if (!isTruthy(session$userData$repo_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
-          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x)))
+          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x, col.names = c("Package", "Version", "Source"))))
         } else {
           session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
         }
@@ -362,7 +362,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       
       if (!isTruthy(session$userData$repo_pkgs())) {
         if (isTRUE(getOption("shiny.testmode"))) {
-          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x)))
+          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x, col.names = c("Package", "Version", "Source"))))
         } else {
           session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
         }

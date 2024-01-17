@@ -242,8 +242,6 @@ build_dep_cards <- function(data, loaded, toggled){
   )
   
   deps <- data %>% 
-    mutate(package = stringr::str_replace(package, "\n", "")) %>% 
-    mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")) %>% 
     mutate(base = if_else(name %in% c(rownames(installed.packages(priority = "base"))), "Base", "Tidyverse")) %>% 
     mutate(base = factor(base, levels = c("Base", "Tidyverse"), labels = c("Base", "Tidyverse"))) %>% 
     mutate(upld = if_else(name %in% loaded, 1, 0)) 
