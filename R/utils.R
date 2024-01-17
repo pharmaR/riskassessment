@@ -86,13 +86,14 @@ get_desc_pkg_info <- function(pkg_name, pkg_version, tar_dir = "tarballs") {
   if (!file.exists(tar_file))
     return(get_latest_pkg_info(pkg_name))
   
-  utils::untar(tar_file, exdir = "source")
+  desc_file <- glue::glue("{pkg_name}/DESCRIPTION")
   
-  desc_file <- glue::glue("source/{pkg_name}/DESCRIPTION")
+  tmp_file <- tempfile()
+  writeLines(readLines(archive::archive_read(tar_file, desc_file, format = "tar")), tmp_file)
   
   keys <- c("Package", "Version", "Maintainer", "Author", "License", "Packaged", "Title", "Description")
   purrr::map(keys,
-             desc::desc_get_field, file = desc_file) %>%
+             desc::desc_get_field, file = tmp_file) %>%
     purrr::set_names(keys) %>%
     dplyr::as_tibble() %>%
     dplyr::rename("Published"="Packaged")
