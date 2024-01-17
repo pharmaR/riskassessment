@@ -1,7 +1,11 @@
 default:
+  package_repo: https://cran.rstudio.com
   assessment_db: database.sqlite
   loggit_json: loggit.json
+  use_shinymanager: true
   credential_db: credentials.sqlite
+  report_prefs:
+    directory: report_preferences
   credentials:
     roles:
       - admin
@@ -51,12 +55,18 @@ example:
       - Major Risk
       - Severe Risk
     rules:
-      Insignificant Risk:
-        - 0
-        - .1
       Severe Risk:
         - .7
         - 1
+      rule_2:
+        metric: has_vignettes
+        condition: ~ .x == 0
+        decision: Major Risk
+      Insignificant Risk:
+        - 0
+        - .1
+      rule_else:
+        decision: Insignificant Risk
     colors:
       Moderate Risk: !expr grDevices::rgb(52, 235, 229, maxColorValue = 255)
   metric_weights:
@@ -76,3 +86,11 @@ demo:
   metric_weights:
     covr_coverage: 0
     has_vignettes: 2
+noncredentialed:
+  use_shinymanager: false
+  assessment_db: database_noncredentialed.sqlite
+  credentials:
+    roles:
+      - default
+    privileges:
+      default: [admin, weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]

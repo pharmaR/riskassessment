@@ -32,7 +32,7 @@ addCommentUI <- function(id) {
 #' 
 addCommentServer <- function(id, metric_abrv, user, credentials, pkg_name) {
   if (missing(credentials))
-    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
+    credentials <- get_credential_config()
   
   moduleServer(id, function(input, output, session) {
     
@@ -41,7 +41,8 @@ addCommentServer <- function(id, metric_abrv, user, credentials, pkg_name) {
       metric_name <- switch(metric_abrv,
                             mm = "Maintenance Metrics",
                             cum = "Community Usage Metrics",
-                            se = "Source Explorer")
+                            se = "Source Explorer",
+                            fe = "Function Explorer")
       
       textAreaInput(
         session$ns("add_comment"),
@@ -49,14 +50,14 @@ addCommentServer <- function(id, metric_abrv, user, credentials, pkg_name) {
         width = "100%",
         rows = 4,
         placeholder = glue::glue(
-          "Commenting as user: {user$name}, role: {user$role}"
+          "Commenting as user: {user$name}, role: {paste(user$role, collapse = ', ')}"
         )
       )
     })
     
     observeEvent(input$submit_comment, {
       req(input$add_comment)
-      req("general_comment" %in% credentials$privileges[[user$role]])
+      req("general_comment" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       
       comment <- trimws(input$add_comment)
       
@@ -64,7 +65,7 @@ addCommentServer <- function(id, metric_abrv, user, credentials, pkg_name) {
         
         dbUpdate(
         "INSERT INTO comments values({pkg_name()}, {user$name}, 
-        {user$role}, {comment}, {metric_abrv},
+        {paste(user$role, collapse = ', ')}, {comment}, {metric_abrv},
         {getTimeStamp()})"
         )
         

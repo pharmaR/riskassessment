@@ -9,10 +9,11 @@ metricBoxServer(
   title,
   desc,
   value,
+  score = "NULL",
   is_perc = FALSE,
   is_url = FALSE,
   succ_icon = "check",
-  unsucc_icon = "times",
+  unsucc_icon = "triangle-exclamation",
   icon_class = "text-success",
   type = "information"
 )
@@ -25,6 +26,8 @@ metricBoxServer(
 \item{desc}{description.}
 
 \item{value}{metric value.}
+
+\item{score}{metric score, as a character value}
 
 \item{is_perc}{logical is the value is a percentage?}
 

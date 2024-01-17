@@ -15,20 +15,18 @@ reweightViewUI <- function(id) {
 #' @param id the module id
 #' @param user the user name
 #' @param decision_list the list containing the decision automation criteria
-#' @param trigger_events a reactive values object to trigger actions here or elsewhere
 #' 
 #' 
 #' @import dplyr
 #' @importFrom DT datatable formatStyle styleEqual renderDataTable
 #' @importFrom shinyjs enable disable delay
-#' @importFrom shinydashboard box
 #' @importFrom DBI dbConnect dbDisconnect
 #' @importFrom RSQLite SQLite sqliteCopyDatabase
 #' 
 #' @keywords internal
-reweightViewServer <- function(id, user, decision_list, credentials, trigger_events) {
+reweightViewServer <- function(id, user, decision_list, credentials) {
   if (missing(credentials))
-    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
+    credentials <- get_credential_config()
   moduleServer(id, function(input, output, session) {
     
     exportTestValues(
@@ -48,7 +46,7 @@ reweightViewServer <- function(id, user, decision_list, credentials, trigger_eve
       )
     
     observeEvent(input$update_weight, {
-      req("weight_adjust" %in% credentials$privileges[[user$role]])
+      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       curr_new_wts(save$data %>%
                      dplyr::mutate(new_weight = ifelse(name == isolate(input$metric_name),
                                                        isolate(input$metric_weight), new_weight)))
@@ -88,59 +86,63 @@ reweightViewServer <- function(id, user, decision_list, credentials, trigger_eve
       tagList(
         tags$section(
           br(), br(),
-          shinydashboard::box(width = 12, status = "primary",
-              title = h2("View/Change Weights", style = "margin-top: 5px", align = "center"),
-              solidHeader = TRUE,
-              br(),
-              fluidRow(
-                column(width = 5, offset = 5, align = "left",
-                       h3("Set new weights:"),
-                )),
-              fluidRow(
-                column(width = 2, offset = 5, align = "left",
-                       selectInput(NS(id, "metric_name"), "Select metric", curr_new_wts()$name, selected = curr_new_wts()$name[1]) ),
-                column(width = 2, align = "left",
-                       numericInput(NS(id, "metric_weight"), "Choose new weight", min = 0, value = curr_new_wts()$new_weight[1]) ),
-                column(width = 1,
-                       br(),
-                       actionButton(NS(id, "update_weight"), "Confirm", class = "btn-secondary") ) ),
-              br(), br(), 
-              fluidRow(
-                column(width = 3, offset = 1, align = "center",
-                       
-                       br(), br(), br(), 
-                       tags$hr(class = "hr_sep"),
-                       br(), br(),
-                       
-                       h3("Download database"),
-                       downloadButton(NS(id, "download_database_btn"),
-                                      "Download",
-                                      class = "btn-secondary"),
-                       
-                       br(), br(), br(), 
-                       tags$hr(class = "hr_sep"),
-                       br(), br(),
-                       
-                       h3("Apply new weights and re-calculate risk for each package"),
-                       actionButton(NS(id, "update_pkg_risk"), "Update", class = "btn-secondary")
-                       
-                ),
-                column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
-                       offset = 1,
-                       h3("Current Risk Score Weights by Metric", align = "center"),
-                       DT::dataTableOutput(NS(id, "weights_table")))
+          div(class = c("box", "box-primary", "box-solid"),
+              h3(class = "box-title",
+                 h2("View/Change Weights", style = "margin-top: 5px", align = "center")
               ),
-              br(), br(), br(),
-              fluidRow(
-                column(width = 1),
-                column(width = 10,
-                       h5(em("Note: Changing the weights of the metrics will not update the
+              div(class = "box-body",
+                  br(),
+                  fluidRow(
+                    column(width = 5, offset = 5, align = "left",
+                           h3("Set new weights:"),
+                    )),
+                  fluidRow(
+                    column(width = 2, offset = 5, align = "left",
+                           selectInput(NS(id, "metric_name"), "Select metric", curr_new_wts()$name, selected = curr_new_wts()$name[1]) ),
+                    column(width = 2, align = "left",
+                           numericInput(NS(id, "metric_weight"), "Choose new weight", min = 0, value = curr_new_wts()$new_weight[1]) ),
+                    column(width = 1,
+                           br(),
+                           actionButton(NS(id, "update_weight"), "Confirm", class = "btn-secondary") ) ),
+                  br(), br(), 
+                  fluidRow(
+                    column(width = 3, offset = 1, align = "center",
+                           
+                           br(), br(), br(), 
+                           tags$hr(class = "hr_sep"),
+                           br(), br(),
+                           
+                           h3("Download database"),
+                           downloadButton(NS(id, "download_database_btn"),
+                                          "Download",
+                                          class = "btn-secondary"),
+                           
+                           br(), br(), br(), 
+                           tags$hr(class = "hr_sep"),
+                           br(), br(),
+                           
+                           h3("Apply new weights and re-calculate risk for each package"),
+                           actionButton(NS(id, "update_pkg_risk"), "Update", class = "btn-secondary")
+                           
+                    ),
+                    column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
+                           offset = 1,
+                           h3("Current Risk Score Weights by Metric", align = "center"),
+                           DT::dataTableOutput(NS(id, "weights_table")))
+                  ),
+                  br(), br(), br(),
+                  fluidRow(
+                    column(width = 1),
+                    column(width = 10,
+                           h5(em("Note: Changing the weights of the metrics will not update the
                risk of the packages on the database until 'Update' button is selected.
                ")), align = "center"),
-                column(width = 1)
-              ),
-              br(), br()
-          )
+                    column(width = 1)
+                  ),
+                  br(), br()
+              )
+          ) %>%
+            column(width = 12)
         )
       )
     })
@@ -182,7 +184,7 @@ reweightViewServer <- function(id, user, decision_list, credentials, trigger_eve
     
     # Update metric weight dropdown so that it matches the metric name.
     observeEvent(input$metric_name, {
-      req("weight_adjust" %in% credentials$privileges[[user$role]])
+      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       
       shinyjs::disable("update_weight")
       updateNumericInput(session, "metric_weight",
@@ -197,14 +199,14 @@ reweightViewServer <- function(id, user, decision_list, credentials, trigger_eve
     # Note that another of the observeEvents will update the metric weight after
     # the selected metric name is updated.
     observeEvent(input$weights_table_rows_selected, {
-      req("weight_adjust" %in% credentials$privileges[[user$role]])
+      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       updateSelectInput(session, "metric_name",
                         selected = curr_new_wts()$name[input$weights_table_rows_selected])
     })
     
     # Save new weight into db.
     observeEvent(input$update_pkg_risk, {
-      req("weight_adjust" %in% credentials$privileges[[user$role]])
+      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       
       # if you the user goes input$back2dash, then when they return to the 
       if(n_wts_chngd() == 0){
@@ -241,10 +243,10 @@ reweightViewServer <- function(id, user, decision_list, credentials, trigger_eve
     
     # Upon confirming the risk re-calculation
     observeEvent(input$confirm_update_risk, {
-      req("weight_adjust" %in% credentials$privileges[[user$role]])
+      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       removeModal()
       
-      trigger_events[["reset_pkg_upload"]] <- trigger_events[["reset_pkg_upload"]] + 1
+      session$userData$trigger_events[["reset_pkg_upload"]] <- session$userData$trigger_events[["reset_pkg_upload"]] + 1
       
       # Update the weights in the `metric` table to reflect recent changes
       # First, which weights are different than the originals?
@@ -263,7 +265,7 @@ reweightViewServer <- function(id, user, decision_list, credentials, trigger_eve
           dplyr::mutate(new_weight = weight)
       )
       
-      trigger_events$reset_sidebar <- trigger_events$reset_sidebar + 1
+      session$userData$trigger_events$reset_sidebar <- session$userData$trigger_events$reset_sidebar + 1
       
       # update for each package
       all_pkgs <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")
@@ -283,11 +285,11 @@ reweightViewServer <- function(id, user, decision_list, credentials, trigger_eve
         # insert comment for both mm and cum tabs
         for (typ in c("mm","cum")) {
           dbUpdate(
-            'INSERT INTO comments
-            VALUES({all_pkgs$pkg_name[i]}, {user$name}, {user$role},
+            "INSERT INTO comments
+            VALUES({all_pkgs$pkg_name[i]}, {user$name}, {paste(user$role, collapse = ', ')},
             {paste0(weight_risk_comment(all_pkgs$pkg_name[i]), 
-                          ifelse(all_pkgs$pkg_name[i] %in% cmt_or_dec_pkgs$pkg_name, cmt_or_dec_dropped_cmt, ""))},
-            {typ}, {getTimeStamp()})'
+                          ifelse(all_pkgs$pkg_name[i] %in% cmt_or_dec_pkgs$pkg_name, cmt_or_dec_dropped_cmt, ''))},
+            {typ}, {getTimeStamp()})"
           )
         }
       }
@@ -296,7 +298,7 @@ reweightViewServer <- function(id, user, decision_list, credentials, trigger_eve
       pkg <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package WHERE decision_id IS NOT NULL")
       if (nrow(pkg) > 0) {
         for (i in 1:nrow(pkg)) {
-          dbUpdate("UPDATE package SET decision_id = NULL where name = {pkg$pkg_name[i]}")
+          dbUpdate("UPDATE package SET decision_id = NULL, decision_by = NULL, decision_date = NULL where name = {pkg$pkg_name[i]}")
         }
       }
       
@@ -328,7 +330,7 @@ reweightViewServer <- function(id, user, decision_list, credentials, trigger_eve
     output$download_database_btn <- downloadHandler(
       
       filename = function() {
-        glue::glue("datase_backup-{Sys.Date()}.sqlite")
+        glue::glue("datase_backup-{get_Date()}.sqlite")
       },
       content = function(file) {
         con <- DBI::dbConnect(RSQLite::SQLite(), golem::get_golem_options('assessment_db_name'))

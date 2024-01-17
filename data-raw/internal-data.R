@@ -81,9 +81,19 @@ test_pkg_cum <-
   purrr::map(generate_comm_data) %>%
   purrr::set_names(test_pkg_lst)
 
-color_palette <- c("#06B756","#2FBC06","#67BA04","#81B50A","#96AB0A","#A99D04","#B78D07","#BE7900","#BE6200","#B24F22","#A63E24")
+# New light palette, verified as color-blind friendly here:
+# https://davidmathlogic.com/colorblind/#%239CFF94-%23B3FF87-%23BCFF43-%23D8F244-%23F2E24B-%23FFD070-%23FFBE82-%23FFA87C-%23FF8F6C-%23FF765B
+# code:
+# paste0("'",viridisLite::turbo(11, begin = 0.4, end = .8225)[2:11] %>% colorspace::lighten(.25) %>% paste(collapse = "', '"),"'")
+color_palette <- c('#9CFF94FF', '#B3FF87FF', '#BCFF43FF', '#D8F244FF', '#F2E24BFF', '#FFD070FF', '#FFBE82FF', '#FFA87CFF', '#FF8F6CFF', '#FF765BFF')
 
 used_privileges <- c("admin", "weight_adjust", "auto_decision_adjust", "final_decision", "revert_decision", "add_package", "delete_package", "overall_comment", "general_comment")
+
+metric_lst <- c("1"='has_vignettes', "2"='has_news', "3"='news_current', "4"='has_bug_reports_url', "5"='has_website', "6"='has_maintainer', "7"='has_source_control', "8"='export_help', "9"='bugs_status', "10"='license', "11"='dependencies', "12"='reverse_dependencies', "13"='covr_coverage', "14"='downloads_1yr')
+
+rpt_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
+                 "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
+                 "Package Dependencies", "Source Explorer Comments", "Function Explorer Comments")
 
 usethis::use_data(
   # app_version, 
@@ -95,5 +105,6 @@ usethis::use_data(
   riskcalc_text, template,
   privileges_tbl,
   test_pkg_lst, test_pkg_refs, test_pkg_info, test_pkg_assess, test_pkg_cum,
-  color_palette, used_privileges,
+  color_palette, used_privileges, metric_lst, rpt_choices,
   internal = TRUE, overwrite = TRUE)
+

@@ -40,46 +40,67 @@ mod_downloadHandler_filetype_ui <- function(id){
 mod_downloadHandler_include_ui <- function(id){
   # will want to change this to input_UI so we can include additional items
   # such as "Include comments" check boxes for summary, maint-metrics, comm usage, and overall comments
-  my_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
-    "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
-    "Source Explorer Comments")
-  div(
-    strong(p("Elements to include:")),
-    div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
-      # checkboxGroupInput(
-      shinyWidgets::prettyCheckboxGroup(
-        NS(id, "report_includes"), label = NULL, inline = FALSE,
-        choices = my_choices, selected = my_choices
-      )
-    )
-  )
+  uiOutput(NS(id, "mod_downloadHandler_incl_output"))
 }
-
-#' downloadHandler Inlcude Server Function
+#' downloadHandler Include Server Function
 #'
 #' @description A shiny Module.
 #'
 #' @param id Internal parameters for {shiny}.
+#' 
+#' @importFrom shiny showModal modalDialog
+#' @importFrom glue glue
+#' @importFrom shinyWidgets prettyCheckboxGroup updatePrettyCheckboxGroup
 #'
 #' @noRd 
 mod_downloadHandler_include_server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    observe({
-      # print("#####################################")
-      # print("input$report_includes:")
-      # print(input$report_includes)
-      # shinyWidgets::updatePrettyCheckboxGroup("report_includes",)
+    ns <- session$ns
 
-      # selected = ifelse(is.null(input$report_includes) | input$report_includes != my_choices,
-      #                   isolate(input$report_includes), my_choices)
+    output$mod_downloadHandler_incl_output <- renderUI({
+      div(
+        strong(p("Elements to include:")),
+        div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
+            shinyWidgets::prettyCheckboxGroup(
+              ns("report_includes"), label = NULL, inline = FALSE,
+              choices = rpt_choices, selected = isolate(session$userData$user_report$report_includes) %||% rpt_choices
+            )
+        )
+      )
     })
+    
+    # save user selections and notify user
+    observeEvent(input$store_prefs, {
+      writeLines(
+        session$userData$user_report$report_includes, 
+        session$userData$user_report$user_file
+      )
+
+      shiny::showModal(shiny::modalDialog(title = "User preferences saved",
+                                          "Report preferences stored for user", 
+                                          footer = modalButton("Dismiss"), 
+                                          easyClose = TRUE))
+    }, ignoreInit = TRUE)
+    
+    observeEvent(session$userData$trigger_events$update_report_pref_inclusions, {
+      shinyWidgets::updatePrettyCheckboxGroup(
+        session,
+        "report_includes",
+        selected = session$userData$user_report$report_includes
+      )
+    })
+    
+    observeEvent(input$report_includes, {
+      session$userData$user_report$report_includes <- input$report_includes %||% ""
+    }, ignoreNULL = FALSE, ignoreInit = TRUE)
+    
     return(reactive(input$report_includes))
   })
 }
   
-
-    
 #' downloadHandler Server Functions
+#' 
+#' @importFrom flextable flextable set_table_properties colformat_char
 #'
 #' @noRd 
 mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
@@ -99,7 +120,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
         n_pkgs <- length(pkgs())
         
         if (n_pkgs > 1) {
-          report_datetime <- stringr::str_replace_all(stringr::str_replace(Sys.time(), " ", "_"), ":", "-")
+          report_datetime <- stringr::str_replace_all(stringr::str_replace(get_time(), " ", "_"), ":", "-")
           glue::glue('RiskAssessment-Report-{report_datetime}.zip')
         } else {
           pkg_ver <- dbSelect("SELECT version FROM package WHERE name = {pkgs()}")
@@ -110,6 +131,14 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
         n_pkgs <- length(pkgs())
         
         req(n_pkgs > 0)
+        
+        if (!isTruthy(session$userData$repo_pkgs())) {
+          if (isTRUE(getOption("shiny.testmode"))) {
+            session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x, col.names = c("Package", "Version", "Source"))))
+          } else {
+            session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
+          }
+        }
         
         shiny::withProgress(
           message = glue::glue('Downloading {ifelse(n_pkgs > 1, paste0(n_pkgs, " "), "")}Report{ifelse(n_pkgs > 1, "s", paste0(": ", pkgs()))}'),
@@ -136,61 +165,61 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               }
               
               Report <- file.path(my_tempdir, "reportHtml.Rmd")
-              file.copy(system.file('report_downloads', 'reportHtml.Rmd', package = "riskassessment"), Report, overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'raa-image.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'reportHtml.Rmd'), Report, overwrite = TRUE)
+              file.copy(app_sys('report_downloads', 'raa-image.png'),
                         file.path(my_tempdir, 'raa-image.png'), overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'header.html', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'header.html'),
                         file.path(my_tempdir, 'header.html'), overwrite = TRUE)
             } 
             else if (input$report_format == "docx") { 
               Report <- file.path(my_tempdir, "reportDocx.Rmd")
               if (!dir.exists(file.path(my_tempdir, "images")))
                 dir.create(file.path(my_tempdir, "images"))
-              file.copy(system.file('report_downloads', 'ReportDocx.Rmd', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'reportDocx.Rmd'),
                         Report,
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'header.docx', package = 'riskassessment'),
+              file.copy(app_sys('report_downloads', 'header.docx'),
                         file.path(my_tempdir, 'header.docx'),
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'read_html.lua', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'read_html.lua'),
                         file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'images', 'user-tie.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'images', 'user-tie.png'),
                         file.path(my_tempdir, "images", "user-tie.png"),
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'images', 'user-shield.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'images', 'user-shield.png'),
                         file.path(my_tempdir, "images", "user-shield.png"),
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'images', 'calendar-alt.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'images', 'calendar-alt.png'),
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'raa-image.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'raa-image.png'),
                         file.path(my_tempdir, 'raa-image.png'), overwrite = TRUE)
             } 
             else { 
               Report <- file.path(my_tempdir, "reportPdf.Rmd")
               if (!dir.exists(file.path(my_tempdir, "images")))
                 dir.create(file.path(my_tempdir, "images"))
-              file.copy(system.file('report_downloads', 'ReportPdf.Rmd', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'reportPdf.Rmd'),
                         Report,
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'header.tex', package = 'riskassessment'),
+              file.copy(app_sys('report_downloads', 'header.tex'),
                         file.path(my_tempdir, 'header.tex'),
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'fancyhdr.sty', package = 'riskassessment'),
+              file.copy(app_sys('report_downloads', 'fancyhdr.sty'),
                         file.path(my_tempdir, 'fancyhdr.sty'),
                         overwrite = TRUE)              
-              file.copy(system.file('report_downloads', 'read_html.lua', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'read_html.lua'),
                         file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'images', 'user-tie.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'images', 'user-tie.png'),
                         file.path(my_tempdir, "images", "user-tie.png"),
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'images', 'user-shield.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'images', 'user-shield.png'),
                         file.path(my_tempdir, "images", "user-shield.png"),
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'images', 'calendar-alt.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'images', 'calendar-alt.png'),
                         file.path(my_tempdir, "images", "calendar-alt.png"),
                         overwrite = TRUE)
-              file.copy(system.file('report_downloads', 'raa-image.png', package = "riskassessment"),
+              file.copy(app_sys('report_downloads', 'raa-image.png'),
                         file.path(my_tempdir, 'raa-image.png'), overwrite = TRUE)
             }
             
@@ -229,15 +258,27 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               mm_comments <- get_mm_comments(this_pkg)
               cm_comments <- get_cm_comments(this_pkg)
               se_comments <- get_se_comments(this_pkg)
+              fe_comments <- get_fe_comments(this_pkg)
               
               # gather maint metrics & community metric data
-              mm_data <- get_mm_data(pkg_list$id)
+              mm_data <- get_metric_data(this_pkg, metric_class = "maintenance")
               comm_data <- get_comm_data(this_pkg)
               comm_cards <- build_comm_cards(comm_data)
               downloads_plot <- build_comm_plotly(comm_data)
               metric_tbl <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
               
-              
+              dep_metrics <- eventReactive(this_pkg, {
+                get_depends_data(this_pkg, db_name = golem::get_golem_options("assessment_db_name"))
+              })
+
+              dep_cards <- build_dep_cards(data = dep_metrics(), loaded = session$userData$loaded2_db()$name, toggled = 0L)
+
+              dep_table <- purrr::map_df(dep_metrics()$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>%
+                  right_join(dep_metrics(), by = "name") %>%
+                  select(package, type, version, score) %>%
+                  arrange(package, type) %>%
+                  distinct()
+
               # Render the report, passing parameters to the rmd file.
               rmarkdown::render(
                 input = Report,
@@ -249,16 +290,19 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                               app_version = golem::get_golem_options('app_version'),
                               metric_weights = metric_weights(),
                               user_name = user$name,
-                              user_role = user$role,
+                              user_role = paste(user$role, collapse = ', '),
                               overall_comments = overall_comments,
                               pkg_summary = pkg_summary,
                               mm_comments = mm_comments,
                               cm_comments = cm_comments,
                               se_comments = se_comments,
+                              fe_comments = fe_comments,
                               maint_metrics = mm_data,
                               com_metrics = comm_cards,
                               com_metrics_raw = comm_data,
                               downloads_plot_data = downloads_plot,
+                              dep_cards = dep_cards,
+                              dep_table = dep_table,
                               metric_tbl = metric_tbl
                 )
               )

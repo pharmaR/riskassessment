@@ -20,7 +20,7 @@ maintenanceMetricsUI <- function(id) {
 #' 
 maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, credentials, parent) {
   if (missing(credentials))
-    credentials <- get_golem_config("credentials", file = app_sys("db-config.yml"))
+    credentials <- get_credential_config()
   
   moduleServer(id, function(input, output, session) {
        ns <- NS(id)
@@ -39,7 +39,7 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, cred
             metricGridUI(NS(id, 'metricGrid')),
             br(), br(),
             fluidRow(div(id = "comments_for_mm",
-                         if ("general_comment" %in% credentials$privileges[[user$role]]) addCommentUI(NS(id, 'add_comment')),
+                         if ("general_comment" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) addCommentUI(NS(id, 'add_comment')),
                          viewCommentsUI(NS(id, 'view_comments')))
             )
           )

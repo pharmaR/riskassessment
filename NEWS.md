@@ -1,3 +1,46 @@
+# riskassessment (development version)
+
+* Fixes bug that doesn't reset decision by and date fields when re-scoring/re-weighting packages (#680)
+* Fixes bug where the privileges table was not aligned with the used privileges in the application (#697)
+* Added introjs for file browser & function explorer( #581)
+* Added tests for the code and function explorers
+* Added repo specification to configuration file (#701)
+* Fix typo in Privileges table (#719)
+* Fixed bug where HTML reports displayed a darker green in the cards' meters
+* Only run configuration checkers when configuring the database
+* Added dependencies/reverse dependencies card hyperlink (#597)
+* Added non-shinymanager deployment option (#700)
+* Added Package Dependencies to Reports (#721)
+
+# riskassessment 3.0.0
+
+### Enhancements
+* Added "Suggests" pkgs to Dependencies tab (#624)
+* Summarized Package Dependencies (#618)
+* Integrated the 'Function Explorer' to offer users function-level browsing of source code, unit testing, and automatic rendering of help documentation (#498)
+* Started showing `metric_score`s for each assessment's card, using an html meter (#634)
+* Added default `{DT}` based filter to Database Overview tab (#586)
+* Allowed users to create decision automation rules for individual metrics (#483)
+* Added checkbox to databaseView to select all packages for reportDownload handler (#649)
+* Allowed users to identify and store preferred elements to include in downloaded reports (#526)
+* Add "Explore Metrics" button to Uploaded Pkgs Summary tab on Upload Packages tab (#653)
+* Added comment module to the Function Explorer (#643)
+* Made color palette used through the app even more colorblind-friendly and created lighter "User Guide" logo (#654)
+
+### Squashed Bugs
+* Fixed the app's logo hyperlink to docs not functioning in the expected "zone" (#633)
+* Fixed tests showing "Package Downloads" community usage card as a non-metric (#621)
+* Removed "Suggests" from Riskassessment Criteria weights table (#646)
+* Forced formation of new lines in cards (#671)
+* Ensured users couldn't create & select packages from CRAN that don't exist on Upload Packages tab
+
+### For Devs
+* Migrated from `{jsTreeR}` to `{shinyTree}` (#585)
+* Removed some unneeded/unused dependencies
+* Updated `{shinytest2}` and `{chromote}` to more recent versions for testing
+* Added correct remotes reference in `DESCRIPTION` file for pharmar/riskmetric & rstudio/chromote
+* Stopped using CRAN repo snapshot date in `renv` (#677)
+
 # riskassessment 2.0.0
 
 ### Enhancements
