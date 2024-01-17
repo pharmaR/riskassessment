@@ -10,6 +10,7 @@
 * Only run configuration checkers when configuring the database
 * Added dependencies/reverse dependencies card hyperlink (#597)
 * Added non-shinymanager deployment option (#700)
+* Added Package Dependencies to Reports (#721)
 * Added function to allow package upload outside of application
 
 # riskassessment 3.0.0

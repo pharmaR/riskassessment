@@ -3,6 +3,7 @@ title:    "<span class='txtasis'>R Package Risk Assessment</span>"
 subtitle: "<span class='txtasis'>Report for Package: `r params$pkg[['name']]`</span>"
 author:   "<span class='txtasis'> `r if('Report Author' %in% params$report_includes) paste0('Author (Role): ', params$user_name, ' (', params$user_role, ')') else ''`</span>"
 date:     "<span class='txtasis'> `r if('Report Date' %in% params$report_includes) paste0('Report Date: ', format(Sys.time(), '%B %d, %Y')) else ''`</span>"
+geometry: "left=.5in,right=.5in,top=1.5in,bottom=1in"
 output:
   pdf_document:
     latex_engine: xelatex
@@ -29,6 +30,8 @@ params:
   com_metrics: NA
   com_metrics_raw: NA
   downloads_plot_data: NA
+  dep_cards: NA
+  dep_table: NA
   metric_tbl: NA
 ---
 
@@ -44,10 +47,13 @@ library(shiny)
 library(ggplot2)
 library(plotly)
 
+options(tinytex.verbose = TRUE)
 knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 cm_ind <- nrow(params$com_metrics) != 0
 ```
 
+<!-- Fix Package fancyhdr Warning -->
+`r {"\\setlength{\\headheight}{53.61403pt}\\addtolength{\\topmargin}{-38.61403pt}"}`
 
 ```{r functions, include=FALSE, message=FALSE, warning=FALSE}
 outputComments <- function(pkg_name, comments, none_txt = "No comments"){
@@ -67,7 +73,6 @@ outputComments <- function(pkg_name, comments, none_txt = "No comments"){
 }
 ```
 
-<br>
 
 ```{r general_pkg_info}
 tagList(
@@ -100,6 +105,7 @@ if('Overall Comment' %in% params$report_includes){
 }
 ```
 
+
 ```{r pkg_summary}
 if('Package Summary' %in% params$report_includes){
   tagList(
@@ -115,7 +121,7 @@ if('Package Summary' %in% params$report_includes){
 }
 ```
 
-`r if(any(c('Maintenance Metrics', 'Maintenance Comments') %in% params$report_includes)) {"\\newpage"}`
+`r if(any(c('Maintenance Metrics', 'Maintenance Comments') %in% params$report_includes)) {"\\newpage "}`
 
 ```{r maintenance_metrics}
 if(any(c('Maintenance Metrics', 'Maintenance Comments') %in% params$report_includes)) {
@@ -124,33 +130,40 @@ if(any(c('Maintenance Metrics', 'Maintenance Comments') %in% params$report_inclu
 ```
 
 
-```{r maintenance_metrics_table, warning=FALSE, message=FALSE, error=FALSE, results='HIDE', echo=FALSE}
+```{r maintenance_metrics_table, warning=FALSE, message=FALSE, error=FALSE, results='markdown', echo=FALSE}
 if('Maintenance Metrics' %in% params$report_includes){
-  # maint_out_tab <- 
-    params$maint_metrics %>%
-    dplyr::mutate(
-      `Metric Name` = title,
-      `Metric Description` = desc,
-      `Metric Value` = dplyr::case_when(
-        value %in% c("pkg_metric_error", "NA", NA) ~ "Not found",
-        # name %in% c('has_website', 'has_source_control') & nchar(value) > 5 ~ 'Yes',
-          # stringr::str_wrap(sub("\\s+$", "", gsub('(.{20})', '\\1 ', value)), 20), # text-wrap
-        value %in% c("TRUE","1") ~ 'Yes',
-        !(name %in% c('has_bug_reports_url', 'news_current')) ~ value,
-        TRUE ~ 'No'
-       ),
-      `Metric Score` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ "NA",
-          # flip the label display of the score to mimic the package score...
-          round(as.numeric(score), 2) == 0 ~ "1.0",
-          round(as.numeric(score), 2) == 1 ~ "0.0",
-          TRUE ~ as.character(round(1 - as.numeric(score), 2))
-        )
-      ) %>%
-      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
-    knitr::kable(format = 'pandoc')
+params$maint_metrics %>%
+   dplyr::mutate(
+     `Metric Name` = title,
+     `Metric Description` = desc,
+     `Metric Value` = dplyr::case_when(
+       value %in% c("pkg_metric_error", "NA", NA) ~ "Not found",
+       value %in% c("TRUE","1") ~ 'Yes',
+       !(name %in% c('has_bug_reports_url', 'news_current')) ~ value,
+       TRUE ~ 'No'
+      ),
+      score = na_if(score, "NA"),
+      score = na_if(score, "NULL"),
+     `Metric Score *` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ NA_character_,
+         # flip the label display of the score to mimic the package score...
+         round(as.numeric(score), 2) == 0 ~ "1.0",
+         round(as.numeric(score), 2) == 1 ~ "0.0",
+         TRUE ~ as.character(round(1 - as.numeric(score), 2))
+       )
+       ) %>%
+   # add a space after the .com
+   dplyr::mutate(`Metric Value` = stringr::str_replace(`Metric Value`, stringr::regex("^(.+\\.com\\/)"), "\\1 ")) %>%
+   dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score *`) %>%
+   kableExtra::kbl(format = 'latex', booktabs = T, linesep = "") %>% 
+   kableExtra::kable_styling("basic", latex_options = "hold_position", full_width = F, position = 'left')  %>% 
+   kableExtra::column_spec(1, width = "1.0in") %>%
+   kableExtra::column_spec(2, width = "1.75in", latex_valign = "p") %>%
+   kableExtra::column_spec(3, width = "2.0in", latex_valign = "p") %>%
+   kableExtra::column_spec(4, width = "1.0in")
 }
 ```
-`r if ('Maintenance Metrics' %in% params$report_includes) {"* Metrics whose score is NA will not impact the package {riskmetric} score"}`
+
+`r if ('Maintenance Metrics' %in% params$report_includes) {"\\* Metrics whose score is NA will not impact the package {riskmetric} score"}`
 
 ```{r maintenance_metrics_comments}
 if('Maintenance Comments' %in% params$report_includes){
@@ -165,7 +178,7 @@ if('Maintenance Comments' %in% params$report_includes){
 ```
 
 
-`r if(any(c('Community Usage Metrics', 'Community Usage Comments') %in% params$report_includes)) {"\\newpage"}`
+`r if(any(c('Community Usage Metrics', 'Community Usage Comments') %in% params$report_includes)) {"\\newpage "}`
 
 ```{r community_metrics, warning=FALSE, message=FALSE}
 if(any(c('Community Usage Metrics', 'Community Usage Comments') %in% params$report_includes)) {
@@ -174,7 +187,7 @@ if(any(c('Community Usage Metrics', 'Community Usage Comments') %in% params$repo
 ```
 
 
-```{r community_metrics_table, warning=FALSE, message=FALSE, error=FALSE, results='HIDE', echo=FALSE}
+```{r community_metrics_table, warning=FALSE, message=FALSE, error=FALSE, results='markdown', echo=FALSE}
 if (!cm_ind) {
     h6(glue::glue("Community Usage Metrics not avaiable for {params$pkg$name}"),
        style = "text-align: center; color: gray; padding-top: 50px;")
@@ -182,22 +195,26 @@ if (!cm_ind) {
   if('Community Usage Metrics' %in% params$report_includes){
     params$com_metrics %>%
       dplyr::mutate(
+        score = na_if(score, "NA"),        
+        score = na_if(score, "NULL"), 
         `Metric Name` = title,
         `Metric Description` = desc,
         `Metric Value` = ifelse(value %in% c("pkg_metric_error", "NA", NA), "Not found", value),
-        `Metric Score` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ "NA",
+        `Metric Score *` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ NA_character_,
           # flip the label display of the score to mimic the package score...
           round(as.numeric(score), 2) == 0 ~ "1.0",
           round(as.numeric(score), 2) == 1 ~ "0.0",
           TRUE ~ as.character(round(1 - as.numeric(score), 2))
         )
       ) %>%
-      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score`) %>%
-      knitr::kable(format = 'pandoc')
+      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score *`) %>%
+      kableExtra::kbl(format = 'latex', booktabs = T, linesep = "") %>% 
+      kableExtra::kable_styling("basic", latex_options = "hold_position", full_width = F, position = 'left') 
   }
 }
 ```
-`r if ('Community Usage Metrics' %in% params$report_includes) {"* Metrics whose score is NA will not impact the package {riskmetric} score"}`
+
+`r if ('Community Usage Metrics' %in% params$report_includes) {"\\* Metrics whose score is NA will not impact the package {riskmetric} score"}`
 
 
 ```{r community_metrics_plot_title, eval=cm_ind}
@@ -246,9 +263,50 @@ if('Community Usage Comments' %in% params$report_includes){
 }
 ```
 
+`r if('Package Dependencies' %in% params$report_includes) {"\\newpage "}`
 
+```{r package_dependencies_header}
+  if('Package Dependencies' %in% params$report_includes) {
+    tagList(br(), h2("Package Dependencies"), br())
+  } else ""
+```
 
-`r if(any(c('Source Explorer Comments') %in% params$report_includes)) {"\\newpage"}`
+```{r package_dependencies_cards}
+  if('Package Dependencies' %in% params$report_includes) {
+     cards <- params$dep_cards %>%
+      dplyr::mutate(
+        score = na_if(score, "NA"),        
+        score = na_if(score, "NULL"),
+        `Metric Name` = title,
+        `Metric Description` = desc,
+        `Metric Value` = ifelse(value %in% c("pkg_metric_error", "NA", NA), "Not found", value),
+        `Metric Score *` = dplyr::case_when(toupper(score) %in% c("NA", "NULL") ~ "NA",
+          # flip the label display of the score to mimic the package score...
+          round(as.numeric(score), 2) == 0 ~ "1.0",
+          round(as.numeric(score), 2) == 1 ~ "0.0",
+          TRUE ~ as.character(round(1 - as.numeric(score), 2))
+        )
+      ) %>%
+      dplyr::select(`Metric Name`, `Metric Description`, `Metric Value`, `Metric Score *`) 
+     
+      kableExtra::kbl(cards, format = 'latex', booktabs = T, linesep = "") %>% 
+      kableExtra::kable_styling("basic", latex_options = "hold_position", full_width = F, position = 'left') %>% 
+      kableExtra::column_spec(3, width = "1.5in", latex_valign = "p")
+
+  } else ""
+```
+
+`r if ('Package Dependencies' %in% params$report_includes) {"\\* Metrics whose score is NA will not impact the package {riskmetric} score"}`
+
+```{r package_dependencies_table}
+  if('Package Dependencies' %in% params$report_includes) {
+    params$dep_table %>% 
+    kableExtra::kbl(format = 'latex', booktabs = T, linesep = "") %>% 
+    kableExtra::kable_styling("basic", latex_options = "hold_position", full_width = F, position = 'left')
+  } else ""
+```
+
+`r if(any(c('Source Explorer Comments') %in% params$report_includes)) {"\\newpage "}`
 
 ```{r source_explorer}
 if(any(c('Source Explorer Comments') %in% params$report_includes)) {
@@ -272,9 +330,7 @@ if('Source Explorer Comments' %in% params$report_includes){
 }
 ```
 
-
-
-`r if(any(c('Function Explorer Comments') %in% params$report_includes)) {"\\newpage"}`
+`r if(any(c('Function Explorer Comments') %in% params$report_includes)) {"\\newpage "}`
 
 ```{r function_explorer}
 if(any(c('Function Explorer Comments') %in% params$report_includes)) {
@@ -298,13 +354,13 @@ if('Function Explorer Comments' %in% params$report_includes){
 }
 ```
 
-\newpage
+`r {"\\newpage "}`
 
 ```{r about_report_title}
 tagList(br(), h2('About The Report'))
 ```
 
-```{r about_report}
+```{r about_report, warning=FALSE}
 
 tagList(
   strong('{riskassessment} App Version:'), br(), getElement(params, 'app_version'), br(), br(),
@@ -314,11 +370,9 @@ tagList(
 )
 
 if('Risk Score' %in% params$report_includes) {
-  tab_out <-
     params$metric_weights %>%
-    knitr::kable(align = c('l','c'), format = 'latex', booktabs = TRUE) 
-  
-  if (!requireNamespace("kableExtra", quietly = TRUE)) tab_out else tab_out %>% kableExtra::kable_styling(position = "left")
+    kableExtra::kbl(booktabs = TRUE, linesep = "", format = "latex", align = c('l','c'), centering = F) %>% 
+    kableExtra::kable_styling(position = "left")
 }
 ```
 
