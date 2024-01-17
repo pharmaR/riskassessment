@@ -5,8 +5,9 @@
 #' @return The return value, if any, from executing the utility.
 #'
 #' @noRd
-report_creation <- function(pkg_lst, metric_weights, report_format, report_includes, user, 
-                            db_name = golem::get_golem_options('assessment_db_name'), 
+report_creation <- function(pkg_lst, metric_weights, report_format, report_includes, user,
+                            loaded2_db, repo_pkgs,
+                            db_name = golem::get_golem_options('assessment_db_name'),
                             my_tempdir = tempdir(), updateProgress = NULL) {
   n_pkgs <- length(pkg_lst)
   
@@ -131,6 +132,16 @@ report_creation <- function(pkg_lst, metric_weights, report_format, report_inclu
     downloads_plot <- build_comm_plotly(comm_data)
     metric_tbl <- dbSelect("select * from metric", db_name = db_name)
     
+    dep_metrics <- get_depends_data(this_pkg, db_name = db_name)
+
+    dep_cards <- build_dep_cards(data = dep_metrics, loaded = loaded2_db$name, toggled = 0L)
+    
+    dep_table <- purrr::map_df(dep_metrics$name, ~ get_versnScore(.x, loaded2_db, repo_pkgs)) %>%
+      right_join(dep_metrics, by = "name") %>%
+      select(package, type, version, score) %>%
+      arrange(package, type) %>%
+      distinct()
+    
     
     # Render the report, passing parameters to the rmd file.
     out <-
@@ -155,6 +166,8 @@ report_creation <- function(pkg_lst, metric_weights, report_format, report_inclu
                       com_metrics = comm_cards,
                       com_metrics_raw = comm_data,
                       downloads_plot_data = downloads_plot,
+                      dep_cards = dep_cards,
+                      dep_table = dep_table,
                       metric_tbl = metric_tbl
         )
       )

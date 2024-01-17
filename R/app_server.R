@@ -240,6 +240,10 @@ app_server <- function(input, output, session) {
     get_comm_data(selected_pkg$name())
   })
   
+  session$userData$loaded2_db <- eventReactive({uploaded_pkgs(); changes()}, {
+    dbSelect("SELECT name, version, score FROM package")
+  })
+  
   create_src_dir <- eventReactive(input$tabs, input$tabs == "Source Explorer")
   pkgdir <- reactiveVal()
   observe({
@@ -288,6 +292,12 @@ app_server <- function(input, output, session) {
                                            community_usage_metrics,
                                            user,
                                            credential_config)
+
+  # Load server for the package dependencies tab.
+  dependencies_data <- packageDependenciesServer('packageDependencies',
+                                                  selected_pkg,
+                                                  user,
+                                                  parent = session)
   
   # Load server of the report preview tab.
   reportPreviewServer(id = "reportPreview",
@@ -304,12 +314,7 @@ app_server <- function(input, output, session) {
                       app_version = golem::get_golem_options('app_version'),
                       metric_weights = metric_weights)
   
-  # Load server for the package dependencies tab.
-  dependencies_data <- packageDependenciesServer('packageDependencies',
-                                               selected_pkg,
-                                               user,
-                                               parent = session)
-  
+
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)
   })

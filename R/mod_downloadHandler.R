@@ -99,6 +99,8 @@ mod_downloadHandler_include_server <- function(id) {
 }
   
 #' downloadHandler Server Functions
+#' 
+#' @importFrom flextable flextable set_table_properties colformat_char
 #'
 #' @noRd
 #' @importFrom callr r_bg
@@ -119,6 +121,14 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
       
       n_pkgs <- length(pkgs())
       req(n_pkgs > 0)
+      
+      if (!isTruthy(session$userData$repo_pkgs())) {
+        if (isTRUE(getOption("shiny.testmode"))) {
+          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x, col.names = c("Package", "Version", "Source"))))
+        } else {
+          session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
+        }
+      }
       
       download_file$filename <- {
         if (n_pkgs > 1) {
@@ -142,7 +152,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
         }
         
         download_file$filepath <-
-          report_creation(pkgs(), metric_weights(), input$report_format, input$report_includes, reactiveValuesToList(user), updateProgress = updateProgress)
+          report_creation(pkgs(), metric_weights(), input$report_format, input$report_includes, reactiveValuesToList(user), session$userData$loaded2_db(), session$userData$repo_pkgs(), updateProgress = updateProgress)
       } else {
         download_file$progress <- shiny::Progress$new(max = n_pkgs + 2)
         download_file$progress$set(message = glue::glue('Downloading {ifelse(n_pkgs > 1, paste0(n_pkgs, " "), "")}Report{ifelse(n_pkgs > 1, "s:", ":")}'),
@@ -161,7 +171,8 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
             },
             list(pkg_lst = pkgs(), metric_weights = metric_weights(),
                  report_format = input$report_format, report_includes = input$report_includes,
-                 user = reactiveValuesToList(user), 
+                 user = reactiveValuesToList(user),
+                 loaded2_db = session$userData$loaded2_db(), repo_pkgs = session$userData$repo_pkgs(),
                  db_name = golem::get_golem_options('assessment_db_name'), my_tempdir = tempdir(),
                  updateProgress = updateProgress),
             user_profile = FALSE
