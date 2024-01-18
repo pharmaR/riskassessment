@@ -40,6 +40,7 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports: 
+    archive,
     bslib (>= 0.3.0),
     config (>= 0.3.1),
     cranlogs,

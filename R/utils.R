@@ -78,7 +78,7 @@ get_latest_pkg_info <- function(pkg_name) {
 #' @importFrom desc desc_get_field
 #' @importFrom glue glue
 #' @importFrom purrr map set_names
-#' @importFrom utils untar
+#' @importFrom archive archive_read
 #' 
 #' @noRd
 get_desc_pkg_info <- function(pkg_name, pkg_version, tar_dir = "tarballs") {
