@@ -131,12 +131,15 @@ build_comm_cards <- function(data){
   
   # new
   comm_d1 <- comm %>% filter(name == "downloads_1yr")
+  # replace "pkg_metric_error" with NA_character_ to avoid
+  if(comm_d1$value == "pkg_metric_error")  comm_d1$value <- NA_character_
+
   cards <- cards %>%
     dplyr::add_row(name = comm_d1[['name']],
                    title = comm_d1[['title']],
                    desc = comm_d1[['desc']],
                    value = format(as.numeric(comm_d1[['value']]), big.mark = ","),
-                   # altneratively, last 12 months from plot (doesn't include current month)
+                   # alternatively, last 12 months from plot (doesn't include current month)
                    # format(sum(downloads_last_year$downloads), big.mark = ","),
                    score = comm_d1[['score']],
                    succ_icon = comm_d1[['succ_icon']],
