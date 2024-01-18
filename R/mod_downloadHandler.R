@@ -64,6 +64,13 @@ mod_downloadHandler_include_server <- function(id) {
             shinyWidgets::prettyCheckboxGroup(
               ns("report_includes"), label = NULL, inline = FALSE,
               choices = rpt_choices, selected = isolate(session$userData$user_report$report_includes) %||% rpt_choices
+            ),
+            shinyWidgets::materialSwitch(
+              inputId =  ns("include_suggests"),
+              label = "Include Suggests",
+              value = FALSE,
+              inline = TRUE,
+              status = "success"
             )
         )
       )
@@ -92,7 +99,25 @@ mod_downloadHandler_include_server <- function(id) {
     
     observeEvent(input$report_includes, {
       session$userData$user_report$report_includes <- input$report_includes %||% ""
+      
+      if('Package Dependencies' %in% input$report_includes) {
+       shinyjs::show("include_suggests") 
+      } else {
+        shinyjs::hide("include_suggests")
+      }
+      
     }, ignoreNULL = FALSE, ignoreInit = TRUE)
+    
+    
+    observeEvent(input$include_suggests, {
+      req(session$userData$loaded2_db())
+      if(input$include_suggests == TRUE) {
+        cat("include suggests is TRUE \n")
+        session$userData$suggests <- TRUE }
+      else {
+        session$userData$suggests <- FALSE
+      }
+    })
     
     return(reactive(input$report_includes))
   })
@@ -267,7 +292,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               downloads_plot <- build_comm_plotly(comm_data)
               metric_tbl <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
               
-              dep_metrics <- get_depends_data(this_pkg, db_name = golem::get_golem_options("assessment_db_name"))
+              dep_metrics <- get_depends_data(this_pkg, suggests = session$userData$suggests, db_name = golem::get_golem_options("assessment_db_name"))
 
               dep_cards <- build_dep_cards(data = dep_metrics, loaded = session$userData$loaded2_db()$name, toggled = 0L)
 
