@@ -11,6 +11,7 @@
 * Added dependencies/reverse dependencies card hyperlink (#597)
 * Added non-shinymanager deployment option (#700)
 * Added Package Dependencies to Reports (#721)
+* Fix warning message from package dependencies tab (#748)
 
 # riskassessment 3.0.0
 

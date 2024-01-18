@@ -131,7 +131,7 @@ build_comm_cards <- function(data){
   
   # new
   comm_d1 <- comm %>% filter(name == "downloads_1yr")
-  # replace "pkg_metric_error" with NA_character_ to avoid
+  # replace "pkg_metric_error" with NA_character_ to avoid warning msg
   if(comm_d1$value == "pkg_metric_error")  comm_d1$value <- NA_character_
 
   cards <- cards %>%
