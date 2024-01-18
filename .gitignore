@@ -15,3 +15,4 @@ docs/
 tarballs/
 source/
 report_preferences/
+.Renviron
