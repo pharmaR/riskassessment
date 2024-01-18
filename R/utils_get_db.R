@@ -227,17 +227,29 @@ get_metric_data <- function(pkg_name, metric_class = 'maintenance', db_name = go
 #' 
 #' @returns a data frame with package, type, and name
 #' @noRd
-get_depends_data <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')){
+get_depends_data <- function(pkg_name, suggests = FALSE, db_name = golem::get_golem_options('assessment_db_name')){
   
   pkgref <- get_assess_blob(pkg_name, db_name)
   
   if(suppressWarnings(is.null(nrow(pkgref$dependencies[[1]])) || nrow(pkgref$dependencies[[1]]) == 0)) {
-    dplyr::tibble(package = character(0), type = character(0), name = character(0))
+    deps <- dplyr::tibble(package = character(0), type = character(0), name = character(0))
   } else {
-    pkgref$dependencies[[1]] %>% dplyr::as_tibble() %>% 
+    deps <- pkgref$dependencies[[1]] %>% dplyr::as_tibble() %>% 
       mutate(package = stringr::str_replace(package, "\n", " ")) %>%
       mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")) 
   }
+  
+  if(suggests == TRUE) {
+    if(suppressWarnings(is.null(nrow(pkgref$suggests[[1]])) || nrow(pkgref$suggests[[1]]) == 0)) {
+      sugg <- dplyr::tibble(package = character(0), type = character(0), name = character(0))
+    } else {
+      sugg <- pkgref$suggests[[1]] %>% dplyr::as_tibble() %>% 
+        mutate(package = stringr::str_replace(package, "\n", " ")) %>%
+        mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")) 
+    }
+    return(bind_rows(deps, sugg))
+  } else {
+    return(deps) }
 }
 
 #' The 'Get Community Data' function
