@@ -89,7 +89,9 @@ get_desc_pkg_info <- function(pkg_name, pkg_version, tar_dir = "tarballs") {
   desc_file <- glue::glue("{pkg_name}/DESCRIPTION")
   
   tmp_file <- tempfile()
-  writeLines(readLines(archive::archive_read(tar_file, desc_file, format = "tar")), tmp_file)
+  tar_con <- archive::archive_read(tar_file, desc_file, format = "tar")
+  on.exit(close(tar_con))
+  writeLines(readLines(tar_con), tmp_file)
   
   keys <- c("Package", "Version", "Maintainer", "Author", "License", "Packaged", "Title", "Description")
   purrr::map(keys,
