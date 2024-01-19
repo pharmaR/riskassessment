@@ -227,7 +227,7 @@ get_metric_data <- function(pkg_name, metric_class = 'maintenance', db_name = go
 #' 
 #' @returns a data frame with package, type, and name
 #' @noRd
-get_depends_data <- function(pkg_name, suggests = FALSE, db_name = golem::get_golem_options('assessment_db_name')){
+get_depends_data <- function(pkg_name, suggests, db_name = golem::get_golem_options('assessment_db_name')){
   
   pkgref <- get_assess_blob(pkg_name, db_name)
   
