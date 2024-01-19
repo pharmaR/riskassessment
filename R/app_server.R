@@ -32,7 +32,7 @@ app_server <- function(input, output, session) {
     update_report_pref_inclusions = 0
   )
   session$userData$repo_pkgs <- reactiveVal()
-  session$userData$suggests <- reactiveVal(FALSE)
+  session$userData$suggests <- reactiveVal()
   
   
   # this skips authentication if the application is running in test mode
