@@ -239,7 +239,7 @@ get_depends_data <- function(pkg_name, suggests = FALSE, db_name = golem::get_go
       mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")) 
   }
   
-  if(suggests == TRUE) {
+  if(isTruthy(suggests)) {
     if(suppressWarnings(is.null(nrow(pkgref$suggests[[1]])) || nrow(pkgref$suggests[[1]]) == 0)) {
       sugg <- dplyr::tibble(package = character(0), type = character(0), name = character(0))
     } else {
