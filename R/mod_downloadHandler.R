@@ -110,12 +110,7 @@ mod_downloadHandler_include_server <- function(id) {
     
     
     observeEvent(input$include_suggests, {
-      req(session$userData$loaded2_db())
-      if(input$include_suggests == TRUE) {
-        session$userData$suggests <- TRUE }
-      else {
-        session$userData$suggests <- FALSE
-      }
+      session$userData$suggests(input$include_suggests)
     })
     
     return(reactive(input$report_includes))
@@ -142,6 +137,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
     output$download_reports <- downloadHandler(
       filename = function() {
         n_pkgs <- length(pkgs())
+        browser()
         
         if (n_pkgs > 1) {
           report_datetime <- stringr::str_replace_all(stringr::str_replace(get_time(), " ", "_"), ":", "-")
@@ -291,7 +287,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               downloads_plot <- build_comm_plotly(comm_data)
               metric_tbl <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
               
-              dep_metrics <- get_depends_data(this_pkg, suggests = session$userData$suggests(), db_name = golem::get_golem_options("assessment_db_name"))
+              dep_metrics <- get_depends_data(this_pkg, session$userData$suggests(), db_name = golem::get_golem_options("assessment_db_name"))
 
               dep_cards <- build_dep_cards(data = dep_metrics, loaded = session$userData$loaded2_db()$name, toggled = 0L)
 
