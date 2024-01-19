@@ -40,6 +40,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
     depends  <- reactiveVal(value = NULL)
     suggests <- reactiveVal(value = NULL)
     revdeps  <- reactiveVal(value = NULL)
+    revdeps_local <- reactiveVal(value = NULL)
     rev_pkg  <- reactiveVal(value = 0L)
     toggled  <- reactiveVal(value = 0L)
     pkg_updates <- reactiveValues()
@@ -93,6 +94,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
       if (rlang::is_empty(pkgref()$dependencies[[1]])) depends(dplyr::tibble(package = character(0), type = character(0)))
         
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
+      revdeps_local(with(loaded2_db(), name[name %in% revdeps()]))
+      
       # send either depends() or both to build_dep_cards(), depending on toggled()
       if (toggled() == 0L) {
         cards(build_dep_cards(data = depends(), loaded = loaded2_db()$name, toggled = 0L))
@@ -263,8 +266,19 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
                     })
                 ) # column
               ), # fluidRow
-              br(),
-              h4(glue::glue("Reverse Dependencies: {length(revdeps())}"), style = "text-align: left;"),
+              br(), 
+              h4(glue::glue("Reverse Dependencies available in database: {length(revdeps_local())}"), style = "text-align: left;"),
+              br(), br(),
+              fluidRow(
+                column(
+                  width = 8,
+                  wellPanel(
+                    renderText(revdeps_local() %>% sort()),
+                    style = "max-height: 500px; overflow: auto"
+                  )
+                )
+              ),
+              h4(glue::glue("All reverse Dependencies: {length(revdeps())}"), style = "text-align: left;"),
               br(), br(),
               fluidRow(
                 column(

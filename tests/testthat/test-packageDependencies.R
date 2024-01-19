@@ -42,3 +42,58 @@ test_that("module can produce a table of package dependencies", {
   rm(out_htm, id_strng, json, actual, expected, app_db_loc)
 
 })
+
+test_that(
+  "Feature 1. module packageDependencies selects all reverse dependencies 
+  in the database.
+    Scenario 1. Given the selected package is 'dplyr',  
+    and the packages names in the package database are 'dplyr' and 'dbplyr', 
+    I expect that the package names 'plotly', 'admiral', 'dbplyr' and 'glue' are found in [revdeps],
+    and that [revdeps_local] is equal to 'dbplyr'.",
+  {
+    testargs <- list(
+      selected_pkg =  list(
+        name = reactiveVal("dplyr")
+      ),
+      user = "test_user",
+      parent = reactiveValues(
+        input = reactiveValues(
+          tabs = "Package Metrics",
+          metric_type = "dep"
+        )
+      )
+    )
+    
+    test_db_loc <- system.file("testdata", "upload_format.database", 
+                               package = "riskassessment")
+    temp_db_loc <- withr::local_tempfile(fileext = ".database")
+    file.copy(test_db_loc, temp_db_loc)
+    con <- withr::local_db_connection(
+      DBI::dbConnect(RSQLite::SQLite(), temp_db_loc)
+    )
+    # because only the dplyr package is in the test dataset, we add one of its 
+    # known reverse dependencies:
+    DBI::dbAppendTable(
+      con, 
+      "package", 
+      data.frame(
+        name = "dbplyr",
+        version = "1.0.0",
+        score = "0.32"
+      )
+    )
+    # add test db location to the app session:
+    app_session <- MockShinySession$new()
+    app_session$options$golem_options <- list(
+      assessment_db_name = temp_db_loc
+    )
+    
+    testServer(packageDependenciesServer, args = testargs,  {
+      session$flushReact()
+      expect_true(all(c("plotly", "admiral", "dbplyr", "glue") %in% revdeps()))
+      expect_equal(revdeps_local(), "dbplyr")
+    },
+    session = app_session)
+  }
+)
+

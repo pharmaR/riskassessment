@@ -78,7 +78,8 @@ Suggests:
     shinytest2,
     spelling,
     testthat (>= 3.0.0),
-    tinytex
+    tinytex,
+    withr
 Config/testthat/edition: 3
 Language: en-US
 Depends: 
