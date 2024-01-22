@@ -266,9 +266,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
                     })
                 ) # column
               ), # fluidRow
-              br(), 
+              br(), br(),  
               h4(glue::glue("Reverse Dependencies available in database: {length(revdeps_local())}"), style = "text-align: left;"),
-              br(), br(),
+              br(), 
               fluidRow(
                 column(
                   width = 8,
@@ -278,8 +278,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
                   )
                 )
               ),
-              h4(glue::glue("All reverse Dependencies: {length(revdeps())}"), style = "text-align: left;"),
               br(), br(),
+              h4(glue::glue("All reverse Dependencies: {length(revdeps())}"), style = "text-align: left;"),
+              br(),
               fluidRow(
                 column(
                   width = 8,
