@@ -68,19 +68,22 @@ test_that(
                                package = "riskassessment")
     temp_db_loc <- withr::local_tempfile(fileext = ".database")
     file.copy(test_db_loc, temp_db_loc)
-    con <- withr::local_db_connection(
-      DBI::dbConnect(RSQLite::SQLite(), temp_db_loc)
-    )
+    
     # because only the dplyr package is in the test dataset, we add one of its 
     # known reverse dependencies:
-    DBI::dbAppendTable(
-      con, 
-      "package", 
-      data.frame(
-        name = "dbplyr",
-        version = "1.0.0",
-        score = "0.32"
-      )
+    withr::with_db_connection(
+      list(con = DBI::dbConnect(RSQLite::SQLite(), temp_db_loc)),
+      {
+        DBI::dbAppendTable(
+          con, 
+          "package", 
+          data.frame(
+            name = "dbplyr",
+            version = "1.0.0",
+            score = "0.32"
+          )
+        )
+      }
     )
     # add test db location to the app session:
     app_session <- MockShinySession$new()
