@@ -50,6 +50,7 @@ library(plotly)
 options(tinytex.verbose = TRUE)
 knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 cm_ind <- nrow(params$com_metrics) != 0
+dm_ind <- nrow(params$dep_table) != 0
 ```
 
 <!-- Fix Package fancyhdr Warning -->
@@ -298,12 +299,13 @@ if('Community Usage Comments' %in% params$report_includes){
 
 `r if ('Package Dependencies' %in% params$report_includes) {"\\* Metrics whose score is NA will not impact the package {riskmetric} score"}`
 
-```{r package_dependencies_table}
-  if('Package Dependencies' %in% params$report_includes) {
-    params$dep_table %>% 
+```{r package_dependencies_table, eval=dm_ind}
+if('Package Dependencies' %in% params$report_includes) {
+  params$dep_table %>%
+    purrr::set_names(tools::toTitleCase(names(.))) %>%
     kableExtra::kbl(format = 'latex', booktabs = T, linesep = "") %>% 
     kableExtra::kable_styling("basic", latex_options = "hold_position", full_width = F, position = 'left')
-  } else ""
+} else ""
 ```
 
 `r if(any(c('Source Explorer Comments') %in% params$report_includes)) {"\\newpage "}`
