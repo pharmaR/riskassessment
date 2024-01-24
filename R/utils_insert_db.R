@@ -316,12 +316,14 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, updateProgress 
     warning("No value supplied for `assess_db`. Will try to use configuration file.")
     assess_db <- get_db_config("assessment_db")
   }
+  if (!file.exists(assess_db))
+    stop(glue::glue("The file `{assess_db}` does not exist."))
   
   if (missing(repos)) {
     warning("No value supplied for `repos`. Will try to use configuration file.")
     repos <- get_db_config("package_repo")
-    check_repos(repos)
   }
+  check_repos(repos)
   
   if (!isTRUE(all.equal(getOption("repos"), repos))) {
     old_options <- options()
