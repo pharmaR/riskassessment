@@ -310,8 +310,6 @@ insert_community_metrics_to_db <- function(pkg_name,
 #'   progress meter in the application
 #' 
 #' @return A data frame object containing a summary of the upload process
-#' 
-#' @export
 upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, updateProgress = NULL) {
   
   if (missing(assess_db)) {
