@@ -24,6 +24,11 @@ default:
       - High Risk
   metric_weights:
     covr_coverage: 0
+  dependencies:
+    auto_assess:
+      depends: TRUE
+      imports: FALSE
+      suggests: FALSE
 example:
   assessment_db: database_ex.sqlite
   credential_db: credentials_ex.sqlite

@@ -4,6 +4,7 @@
 #' 
 #' 
 #' @importFrom DT dataTableOutput
+#' @importFrom shinyWidgets awesomeCheckbox
 #' @keywords internal
 #' 
 uploadPackageUI <- function(id) {
@@ -31,6 +32,17 @@ uploadPackageUI <- function(id) {
                                              $("a[data-toggle=\'tab\']").on("shown.bs.tab", function(e) {{
                                              $("#{NS(id, "add_pkgs")}").css("margin-top", $("#{NS(id, "pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))
                                              }})')))
+        ),
+        column(
+          width = 8,
+          div(id = "chk-dependencies-grp",
+                shinyWidgets::awesomeCheckbox(
+                  inputId = NS(id, "assess_deps"),
+                  label = "Assess Dependencies",
+                  status = "danger",
+                  value = FALSE
+                )
+              )
         ),
         uiOutput(NS(id, "rem_pkg_div"))
       ),
@@ -213,8 +225,6 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       uploaded_pkgs00(uploaded_packages)
     })
     
-    
-    
     observeEvent(input$add_pkgs, {
       req(input$pkg_lst)
       
@@ -306,6 +316,44 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       ))
     })
     
+    dependencies <- reactiveValues(pkg = NULL, tbl = NULL)
+    
+    observeEvent(dependencies$tbl, {
+      req(dependencies$tbl)
+      
+      DT::dataTableOutput(NS(id, "dependencies$tbl"))
+      
+      showModal(modalDialog(
+        size = "l",
+        easyClose = TRUE,
+        footer = list(
+          actionButton(ns("confirmTbl"), "OK"),
+          modalButton("Dismss")),
+        strong(glue::glue("Dependencies for package: ",dependencies$pkg, style = 'text-align: left'),
+        hr(),
+        br(),
+        fluidRow(
+          column(
+            width = 12,
+            output$depends_tbl <- DT::renderDataTable(
+              DT::datatable(
+                dependencies$tbl,
+                escape = FALSE,
+                editable = FALSE,
+                filter = 'none',
+                selection = 'none',
+                extensions = 'Buttons',
+                options = list(
+                  aLengthMenu = list(c(15, 25, -1), list('10', '25', 'All')),
+                  pageLength = 15,
+                  dom = "ltp"
+                )
+              ))
+          ))
+      )))
+      
+    }, ignoreInit = TRUE)
+    
     uploaded_pkgs <- reactiveVal(data.frame())
     # Save all the uploaded packages, marking them as 'new', 'not found', 
     # 'duplicate' or 'removed'
@@ -355,6 +403,8 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
         }
       }
       
+      loaded2_db <- reactive(dbSelect("SELECT name, version, score FROM package"))
+      
       # Start progress bar. Need to establish a maximum increment
       # value based on the number of packages, np, and the number of
       # incProgress() function calls in the loop, plus one to show
@@ -367,6 +417,52 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
 
             user_ver <- uploaded_packages$version[i]
             incProgress(1, detail = glue::glue("{uploaded_packages$package[i]} {user_ver}"))
+            
+            if(input$assess_deps == TRUE) {
+              
+              pkginfo <- riskmetric::pkg_ref(uploaded_packages$package[i]) %>% 
+                riskmetric::assess_dependencies()
+              
+              pkginfo <- pkginfo %>% 
+                mutate(package = stringr::str_replace(package, "\n", " ")) %>%
+                mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
+              
+              # Get the metrics weights to be used during pkg_score.
+              metric_weights_df <- get_metric_weights(db_name = golem::get_golem_options('assessment_db_name'))
+              metric_weights <- metric_weights_df$weight
+              names(metric_weights) <- metric_weights_df$name
+              
+              pkg_df <- purrr::map_df(pkginfo$name, ~get_versnScore(.x, loaded2_db(), session$userData$repo_pkgs())) %>% 
+                right_join(pkginfo, by = "name") %>% 
+                select(package, type, name, version, score) %>%
+                arrange(name, type) %>% 
+                distinct() %>% 
+                filter(!name %in% c(rownames(installed.packages(priority = "base"))))
+
+              for(j in 1:nrow(pkg_df)) {
+                if(pkg_df$score[j] == "") {
+                metric_row <- riskmetric::pkg_ref(pkg_df$name[j]) %>% 
+                  as_tibble() %>% 
+                  riskmetric::pkg_assess() %>%
+                  riskmetric::pkg_score(weights = metric_weights)
+                pkg_df$score[j] <- round(as.numeric(metric_row$pkg_score), 2)
+                }
+              }
+
+              dependencies$pkg <- uploaded_packages$package[i]
+              dependencies$tbl <- pkg_df[,3:5]
+              
+              observeEvent(input$confirmTbl, {
+                req(input$confirmTbl)
+              cat("response from modal:", input$confirmTbl, "\n")
+                shiny::removeModal()
+              }, ignoreInit = TRUE)
+              
+              # req(input$confirmTbl == 1L)
+
+              cat("got past the req() \n")
+
+            }
             
 
             if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
