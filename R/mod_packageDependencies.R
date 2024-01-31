@@ -93,7 +93,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
       if (rlang::is_empty(pkgref()$dependencies[[1]])) depends(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
         
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
-      revdeps_local(with(loaded2_db(), name[name %in% revdeps()]))
+      revdeps_local(with(session$userData$loaded2_db(), name[name %in% revdeps()]))
       
       # send either depends() or both to build_dep_cards(), depending on toggled()
       if (toggled() == 0L) {
