@@ -49,7 +49,8 @@ test_that(
     Scenario 1. Given the selected package is 'dplyr',  
     and the packages names in the package database are 'dplyr' and 'dbplyr', 
     I expect that the package names 'plotly', 'admiral', 'dbplyr' and 'glue' are found in [revdeps],
-    and that [revdeps_local] is equal to 'dbplyr'.",
+    and that [table_revdeps_local] contains the package name 'dbplyr',
+    and that [table_revdeps_local] contains an action button",
   {
     testargs <- list(
       selected_pkg =  list(
@@ -95,7 +96,9 @@ test_that(
     testServer(packageDependenciesServer, args = testargs,  {
       session$flushReact()
       expect_true(all(c("plotly", "admiral", "dbplyr", "glue") %in% revdeps()))
-      expect_equal(revdeps_local(), "dbplyr")
+      expect_equal(table_revdeps_local()$name, "dbplyr")
+      # the table contains an action button:
+      expect_true(grepl('button id=\"button_1\"',table_revdeps_local()$Actions))
     },
     session = app_session)
   }
