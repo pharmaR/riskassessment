@@ -279,7 +279,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
            fluidRow(
              column(
                width = 12,
-               "Please confirm to load this package: ", span(class = "text-info", input$decision),
+               "Please confirm to load this package: ", span(class = "text-info", selected_package()),
              )
            ),
            br(),
