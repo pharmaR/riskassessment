@@ -541,3 +541,119 @@ shinyInput <- function(FUN, len, id, ...) {
   }
   inputs
 }
+
+#' Custom datatable
+#'
+#' Small helper function to create a `DT::datatable()` object in a consistent
+#' style.
+#'
+#' @param data A data frame as input.
+#' @param colnames 
+#' @param hide_names Character vector. Whether to hide columns in the data
+#'   frame.
+#' @param ... Other options. Currently not in use.
+#'
+#' @return a DT::datatable object. 
+#'
+#' @examples datatable_custom(mtcars, colnames = paste0("custom_", names(mtcars)))
+#' 
+datatable_custom <- function(
+    data, 
+    colnames = c("Package", "Type", "Name", "Version", "Score", "Review Package"), 
+    hide_names = "name",
+    ...
+){
+  colnames <- colnames %||% character(0)
+  hide_names <- hide_names %||% character(0)
+  data <- data %||% as.data.frame(matrix(nrow = 0, ncol = pmax(length(colnames), 1) )) 
+  stopifnot(is.data.frame(data))
+  stopifnot(is.character(hide_names))
+  stopifnot(is.character(colnames))
+  # Hiding name from DT table. 
+  # The - 1 is because js uses 0 index instead of 1 like R
+  target <- which(names(data) %in% hide_names) - 1
+  
+  formattable::as.datatable(
+    formattable::formattable(
+      data,
+      list(
+        score = formattable::formatter(
+          "span",
+          style = x ~ formattable::style(
+            display = "block",
+            "border-radius" = "4px",
+            "padding-right" = "4px",
+            "color" = "#000000",
+            "order" = x,
+            "background-color" = formattable::csscolor(
+              setColorPalette(100)[round(as.numeric(x)*100)]
+            )
+          )
+        ),
+        decision = formattable::formatter(
+          "span",
+          style = x ~ formattable::style(
+            display = "block",
+            "border-radius" = "4px",
+            "padding-right" = "4px",
+            "font-weight" = "bold",
+            "color" = ifelse(x %in% decision_lst, "white", "inherit"),
+            "background-color" =
+              ifelse(x %in% decision_lst,
+                     color_lst[x],
+                     "transparent"
+              )
+          )
+        )
+      )
+    ),
+    selection = "none",
+    colnames = if(length(colnames) == 0) names(data) else colnames,
+    rownames = FALSE,
+    options = list(
+      lengthMenu = list(c(15, -1), c("15", "All")),
+      columnDefs = list(list(visible = FALSE, targets = target)),
+      searchable = FALSE
+    ),
+    style = "default"
+  ) %>%
+    DT::formatStyle(names(data), textAlign = "center")
+}
+
+#' Add buttons to data frame
+#' 
+#' Small helper function to add Shiny action buttons to a data frame.
+#'
+#' @param data A data frame. 
+#' @param id Character vector. the main id of the buttons.
+#' @param label Label to use for the button. 
+#' @param ... For future expansions. Currently not in use. 
+#'
+#' @return A data frame with a button in each table row. 
+#' @export
+#'
+#' @examples 
+#' add_buttons_to_table(mtcars[, 1:5], "button_id", "click me") |> 
+#'   datatable_custom()
+#'   
+add_buttons_to_table <- function(
+    data, 
+    id,
+    label = icon("arrow-right", class = "fa-regular", lib = "font-awesome"),
+    ...
+){
+  stopifnot(is.data.frame(data))
+  cbind(
+    data,
+    data.frame(
+      Actions = shinyInput(
+        actionButton, nrow(data),
+        "button_",
+        size = "xs",
+        style = "height:24px; padding-top:1px;",
+        label = label,
+        onclick = paste0('Shiny.setInputValue(\"', id, '\", this.id, {priority: "event"})')
+      )
+    )
+  )
+}
