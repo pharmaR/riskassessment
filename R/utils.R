@@ -569,6 +569,12 @@ datatable_custom <- function(
   stopifnot(is.data.frame(data))
   stopifnot(is.character(hide_names))
   stopifnot(is.character(colnames))
+  colnames <- if(length(colnames) == 0) names(data) else colnames
+  if(length(colnames) != ncol(data)) {
+    warning("number of provided colnames unequal to number of columns in data. 
+            Defaulting to original data frame names.")
+    colnames <- names(data)
+  } 
   # Hiding name from DT table. 
   # The - 1 is because js uses 0 index instead of 1 like R
   target <- which(names(data) %in% hide_names) - 1
@@ -608,7 +614,7 @@ datatable_custom <- function(
       )
     ),
     selection = "none",
-    colnames = if(length(colnames) == 0) names(data) else colnames,
+    colnames = colnames,
     rownames = FALSE,
     options = list(
       lengthMenu = list(c(15, -1), c("15", "All")),
