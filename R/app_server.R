@@ -224,35 +224,24 @@ app_server <- function(input, output, session) {
   })
   
   create_src_dir <- eventReactive(input$tabs, input$tabs == "Source Explorer")
-  pkgdir <- reactiveVal()
+  pkgarchive <- reactiveVal()
   observe({
     req(selected_pkg$name() != "-")
     req(create_src_dir())
     req(file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz"))))
-    
-    src_dir <- file.path("source", selected_pkg$name())
-    if (dir.exists(src_dir)) {
-      pkgdir(src_dir)
-    } else {
-      withProgress(
-        utils::untar(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")), exdir = "source"),
-        message = glue::glue("Unpacking {selected_pkg$name()}_{selected_pkg$version()}.tar.gz"),
-        value = 1
-      )
-      pkgdir(src_dir)
-    }
+    pkgarchive(archive::archive(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz"))))
   }) %>% 
     bindEvent(selected_pkg$name(), create_src_dir())
   
   
   mod_pkg_explorer_server("pkg_explorer", selected_pkg,
-                          pkgdir = pkgdir,
+                          pkgarchive = pkgarchive,
                           creating_dir = create_src_dir,
                           user = user,
                           credentials = credential_config)
   
   mod_code_explorer_server("code_explorer", selected_pkg,
-                          pkgdir = pkgdir,
+                           pkgarchive = pkgarchive,
                           creating_dir = create_src_dir,
                           user = user,
                           credentials = credential_config)
