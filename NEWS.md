@@ -8,6 +8,7 @@
 * Fix typo in Privileges table (#719)
 * Fixed bug where HTML reports displayed a darker green in the cards' meters
 * Only run configuration checkers when configuring the database
+* Shorten waiting time in code explorer/package explorer by reading tarballs in memory(#707)
 
 # riskassessment 3.0.0
 

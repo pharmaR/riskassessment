@@ -2,14 +2,18 @@
 #' 
 #' Scrapes NAMESPACE for exported functions and returns them as a list
 #' 
-#' @param pkgdir The package directory to evaluate
+#' @param pkgArchive  The package directory to evaluate
 #' 
 #' @return A character vector of the function names
 #' 
 #' @noRd
-get_exported_functions <- function(pkgdir) {
-  nsFile <- parse(file.path(pkgdir, "NAMESPACE"), keep.source = FALSE, srcfile = NULL)
+get_exported_functions <- function(pkgArchive,selected_pkg   ) {
+ con <- archive::archive_read(file.path("tarballs",
+                                        glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")),
+                              file = glue::glue("{selected_pkg$name()}/NAMESPACE"))
+  nsFile <- parse(con,keep.source = TRUE)
   nsexp <- character(); nsimp <- character()
+  close(con)
   for (e in nsFile) {
     switch (as.character(e[[1L]]),
       export = {
@@ -28,7 +32,7 @@ get_exported_functions <- function(pkgdir) {
 #' Parses the files to determine which contain the function(s) of interest
 #' 
 #' @param type The type of files to parse
-#' @param pkgdir The package directory
+#' @param pkgArchive   The package directory
 #' @param funcnames The list of functions to evaluate
 #' 
 #' @return A `tibble` object containing the type of file, file name, function,
@@ -37,17 +41,25 @@ get_exported_functions <- function(pkgdir) {
 #' @noRd
 #' 
 #' @importFrom utils getParseData
-get_parse_data <- function(type = c("test", "source"), pkgdir, funcnames = NULL) {
+get_parse_data <- function(type = c("test", "source"), pkgarchive  ,selected_pkg, funcnames = NULL) {
+  
   type <- match.arg(type)
   dirpath <- switch (type,
-    test = if (file.exists(file.path(pkgdir, "tests", "testthat.R"))) file.path(pkgdir, "tests", "testthat") else file.path(pkgdir, "tests"),
-    source = file.path(pkgdir, "R")
+    test = if (file.path(glue::glue("{selected_pkg$name()}"),"tests", "testthat.R") %in% pkgarchive()$path ){
+      file.path(glue::glue("{selected_pkg$name()}"),"tests", "testthat") }
+    else { file.path(glue::glue("{selected_pkg$name()}"),"tests") }
+    ,
+    source = file.path(glue::glue("{selected_pkg$name()}"),"R")
   )
-  filenames <- list.files(dirpath, ".+\\.[R|r]$")
+  filenames <- na.omit((str_extract(pkgarchive()$path,paste0(dirpath,".+\\.[R|r]$"))))
   dplyr::bind_rows(lapply(filenames, function(filename) {
-    d <- parse(file.path(dirpath, filename), keep.source = TRUE) %>% 
+    con <- archive::archive_read(file.path("tarballs",
+                                           glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")),
+                                 file = filename)
+    d <- parse( text =readLines(con))  %>%
       utils::getParseData() %>% 
       dplyr::filter(token %in% c("SYMBOL_FUNCTION_CALL", "SYMBOL", "SPECIAL", "STR_CONST"))
+    close(con)
     d <- d %>% 
       dplyr::mutate(
         type = type,
@@ -91,6 +103,7 @@ get_test_files <- function(funcname, parse_data) {
 #' 
 #' @noRd
 get_source_files <- function(funcname, parse_data) {
+  #browser()
   func_list <- c(funcname, paste0("`", funcname, "`"))
   parse_data %>%
     dplyr::filter(type == "source", 
@@ -104,17 +117,22 @@ get_source_files <- function(funcname, parse_data) {
 #' Returns the man files from the package directory corresponding to the function of interest
 #' 
 #' @param funcname The name of the function to evaluate
-#' @param pkgdir The package directory
+#' @param pkgArchive   The package directory
 #' 
 #' @noRd
-get_man_files <- function(funcname, pkgdir) {
-  man_files <- list.files(file.path(pkgdir, "man"), ".+\\.Rd$")
+get_man_files <- function(funcname, pkgarchive,selected_pkg  ) {
+  man_files <- na.omit((str_extract(pkgarchive()$path,
+                                    paste(glue::glue("{selected_pkg$name()}"),"man",".+\\.Rd$",sep ="/"))))
   funcname_regex <- 
     gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", funcname) %>%
     gsub(pattern = "`", replacement = "`?") %>%
     gsub(pattern = "\\%", replacement = "\\\\\\\\\\%")
   i <- sapply(man_files, function(f) {
-    s <- readLines(file.path(pkgdir, "man", f))
+    con <- archive::archive_read(file.path("tarballs",
+                                           glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")),
+                                 file = f)
+    s <- readLines(con)
+    close(con)
     any(grepl(sprintf("name\\{%s\\}|alias\\{%s\\}", funcname_regex, funcname_regex), s))
   })
   man_files[i]
