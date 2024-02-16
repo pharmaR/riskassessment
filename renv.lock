@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.2.2",
+    "Version": "4.1.0",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -9,7 +9,7 @@
     ]
   },
   "Bioconductor": {
-    "Version": "3.16"
+    "Version": "3.14"
   },
   "Packages": {
     "AsioHeaders": {
@@ -194,6 +194,21 @@
         "Rcpp"
       ],
       "Hash": "74a64813f17b492da9c6afda6b128e3d"
+    },
+    "archive": {
+      "Package": "archive",
+      "Version": "1.1.5",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "cli",
+        "cpp11",
+        "glue",
+        "rlang",
+        "tibble"
+      ],
+      "Hash": "ed7b553d0142e37936e924b95c876cfe"
     },
     "askpass": {
       "Package": "askpass",
