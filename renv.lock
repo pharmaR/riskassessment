@@ -1,6 +1,6 @@
 {
   "R": {
-    "Version": "4.1.0",
+    "Version": "4.2.2",
     "Repositories": [
       {
         "Name": "CRAN",
@@ -9,7 +9,7 @@
     ]
   },
   "Bioconductor": {
-    "Version": "3.14"
+    "Version": "3.16"
   },
   "Packages": {
     "AsioHeaders": {
