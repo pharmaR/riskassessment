@@ -37,6 +37,7 @@ server <- function(input, output, session) {
   
 
   session$userData$repo_pkgs <- reactiveVal()
+  session$userData$suggests <- reactiveVal(FALSE)
   
   session$userData$loaded2_db <- reactive({
     riskassessment:::dbSelect("select name, version, score from package")
