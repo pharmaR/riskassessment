@@ -638,7 +638,6 @@ datatable_custom <- function(
 #' @param ... For future expansions. Currently not in use. 
 #'
 #' @return A data frame with a button in each table row. 
-#' @export
 #'
 #' @examples 
 #' add_buttons_to_table(mtcars[, 1:5], "button_id", "click me") |> 
