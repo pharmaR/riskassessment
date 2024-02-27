@@ -557,6 +557,8 @@ shinyInput <- function(FUN, len, id, ...) {
 #'
 #' @examples datatable_custom(mtcars, colnames = paste0("custom_", names(mtcars)))
 #' 
+#' @noRd
+#' 
 datatable_custom <- function(
     data, 
     colnames = c("Package", "Type", "Name", "Version", "Score", "Review Package"), 
@@ -641,6 +643,8 @@ datatable_custom <- function(
 #' @examples 
 #' add_buttons_to_table(mtcars[, 1:5], "button_id", "click me") |> 
 #'   datatable_custom()
+#'   
+#' @noRd
 #'   
 add_buttons_to_table <- function(
     data, 
