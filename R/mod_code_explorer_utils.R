@@ -56,7 +56,7 @@ get_parse_data <- function(type = c("test", "source"), pkgarchive  ,selected_pkg
     con <- archive::archive_read(file.path("tarballs",
                                            glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")),
                                  file = filename)
-    d <- parse( text =readLines(con))  %>%
+    d <- parse(text = readLines(con), keep.source = TRUE)  %>%
       utils::getParseData() %>% 
       dplyr::filter(token %in% c("SYMBOL_FUNCTION_CALL", "SYMBOL", "SPECIAL", "STR_CONST"))
     close(con)
