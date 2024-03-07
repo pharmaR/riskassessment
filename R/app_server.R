@@ -250,7 +250,8 @@ app_server <- function(input, output, session) {
     req(selected_pkg$name() != "-")
     req(create_src_dir())
     req(file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz"))))
-    pkgarchive(archive::archive(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz"))))
+    pkgarchive(archive::archive(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz"))) %>% 
+                 dplyr::arrange(tolower(path)))
   }) %>% 
     bindEvent(selected_pkg$name(), create_src_dir())
   
