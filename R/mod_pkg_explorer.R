@@ -85,7 +85,10 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
 
     nodes <- reactive({
       req(pkgarchive())
+     # browser()
       s <-  pkgarchive() %>%
+        mutate(lowercase =  tolower(path)) %>% 
+        arrange(lowercase) %>%
         filter(size > 0) %>%
         filter(grepl("/",path))  %>%
        dplyr::pull(path) %>%
