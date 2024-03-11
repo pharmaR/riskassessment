@@ -7,11 +7,12 @@
 #' @return A character vector of the function names
 #' 
 #' @noRd
-get_exported_functions <- function(pkgArchive,selected_pkg   ) {
+get_exported_functions <- function(pkg_name, pkg_version) {
+
  con <- archive::archive_read(file.path("tarballs",
-                                        glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")),
-                              file = glue::glue("{selected_pkg$name()}/NAMESPACE"))
-  nsFile <- parse(con,keep.source = TRUE)
+                                        glue::glue("{pkg_name}_{pkg_version}.tar.gz")),
+                              file = glue::glue("{pkg_name}/NAMESPACE"))
+  nsFile <- parse(con, keep.source = TRUE)
   nsexp <- character(); nsimp <- character()
   close(con)
   for (e in nsFile) {
@@ -41,20 +42,20 @@ get_exported_functions <- function(pkgArchive,selected_pkg   ) {
 #' @noRd
 #' 
 #' @importFrom utils getParseData
-get_parse_data <- function(type = c("test", "source"), pkgarchive  ,selected_pkg, funcnames = NULL) {
+get_parse_data <- function(type = c("test", "source"), pkgarchive, pkg_name, pkg_version, funcnames = NULL) {
   
   type <- match.arg(type)
   dirpath <- switch (type,
-    test = if (file.path(glue::glue("{selected_pkg$name()}"),"tests", "testthat.R") %in% pkgarchive()$path ){
-      file.path(glue::glue("{selected_pkg$name()}"),"tests", "testthat") }
-    else { file.path(glue::glue("{selected_pkg$name()}"),"tests") }
+    test = if (file.path(glue::glue("{pkg_name}"), "tests", "testthat.R") %in% pkgarchive$path ){
+      file.path(glue::glue("{pkg_name}"), "tests", "testthat") }
+    else { file.path(glue::glue("{pkg_name}"),"tests") }
     ,
-    source = file.path(glue::glue("{selected_pkg$name()}"),"R")
+    source = file.path(glue::glue("{pkg_name}"), "R")
   )
-  filenames <- na.omit((str_extract(pkgarchive()$path,paste0(dirpath,".+\\.[R|r]$"))))
+  filenames <- na.omit((str_extract(pkgarchive$path,paste0(dirpath, ".+\\.[R|r]$"))))
   dplyr::bind_rows(lapply(filenames, function(filename) {
     con <- archive::archive_read(file.path("tarballs",
-                                           glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")),
+                                           glue::glue("{pkg_name}_{pkg_version}.tar.gz")),
                                  file = filename)
     d <- parse(text = readLines(con), keep.source = TRUE)  %>%
       utils::getParseData() %>% 
@@ -103,7 +104,6 @@ get_test_files <- function(funcname, parse_data) {
 #' 
 #' @noRd
 get_source_files <- function(funcname, parse_data) {
-  #browser()
   func_list <- c(funcname, paste0("`", funcname, "`"))
   parse_data %>%
     dplyr::filter(type == "source", 
@@ -120,16 +120,17 @@ get_source_files <- function(funcname, parse_data) {
 #' @param pkgArchive   The package directory
 #' 
 #' @noRd
-get_man_files <- function(funcname, pkgarchive,selected_pkg  ) {
-  man_files <- na.omit((str_extract(pkgarchive()$path,
-                                    paste(glue::glue("{selected_pkg$name()}"),"man",".+\\.Rd$",sep ="/"))))
+get_man_files <- function(funcname, pkgarchive, pkg_name, pkg_version) {
+  
+  man_files <- na.omit((str_extract(pkgarchive$path,
+                                    paste(glue::glue("{pkg_name}"), "man", ".+\\.Rd$", sep ="/"))))
   funcname_regex <- 
     gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", funcname) %>%
     gsub(pattern = "`", replacement = "`?") %>%
     gsub(pattern = "\\%", replacement = "\\\\\\\\\\%")
   i <- sapply(man_files, function(f) {
     con <- archive::archive_read(file.path("tarballs",
-                                           glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")),
+                                           glue::glue("{pkg_name}_{pkg_version}.tar.gz")),
                                  file = f)
     s <- readLines(con)
     close(con)

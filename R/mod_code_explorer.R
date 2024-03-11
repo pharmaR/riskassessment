@@ -80,14 +80,14 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
     })
     
     exported_functions <- eventReactive(pkgarchive(), {
-      get_exported_functions(pkgarchive,selected_pkg)
+      get_exported_functions(pkg_name = selected_pkg$name(), pkg_version = selected_pkg$version())
     })
     
     parse_data <- eventReactive(exported_functions(), {
       
       purrr::map_dfr(
         c("test", "source"),
-        ~ get_parse_data(.x, pkgarchive, selected_pkg,exported_functions())
+        ~ get_parse_data(.x, pkgarchive(), pkg_name = selected_pkg$name(), pkg_version = selected_pkg$version(), exported_functions())
       )
     })
     
@@ -104,7 +104,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
       updateSelectInput(session, "source_files", choices = basename(source_files()),
                         selected = if (!rlang::is_empty(source_files())) basename(source_files())[1] else NULL)
       
-      man_files(get_files(input$exported_function, "man", pkgarchive,selected_pkg))
+      man_files(get_files(input$exported_function, "man", pkgarchive(), pkg_name = selected_pkg$name(), pkg_version = selected_pkg$version()))
       updateSelectInput(session, "man_files", choices = basename(man_files()),
                         selected = if (!rlang::is_empty(man_files())) basename(man_files())[1] else NULL)
     })
@@ -114,10 +114,10 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
       req(input$test_files)
       if (file.path(glue::glue("{selected_pkg$name()}"),"tests", "testthat.R") %in% pkgarchive()$path )
         {
-        fp <-   file.path(glue::glue("{selected_pkg$name()}"),"tests", "testthat",input$test_files)}
+        fp <-   file.path(glue::glue("{selected_pkg$name()}"), "tests", "testthat", input$test_files)}
       else 
       { 
-        fp <- file.path(glue::glue("{selected_pkg$name()}"),"tests",input$test_files) 
+        fp <- file.path(glue::glue("{selected_pkg$name()}"), "tests", input$test_files) 
         }
       con <- archive::archive_read(file.path("tarballs",
                                              glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")),
@@ -126,7 +126,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
       close(con)
       func_list <- c(input$exported_function, paste0("`", input$exported_function, "`"))
       highlight_index <- parse_data() %>% 
-        filter(stringr::str_ends(file,input$test_files) & func %in% func_list) %>% 
+        filter(stringr::str_ends(file, input$test_files) & func %in% func_list) %>% 
         pull(line)
       renderCode(lines, highlight_index)
     }) %>%
@@ -135,7 +135,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
     source_code <- reactive({
       if (rlang::is_empty(source_files())) return(HTML("No files to display"))
       req(input$source_files)
-      fp <- file.path(glue::glue("{selected_pkg$name()}"),"R", input$source_files) 
+      fp <- file.path(glue::glue("{selected_pkg$name()}"), "R", input$source_files) 
       con <- archive::archive_read(file.path("tarballs",
                                              glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")),
                                    file = fp)
@@ -143,7 +143,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
       close(con)
       func_list <- c(input$exported_function, paste0("`", input$exported_function, "`"))
       highlight_index <- parse_data() %>% 
-        filter(stringr::str_ends(file,input$source_files) & func %in% func_list) %>% 
+        filter(stringr::str_ends(file, input$source_files) & func %in% func_list) %>% 
         pull(line)
       renderCode(lines, highlight_index)
     }) %>%

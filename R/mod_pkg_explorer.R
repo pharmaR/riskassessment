@@ -87,7 +87,7 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
       req(pkgarchive())
       s <-  pkgarchive() %>%
         filter(size > 0) %>%
-        filter(grepl("/",path))  %>%
+        filter(grepl("/", path))  %>%
        dplyr::pull(path) %>%
       make_nodes() %>%
         .[[1]]
