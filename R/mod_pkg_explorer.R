@@ -18,19 +18,19 @@ mod_pkg_explorer_ui <- function(id){
 #' @importFrom shinyAce updateAceEditor
 #' @importFrom utils untar
 #' @importFrom shinyTree shinyTree renderTree updateTree get_selected
+#' @importFrom archive archive_read archive 
 #'
 #' @noRd 
 mod_pkg_explorer_server <- function(id, selected_pkg,
                                     accepted_extensions = c("r", "rmd", "rd", "txt", "md","csv", "tsv", "json", "xml", "yaml", "yml", "dcf", "html", "js", "css", "c", "cpp", "h", "java", "scala", "py", "perl", "sh", "sql"),
                                     accepted_filenames = c("DESCRIPTION", "NAMESPACE", "LICENSE", "LICENSE.note", "NEWS", "README", "CHANGES", "MD5"),
-                                    pkgdir = reactiveVal(),
+                                    pkgarchive = reactiveVal(),
                                     creating_dir = reactiveVal(TRUE),
                                     user, credentials) {
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
     output$pkg_explorer_ui <- renderUI({
-      
       
       # Lets the user know that a package needs to be selected.
       if(identical(selected_pkg$name(), character(0))) {
@@ -84,8 +84,13 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
       bindEvent(selected_pkg$name(), creating_dir())
 
     nodes <- reactive({
-      req(pkgdir())
-      s <- make_nodes(list.files(pkgdir(), recursive = TRUE))
+      req(pkgarchive())
+      s <-  pkgarchive() %>%
+        filter(size > 0) %>%
+        filter(grepl("/", path))  %>%
+       dplyr::pull(path) %>%
+      make_nodes() %>%
+        .[[1]]
       if(!is.null(s[["DESCRIPTION"]])){
       attr(s[["DESCRIPTION"]],"stselected") = TRUE
       }
@@ -93,9 +98,10 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
         f <- names(head(purrr::keep(s, \(x) !is.null(attr(x, "sttype"))), 1))
         attr(s[[f]],"stselected") = TRUE
       }
+      
       s
     }) %>%
-      bindEvent(pkgdir(), selected_pkg$name())
+      bindEvent(pkgarchive (), selected_pkg$name())
     
     output$dirtree <- shinyTree::renderTree(nodes())
     
@@ -117,7 +123,11 @@ mod_pkg_explorer_server <- function(id, selected_pkg,
         filename <- basename(filepath)
         e <- tolower(tools::file_ext(filepath))
         if (e %in% accepted_extensions || filename %in% accepted_filenames) {
-          s <- readLines(file.path(pkgdir(), filepath))
+          con <- archive::archive_read(file.path("tarballs",
+                                                 glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")),
+                                       file = glue::glue("{selected_pkg$name()}/{filepath}"))
+          s <- readLines(con)
+          close(con)
           s <- paste(s, collapse = "\n")
         } else {
           s <- "file format not supported"
