@@ -158,9 +158,9 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
                                              glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")),
                                    file = fp)
       Rdfile <-tools::parse_Rd(con)
-      close(con)
-      tools::Rd2HTML(Rdfile, package = c(selected_pkg$name(), selected_pkg$version()), out = file.path(out_dir, "man.html"))
-      includeHTML(file.path(out_dir, "man.html"))
+      HTML(paste0(capture.output(tools::Rd2HTML(Rdfile,
+                                               package = c(selected_pkg$name(),
+                                                           selected_pkg$version()), out = "")),collapse = "\n"))
     }) %>%
       bindEvent(input$man_files, input$exported_function, ignoreNULL = FALSE)
     
