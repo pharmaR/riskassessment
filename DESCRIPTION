@@ -68,7 +68,8 @@ Imports:
     shinyWidgets,
     stringr,
     shinyAce,
-    sortable
+    sortable,
+    archive
 Suggests: 
     chromote (>= 0.1.1.9001),
     fontawesome,

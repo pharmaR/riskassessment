@@ -11,14 +11,14 @@ mod_code_explorer_ui <- function(id){
   ns <- NS(id)
   uiOutput(ns("func_explorer_ui"))
 }
-
 #' code_explorer Server Functions
 #'
 #' @noRd 
 #' 
 #' @importFrom tools Rd2HTML
 #' @importFrom purrr map_dfr
-mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), creating_dir = reactiveVal(TRUE), user, credentials){
+#' @importFrom archive archive_read archive 
+mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(), creating_dir = reactiveVal(TRUE), user, credentials){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
@@ -79,14 +79,15 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
       }
     })
     
-    exported_functions <- eventReactive(pkgdir(), {
-      get_exported_functions(pkgdir())
+    exported_functions <- eventReactive(pkgarchive(), {
+      get_exported_functions(pkg_name = selected_pkg$name(), pkg_version = selected_pkg$version())
     })
     
     parse_data <- eventReactive(exported_functions(), {
+      
       purrr::map_dfr(
         c("test", "source"),
-        ~ get_parse_data(.x, pkgdir(), exported_functions())
+        ~ get_parse_data(.x, pkgarchive(), pkg_name = selected_pkg$name(), pkg_version = selected_pkg$version(), exported_functions())
       )
     })
     
@@ -96,26 +97,36 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
     observeEvent(input$exported_function, {
       req(input$exported_function)
       test_files(get_files(input$exported_function, "test", parse_data()))
-      updateSelectInput(session, "test_files", choices = test_files(),
-                        selected = if (!rlang::is_empty(test_files())) test_files()[1] else NULL)
+      updateSelectInput(session, "test_files", choices = basename(test_files()),
+                        selected = if (!rlang::is_empty(test_files())) basename(test_files())[1] else NULL)
       
       source_files(get_files(input$exported_function, "source", parse_data()))
-      updateSelectInput(session, "source_files", choices = source_files(),
-                        selected = if (!rlang::is_empty(source_files())) source_files()[1] else NULL)
+      updateSelectInput(session, "source_files", choices = basename(source_files()),
+                        selected = if (!rlang::is_empty(source_files())) basename(source_files())[1] else NULL)
       
-      man_files(get_files(input$exported_function, "man", pkgdir()))
-      updateSelectInput(session, "man_files", choices = man_files(),
-                        selected = if (!rlang::is_empty(man_files())) man_files()[1] else NULL)
+      man_files(get_files(input$exported_function, "man", pkgarchive(), pkg_name = selected_pkg$name(), pkg_version = selected_pkg$version()))
+      updateSelectInput(session, "man_files", choices = basename(man_files()),
+                        selected = if (!rlang::is_empty(man_files())) basename(man_files())[1] else NULL)
     })
     
     test_code <- reactive({
       if (rlang::is_empty(test_files())) return(HTML("No files to display"))
       req(input$test_files)
-      fp <- if (file.exists(file.path(pkgdir(), "tests", "testthat.R"))) file.path(pkgdir(), "tests", "testthat", input$test_files) else file.path(pkgdir(), "tests", input$test_files)
-      lines <- readLines(fp)
+      if (file.path(glue::glue("{selected_pkg$name()}"),"tests", "testthat.R") %in% pkgarchive()$path )
+        {
+        fp <-   file.path(glue::glue("{selected_pkg$name()}"), "tests", "testthat", input$test_files)}
+      else 
+      { 
+        fp <- file.path(glue::glue("{selected_pkg$name()}"), "tests", input$test_files) 
+        }
+      con <- archive::archive_read(file.path("tarballs",
+                                             glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")),
+                                   file = fp)
+      lines <- readLines(con)
+      close(con)
       func_list <- c(input$exported_function, paste0("`", input$exported_function, "`"))
       highlight_index <- parse_data() %>% 
-        filter(file == input$test_files & func %in% func_list) %>% 
+        filter(stringr::str_ends(file, input$test_files) & func %in% func_list) %>% 
         pull(line)
       renderCode(lines, highlight_index)
     }) %>%
@@ -124,10 +135,15 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
     source_code <- reactive({
       if (rlang::is_empty(source_files())) return(HTML("No files to display"))
       req(input$source_files)
-      lines <- readLines(file.path(pkgdir(), "R", input$source_files))
+      fp <- file.path(glue::glue("{selected_pkg$name()}"), "R", input$source_files) 
+      con <- archive::archive_read(file.path("tarballs",
+                                             glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")),
+                                   file = fp)
+      lines <- readLines(con)
+      close(con)
       func_list <- c(input$exported_function, paste0("`", input$exported_function, "`"))
       highlight_index <- parse_data() %>% 
-        filter(file == input$source_files & func %in% func_list) %>% 
+        filter(stringr::str_ends(file, input$source_files) & func %in% func_list) %>% 
         pull(line)
       renderCode(lines, highlight_index)
     }) %>%
@@ -136,9 +152,15 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgdir = reactiveVal(), c
     man_page <- reactive({
       if (rlang::is_empty(man_files())) return(HTML("No files to display"))
       req(input$man_files)
-      out_dir <- tempdir()
-      tools::Rd2HTML(file.path(pkgdir(), "man", input$man_files), package = c(selected_pkg$name(), selected_pkg$version()), out = file.path(out_dir, "man.html"))
-      includeHTML(file.path(out_dir, "man.html"))
+      fp <- file.path(glue::glue("{selected_pkg$name()}"), "man", input$man_files) 
+      con <- archive::archive_read(file.path("tarballs",
+                                             glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")),
+                                   file = fp)
+      Rdfile <-tools::parse_Rd(con)
+      close(con)
+      HTML(paste0(capture.output(tools::Rd2HTML(Rdfile,
+                                               package = c(selected_pkg$name(),
+                                                           selected_pkg$version()), out = "")), collapse = "\n"))
     }) %>%
       bindEvent(input$man_files, input$exported_function, ignoreNULL = FALSE)
     
