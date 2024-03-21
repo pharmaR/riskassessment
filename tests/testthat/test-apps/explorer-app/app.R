@@ -19,7 +19,8 @@ server <- function(input, output, server) {
   shinyOptions(golem_options = list(assessment_db_name = "dplyr.sqlite"))
   
   selected_pkg <- list(name = reactiveVal("dplyr"), version = reactiveVal("1.1.2"))
-  pkgdir <- reactiveVal(file.path("source", "dplyr"))
+  pkgarchive <- reactiveVal(archive::archive(file.path("tarballs", "dplyr_1.1.2.tar.gz")) |>
+                              dplyr::arrange(tolower(path)))
   user <- reactiveValues(
     name = "tester",
     role = "admin"
@@ -27,12 +28,12 @@ server <- function(input, output, server) {
   credential_config <- riskassessment:::get_db_config("credentials")
   
   riskassessment:::mod_pkg_explorer_server("src_explorer", selected_pkg,
-                                           pkgdir = pkgdir,
+                                           pkgarchive = pkgarchive,
                                            user = user,
                                            credentials = credential_config)
   
   riskassessment:::mod_code_explorer_server("fn_explorer", selected_pkg,
-                                            pkgdir = pkgdir,
+                                            pkgarchive = pkgarchive,
                                             user = user,
                                             credentials = credential_config)
 }

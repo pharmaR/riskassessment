@@ -454,6 +454,9 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     dep_table <- eventReactive(dep_metrics(), {
       req(dep_metrics())
 
+      if (nrow(dep_metrics()) == 0)
+        return(dplyr::tibble(package = character(), type = character(), version = character(), score = character()))
+      
       purrr::map_df(dep_metrics()$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>%
       right_join(dep_metrics(), by = "name") %>%
       select(package, type, version, score) %>%

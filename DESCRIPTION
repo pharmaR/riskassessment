@@ -1,6 +1,6 @@
 Package: riskassessment
 Title: A web app designed to interface with the `riskmetric` package
-Version: 3.0.0.9012
+Version: 3.0.0.9014
 Authors@R: c( 
     person("Aaron", "Clark", role = c("aut", "cre"), email = "aaron.clark@biogen.com"),
     person("Robert", "Krajcik", role = "aut", email = "robert.krajcik@biogen.com"),
@@ -69,7 +69,8 @@ Imports:
     shinyWidgets,
     stringr,
     shinyAce,
-    sortable
+    sortable,
+    archive
 Suggests: 
     chromote (>= 0.1.1.9001),
     fontawesome,

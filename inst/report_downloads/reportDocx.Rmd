@@ -49,6 +49,7 @@ library(plotly)
 
 knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
 cm_ind <- nrow(params$com_metrics) != 0
+dm_ind <- nrow(params$dep_table) != 0
 ```
 
 ```{r functions, include=FALSE, message=FALSE, warning=FALSE}
@@ -286,10 +287,12 @@ if('Community Usage Comments' %in% params$report_includes){
 
 `r if ('Package Dependencies' %in% params$report_includes) {"\\* Metrics whose score is NA will not impact the package {riskmetric} score"}`
 
-```{r package_dependencies_table}
+```{r package_dependencies_table, eval=dm_ind}
   if('Package Dependencies' %in% params$report_includes) {
-    flextable::flextable(params$dep_table, cwidth = c(1.5, 1.25, 1.25, 1.25))  %>% 
-    flextable::set_table_properties(align = "left") 
+    params$dep_table %>%
+      purrr::set_names(tools::toTitleCase(names(.))) %>%
+      flextable::flextable(cwidth = c(1.5, 1.25, 1.25, 1.25))  %>% 
+      flextable::set_table_properties(align = "left") 
   } else ""
 ```
 

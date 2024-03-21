@@ -136,13 +136,17 @@ report_creation <- function(pkg_lst, metric_weights, report_format, report_inclu
 
     dep_cards <- build_dep_cards(data = dep_metrics, loaded = loaded2_db$name, toggled = 0L)
     
-    dep_table <- purrr::map_df(dep_metrics$name, ~ get_versnScore(.x, loaded2_db, repo_pkgs)) %>%
-      right_join(dep_metrics, by = "name") %>%
-      select(package, type, version, score) %>%
-      arrange(package, type) %>%
-      distinct()
-    
-    
+    dep_table <- 
+      if (nrow(dep_metrics) == 0) {
+        dplyr::tibble(package = character(), type = character(), version = character(), score = character())
+      } else {
+        purrr::map_df(dep_metrics$name, ~get_versnScore(.x, loaded2_db, repo_pkgs)) %>%
+          right_join(dep_metrics, by = "name") %>%
+          select(package, type, version, score) %>%
+          arrange(package, type) %>%
+          distinct()
+      }
+
     # Render the report, passing parameters to the rmd file.
     out <-
       rmarkdown::render(
