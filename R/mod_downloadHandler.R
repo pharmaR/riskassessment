@@ -203,9 +203,10 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
       }
     })
     
-    observeEvent(download_file$filepath,{
+    observeEvent(download_file$filepath, {
       showNotification("Reports created",
                        action = downloadLink(ns("download_reports")),
+                       id = ns("dr_id"),
                        duration = NULL)
     })
     
@@ -214,10 +215,14 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
         basename(download_file$filename)
       },
       content = function(file) {
-        file.copy(
-          from = download_file$filepath,
-          to = file
-        )
+        removeNotification(ns("dr_id"))
+        filepath <-
+          file.copy(
+            from = download_file$filepath,
+            to = file
+          )
+        download_file$filepath <- NULL
+        filepath
       }
     )
   })
