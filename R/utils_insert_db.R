@@ -151,7 +151,7 @@ upload_package_to_db <- function(name, version, title, description,
 #' 
 #' @returns nothing
 #' @noRd
-insert_riskmetric_to_db <- function(pkg_name, 
+insert_riskmetric_to_db <- function(pkg_name, pkg_version = "",
     db_name = golem::get_golem_options('assessment_db_name')){
 
   if (!isTRUE(getOption("shiny.testmode"))) {
@@ -221,11 +221,17 @@ insert_riskmetric_to_db <- function(pkg_name,
   }
 
   # get suggests and add it to package_metrics table
-  src_dir <- file.path("source", pkg_name)
-  if (dir.exists(src_dir)) {
-    desc_file <- glue::glue("source/{pkg_name}/DESCRIPTION")
-    if ('Suggests' %in% desc::desc_fields(file = desc_file)) {
-    sug_vctr <- desc::desc_get_list(key = 'Suggests', file = desc_file) %>% sort()
+  tar_file <- file.path("tarballs", glue::glue("{pkg_name}_{pkg_version}.tar.gz"))
+  if (file.exists(tar_file)) {
+    desc_file <- glue::glue("{pkg_name}/DESCRIPTION")
+    
+    tmp_file <- tempfile()
+    tar_con <- archive::archive_read(tar_file, desc_file, format = "tar")
+    on.exit(close(tar_con))
+    writeLines(readLines(tar_con), tmp_file)
+    
+    if ('Suggests' %in% desc::desc_fields(file = tmp_file)) {
+      sug_vctr <- desc::desc_get_list(key = 'Suggests', file = tmp_file) %>% sort()
     } else {
       msg <- paste("Suggests not found for package", pkg_name)
       rlang::warn(msg)
@@ -233,9 +239,9 @@ insert_riskmetric_to_db <- function(pkg_name,
     }
   } else {
     sug_vctr <- unlist(tools::package_dependencies(pkg_name, available.packages(contrib.url(repos = "http://cran.us.r-project.org")),
-                       which=c("Suggests"), recursive=FALSE)) %>% unname() %>% sort()
+                                                   which=c("Suggests"), recursive=FALSE)) %>% unname() %>% sort()
   }
-  
+
   tbl_suggests <- tibble("package" = sug_vctr, type = "Suggests") 
   attr(tbl_suggests, "class") <- c('pkg_metric_dependencies', 'pkg_metric', 'data.frame')
   lst_suggests <- list(suggests = tbl_suggests)
@@ -432,7 +438,7 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, updateProgress 
       # Get and upload maintenance metrics to db.
       if (is.function(updateProgress))
         updateProgress(1)
-      insert_riskmetric_to_db(uploaded_packages$package[i], assess_db)
+      insert_riskmetric_to_db(uploaded_packages$package[i], uploaded_packages$version[i], assess_db)
       
       # Get and upload community metrics to db.
       if (is.function(updateProgress))

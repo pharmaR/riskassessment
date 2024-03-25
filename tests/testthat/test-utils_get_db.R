@@ -43,7 +43,7 @@ test_that("utils_get_db functions other than dbSelect", {
     dbUpdate(command, app_db_loc)
   }
 
-  insert_riskmetric_to_db(pkg_name, app_db_loc)
+  insert_riskmetric_to_db(pkg_name, db_name = app_db_loc)
   insert_community_metrics_to_db(pkg_name, app_db_loc)
   
   pkg_id <- dbSelect("SELECT id FROM package WHERE name = {pkg_name}", app_db_loc)
