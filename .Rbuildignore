@@ -22,6 +22,5 @@ _\.new\.png$
 ^pkgdown$
 ^Crashpad$
 ^tarballs$
-^source$
 ^revdep
 ^revdep$
