@@ -77,7 +77,7 @@ metricBoxServer <- function(n = 0, id, title, desc, value, score = "NULL",
       ) # , num_bins = 3
       
       body_p_style <- glue::glue("font-size: {auto_font_out}vw;")
-      card_id <- paste0("card", n)
+      card_id <- gsub(" ","",paste0("card", n))
       
       # build the html card
       if(score == "NULL" | # usually for non-riskmetric cards (like on comm or database tab)
@@ -130,7 +130,7 @@ metricBoxServer <- function(n = 0, id, title, desc, value, score = "NULL",
         div(
           class = "row no-gutters;",
           div(
-            id = card_id,
+            id = ns(card_id),
             class = "col-md-4 text-center border-info",
             display_obj,
             tags$script(glue::glue("$('#{ns(\"card_id\")}').tooltip({{placement: 'right', title: '{legend_desc}', html: false, trigger: 'hover'}});"))
