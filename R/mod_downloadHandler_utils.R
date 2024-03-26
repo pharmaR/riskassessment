@@ -96,11 +96,7 @@ report_creation <- function(pkg_lst, metric_weights, report_format, report_inclu
     this_pkg <- selected_pkg$name
     this_ver <- selected_pkg$version
     file_named <- glue::glue('{this_pkg}_{this_ver}_Risk_Assessment.{report_format}')
-    path <- if (n_pkgs > 1) {
-      file.path(my_tempdir, file_named)
-    } else {
-      NULL
-    }
+    path <- file.path(my_tempdir, file_named)
     
     pkg_list <- list(
       id = selected_pkg$id,
@@ -148,8 +144,7 @@ report_creation <- function(pkg_lst, metric_weights, report_format, report_inclu
       }
 
     # Render the report, passing parameters to the rmd file.
-    out <-
-      rmarkdown::render(
+    rmarkdown::render(
         input = Report,
         output_file = path,
         clean = FALSE,
@@ -177,11 +172,10 @@ report_creation <- function(pkg_lst, metric_weights, report_format, report_inclu
       )
     fs <- c(fs, path)  # Save all the reports/
   }
-  # Zip all the files up. -j retains just the files in zip file.
-  if (n_pkgs > 1) zip(zipfile = my_tempdir, files = fs, extras = "-j")
+  
   if (is.function(updateProgress))
     updateProgress(1, "**Finished**")
   
-  if (n_pkgs > 1) paste0(my_tempdir, ".zip") else out
+  fs
 }
 

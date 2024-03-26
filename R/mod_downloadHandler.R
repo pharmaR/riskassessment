@@ -214,17 +214,22 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
     
     output$download_reports <- downloadHandler(
       filename = function() {
-        basename(download_file$filename)
+        if (length(download_file$filepath) > 1) {
+          report_datetime <- stringr::str_replace_all(stringr::str_replace(get_time(), " ", "_"), ":", "-")
+          glue::glue('RiskAssessment-Report-{report_datetime}.zip')        
+        } else {
+          basename(download_file$filename)
+        }
       },
       content = function(file) {
         removeNotification(ns("dr_id"))
-        filepath <-
-          file.copy(
-            from = download_file$filepath,
-            to = file
-          )
+        
+        if (length(download_file$filepath) > 1) {
+          zip(zipfile = file, files = download_file$filepath, extras = "-j")
+        } else {
+          file.copy(from = download_file$filepath, to = file)
+        }
         download_file$filepath <- NULL
-        filepath
       }
     )
   })
