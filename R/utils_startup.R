@@ -244,7 +244,6 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   }
   
   if (!dir.exists("tarballs")) dir.create("tarballs")
-  if (!dir.exists("source")) dir.create("source")
 
   invisible(c(assessment_db, if (use_shinymanager) credentials_db))
 }
