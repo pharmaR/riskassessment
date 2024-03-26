@@ -163,6 +163,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
           cat("<begin>", amount, ":", detail, "<end>", "\n", sep = "")
         }
         
+        shinyjs::disable("create_reports")
         download_file$background <-
           callr::r_bg(
             function(...) {
@@ -200,6 +201,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
       } else {
         download_file$progress$close()
         download_file$filepath <- download_file$background$get_result()
+        shinyjs::enable("create_reports")
       }
     })
     
