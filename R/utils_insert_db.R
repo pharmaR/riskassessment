@@ -146,7 +146,7 @@ upload_package_to_db <- function(name, version, title, description,
 #' @import dplyr
 #' @importFrom riskmetric pkg_ref pkg_assess pkg_score
 #' @importFrom glue glue 
-#' @importFrom desc desc_fields desc_get_list
+#' @importFrom desc description
 #' @importFrom tools package_dependencies
 #' 
 #' @returns nothing
@@ -225,13 +225,12 @@ insert_riskmetric_to_db <- function(pkg_name, pkg_version = "",
   if (file.exists(tar_file)) {
     desc_file <- glue::glue("{pkg_name}/DESCRIPTION")
     
-    tmp_file <- tempfile()
     tar_con <- archive::archive_read(tar_file, desc_file, format = "tar")
     on.exit(close(tar_con))
-    writeLines(readLines(tar_con), tmp_file)
     
-    if ('Suggests' %in% desc::desc_fields(file = tmp_file)) {
-      sug_vctr <- desc::desc_get_list(key = 'Suggests', file = tmp_file) %>% sort()
+    desc_con <- desc::description$new(text = readLines(tar_con))
+    if ('Suggests' %in% desc_con$fields()) {
+      sug_vctr <- desc_con$get_list(key = 'Suggests') %>% sort()
     } else {
       msg <- paste("Suggests not found for package", pkg_name)
       rlang::warn(msg)
