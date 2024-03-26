@@ -40,8 +40,11 @@ metricGridServer <- function(id, metrics) {
     
     
     observeEvent(req(nrow(metrics()) > 0), {
-      apply(metrics(), 1, function(m)
-        metricBoxServer(id = m['name'],
+      metrics_dat <-  dplyr::mutate(metrics(), card_num = as.numeric(row_number()))
+      print(metrics_dat)
+      apply(metrics_dat, 1, function(m) {
+        metricBoxServer(n = m["card_num"],
+            id = m['name'],
             title = m['title'],
             desc = m['desc'],
             value = dplyr::case_when(m['name'] != 'has_bug_reports_url' ~ m['value'],
@@ -54,7 +57,8 @@ metricGridServer <- function(id, metrics) {
             icon_class = m['icon_class'],
             type = m['type']
           )
-        )
+        }
+      )
     })
   })
 }

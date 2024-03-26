@@ -17,3 +17,6 @@ run_app(pre_auth_user = 'admin')
 # options(shiny.autoload.r=NULL)
 
 
+# devtools::load_all()
+# upload_pkg_lst("Tplyr")
+# upload_pkg_lst(c("tidyr", "IDEAFilter", "tidyCDISC", "ggplot2", "xportr"))

@@ -7,12 +7,12 @@
 #' @return tagList object
 #' @keywords internal
 #'
-metric_gauge <- function(score) { # could add id arg here
+metric_gauge <- function(score, id = "meter") { # could add id arg here
   
   tagList(
     div(style = "width: 78px; text-align:center;",
         div(
-          tags$label(style = "font-size:32px", # `for` = id,
+          tags$label(style = "font-size:32px", `for` = id,
                      if(toupper(score) %in% c("NA", "NULL")) "NA" else {
                        # flip the label display of the score to mimic the package score...
                        HTML(case_when(
@@ -24,7 +24,7 @@ metric_gauge <- function(score) { # could add id arg here
           )
         ),
         div(
-          tags$meter( # id = id,
+          tags$meter( id = id,
             min = 0,
             max = 1,
             optimum = 1,
