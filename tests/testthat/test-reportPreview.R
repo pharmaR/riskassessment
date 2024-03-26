@@ -36,6 +36,8 @@ test_that("Reactivity of reportPreview", {
   expect_equal(app$get_value(input = "reportPreview-downloadHandler-report_format"), "html")
   
   # download and check file type
+  app$click("reportPreview-downloadHandler-create_reports", timeout_ = 30*1000)
+  app$wait_for_idle()
   report <- app$get_download("reportPreview-downloadHandler-download_reports")
   app$wait_for_idle()
 

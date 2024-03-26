@@ -18,6 +18,7 @@ dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_na
   errFlag <- FALSE
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
+  RSQLite::sqliteSetBusyHandler(con, 3000)
   tryCatch(
     expr = {
       rs <- DBI::dbSendQuery(con, glue::glue_sql(query, .envir = .envir, .con = con))

@@ -8,7 +8,7 @@
 mod_downloadHandler_button_ui <- function(id, multiple = TRUE){
   ns <- NS(id)
   tagList(
-    downloadButton(ns("download_reports"), if (multiple) "Download Report(s)" else "Download Report")
+    actionButton(ns("create_reports"), if (multiple) "Create Report(s)" else "Create Report")
   )
 }
 
@@ -102,23 +102,35 @@ mod_downloadHandler_include_server <- function(id) {
 #' 
 #' @importFrom flextable flextable set_table_properties colformat_char
 #'
-#' @noRd 
+#' @noRd
+#' @importFrom callr r_bg
 mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
     observe({
       if(isTruthy(pkgs())) {
-        shinyjs::enable("download_reports")
+        shinyjs::enable("create_reports")
       } else {
-        shinyjs::disable("download_reports")
+        shinyjs::disable("create_reports")
       }
     })
+    download_file <- reactiveValues()
     
-    output$download_reports <- downloadHandler(
-      filename = function() {
-        n_pkgs <- length(pkgs())
-        
+    observeEvent(input$create_reports, {
+      
+      n_pkgs <- length(pkgs())
+      req(n_pkgs > 0)
+      
+      if (!isTruthy(session$userData$repo_pkgs())) {
+        if (isTRUE(getOption("shiny.testmode"))) {
+          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x, col.names = c("Package", "Version", "Source"))))
+        } else {
+          session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
+        }
+      }
+      
+      download_file$filename <- {
         if (n_pkgs > 1) {
           report_datetime <- stringr::str_replace_all(stringr::str_replace(get_time(), " ", "_"), ":", "-")
           glue::glue('RiskAssessment-Report-{report_datetime}.zip')
@@ -126,201 +138,103 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
           pkg_ver <- dbSelect("SELECT version FROM package WHERE name = {pkgs()}")
           glue::glue('{pkgs()}_{pkg_ver}_Risk_Assessment.{input$report_format}')
         }
-      },
-      content = function(file) {
-        n_pkgs <- length(pkgs())
+      }
+      
+      if (n_pkgs < 4) {
+        progress <- shiny::Progress$new(max = n_pkgs + 1)
+        progress$set(message = glue::glue('Downloading {ifelse(n_pkgs > 1, paste0(n_pkgs, " "), "")}Report{ifelse(n_pkgs > 1, "s:", ":")}'),
+                     detail = if(n_pkgs == 1) pkgs(),
+                     value = 0)
+        on.exit(progress$close())
         
-        req(n_pkgs > 0)
-        
-        if (!isTruthy(session$userData$repo_pkgs())) {
-          if (isTRUE(getOption("shiny.testmode"))) {
-            session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x, col.names = c("Package", "Version", "Source"))))
-          } else {
-            session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
-          }
+        updateProgress <- function(amount = 1, detail = NULL) {
+          progress$inc(amount = amount, detail = detail)
         }
         
-        shiny::withProgress(
-          message = glue::glue('Downloading {ifelse(n_pkgs > 1, paste0(n_pkgs, " "), "")}Report{ifelse(n_pkgs > 1, "s", paste0(": ", pkgs()))}'),
-          value = 0,
-          max = n_pkgs + 2, # Tell the progress bar the total number of events.
-          {
-            shiny::incProgress(1)
-            
-            my_tempdir <- tempdir()
-            if (input$report_format == "html") {
-              
-              # https://github.com/rstudio/fontawesome/issues/99
-              # Here, we make sure user has a functional version of fontawesome
-              fa_v <- packageVersion("fontawesome")
-              if(fa_v == '0.4.0') {
-                msg1 <- "HTML reports will not render with {fontawesome} v0.4.0."
-                msg2 <- glue::glue("You currently have v{fa_v} installed. If the report download failed, please install a stable version. We recommend v0.5.0 or higher.")
-                warning(paste(msg1, msg2))
-                showModal(modalDialog(
-                  size = "l",
-                  title = h3(msg1, class = "mb-0 mt-0 txt-color"),
-                  h5(msg2)
-                ))
-              }
-              
-              Report <- file.path(my_tempdir, "reportHtml.Rmd")
-              file.copy(app_sys('report_downloads', 'reportHtml.Rmd'), Report, overwrite = TRUE)
-              file.copy(app_sys('report_downloads', 'raa-image.png'),
-                        file.path(my_tempdir, 'raa-image.png'), overwrite = TRUE)
-              file.copy(app_sys('report_downloads', 'header.html'),
-                        file.path(my_tempdir, 'header.html'), overwrite = TRUE)
-            } 
-            else if (input$report_format == "docx") { 
-              Report <- file.path(my_tempdir, "reportDocx.Rmd")
-              if (!dir.exists(file.path(my_tempdir, "images")))
-                dir.create(file.path(my_tempdir, "images"))
-              file.copy(app_sys('report_downloads', 'reportDocx.Rmd'),
-                        Report,
-                        overwrite = TRUE)
-              file.copy(app_sys('report_downloads', 'header.docx'),
-                        file.path(my_tempdir, 'header.docx'),
-                        overwrite = TRUE)
-              file.copy(app_sys('report_downloads', 'read_html.lua'),
-                        file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
-              file.copy(app_sys('report_downloads', 'images', 'user-tie.png'),
-                        file.path(my_tempdir, "images", "user-tie.png"),
-                        overwrite = TRUE)
-              file.copy(app_sys('report_downloads', 'images', 'user-shield.png'),
-                        file.path(my_tempdir, "images", "user-shield.png"),
-                        overwrite = TRUE)
-              file.copy(app_sys('report_downloads', 'images', 'calendar-alt.png'),
-                        file.path(my_tempdir, "images", "calendar-alt.png"),
-                        overwrite = TRUE)
-              file.copy(app_sys('report_downloads', 'raa-image.png'),
-                        file.path(my_tempdir, 'raa-image.png'), overwrite = TRUE)
-            } 
-            else { 
-              Report <- file.path(my_tempdir, "reportPdf.Rmd")
-              if (!dir.exists(file.path(my_tempdir, "images")))
-                dir.create(file.path(my_tempdir, "images"))
-              file.copy(app_sys('report_downloads', 'reportPdf.Rmd'),
-                        Report,
-                        overwrite = TRUE)
-              file.copy(app_sys('report_downloads', 'header.tex'),
-                        file.path(my_tempdir, 'header.tex'),
-                        overwrite = TRUE)
-              file.copy(app_sys('report_downloads', 'fancyhdr.sty'),
-                        file.path(my_tempdir, 'fancyhdr.sty'),
-                        overwrite = TRUE)              
-              file.copy(app_sys('report_downloads', 'read_html.lua'),
-                        file.path(my_tempdir, "read_html.lua"), overwrite = TRUE)
-              file.copy(app_sys('report_downloads', 'images', 'user-tie.png'),
-                        file.path(my_tempdir, "images", "user-tie.png"),
-                        overwrite = TRUE)
-              file.copy(app_sys('report_downloads', 'images', 'user-shield.png'),
-                        file.path(my_tempdir, "images", "user-shield.png"),
-                        overwrite = TRUE)
-              file.copy(app_sys('report_downloads', 'images', 'calendar-alt.png'),
-                        file.path(my_tempdir, "images", "calendar-alt.png"),
-                        overwrite = TRUE)
-              file.copy(app_sys('report_downloads', 'raa-image.png'),
-                        file.path(my_tempdir, 'raa-image.png'), overwrite = TRUE)
-            }
-            
-            fs <- c()
-            for (i in 1:n_pkgs) {
-              # Grab package name and version, then create filename and path.
-              # this_pkg <- "stringr" # for testing
-              selected_pkg <- get_pkg_info(pkgs()[i])
-              this_pkg <- selected_pkg$name
-              this_ver <- selected_pkg$version
-              file_named <- glue::glue('{this_pkg}_{this_ver}_Risk_Assessment.{input$report_format}')
-              path <- if (n_pkgs > 1) {
-                file.path(my_tempdir, file_named)
-              } else {
-                file
-              }
-              
-              pkg_list <- list(
-                id = selected_pkg$id,
-                name = selected_pkg$name,
-                version = selected_pkg$version,
-                date_added = selected_pkg$date_added,
-                title = selected_pkg$title,
-                decision = selected_pkg$decision,
-                description = selected_pkg$description,
-                author = selected_pkg$author,
-                maintainer = selected_pkg$maintainer,
-                license = selected_pkg$license,
-                published = selected_pkg$published_on,
-                score = selected_pkg$score
-              )
-              
-              # gather comments data
-              overall_comments <- get_overall_comments(this_pkg)
-              pkg_summary <- get_pkg_summary(this_pkg)
-              mm_comments <- get_mm_comments(this_pkg)
-              cm_comments <- get_cm_comments(this_pkg)
-              se_comments <- get_se_comments(this_pkg)
-              fe_comments <- get_fe_comments(this_pkg)
-              
-              # gather maint metrics & community metric data
-              mm_data <- get_metric_data(this_pkg, metric_class = "maintenance")
-              comm_data <- get_comm_data(this_pkg)
-              comm_cards <- build_comm_cards(comm_data)
-              downloads_plot <- build_comm_plotly(comm_data)
-              metric_tbl <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
-              
-              dep_metrics <- get_depends_data(this_pkg, db_name = golem::get_golem_options("assessment_db_name"))
-
-              dep_cards <- build_dep_cards(data = dep_metrics, loaded = session$userData$loaded2_db()$name, toggled = 0L)
-
-              dep_table <- 
-                if (nrow(dep_metrics) == 0) {
-                  dplyr::tibble(package = character(), type = character(), version = character(), score = character())
-                } else {
-                purrr::map_df(dep_metrics$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>%
-                  right_join(dep_metrics, by = "name") %>%
-                  select(package, type, version, score) %>%
-                  arrange(package, type) %>%
-                  distinct()
-                }
-
-              # Render the report, passing parameters to the rmd file.
-              rmarkdown::render(
-                input = Report,
-                output_file = path,
-                clean = FALSE,
-                params = list(pkg = pkg_list,
-                              report_includes = input$report_includes,
-                              riskmetric_version = paste0(packageVersion("riskmetric")),
-                              app_version = golem::get_golem_options('app_version'),
-                              metric_weights = metric_weights(),
-                              user_name = user$name,
-                              user_role = paste(user$role, collapse = ', '),
-                              overall_comments = overall_comments,
-                              pkg_summary = pkg_summary,
-                              mm_comments = mm_comments,
-                              cm_comments = cm_comments,
-                              se_comments = se_comments,
-                              fe_comments = fe_comments,
-                              maint_metrics = mm_data,
-                              com_metrics = comm_cards,
-                              com_metrics_raw = comm_data,
-                              downloads_plot_data = downloads_plot,
-                              dep_cards = dep_cards,
-                              dep_table = dep_table,
-                              metric_tbl = metric_tbl
-                )
-              )
-              fs <- c(fs, path)  # Save all the reports/
-              shiny::incProgress(1) # Increment progress bar.
-            }
-            # Zip all the files up. -j retains just the files in zip file.
-            if (n_pkgs > 1) zip(zipfile = file, files = fs, extras = "-j")
-            shiny::incProgress(1) # Increment progress bar.
-          })
+        download_file$filepath <-
+          report_creation(pkgs(), metric_weights(), input$report_format, input$report_includes, reactiveValuesToList(user), session$userData$loaded2_db(), session$userData$repo_pkgs(), updateProgress = updateProgress)
+      } else {
+        download_file$progress <- shiny::Progress$new(max = n_pkgs + 2)
+        download_file$progress$set(message = glue::glue('Downloading {ifelse(n_pkgs > 1, paste0(n_pkgs, " "), "")}Report{ifelse(n_pkgs > 1, "s:", ":")}'),
+                     detail = "Setting up background process",
+                     value = 1)
+        
+        updateProgress <- function(amount = 1, detail = NULL) {
+          cat("<begin>", amount, ":", detail, "<end>", "\n", sep = "")
+        }
+        
+        shinyjs::disable("create_reports")
+        download_file$background <-
+          callr::r_bg(
+            function(...) {
+              pkgload::load_all(export_all = TRUE, helpers = FALSE, attach_testthat = FALSE)
+              report_creation(...)
+            },
+            list(pkg_lst = pkgs(), metric_weights = metric_weights(),
+                 report_format = input$report_format, report_includes = input$report_includes,
+                 user = reactiveValuesToList(user),
+                 loaded2_db = session$userData$loaded2_db(), repo_pkgs = session$userData$repo_pkgs(),
+                 db_name = golem::get_golem_options('assessment_db_name'), my_tempdir = tempdir(),
+                 updateProgress = updateProgress),
+            user_profile = FALSE
+          )
+      }
+    })
+    
+    observe({
+      req(download_file$background)
+      
+      out <-
+        download_file$background$read_output_lines() %>%
+        `[`(grepl(pattern = "^<begin>.*?<end>$", .))
+      if (length(out) > 0) {
+        out <- 
+          sub("<end>", "", out) %>% 
+          sub(pattern = "<begin>", replacement = "") %>% 
+          strsplit(":")
+        purrr::walk(out, ~ {
+          download_file$progress$inc(amount = as.numeric(.x[1]), detail = if (!is.na(.x[2])) .x[2])
+        })
+      }
+      if (download_file$background$is_alive()) {
+        invalidateLater(1000, session)
+      } else {
+        download_file$progress$close()
+        download_file$filepath <- download_file$background$get_result()
+        shinyjs::enable("create_reports")
+      }
+    })
+    
+    observeEvent(download_file$filepath, {
+      showNotification("Reports created",
+                       action = downloadLink(ns("download_reports")),
+                       id = ns("dr_id"),
+                       duration = NULL)
+    })
+    
+    output$download_reports <- downloadHandler(
+      filename = function() {
+        if (length(download_file$filepath) > 1) {
+          report_datetime <- stringr::str_replace_all(stringr::str_replace(get_time(), " ", "_"), ":", "-")
+          glue::glue('RiskAssessment-Report-{report_datetime}.zip')        
+        } else {
+          basename(download_file$filename)
+        }
+      },
+      content = function(file) {
+        removeNotification(ns("dr_id"))
+        
+        if (length(download_file$filepath) > 1) {
+          zip(zipfile = file, files = download_file$filepath, extras = "-j")
+        } else {
+          file.copy(from = download_file$filepath, to = file)
+        }
+        download_file$filepath <- NULL
       }
     )
   })
 }
-    
+
 ## To be copied in the UI
 # mod_downloadHandler_button_ui("downloadHandler_1")
 
