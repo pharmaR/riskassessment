@@ -9,6 +9,7 @@ metricBoxUI <- function(id) {
 
 #' Server logic for the 'Metric Box' module
 #'
+#' @param n the card count within a given metricGrid
 #' @param id a module id name
 #' @param title title.
 #' @param desc description.
@@ -27,12 +28,13 @@ metricBoxUI <- function(id) {
 #' @importFrom glue glue
 #' @keywords internal
 #'
-metricBoxServer <- function(id, title, desc, value, score = "NULL",
+metricBoxServer <- function(n = 0, id, title, desc, value, score = "NULL",
                             is_perc = FALSE, is_url = FALSE,
                             succ_icon = "check", unsucc_icon = "triangle-exclamation",
                             icon_class = "text-success", type = "information"
                             ) {
   moduleServer(id, function(input, output, session) {
+    ns <- session$ns
 
     metric <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
     
@@ -75,6 +77,7 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
       ) # , num_bins = 3
       
       body_p_style <- glue::glue("font-size: {auto_font_out}vw;")
+      card_id <- paste0("card", n)
       
       # build the html card
       if(score == "NULL" | # usually for non-riskmetric cards (like on comm or database tab)
@@ -95,11 +98,21 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
              class = icon_class, verify_fa = FALSE,
              style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
         )
+        legend_desc <- dplyr::if_else(score == "NULL",
+          "Not a riskmetric assessment",
+          "Assessment not found, most commonly due to riskmetric source type"
+        )
       } else { # use html version (displaying riskmetric score on a meter)
         display_obj <- 
           div(style = "padding-top: 30%; padding-left: 10%;",
              metric_gauge(score = score)
           )
+        legend_desc <- dplyr::case_when(
+          score == "NA" | is.na(score) ~ "Score: NA indicates an assessment value exists, but there is no score",
+          score == 0 ~ "Score: 1 indicates the highest risk possible",
+          score == 1 ~ "Score: 0 indicates the lowest risk possible",
+          TRUE ~ "Scores close to 1 indicate high risk while scores closer to 0 are low risk"
+        )
       }
       if (title %in% c("Dependencies","Reverse Dependencies")){ # for dependencies/rev dep cards alone
         link_button <-  a(class="stretched-link",title = "Click for more details",
@@ -117,8 +130,10 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
         div(
           class = "row no-gutters;",
           div(
+            id = card_id,
             class = "col-md-4 text-center border-info",
-            display_obj
+            display_obj,
+            tags$script(glue::glue("$('#{ns(\"card_id\")}').tooltip({{placement: 'right', title: '{legend_desc}', html: false, trigger: 'hover'}});"))
           ),
           div(
             class = "col-md-8",

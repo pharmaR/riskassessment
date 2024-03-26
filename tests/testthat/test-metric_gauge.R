@@ -31,3 +31,30 @@ test_that("metric_gauge() 'value' working...", {
   expect_equal(metric_gauge(".45") |> meter_val() ,"0.45")
   expect_equal(metric_gauge("1") |> meter_val(), "1")
 })
+
+# For interactive use only, to visualize the meters in a browser
+if(interactive()) {
+  ui <- fluidPage(
+    tags$head(tags$style(
+           "meter::-webkit-meter-optimum-value {background: #9CFF94;}
+            meter::-webkit-meter-suboptimum-value{background:#FFD070;}
+            meter::-webkit-meter-even-less-good-value{background:#FF765B;}
+            meter::-moz-meter-bar {background: #FF765B;}  /* color of bar*/
+            meter::-moz-meter-optimum-value {background: #9CFF94;} 
+            meter::-moz-meter-suboptimum-value{background:#FFD070;}")),
+    div(
+      metric_gauge("NA"),
+      tags$script(glue::glue("$('#{\"meter\"}').tooltip({{placement: 'right', title: 'Legend description for \"NA\"', html: false, trigger: 'hover'}});"))
+      # tags$script(glue::glue("$('#{ns(\"meter\")}').tooltip({{placement: 'right', title: 'Legend description', html: false, trigger: 'hover'}});"))
+    ),  br(),
+    div(
+      metric_gauge("0", id = "meter2"),
+      tags$script(glue::glue("$('#{\"meter2\"}').tooltip({{placement: 'right', title: 'Legend description for zero', html: false, trigger: 'hover'}});"))
+      ), br(),
+    metric_gauge(".25"), br(),
+    metric_gauge(".45"), br(),
+    metric_gauge("1")
+  )
+  server <- function(input, output, session) {}
+  shinyApp(ui, server)
+}
