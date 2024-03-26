@@ -165,3 +165,50 @@ test_that("Test that get_time() works", {
 test_that("Test that build_dep_cards() works", {
   skip("Placeholder for build_dep_cards()")
 })
+
+test_that("add_buttons_to_table works", {
+  expect_no_error(add_buttons_to_table(mtcars, "testid", "click me"))
+})
+test_that("add_buttons_to_table adds unique buttons to each table row", {
+  output <- add_buttons_to_table(mtcars, "testid", "click me")
+  # individual buttons are added to each row:
+  expected_button_ids <- paste0('<button id=\"button_', 1:nrow(mtcars))
+  sapply(
+    seq_along(output$Actions), 
+    \(x){expect_true(grepl(expected_button_ids[x], output$Actions[x]))}
+  )
+})
+test_that(
+  "add_buttons_to_table can handle zero-row data frames and 
+    errors if not a data frame is provided", 
+  {
+    #it does not error with a zero-row data frame: 
+    expect_no_error(add_buttons_to_table(data.frame(), "testid", "click me"))
+    
+    # it errors if not a data frame is provided
+    expect_error(add_buttons_to_table(matrix(), "testid", "click me"))
+  }
+) 
+
+test_that("datatable_custom works", {
+  output <- datatable_custom(mtcars, colnames = paste0("custom_", names(mtcars)))
+  expect_true(inherits(output, "datatables"))
+  # it errors if not a data frame is provided:
+  expect_error(datatable_custom(matrix()))
+  # it defaults to data frame names with a warning if colnames is not of equal 
+  # length as names(data)
+  expect_warning(
+    datatable_custom(mtcars[, 1:2], colnames = c("a", "b", "c")),
+    "Defaulting to original data frame names"
+  )
+  #it returns an empty datatable if the data frame provided is NULL
+  output_no_df <- datatable_custom(NULL, colnames = paste0("custom_", names(mtcars)))
+  expect_true(inherits(output_no_df, "datatables"))
+  expect_equal(nrow(output_no_df$x$data), 0)
+  # and if the colnames parameter is also NULL:
+  output_no_df_no_colnames <- datatable_custom(NULL, colnames = NULL)
+  expect_true(inherits(output_no_df_no_colnames, "datatables"))
+  expect_equal(nrow(output_no_df_no_colnames$x$data), 0)
+  
+})
+
