@@ -11,7 +11,6 @@ app_server <- function(input, output, session) {
   
   old <- options()
   onStop(function() {
-    unlink("source/*", recursive = TRUE)
     options(old)
     })
   options(repos = get_db_config("package_repo"))
