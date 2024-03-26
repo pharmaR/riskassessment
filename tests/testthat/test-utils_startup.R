@@ -125,6 +125,21 @@ test_that("database initialization", {
   expect_true(file.exists(db_lst[2]))
 })
 
+test_that("check_repo works", {
+  
+  repos <- c("https://packagemanager.posit.co/cran/latest", "https://cran.rstudio.com")
+  expect_equal(
+    check_repos(repos),
+    repos
+  )
+  
+  repos <- c("https://packagemanager.posit.co/cran/latest", "https://cran.studio.com")
+  expect_error(
+    check_repos(repos),
+    "The following URL was not reachable: https://cran.studio.com/src/contrib. Please check that the repo is valid and pointing to external sources."
+  )
+})
+
 #### add_tags tests ####
 
 test_that("add_tags works", {

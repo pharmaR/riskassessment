@@ -32,7 +32,7 @@ test_that("Reactivity of database view table", {
   tbl_actual <-
     app$get_value(export = "databaseView-table_data")
   
-  app$run_js("Shiny.setInputValue('upload_package-load_cran', 'load')")
+  app$run_js("Shiny.setInputValue('upload_package-load_repo_pkgs', 'load')")
   app$wait_for_idle()
   app$set_inputs(`upload_package-pkg_lst` = "tidyr")
   app$click("upload_package-add_pkgs", wait_ = FALSE)

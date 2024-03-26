@@ -11,10 +11,9 @@ app_server <- function(input, output, session) {
   
   old <- options()
   onStop(function() {
-    unlink("source/*", recursive = TRUE)
     options(old)
     })
-  options(repos = c(CRAN = "https://cran.rstudio.com"))
+  options(repos = get_db_config("package_repo"))
   
   # Collect user info.
   user <- reactiveValues()
@@ -31,6 +30,7 @@ app_server <- function(input, output, session) {
     upload_pkgs = NULL,
     update_report_pref_inclusions = 0
   )
+  session$userData$repo_pkgs <- reactiveVal()
   
   
   # this skips authentication if the application is running in test mode
@@ -40,6 +40,11 @@ app_server <- function(input, output, session) {
     res_auth[["admin"]] <- !isTRUE(golem::get_golem_options('nonadmin'))
     res_auth[["user"]] <- "test_user"
     res_auth[["role"]] <- ifelse(!isTRUE(golem::get_golem_options('nonadmin')), "admin", "reviewer")
+  } else if (isFALSE(get_db_config("use_shinymanager"))) {
+    res_auth <- reactiveValues()
+    res_auth[["admin"]] <- FALSE
+    res_auth[["user"]] <- session$user %||% "anonymous"
+    res_auth[["role"]] <- intersect(unlist(session$groups, use.names = FALSE), dbSelect("select user_role from roles")[[1]]) %||% "default"
   } else {
     # check_credentials directly on sqlite db
     res_auth <- shinymanager::secure_server(
@@ -49,10 +54,21 @@ app_server <- function(input, output, session) {
       )
     )
   }
-
   
+  #click event on dependencies card to change dropdown to dependencies
+  observeEvent(list(input$`dependencies-dep_click`, input$`reverse_dependencies-dep_click`),{
+   if(!is.null(c(input$`dependencies-dep_click`,
+                 input$`reverse_dependencies-dep_click`))){
+    
+     updateSelectInput(session,"metric_type",selected = "dep")
+     if(!is.null(input$`reverse_dependencies-dep_click`)){
+     shinyjs::runjs(' setTimeout(function() {
+                    window.scrollTo(0,document.body.scrollHeight);}, 3000); // biding time for rev-dependencies text to load
+           Shiny.setInputValue("reverse_dependencies-dep_click",null);')}}
+  })
+
   observeEvent(res_auth$user, {
-    req(res_auth$admin == TRUE | "weight_adjust" %in% credential_config$privileges[[res_auth$role]])
+    req(res_auth$admin == TRUE || any(c("admin", "weight_adjust") %in% unlist(credential_config$privileges[res_auth$role])))
     
       appendTab("apptabs",
                 tabPanel(
@@ -67,14 +83,20 @@ app_server <- function(input, output, session) {
                       tabPanel(
                         id = "credentials_id",
                         title = "Credential Manager",
-                        shinymanager:::admin_ui("admin")
+                        {
+                          admin_ui <- shinymanager:::admin_ui("admin")
+                          admin_ui[[1]]$children[[3]] <- NULL # shinymanager/timeout.js
+                          admin_ui[[1]]$children[[1]] <- NULL # shinymanager/styles-admin.css
+                          admin_ui
+                        }
                       ),
-                    if (res_auth$admin)
+                    if (res_auth$admin == TRUE || "admin" %in% unlist(credential_config$privileges[res_auth$role]))
                       tabPanel(
                         id = "privilege_id",
                         title = "Roles & Privileges",
                         mod_user_roles_ui("userRoles")
                       ),
+                    if ("weight_adjust" %in% unlist(credential_config$privileges[res_auth$role]))
                     tabPanel(
                       id = "reweight_id",
                       title = "Assessment Reweighting",
@@ -88,7 +110,7 @@ app_server <- function(input, output, session) {
   observeEvent(credential_config$privileges, {
     req(user$role)
     
-    if ("weight_adjust" %in% credential_config$privileges[[user$role]])
+    if ("weight_adjust" %in% unlist(credential_config$privileges[user$role]))
       showTab("credentials", "Assessment Reweighting")
     else
       hideTab("credentials", "Assessment Reweighting")
@@ -217,36 +239,30 @@ app_server <- function(input, output, session) {
     get_comm_data(selected_pkg$name())
   })
   
+  session$userData$loaded2_db <- eventReactive({uploaded_pkgs(); changes()}, {
+    dbSelect("SELECT name, version, score FROM package")
+  })
+  
   create_src_dir <- eventReactive(input$tabs, input$tabs == "Source Explorer")
-  pkgdir <- reactiveVal()
+  pkgarchive <- reactiveVal()
   observe({
     req(selected_pkg$name() != "-")
     req(create_src_dir())
     req(file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz"))))
-    
-    src_dir <- file.path("source", selected_pkg$name())
-    if (dir.exists(src_dir)) {
-      pkgdir(src_dir)
-    } else {
-      withProgress(
-        utils::untar(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")), exdir = "source"),
-        message = glue::glue("Unpacking {selected_pkg$name()}_{selected_pkg$version()}.tar.gz"),
-        value = 1
-      )
-      pkgdir(src_dir)
-    }
+    pkgarchive(archive::archive(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz"))) %>% 
+                 dplyr::arrange(tolower(path)))
   }) %>% 
     bindEvent(selected_pkg$name(), create_src_dir())
   
   
   mod_pkg_explorer_server("pkg_explorer", selected_pkg,
-                          pkgdir = pkgdir,
+                          pkgarchive = pkgarchive,
                           creating_dir = create_src_dir,
                           user = user,
                           credentials = credential_config)
   
   mod_code_explorer_server("code_explorer", selected_pkg,
-                          pkgdir = pkgdir,
+                           pkgarchive = pkgarchive,
                           creating_dir = create_src_dir,
                           user = user,
                           credentials = credential_config)
@@ -265,6 +281,12 @@ app_server <- function(input, output, session) {
                                            community_usage_metrics,
                                            user,
                                            credential_config)
+
+  # Load server for the package dependencies tab.
+  dependencies_data <- packageDependenciesServer('packageDependencies',
+                                                  selected_pkg,
+                                                  user,
+                                                  parent = session)
   
   # Load server of the report preview tab.
   reportPreviewServer(id = "reportPreview",
@@ -281,12 +303,7 @@ app_server <- function(input, output, session) {
                       app_version = golem::get_golem_options('app_version'),
                       metric_weights = metric_weights)
   
-  # Load server for the package dependencies tab.
-  dependencies_data <- packageDependenciesServer('packageDependencies',
-                                               selected_pkg,
-                                               user,
-                                               parent = session)
-  
+
   output$auth_output <- renderPrint({
     reactiveValuesToList(res_auth)
   })

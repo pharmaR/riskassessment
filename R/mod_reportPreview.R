@@ -35,12 +35,12 @@ reportPreviewUI <- function(id) {
 #' @importFrom shinyjs enable disable show hide disabled
 #' @keywords internal
 #' 
-reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
+reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics, 
                                 com_metrics_raw, mm_comments, cm_comments, #se_comments,
-                                downloads_plot_data, user, credentials, app_version,
-                                metric_weights) {
+                                downloads_plot_data, user, credentials, 
+                                app_version, metric_weights) {
   if (missing(credentials))
-    credentials <- get_db_config("credentials")
+    credentials <- get_credential_config()
   
   moduleServer(id, function(input, output, session) {
     
@@ -82,7 +82,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
             
             br(), br(),
             
-            if ("overall_comment" %in% credentials$privileges[[user$role]]) 
+            if ("overall_comment" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) 
               div(id = NS(id, "pkg-summary-grp"),
                   # Compose pkg summary - either disabled, enabled, or pre-populated
                   uiOutput(NS(id, "pkg_summary_ui")),
@@ -119,7 +119,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
               HTML("<span class='h2 txtasis'>R Package Risk Assessment  </span><br>"),
               HTML(glue::glue("<span class='h4 txtasis'>Report for Package: {selected_pkg$name()}</span><br>")),
               if("Report Author" %in% report_includes())
-                HTML(glue::glue("<span class='h4 txtasis'>Author (Role): {user$name} ({user$role})</span><br>")),
+                HTML(glue::glue("<span class='h4 txtasis'>Author (Role): {user$name} ({paste(user$role, collapse = ', ')})</span><br>")),
               if("Report Date" %in% report_includes())
                 HTML(glue::glue("<span class='h4 txtasis'>Report Date: {format(get_time(), '%B %d, %Y')}</span><br>")),
               
@@ -172,6 +172,33 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                 )
               } else "",
               
+              if('Package Dependencies' %in% report_includes()) {
+                tagList(
+                  br(), br(),
+                  hr(),
+                  fluidRow(
+                    column(width = 12,
+                           h5("Package Dependencies",
+                              style = "text-align: center; padding-bottom: 50px;"),
+                             metricGridUI(session$ns('dep_metricGrid'))
+                    )
+                  ),
+                  br(), br(),
+                  fluidRow(
+                    column(width = 12,
+                           DT::renderDataTable({
+                             req(selected_pkg$name())
+                             
+                             dep_table()
+                             
+                           }, options = list(dom = "t", searching = FALSE, pageLength = -1, lengthChange = FALSE,
+                                             info = FALSE,
+                                             columnDefs = list(list(className = 'dt-center', targets = 2))
+                           )
+                           )
+                    ))
+                )
+              } else "",
               
               if(any(c('Source Explorer Comments') %in% report_includes())) {
                 tagList(
@@ -289,7 +316,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       } else { # first summary!
         dbUpdate(
           "INSERT INTO comments
-          VALUES ({selected_pkg$name()}, {user$name}, {user$role},
+          VALUES ({selected_pkg$name()}, {user$name}, {paste(user$role, collapse = ', ')},
           {current_summary}, 's', {getTimeStamp()})")
         showModal(modalDialog(
           title = h2("Summary Submitted"),
@@ -315,7 +342,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
           SET comment = {input$pkg_summary}, added_on = {getTimeStamp()}
           WHERE id = {selected_pkg$name()} AND
           user_name = {user$name} AND
-          user_role = {user$role} AND
+          user_role = {paste(user$role, collapse = ', ')} AND
           comment_type = 's'"
       )
       
@@ -401,6 +428,41 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     
     # Community usage metrics cards.
     metricGridServer("cm_metricGrid", metrics = com_metrics)
+    
+    observe({
+      if (!isTruthy(session$userData$repo_pkgs())) {
+        if (isTRUE(getOption("shiny.testmode"))) {
+          session$userData$repo_pkgs(purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x, col.names = c("Package", "Version", "Source"))))
+        } else {
+          session$userData$repo_pkgs(as.data.frame(utils::available.packages()[,1:2]))
+        }
+      }
+    })
+    
+    dep_metrics <- eventReactive(selected_pkg$name(), {
+      get_depends_data(selected_pkg$name())
+    })
+
+    dep_cards <- eventReactive(dep_metrics(), {
+      req(dep_metrics())
+      build_dep_cards(data = dep_metrics(), loaded = session$userData$loaded2_db()$name, toggled = 0L)
+    })
+    
+    # Package Dependencies metrics cards.
+    metricGridServer("dep_metricGrid", metrics = dep_cards)
+
+    dep_table <- eventReactive(dep_metrics(), {
+      req(dep_metrics())
+
+      if (nrow(dep_metrics()) == 0)
+        return(dplyr::tibble(package = character(), type = character(), version = character(), score = character()))
+      
+      purrr::map_df(dep_metrics()$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>%
+      right_join(dep_metrics(), by = "name") %>%
+      select(package, type, version, score) %>%
+      arrange(package, type) %>%
+      distinct()
+    })
     
     output$communityMetrics_ui <- renderUI({
       req(selected_pkg$name())

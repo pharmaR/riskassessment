@@ -93,7 +93,7 @@ metric_lst <- c("1"='has_vignettes', "2"='has_news', "3"='news_current', "4"='ha
 
 rpt_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
                  "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
-                 "Source Explorer Comments", "Function Explorer Comments")
+                 "Package Dependencies", "Source Explorer Comments", "Function Explorer Comments")
 
 usethis::use_data(
   # app_version, 

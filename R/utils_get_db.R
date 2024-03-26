@@ -214,6 +214,31 @@ get_metric_data <- function(pkg_name, metric_class = 'maintenance', db_name = go
     )
 }
 
+#' The 'Get Dependencies Metrics Data' function
+#' 
+#' Pull the depenencies data for a specific package id, and create 
+#' necessary columns for Cards UI
+#' 
+#' @param pkg_name character name of package
+#' @param db_name character name (and file path) of the database
+#' 
+#' @import dplyr
+#' @importFrom stringr str_replace
+#' 
+#' @returns a data frame with package, type, and name
+#' @noRd
+get_depends_data <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')){
+  
+  pkgref <- get_assess_blob(pkg_name, db_name)
+  
+  if(suppressWarnings(is.null(nrow(pkgref$dependencies[[1]])) || nrow(pkgref$dependencies[[1]]) == 0)) {
+    dplyr::tibble(package = character(0), type = character(0), name = character(0))
+  } else {
+    pkgref$dependencies[[1]] %>% dplyr::as_tibble() %>% 
+      mutate(package = stringr::str_replace(package, "\n", " ")) %>%
+      mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")) 
+  }
+}
 
 #' The 'Get Community Data' function
 #' 
@@ -301,6 +326,9 @@ get_assess_blob <- function(pkg_name, db_name = golem::get_golem_options('assess
 #' @returns a list
 #' @noRd
 get_versnScore <- function(pkg_name, verify_data, cran_pkgs) {
+  
+  if (rlang::is_empty(pkg_name)) 
+    return(list(name = character(), version = character(), score = character()))
   
   if (pkg_name %in% verify_data$name) { #loaded2_db()$name
     tmp_df <- verify_data %>% filter(name == pkg_name) %>% select(score, version)

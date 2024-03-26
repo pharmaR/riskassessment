@@ -1,3 +1,21 @@
+# riskassessment (development version)
+
+* Fixes bug that doesn't reset decision by and date fields when re-scoring/re-weighting packages (#680)
+* Fixes bug where the privileges table was not aligned with the used privileges in the application (#697)
+* Added introjs for file browser & function explorer( #581)
+* Added tests for the code and function explorers
+* Added repo specification to configuration file (#701)
+* Fix typo in Privileges table (#719)
+* Fixed bug where HTML reports displayed a darker green in the cards' meters
+* Only run configuration checkers when configuring the database
+* Added dependencies/reverse dependencies card hyperlink (#597)
+* Added non-shinymanager deployment option (#700)
+* Added Package Dependencies to Reports (#721)
+* Shorten waiting time in code explorer/package explorer by reading tarballs in memory (#707)
+* Move package upload process to a function
+* Updated logo in reports to lighter version to match application UI
+* Utilize `{archive}` to parse DESCRIPTION file in package upload process
+
 # riskassessment 3.0.0
 
 ### Enhancements

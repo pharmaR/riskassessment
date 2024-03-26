@@ -133,9 +133,10 @@ test_that("check_credentials works", {
     fixed = TRUE
   )
   
+  test_creds <- list(roles = c("admin", "lead", "reviewer"), privileges = list(admin = used_privileges))
   expect_equal(
-    check_credentials(list(roles = c("admin", "lead", "reviewer"), privileges = list(admin = used_privileges))),
-    NULL
+    check_credentials(test_creds),
+    test_creds
   )
 })
 

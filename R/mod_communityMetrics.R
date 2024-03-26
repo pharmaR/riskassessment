@@ -25,7 +25,7 @@ communityMetricsUI <- function(id) {
 #' 
 communityMetricsServer <- function(id, selected_pkg, community_metrics, user, credentials) {
   if (missing(credentials))
-    credentials <- get_db_config("credentials")
+    credentials <- get_credential_config()
   
   moduleServer(id, function(input, output, session) {
     
@@ -51,7 +51,7 @@ communityMetricsServer <- function(id, selected_pkg, community_metrics, user, cr
                      plotly::plotlyOutput(NS(id, "downloads_plot"), height = "500px")))),
             br(), br(),
             div(id = "comments_for_cum", fluidRow( 
-              if ("general_comment" %in% credentials$privileges[[user$role]]) addCommentUI(id = session$ns("add_comment")),
+              if ("general_comment" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) addCommentUI(id = session$ns("add_comment")),
               viewCommentsUI(id = session$ns("view_comments"))))
           )
       }

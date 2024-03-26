@@ -188,19 +188,22 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   if (isTRUE(getOption("shiny.testmode"))) return(NULL)
   
   db_config <- if(missing(configuration)) get_db_config(NULL) else configuration
-  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json", "metric_weights", "report_prefs")
+  used_configs <- c("assessment_db", "credential_db", "decisions", "credentials", "loggit_json", "metric_weights", "report_prefs", "package_repo", "use_shinymanager")
   if (any(!names(db_config) %in% used_configs)) {
     names(db_config) %>%
       `[`(!. %in% used_configs) %>%
       purrr::walk(~ warning(glue::glue("Unknown database configuration '{.x}' found in db-config.yml")))
   }
   
+  use_shinymanager <- !isFALSE(db_config[["use_shinymanager"]])
+  
   assessment_db <- if (missing(assess_db)) get_db_config("assessment_db") else assess_db
-  credentials_db <- if (missing(cred_db)) golem::get_golem_options('credentials_db_name') else cred_db
+  if (use_shinymanager)
+    credentials_db <- if (missing(cred_db)) golem::get_golem_options('credentials_db_name') else cred_db
   
   if (is.null(assessment_db) || typeof(assessment_db) != "character" || length(assessment_db) != 1 || !grepl("\\.sqlite$", assessment_db))
     stop("assess_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
-  if (is.null(credentials_db) || typeof(credentials_db) != "character" || length(credentials_db) != 1 || !grepl("\\.sqlite$", credentials_db))
+  if (use_shinymanager && !isTRUE(getOption("shiny.testmode")) && (is.null(credentials_db) || typeof(credentials_db) != "character" || length(credentials_db) != 1 || !grepl("\\.sqlite$", credentials_db)))
     stop("cred_db must follow SQLite naming conventions (e.g. 'database.sqlite')")
   
   # Start logging info.
@@ -212,13 +215,18 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   fa_v <- packageVersion("fontawesome")
   if(fa_v == '0.4.0') warning(glue::glue("HTML reports will not render with {{fontawesome}} v0.4.0. You currently have v{fa_v} installed. If the report download failed, please install a stable version. We recommend v0.5.0 or higher."))
   
+  check_repos(db_config[["package_repo"]])
+  
+  if (file.exists(assessment_db) && (isTRUE(getOption("shiny.testmode")) || use_shinymanager && file.exists(credentials_db)))
+    return(invisible(c(assessment_db, if (!isTRUE(getOption("shiny.testmode")) & use_shinymanager) credentials_db)))
+  
   check_credentials(db_config[["credentials"]])
 
-  if (isFALSE(getOption("golem.app.prod")) && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(credentials_db)) create_credentials_dev_db(credentials_db)
+  if (use_shinymanager && isFALSE(getOption("golem.app.prod")) && !is.null(golem::get_golem_options('pre_auth_user')) && !file.exists(credentials_db)) create_credentials_dev_db(credentials_db)
 
   # Create package db & credentials db if it doesn't exist yet.
   if(!file.exists(assessment_db)) create_db(assessment_db)
-  if(!file.exists(credentials_db)) {
+  if(use_shinymanager && !file.exists(credentials_db)) {
     admin_role <- db_config[["credentials"]][["privileges"]] %>%
       purrr::imap(~ if ("admin" %in% .x) .y) %>%
       unlist(use.names = FALSE) %>%
@@ -236,9 +244,53 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   }
   
   if (!dir.exists("tarballs")) dir.create("tarballs")
-  if (!dir.exists("source")) dir.create("source")
 
-  invisible(c(assessment_db, credentials_db))
+  invisible(c(assessment_db, if (use_shinymanager) credentials_db))
+}
+
+#' Check CRAN repos
+#' 
+#' Checks that the package repositories provided in the configuration file are valid
+#' 
+#' @param repos A character vector containing the package repos
+#' 
+#' @noRd
+check_repos <- function(repos) {
+  if (!is.character(repos)) stop("The 'package_repo' configuration must be a character vector.")
+  
+  # `contrib.url()` is used to insure that appropriate subpages exist for the URL.
+  good_urls <- 
+    purrr::map_lgl(contrib.url(repos), ~ {
+      dest <- tempfile()
+      op <- options(warn = -1L)
+      z <- tryCatch({
+        download.file(url = paste0(.x, "/PACKAGES.rds"), 
+                      destfile = dest, cacheOK = FALSE, 
+                      quiet = TRUE, mode = "wb")
+      }, error = identity)
+      if (inherits(z, "error")) {
+        z <- tryCatch({
+          download.file(url = paste0(repos, "/PACKAGES.gz"), 
+                        destfile = dest, cacheOK = FALSE, 
+                        quiet = TRUE, mode = "wb")
+        }, error = identity)
+      }
+      if (inherits(z, "error")) {
+        z <- tryCatch({
+          download.file(url = paste0(repos, "/PACKAGES"), 
+                        destfile = dest, cacheOK = FALSE, 
+                        quiet = TRUE, mode = "wb")
+        }, error = identity)
+      }
+      options(op)
+      unlink(dest)
+      
+      !inherits(z, "error")
+    })
+  
+  if (any(!good_urls)) stop(glue::glue("The following URL{if (sum(!good_urls) > 1) 's' else ''} {if (sum(!good_urls) > 1) 'were' else 'was'} not reachable: {paste(contrib.url(repos[!good_urls]), collapse = ', ')}. Please check that the repo{if (sum(!good_urls) > 1) 's' else ''} {if (sum(!good_urls) > 1) 'are' else 'is'} valid and pointing to external sources."))
+  
+  invisible(repos)
 }
 
 
@@ -312,7 +364,8 @@ add_tags <- function(ui, ...) {
 #' @md
 #' @keywords internal
 add_shinymanager_auth <- function(app_ui, app_ver, login_note) {
-  if (!isTRUE(getOption("shiny.testmode"))) {
+  # Don't add shinymanager if running the application in testing mode or without credentials
+  if (!isTRUE(getOption("shiny.testmode")) && !isFALSE(get_db_config("use_shinymanager"))) {
   add_tags(shinymanager::secure_app(app_ui,
     tags_top = tags$div(
       tags$head(favicon(), tags$style(HTML(readLines(app_sys("app/www/css", "login_screen.css"))))),

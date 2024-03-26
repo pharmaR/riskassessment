@@ -18,7 +18,7 @@ server <- function(input, output, session) {
   
   user <- reactiveValues(
     name = "tester",
-    role = "admin"
+    role = "reweighter"
   )
   
   auto_decision <- riskassessment:::mod_decision_automation_server("automate", user)

@@ -94,7 +94,7 @@ mod_decision_automation_ui_2 <- function(id){
 #' @importFrom sortable sortable_js sortable_options sortable_js_capture_input
 mod_decision_automation_server <- function(id, user, credentials){
   if (missing(credentials))
-    credentials <- get_db_config("credentials")
+    credentials <- get_credential_config()
   moduleServer( id, function(input, output, session){
     ns <- session$ns
     
@@ -428,7 +428,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     #### Outputs ####
     purrr::walk(c("auto_dropdown", "auto_dropdown2"), ~
                   observeEvent(input[[.x]], {
-                    req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
+                    req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
                     
                     showModal(modalDialog(
                       size = "l",
@@ -515,7 +515,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     })
     
     output$auto_classify <- renderUI({
-      if ("auto_decision_adjust" %in% credentials$privileges[[user$role]]) {
+      if ("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) {
         tagList(
           br(),br(),
           hr(),
@@ -540,7 +540,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     })
     
     output$decision_rule_div <- renderUI({
-      req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
+      req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       tagList(
         div(
           style = "display: flex",
@@ -625,7 +625,7 @@ mod_decision_automation_server <- function(id, user, credentials){
 
     output$auto_settings <-
       renderUI({
-        req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
+        req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
         
         div(
           style = "float: right;",
@@ -637,7 +637,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     
     output$auto_settings2 <-
       renderUI({
-        req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
+        req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
         
         div(
           style = "float: right;",
@@ -721,7 +721,7 @@ mod_decision_automation_server <- function(id, user, credentials){
       })
     
     observeEvent(input$submit_auto, {
-      req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
+      req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       
       showModal(modalDialog(
         size = "l",
@@ -752,7 +752,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     })
     
     observeEvent(input$submit_color, {
-      req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
+      req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       
       showModal(modalDialog(
         size = "l",
@@ -784,7 +784,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     })
     
     observeEvent(input$confirm_submit_auto, {
-      req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
+      req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       req(!disable_auto_submit())
       
       out_lst <- purrr::compact(reactiveValuesToList(auto_decision))
@@ -796,7 +796,7 @@ mod_decision_automation_server <- function(id, user, credentials){
       if (rlang::is_empty(rules_updates)) {
         risk_rule_update(rules_updates)
         dbUpdate("DELETE FROM rules")
-        loggit::loggit("INFO", glue::glue("Decision automation rules have been disabled by {user$name} ({user$role})."))
+        loggit::loggit("INFO", glue::glue("Decision automation rules have been disabled by {user$name} ({paste(user$role, collapse = ', ')})."))
       } else {
         if (!is.null(rule_lst[["rule_else"]][["decision"]]))
           rules_updates[["rule_else"]] <- rule_lst[["rule_else"]]
@@ -812,7 +812,7 @@ mod_decision_automation_server <- function(id, user, credentials){
           glue::glue_collapse(", ")
         dbUpdate("DELETE FROM rules")
         dbUpdate(glue::glue("INSERT INTO rules (rule_type, metric_id, condition, decision_id) VALUES {rule_out};"))
-        loggit::loggit("INFO", glue::glue("Decision automation rules were updated/implemented by {user$name} ({user$role})."))
+        loggit::loggit("INFO", glue::glue("Decision automation rules were updated/implemented by {user$name} ({paste(user$role, collapse = ', ')})."))
       }
       
       removeModal()
@@ -829,7 +829,7 @@ mod_decision_automation_server <- function(id, user, credentials){
       
     
     observeEvent(input$confirm_submit_col, {
-      req("auto_decision_adjust" %in% credentials$privileges[[user$role]])
+      req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
       
       selected_colors <- 
         decision_lst %>%
@@ -839,7 +839,7 @@ mod_decision_automation_server <- function(id, user, credentials){
         dbUpdate("UPDATE decision_categories SET color = {.x} WHERE decision = {.y}")
         shinyjs::runjs(glue::glue("document.documentElement.style.setProperty('--{risk_lbl(.y, type = 'attribute')}-color', '{.x}');"))
         })
-      loggit::loggit("INFO", glue::glue("The decision category display colors were modified by {user$name} ({user$role})"))
+      loggit::loggit("INFO", glue::glue("The decision category display colors were modified by {user$name} ({paste(user$role, collapse = ', ')})"))
       color_current(selected_colors)
       
       removeModal()

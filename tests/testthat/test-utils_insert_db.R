@@ -34,7 +34,7 @@ test_that("utils_insert_db functions other than dbUpdate", {
                                "score", "weighted_score", "decision_id", "decision_by", "decision_date", "date_added"))
   })
   
-  insert_riskmetric_to_db(pkg_name, app_db_loc)
+  insert_riskmetric_to_db(pkg_name, db_name = app_db_loc)
   
   pkg_id <- dbSelect("SELECT id FROM package WHERE name = {pkg_name}", app_db_loc)
   

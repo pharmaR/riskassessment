@@ -29,6 +29,7 @@ reference:
   contents:
   - run_app
   - initialize_raa
+  - upload_pkg_lst
 - title: Use {riskassessment} outside the app
   desc: Leverage these functions to mimic analysis performed in the app
   contents:
