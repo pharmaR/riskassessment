@@ -313,7 +313,7 @@ get_metric_weights <- function(db_name = golem::get_golem_options('assessment_db
 #' @importFrom purrr map pmap_dfc reduce
 get_assess_blob <- function(pkg_lst, db_name = golem::get_golem_options('assessment_db_name'),
                             metric_lst = NA) {
-  if (length(pkg_lst) == 0) return(list())
+  if (length(pkg_lst) == 0) return(dplyr::tibble(name = character()))
   
   db_table <- dbSelect("SELECT package.name, metric.name metric, package_metrics.encode FROM package 
                        INNER JOIN package_metrics ON package.id = package_metrics.package_id

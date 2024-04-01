@@ -155,11 +155,31 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
         mutate(Actions = if_else(!name %in% session$userData$loaded2_db()$name, gsub("fas fa-arrow-right fa-regular", "fas fa-upload fa-solid", Actions), Actions))
     })
     
-    table_revdeps_local <- reactive({
+    revdeps_local <- reactive({
       df <- session$userData$loaded2_db()
       req(df, df$name)
-      with(df, df[name %in% revdeps(),]) |> 
-      add_buttons_to_table(ns("go_to_revdep"))
+      req(revdeps())
+      
+      revdeps <-
+        df %>%
+        dplyr::filter(name %in% revdeps()) %>%
+        dplyr::pull(name) %>%
+        get_assess_blob(metric_lst = "suggests")
+      
+      if (nrow(revdeps) == 0) return(dplyr::left_join(bind_rows(revdeps, list(suggests = logical())), df, by = "name"))
+      
+      revdeps %>%
+        dplyr::mutate(suggests = purrr::map_lgl(suggests, ~ selected_pkg$name() %in% .x$package)) %>%
+        dplyr::left_join(df, by = "name")
+    })
+    
+    table_revdeps_local <- reactive({
+      req(revdeps_local())
+      
+      revdeps_local() %>%
+        dplyr::filter(toggled() == 1L | !suggests) %>%
+        dplyr::select(-suggests) %>%
+        add_buttons_to_table(ns("go_to_revdep"))
     })
     
     # Create metric grid card.
