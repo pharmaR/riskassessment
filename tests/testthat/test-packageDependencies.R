@@ -65,27 +65,11 @@ test_that(
       )
     )
     
-    test_db_loc <- system.file("testdata", "upload_format.database", 
-                               package = "riskassessment")
+    test_db_loc <- test_path("test-apps", "downloadHandler-app", 
+                                "dplyr_tidyr.sqlite")
     temp_db_loc <- withr::local_tempfile(fileext = ".database")
     file.copy(test_db_loc, temp_db_loc)
     
-    # because only the dplyr package is in the test dataset, we add one of its 
-    # known reverse dependencies:
-    withr::with_db_connection(
-      list(con = DBI::dbConnect(RSQLite::SQLite(), temp_db_loc)),
-      {
-        DBI::dbAppendTable(
-          con, 
-          "package", 
-          data.frame(
-            name = "dbplyr",
-            version = "1.0.0",
-            score = "0.32"
-          )
-        )
-      }
-    )
     # add test db location to the app session:
     app_session <- MockShinySession$new()
     app_session$options$golem_options <- list(
@@ -95,8 +79,9 @@ test_that(
     
     testServer(packageDependenciesServer, args = testargs,  {
       session$flushReact()
-      expect_true(all(c("plotly", "admiral", "dbplyr", "glue") %in% revdeps()))
-      expect_equal(table_revdeps_local()$name, "dbplyr")
+      session$setInputs(incl_suggests = TRUE)
+      expect_true(all(c("plotly", "admiral", "dbplyr", "glue", "tidyr") %in% revdeps()))
+      expect_equal(table_revdeps_local()$name, "tidyr")
       # the table contains an action button:
       expect_true(grepl('button id=\"button_1\"',table_revdeps_local()$Actions))
     },
