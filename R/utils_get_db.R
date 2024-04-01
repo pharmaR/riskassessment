@@ -14,13 +14,15 @@
 #' @returns a data frame
 #'
 #' @noRd
-dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_name'), .envir = parent.frame()){
+dbSelect <- function(query, db_name = golem::get_golem_options('assessment_db_name'), .envir = parent.frame(), params = NULL){
   errFlag <- FALSE
   con <- DBI::dbConnect(RSQLite::SQLite(), db_name)
   
   tryCatch(
     expr = {
       rs <- DBI::dbSendQuery(con, glue::glue_sql(query, .envir = .envir, .con = con))
+      if (!is.null(params))
+        DBI::dbBind(rs, params)
     },
     warning = function(warn) {
       message <- glue::glue("warning:\n {query} \nresulted in\n {warn}")
@@ -313,6 +315,19 @@ get_assess_blob <- function(pkg_name, db_name = golem::get_golem_options('assess
                        db_name = db_name)
   
   purrr::pmap_dfc(db_table, function(name, encode) {dplyr::tibble(unserialize(encode)) %>% purrr::set_names(name)}) 
+}
+
+get_dep_blob <- function(pkg_lst, db_name = golem::get_golem_options('assessment_db_name')) {
+  db_table <- dbSelect("SELECT package.name, metric.name metric, package_metrics.encode FROM package 
+                       INNER JOIN package_metrics ON package.id = package_metrics.package_id
+                       INNER JOIN metric ON package_metrics.metric_id = metric.id
+                       WHERE metric.name IN ('dependencies', 'suggests') AND package.name = $pkg_name", 
+                       db_name = db_name,
+                       params = list(pkg_name = unlist(pkg_lst)))
+  
+  db_table %>% 
+    dplyr::mutate(encode = purrr::map(encode, ~ unserialize(.x)[[1]])) %>% 
+    tidyr::pivot_wider(names_from = metric, values_from = encode)
 }
 
 
