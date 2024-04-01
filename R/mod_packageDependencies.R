@@ -57,7 +57,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
       req(selected_pkg$name() != "-")
       req(tabready() == 1L)
       
-      get_assess_blob(selected_pkg$name())
+      get_assess_blob(selected_pkg$name(), metric_lst = c("dependencies", "suggests", "reverse_dependencies"))
     })
     
     observeEvent(list(pkgref(), toggled()), {

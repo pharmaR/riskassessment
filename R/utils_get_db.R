@@ -231,7 +231,7 @@ get_metric_data <- function(pkg_name, metric_class = 'maintenance', db_name = go
 #' @noRd
 get_depends_data <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')){
   
-  pkgref <- get_assess_blob(pkg_name, db_name)
+  pkgref <- get_assess_blob(pkg_name, db_name, metric_lst = "dependencies")
   
   if(suppressWarnings(is.null(nrow(pkgref$dependencies[[1]])) || nrow(pkgref$dependencies[[1]]) == 0)) {
     dplyr::tibble(package = character(0), type = character(0), name = character(0))
