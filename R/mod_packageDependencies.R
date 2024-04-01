@@ -169,7 +169,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
       if (nrow(revdeps) == 0) return(dplyr::left_join(bind_rows(revdeps, list(suggests = logical())), df, by = "name"))
       
       revdeps %>%
-        dplyr::mutate(suggests = purrr::map_lgl(suggests, ~ selected_pkg$name() %in% .x$package)) %>%
+        dplyr::mutate(suggests = purrr::map_lgl(suggests, ~ any(grepl(selected_pkg$name(), .x$package)))) %>%
         dplyr::left_join(df, by = "name")
     })
     
