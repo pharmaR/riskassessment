@@ -234,10 +234,17 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
               fluidRow(
                 column(
                   width = 8,
-                    DT::renderDataTable(server = FALSE, {
+                  DT::renderDataTable(server = FALSE, {
                     datatable_custom(data_table())                      
-                    }),
-                  br(), br(),  
+                  })
+                )
+              ), 
+              br(), br(),
+              h3(glue::glue("All reverse Dependencies: {length(revdeps())}"), style = "text-align: left;"),
+              br(),
+              fluidRow(
+                column(
+                  width = 8,
                   h4(glue::glue("Reverse Dependencies available in database: {nrow(table_revdeps_local()) %||% 0}"), style = "text-align: left;"),
                   br(), 
                   DT::renderDataTable({
@@ -246,15 +253,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
                       colnames = c("Package", "Version", "Score", "Review Package"),
                       hide_names = NULL
                     )
-                  })
-                )
-              ), 
-              br(), br(),
-              h4(glue::glue("All reverse Dependencies: {length(revdeps())}"), style = "text-align: left;"),
-              br(),
-              fluidRow(
-                column(
-                  width = 8,
+                  }),
+                  br(), br(),
                   wellPanel(
                     renderText(revdeps() %>% sort()),
                     style = "max-height: 500px; overflow: auto"
