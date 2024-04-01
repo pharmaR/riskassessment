@@ -11,6 +11,10 @@
 * Added dependencies/reverse dependencies card hyperlink (#597)
 * Added non-shinymanager deployment option (#700)
 * Added Package Dependencies to Reports (#721)
+* Shorten waiting time in code explorer/package explorer by reading tarballs in memory (#707)
+* Move package upload process to a function
+* Updated logo in reports to lighter version to match application UI
+* Utilize `{archive}` to parse DESCRIPTION file in package upload process
 
 # riskassessment 3.0.0
 
