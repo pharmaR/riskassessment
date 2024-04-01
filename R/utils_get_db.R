@@ -302,32 +302,34 @@ get_metric_weights <- function(db_name = golem::get_golem_options('assessment_db
 #'
 #' Retrieves metric name and current weight from metric table
 #' 
-#' @param pkg_name character name of the package
+#' @param pkg_lst character name of the package
 #' @param db_name character name (and file path) of the database
+#' @param metric_lst character name of metric
 #'
 #' @returns a data frame
 #' @noRd
-get_assess_blob <- function(pkg_name, db_name = golem::get_golem_options('assessment_db_name')) {
-  db_table <- dbSelect("SELECT metric.name, package_metrics.encode FROM package 
-                       INNER JOIN package_metrics ON package.id = package_metrics.package_id
-                       INNER JOIN metric ON package_metrics.metric_id = metric.id
-                       WHERE package.name = {pkg_name}", 
-                       db_name = db_name)
+#' 
+#' @import dplyr
+#' @importFrom purrr map pmap_dfc reduce
+get_assess_blob <- function(pkg_lst, db_name = golem::get_golem_options('assessment_db_name'),
+                            metric_lst = NA) {
+  if (length(pkg_lst) == 0) return(list())
   
-  purrr::pmap_dfc(db_table, function(name, encode) {dplyr::tibble(unserialize(encode)) %>% purrr::set_names(name)}) 
-}
-
-get_dep_blob <- function(pkg_lst, db_name = golem::get_golem_options('assessment_db_name')) {
   db_table <- dbSelect("SELECT package.name, metric.name metric, package_metrics.encode FROM package 
                        INNER JOIN package_metrics ON package.id = package_metrics.package_id
                        INNER JOIN metric ON package_metrics.metric_id = metric.id
-                       WHERE metric.name IN ('dependencies', 'suggests') AND package.name = $pkg_name", 
+                       WHERE package.name = $pkg_name AND metric.name = COALESCE($metric_name, metric.name)", 
                        db_name = db_name,
-                       params = list(pkg_name = unlist(pkg_lst)))
+                       params = list(pkg_name = rep(pkg_lst, each = length(metric_lst)),
+                                     metric_name = rep(metric_lst, length(pkg_lst))))
   
-  db_table %>% 
-    dplyr::mutate(encode = purrr::map(encode, ~ unserialize(.x)[[1]])) %>% 
-    tidyr::pivot_wider(names_from = metric, values_from = encode)
+  # This approach was used to avoid adding a dependency on tidyr to use pivot_wider
+  purrr::map(pkg_lst, ~ 
+               db_table %>% 
+               dplyr::filter(name == .x) %>% 
+               purrr::pmap_dfc(function(name, metric, encode) {dplyr::tibble(!!metric := unserialize(encode))}) %>%
+               dplyr::mutate(name = .x, .before = 0)) %>%
+    purrr::reduce(dplyr::bind_rows)
 }
 
 
