@@ -158,8 +158,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
     revdeps_local <- reactive({
       df <- session$userData$loaded2_db()
       req(df, df$name)
-      req(revdeps())
-      
+
       revdeps <-
         df %>%
         dplyr::filter(name %in% revdeps()) %>%
@@ -193,7 +192,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
         showHelperMessage()
       } else {
         req(depends())
-        
+
         fluidPage(
           shiny::
             tagList(
