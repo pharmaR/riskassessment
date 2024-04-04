@@ -98,13 +98,17 @@ app_ui <- function(request) {
         value = "database-tab"
       ),
       
-      tabPanel(
-        title = "Assessment Criteria",
-        icon = icon("circle-info"),
-        assessmentInfoUI("assessmentInfo"),
-        value = "assessment-criteria-tab"
-      )
-    ),
+    
+    tabPanel(
+      title = "About",
+      icon = icon("circle-info"),
+      aboutInfoUI("aboutInfo"),
+      value = "about-tab"
+    )
+    
+    
+    
+     ),
     
     wellPanel(
       id = "footer",

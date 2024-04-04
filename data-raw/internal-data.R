@@ -5,6 +5,68 @@ passphrase <- 'somepassphrase'
 # credentials_name <- "credentials.sqlite"
 
 
+# Overall descriptive test for contact sub-tab under About tab.
+
+contact_text <- shiny::HTML("<h3> Developemnt Team Contacts </h3> 
+<p> In case of any enqueries about Risk Assessment Application, please contact the development team.</p>
+<br>
+<ul>  
+  <li>Aaron Clark [ <a target='_blank' href= 'aaron.clark@biogen.com'> Send Email </a> ] </li>
+  <li>Jeff Thompson [ <a target='_blank' href= 'jeff.thompson51317@gmail.com'> Send Email </a> ] </li>
+  <li>Robert Krajcik [ <a target='_blank' href= 'robert.krajcik@biogen.com'> Send Email </a> ] </li>
+</ul> 
+<br>                           
+<h3> Report Issues </h3>
+<p> To report a bug or open a new issue, please follow the <a tagret='_blank' href='https://github.com/pharmaR/riskassessment/issues' >
+link </a> to our GitHub page. </p>
+<br>
+
+<h3> R Validation Hub </h3>
+<p> To learn more about the work and initiatives of R Validation Hub, please visit our <a target='_blank' href= 'https://www.pharmar.org/about/'> 
+                            website </a> . </p>  ")
+
+
+# Overall descriptive test for contributors sub-tab under About tab.
+contributor_text <- shiny::HTML("
+<h3> Development hosted by <a target='_blank' href='https://procogia.com/'> ProCogia </a> </h3>
+<img scr='www/procogia_logo.png' alt = 'ProCogia logo' style='width:300px;height:71px'> 
+
+<br>
+<h3> Current Contributors and Companies</h3>
+<ul>
+  <li> Aaron Clark </li>
+  <li> Jeff Thompson </li>
+  <li> Robert Krajcik </li>
+  <li> Narayanan Iyer </li>
+  <li> R Validation Hub </li>
+</ul>
+
+<br>
+
+<h3> Past Contributors and Companies </h3>
+
+<ul>
+  <li> Lars Andersen </li>
+  <li> Andrew Borgman </li>
+  <li> Scott Schumacker </li>
+  <li> Marly Gotti </li>
+  <li> Maya Gans </li>
+  <li> Aravid Reddy Kallem </li>
+  <li> Eduardo Almeida </li>
+  <li> Munshi Imran Hossain </li>
+  <li> Fission Labs India Pvt Ltd </li>
+  <li> GSK </li>
+  <li> Biogen</li>
+  <li> Appsilon</li>
+</ul>
+<br>
+
+<img scr='www/R_validation_hub_logo.png' alt='R Validation Hub Logo' style = 'width:107px;height:100px'>
+<img scr='www/fission_logo.png' alt='Fission Labs India Pvt Ltd' style = 'width:306px;height:100px'>
+<img scr='www/GSK_logo.jpg' alt='GSK' style = 'width:191px;height:100px'>
+<img scr='www/biogen_logo.jpg' alt='Biogen' style = 'width:243px;height:100px'>
+<img scr='www/appsilon_logo.jpg' alt='Appsilon' style = 'width:152px;height:100px'> ")
+
 # Overall descriptive text for community usage. Please edit text file to make changes.
 community_usage_txt <- readLines(file.path("data-raw", "community.txt"))
 
@@ -98,6 +160,8 @@ rpt_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment"
 usethis::use_data(
   # app_version, 
   # database_name, #credentials_name,
+  contact_text,
+  contributor_text,
   passphrase,
   community_usage_txt, community_usage_tbl,
   maintenance_metrics_text, maintenance_metrics_tbl,

@@ -210,12 +210,14 @@ app_server <- function(input, output, session) {
   })
   
   observeEvent(input$apptabs, {
-    req(input$apptabs %in% c("risk-assessment-tab", "database-tab"))
+    req(input$apptabs %in% c("about-tab", "database-tab"))
     session$userData$trigger_events$update_report_pref_inclusions <- session$userData$trigger_events$update_report_pref_inclusions + 1
   })
   
-  # Load server of the assessment criteria module.
-  assessmentInfoServer("assessmentInfo", metric_weights = metric_weights)
+
+  
+  # Load server of the about tab module
+  aboutInfoServer("aboutInfo")
   
   # Load server of the database view module.
   #parentSession <- .subset2(session, "parent")
