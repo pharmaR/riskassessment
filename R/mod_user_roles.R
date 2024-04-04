@@ -323,7 +323,7 @@ mod_user_roles_server <- function(id, user, credentials){
     })
     
     observeEvent(input$submit_changes, {
-      req("admin" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
+      req("admin" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
       
       chng_lst <- dplyr::filter(role_changes(), paste(old_role) != paste(new_role))
       purrr::pmap(chng_lst, function(old_role, new_role) {
