@@ -4,10 +4,12 @@
 \alias{aboutInfoServer}
 \title{Server Logic for 'About' Module}
 \usage{
-aboutInfoServer(id)
+aboutInfoServer(id, metric_weights)
 }
 \arguments{
 \item{id}{a module id name}
+
+\item{metric_weights}{object outputted from reweightViewServer()}
 }
 \description{
 Server Logic for 'About' Module

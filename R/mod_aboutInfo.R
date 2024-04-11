@@ -42,11 +42,11 @@ aboutInfoUI <- function(id) {
 #' Server Logic for 'About' Module
 #' 
 #' @param id a module id name
-#' 
+#' @param metric_weights object outputted from reweightViewServer()
 #' 
 #' @keywords internal
 #' 
-aboutInfoServer <- function(id) {
+aboutInfoServer <- function(id, metric_weights) {
   moduleServer(id, function(input, output, session) {
     
     # Display the contact description.

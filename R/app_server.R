@@ -217,7 +217,7 @@ app_server <- function(input, output, session) {
 
   
   # Load server of the about tab module
-  aboutInfoServer("aboutInfo")
+  aboutInfoServer("aboutInfo", metric_weights)
   
   # Load server of the database view module.
   #parentSession <- .subset2(session, "parent")
