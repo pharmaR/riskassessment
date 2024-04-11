@@ -26,14 +26,14 @@ aboutInfoUI <- function(id) {
             title = "Contact",
             h6("List of Important Contacts"),
             br(),
-            uilOutput(NS(id,"contact_text")),  # ui output with contacts description.
+            uiOutput(NS(id,"contact_text")),  # ui output with contacts description.
           ),
         # Contributors sub-tab
           tabPanel(
             title = "Contributors and Companies",
             h6("List of Contributors and Comanies"),
             br(),
-            uilOutput(NS(id,"contributor_text")), # ui output with contributors and companies description.
+            uiOutput(NS(id,"contributor_text")), # ui output with contributors and companies description.
           )
         )
       )))
