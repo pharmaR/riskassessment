@@ -24,11 +24,6 @@ test_that("The introJS module works as expected for admins", {
     )
   }
   
-  app_src_loc <- test_path("test-apps", "source", "tidyr")
-  if (!dir.exists(app_src_loc)) {
-    untar(app_tar_loc, exdir = dirname(app_src_loc))
-  }
-  
   getBoundingClientRect <- function(appDriver, el) {
     appDriver$get_js(glue::glue('const rect = $("{el}")[0].getBoundingClientRect(); [rect.left, rect.top, rect.bottom, rect.right]')) %>% purrr::possibly(purrr::set_names, otherwise = .)(c("left", "top", "bottom", "right"))
   }

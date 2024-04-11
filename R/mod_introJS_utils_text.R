@@ -23,7 +23,7 @@ sidebar_steps <-
 # appui tab widgets
 apptab_steps <- data.frame(
   element = c(
-    "[data-value=assessment-criteria-tab]", "[data-value=database-tab]"),
+    "[data-value=about-tab]", "[data-value=database-tab]"),
   intro = c("Discover the package assessment process & criteria",
             "Review the R packages that already exist in the database"),
   position = c(rep("bottom", 2))
