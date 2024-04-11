@@ -24,3 +24,5 @@ _\.new\.png$
 ^tarballs$
 ^revdep
 ^revdep$
+^manifest\.json$
+^\.rscignore$

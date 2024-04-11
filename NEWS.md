@@ -15,6 +15,8 @@
 * Move package upload process to a function
 * Updated logo in reports to lighter version to match application UI
 * Utilize `{archive}` to parse DESCRIPTION file in package upload process
+* Incorporates table to show reverse dependencies included in the database
+* updated manifest file and deployments article
 
 # riskassessment 3.0.0
 
