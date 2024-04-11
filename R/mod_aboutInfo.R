@@ -53,46 +53,58 @@ aboutInfoUI <- function(id) {
             icon = icon("address-card"),
             br(),
             shiny::HTML(
-               "<h3> Collaborative Deployment hosted by <a target='_blank' href='https://procogia.com/'> ProCogia </a> </h3>
+               "<h3> Official Workstream of the <a target='_blank' href='https://www.pharmar.org/'>R Validation Hub</a>.
+                <br/>Sponsored by the <a target='_blank' href='https://www.r-consortium.org//'>R Consortium</a></h3>
+                <br>
+                <img src='www/pharmaRlogo_large.png' alt='R Validation Hub Logo' style = 'height:100px;padding-right: 50px;'>  
+                <br>
+                <img src='www/rc_logo.png' alt = 'ProCogia logo' style='height:100px;'> 
+                <br>
+                
+                <br>
+                <h3> Collaborative Deployment hosted by <a target='_blank' href='https://procogia.com/'> ProCogia </a> </h3>
                 <img src='www/procogia_logo.png' alt = 'ProCogia logo' style='height:100px'> 
                 <br>
                 
                 <br>
-                <h3> Current Contributors and Companies</h3>
+                <h3> Current Contributors </h3>
                 <ul>
-                  <li> Aaron Clark </li>
-                  <li> Jeff Thompson </li>
-                  <li> Robert Krajcik </li>
-                  <li> Narayanan Iyer </li>
-                  <li> R Validation Hub </li>
+                  <li> Aaron Clark, Arcus Biosciences </li>
+                  <li> Narayanan Iyer, Pfizer </li>
+                  <li> Robert Krajcik, Cytel </li>
+                  <li> Barbara Mikulasova, Katalyze Data </li>
+                  <li> Jeff Thompson, Arcus Biosciences </li>
                 </ul>
                 
                 <br>
                 
-                <h3> Past Contributors and Companies </h3>
+                <h3> Past Contributors </h3>
                 
                 <ul>
-                  <li> Lars Andersen </li>
-                  <li> Andrew Borgman </li>
-                  <li> Scott Schumacker </li>
-                  <li> Marly Gotti </li>
-                  <li> Maya Gans </li>
-                  <li> Aravid Reddy Kallem </li>
-                  <li> Eduardo Almeida </li>
-                  <li> Munshi Imran Hossain </li>
-                  <li> Fission Labs India Pvt Ltd </li>
-                  <li> GSK </li>
-                  <li> Biogen</li>
-                  <li> Appsilon</li>
+                  <li> Eduardo Almeida, Appsilon </li>
+                  <li> Lars Andersen, Boehringer Ingelheim </li>
+                  <li> Andrew Borgman, Biogen </li>
+                  <li> Maya Gans, Cytel </li>
+                  <li> Marly Gotti, Biogen </li>
+                  <li> Munshi Imran Hossain, Cytel </li>
+                  <li> Aravid Reddy Kallem, Fission Labs </li>
+                  <li> Scott Schumacker, Canary Medical </li>
                 </ul>
                 <br>
                 
-                <img src='www/R_validation_hub_logo.png' alt='R Validation Hub Logo' style = 'height:100px'>
-                <img src='www/fission_logo.png' alt='Fission Labs India Pvt Ltd' style = 'height:100px'>
-                <img src='www/GSK_logo.jpg' alt='GSK' style = 'height:100px'>
-                <img src='www/biogen_logo.jpg' alt='Biogen' style = 'height:100px'>
-                <img src='www/appsilon_logo.jpg' alt='Appsilon' style = height:80px'> "
-               )
+                <h3> Contributing Companies </h3>
+                
+                <img src='www/appsilon_logo.jpg' alt='Appsilon' style = 'height:100px;padding-right:40px;'> 
+                <img src='www/arcus_logo.png' alt='Arcus Biosciences' style = 'height:100px;padding-right:40px;'> 
+                <img src='www/bi_logo.png' alt='Boehringer Ingelheim' style = 'height:100px;padding-right:40px;'>
+                <img src='www/biogen_logo.jpg' alt='Biogen' style = 'height:100px;padding-right:40px;'>
+                <img src='www/cytel.png' alt='Cytel' style = 'height:100px;padding-right:40px;'>
+                <img src='www/fission_logo.png' alt='Fission Labs India Pvt Ltd' style = 'height:100px;padding-right:40px;'>
+                <img src='www/gcp_logo.png' alt='GCP-Service International' style = 'height:100px;padding-right:40px;'>
+                <img src='www/GSK_logo.jpg' alt='GSK' style = 'height:100px;padding-right:40px;'>
+                <img src='www/katalyzedata_logo.jpg' alt='Katalyze Data' style = 'height:100px;padding-right:40px;'>
+                <img src='www/pfizer_logo.png' alt='Pfizer' style = 'height:100px'>
+               ")
           )
         )
       )))
