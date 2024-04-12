@@ -77,6 +77,10 @@ app_server <- function(input, output, session) {
                   value = "admin-mode-tab",
                   h2("Administrative Tools & Options", align = "center", `padding-bottom`="20px"),
                   br(),
+                  
+                  fluidRow(
+                    column(
+                      width = 10, offset = 1,
                   tabsetPanel(
                     id = "credentials",
                     if (res_auth$admin)
@@ -102,6 +106,7 @@ app_server <- function(input, output, session) {
                       title = "Assessment Reweighting",
                       reweightViewUI("reweightInfo")
                     )
+                  ))
                   ),
                   tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';"))
                 ))

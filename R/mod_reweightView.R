@@ -93,11 +93,11 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
               div(class = "box-body",
                   br(),
                   fluidRow(
-                    column(width = 5, offset = 5, align = "left",
+                    column(width = 5, offset = 4, align = "left",
                            h3("Set new weights:"),
                     )),
                   fluidRow(
-                    column(width = 2, offset = 5, align = "left",
+                    column(width = 2, offset = 4, align = "left",
                            selectInput(NS(id, "metric_name"), "Select metric", curr_new_wts()$name, selected = curr_new_wts()$name[1]) ),
                     column(width = 2, align = "left",
                            numericInput(NS(id, "metric_weight"), "Choose new weight", min = 0, value = curr_new_wts()$new_weight[1]) ),
@@ -106,7 +106,7 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
                            actionButton(NS(id, "update_weight"), "Confirm", class = "btn-secondary") ) ),
                   br(), br(), 
                   fluidRow(
-                    column(width = 3, offset = 1, align = "center",
+                    column(width = 3, offset = 0, align = "center",
                            
                            br(), br(), br(), 
                            tags$hr(class = "hr_sep"),
@@ -126,7 +126,7 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
                            
                     ),
                     column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
-                           offset = 1,
+                           offset = 0,
                            h3("Current Risk Score Weights by Metric", align = "center"),
                            DT::dataTableOutput(NS(id, "weights_table")))
                   ),

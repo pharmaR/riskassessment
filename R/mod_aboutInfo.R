@@ -10,7 +10,7 @@ aboutInfoUI <- function(id) {
   fluidPage(
     fluidRow(
       column(
-        width = 8, offset = 2,
+        width = 10, offset = 1,
         h2("About", align = "center", `padding-bottom`="20px"),
         br(),
         br(),
@@ -20,13 +20,24 @@ aboutInfoUI <- function(id) {
             title = "Assessment Criteria",
             icon = icon("circle-info"),
             br(),
+            fluidRow(
+              column(
+                width = 10, offset = 1,
             assessmentInfoUI(NS(id,"assessmentInfo"))  # call assessment module UI
-               ),
+               ))
+            ),
         # Contacts sub-tab  
           tabPanel(
             title = "Contact",
             icon = icon("envelope"),
+            
             # contacts description.
+            br(),
+            h2("Contact", align = "center", `padding-bottom`="20px"),
+            br(),
+            fluidRow(
+              column(
+                width = 10, offset = 1,
             br(),
             shiny::HTML(
                "<h3><i class='fa fa-github' aria-hidden='true'></i> Report Issues </h3>
@@ -46,11 +57,19 @@ aboutInfoUI <- function(id) {
                 <h3><img src='www/R_validation_hub_logo.png' alt='R Validation Hub Logo' style = 'height:50px;padding-right:8px;'>R Validation Hub </h3>
                 <p> To learn more about the work and initiatives of R Validation Hub, please visit <a target='_blank' href= 'https://www.pharmar.org/about/'> 
                                             https://www.pharmar.org/about/</a>. </p>  ")
+          ))
           ),
         # Contributors sub-tab
           tabPanel(
             title = "Contributors and Companies",
             icon = icon("address-card"),
+            
+            br(),
+            h2("Contributors and Companies", align = "center", `padding-bottom`="20px"),
+            br(),
+            fluidRow(
+              column(
+                width = 10, offset = 1,
             br(),
             shiny::HTML(
                "<h3> Official Workstream of the <a target='_blank' href='https://www.pharmar.org/'>R Validation Hub</a>.
@@ -103,14 +122,15 @@ aboutInfoUI <- function(id) {
                 <img src='www/gcp_logo.png' alt='GCP-Service International' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
                 <img src='www/GSK_logo.jpg' alt='GSK' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
                 <img src='www/katalyzedata_logo.jpg' alt='Katalyze Data' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/merck_logo.png' alt='Merck' style = 'height:100px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/pfizer_logo.png' alt='Pfizer' style = 'height:100px;padding-top:15px;padding-bottom:15px;'>
+                <img src='www/merck_logo.png' alt='Merck' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+                <img src='www/pfizer_logo.png' alt='Pfizer' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
                 <img src='www/roche_logo.png' alt='Roche' style = 'height:100px;padding-top:15px;padding-bottom:15px;'>
                 <br>
                 <br>
                 <br>
                 <br>
                ")
+          ))
           )
         )
       )))

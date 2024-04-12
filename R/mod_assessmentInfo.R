@@ -8,9 +8,9 @@
 #' 
 assessmentInfoUI <- function(id) {
   fluidPage(
-    fluidRow(
-      column(
-        width = 8, offset = 2,
+    # fluidRow(
+      # column(
+      #   width = 8, offset = 2,
         h2("Assessment Criteria Overview", align = "center", `padding-bottom`="20px"),
         br(),
         tabsetPanel(
@@ -19,7 +19,9 @@ assessmentInfoUI <- function(id) {
             h6("About Risk Calculation"),
             uiOutput(NS(id, "riskcalc_desc")),  # Maintenance metrics description.
             br(),
-            DT::dataTableOutput(NS(id, "riskcalc_weights_table"))
+            column(width = 8, offset = 2,
+              DT::dataTableOutput(NS(id, "riskcalc_weights_table"))
+            )
           ),
           tabPanel(
             title = "Maintenance Metrics",
@@ -42,7 +44,8 @@ assessmentInfoUI <- function(id) {
             br(),
             DT::dataTableOutput(NS(id, "testing_table"))  # data table for testing metrics.
           )
-        ))))
+        # ))
+    ))
 }
 
 #' Server Logic for 'Assessment Info' Module
