@@ -42,6 +42,8 @@ get_exported_functions <- function(pkg_name, pkg_version) {
 #' @noRd
 #' 
 #' @importFrom utils getParseData
+#' @importFrom stats na.omit
+#' 
 get_parse_data <- function(type = c("test", "source"), pkgarchive, pkg_name, pkg_version, funcnames = NULL) {
   
   type <- match.arg(type)
@@ -52,7 +54,7 @@ get_parse_data <- function(type = c("test", "source"), pkgarchive, pkg_name, pkg
     ,
     source = file.path(glue::glue("{pkg_name}"), "R")
   )
-  filenames <- na.omit((str_extract(pkgarchive$path,paste0(dirpath, ".+\\.[R|r]$"))))
+  filenames <- stats::na.omit((str_extract(pkgarchive$path,paste0(dirpath, ".+\\.[R|r]$"))))
   dplyr::bind_rows(lapply(filenames, function(filename) {
     con <- archive::archive_read(file.path("tarballs",
                                            glue::glue("{pkg_name}_{pkg_version}.tar.gz")),
@@ -119,10 +121,11 @@ get_source_files <- function(funcname, parse_data) {
 #' @param funcname The name of the function to evaluate
 #' @param pkgArchive   The package directory
 #' 
+#' @importFrom stats na.omit
 #' @noRd
 get_man_files <- function(funcname, pkgarchive, pkg_name, pkg_version) {
   
-  man_files <- na.omit((str_extract(pkgarchive$path,
+  man_files <- stats::na.omit((str_extract(pkgarchive$path,
                                     paste(glue::glue("{pkg_name}"), "man", ".+\\.Rd$", sep ="/"))))
   funcname_regex <- 
     gsub("([.|()\\^{}+$*?]|\\[|\\])", "\\\\\\1", funcname) %>%

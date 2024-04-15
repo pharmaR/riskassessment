@@ -10,4 +10,3 @@ News is current,Yes/no,"The news feed is typically used to communicate new featu
 Has a package maintainer,Yes/no,"Over time, there may be changes in the package dependencies (including system / third party dependencies).  Development standards may also evolve.  It is therefore important that a package is actively maintained to ensure it meets current standards and functions as originally intended. The absence of a maintainer therefore presents a risk."
 License,Eg GPL-2,Certain licenses can be prohibitive and restrict the commercial use of a package.  The license should be noted and compared with an acceptable set of licenses as identified by an organisations legal team.
 Dependencies,Count,The more packages a package relies on the more chances for errors to exist.
-Reverse Dependencies,Count,The more packages that depend on a package the more chance for errors/bugs to be found
