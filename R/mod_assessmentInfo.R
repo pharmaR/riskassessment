@@ -19,7 +19,7 @@ assessmentInfoUI <- function(id) {
             h6("About Risk Calculation"),
             uiOutput(NS(id, "riskcalc_desc")),  # Maintenance metrics description.
             br(),
-            column(width = 8, offset = 2,
+            column(width = 8, #offset = 2,
               DT::dataTableOutput(NS(id, "riskcalc_weights_table"))
             )
           ),

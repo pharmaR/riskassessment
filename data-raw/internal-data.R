@@ -98,6 +98,7 @@ rpt_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment"
                  "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
                  "Package Dependencies", "Source Explorer Comments", "Function Explorer Comments")
 
+# load(file = 'R/sysdata.rda') # helpful if changing just one object in sysdta.rda
 usethis::use_data(
   # app_version, 
   # database_name, #credentials_name,
