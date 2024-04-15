@@ -45,7 +45,7 @@ aboutInfoUI <- function(id) {
                 <br>
                 <br>
                 
-                <h3><i class='fa fa-coffee' aria-hidden='true'></i> Developemnt Team </h3> 
+                <h3><i class='fa fa-coffee' aria-hidden='true'></i> Development Team </h3> 
                 <p> Most all inquiries should flow through the GitHub page reference above (start there), but you may reach out to the lead developer at any time, especially if you'd like to start contributing to the project!</p>
                 <br>
                 <ul>  
