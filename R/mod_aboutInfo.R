@@ -41,12 +41,12 @@ aboutInfoUI <- function(id) {
             shiny::HTML(
                "<h3><i class='fa fa-github' aria-hidden='true'></i> Report Issues </h3>
                 <p> To propose new features or report a bug, please review our open issues first on our 
-                <a tagret='_blank' href='https://github.com/pharmaR/riskassessment/issues' > GitHub page</a>. If your topic hasn't been addressed, we highly encourage you to <a tagret='_blank' href='https://github.com/pharmaR/riskassessment/issues/new' >open a new issue</a>!</p>
+                <a target='_blank' href='https://github.com/pharmaR/riskassessment/issues' > GitHub page</a>. If your topic hasn't been addressed, we highly encourage you to <a target='_blank' href='https://github.com/pharmaR/riskassessment/issues/new' >open a new issue</a>!</p>
                 <br>
                 <br>
                 
                 <h3><i class='fa fa-coffee' aria-hidden='true'></i> Development Team </h3> 
-                <p> Most all inquiries should flow through the GitHub page reference above (start there), but you may reach out to the lead developer at any time, especially if you'd like to start contributing to the project!</p>
+                <p> Most all inquiries should flow through the GitHub page reference above (start there), but you may reach out to the lead developer at any time, especially if you would like to start contributing to the project!</p>
                 <br>
                 <ul>  
                   <li>Aaron Clark [ <a href= 'mailto:clark.aaronchris@gmail.com?subject={riskassessment} inquiry'> Send Email </a> ] </li>
