@@ -49,7 +49,7 @@ aboutInfoUI <- function(id) {
                 <p> Most all inquiries should flow through the GitHub page reference above (start there), but you may reach out to the lead developer at any time, especially if you'd like to start contributing to the project!</p>
                 <br>
                 <ul>  
-                  <li>Aaron Clark [ <a href= 'mailto:clark.aaronchris@gmail.com'> Send Email </a> ] </li>
+                  <li>Aaron Clark [ <a href= 'mailto:clark.aaronchris@gmail.com?subject={riskassessment} inquiry'> Send Email </a> ] </li>
                 </ul> 
                 <br>                           
                 
