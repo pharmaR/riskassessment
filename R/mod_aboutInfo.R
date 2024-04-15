@@ -13,7 +13,6 @@ aboutInfoUI <- function(id) {
         width = 10, offset = 1,
         h2("About", align = "center", `padding-bottom`="20px"),
         br(),
-        br(),
         # Assessment criteria sub-tab
         tabsetPanel(
           tabPanel(
