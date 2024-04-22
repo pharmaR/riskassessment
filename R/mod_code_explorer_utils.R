@@ -172,9 +172,20 @@ renderCode <- function(lines, hlindex) {
                })
              ),
              tags$script(HTML("
+                             
         document.querySelectorAll('.code pre').forEach(bl => {
           hljs.highlightBlock(bl);
         }); 
+       
+        debugger;
+        var $highlights_list = document.querySelectorAll('.highlight')
+       if(typeof($highlights_list) != 'undefined'){
+        var $gh = document.querySelector('.highlight')
+        var $target = document.querySelector('#code_explorer-file_viewer')
+        // debugger;
+        $target.scrollTop = 0;
+        $target.scrollTop = $gh.offsetTop  - $target.offsetTop + $target.scrollTop; 
+       }
       "))
   )
 }
