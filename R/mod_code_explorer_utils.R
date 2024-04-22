@@ -176,7 +176,6 @@ renderCode <- function(lines, hlindex) {
         document.querySelectorAll('.code pre').forEach(bl => {
           hljs.highlightBlock(bl);
         }); 
-       
         var $highlights_list = document.querySelectorAll('.highlight')
        if(typeof($highlights_list) != 'undefined'){
        
@@ -185,6 +184,14 @@ renderCode <- function(lines, hlindex) {
         var $target = document.querySelector('#code_explorer-file_viewer')
         $target.scrollTop = 0;
         $target.scrollTop = $curr_sel.offsetTop  - 40; 
+        var $highlights_list = document.querySelectorAll('.highlight')
+       if(typeof($highlights_list) != 'undefined'){
+        var $gh = document.querySelector('.highlight')
+        var $target = document.querySelector('#code_explorer-file_viewer')
+         
+        $target.scrollTop = 0;
+        $target.scrollTop = $gh.offsetTop  - $target.offsetTop + $target.scrollTop; 
+
        }
       "))
   )

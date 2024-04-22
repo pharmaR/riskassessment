@@ -49,6 +49,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
                             font-size: 16px !important;
                             line-height: 5px !important;
                             padding: 0px !important;")|>bslib::tooltip("Next occurence",placement ="right"), style = "display: inline-block;"))),
+
           fluidRow(
             column(3,
                    wellPanel(
@@ -202,12 +203,27 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
                     var $target = document.querySelector("#code_explorer-file_viewer")
                     $target.scrollTop = 0;
                     $target.scrollTop =$curr_sel.offsetTop -40; 
+                      
+                     var $index =Array.from(window.$highlights_list).findIndex(node => node.isEqualNode(window.$gh));
+              if( $index == window.$highlights_list.length -1) {
+              
+              var $gh = window.$highlights_list[0]
+              
+              }
+              else 
+              {
+              var $gh = window.$highlights_list[$index +1]
+              }  
+              var $target = document.querySelector("#code_explorer-file_viewer")
+        $target.scrollTop = 0;
+        $target.scrollTop = $gh.offsetTop  - $target.offsetTop + $target.scrollTop; 
               ')
       }
       
     })
     
     observeEvent(input$prev_button,{
+ 
       if (input$prev_button > 0){
         shinyjs::runjs('
                       var $index =Array.from($highlights_list).findIndex(node => node.isEqualNode($curr_sel));
@@ -222,6 +238,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
                       var $target = document.querySelector("#code_explorer-file_viewer")
                       $target.scrollTop = 0; # scroll to the top 
                       $target.scrollTop = $curr_sel.offsetTop  - 40; 
+
               ')
       }
       
