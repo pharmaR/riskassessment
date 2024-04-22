@@ -26,11 +26,6 @@ test_that("pkg_explorer works", {
     )
   }
   
-  app_src_loc <- test_path("test-apps", "explorer-app", "source", "magrittr")
-  if (!dir.exists(app_src_loc)) {
-    untar(app_tar_loc, exdir = dirname(app_src_loc))
-  }
-  
   app <- shinytest2::AppDriver$new(test_path("test-apps", "explorer-app"))
   
   app$set_inputs(tabs = "fn_expl_tab")
