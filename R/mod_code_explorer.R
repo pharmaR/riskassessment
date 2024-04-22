@@ -31,6 +31,14 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
       } else {
         div(introJSUI(NS(id, "introJS")),
           br(),
+          fluidRow(column(2,offset = 8,
+                          conditionalPanel(
+                            condition = "typeof(window.$highlights_list) != 'undefined' && window.$highlights_list.length > 1",
+                          actionButton(ns("next_button"),label = "Next"))),
+                   column(2,
+                          conditionalPanel(
+                            condition = "typeof(window.$highlights_list) != 'undefined'  && window.$highlights_list.length > 1",
+                          actionButton(ns("prev_button"),label = "Prev")))),
           fluidRow(
             column(3,
                    wellPanel(
@@ -166,6 +174,49 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
     
     introJSServer("introJS", text = reactive(fe_steps), user, credentials)
     
+    observeEvent(input$next_button,{
+      if (input$next_button > 0){
+      shinyjs::runjs('
+                      // debugger;
+                     var $index =Array.from(window.$highlights_list).findIndex(node => node.isEqualNode(window.$gh));
+              if( $index == window.$highlights_list.length -1) {
+              
+              var $gh = window.$highlights_list[0]
+              
+              }
+              else 
+              {
+              var $gh = window.$highlights_list[$index +1]
+              }  
+              var $target = document.querySelector("#code_explorer-file_viewer")
+        $target.scrollTop = 0;
+        $target.scrollTop = $gh.offsetTop  - $target.offsetTop + $target.scrollTop; 
+              ')
+      }
+      
+    })
+    
+    observeEvent(input$prev_button,{
+      if (input$next_button > 0){
+        shinyjs::runjs('
+                      // debugger;
+                     var $index =Array.from(window.$highlights_list).findIndex(node => node.isEqualNode(window.$gh));
+              if( $index ==0) {
+              var $gh = window.$highlights_list[window.$highlights_list.length -1]
+              
+              
+              }
+              else 
+              {
+              var $gh = window.$highlights_list[$index -1]
+              }  
+              var $target = document.querySelector("#code_explorer-file_viewer")
+        $target.scrollTop = 0;
+        $target.scrollTop = $gh.offsetTop  - $target.offsetTop + $target.scrollTop; 
+              ')
+      }
+      
+    })
     output$file_output <- renderUI({
       switch (input$file_type,
               test = test_code(),
