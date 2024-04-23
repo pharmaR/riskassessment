@@ -29,7 +29,7 @@ jobs:
         run: Rscript -e 'install.packages("rsconnect", repos = "https://cran.rstudio.com")'
 
       - name: Create manifest.json
-        run: Rscript -e 'rsconnect::writeManifest()''
+        run: Rscript -e 'rsconnect::writeManifest()'
           
       - name: Commit results
         run: |
