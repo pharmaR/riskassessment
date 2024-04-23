@@ -18,6 +18,7 @@
 * Incorporates table to show reverse dependencies included in the database
 * updated manifest file and deployments article
 * Adds about page to help users understand the project a little more, providing useful resources and attribution
+* Updated version of `{riskmetric}` being used
 
 # riskassessment 3.0.0
 
