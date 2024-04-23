@@ -27,14 +27,14 @@ jobs:
       - uses: r-lib/actions/setup-renv@v2
 
       - name: install required packages
-        run: Rscript -e 'install.packages(c("rsconnect"))'
+        run: Rscript -e 'install.packages("rsconnect", repos = "https://cran.rstudio.com")'
 
       - name: Create manifest.json
         shell: Rscript {0}
         run: |
           rsconnect::writeManifest()
           
-      - name: commit results
+      - name: Commit results
         run: |
           git config --local user.name "$GITHUB_ACTOR"
           git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
