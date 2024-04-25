@@ -31,7 +31,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2022-12-08 08:12:34 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2022-12-09 11:47:41 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:09:31 UTC; windows"
       }
     },
     "BH": {
@@ -54,7 +54,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2023-01-22 08:20:02 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2023-10-09 12:30:48 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:24:25 UTC; windows"
       }
     },
     "BiocManager": {
@@ -169,7 +169,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2023-05-04 07:32:21 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-05-05 11:21:16 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 01:57:32 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -231,7 +231,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2022-06-13 22:00:14 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2022-06-14 11:33:18 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:57:14 UTC; windows"
       }
     },
     "R.oo": {
@@ -257,7 +257,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2022-06-12 02:20:02 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2022-06-13 11:38:55 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:57:54 UTC; windows"
       }
     },
     "R.utils": {
@@ -308,7 +308,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2021-08-19 14:00:05 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2022-05-07 00:38:41 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:37:40 UTC; windows"
       }
     },
     "RColorBrewer": {
@@ -330,7 +330,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2022-04-03 19:20:13 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2022-04-22 18:26:11 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 02:04:28 UTC; windows"
       }
     },
     "RSQLite": {
@@ -391,7 +391,7 @@
         "Packaged": "2023-07-03 15:56:55 UTC; edd",
         "Repository": "RSPM",
         "Date/Publication": "2023-07-06 07:33:14 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-10-09 11:57:04 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 01:06:55 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -421,7 +421,7 @@
         "Packaged": "2020-08-26 17:46:45.898451 UTC; edd",
         "Repository": "RSPM",
         "Date/Publication": "2020-08-27 11:40:21 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-07-07 19:51:49 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 01:46:45 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -509,7 +509,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2019-03-21 14:53:46 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2022-05-07 00:39:28 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:43:56 UTC; windows"
       }
     },
     "attachment": {
@@ -565,7 +565,7 @@
         "Maintainer": "Colin Fay <contact@colinfay.me>",
         "Repository": "RSPM",
         "Date/Publication": "2020-05-03 20:50:02 UTC",
-        "Built": "R 4.2.0; ; 2022-05-07 23:03:08 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 04:31:00 UTC; windows"
       }
     },
     "backports": {
@@ -591,7 +591,7 @@
         "Author": "Michel Lang [cre, aut] (<https://orcid.org/0000-0001-9754-0393>),\nR Core Team [aut]",
         "Repository": "RSPM",
         "Date/Publication": "2021-12-13 11:30:02 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2022-04-22 18:28:15 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 03:22:34 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -615,7 +615,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2015-07-28 08:03:37",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2022-05-07 00:16:27 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 02:03:34 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -673,7 +673,7 @@
         "Packaged": "2022-11-13 21:22:09 UTC; jo",
         "Repository": "RSPM",
         "Date/Publication": "2022-11-15 21:20:16 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2022-11-16 11:45:43 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 01:29:29 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -703,7 +703,7 @@
         "Date/Publication": "2020-08-30 07:20:02 UTC",
         "NeedsCompilation": "yes",
         "Packaged": "2020-08-29 10:56:45 UTC; jo",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-10-03 11:47:19 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 01:33:12 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -733,7 +733,7 @@
         "Maintainer": "Kirill Müller <kirill@cynkra.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-03-17 12:00:06 UTC",
-        "Built": "R 4.2.0; ; 2023-10-16 11:29:48 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 06:58:37 UTC; windows"
       }
     },
     "brew": {
@@ -815,7 +815,7 @@
         "Maintainer": "Simon Couch <simon.couch@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-06-09 22:50:02 UTC",
-        "Built": "R 4.2.0; ; 2023-06-12 11:30:20 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 06:29:30 UTC; windows"
       }
     },
     "bslib": {
@@ -873,7 +873,7 @@
         "Maintainer": "Winston Chang <winston@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-05-01 16:40:02 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-05-02 11:29:10 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 03:51:27 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -904,7 +904,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-11-02 16:40:11 UTC",
-        "Built": "R 4.2.0; ; 2023-10-18 11:33:24 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 03:06:28 UTC; windows"
       }
     },
     "cellranger": {
@@ -932,7 +932,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2016-07-27 03:17:48",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2023-05-31 11:29:43 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 05:05:51 UTC; windows"
       }
     },
     "checkhelper": {
@@ -960,7 +960,7 @@
         "RoxygenNote": "7.2.3",
         "Author": "Sebastien Rochette [aut, cre] (<https://orcid.org/0000-0002-1565-9313>), Vincent Guyader [aut] (<https://orcid.org/0000-0003-0671-9270>), Arthur Bréant [aut] (<https://orcid.org/0000-0003-1668-0963>), ThinkR [cph]",
         "Maintainer": "Sebastien Rochette <sebastien@thinkr.fr>",
-        "Built": "R 4.2.2; ; 2023-11-28 16:10:41 UTC; windows",
+        "Built": "R 4.2.1; ; 2024-02-22 13:46:12 UTC; windows",
         "RemoteType": "github",
         "RemoteUsername": "thinkr-open",
         "RemoteRepo": "checkhelper",
@@ -1092,7 +1092,7 @@
         "Maintainer": "Matthew Lincoln <matthew.d.lincoln@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-02-22 00:58:45 UTC",
-        "Built": "R 4.2.0; ; 2023-05-31 11:30:58 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:10:26 UTC; windows"
       }
     },
     "clisymbols": {
@@ -1115,7 +1115,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2017-05-21 17:19:19 UTC",
-        "Built": "R 4.2.0; ; 2022-05-07 02:45:40 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:59:25 UTC; windows"
       }
     },
     "codetools": {
@@ -1137,7 +1137,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2023-02-01 13:21:59 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2023-02-02 18:47:27 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:20:29 UTC; windows"
       }
     },
     "colorspace": {
@@ -1166,7 +1166,7 @@
         "Maintainer": "Achim Zeileis <Achim.Zeileis@R-project.org>",
         "Repository": "RSPM",
         "Date/Publication": "2023-01-23 11:40:02 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-07-10 11:43:34 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 01:57:33 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -1194,7 +1194,7 @@
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
         "Repository": "RSPM",
         "Date/Publication": "2023-03-17 18:40:02 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-10-09 13:40:52 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 02:11:34 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -1252,7 +1252,7 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-02-01 08:20:06 UTC",
-        "Built": "R 4.2.0; ; 2023-07-09 22:18:15 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 06:29:18 UTC; windows"
       }
     },
     "covr": {
@@ -1332,7 +1332,7 @@
         "Imports": "callr, cranlike (>= 1.0.2), curl, desc (>= 1.1.0), digest, parsedate,\nrappdirs, rematch2, tools, utils, withr",
         "Suggests": "covr, pingr, testthat, zip",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.2; ; 2023-11-28 16:11:06 UTC; windows",
+        "Built": "R 4.2.1; ; 2024-02-22 13:46:25 UTC; windows",
         "RemoteType": "github",
         "RemoteUsername": "r-lib",
         "RemoteRepo": "crancache",
@@ -1393,7 +1393,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2019-04-29 19:30:07 UTC",
-        "Built": "R 4.2.0; ; 2022-05-09 05:51:28 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 02:17:46 UTC; windows"
       }
     },
     "crayon": {
@@ -1419,7 +1419,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-09-29 16:20:24 UTC",
-        "Built": "R 4.2.0; ; 2023-07-10 11:46:30 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:11:49 UTC; windows"
       }
     },
     "credentials": {
@@ -1504,7 +1504,7 @@
         "Maintainer": "Scott Chamberlain <myrmecocystus@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-05-17 07:30:02 UTC",
-        "Built": "R 4.2.0; ; 2023-11-03 21:25:23 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 04:36:21 UTC; windows"
       }
     },
     "curl": {
@@ -1711,7 +1711,7 @@
         "Maintainer": "Brodie Gaslam <brodie.gaslam@yahoo.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-10-05 07:10:17 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2022-05-07 00:44:33 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 02:31:49 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -1739,7 +1739,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2023-07-07 14:10:02 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-07-10 12:07:24 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 01:11:02 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -1769,7 +1769,7 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-06-29 22:40:08 UTC",
-        "Built": "R 4.2.0; ; 2023-06-30 11:46:43 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 07:12:56 UTC; windows"
       }
     },
     "dplyr": {
@@ -1857,7 +1857,7 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-04-29 12:40:02 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2022-05-07 00:41:57 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 04:30:52 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -1944,7 +1944,7 @@
         "Author": "Thomas Lin Pedersen [cre, aut]\n(<https://orcid.org/0000-0002-5147-4711>),\nBerendea Nicolae [aut] (Author of the ColorSpace C++ library),\nRomain François [aut] (<https://orcid.org/0000-0002-2444-4226>)",
         "Repository": "RSPM",
         "Date/Publication": "2022-07-06 13:50:02 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2022-10-19 21:03:35 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 02:15:09 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -1970,7 +1970,7 @@
         "Maintainer": "Winston Chang <winston@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-02-24 16:30:02 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-02-27 11:43:17 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 01:28:55 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -2023,7 +2023,7 @@
         "License_is_FOSS": "yes",
         "Repository": "RSPM",
         "Date/Publication": "2017-02-01 00:53:34",
-        "Built": "R 4.2.0; ; 2023-10-12 11:35:07 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 02:47:08 UTC; windows"
       }
     },
     "fontLiberation": {
@@ -2047,7 +2047,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2016-10-15 11:24:18",
         "License_is_FOSS": "yes",
-        "Built": "R 4.2.0; ; 2022-05-21 04:41:33 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:38:02 UTC; windows"
       }
     },
     "fontawesome": {
@@ -2102,7 +2102,7 @@
         "Maintainer": "Lionel Henry <lionel@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2017-02-01 00:52:56",
-        "Built": "R 4.2.0; ; 2022-05-21 04:42:06 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 02:47:50 UTC; windows"
       }
     },
     "forcats": {
@@ -2132,7 +2132,7 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-01-29 22:20:02 UTC",
-        "Built": "R 4.2.0; ; 2023-01-30 12:11:44 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 05:05:59 UTC; windows"
       }
     },
     "formattable": {
@@ -2195,7 +2195,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-07-20 10:30:02 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-10-16 11:31:43 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 03:38:31 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -2227,7 +2227,7 @@
         "Maintainer": "Jennifer Bryan <jenny@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-07-20 18:50:08 UTC",
-        "Built": "R 4.2.0; ; 2023-07-21 11:27:40 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 07:00:54 UTC; windows"
       }
     },
     "gdtools": {
@@ -2285,7 +2285,7 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-07-05 19:40:02 UTC",
-        "Built": "R 4.2.0; ; 2022-10-19 21:00:55 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:17:28 UTC; windows"
       }
     },
     "gert": {
@@ -2344,7 +2344,7 @@
         "Maintainer": "Victor Perrier <victor.perrier@dreamrs.fr>",
         "Repository": "RSPM",
         "Date/Publication": "2023-01-08 18:50:02 UTC",
-        "Built": "R 4.2.0; ; 2023-01-09 12:51:12 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 06:39:27 UTC; windows"
       }
     },
     "ggplot2": {
@@ -2406,7 +2406,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-02-22 20:20:02 UTC",
-        "Built": "R 4.2.0; ; 2023-02-23 11:25:44 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 07:11:35 UTC; windows"
       }
     },
     "gitcreds": {
@@ -2435,7 +2435,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-09-08 10:42:55 UTC",
-        "Built": "R 4.2.0; ; 2022-09-09 11:42:31 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 04:02:47 UTC; windows"
       }
     },
     "globals": {
@@ -2462,7 +2462,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2022-11-21 21:10:02 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2022-11-22 13:19:04 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:44:34 UTC; windows"
       }
     },
     "glue": {
@@ -2492,7 +2492,7 @@
         "Maintainer": "Jennifer Bryan <jenny@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-02-24 07:50:20 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2022-04-22 18:22:07 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 01:18:48 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -2552,7 +2552,7 @@
         "Maintainer": "Colin Fay <contact@colinfay.me>",
         "Repository": "RSPM",
         "Date/Publication": "2023-06-05 15:50:03 UTC",
-        "Built": "R 4.2.0; ; 2023-06-06 11:43:56 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 07:08:04 UTC; windows"
       }
     },
     "googledrive": {
@@ -2703,7 +2703,7 @@
         "Maintainer": "Kirill Müller <krlmlr+r@mailbox.org>",
         "Repository": "RSPM",
         "Date/Publication": "2020-12-13 07:30:02 UTC",
-        "Built": "R 4.2.0; ; 2022-05-07 00:40:37 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 05:07:30 UTC; windows"
       }
     },
     "highr": {
@@ -2731,7 +2731,7 @@
         "Maintainer": "Yihui Xie <xie@yihui.name>",
         "Repository": "RSPM",
         "Date/Publication": "2022-12-22 07:00:02 UTC",
-        "Built": "R 4.2.0; ; 2022-12-23 11:38:49 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:54:11 UTC; windows"
       }
     },
     "hms": {
@@ -2761,7 +2761,7 @@
         "Maintainer": "Kirill Müller <kirill@cynkra.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-03-21 18:10:02 UTC",
-        "Built": "R 4.2.0; ; 2023-03-22 11:50:13 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 02:28:09 UTC; windows"
       }
     },
     "htmltools": {
@@ -2846,7 +2846,7 @@
         "Maintainer": "Scott Chamberlain <myrmecocystus@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2020-04-10 06:20:02 UTC",
-        "Built": "R 4.2.0; ; 2022-05-07 02:05:55 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:55:16 UTC; windows"
       }
     },
     "httpuv": {
@@ -2992,7 +2992,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2017-05-31 08:49:59 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2022-05-07 00:43:48 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:52:12 UTC; windows"
       }
     },
     "ini": {
@@ -3018,7 +3018,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2018-05-20 03:26:39 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2022-05-07 00:35:44 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 04:27:50 UTC; windows"
       }
     },
     "isoband": {
@@ -3047,7 +3047,7 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2022-12-20 10:00:13 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2022-12-21 11:43:36 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 01:47:52 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -3073,7 +3073,7 @@
         "Maintainer": "Carson Sievert <carson@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-04-26 17:10:02 UTC",
-        "Built": "R 4.2.0; ; 2022-05-07 00:43:09 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 05:47:34 UTC; windows"
       }
     },
     "jsonlite": {
@@ -3130,7 +3130,7 @@
         "Maintainer": "Hao Zhu <haozhu233@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-02-20 05:50:07 UTC",
-        "Built": "R 4.2.0; ; 2022-04-22 21:50:45 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 05:37:54 UTC; windows"
       }
     },
     "knitr": {
@@ -3270,7 +3270,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2019-03-15 17:50:07 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2022-05-07 00:39:57 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 01:58:26 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -3424,7 +3424,7 @@
         "Maintainer": "Lionel Henry <lionel@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-03-30 07:30:09 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2022-04-22 18:21:19 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 01:41:22 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -3479,7 +3479,7 @@
         "Maintainer": "Winston Chang <winston@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-11-26 16:11:10 UTC",
-        "Built": "R 4.2.0; ; 2022-04-22 21:48:42 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 06:06:40 UTC; windows"
       }
     },
     "mgcv": {
@@ -3531,7 +3531,7 @@
         "Maintainer": "Yihui Xie <xie@yihui.name>",
         "Repository": "RSPM",
         "Date/Publication": "2021-09-28 05:00:05 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2022-05-07 00:13:49 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 02:06:08 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -3557,7 +3557,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2018-05-18 18:37:18 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2022-04-22 21:55:09 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 06:38:02 UTC; windows"
       }
     },
     "modelr": {
@@ -3586,7 +3586,7 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-03-22 13:00:07 UTC",
-        "Built": "R 4.2.0; ; 2023-03-23 11:37:06 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 06:59:49 UTC; windows"
       }
     },
     "munsell": {
@@ -3610,7 +3610,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2018-06-12 04:29:06 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2022-05-07 00:40:57 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 02:39:10 UTC; windows"
       }
     },
     "nlme": {
@@ -3756,7 +3756,7 @@
         "Maintainer": "Kirill Müller <kirill@cynkra.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-03-22 08:10:02 UTC",
-        "Built": "R 4.2.0; ; 2023-10-16 11:28:56 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 07:12:50 UTC; windows"
       }
     },
     "pingr": {
@@ -3835,7 +3835,7 @@
         "Packaged": "2019-09-22 08:42:40 UTC; gaborcsardi",
         "Repository": "RSPM",
         "Date/Publication": "2019-09-22 09:20:02 UTC",
-        "Built": "R 4.2.0; ; 2022-05-07 00:11:44 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:39:01 UTC; windows"
       }
     },
     "pkgdown": {
@@ -3920,7 +3920,7 @@
         "Maintainer": "Kirill Müller <krlmlr+r@mailbox.org>",
         "Repository": "RSPM",
         "Date/Publication": "2018-03-25 15:25:27 UTC",
-        "Built": "R 4.2.0; ; 2023-05-30 11:33:46 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:39:46 UTC; windows"
       }
     },
     "plotly": {
@@ -3972,7 +3972,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2015-08-11 08:22:28",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2022-05-07 00:28:13 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 03:24:57 UTC; windows"
       }
     },
     "prettyunits": {
@@ -4052,7 +4052,7 @@
         "Maintainer": "Winston Chang <winston@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-05-02 18:00:02 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-05-03 11:40:53 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 07:30:28 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -4140,7 +4140,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-04-18 19:30:02 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-04-19 11:34:58 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 02:57:36 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -4234,7 +4234,7 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-01-31 05:40:02 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2022-05-07 00:39:41 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 04:19:02 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -4262,7 +4262,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-09-27 15:10:02 UTC",
-        "Built": "R 4.2.0; ; 2022-05-07 00:47:02 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 05:06:04 UTC; windows"
       }
     },
     "readr": {
@@ -4379,7 +4379,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2020-05-01 06:50:02 UTC",
-        "Built": "R 4.2.0; ; 2022-05-07 00:47:20 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 04:47:12 UTC; windows"
       }
     },
     "remotes": {
@@ -4407,7 +4407,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-07-18 13:49:25 UTC",
-        "Built": "R 4.2.0; ; 2023-07-19 11:12:58 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:28:38 UTC; windows"
       }
     },
     "renv": {
@@ -4494,7 +4494,7 @@
         "RoxygenNote": "7.2.3",
         "Author": "Gábor Csárdi [cre, aut, cph], Hadley Wickham [aut], RConsortium [cph], RStudio [cph, fnd]",
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
-        "Built": "R 4.2.2; ; 2023-11-28 16:19:37 UTC; windows",
+        "Built": "R 4.2.1; ; 2024-02-22 13:47:13 UTC; windows",
         "RemoteType": "github",
         "RemoteUsername": "r-lib",
         "RemoteRepo": "revdepcheck",
@@ -4534,7 +4534,7 @@
         "Maintainer": "Kevin Ushey <kevinushey@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-11-26 16:11:02 UTC",
-        "Built": "R 4.2.0; ; 2022-04-22 21:47:41 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:59:36 UTC; windows"
       }
     },
     "rhub": {
@@ -4598,7 +4598,7 @@
         "Type": "Package",
         "Title": "Risk Metrics to Evaluating R Packages",
         "Description": "Facilities for assessing R packages against a number of metrics to  help quantify their robustness.",
-        "Version": "0.2.3",
+        "Version": "0.2.4.9000",
         "Authors@R": "c( person(\"R Validation Hub\", role = c(\"aut\"), email = \"psi.aims.r.validation@gmail.com\"), person(\"Doug\", \"Kelkhoff\", role = c(\"aut\"), email = \"doug.kelkhoff@gmail.com\"), person(\"Marly\", \"Gotti\", role = c(\"aut\")),  person(\"Eli\", \"Miller\", role = c(\"cre\", \"aut\"), email = \"eli.miller@atorusresearch.com\"),  person(\"Kevin\", \"K\", role = c(\"aut\")),  person(\"Yilong\", \"Zhang\", role = c(\"aut\")), person(\"Eric\", \"Milliman\", role = c(\"aut\")), person(\"Juliane\", \"Manitz\", role = c(\"aut\")), person(\"Mark\", \"Padgham\", role = c(\"ctb\")), person(\"PSI special interest group Application and Implementation of Methodologies in Statistics\", role = c(\"cph\")))",
         "URL": "https://pharmar.github.io/riskmetric/,\nhttps://github.com/pharmaR/riskmetric",
         "BugReports": "https://github.com/pharmaR/riskmetric/issues",
@@ -4611,18 +4611,18 @@
         "Config/testthat/edition": "3",
         "Author": "R Validation Hub [aut], Doug Kelkhoff [aut], Marly Gotti [aut], Eli Miller [cre, aut], Kevin K [aut], Yilong Zhang [aut], Eric Milliman [aut], Juliane Manitz [aut], Mark Padgham [ctb], PSI special interest group Application and Implementation of Methodologies in Statistics [cph]",
         "Maintainer": "Eli Miller <eli.miller@atorusresearch.com>",
-        "Built": "R 4.2.2; ; 2023-11-28 16:19:57 UTC; windows",
+        "Built": "R 4.2.1; ; 2024-04-23 13:43:02 UTC; windows",
         "RemoteType": "github",
         "RemoteHost": "api.github.com",
         "RemoteUsername": "pharmaR",
         "RemoteRepo": "riskmetric",
         "RemoteRef": "HEAD",
-        "RemoteSha": "3905c66d15dde5b6e3d021aa2bec52d883462bd9",
+        "RemoteSha": "7c7bf3c15c02c33bc788e1070f25302b203d6d9e",
         "GithubHost": "api.github.com",
         "GithubRepo": "riskmetric",
         "GithubUsername": "pharmaR",
         "GithubRef": "HEAD",
-        "GithubSHA1": "3905c66d15dde5b6e3d021aa2bec52d883462bd9"
+        "GithubSHA1": "7c7bf3c15c02c33bc788e1070f25302b203d6d9e"
       }
     },
     "rjson": {
@@ -4644,7 +4644,7 @@
         "Packaged": "2022-01-08 19:22:39 UTC; root",
         "NeedsCompilation": "yes",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2022-04-22 21:22:14 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 01:21:01 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -4795,7 +4795,7 @@
         "Author": "Kevin Ushey [aut, cre],\nJJ Allaire [aut],\nHadley Wickham [aut],\nGary Ritchie [aut],\nRStudio [cph]",
         "Repository": "RSPM",
         "Date/Publication": "2023-07-07 19:10:02 UTC",
-        "Built": "R 4.2.0; ; 2023-07-10 11:28:27 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 02:16:42 UTC; windows"
       }
     },
     "rversions": {
@@ -4820,7 +4820,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-08-31 10:30:02 UTC",
-        "Built": "R 4.2.0; ; 2023-11-03 21:35:45 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:56:10 UTC; windows"
       }
     },
     "rvest": {
@@ -4850,7 +4850,7 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-08-19 22:30:08 UTC",
-        "Built": "R 4.2.0; ; 2023-10-03 11:56:29 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 05:18:54 UTC; windows"
       }
     },
     "sass": {
@@ -4965,7 +4965,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2019-11-20 07:30:03 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2022-05-07 00:53:59 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 06:47:22 UTC; windows"
       }
     },
     "sessioninfo": {
@@ -4994,7 +4994,7 @@
         "Author": "Gábor Csárdi [cre],\nHadley Wickham [aut],\nWinston Chang [aut],\nRobert Flight [aut],\nKirill Müller [aut],\nJim Hester [aut],\nR Core team [ctb]",
         "Repository": "RSPM",
         "Date/Publication": "2021-12-06 11:50:02 UTC",
-        "Built": "R 4.2.0; ; 2023-05-29 11:34:49 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:57:02 UTC; windows"
       }
     },
     "shiny": {
@@ -5053,7 +5053,7 @@
         "Maintainer": "Vincent Nijs <radiant@rady.ucsd.edu>",
         "Repository": "RSPM",
         "Date/Publication": "2022-05-06 06:50:08 UTC",
-        "Built": "R 4.2.0; ; 2022-05-09 11:21:52 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 06:39:59 UTC; windows"
       }
     },
     "shinyTree": {
@@ -5080,7 +5080,7 @@
         "Author": "Trestle Technology, LLC [aut],\nJeff Allen [aut],\nInstitut de Radioprotection et de Sûreté Nucléaire [cph],\nIvan Bozhanov [ctb, cph] (jsTree),\nThe Dojo Foundation [ctb, cph] (require.js),\njQuery Foundation, Inc. [ctb, cph],\nMike Schaffer [ctb],\nTimm Danker [ctb],\nMichael Bell [cre],\nSebastian Gatscha [ctb],\nThorn Thaler [ctb]",
         "Repository": "RSPM",
         "Date/Publication": "2023-08-07 18:30:02 UTC",
-        "Built": "R 4.2.0; ; 2023-08-08 20:05:37 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 07:08:07 UTC; windows"
       }
     },
     "shinyWidgets": {
@@ -5134,7 +5134,7 @@
         "Maintainer": "Dean Attali <daattali@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-12-23 10:10:02 UTC",
-        "Built": "R 4.2.0; ; 2022-04-22 21:52:40 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 07:19:50 UTC; windows"
       }
     },
     "shinymanager": {
@@ -5247,7 +5247,7 @@
         "Packaged": "2023-01-31 18:03:04 UTC; kevin",
         "Repository": "RSPM",
         "Date/Publication": "2023-02-01 10:10:02 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-02-02 19:02:10 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 02:31:05 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -5394,7 +5394,7 @@
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
         "Repository": "RSPM",
         "Date/Publication": "2023-05-23 07:50:02 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-05-24 11:36:07 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 01:35:04 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -5525,7 +5525,7 @@
         "Maintainer": "Kirill Müller <kirill@cynkra.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-03-20 06:30:02 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-03-21 11:23:49 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 04:46:02 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -5591,7 +5591,7 @@
         "Maintainer": "Lionel Henry <lionel@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-10-10 19:00:02 UTC",
-        "Built": "R 4.2.0; ; 2023-10-16 11:55:29 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 06:59:14 UTC; windows"
       }
     },
     "tidyverse": {
@@ -5703,7 +5703,7 @@
         "Packaged": "2023-03-04 21:40:31 UTC; ironholds",
         "Repository": "RSPM",
         "Date/Publication": "2023-03-04 23:30:07 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-07-07 14:47:05 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 01:11:08 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -5762,7 +5762,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-11-30 13:40:02 UTC",
-        "Built": "R 4.2.0; ; 2022-04-26 21:16:19 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 02:10:26 UTC; windows"
       }
     },
     "urltools": {
@@ -5792,7 +5792,7 @@
         "Packaged": "2019-04-14 22:25:08 UTC; ironholds",
         "Repository": "RSPM",
         "Date/Publication": "2019-04-14 23:02:47 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-07-07 14:48:44 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 01:16:29 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -5935,7 +5935,7 @@
         "Author": "Simon Garnier [aut, cre],\nNoam Ross [ctb, cph],\nBob Rudis [ctb, cph],\nMarco Sciaini [ctb, cph],\nAntônio Pedro Camargo [ctb, cph],\nCédric Scherer [ctb, cph]",
         "Repository": "RSPM",
         "Date/Publication": "2023-05-02 23:50:02 UTC",
-        "Built": "R 4.2.0; ; 2023-05-03 11:34:36 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 01:12:42 UTC; windows"
       }
     },
     "vroom": {
@@ -6025,7 +6025,7 @@
         "Maintainer": "Winston Chang <winston@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-06-26 23:30:02 UTC",
-        "Built": "R 4.2.0; ; 2023-06-27 11:38:35 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 05:10:05 UTC; windows"
       }
     },
     "websocket": {
@@ -6079,7 +6079,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2022-12-05 15:33:50 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2022-12-06 17:12:28 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 04:07:09 UTC; windows"
       }
     },
     "whoami": {
@@ -6222,7 +6222,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2018-09-17 13:10:03 UTC",
-        "Built": "R 4.2.0; ; 2022-05-07 00:44:06 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 03:06:20 UTC; windows"
       }
     },
     "xtable": {
@@ -6248,7 +6248,7 @@
         "Author": "David B. Dahl [aut],\nDavid Scott [aut, cre],\nCharles Roosen [aut],\nArni Magnusson [aut],\nJonathan Swinton [aut],\nAjay Shah [ctb],\nArne Henningsen [ctb],\nBenno Puetz [ctb],\nBernhard Pfaff [ctb],\nClaudio Agostinelli [ctb],\nClaudius Loehnert [ctb],\nDavid Mitchell [ctb],\nDavid Whiting [ctb],\nFernando da Rosa [ctb],\nGuido Gay [ctb],\nGuido Schulz [ctb],\nIan Fellows [ctb],\nJeff Laake [ctb],\nJohn Walker [ctb],\nJun Yan [ctb],\nLiviu Andronic [ctb],\nMarkus Loecher [ctb],\nMartin Gubri [ctb],\nMatthieu Stigler [ctb],\nRobert Castelo [ctb],\nSeth Falcon [ctb],\nStefan Edwards [ctb],\nSven Garbade [ctb],\nUwe Ligges [ctb]",
         "Date/Publication": "2019-04-21 12:20:03 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.2.0; ; 2022-10-19 21:06:13 UTC; windows"
+        "Built": "R 4.2.0; ; 2024-01-23 02:30:15 UTC; windows"
       }
     },
     "yaml": {
@@ -6298,7 +6298,7 @@
         "Packaged": "2023-04-17 13:48:47 UTC; gaborcsardi",
         "Repository": "RSPM",
         "Date/Publication": "2023-04-17 15:30:02 UTC",
-        "Built": "R 4.2.0; x86_64-w64-mingw32; 2023-04-18 11:14:03 UTC; windows",
+        "Built": "R 4.2.0; x86_64-w64-mingw32; 2024-01-23 02:49:38 UTC; windows",
         "ExperimentalWindowsRuntime": "ucrt",
         "Archs": "x64"
       }
@@ -6321,16 +6321,16 @@
       "checksum": "d41d8cd98f00b204e9800998ecf8427e"
     },
     ".Rbuildignore": {
-      "checksum": "b7c95e12e5a6b48ee37e30faad042ad3"
+      "checksum": "e1d317537e0f0293ca54ad01dde4f028"
     },
     ".Renviron": {
-      "checksum": "4d7e9b63206fcc5a9a0db1a48b4d2c7b"
+      "checksum": "d4573d8ed95849bbc1e5a77eb0cb3fdc"
     },
     ".Rprofile": {
-      "checksum": "bdd480ea83e194dec1759e6158a4376d"
+      "checksum": "19fd5af63fd3761f995e83d4cf542213"
     },
     "_pkgdown.yml": {
-      "checksum": "93edcbb89a7aedf046ace84f340aaf98"
+      "checksum": "3daabb4d253fb2ec57861d00f1fab0ce"
     },
     "app.R": {
       "checksum": "a2dd8762b1f4201f078e608757a18103"
@@ -6338,14 +6338,14 @@
     "codecov.yml": {
       "checksum": "95dfbfc38a2669bc0c6af49bce10dc39"
     },
-    "completion_matrix.html": {
-      "checksum": "e3ed87228eb818b3b84462761cd405cb"
+    "credentials.sqlite": {
+      "checksum": "7eae98dbbbaf66d1ae5d5c26f7bfbb2e"
     },
     "credentials_dev.sqlite": {
-      "checksum": "3a24b50e3c7023e56c527e55f27215d9"
+      "checksum": "0e8dd3d6e72af6b8d020f70dfc34ed8d"
     },
     "data-raw/community.csv": {
-      "checksum": "96f6ded0b2073bcf999141017dcb24b9"
+      "checksum": "8aa82d4d2990f337b0ef8320f00c2767"
     },
     "data-raw/community.txt": {
       "checksum": "c68548214eac7a82ce0eebe47985437b"
@@ -6354,10 +6354,10 @@
       "checksum": "a3c0bf5e951a1484422f4f8d75aeac85"
     },
     "data-raw/internal-data.R": {
-      "checksum": "2b52fd421d0a98a2974e1d80eb173787"
+      "checksum": "efd86f3aadf4429fd7fd84a5a453f068"
     },
     "data-raw/maintenance.csv": {
-      "checksum": "c74b66e7688f04a9631380c50099fe9e"
+      "checksum": "ebb0e8eb586f88f059def111b2bf1bcc"
     },
     "data-raw/privileges.csv": {
       "checksum": "6838ae303403f534a942ef6a8d043d8f"
@@ -6371,11 +6371,8 @@
     "data-raw/upload_format.csv": {
       "checksum": "87361dd71fc97d307ae957bf2603130f"
     },
-    "database.sqlite": {
-      "checksum": "640cf57bbf51b0f45932e98061be4080"
-    },
     "DESCRIPTION": {
-      "checksum": "05d9a8366dd3de01c5d9190bee21c64f"
+      "checksum": "d3aa27c654d5c1c5c74df3e687cf0311"
     },
     "inst/app/www/css/community_metrics.css": {
       "checksum": "1961b3f85311f077befd15e45b032b7b"
@@ -6390,7 +6387,7 @@
       "checksum": "5092def469fbaa2997964b1c3b8c5b26"
     },
     "inst/app/www/css/main.css": {
-      "checksum": "a57f99f24c023475a71fcaabf9814e5e"
+      "checksum": "d45c23d20c33dd42b2f47c0fd4abea64"
     },
     "inst/app/www/css/metric_select.css": {
       "checksum": "8765a786b6a068f38bf112185b0ab136"
@@ -6401,26 +6398,74 @@
     "inst/app/www/favicon.ico": {
       "checksum": "cb6c05eadc2b19ec417dae94e3adbcd3"
     },
+    "inst/app/www/images/appsilon_logo.jpg": {
+      "checksum": "4eb45e80954ac4d22d3d0ae87c7f05bf"
+    },
+    "inst/app/www/images/arcus_logo.png": {
+      "checksum": "dfa8ba4df14136cd3e7ba836f070afab"
+    },
+    "inst/app/www/images/bi_logo.png": {
+      "checksum": "7f2896d6740e052f0c02c8371822a9aa"
+    },
+    "inst/app/www/images/biogen_logo.jpg": {
+      "checksum": "354ed99ba28380e61a6dd8c3907beeb3"
+    },
+    "inst/app/www/images/cytel.png": {
+      "checksum": "1efd10241805ad4f72822212fac68968"
+    },
+    "inst/app/www/images/fission_logo.png": {
+      "checksum": "f4bc619a2d201b95fc3af8bce7940db5"
+    },
+    "inst/app/www/images/gcp_logo.png": {
+      "checksum": "c756d1f33afb06ebcc4e8f06da9ef4a7"
+    },
+    "inst/app/www/images/GSK_logo.jpg": {
+      "checksum": "b80ab053fe29a840fe39bb14ccf164d4"
+    },
+    "inst/app/www/images/katalyzedata_logo.jpg": {
+      "checksum": "9cc9ec743a35f63679ec2c77d02c6c08"
+    },
+    "inst/app/www/images/merck_logo.png": {
+      "checksum": "cb5ccd1701519d4a4e7326161a31f91f"
+    },
+    "inst/app/www/images/pfizer_logo.png": {
+      "checksum": "9330169f1ac27f9198cc98382b193dd8"
+    },
+    "inst/app/www/images/pharmaRlogo_large.png": {
+      "checksum": "7c7cce5149191dda65e58d8851a76780"
+    },
+    "inst/app/www/images/procogia_logo.png": {
+      "checksum": "d21a132427bbc182c5250027a832d9d9"
+    },
+    "inst/app/www/images/R_validation_hub_logo.png": {
+      "checksum": "6b9904e59ba7d569a495a59fad482971"
+    },
+    "inst/app/www/images/raa-alt-image-lt-not-used.png": {
+      "checksum": "8062579150b806ba5bb30ac3fff60d75"
+    },
+    "inst/app/www/images/raa-alt-image-lt-ug-not-used.png": {
+      "checksum": "9ea191489dfd5dc8b21c920918dd7f3e"
+    },
+    "inst/app/www/images/raa-alt-image-lt-ug2.png": {
+      "checksum": "cfcc4e2aba88439281667083a0f94281"
+    },
+    "inst/app/www/images/raa-alt-image-not-used.png": {
+      "checksum": "67cf7b41d7962259b16f205b1c78e478"
+    },
+    "inst/app/www/images/raa-image-ug-not-used.png": {
+      "checksum": "7f3066a2042a334ea7db9d1f96057a4f"
+    },
+    "inst/app/www/images/rc_logo.png": {
+      "checksum": "de77043fc1dc41c249e74089dcf62dc3"
+    },
+    "inst/app/www/images/roche_logo.png": {
+      "checksum": "4405843c3e4ca95db8766166a5138360"
+    },
     "inst/app/www/js/highlight.min.js": {
       "checksum": "613f40aaddaa3ffeea28ef28cd9fa6bf"
     },
     "inst/app/www/js/role.js": {
       "checksum": "b1a1715df2872a8f01e68e719de0e3f0"
-    },
-    "inst/app/www/raa-alt-image-lt-ug.png": {
-      "checksum": "9ea191489dfd5dc8b21c920918dd7f3e"
-    },
-    "inst/app/www/raa-alt-image-lt-ug2.png": {
-      "checksum": "cfcc4e2aba88439281667083a0f94281"
-    },
-    "inst/app/www/raa-alt-image-lt.png": {
-      "checksum": "8062579150b806ba5bb30ac3fff60d75"
-    },
-    "inst/app/www/raa-alt-image.png": {
-      "checksum": "67cf7b41d7962259b16f205b1c78e478"
-    },
-    "inst/app/www/raa-image-ug.png": {
-      "checksum": "7f3066a2042a334ea7db9d1f96057a4f"
     },
     "inst/app/www/raa_alt_favicon.ico": {
       "checksum": "464ae1348030dd37080c9b8785706e59"
@@ -6438,7 +6483,7 @@
       "checksum": "c546bedf2ad89fd1d59464025f90f079"
     },
     "inst/report_downloads/header.docx": {
-      "checksum": "d75649a1d79befc8d96f0ddc60e73541"
+      "checksum": "044aeabc883bdfca177ac7208b5aa7e9"
     },
     "inst/report_downloads/header.html": {
       "checksum": "fb9abadd6d2bc3fa4213656659ea6bf2"
@@ -6462,19 +6507,19 @@
       "checksum": "d174feb3c7cb2e965315eb3f9bdc1d69"
     },
     "inst/report_downloads/raa-image.png": {
-      "checksum": "73a5de66a3f30df8a156aa22ad0ee73c"
+      "checksum": "8062579150b806ba5bb30ac3fff60d75"
     },
     "inst/report_downloads/read_html.lua": {
       "checksum": "93f2911e346c6f8faed0bc62205a65ae"
     },
     "inst/report_downloads/reportDocx.Rmd": {
-      "checksum": "8fc6da3e1ef6aa816028dd31476132fa"
+      "checksum": "94b87c77ddc814e966d19620d379f7e6"
     },
     "inst/report_downloads/reportHtml.Rmd": {
       "checksum": "9eb9c81e31c01eb194bb34d43462fc82"
     },
     "inst/report_downloads/reportPdf.Rmd": {
-      "checksum": "097123e7af637045dff810587e67f39d"
+      "checksum": "bdd76e28ab5a56e1935ff6c3942da8c5"
     },
     "inst/sql_queries/create_comments_table.sql": {
       "checksum": "6cbc1f894eafe76fc41d2bb899777ca4"
@@ -6519,7 +6564,7 @@
       "checksum": "5fc0bfdb844b4ce7df8a183e2a4a2f96"
     },
     "inst/WORDLIST": {
-      "checksum": "509d62f3e46d573dde21a5187f149b7c"
+      "checksum": "563249d7f479b7332f7b554086eb0df2"
     },
     "LICENSE": {
       "checksum": "d3ffdaec5c788a5ccca5a67ff73e0c5b"
@@ -6528,61 +6573,64 @@
       "checksum": "a935dd2840ae8d4dab5b90bfdc795609"
     },
     "loggit.json": {
-      "checksum": "5c6d5789af6296a85a600be8d7691991"
+      "checksum": "8470712b5966dfdb911172196e65f775"
     },
     "NAMESPACE": {
-      "checksum": "6ca44aa5f9daba7810812e723de06f40"
+      "checksum": "da6c872184abbc9fd4de7fc105359e38"
     },
     "NEWS.md": {
-      "checksum": "35df3ce5b49fa9fadeb476aff3f69a59"
+      "checksum": "4250d13b8046c00a05e1a016df376342"
     },
     "R/app_config.R": {
       "checksum": "44ca4933ad03b2b7d113900fe8d141bc"
     },
     "R/app_server.R": {
-      "checksum": "c95dd629daabcf315726849f443a3193"
+      "checksum": "5329644f2fff03235fdfafed259db39a"
     },
     "R/app_ui.R": {
-      "checksum": "9fb1981068556b75b7cd846192c90c6f"
+      "checksum": "6cabcb07a0804884c6c513067b0a5ed4"
     },
     "R/global.R": {
-      "checksum": "e02f9b863a27654036c50efc34d48ad9"
+      "checksum": "7572e503445dba7111456a25c6ebac7a"
+    },
+    "R/mod_aboutInfo.R": {
+      "checksum": "0c1bb213893c691f83dae89bf6c32828"
     },
     "R/mod_addComment.R": {
-      "checksum": "177aec6578b64c695239a7121c1cf527"
+      "checksum": "f21f45c28df9f1b8e33ceb645a9564d2"
     },
     "R/mod_assessmentInfo.R": {
-      "checksum": "f8e2b9256371b7dc4040ed73f534b755"
+      "checksum": "78ac9b5fd4929b72914bb42e9ef94630"
     },
     "R/mod_code_explorer.R": {
-      "checksum": "58e367ff613df0a9b15afc404b9b96a3"
+      "checksum": "8bcf1b23a39a25ade768839c9201b116"
     },
     "R/mod_code_explorer_utils.R": {
-      "checksum": "c46871417c6f6cea75ecd4b3a2eb6792"
+      "checksum": "af94ee4ab6fb62731291b3c00c5f2a96"
     },
     "R/mod_communityMetrics.R": {
-      "checksum": "3a493402150eca614d78e77041d11d4d"
+      "checksum": "d085cb2c4e3a5bb9ed9170692f2ff4d8"
     },
     "R/mod_databaseView.R": {
-      "checksum": "1039c13686ab8dd07126404f80355912"
+      "checksum": "a5e55c3ee30b8208731a788eb1e56b97"
     },
     "R/mod_decision_automation.R": {
-      "checksum": "310cff830b0b0c024435bf9b9451a5bf"
+      "checksum": "ad53d0516a992d481303bd5eebe50889"
     },
     "R/mod_decision_automation_utils.R": {
-      "checksum": "82d42e9a8e88cfa659a31ea722eb4ae0"
+      "checksum": "7bdbf163ca9413a084bf78c2b27dae32"
     },
     "R/mod_downloadHandler.R": {
-      "checksum": "4f934e2f18a2120f1f1ed8b735517edc"
+      "checksum": "f5ff8b7f68ef797c5b40343004536c78"
     },
     "R/mod_introJS.R": {
-      "checksum": "0e98dfdfae119e27309575e8e6f0c625"
+      "checksum": "bd69ee2648f11fdfe91cf0177298aa16"
     },
     "R/mod_introJS_utils_text.R": {
-      "checksum": "32aac5cd55fb4c1d526efac6375e9040"
+      "checksum": "224e1ee92cd63457e14970b182939c11"
     },
     "R/mod_maintenanceMetrics.R": {
-      "checksum": "967b9f3c11db22042f70b62f0d0c0636"
+      "checksum": "f0d917bc23b7ac617bd6e263681a88ba"
     },
     "R/mod_metric_rule.R": {
       "checksum": "2eeaeddf08d9d79af747346afe54857b"
@@ -6594,28 +6642,28 @@
       "checksum": "34a007fca1101cea625b81d3bdcf4719"
     },
     "R/mod_packageDependencies.R": {
-      "checksum": "9b9a0c2419dc366fbf14f16799546123"
+      "checksum": "b4f0b93d628b8249132f8d9090a80140"
     },
     "R/mod_pkg_explorer.R": {
-      "checksum": "847a12bcae5c566ce07f5d3247556b10"
+      "checksum": "b99dddfa6338bdc17734815af97e456b"
     },
     "R/mod_pkg_explorer_utils.R": {
       "checksum": "97305d75aa5946b93536724d24388459"
     },
     "R/mod_reportPreview.R": {
-      "checksum": "f6e3fd2417942c212d7a70179777ce15"
+      "checksum": "3f09239bc29ebbde36342c3e50f5548e"
     },
     "R/mod_reweightView.R": {
-      "checksum": "e2860b197b4b5160519cc5fbbbd2e0a4"
+      "checksum": "a39800a320dd70bedf74bbe1c538d0af"
     },
     "R/mod_sidebar.R": {
-      "checksum": "c219c5e857970a5825a004f54a9ae486"
+      "checksum": "2584455c430f3578ba605d315bc5626e"
     },
     "R/mod_uploadPackage.R": {
-      "checksum": "3ed17f73813b4dd09f20ab642fda0cfc"
+      "checksum": "a0977915ec896e9b9d7b8813bb2b6c33"
     },
     "R/mod_user_roles.R": {
-      "checksum": "b3b09317d3f472b73bdc19f1f98397d9"
+      "checksum": "4970e186414e1ea1dab89d8bbfe76656"
     },
     "R/mod_viewComments.R": {
       "checksum": "c9fee0dd1c6c62f1f0157712ea04b764"
@@ -6624,37 +6672,31 @@
       "checksum": "b92560482bf1cfe81c22bf15df351cff"
     },
     "R/sysdata.rda": {
-      "checksum": "87f089f90dc388cebf66e5fe63c3203b"
+      "checksum": "4550c0f472585a438303d78370432558"
     },
     "R/utils.R": {
-      "checksum": "5cb285d8ad3a180b2c018137cb17b6b2"
+      "checksum": "e593de612b796b8fe92323f6aca13e64"
     },
     "R/utils_build_cards.R": {
-      "checksum": "496fbbdad2b476e4ebab6631fc3ab0fb"
+      "checksum": "277f654308f72be4b8cdafedc07e317f"
     },
     "R/utils_config_db.R": {
       "checksum": "cc46b4dff559fd50a40604cefc3cf44e"
     },
     "R/utils_get_db.R": {
-      "checksum": "1ebac2086b6cdced5a3bfe3f4e04e7d6"
+      "checksum": "c44a550d22295e9d9998f2e6a8d6680d"
     },
     "R/utils_insert_db.R": {
-      "checksum": "ee8183576f08afd8422ec3a9fae7a369"
+      "checksum": "22136ef793ccb4a26c19cf70a10ea0d3"
     },
     "R/utils_startup.R": {
-      "checksum": "bfbcb11edd9613af5a372a76c8f17c4b"
+      "checksum": "1e40cbc99eab2f048e9db380433218e4"
     },
     "README.md": {
       "checksum": "44e60c973f19f15e5a386d6d304c56c6"
     },
     "README.Rmd": {
       "checksum": "2943c49784b7c39fd290510770ff8ff3"
-    },
-    "tarballs/dplyr_1.1.4.tar.gz": {
-      "checksum": "29bdf98592722336f0d07484baf2a959"
-    },
-    "tarballs/tidyr_1.3.0.tar.gz": {
-      "checksum": "6721234466ed4b48bab20286131d4a06"
     }
   },
   "users": null
