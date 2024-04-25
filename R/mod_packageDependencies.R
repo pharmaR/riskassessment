@@ -193,75 +193,73 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
       } else {
         req(depends())
 
-        fluidPage(
-          shiny::
-            tagList(
-              div(id = "dep_infoboxes", metricGridUI(NS(id, 'metricGrid'))),
-              br(),
-              fluidRow(
-                column(4, 
-                 tags$strong(
-                  glue::glue("First-order dependencies for package: ", {selected_pkg$name()})
-                 )
-                ),
-                column(2,
-                 shinyWidgets::materialSwitch(
-                   inputId =  ns("incl_suggests"),
-                   label = "Include Suggests",
-                   value = toggled(),
-                   inline = TRUE,
-                   status = "success"
-                 )
-                ),
-                column(2,
-                 if (pkg_updates$render_upload) {
-                   actionButton(
-                     inputId =  ns("update_all_packages"),
-                     label = "Upload all",
-                     icon = icon("fas fa-upload", class = "fa-regular", lib = "font-awesome"),
-                     size = "xs",
-                     style = "height:30px; padding-top:1px;"
+        tagList(
+          br(), br(),
+          div(id = "dep_infoboxes", metricGridUI(NS(id, 'metricGrid'))),
+          br(),
+          fluidRow(
+            column(4, 
+                   tags$strong(
+                     glue::glue("First-order dependencies for package: ", {selected_pkg$name()})
                    )
-                 } 
+            ),
+            column(2,
+                   shinyWidgets::materialSwitch(
+                     inputId =  ns("incl_suggests"),
+                     label = "Include Suggests",
+                     value = toggled(),
+                     inline = TRUE,
+                     status = "success"
+                   )
+            ),
+            column(2,
+                   if (pkg_updates$render_upload) {
+                     actionButton(
+                       inputId =  ns("update_all_packages"),
+                       label = "Upload all",
+                       icon = icon("fas fa-upload", class = "fa-regular", lib = "font-awesome"),
+                       size = "xs",
+                       style = "height:30px; padding-top:1px;"
+                     )
+                   } 
+            )
+          ),
+          br(),
+          # remove DT "search:" rectangle
+          tags$head(
+            tags$style(type = "text/css", ".dataTables_filter {display: none;    }")
+          ),
+          fluidRow(
+            column(
+              width = 8,
+              DT::renderDataTable(server = FALSE, {
+                datatable_custom(data_table())                      
+              })
+            )
+          ), 
+          br(), br(),
+          h3(glue::glue("All reverse Dependencies: {length(revdeps())}"), style = "text-align: left;"),
+          br(),
+          fluidRow(
+            column(
+              width = 8,
+              h4(glue::glue("Reverse Dependencies available in database: {nrow(table_revdeps_local()) %||% 0}"), style = "text-align: left;"),
+              br(), 
+              DT::renderDataTable({
+                datatable_custom(
+                  table_revdeps_local(), 
+                  colnames = c("Package", "Version", "Score", "Review Package"),
+                  hide_names = NULL
                 )
-              ),
-              br(),
-              # remove DT "search:" rectangle
-              tags$head(
-                tags$style(type = "text/css", ".dataTables_filter {display: none;    }")
-              ),
-              fluidRow(
-                column(
-                  width = 8,
-                  DT::renderDataTable(server = FALSE, {
-                    datatable_custom(data_table())                      
-                  })
-                )
-              ), 
+              }),
               br(), br(),
-              h3(glue::glue("All reverse Dependencies: {length(revdeps())}"), style = "text-align: left;"),
-              br(),
-              fluidRow(
-                column(
-                  width = 8,
-                  h4(glue::glue("Reverse Dependencies available in database: {nrow(table_revdeps_local()) %||% 0}"), style = "text-align: left;"),
-                  br(), 
-                  DT::renderDataTable({
-                    datatable_custom(
-                      table_revdeps_local(), 
-                      colnames = c("Package", "Version", "Score", "Review Package"),
-                      hide_names = NULL
-                    )
-                  }),
-                  br(), br(),
-                  wellPanel(
-                    renderText(revdeps() %>% sort()),
-                    style = "max-height: 500px; overflow: auto"
-                  )
-                )
+              wellPanel(
+                renderText(revdeps() %>% sort()),
+                style = "max-height: 500px; overflow: auto"
               )
-            ) # taglist
-        ) # fluidpage
+            )
+          )
+        ) # taglist
       }
     }) # renderUI
     
