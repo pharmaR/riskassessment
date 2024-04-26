@@ -23,7 +23,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Aaron Clark \email{aaron.clark@biogen.com}
+\strong{Maintainer}: Aaron Clark \email{clark.aaronchris@gmail.com}
 
 Authors:
 \itemize{

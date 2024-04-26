@@ -1,8 +1,8 @@
 Package: riskassessment
 Title: A web app designed to interface with the `riskmetric` package
-Version: 3.0.0.9013
+Version: 3.0.0.9019
 Authors@R: c( 
-    person("Aaron", "Clark", role = c("aut", "cre"), email = "aaron.clark@biogen.com"),
+    person("Aaron", "Clark", role = c("aut", "cre"), email = "clark.aaronchris@gmail.com"),
     person("Robert", "Krajcik", role = "aut", email = "robert.krajcik@biogen.com"),
     person("Jeff", "Thompson", role = "aut", email = "jeff.thompson51317@gmail.com"),
     person("Lars", "Andersen", role = "aut", email = "lars.andersen@boehringer-ingelheim.com"),
@@ -40,6 +40,7 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
 Imports: 
+    archive,
     bslib (>= 0.3.0),
     config (>= 0.3.1),
     cranlogs,
@@ -68,8 +69,7 @@ Imports:
     shinyWidgets,
     stringr,
     shinyAce,
-    sortable,
-    archive
+    sortable
 Suggests: 
     chromote (>= 0.1.1.9001),
     fontawesome,
@@ -81,7 +81,8 @@ Suggests:
     shinytest2,
     spelling,
     testthat (>= 3.0.0),
-    tinytex
+    tinytex,
+    withr
 Config/testthat/edition: 3
 Language: en-US
 Depends: 

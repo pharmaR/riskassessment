@@ -13,6 +13,12 @@
 * Added Package Dependencies to Reports (#721)
 * Shorten waiting time in code explorer/package explorer by reading tarballs in memory (#707)
 * Move package upload process to a function
+* Updated logo in reports to lighter version to match application UI
+* Utilize `{archive}` to parse DESCRIPTION file in package upload process
+* Incorporates table to show reverse dependencies included in the database
+* updated manifest file and deployments article
+* Adds about page to help users understand the project a little more, providing useful resources and attribution
+* Updated version of `{riskmetric}` being used to v0.2.4.9000
 
 # riskassessment 3.0.0
 

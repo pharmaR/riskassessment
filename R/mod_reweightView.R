@@ -46,7 +46,7 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
       )
     
     observeEvent(input$update_weight, {
-      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
+      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
       curr_new_wts(save$data %>%
                      dplyr::mutate(new_weight = ifelse(name == isolate(input$metric_name),
                                                        isolate(input$metric_weight), new_weight)))
@@ -93,11 +93,11 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
               div(class = "box-body",
                   br(),
                   fluidRow(
-                    column(width = 5, offset = 5, align = "left",
+                    column(width = 5, offset = 4, align = "left",
                            h3("Set new weights:"),
                     )),
                   fluidRow(
-                    column(width = 2, offset = 5, align = "left",
+                    column(width = 2, offset = 4, align = "left",
                            selectInput(NS(id, "metric_name"), "Select metric", curr_new_wts()$name, selected = curr_new_wts()$name[1]) ),
                     column(width = 2, align = "left",
                            numericInput(NS(id, "metric_weight"), "Choose new weight", min = 0, value = curr_new_wts()$new_weight[1]) ),
@@ -106,7 +106,7 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
                            actionButton(NS(id, "update_weight"), "Confirm", class = "btn-secondary") ) ),
                   br(), br(), 
                   fluidRow(
-                    column(width = 3, offset = 1, align = "center",
+                    column(width = 3, offset = 0, align = "center",
                            
                            br(), br(), br(), 
                            tags$hr(class = "hr_sep"),
@@ -126,7 +126,7 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
                            
                     ),
                     column(width = 6, style = "border: 1px solid rgb(77, 141, 201)",
-                           offset = 1,
+                           offset = 0,
                            h3("Current Risk Score Weights by Metric", align = "center"),
                            DT::dataTableOutput(NS(id, "weights_table")))
                   ),
@@ -184,7 +184,7 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
     
     # Update metric weight dropdown so that it matches the metric name.
     observeEvent(input$metric_name, {
-      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
+      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
       
       shinyjs::disable("update_weight")
       updateNumericInput(session, "metric_weight",
@@ -199,14 +199,14 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
     # Note that another of the observeEvents will update the metric weight after
     # the selected metric name is updated.
     observeEvent(input$weights_table_rows_selected, {
-      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
+      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
       updateSelectInput(session, "metric_name",
                         selected = curr_new_wts()$name[input$weights_table_rows_selected])
     })
     
     # Save new weight into db.
     observeEvent(input$update_pkg_risk, {
-      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
+      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
       
       # if you the user goes input$back2dash, then when they return to the 
       if(n_wts_chngd() == 0){
@@ -243,7 +243,7 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
     
     # Upon confirming the risk re-calculation
     observeEvent(input$confirm_update_risk, {
-      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
+      req("weight_adjust" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
       removeModal()
       
       session$userData$trigger_events[["reset_pkg_upload"]] <- session$userData$trigger_events[["reset_pkg_upload"]] + 1

@@ -147,7 +147,7 @@ build_comm_cards <- function(data){
   
   
   # get reverse dependency info
-  rev_deps <- get_assess_blob(data$id[1])$reverse_dependencies[[1]]
+  rev_deps <- get_assess_blob(data$id[1], metric_lst = "reverse_dependencies")$reverse_dependencies[[1]]
   
   comm_rev <- comm %>% filter(name == "reverse_dependencies")
   # new

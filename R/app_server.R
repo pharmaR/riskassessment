@@ -11,7 +11,6 @@ app_server <- function(input, output, session) {
   
   old <- options()
   onStop(function() {
-    unlink("source/*", recursive = TRUE)
     options(old)
     })
   options(repos = get_db_config("package_repo"))
@@ -78,6 +77,10 @@ app_server <- function(input, output, session) {
                   value = "admin-mode-tab",
                   h2("Administrative Tools & Options", align = "center", `padding-bottom`="20px"),
                   br(),
+                  
+                  fluidRow(
+                    column(
+                      width = 10, offset = 1,
                   tabsetPanel(
                     id = "credentials",
                     if (res_auth$admin)
@@ -103,6 +106,7 @@ app_server <- function(input, output, session) {
                       title = "Assessment Reweighting",
                       reweightViewUI("reweightInfo")
                     )
+                  ))
                   ),
                   tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';"))
                 ))
@@ -211,12 +215,14 @@ app_server <- function(input, output, session) {
   })
   
   observeEvent(input$apptabs, {
-    req(input$apptabs %in% c("risk-assessment-tab", "database-tab"))
+    req(input$apptabs %in% c("about-tab", "database-tab"))
     session$userData$trigger_events$update_report_pref_inclusions <- session$userData$trigger_events$update_report_pref_inclusions + 1
   })
   
-  # Load server of the assessment criteria module.
-  assessmentInfoServer("assessmentInfo", metric_weights = metric_weights)
+
+  
+  # Load server of the about tab module
+  aboutInfoServer("aboutInfo", metric_weights)
   
   # Load server of the database view module.
   #parentSession <- .subset2(session, "parent")

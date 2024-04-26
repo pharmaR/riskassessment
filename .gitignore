@@ -13,6 +13,5 @@ auto_decisions.json
 ^docs$
 docs/
 tarballs/
-source/
 report_preferences/
 .Renviron

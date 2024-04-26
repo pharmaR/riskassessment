@@ -20,11 +20,14 @@ databaseViewUI <- function(id) {
   tagList(
     h2("Database Overview", align = "center", `padding-bottom`="20px"),
     br(),
+    fluidRow(
+      column(
+        width = 10, offset = 1,
     tabsetPanel(
       tabPanel(
         "Uploaded Packages",
         column(
-          width = 8, offset = 2, align = "center",
+          width = 10, offset = 1, align = "center",
           tags$section(
             div(class = "box",
               div(class = "box-header",
@@ -90,6 +93,7 @@ databaseViewUI <- function(id) {
         ))
     )
   )
+  ))
 }
 
 #' Server logic for 'Database View' module

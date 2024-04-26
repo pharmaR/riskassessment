@@ -17,7 +17,8 @@ mod_code_explorer_ui <- function(id){
 #' 
 #' @importFrom tools Rd2HTML
 #' @importFrom purrr map_dfr
-#' @importFrom archive archive_read archive 
+#' @importFrom archive archive_read archive
+#' @importFrom utils capture.output
 mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(), creating_dir = reactiveVal(TRUE), user, credentials){
   moduleServer( id, function(input, output, session){
     ns <- session$ns
@@ -73,7 +74,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
           ),
           br(), br(),
           div(id = ns("comments_for_fe"), fluidRow(
-            if ("general_comment" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) addCommentUI(id = ns("add_comment")),
+            if ("general_comment" %in% unlist(credentials$privileges[user$role], use.names = FALSE)) addCommentUI(id = ns("add_comment")),
             viewCommentsUI(id = ns("view_comments"))))
         )
       }
@@ -158,7 +159,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
                                    file = fp)
       Rdfile <-tools::parse_Rd(con)
       close(con)
-      HTML(paste0(capture.output(tools::Rd2HTML(Rdfile,
+      HTML(paste0(utils::capture.output(tools::Rd2HTML(Rdfile,
                                                package = c(selected_pkg$name(),
                                                            selected_pkg$version()), out = "")), collapse = "\n"))
     }) %>%
