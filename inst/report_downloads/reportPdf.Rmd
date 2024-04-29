@@ -53,8 +53,6 @@ cm_ind <- nrow(params$com_metrics) != 0
 dm_ind <- nrow(params$dep_table) != 0
 ```
 
-<!-- Fix Package fancyhdr Warning -->
-`r {"\\setlength{\\headheight}{53.61403pt}\\addtolength{\\topmargin}{-38.61403pt}"}`
 
 ```{r functions, include=FALSE, message=FALSE, warning=FALSE}
 outputComments <- function(pkg_name, comments, none_txt = "No comments"){
