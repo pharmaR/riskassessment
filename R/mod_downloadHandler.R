@@ -304,7 +304,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               # Render the report, passing parameters to the rmd file.
               rmarkdown::render(
                 input = Report,
-                output_file = path,
+                output_file = basename(path),
                 clean = FALSE,
                 params = list(pkg = pkg_list,
                               report_includes = input$report_includes,
