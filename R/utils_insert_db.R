@@ -146,12 +146,12 @@ upload_package_to_db <- function(name, version, title, description,
 #' @import dplyr
 #' @importFrom riskmetric pkg_ref pkg_assess pkg_score
 #' @importFrom glue glue 
-#' @importFrom desc desc_fields desc_get_list
+#' @importFrom desc description
 #' @importFrom tools package_dependencies
 #' 
 #' @returns nothing
 #' @noRd
-insert_riskmetric_to_db <- function(pkg_name, 
+insert_riskmetric_to_db <- function(pkg_name, pkg_version = "",
     db_name = golem::get_golem_options('assessment_db_name')){
 
   if (!isTRUE(getOption("shiny.testmode"))) {
@@ -221,11 +221,16 @@ insert_riskmetric_to_db <- function(pkg_name,
   }
 
   # get suggests and add it to package_metrics table
-  src_dir <- file.path("source", pkg_name)
-  if (dir.exists(src_dir)) {
-    desc_file <- glue::glue("source/{pkg_name}/DESCRIPTION")
-    if ('Suggests' %in% desc::desc_fields(file = desc_file)) {
-    sug_vctr <- desc::desc_get_list(key = 'Suggests', file = desc_file) %>% sort()
+  tar_file <- file.path("tarballs", glue::glue("{pkg_name}_{pkg_version}.tar.gz"))
+  if (file.exists(tar_file)) {
+    desc_file <- glue::glue("{pkg_name}/DESCRIPTION")
+    
+    tar_con <- archive::archive_read(tar_file, desc_file, format = "tar")
+    on.exit(close(tar_con))
+    
+    desc_con <- desc::description$new(text = readLines(tar_con))
+    if ('Suggests' %in% desc_con$fields()) {
+      sug_vctr <- desc_con$get_list(key = 'Suggests') %>% sort()
     } else {
       msg <- paste("Suggests not found for package", pkg_name)
       rlang::warn(msg)
@@ -233,9 +238,9 @@ insert_riskmetric_to_db <- function(pkg_name,
     }
   } else {
     sug_vctr <- unlist(tools::package_dependencies(pkg_name, available.packages(contrib.url(repos = "http://cran.us.r-project.org")),
-                       which=c("Suggests"), recursive=FALSE)) %>% unname() %>% sort()
+                                                   which=c("Suggests"), recursive=FALSE)) %>% unname() %>% sort()
   }
-  
+
   tbl_suggests <- tibble("package" = sug_vctr, type = "Suggests") 
   attr(tbl_suggests, "class") <- c('pkg_metric_dependencies', 'pkg_metric', 'data.frame')
   lst_suggests <- list(suggests = tbl_suggests)
@@ -294,6 +299,165 @@ insert_community_metrics_to_db <- function(pkg_name,
         (id, month, year, downloads, version)
         VALUES {pkgs_cum_values}"), db_name)
   }
+}
+
+#' Upload a Package List
+#' 
+#' Uploads a list of packages to the database. Designed to be used to set up the
+#' assessment database before deployment of the application.
+#'
+#' @param pkg_lst character vector of packages to upload
+#' @param assess_db character name (and file path) of the database
+#' @param repos character vector, the base URL(s) of the repositories to use
+#' @param repo_pkgs for internal use only, allows the function
+#'   `available.packages()` to be run only once
+#' @param updateProgress for internal use only, provides a function to update
+#'   progress meter in the application
+#' 
+#' @return A data frame object containing a summary of the upload process
+upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, updateProgress = NULL) {
+  
+  if (missing(assess_db)) {
+    warning("No value supplied for `assess_db`. Will try to use configuration file.")
+    assess_db <- get_db_config("assessment_db")
+  }
+  if (!file.exists(assess_db))
+    stop(glue::glue("The file `{assess_db}` does not exist."))
+  
+  if (missing(repos)) {
+    warning("No value supplied for `repos`. Will try to use configuration file.")
+    repos <- get_db_config("package_repo")
+  }
+  check_repos(repos)
+  
+  if (!isTRUE(all.equal(getOption("repos"), repos))) {
+    old_options <- options()
+    on.exit(options(old_options))
+    options(repos = repos)
+  }
+  
+  if (missing(repo_pkgs))
+    repo_pkgs <- as.data.frame(utils::available.packages()[,1:2])
+  
+  if (missing(assess_db)) assess_db <- get_db_config("assessment_db")
+  
+  rule_lst <- process_rule_tbl(assess_db)
+  
+  if (is.data.frame(pkg_lst)) {
+    np <- nrow(pkg_lst)
+    uploaded_packages <- pkg_lst
+  } else {
+    np <- length(pkg_lst)
+    uploaded_packages <-
+      dplyr::tibble(
+        package = pkg_lst,
+        version = rep('0.0.0', np),
+        status = rep('', np),
+        score = rep(NA_real_, np)
+      )
+    
+    if (!rlang::is_empty(rule_lst)) {
+      uploaded_packages$decision <- ""
+      uploaded_packages$decision_rule <- ""
+    }
+  }
+  
+  for (i in 1:np) {
+    if (is.function(updateProgress))
+      updateProgress(1, glue::glue("{uploaded_packages$package[i]}"))
+      
+    if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
+      if (!isTRUE(getOption("shiny.testmode")))
+        ref <- riskmetric::pkg_ref(uploaded_packages$package[i],
+                                   source = "pkg_cran_remote")
+      else
+        ref <- test_pkg_refs[[uploaded_packages$package[i]]]
+    } else {
+      ref <- list(name = uploaded_packages$package[i],
+                  source = "name_bad")
+    }
+    
+    if (ref$source %in% c("pkg_missing", "name_bad")) {
+      if (is.function(updateProgress))
+        updateProgress(4, glue::glue("Package {uploaded_packages$package[i]} not found"))
+      
+      # Suggest alternative spellings using utils::adist() function
+      v <- utils::adist(uploaded_packages$package[i], repo_pkgs[[1]], ignore.case = FALSE)
+      rlang::inform(paste("Package name",uploaded_packages$package[i],"was not found."))
+      
+      suggested_nms <- paste("Suggested package name(s):",paste(head(repo_pkgs[[1]][which(v == min(v))], 10),collapse = ", "))
+      rlang::inform(suggested_nms)
+
+      uploaded_packages$status[i] <- if (shiny::isRunning()) HTML(paste0('<a href="#" title="', suggested_nms, '">not found</a>')) else 'not found'
+      
+      wrn_msg <- {
+        if (ref$source == "pkg_missing")
+          glue::glue('Package {ref$name} was flagged by riskmetric as {ref$source}.')
+        else
+          glue::glue("Riskmetric can't interpret '{ref$name}' as a package reference.")
+      }
+      if (shiny::isRunning())
+        loggit::loggit('WARN', wrn_msg)
+      else
+        warning(wrn_msg)
+      
+      next
+    }
+    
+    uploaded_packages$version[i] <- as.character(ref$version)
+    if (is.function(updateProgress))
+      updateProgress(1, glue::glue("{uploaded_packages$package[i]} v{uploaded_packages$version[i]}"))
+    
+    found <- nrow(dbSelect(
+      "SELECT name
+              FROM package
+              WHERE name = {uploaded_packages$package[i]}",
+      assess_db))
+    
+    uploaded_packages$status[i] <- ifelse(found == 0, 'new', 'duplicate')
+    
+    # Add package and metrics to the db if package is not in the db.
+    if(!found) {
+      # Get and upload pkg general info to db.
+      if (is.function(updateProgress))
+        updateProgress(1)
+
+      if (!isTRUE(getOption("shiny.testmode"))) {
+        dwn_ld <- try(utils::download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), 
+                                           quiet = TRUE, mode = "wb"),
+                      silent = TRUE)
+        if (inherits(dwn_ld, "try-error") | dwn_ld != 0) {
+          wrn_msg <- glue::glue("Unable to download the source files for {uploaded_packages$package[i]} from '{ref$tarball_url}'.")
+          if (shiny::isRunning()) loggit::loggit("INFO", wrn_msg) else warning(wrn_msg)
+        }
+      }
+      
+      insert_pkg_info_to_db(uploaded_packages$package[i], uploaded_packages$version[i], assess_db)
+      
+      # Get and upload maintenance metrics to db.
+      if (is.function(updateProgress))
+        updateProgress(1)
+      insert_riskmetric_to_db(uploaded_packages$package[i], uploaded_packages$version[i], assess_db)
+      
+      # Get and upload community metrics to db.
+      if (is.function(updateProgress))
+        updateProgress(1)
+      insert_community_metrics_to_db(uploaded_packages$package[i], assess_db)
+      
+      uploaded_packages$score[i] <- get_pkg_info(uploaded_packages$package[i], assess_db)$score
+      if (!rlang::is_empty(rule_lst)) {
+        assigned_decision <- assign_decisions(rule_lst, uploaded_packages$package[i], assess_db)
+        uploaded_packages$decision[i] <- assigned_decision$decision
+        uploaded_packages$decision_rule[i] <- assigned_decision$decision_rule
+      }
+    }
+    if (is.function(updateProgress))
+      updateProgress(3)
+  }
+  if (is.function(updateProgress))
+    updateProgress(1, "**Completed Package Uploads**")
+  
+  return(uploaded_packages)
 }
 
 #' update_metric_weight

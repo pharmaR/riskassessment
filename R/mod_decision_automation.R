@@ -428,7 +428,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     #### Outputs ####
     purrr::walk(c("auto_dropdown", "auto_dropdown2"), ~
                   observeEvent(input[[.x]], {
-                    req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
+                    req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
                     
                     showModal(modalDialog(
                       size = "l",
@@ -515,7 +515,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     })
     
     output$auto_classify <- renderUI({
-      if ("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) {
+      if ("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.names = FALSE)) {
         tagList(
           br(),br(),
           hr(),
@@ -540,7 +540,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     })
     
     output$decision_rule_div <- renderUI({
-      req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
+      req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
       tagList(
         div(
           style = "display: flex",
@@ -625,7 +625,7 @@ mod_decision_automation_server <- function(id, user, credentials){
 
     output$auto_settings <-
       renderUI({
-        req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
+        req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
         
         div(
           style = "float: right;",
@@ -637,7 +637,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     
     output$auto_settings2 <-
       renderUI({
-        req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
+        req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
         
         div(
           style = "float: right;",
@@ -721,7 +721,7 @@ mod_decision_automation_server <- function(id, user, credentials){
       })
     
     observeEvent(input$submit_auto, {
-      req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
+      req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
       
       showModal(modalDialog(
         size = "l",
@@ -752,7 +752,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     })
     
     observeEvent(input$submit_color, {
-      req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
+      req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
       
       showModal(modalDialog(
         size = "l",
@@ -784,7 +784,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     })
     
     observeEvent(input$confirm_submit_auto, {
-      req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
+      req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
       req(!disable_auto_submit())
       
       out_lst <- purrr::compact(reactiveValuesToList(auto_decision))
@@ -829,7 +829,7 @@ mod_decision_automation_server <- function(id, user, credentials){
       
     
     observeEvent(input$confirm_submit_col, {
-      req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
+      req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
       
       selected_colors <- 
         decision_lst %>%

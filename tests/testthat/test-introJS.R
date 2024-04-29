@@ -18,15 +18,10 @@ test_that("The introJS module works as expected for admins", {
   }
   if (!file.exists(app_tar_loc)) {
     download.file(
-      "https://cran.r-project.org/src/contrib/tidyr_1.3.0.tar.gz", #This will need to be changed in the future
+      "https://cran.r-project.org/src/contrib/Archive/tidyr/tidyr_1.3.0.tar.gz",
       app_tar_loc,
       mode = "wb"
     )
-  }
-  
-  app_src_loc <- test_path("test-apps", "source", "tidyr")
-  if (!dir.exists(app_src_loc)) {
-    untar(app_tar_loc, exdir = dirname(app_src_loc))
   }
   
   getBoundingClientRect <- function(appDriver, el) {

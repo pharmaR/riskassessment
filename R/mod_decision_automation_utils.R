@@ -13,11 +13,11 @@
 #' @importFrom rlang is_function is_formula
 #' @importFrom glue glue
 #' @importFrom loggit loggit
-assign_decisions <- function(rule_list, package) {
+assign_decisions <- function(rule_list, package, db_name = golem::get_golem_options('assessment_db_name')) {
   decision <- ""
   dec_rule <- ""
   if (any(purrr::map_lgl(rule_list, ~ !is.na(.x$metric))))
-    assessments <- get_assess_blob(package)
+    assessments <- get_assess_blob(package, db_name)
   
   for (i in seq_along(rule_list)) {
     if (decision != "") break
@@ -45,15 +45,17 @@ assign_decisions <- function(rule_list, package) {
     if (decision == "") next
     dec_rule <- paste("Rule", i)
     
-    decision_id <- dbSelect("SELECT id FROM decision_categories WHERE decision = {decision}")
+    decision_id <- dbSelect("SELECT id FROM decision_categories WHERE decision = {decision}", db_name)
     dbUpdate("UPDATE package SET decision_id = {decision_id},
                         decision_by = 'Auto Assigned', decision_date = {get_Date()}
-                         WHERE name = {package}")
+                         WHERE name = {package}",
+             db_name)
     loggit::loggit("INFO", log_message)
     dbUpdate(
       "INSERT INTO comments
           VALUES ({package}, 'Auto Assigned', 'admin',
-          {db_message}, 'o', {getTimeStamp()})")
+          {db_message}, 'o', {getTimeStamp()})",
+      db_name)
   }
   
   list(decision = decision, decision_rule = dec_rule)

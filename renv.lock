@@ -195,6 +195,21 @@
       ],
       "Hash": "74a64813f17b492da9c6afda6b128e3d"
     },
+    "archive": {
+      "Package": "archive",
+      "Version": "1.1.5",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "cli",
+        "cpp11",
+        "glue",
+        "rlang",
+        "tibble"
+      ],
+      "Hash": "ed7b553d0142e37936e924b95c876cfe"
+    },
     "askpass": {
       "Package": "askpass",
       "Version": "1.1",
@@ -2304,14 +2319,14 @@
     },
     "riskmetric": {
       "Package": "riskmetric",
-      "Version": "0.2.3",
+      "Version": "0.2.4.9000",
       "Source": "GitHub",
       "RemoteType": "github",
       "RemoteHost": "api.github.com",
       "RemoteUsername": "pharmaR",
       "RemoteRepo": "riskmetric",
       "RemoteRef": "HEAD",
-      "RemoteSha": "3905c66d15dde5b6e3d021aa2bec52d883462bd9",
+      "RemoteSha": "7c7bf3c15c02c33bc788e1070f25302b203d6d9e",
       "Requirements": [
         "BiocManager",
         "backports",
@@ -2330,7 +2345,7 @@
         "vctrs",
         "xml2"
       ],
-      "Hash": "3d06157f3dc34c80ec908f874484eebf"
+      "Hash": "74a42c9c6546b6b67b247f91007369f9"
     },
     "rjson": {
       "Package": "rjson",

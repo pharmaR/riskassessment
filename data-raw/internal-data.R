@@ -5,6 +5,7 @@ passphrase <- 'somepassphrase'
 # credentials_name <- "credentials.sqlite"
 
 
+
 # Overall descriptive text for community usage. Please edit text file to make changes.
 community_usage_txt <- readLines(file.path("data-raw", "community.txt"))
 
@@ -56,6 +57,7 @@ template <- read.csv(file.path('data-raw', 'upload_format.csv'),  stringsAsFacto
 
 test_pkg_lst <- c("dplyr", "tidyr", "readr", "purrr", "tibble", "stringr", "forcats")
 
+library(magrittr)
 test_pkg_refs_compl <-
   test_pkg_lst %>%
   purrr::map(riskmetric::pkg_ref, source = "pkg_cran_remote", repos = c("https://cran.rstudio.com")) %>%
@@ -65,6 +67,7 @@ test_pkg_refs <-
   test_pkg_refs_compl %>%
   purrr::map(~ .x[c("name", "version", "source")] %>% purrr::set_names(c("name", "version", "source")))
 
+devtools::load_all()
 test_pkg_info <-
   test_pkg_lst %>%
   purrr::map(get_latest_pkg_info) %>%
@@ -95,6 +98,7 @@ rpt_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment"
                  "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
                  "Package Dependencies", "Source Explorer Comments", "Function Explorer Comments")
 
+# load(file = 'R/sysdata.rda') # helpful if changing just one object in sysdta.rda
 usethis::use_data(
   # app_version, 
   # database_name, #credentials_name,

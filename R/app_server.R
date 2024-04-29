@@ -11,7 +11,6 @@ app_server <- function(input, output, session) {
   
   old <- options()
   onStop(function() {
-    unlink("source/*", recursive = TRUE)
     options(old)
     })
   options(repos = get_db_config("package_repo"))
@@ -79,6 +78,10 @@ app_server <- function(input, output, session) {
                   value = "admin-mode-tab",
                   h2("Administrative Tools & Options", align = "center", `padding-bottom`="20px"),
                   br(),
+                  
+                  fluidRow(
+                    column(
+                      width = 10, offset = 1,
                   tabsetPanel(
                     id = "credentials",
                     if (res_auth$admin)
@@ -104,6 +107,7 @@ app_server <- function(input, output, session) {
                       title = "Assessment Reweighting",
                       reweightViewUI("reweightInfo")
                     )
+                  ))
                   ),
                   tags$script(HTML("document.getElementById('admin-add_user').style.width = 'auto';"))
                 ))
@@ -212,12 +216,14 @@ app_server <- function(input, output, session) {
   })
   
   observeEvent(input$apptabs, {
-    req(input$apptabs %in% c("risk-assessment-tab", "database-tab"))
+    req(input$apptabs %in% c("about-tab", "database-tab"))
     session$userData$trigger_events$update_report_pref_inclusions <- session$userData$trigger_events$update_report_pref_inclusions + 1
   })
   
-  # Load server of the assessment criteria module.
-  assessmentInfoServer("assessmentInfo", metric_weights = metric_weights)
+
+  
+  # Load server of the about tab module
+  aboutInfoServer("aboutInfo", metric_weights)
   
   # Load server of the database view module.
   #parentSession <- .subset2(session, "parent")
@@ -246,35 +252,25 @@ app_server <- function(input, output, session) {
   })
   
   create_src_dir <- eventReactive(input$tabs, input$tabs == "Source Explorer")
-  pkgdir <- reactiveVal()
+  pkgarchive <- reactiveVal()
   observe({
     req(selected_pkg$name() != "-")
     req(create_src_dir())
     req(file.exists(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz"))))
-    
-    src_dir <- file.path("source", selected_pkg$name())
-    if (dir.exists(src_dir)) {
-      pkgdir(src_dir)
-    } else {
-      withProgress(
-        utils::untar(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")), exdir = "source"),
-        message = glue::glue("Unpacking {selected_pkg$name()}_{selected_pkg$version()}.tar.gz"),
-        value = 1
-      )
-      pkgdir(src_dir)
-    }
+    pkgarchive(archive::archive(file.path("tarballs", glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz"))) %>% 
+                 dplyr::arrange(tolower(path)))
   }) %>% 
     bindEvent(selected_pkg$name(), create_src_dir())
   
   
   mod_pkg_explorer_server("pkg_explorer", selected_pkg,
-                          pkgdir = pkgdir,
+                          pkgarchive = pkgarchive,
                           creating_dir = create_src_dir,
                           user = user,
                           credentials = credential_config)
   
   mod_code_explorer_server("code_explorer", selected_pkg,
-                          pkgdir = pkgdir,
+                           pkgarchive = pkgarchive,
                           creating_dir = create_src_dir,
                           user = user,
                           credentials = credential_config)

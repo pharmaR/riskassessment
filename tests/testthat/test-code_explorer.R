@@ -34,8 +34,7 @@ test_that("pkg_explorer works", {
   app <- shinytest2::AppDriver$new(test_path("test-apps", "explorer-app"))
   
   app$set_inputs(tabs = "fn_expl_tab")
-  app$wait_for_idle()
-  
+
   expect_equal(
     app$get_values(input = paste("fn_explorer", c("exported_function", "file_type"), sep = "-"))$input,
     list(`fn_explorer-exported_function` = ".data", `fn_explorer-file_type` = "test")

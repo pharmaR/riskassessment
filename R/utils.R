@@ -75,10 +75,10 @@ get_latest_pkg_info <- function(pkg_name) {
 }
 
 #' @import dplyr
-#' @importFrom desc desc_get_field
+#' @importFrom desc description
 #' @importFrom glue glue
 #' @importFrom purrr map set_names
-#' @importFrom utils untar
+#' @importFrom archive archive_read
 #' 
 #' @noRd
 get_desc_pkg_info <- function(pkg_name, pkg_version, tar_dir = "tarballs") {
@@ -86,13 +86,14 @@ get_desc_pkg_info <- function(pkg_name, pkg_version, tar_dir = "tarballs") {
   if (!file.exists(tar_file))
     return(get_latest_pkg_info(pkg_name))
   
-  utils::untar(tar_file, exdir = "source")
+  desc_file <- glue::glue("{pkg_name}/DESCRIPTION")
   
-  desc_file <- glue::glue("source/{pkg_name}/DESCRIPTION")
-  
+  tar_con <- archive::archive_read(tar_file, desc_file, format = "tar")
+  on.exit(close(tar_con))
+
+  desc_con <- desc::description$new(text = readLines(tar_con))
   keys <- c("Package", "Version", "Maintainer", "Author", "License", "Packaged", "Title", "Description")
-  purrr::map(keys,
-             desc::desc_get_field, file = desc_file) %>%
+  purrr::map(keys, desc_con$get_field) %>%
     purrr::set_names(keys) %>%
     dplyr::as_tibble() %>%
     dplyr::rename("Published"="Packaged")
@@ -540,4 +541,129 @@ shinyInput <- function(FUN, len, id, ...) {
     inputs[i] <- as.character(FUN(paste0(id, i), ...))
   }
   inputs
+}
+
+#' Custom datatable
+#'
+#' Small helper function to create a `DT::datatable()` object in a consistent
+#' style.
+#'
+#' @param data A data frame as input.
+#' @param colnames 
+#' @param hide_names Character vector. Whether to hide columns in the data
+#'   frame.
+#' @param ... Other options. Currently not in use.
+#'
+#' @return a DT::datatable object. 
+#'
+#' @examples datatable_custom(mtcars, colnames = paste0("custom_", names(mtcars)))
+#' 
+#' @noRd
+#' 
+datatable_custom <- function(
+    data, 
+    colnames = c("Package", "Type", "Name", "Version", "Score", "Review Package"), 
+    hide_names = "name",
+    ...
+){
+  colnames <- colnames %||% character(0)
+  hide_names <- hide_names %||% character(0)
+  data <- data %||% as.data.frame(matrix(nrow = 0, ncol = pmax(length(colnames), 1) )) 
+  stopifnot(is.data.frame(data))
+  stopifnot(is.character(hide_names))
+  stopifnot(is.character(colnames))
+  colnames <- if(length(colnames) == 0) names(data) else colnames
+  if(length(colnames) != ncol(data)) {
+    warning("number of provided colnames unequal to number of columns in data. 
+            Defaulting to original data frame names.")
+    colnames <- names(data)
+  } 
+  # Hiding name from DT table. 
+  # The - 1 is because js uses 0 index instead of 1 like R
+  target <- which(names(data) %in% hide_names) - 1
+  
+  formattable::as.datatable(
+    formattable::formattable(
+      data,
+      list(
+        score = formattable::formatter(
+          "span",
+          style = x ~ formattable::style(
+            display = "block",
+            "border-radius" = "4px",
+            "padding-right" = "4px",
+            "color" = "#000000",
+            "order" = x,
+            "background-color" = formattable::csscolor(
+              setColorPalette(100)[round(as.numeric(x)*100)]
+            )
+          )
+        ),
+        decision = formattable::formatter(
+          "span",
+          style = x ~ formattable::style(
+            display = "block",
+            "border-radius" = "4px",
+            "padding-right" = "4px",
+            "font-weight" = "bold",
+            "color" = ifelse(x %in% decision_lst, "white", "inherit"),
+            "background-color" =
+              ifelse(x %in% decision_lst,
+                     color_lst[x],
+                     "transparent"
+              )
+          )
+        )
+      )
+    ),
+    selection = "none",
+    colnames = colnames,
+    rownames = FALSE,
+    options = list(
+      lengthMenu = list(c(15, -1), c("15", "All")),
+      columnDefs = list(list(visible = FALSE, targets = target)),
+      searchable = FALSE
+    ),
+    style = "default"
+  ) %>%
+    DT::formatStyle(names(data), textAlign = "center")
+}
+
+#' Add buttons to data frame
+#' 
+#' Small helper function to add Shiny action buttons to a data frame.
+#'
+#' @param data A data frame. 
+#' @param id Character vector. the main id of the buttons.
+#' @param label Label to use for the button. 
+#' @param ... For future expansions. Currently not in use. 
+#'
+#' @return A data frame with a button in each table row. 
+#'
+#' @examples 
+#' add_buttons_to_table(mtcars[, 1:5], "button_id", "click me") |> 
+#'   datatable_custom()
+#'   
+#' @noRd
+#'   
+add_buttons_to_table <- function(
+    data, 
+    id,
+    label = icon("arrow-right", class = "fa-regular", lib = "font-awesome"),
+    ...
+){
+  stopifnot(is.data.frame(data))
+  cbind(
+    data,
+    data.frame(
+      Actions = shinyInput(
+        actionButton, nrow(data),
+        "button_",
+        size = "xs",
+        style = "height:24px; padding-top:1px;",
+        label = label,
+        onclick = paste0('Shiny.setInputValue(\"', id, '\", this.id, {priority: "event"})')
+      )
+    )
+  )
 }

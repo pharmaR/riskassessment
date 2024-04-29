@@ -94,7 +94,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       req(user$role)
       req(credentials$privileges)
       
-      if ("add_package" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) {
+      if ("add_package" %in% unlist(credentials$privileges[user$role], use.names = FALSE)) {
         shinyjs::enable("pkg_lst")
         shinyjs::enable("add_pkgs")
         shinyjs::enable("uploaded_file")
@@ -108,7 +108,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
     })
 
     output$upload_format_lnk <- renderUI({
-      req("add_package" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
+      req("add_package" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
       
       actionLink(NS(id, "upload_format"), "View Sample Dataset")
     })
@@ -119,9 +119,9 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       
       dplyr::bind_rows(
         upload_pkg,
-        if ("add_package" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) upload_pkg_add,
-        if ("delete_package" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) upload_pkg_delete,
-        if ("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) upload_pkg_dec_adj,
+        if ("add_package" %in% unlist(credentials$privileges[user$role], use.names = FALSE)) upload_pkg_add,
+        if ("delete_package" %in% unlist(credentials$privileges[user$role], use.names = FALSE)) upload_pkg_delete,
+        if ("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.names = FALSE)) upload_pkg_dec_adj,
         if (nrow(uploaded_pkgs()) > 0) upload_pkg_comp
       )
     })
@@ -165,7 +165,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
     output$rem_pkg_div <- renderUI({
       req(user$role)
       req(credentials$privileges)
-      req("delete_package" %in% unlist(credentials$privileges[user$role], use.name = FALSE))
+      req("delete_package" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
       
       session$onFlushed(function() {
         shinyjs::runjs(glue::glue('$("#{NS(id, "rem_pkg_btn")}").css("margin-top", $("#{NS(id, "rem_pkg_lst")}-label")[0].scrollHeight + .5*parseFloat(getComputedStyle(document.documentElement).fontSize))'))
@@ -246,7 +246,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
     })
     
     observeEvent(input$rem_pkg_btn, {
-      req("delete_package" %in% unlist(credentials$privileges[user$role], use.name = FALSE)) 
+      req("delete_package" %in% unlist(credentials$privileges[user$role], use.names = FALSE)) 
       
       np <- length(input$rem_pkg_lst)
       uploaded_packages <-
@@ -359,101 +359,21 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       # value based on the number of packages, np, and the number of
       # incProgress() function calls in the loop, plus one to show
       # the incProgress() that the process is completed.
-      withProgress(
-        max = (np * 5) + 1, value = 0,
-        message = "Uploading Packages to DB:", {
-          
-          for (i in 1:np) {
-
-            user_ver <- uploaded_packages$version[i]
-            incProgress(1, detail = glue::glue("{uploaded_packages$package[i]} {user_ver}"))
-            
-
-            if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
-              # run pkg_ref() to get pkg version and source info
-              if (!isTRUE(getOption("shiny.testmode")))
-                ref <- riskmetric::pkg_ref(uploaded_packages$package[i],
-                                           source = "pkg_cran_remote")
-              else
-                ref <- test_pkg_refs[[uploaded_packages$package[i]]]
-            } else {
-              ref <- list(name = uploaded_packages$package[i],
-                          source = "name_bad")
-            }
-
-            if (ref$source %in% c("pkg_missing", "name_bad")) {
-              incProgress(1, detail = 'Package {uploaded_packages$package[i]} not found')
-
-              # Suggest alternative spellings using utils::adist() function
-              v <- utils::adist(uploaded_packages$package[i], session$userData$repo_pkgs()[[1]], ignore.case = FALSE)
-              rlang::inform(paste("Package name",uploaded_packages$package[i],"was not found."))
-
-              suggested_nms <- paste("Suggested package name(s):",paste(head(session$userData$repo_pkgs()[[1]][which(v == min(v))], 10),collapse = ", "))
-              rlang::inform(suggested_nms)
-
-              uploaded_packages$status[i] <- HTML(paste0('<a href="#" title="', suggested_nms, '">not found</a>'))
-
-              if (ref$source == "pkg_missing")
-                loggit::loggit('WARN',
-                               glue::glue('Package {ref$name} was flagged by riskmetric as {ref$source}.'))
-              else
-                loggit::loggit('WARN',
-                               glue::glue("Riskmetric can't interpret '{ref$name}' as a package reference."))
-
-              next
-            }
-
-            ref_ver <- as.character(ref$version)
-            
-            deets <- glue::glue("{uploaded_packages$package[i]} {ref_ver}")
-            uploaded_packages$version[i] <- ref_ver
-            
-            # Save version.
-            incProgress(1, detail = deets)
-            uploaded_packages$version[i] <- as.character(ref$version)
-            
-            found <- nrow(dbSelect(
-              "SELECT name
-              FROM package
-              WHERE name = {uploaded_packages$package[i]}"))
-            
-            uploaded_packages$status[i] <- ifelse(found == 0, 'new', 'duplicate')
-
-            # Add package and metrics to the db if package is not in the db.
-            if(!found) {
-              # Get and upload pkg general info to db.
-              incProgress(1, detail = deets)
-
-              if (!isTRUE(getOption("shiny.testmode"))) {
-                dwn_ld <- utils::download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), 
-                                        quiet = TRUE, mode = "wb")
-                if (dwn_ld != 0) {
-                  loggit::loggit("INFO", glue::glue("Unable to download the source files for {uploaded_packages$package[i]} from '{ref$tarball_url}'."))
-                }
-              }
-              insert_pkg_info_to_db(uploaded_packages$package[i], ref_ver)
-              # Get and upload maintenance metrics to db.
-              incProgress(1, detail = deets)
-              
-              insert_riskmetric_to_db(uploaded_packages$package[i])
-              # Get and upload community metrics to db.
-              incProgress(1, detail = deets)
-              
-              insert_community_metrics_to_db(uploaded_packages$package[i])
-              uploaded_packages$score[i] <- get_pkg_info(uploaded_packages$package[i])$score
-              if (!rlang::is_empty(auto_list())) {
-                assigned_decision <- assign_decisions(auto_list(), uploaded_packages$package[i])
-                uploaded_packages$decision[i] <- assigned_decision$decision
-                uploaded_packages$decision_rule[i] <- assigned_decision$decision_rule
-              }
-            }
-          }
-          
-          incProgress(1, detail = "   **Completed Pkg Uploads**")
-          Sys.sleep(0.25)
-          
-      }) #withProgress
+      progress <- shiny::Progress$new(max = (np * 5) + 1)
+      progress$set(0, "Uploading Packages to DB:")
+      on.exit(progress$close())
       
+      updateProgress <- function(amount = 1, detail = NULL) {
+        progress$inc(amount = amount, detail = detail)
+      }
+      
+      uploaded_packages <-
+        upload_pkg_lst(uploaded_packages, 
+                       golem::get_golem_options("assessment_db_name"), 
+                       getOption("repos"),
+                       session$userData$repo_pkgs(),
+                       updateProgress)
+
       uploaded_pkgs(uploaded_packages)
       
     })
