@@ -23,7 +23,7 @@ jobs:
       - uses: r-lib/actions/setup-renv@v2
 
       - name: Install required packages
-        run: Rscript -e 'install.packages("rsconnect", repos = "https://cran.rstudio.com")'
+        run: Rscript -e 'install.packages("rsconnect")'
 
       - name: Create manifest.json
         run: Rscript -e 'rsconnect::writeManifest()'
