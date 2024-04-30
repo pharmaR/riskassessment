@@ -68,7 +68,7 @@ mod_downloadHandler_include_server <- function(id) {
             shinyWidgets::materialSwitch(
               inputId =  ns("include_suggests"),
               label = "Include Suggests",
-              value = FALSE,
+              value = isolate(session$userData$suggests()),
               inline = TRUE,
               status = "success"
             )
@@ -94,6 +94,12 @@ mod_downloadHandler_include_server <- function(id) {
         session,
         "report_includes",
         selected = session$userData$user_report$report_includes
+      )
+      
+      shinyWidgets::updateMaterialSwitch(
+        session,
+        "include_suggests",
+        value = session$userData$suggests()
       )
     })
     
