@@ -158,6 +158,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
     revdeps_local <- reactive({
       df <- session$userData$loaded2_db()
       req(df, df$name)
+      req(selected_pkg$name())
 
       revdeps <-
         df %>%
