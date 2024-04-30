@@ -445,7 +445,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
 
     dep_cards <- eventReactive(dep_metrics(), {
       req(dep_metrics())
-      build_dep_cards(data = dep_metrics(), loaded = session$userData$loaded2_db()$name, toggled = 0L)
+      build_dep_cards(data = dep_metrics(), loaded = session$userData$loaded2_db()$name, toggled = session$userData$suggests())
     })
     
     # Package Dependencies metrics cards.
