@@ -410,21 +410,7 @@ mod_decision_automation_server <- function(id, user, credentials){
     }, priority = 100)
     
     disable_auto_submit <- reactiveVal(TRUE)
-    observeEvent(reactiveValuesToList(rule_lst), {
-      disable_auto_submit(FALSE)
-      rule_list <- reactiveValuesToList(rule_lst)
-      for (rule in rule_list) {
-        if (isTRUE(rule == "remove")) {
-          disable_auto_submit(TRUE)
-          break
-        }
-        if (!rlang::is_formula(rule$mapper) & !rlang::is_function(rule$mapper)) {
-          disable_auto_submit(TRUE)
-          break
-        }
-      }
-    })
-    
+
     #### Outputs ####
     purrr::walk(c("auto_dropdown", "auto_dropdown2"), ~
                   observeEvent(input[[.x]], {
@@ -723,6 +709,19 @@ mod_decision_automation_server <- function(id, user, credentials){
     observeEvent(input$submit_auto, {
       req("auto_decision_adjust" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
       
+      disable_auto_submit(FALSE)
+      rule_list <- reactiveValuesToList(rule_lst)
+      for (rule in rule_list) {
+        if (isTRUE(rule == "remove")) {
+          disable_auto_submit(TRUE)
+          break
+        }
+        if (!rlang::is_formula(rule$mapper) & !rlang::is_function(rule$mapper)) {
+          disable_auto_submit(TRUE)
+          break
+        }
+      }
+
       showModal(modalDialog(
         size = "l",
         easyClose = TRUE,

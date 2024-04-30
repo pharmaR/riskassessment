@@ -158,3 +158,12 @@ h4, .h4, h5, .h5, h6, .h6 {
 .btn-margin {
   margin-top: 27px;
 }
+
+.selectize-dropdown .selected {
+  background-color: #3399ff;
+}
+
+.selectize-input {
+  border-radius: 0;
+  border-color: rgb(206, 212, 218);
+}

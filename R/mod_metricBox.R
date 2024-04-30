@@ -84,7 +84,7 @@ metricBoxServer <- function(n = 0, id, title, desc, value, score = "NULL",
          # riskmetric cards, both value and score must be missing to show an icon
          # if value is missing, but score isn't, then we need to show a meter
          # if score is missing, but value isn't, we need to show an NA meter
-         (score == "NA" | is.na(score)) & any(value %in% "Not found")) { # use icon version
+         (score == "NA" | is.na(score)) & any(unlist(value) %in% "Not found")) { # use icon version
         
         # maintain icon logic
         # succ_icon should only show up for non-riskmetric cards
