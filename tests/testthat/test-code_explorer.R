@@ -26,14 +26,10 @@ test_that("pkg_explorer works", {
     )
   }
   
-  app_src_loc <- test_path("test-apps", "explorer-app", "source", "magrittr")
-  if (!dir.exists(app_src_loc)) {
-    untar(app_tar_loc, exdir = dirname(app_src_loc))
-  }
-  
   app <- shinytest2::AppDriver$new(test_path("test-apps", "explorer-app"))
   
   app$set_inputs(tabs = "fn_expl_tab")
+  app$wait_for_value(input = "fn_explorer-test_files")
 
   expect_equal(
     app$get_values(input = paste("fn_explorer", c("exported_function", "file_type"), sep = "-"))$input,
