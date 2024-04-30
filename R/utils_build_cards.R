@@ -36,7 +36,7 @@ metric_gauge <- function(score, id = "meter") { # could add id arg here
             style = "height: 30px; width: 100%;"
           )
         )
-    )
+    ) |> bslib::tooltip("My tooltip")
   ) 
 }
 

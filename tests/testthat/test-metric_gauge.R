@@ -34,6 +34,8 @@ test_that("metric_gauge() 'value' working...", {
 
 # For interactive use only, to visualize the meters in a browser
 if(interactive()) {
+  library(bslib)
+  library(shiny)
   ui <- fluidPage(
     tags$head(tags$style(
            "meter::-webkit-meter-optimum-value {background: #9CFF94;}
