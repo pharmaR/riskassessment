@@ -63,9 +63,9 @@ test_that("Test that showComments() works", {
 
 test_that("Test that getTimeStamp() works", {
   expect_type(getTimeStamp(), "character")
-  expect_equal(object = getTimeStamp(),
-               expected = paste(gsub(x = Sys.time(), pattern = " ", replacement = "; "),
-                                Sys.timezone()), tolerance = 1e-02
+  expect_equal(object = as_datetime(getTimeStamp()),
+               expected = as_datetime(paste(gsub(x = Sys.time(), pattern = " ", replacement = "; "),
+                                Sys.timezone())), tolerance = 1e-02
   )
   str = ";"
   expect_true(grepl(str, getTimeStamp(), fixed = TRUE))

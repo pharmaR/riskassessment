@@ -231,7 +231,9 @@ create_rule_obs <- function(rv, rule_lst, .input, ns = NS(NULL), session = getDe
     session$onFlushed(function() {
       shinyjs::runjs(glue::glue("Shiny.setInputValue('{ns(\"rules_order\")}:sortablejs.rank_list', $.map($('#{ns(\"rules_list\")}').children(), function(child) {{return $(child).attr('data-rank-id') || $.trim(child.innerText);}}))"))
     })
-    .subset2(rule_lst, "impl")$.values$remove(rv)
+    rv_r6 <- .subset2(rule_lst, "impl")
+    rv_r6$.values$remove(rv)
+    rv_r6$.nameOrder = setdiff(rv_r6$.nameOrder, rv)
     o$destroy()
   })
 }
