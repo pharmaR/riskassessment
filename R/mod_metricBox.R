@@ -104,7 +104,9 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
           )
       }
       if (title %in% c("Dependencies","Reverse Dependencies")){ # for dependencies/rev dep cards alone
-        link_button <-  a(class="stretched-link",title = "Click for more details",
+        link_button <-  a(class="stretched-link",
+                          style = "position: relative;",
+                          title = "Click for more details",
                           onclick = sprintf('(function () {
        Shiny.setInputValue("%s", new Date().getTime());
        }());', NS(id,"dep_click")))  
@@ -114,7 +116,6 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
       }
       
       html_component <- div(
-        link_button,
         class = "card mb-3 text-center border-info", style = card_style,
         div(
           class = "row no-gutters;",
@@ -123,6 +124,7 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
             display_obj
           ),
           div(
+            link_button,
             class = "col-md-8",
             h5(
               class = "card-header bg-transparent", style = "font-size: 1vw",
@@ -137,15 +139,15 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
         ))
      
       
-      if (title %in% c("Dependencies","Reverse Dependencies")){ 
-         html_component <- shiny::tagAppendAttributes(html_component, 
-                                                      onMouseOver="this.style['box-shadow'] = '2px 2px 2px black';
-                                                      this.style['cursor'] = 'pointer'",
-                                    onMouseOut="this.style['box-shadow'] = 'none'")
-      }
-      else {
-        html_component
-      }
+      # if (title %in% c("Dependencies","Reverse Dependencies")){ 
+      #    html_component <- shiny::tagAppendAttributes(html_component, 
+      #                                                 onMouseOver="this.style['box-shadow'] = '2px 2px 2px black';
+      #                                                 this.style['cursor'] = 'pointer'",
+      #                               onMouseOut="this.style['box-shadow'] = 'none'")
+      # }
+      # else {
+      #   html_component
+      # }
       if (type == "danger" & !is.na(type)) {
         html_component %>% 
           shiny::tagAppendAttributes(class = "text-danger", .cssSelector = "i") %>% 
