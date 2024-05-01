@@ -46,8 +46,8 @@ if(interactive()) {
             meter::-moz-meter-suboptimum-value{background:#FFD070;}")),
     metric_gauge("NA"), br(),
     metric_gauge("0"), br(),
-    metric_gauge(".25"), br(),
-    metric_gauge(".45"), br(),
+    # metric_gauge(".25"), br(),
+    metric_gauge(".50"), br(),
     metric_gauge("1")
   )
   server <- function(input, output, session) {}

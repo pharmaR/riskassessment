@@ -1,6 +1,7 @@
 
 #'UI for Module to display introJS button and functionality.
-#' 
+#' @importFrom shinyWidgets actionBttn
+#' @importFrom bslib tooltip
 #' @param id a module id
 #' @keywords internal
 #' 
@@ -15,7 +16,8 @@ introJSUI <- function(id) {
                  icon = icon("circle-question"),
                  block = FALSE,
                  style = "simple",
-                 size = "md")
+                 size = "md") |>
+        bslib::tooltip("In-app Guide")
     ))
 }
 

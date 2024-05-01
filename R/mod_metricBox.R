@@ -105,7 +105,7 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
       }
       if (title %in% c("Dependencies","Reverse Dependencies")){ # for dependencies/rev dep cards alone
         link_button <-  a(class="stretched-link",
-                          style = "position: relative;",
+                          # style = "position: relative;",
                           title = "Click for more details",
                           onclick = sprintf('(function () {
        Shiny.setInputValue("%s", new Date().getTime());
@@ -139,15 +139,15 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
         ))
      
       
-      # if (title %in% c("Dependencies","Reverse Dependencies")){ 
-      #    html_component <- shiny::tagAppendAttributes(html_component, 
-      #                                                 onMouseOver="this.style['box-shadow'] = '2px 2px 2px black';
-      #                                                 this.style['cursor'] = 'pointer'",
-      #                               onMouseOut="this.style['box-shadow'] = 'none'")
-      # }
-      # else {
-      #   html_component
-      # }
+      if (title %in% c("Dependencies","Reverse Dependencies")){
+         html_component <- shiny::tagAppendAttributes(html_component,
+                                                      onMouseOver="this.style['box-shadow'] = '2px 2px 2px black';
+                                                      this.style['cursor'] = 'pointer'",
+                                    onMouseOut="this.style['box-shadow'] = 'none'")
+      }
+      else {
+        html_component
+      }
       if (type == "danger" & !is.na(type)) {
         html_component %>% 
           shiny::tagAppendAttributes(class = "text-danger", .cssSelector = "i") %>% 
