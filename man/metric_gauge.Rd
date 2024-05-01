@@ -4,7 +4,7 @@
 \alias{metric_gauge}
 \title{Metric Gauge}
 \usage{
-metric_gauge(score, id = "meter")
+metric_gauge(score)
 }
 \arguments{
 \item{score}{a whole number between 0 and 100}

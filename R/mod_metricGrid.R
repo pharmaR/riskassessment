@@ -40,10 +40,8 @@ metricGridServer <- function(id, metrics) {
     
     
     observeEvent(req(nrow(metrics()) > 0), {
-      metrics_dat <-  dplyr::mutate(metrics(), card_num = as.numeric(row_number()))
-      print(metrics_dat)
-      apply(metrics_dat, 1, function(m) {
-        metricBoxServer(n = m["card_num"],
+      apply(metrics(), 1, function(m) {
+        metricBoxServer(
             id = m['name'],
             title = m['title'],
             desc = m['desc'],

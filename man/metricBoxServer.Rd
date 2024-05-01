@@ -5,7 +5,6 @@
 \title{Server logic for the 'Metric Box' module}
 \usage{
 metricBoxServer(
-  n = 0,
   id,
   title,
   desc,
@@ -20,8 +19,6 @@ metricBoxServer(
 )
 }
 \arguments{
-\item{n}{the card count within a given metricGrid}
-
 \item{id}{a module id name}
 
 \item{title}{title.}

@@ -9,7 +9,6 @@ metricBoxUI <- function(id) {
 
 #' Server logic for the 'Metric Box' module
 #'
-#' @param n the card count within a given metricGrid
 #' @param id a module id name
 #' @param title title.
 #' @param desc description.
@@ -28,7 +27,7 @@ metricBoxUI <- function(id) {
 #' @importFrom glue glue
 #' @keywords internal
 #'
-metricBoxServer <- function(n = 0, id, title, desc, value, score = "NULL",
+metricBoxServer <- function(id, title, desc, value, score = "NULL",
                             is_perc = FALSE, is_url = FALSE,
                             succ_icon = "check", unsucc_icon = "triangle-exclamation",
                             icon_class = "text-success", type = "information"
@@ -77,7 +76,6 @@ metricBoxServer <- function(n = 0, id, title, desc, value, score = "NULL",
       ) # , num_bins = 3
       
       body_p_style <- glue::glue("font-size: {auto_font_out}vw;")
-      card_id <- gsub(" ","",paste0("card", n))
       
       # build the html card
       if(score == "NULL" | # usually for non-riskmetric cards (like on comm or database tab)
@@ -85,34 +83,25 @@ metricBoxServer <- function(n = 0, id, title, desc, value, score = "NULL",
          # if value is missing, but score isn't, then we need to show a meter
          # if score is missing, but value isn't, we need to show an NA meter
          (score == "NA" | is.na(score)) & any(unlist(value) %in% "Not found")) { # use icon version
-        
-        # maintain icon logic
-        # succ_icon should only show up for non-riskmetric cards
-        icon_name <- succ_icon 
-        if (value == "Not found") { # !is_true
-          icon_name <- unsucc_icon
-          icon_class <- "text-warning"
+
+        if (value == "Not found") { # For 'not found' cards
+          display_obj <- icon(unsucc_icon,
+                              class = "text-warning", verify_fa = FALSE,
+                              style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
+          ) |> bslib::tooltip("Assessment not found, due to {riskmetric} source type")
+          
+        } else {  # usually for non-riskmetric cards
+          display_obj <- icon(succ_icon,
+                              class = icon_class, verify_fa = FALSE,
+                              style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
+          )
         }
         
-        display_obj <- icon(icon_name,
-             class = icon_class, verify_fa = FALSE,
-             style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
-        )
-        legend_desc <- dplyr::if_else(score == "NULL",
-          "Not a riskmetric assessment",
-          "Assessment not found, most commonly due to riskmetric source type"
-        )
       } else { # use html version (displaying riskmetric score on a meter)
         display_obj <- 
           div(style = "padding-top: 30%; padding-left: 10%;",
              metric_gauge(score = score)
           )
-        legend_desc <- dplyr::case_when(
-          score == "NA" | is.na(score) ~ "Score: NA indicates an assessment value exists, but there is no score",
-          score == 0 ~ "Score: 1 indicates the highest risk possible",
-          score == 1 ~ "Score: 0 indicates the lowest risk possible",
-          TRUE ~ "Scores close to 1 indicate high risk while scores closer to 0 are low risk"
-        )
       }
       if (title %in% c("Dependencies","Reverse Dependencies")){ # for dependencies/rev dep cards alone
         link_button <-  a(class="stretched-link",title = "Click for more details",
@@ -130,10 +119,8 @@ metricBoxServer <- function(n = 0, id, title, desc, value, score = "NULL",
         div(
           class = "row no-gutters;",
           div(
-            id = ns(card_id),
             class = "col-md-4 text-center border-info",
-            display_obj,
-            tags$script(glue::glue("$('#{ns(\"card_id\")}').tooltip({{placement: 'right', title: '{legend_desc}', html: false, trigger: 'hover'}});"))
+            display_obj
           ),
           div(
             class = "col-md-8",
