@@ -25,6 +25,7 @@ metricBoxUI <- function(id) {
 #' @import dplyr
 #' @importFrom stringr str_sub str_extract
 #' @importFrom glue glue
+#' @importFrom bslib tooltip
 #' @keywords internal
 #'
 metricBoxServer <- function(id, title, desc, value, score = "NULL",
@@ -33,7 +34,6 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
                             icon_class = "text-success", type = "information"
                             ) {
   moduleServer(id, function(input, output, session) {
-    ns <- session$ns
 
     metric <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
     
