@@ -294,6 +294,7 @@ app_server <- function(input, output, session) {
   dependencies_data <- packageDependenciesServer('packageDependencies',
                                                   selected_pkg,
                                                   user,
+                                                  credential_config,
                                                   parent = session)
   
   # Load server of the report preview tab.
