@@ -3,7 +3,7 @@ title:    "<span class='txtasis'>R Package Risk Assessment</span>"
 subtitle: "<span class='txtasis'>Report for Package: `r params$pkg[['name']]`</span>"
 author:   "<span class='txtasis'> `r if('Report Author' %in% params$report_includes) paste0('Author (Role): ', params$user_name, ' (', params$user_role, ')') else ''`</span>"
 date:     "<span class='txtasis'> `r if('Report Date' %in% params$report_includes) paste0('Report Date: ', format(Sys.time(), '%B %d, %Y')) else ''`</span>"
-geometry: "left=.5in,right=.5in,top=1.5in,bottom=1in"
+geometry: "left=.5in,right=.5in,top=1in,bottom=1in"
 output:
   pdf_document:
     latex_engine: xelatex
@@ -125,7 +125,7 @@ if('Package Summary' %in% params$report_includes){
 
 ```{r maintenance_metrics}
 if(any(c('Maintenance Metrics', 'Maintenance Comments') %in% params$report_includes)) {
-  tagList(br(), h2('Maintenance Metrics'))
+  h2('Maintenance Metrics')
 }
 ```
 
@@ -182,7 +182,7 @@ if('Maintenance Comments' %in% params$report_includes){
 
 ```{r community_metrics, warning=FALSE, message=FALSE}
 if(any(c('Community Usage Metrics', 'Community Usage Comments') %in% params$report_includes)) {
-  tagList(br(), h2("Community Usage Metrics"))
+  h2("Community Usage Metrics")
 }
 ```
 
@@ -267,7 +267,7 @@ if('Community Usage Comments' %in% params$report_includes){
 
 ```{r package_dependencies_header}
   if(any(c('Package Dependencies', 'Dependency Comments') %in% params$report_includes)) {
-    tagList(br(), h2("Package Dependencies"), br())
+    tagList(h2("Package Dependencies"), br())
   }
 ```
 
@@ -320,14 +320,14 @@ if('Dependency Comments' %in% params$report_includes){
 }
 ```
 
-`r if(any(c('Source Explorer Comments') %in% params$report_includes)) {"\\newpage "}`
+`r if(any(c('Source Explorer Comments', 'Function Explorer Comments') %in% params$report_includes)) {"\\newpage "}`
 
 ```{r source_explorer}
 if(any(c('Source Explorer Comments') %in% params$report_includes)) {
-  tagList(br(),
-          h2('Source Explorer'),
+  tagList(h2('Source Explorer'),
           br(),
-          h6("Source code visuals not available."))
+          h6("Source code visuals not available."),
+          br())
 }
 ```
 
@@ -335,23 +335,22 @@ if(any(c('Source Explorer Comments') %in% params$report_includes)) {
 ```{r source_explorer_comments}
 if('Source Explorer Comments' %in% params$report_includes){
   tagList(
-    br(),
     h2('Comments'),
     HTML(outputComments(
       pkg_name = params$pkg$name,
-      comments = params$se_comments))
+      comments = params$se_comments),
+      br())
   )
 }
 ```
 
-`r if(any(c('Function Explorer Comments') %in% params$report_includes)) {"\\newpage "}`
 
 ```{r function_explorer}
 if(any(c('Function Explorer Comments') %in% params$report_includes)) {
-  tagList(br(),
-          h2('Function Explorer'),
+  tagList(h2('Function Explorer'),
           br(),
-          h6("Function code visuals not available."))
+          h6("Function code visuals not available."),
+          br())
 }
 ```
 
@@ -359,7 +358,6 @@ if(any(c('Function Explorer Comments') %in% params$report_includes)) {
 ```{r function_explorer_comments}
 if('Function Explorer Comments' %in% params$report_includes){
   tagList(
-    br(),
     h2('Comments'),
     HTML(outputComments(
       pkg_name = params$pkg$name,
@@ -371,7 +369,7 @@ if('Function Explorer Comments' %in% params$report_includes){
 `r {"\\newpage "}`
 
 ```{r about_report_title}
-tagList(br(), h2('About The Report'))
+h2('About The Report')
 ```
 
 ```{r about_report, warning=FALSE}
