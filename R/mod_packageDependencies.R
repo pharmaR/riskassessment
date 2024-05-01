@@ -408,6 +408,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
                        comments = comments,
                        pkg_name = selected_pkg$name)
     
-    
+    list(
+      comments = comments,
+      comment_added = comment_added
+    )
   }) # moduleServer
 }

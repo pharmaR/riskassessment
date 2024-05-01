@@ -96,7 +96,7 @@ metric_lst <- c("1"='has_vignettes', "2"='has_news', "3"='news_current', "4"='ha
 
 rpt_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
                  "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
-                 "Package Dependencies", "Source Explorer Comments", "Function Explorer Comments")
+                 "Package Dependencies", "Dependency Comments", "Source Explorer Comments", "Function Explorer Comments")
 
 # load(file = 'R/sysdata.rda') # helpful if changing just one object in sysdta.rda
 usethis::use_data(

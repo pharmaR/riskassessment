@@ -306,6 +306,7 @@ app_server <- function(input, output, session) {
                       mm_comments = maintenance_data$comments,
                       cm_comments = community_data$comments,
                       # se_comments = src_explorer_data$comments, # not an arg
+                      dep_comments = dependencies_data$comments,
                       downloads_plot_data = community_data$downloads_plot_data,
                       user = user,
                       credential_config,

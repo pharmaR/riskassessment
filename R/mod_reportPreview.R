@@ -36,7 +36,7 @@ reportPreviewUI <- function(id) {
 #' @keywords internal
 #' 
 reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics, 
-                                com_metrics_raw, mm_comments, cm_comments, #se_comments,
+                                com_metrics_raw, mm_comments, cm_comments, dep_comments,
                                 downloads_plot_data, user, credentials, 
                                 app_version, metric_weights) {
   if (missing(credentials))
@@ -172,7 +172,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                 )
               } else "",
               
-              if('Package Dependencies' %in% report_includes()) {
+              if(any(c('Package Dependencies', 'Dependency Comments') %in% report_includes())) {
                 tagList(
                   br(), br(),
                   hr(),
@@ -180,23 +180,29 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                     column(width = 12,
                            h5("Package Dependencies",
                               style = "text-align: center; padding-bottom: 50px;"),
+                           if('Package Dependencies' %in% report_includes())
                              metricGridUI(session$ns('dep_metricGrid'))
                     )
                   ),
-                  br(), br(),
-                  fluidRow(
-                    column(width = 12,
-                           DT::renderDataTable({
-                             req(selected_pkg$name())
-                             
-                             dep_table()
-                             
-                           }, options = list(dom = "t", searching = FALSE, pageLength = -1, lengthChange = FALSE,
-                                             info = FALSE,
-                                             columnDefs = list(list(className = 'dt-center', targets = 2))
-                           )
-                           )
-                    ))
+                  if('Package Dependencies' %in% report_includes())
+                    tagList(
+                      br(), br(),
+                      fluidRow(
+                        column(width = 12,
+                               DT::renderDataTable({
+                                 req(selected_pkg$name())
+                                 
+                                 dep_table()
+                                 
+                               }, options = list(dom = "t", searching = FALSE, pageLength = -1, lengthChange = FALSE,
+                                                 info = FALSE,
+                                                 columnDefs = list(list(className = 'dt-center', targets = 2))
+                               )
+                               )
+                        ))
+                    ),
+                  if('Dependency Comments' %in% report_includes())
+                    viewCommentsUI(NS(id, 'dep_comments')) else ""
                 )
               } else "",
               
@@ -406,7 +412,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       get_se_comments(selected_pkg$name()) # see utils
     })
     
-    # View Comm Usage comments.
+    # View Source Explorer comments.
     viewCommentsServer(id = 'se_comments',
                        comments = se_comments, # not a arg
                        pkg_name = selected_pkg$name,
@@ -417,11 +423,17 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       get_fe_comments(selected_pkg$name()) # see utils
     })
     
-    # View Comm Usage comments.
+    # View Function Explorer comments.
     viewCommentsServer(id = 'fe_comments',
                        comments = fe_comments, # not a arg
                        pkg_name = selected_pkg$name,
                        label = 'Function Explorer Comments')
+    
+    # View Dependency comments.
+    viewCommentsServer(id = 'dep_comments',
+                       comments = dep_comments, # not a arg
+                       pkg_name = selected_pkg$name,
+                       label = 'Dependency Comments')
     
     # Maintenance metrics cards.
     metricGridServer("mm_metricGrid", metrics = maint_metrics)
