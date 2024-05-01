@@ -26,6 +26,7 @@ params:
   cm_comments: NA
   se_comments: NA
   fe_comments: NA
+  dep_comments: NA
   maint_metrics: NA
   com_metrics: NA
   com_metrics_raw: NA
@@ -262,12 +263,12 @@ if('Community Usage Comments' %in% params$report_includes){
 }
 ```
 
-`r if('Package Dependencies' %in% params$report_includes) {"\\newpage "}`
+`r if(any(c('Package Dependencies', 'Dependency Comments') %in% params$report_includes)) {"\\newpage "}`
 
 ```{r package_dependencies_header}
-  if('Package Dependencies' %in% params$report_includes) {
+  if(any(c('Package Dependencies', 'Dependency Comments') %in% params$report_includes)) {
     tagList(br(), h2("Package Dependencies"), br())
-  } else ""
+  }
 ```
 
 ```{r package_dependencies_cards}
@@ -292,7 +293,7 @@ if('Community Usage Comments' %in% params$report_includes){
       kableExtra::kable_styling("basic", latex_options = "hold_position", full_width = F, position = 'left') %>% 
       kableExtra::column_spec(3, width = "1.5in", latex_valign = "p")
 
-  } else ""
+  }
 ```
 
 `r if ('Package Dependencies' %in% params$report_includes) {"\\* Metrics whose score is NA will not impact the package {riskmetric} score"}`
@@ -303,7 +304,20 @@ if('Package Dependencies' %in% params$report_includes) {
     purrr::set_names(tools::toTitleCase(names(.))) %>%
     kableExtra::kbl(format = 'latex', booktabs = T, linesep = "") %>% 
     kableExtra::kable_styling("basic", latex_options = "hold_position", full_width = F, position = 'left')
-} else ""
+}
+```
+
+
+```{r dependency_comments, eval=dm_ind}
+if('Dependency Comments' %in% params$report_includes){
+  tagList(
+    br(),
+    h2('Comments'),
+    HTML(outputComments(
+      pkg_name = params$pkg$name,
+      comments = params$dep_comments))
+  )
+}
 ```
 
 `r if(any(c('Source Explorer Comments') %in% params$report_includes)) {"\\newpage "}`

@@ -23,6 +23,7 @@ params:
   cm_comments: NA
   se_comments: NA
   fe_comments: NA
+  dep_comments: NA
   maint_metrics: NA
   com_metrics: NA
   com_metrics_raw: NA
@@ -255,10 +256,12 @@ if('Community Usage Comments' %in% params$report_includes){
 }
 ```
 
+`r if(any(c('Package Dependencies', 'Dependency Comments') %in% params$report_includes)) {"\\newpage"}`
+
 ```{r package_dependencies_header}
-  if('Package Dependencies' %in% params$report_includes) {
+  if(any(c('Package Dependencies', 'Dependency Comments') %in% params$report_includes)) {
     tagList(br(), h2("Package Dependencies"), br())
-  } else ""
+  }
 ```
 
 ```{r package_dependencies_cards}
@@ -282,7 +285,7 @@ if('Community Usage Comments' %in% params$report_includes){
       flextable::flextable(cards, cwidth = c(1.5, 2.0, 2.0, 1.25))  %>% 
       flextable::set_table_properties(align = "left") %>% 
       flextable::colformat_char(na_str = "NA")
-  } else ""
+  }
 ```
 
 `r if ('Package Dependencies' %in% params$report_includes) {"\\* Metrics whose score is NA will not impact the package {riskmetric} score"}`
@@ -293,7 +296,20 @@ if('Community Usage Comments' %in% params$report_includes){
       purrr::set_names(tools::toTitleCase(names(.))) %>%
       flextable::flextable(cwidth = c(1.5, 1.25, 1.25, 1.25))  %>% 
       flextable::set_table_properties(align = "left") 
-  } else ""
+  }
+```
+
+
+```{r dependency_comments, eval=dm_ind}
+if('Dependency Comments' %in% params$report_includes){
+  tagList(
+    br(),
+    h2('Comments'),
+    HTML(outputComments(
+      pkg_name = params$pkg$name,
+      comments = params$dep_comments))
+  )
+}
 ```
 
 
