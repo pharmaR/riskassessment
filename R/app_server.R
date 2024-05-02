@@ -211,12 +211,12 @@ app_server <- function(input, output, session) {
     if (file.exists(session$userData$user_report$user_file)) {
       session$userData$user_report$report_includes <- readLines(session$userData$user_report$user_file)
     } else {
-      session$userData$user_report$report_includes <- rpt_choices
+      session$userData$user_report$report_includes <- rpt_choices[rpt_choices != 'Include Suggests']
     }
   })
   
   observeEvent(input$apptabs, {
-    req(input$apptabs %in% c("about-tab", "database-tab"))
+    req(input$apptabs %in% c("risk-assessment-tab", "database-tab"))
     session$userData$trigger_events$update_report_pref_inclusions <- session$userData$trigger_events$update_report_pref_inclusions + 1
   })
   

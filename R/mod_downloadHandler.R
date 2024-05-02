@@ -64,13 +64,6 @@ mod_downloadHandler_include_server <- function(id) {
             shinyWidgets::prettyCheckboxGroup(
               ns("report_includes"), label = NULL, inline = FALSE,
               choices = rpt_choices, selected = isolate(session$userData$user_report$report_includes) %||% rpt_choices
-            ),
-            shinyWidgets::materialSwitch(
-              inputId =  ns("include_suggests"),
-              label = "Include Suggests",
-              value = isolate(session$userData$suggests()),
-              inline = TRUE,
-              status = "success"
             )
         )
       )
@@ -95,29 +88,20 @@ mod_downloadHandler_include_server <- function(id) {
         "report_includes",
         selected = session$userData$user_report$report_includes
       )
-      
-      shinyWidgets::updateMaterialSwitch(
-        session,
-        "include_suggests",
-        value = session$userData$suggests()
-      )
     })
     
     observeEvent(input$report_includes, {
       session$userData$user_report$report_includes <- input$report_includes %||% ""
       
       if('Package Dependencies' %in% input$report_includes) {
-       shinyjs::show("include_suggests") 
+        shinyjs::enable(selector = 'input[type="checkbox"][value="Include Suggests"]')
       } else {
-        shinyjs::hide("include_suggests")
+        shinyjs::disable(selector = 'input[type="checkbox"][value="Include Suggests"]')
       }
       
+      session$userData$suggests('Include Suggests' %in% input$report_includes)
+      
     }, ignoreNULL = FALSE, ignoreInit = TRUE)
-    
-    
-    observeEvent(input$include_suggests, {
-      session$userData$suggests(input$include_suggests)
-    })
     
     return(reactive(input$report_includes))
   })
