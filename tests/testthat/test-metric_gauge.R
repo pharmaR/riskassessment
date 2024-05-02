@@ -15,7 +15,7 @@ meter_val <- function(x) {
 }
 
 test_that("metric_gauge() 'Label' tag working...", {
-  expect_equal(class(metric_gauge("NA")), c("shiny.tag.list", "list"))
+  expect_equal(class(metric_gauge("NA")), c("bslib_fragment", "shiny.tag"))
   
   expect_equal(metric_gauge("NA") |> my_attr("label") ,"NA")
   expect_equal(metric_gauge("0") |> my_attr("label") |> substr(1,1),"1")
@@ -53,17 +53,6 @@ if(interactive()) {
   server <- function(input, output, session) {}
   shinyApp(ui, server)
 }
-
-
-# div(
-#   metric_gauge("NA")#,
-#   # tags$script(glue::glue("$('#{\"meter\"}').tooltip({{placement: 'right', title: 'Legend description for \"NA\"', html: false, trigger: 'hover'}});"))
-#   # tags$script(glue::glue("$('#{ns(\"meter\")}').tooltip({{placement: 'right', title: 'Legend description', html: false, trigger: 'hover'}});"))
-# ),  br(),
-# div(
-#   metric_gauge("0")#, id = "meter2")#,
-#   # tags$script(glue::glue("$('#{\"meter2\"}').tooltip({{placement: 'right', title: 'Legend description for zero', html: false, trigger: 'hover'}});"))
-#   ), br(),
 
 
 
