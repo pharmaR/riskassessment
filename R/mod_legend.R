@@ -7,7 +7,7 @@
 #' @noRd 
 #'
 #' @importFrom shiny NS tagList 
-#' @importFrom bslib popover
+#' @importFrom bslib tooltip
 legendUI <- function(id){
   ns <- NS(id)
   tagList(
