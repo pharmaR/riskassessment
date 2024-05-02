@@ -22,13 +22,6 @@ legendUI <- function(id){
            style = "simple",
            size = "md") |>
         bslib::tooltip("About Score Cards")
-        # bslib::popover(
-        #   div(style = "display: flex; align-items: center;", metric_gauge("NA"), br(), "text about NA"), br(),
-        #   div(style = "display: flex; align-items: center;", metric_gauge("0"), br(), "text about 1"), br(),
-        #   div(style = "display: flex; align-items: center;", metric_gauge(".50"), br(), "text about .50"), br(),
-        #   div(style = "display: flex; align-items: center;", metric_gauge("1"), br(),"text about 0"),
-        #   title = "Risk Score Legend"
-        # )
     )
   )
 }

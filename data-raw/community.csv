@@ -1,3 +1,3 @@
-Metric,Measure,Reason for Inclusion
-Number of downloads in past 12 months (all versions),Count,The more times a package has been downloaded the more extensive the user testing and the greater chance there is of someone finding a bug and logging it.
-Reverse Dependencies,Count,The more packages that depend on a package the more chance for errors/bugs to be found
+Metric,Measure,Documentation,Reason for Inclusion
+Number of downloads in past 12 months (all versions),Count,"<a href='https://pharmar.github.io/riskmetric/reference/assess_downloads_1yr.html' target=""_blank"">assess_downloads_1yr()</a>",The more times a package has been downloaded the more extensive the user testing and the greater chance there is of someone finding a bug and logging it.
+Reverse Dependencies,Count,"<a href='https://pharmar.github.io/riskmetric/reference/assess_reverse_dependencies.html' target=""_blank"">assess_reverse_dependencies()</a>",The more packages that depend on a package the more chance for errors/bugs to be found
