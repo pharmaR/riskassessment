@@ -133,7 +133,8 @@ metricBoxServer <- function(id, title, desc, value, score = "NULL",
            onMouseOut="this.style['box-shadow'] = 'none'",
            onclick = sprintf('(function () {
              Shiny.setInputValue("%s", new Date().getTime());
-             }());', NS(id,"dep_click")))
+             }());', NS(id,"dep_click"))) |>
+          bslib::tooltip("Click for more details", placement = "top")
       }
       else {
         html_component
