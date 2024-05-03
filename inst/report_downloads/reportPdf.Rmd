@@ -267,7 +267,7 @@ if('Community Usage Comments' %in% params$report_includes){
 
 ```{r package_dependencies_header}
   if(any(c('Package Dependencies', 'Dependency Comments') %in% params$report_includes)) {
-    tagList(h2("Package Dependencies"), br())
+    tagList(h2("Package Dependencies"))
   }
 ```
 
