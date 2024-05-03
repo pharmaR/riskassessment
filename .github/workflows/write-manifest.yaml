@@ -35,7 +35,7 @@ jobs:
         run: |
           git config --local user.name "Github Actions"
           git config --local user.email "actions@github.com"
-          if git merge-base --is-ancestor devel @
+          if git merge-base --is-ancestor dev @
           then
             echo "Branch is up to date"
           else
