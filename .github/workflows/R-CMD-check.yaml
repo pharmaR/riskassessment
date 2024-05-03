@@ -3,6 +3,7 @@
 on:
   push:
     branches: [main, master, dev]
+    paths: ['manifest.json']
   pull_request:
     branches: [main, master, dev]
   workflow_dispatch:
