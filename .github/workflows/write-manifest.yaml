@@ -2,11 +2,14 @@
 
 name: write-manifest
 on:
-  pull_request:
+  pull_request_review:
     branches: [dev]
+    type: [submitted]
+  
 
 jobs:
   write-manifest:
+    if: github.event.review.state == 'approved'
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -32,6 +35,7 @@ jobs:
         run: |
           git config --local user.name "$GITHUB_ACTOR"
           git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git merge origin/dev || echo "WARN: unable to merge dev branch"
           git add manifest.json || echo "WARN: manifest.json was not updated"
           git commit -m 'Re-build manifest file' || echo "No changes to commit"
           git push origin || echo "No changes to commit"
