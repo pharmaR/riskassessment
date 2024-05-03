@@ -225,6 +225,7 @@ build_comm_cards <- function(data){
 #' @importFrom glue glue
 #' @importFrom purrr map_df
 #' @importFrom rlang is_empty
+#' @importFrom tidyverse tidyverse_packages
 #' @keywords internal
 #' 
 build_dep_cards <- function(data, loaded, toggled){
@@ -242,9 +243,11 @@ build_dep_cards <- function(data, loaded, toggled){
   )
   
   deps <- data %>% 
-    mutate(base = if_else(name %in% c(rownames(installed.packages(priority = "base"))), "Base", "Tidyverse")) %>% 
-    mutate(base = factor(base, levels = c("Base", "Tidyverse"), labels = c("Base", "Tidyverse"))) %>% 
-    mutate(upld = if_else(name %in% loaded, 1, 0)) 
+    mutate(base = if_else(name %in% c(rownames(installed.packages(priority = "base"))), "Base", "Non-Base")) %>% 
+    mutate(base = factor(base, levels = c("Base", "Tidyverse"), labels = c("Base", "Non-Base"))) %>% 
+    mutate(upld = if_else(name %in% loaded, 1, 0)) %>%
+    mutate(upld_non_base = if_else((name %in% loaded) & base != "Base", 1, 0))
+  
   
   if (toggled == 0L) {
     deps <- deps %>% 
@@ -254,14 +257,16 @@ build_dep_cards <- function(data, loaded, toggled){
       mutate(type = factor(type, levels = c("Imports", "Depends", "LinkingTo", "Suggests"), ordered = TRUE)) 
   }
   
-  upld_cat_rows <-
+  # Card 1: Dependencies Uploaded
+  upld_cat_rows_dat <-
     deps %>%
-    summarize(upld_cat_sum = sum(upld)) %>%
+    summarize(upld_cat_sum = sum(upld_non_base)) %>% # can't upload base pkgs, so they shouldn't be included
     mutate(upld_cat_pct  = 100 * (upld_cat_sum / nrow(deps))) %>% 
-    mutate(upld_cat_disp = if_else(is.nan(upld_cat_pct),
-                                   glue::glue('{upld_cat_sum} ( 0%)'),
-                                   glue::glue('{upld_cat_sum} of {nrow(deps)} ({format(upld_cat_pct, digits = 1)}%)'))) %>% 
-    pull(upld_cat_disp) 
+    mutate(upld_cat_disp = 
+       if_else(is.nan(upld_cat_pct),
+         glue::glue('{upld_cat_sum} ( 0%)'),
+         glue::glue('{upld_cat_sum} of {nrow(deps)} ({format(upld_cat_pct, digits = 1)}%)')))
+  upld_cat_rows <- upld_cat_rows_dat %>% pull(upld_cat_disp) 
   
   # Get the Number of uploaded dependencies in the db
   cards <- cards %>%
@@ -272,17 +277,20 @@ build_dep_cards <- function(data, loaded, toggled){
       value = upld_cat_rows,
       score = "NULL",
       succ_icon = 'upload',
-      icon_class = "text-info",
+      icon_class = ifelse(upld_cat_rows_dat$upld_cat_pct < 100, "text-danger", "text-info"),
       is_perc = 0,
       is_url = 0
     )
+  
+  
+  # Card 2: Type Summary
   # base R replacement for tidyr::complete(type)
-  x <- tibble("type" = levels(deps$type))
-  y <- full_join(x, deps, by = "type") %>% 
+  x2 <- tibble("type" = levels(deps$type))
+  y2 <- full_join(x2, deps, by = "type") %>% 
     mutate(type = factor(type, ordered = TRUE))
   
   type_cat_rows <-
-    y %>%
+    y2 %>%
     mutate(cnt = ifelse(is.na(name), 0, 1)) %>%
     group_by(type) %>%
     summarize(type_cat_sum = sum(cnt)) %>%
@@ -308,11 +316,13 @@ build_dep_cards <- function(data, loaded, toggled){
       is_url = 0
     )
   
-  x <- tibble("base" = levels(deps$base))
-  y <- full_join(x, deps, by = "base")
+  
+  # Card 3: Base-R Percent
+  x3 <- tibble("base" = levels(deps$base))
+  y3 <- full_join(x3, deps, by = "base")
   
   base_cat_rows <-
-    y %>%
+    y3 %>%
     mutate(cnt = ifelse(is.na(name), 0, 1)) %>%
     group_by(base) %>%
     summarize(base_cat_sum = sum(cnt)) %>%
@@ -328,11 +338,11 @@ build_dep_cards <- function(data, loaded, toggled){
   cards <- cards %>%
     dplyr::add_row(
       name = 'base_cat_count',
-      title = 'Base R Summary',
+      title = 'Base-R Percent',
       desc = 'Percent of Packages from Base R',
       value = base_cat_rows,
       score = "NULL",
-      succ_icon = 'boxes-stacked',
+      succ_icon = 'house-circle-check',
       icon_class = "text-info",
       is_perc = 0,
       is_url = 0
@@ -344,32 +354,32 @@ build_dep_cards <- function(data, loaded, toggled){
 
 # # test data fro build_db_cards()
 # data <- structure(list(
-#   name = c("zoo", "xts", "vcd", "tidyverse", "tidyr", 
-#           "tidymodels", "testthat", "stringr", "sp", "shiny", "samplesizeCMH", 
-#           "roxygen2", "riskmetric", "rgl", "purrr", "odbc", "editData", 
-#           "dplyr", "AalenJohansen", "A3"), 
-#   date_added = structure(c(19649, 
-#         19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 
-#         19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 
+#   name = c("zoo", "xts", "vcd", "tidyverse", "tidyr",
+#           "tidymodels", "testthat", "stringr", "sp", "shiny", "samplesizeCMH",
+#           "roxygen2", "riskmetric", "rgl", "purrr", "odbc", "editData",
+#           "dplyr", "AalenJohansen", "A3"),
+#   date_added = structure(c(19649,
+#         19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649,
+#         19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649,
 #         19649), class = "Date"),
-#   version = c("1.8-12", "0.13.1", "1.4-11", 
-#        "2.0.0", "1.3.0", "1.1.1", "3.2.0", "1.5.0", "2.1-1", "1.7.5.1", 
-#        "0.0.0", "7.2.3", "0.2.3", "1.2.1", "1.0.2", "1.3.5", "0.1.8", 
+#   version = c("1.8-12", "0.13.1", "1.4-11",
+#        "2.0.0", "1.3.0", "1.1.1", "3.2.0", "1.5.0", "2.1-1", "1.7.5.1",
+#        "0.0.0", "7.2.3", "0.2.3", "1.2.1", "1.0.2", "1.3.5", "0.1.8",
 #        "1.1.3", "1.0", "1.0.0"),
 #   score = c(0.43, 0.21, 0.55, 0.25, 0.29, 0.29, 0.26, 0.25, 0.32, 0.34, 0.53,
 #             0.29, 0.43, 0.24, 0.24, 0.36, 0.4, 0.27, 0.76, 0.74),
 #   decision = structure(c(3L, 2L, 3L, 2L,2L, 2L, 2L, 2L, 2L, 3L, 3L,
 #                          2L, 3L, 2L,2L, 3L, 3L, 2L, 1L, 1L
-#        ), levels = c("High Risk", "Low Risk", "Medium Risk"), class = "factor"), 
-#  decision_by = structure(c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 
-#        1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L), levels = "Auto Assigned", class = "factor"), 
-#  decision_date = structure(c(19649, 19649, 19649, 19649, 19649, 
-#        19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 
-#        19649, 19649, 19649, 19649, 19649, 19649), class = "Date"), 
-#  last_comment = structure(c(1697709264, 1697709291, 1697709318, 
-#       1697709337, 1697709375, 1697709397, 1697709433, 1697709457, 
-#       1697709489, 1697709547, 1697706022, 1697709582, 1697709624, 
-#       1697709670, 1697709703, 1697709726, 1697706095, 1697706073, 
+#        ), levels = c("High Risk", "Low Risk", "Medium Risk"), class = "factor"),
+#  decision_by = structure(c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L,
+#        1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L), levels = "Auto Assigned", class = "factor"),
+#  decision_date = structure(c(19649, 19649, 19649, 19649, 19649,
+#        19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649,
+#        19649, 19649, 19649, 19649, 19649, 19649), class = "Date"),
+#  last_comment = structure(c(1697709264, 1697709291, 1697709318,
+#       1697709337, 1697709375, 1697709397, 1697709433, 1697709457,
+#       1697709489, 1697709547, 1697706022, 1697709582, 1697709624,
+#       1697709670, 1697709703, 1697709726, 1697706095, 1697706073,
 #       1697708816, 1697708016), class = c("POSIXct", "POSIXt"), tzone = "UTC")),
 #  class = "data.frame", row.names = c(NA, -20L))
 
