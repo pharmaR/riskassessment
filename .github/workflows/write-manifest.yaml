@@ -9,7 +9,7 @@ on:
 
 jobs:
   write-manifest:
-    # if: github.event.review.state == 'approved'
+    if: github.event.review.state == 'approved'
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
