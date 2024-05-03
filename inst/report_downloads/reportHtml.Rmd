@@ -49,6 +49,7 @@ params:
 ```{r setup, include=FALSE}
 library(knitr)
 library(shiny)
+library(bslib)
 library(shinyjs)
 
 knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
@@ -79,18 +80,6 @@ createCard <- function(title, desc, value, score = "NULL",
         # outside the card when val_max_nchar is too large.
   else if(value %in% c('TRUE', 'FALSE'))
     value <- ifelse(value == 'TRUE', 'Yes', 'No')
-
-  # icon_name <- succ_icon
-  # 
-  # if(!is_true){
-  #   icon_name <- unsucc_icon
-  #   icon_class <- "text-warning"
-  # }
-  # 
-  # if(is_perc){
-  #   icon_name <- "percent"
-  #   icon_class <- "text-info"
-  # }
   
   # add asterisk to title if it is not in the metric table
   # There are no databaseView cards here.
@@ -103,32 +92,31 @@ createCard <- function(title, desc, value, score = "NULL",
   body_p_style = glue::glue('font-size: {auto_font_out}vw;')
       
   
-  # build the html card
-      if(score == "NULL" | # usually for non-riskmetric cards (like on comm or database tab)
-         # riskmetric cards, both value and score must be missing to show an icon
-         # if value is missing, but score isn't, then we need to show a meter
-         # if score is missing, but value isn't, we need to show an NA meter
-         (score == "NA" | is.na(score)) & any(unlist(value) %in% "Not found")) { # use icon version
+  # Build the card's metric visual - either an icon or a meter
+  if(score == "NULL" | # usually for non-riskmetric cards (like on comm or database tab)
+     # riskmetric cards, both value and score must be missing to show an icon
+     # if value is missing, but score isn't, then we need to show a meter
+     # if score is missing, but value isn't, we need to show an NA meter
+     (score == "NA" | is.na(score)) & any(unlist(value) %in% "Not found")) { # use icon version
     
-    # maintain icon logic
-    # succ_icon should only show up for non-riskmetric cards
-    icon_name <- succ_icon 
-    if (value == "Not found") {
-      icon_name <- unsucc_icon
-      icon_class <- "text-warning"
-    }
-
-    display_obj <- icon(icon_name,
-         class = icon_class, verify_fa = FALSE,
-         style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
-    )
-  } else { # use html version (displaying riskmetric score on a meter)
-    display_obj <- 
-      div(style = "padding-top: 30%; padding-left: 10%;",
-         metric_gauge(score = score)
-      )
-  }
+    if (value == "Not found") { # For 'not found' cards
+          display_obj <- icon(unsucc_icon,
+                              class = "text-warning", verify_fa = FALSE,
+                              style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
+          ) |> bslib::tooltip("Assessment not found, due to {riskmetric} source type")
+          
+        } else {  # usually for non-riskmetric cards
+          display_obj <- icon(succ_icon,
+                              class = icon_class, verify_fa = FALSE,
+                              style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
+          )
+        }
+      } else { # use html version (displaying riskmetric score on a meter)
+        display_obj <- div(style = "padding-top: 30%; padding-left: 10%;",
+                           metric_gauge(score = score))
+      }
   
+  # Build HTML Card
   html_component <- div(class="card mb-3 text-center border-info", style=card_style,
       div(class ="row no-gutters",
           div(class="col-md-4 text-center border-info",
