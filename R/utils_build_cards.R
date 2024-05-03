@@ -32,7 +32,7 @@ metric_gauge <- function(score) { #, id = "meter") { # could add id arg here
   # insert label, meter, and tooltip into a tagList
   tagList(
     div(style = "width: 78px; text-align:center;",
-        div(tags$label(style = "font-size:32px", lab) #`for` = id,
+        div(tags$label(style = "font-size:32px; cursor: var(--cursor, default)", lab) #`for` = id,
         ) ,
         div(
           tags$meter( #id = id,
