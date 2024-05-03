@@ -6154,7 +6154,7 @@
       "checksum": "5672e25aad19ca20ba7c2d23a8362245"
     },
     ".github/workflows/R-CMD-check.yaml": {
-      "checksum": "f4dfab29b3ae602f494fc47945763268"
+      "checksum": "f3b8ba11fdfeb87ccfbca0723895f82f"
     },
     ".github/workflows/render-readme.yml": {
       "checksum": "d74482ddef0a4941a51c077f5ea60e10"
@@ -6172,7 +6172,7 @@
       "checksum": "70824d07d35cb82e0d1e78f58783e73b"
     },
     ".Rprofile": {
-      "checksum": "587e4100ce9187bbd4915b4a22d3c665"
+      "checksum": "eb79c5c9bae420c04f6ce40dd0d35a60"
     },
     "app.R": {
       "checksum": "4ea07f590cf6a7980f5d997ad9cd55d2"
