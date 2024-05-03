@@ -225,7 +225,6 @@ build_comm_cards <- function(data){
 #' @importFrom glue glue
 #' @importFrom purrr map_df
 #' @importFrom rlang is_empty
-#' @importFrom tidyverse tidyverse_packages
 #' @keywords internal
 #' 
 build_dep_cards <- function(data, loaded, toggled){
@@ -239,14 +238,16 @@ build_dep_cards <- function(data, loaded, toggled){
     succ_icon = character(),
     icon_class = character(),
     is_perc = numeric(),
-    is_url = numeric()
+    is_url = numeric(),
+    type = "information"
   )
   
   deps <- data %>% 
     mutate(base = if_else(name %in% c(rownames(installed.packages(priority = "base"))), "Base", "Non-Base")) %>% 
+    mutate(non_base = ifelse(base != "Base", 1, 0)) %>%
     mutate(base = factor(base, levels = c("Base", "Tidyverse"), labels = c("Base", "Non-Base"))) %>% 
     mutate(upld = if_else(name %in% loaded, 1, 0)) %>%
-    mutate(upld_non_base = if_else((name %in% loaded) & base != "Base", 1, 0))
+    mutate(upld_non_base = if_else((name %in% loaded) & non_base == 1, 1, 0))
   
   
   if (toggled == 0L) {
@@ -258,15 +259,21 @@ build_dep_cards <- function(data, loaded, toggled){
   }
   
   # Card 1: Dependencies Uploaded
-  upld_cat_rows_dat <-
+  upld_dat <-
     deps %>%
-    summarize(upld_cat_sum = sum(upld_non_base)) %>% # can't upload base pkgs, so they shouldn't be included
+    summarize(
+      upld_cat_sum = sum(upld),
+      upld_non_base_sum = sum(upld_non_base), # can't upload base pkgs, 
+      non_base_sum = sum(non_base)       # so they shouldn't be included
+    ) %>% 
     mutate(upld_cat_pct  = 100 * (upld_cat_sum / nrow(deps))) %>% 
+    mutate(upld_non_base_pct  = if_else(non_base_sum == 0, 100, 100 * (upld_non_base_sum / non_base_sum))) %>% 
     mutate(upld_cat_disp = 
        if_else(is.nan(upld_cat_pct),
-         glue::glue('{upld_cat_sum} ( 0%)'),
+         glue::glue('{upld_cat_sum} ( 100%)'),
          glue::glue('{upld_cat_sum} of {nrow(deps)} ({format(upld_cat_pct, digits = 1)}%)')))
-  upld_cat_rows <- upld_cat_rows_dat %>% pull(upld_cat_disp) 
+  upld_cat_rows <- upld_dat %>% pull(upld_cat_disp) 
+  
   
   # Get the Number of uploaded dependencies in the db
   cards <- cards %>%
@@ -277,9 +284,10 @@ build_dep_cards <- function(data, loaded, toggled){
       value = upld_cat_rows,
       score = "NULL",
       succ_icon = 'upload',
-      icon_class = ifelse(upld_cat_rows_dat$upld_cat_pct < 100, "text-danger", "text-info"),
+      icon_class = "text-info", # this get's overwritten by "type" arg
       is_perc = 0,
-      is_url = 0
+      is_url = 0,
+      type = if_else(pull(upld_dat, upld_non_base_pct) < 100, "danger", "information")
     )
   
   
