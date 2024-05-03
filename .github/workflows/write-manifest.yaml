@@ -33,9 +33,15 @@ jobs:
           
       - name: Commit results
         run: |
-          git config --local user.name "$GITHUB_ACTOR"
-          git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          git merge origin/dev || echo "::error::WARN: unable to merge dev branch"
+          git config --local user.name "Github Actions"
+          git config --local user.email "actions@github.com"
+          if git merge-base --is-ancestor devel @
+          then
+            echo "Branch is up to date"
+          else
+            echo "::error:: Branch is NOT up to date with dev"
+            exit 1
+          fi
           git add manifest.json || echo "WARN: manifest.json was not updated"
           git commit -m 'Re-build manifest file' || echo "No changes to commit"
           git push origin || echo "No changes to commit"
