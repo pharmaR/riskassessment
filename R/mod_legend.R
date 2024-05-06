@@ -54,7 +54,7 @@ legendServer <- function(id){
           br(),
           div(style = "display: flex; align-items: center;",
               metric_gauge(".50"),
-              div(style = "position: absolute; left: 8rem; padding-right: 20px;", "A Score close to 1 indicates the {riskmetric} assessment value is high risk, where scores closer to 0 inidicate lower risk")),
+              div(style = "position: absolute; left: 8rem; padding-right: 20px;", "A score close to 1 indicates the {riskmetric} assessment value is high risk, where scores closer to 0 inidicate lower risk")),
           br(),
           div(style = "display: flex; align-items: center;",
               metric_gauge("1"),
