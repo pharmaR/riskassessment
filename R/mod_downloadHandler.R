@@ -92,6 +92,15 @@ mod_downloadHandler_include_server <- function(id) {
     
     observeEvent(input$report_includes, {
       session$userData$user_report$report_includes <- input$report_includes %||% ""
+      
+      if('Package Dependencies' %in% input$report_includes) {
+        shinyjs::enable(selector = 'input[type="checkbox"][value="Include Suggests"]')
+      } else {
+        shinyjs::disable(selector = 'input[type="checkbox"][value="Include Suggests"]')
+      }
+      
+      session$userData$suggests('Include Suggests' %in% input$report_includes)
+      
     }, ignoreNULL = FALSE, ignoreInit = TRUE)
     
     return(reactive(input$report_includes))
@@ -118,7 +127,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
     output$download_reports <- downloadHandler(
       filename = function() {
         n_pkgs <- length(pkgs())
-        
+
         if (n_pkgs > 1) {
           report_datetime <- stringr::str_replace_all(stringr::str_replace(get_time(), " ", "_"), ":", "-")
           glue::glue('RiskAssessment-Report-{report_datetime}.zip')
@@ -259,6 +268,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               cm_comments <- get_cm_comments(this_pkg)
               se_comments <- get_se_comments(this_pkg)
               fe_comments <- get_fe_comments(this_pkg)
+              dep_comments <- get_dep_comments(this_pkg)
               
               # gather maint metrics & community metric data
               mm_data <- get_metric_data(this_pkg, metric_class = "maintenance")
@@ -267,9 +277,9 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               downloads_plot <- build_comm_plotly(comm_data)
               metric_tbl <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
               
-              dep_metrics <- get_depends_data(this_pkg, db_name = golem::get_golem_options("assessment_db_name"))
+              dep_metrics <- get_depends_data(this_pkg, session$userData$suggests(), db_name = golem::get_golem_options("assessment_db_name"))
 
-              dep_cards <- build_dep_cards(data = dep_metrics, loaded = session$userData$loaded2_db()$name, toggled = 0L)
+              dep_cards <- build_dep_cards(data = dep_metrics, loaded = session$userData$loaded2_db()$name, toggled = session$userData$suggests())
 
               dep_table <- 
                 if (nrow(dep_metrics) == 0) {
@@ -285,7 +295,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               # Render the report, passing parameters to the rmd file.
               rmarkdown::render(
                 input = Report,
-                output_file = path,
+                output_file = basename(path),
                 clean = FALSE,
                 params = list(pkg = pkg_list,
                               report_includes = input$report_includes,
@@ -300,6 +310,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                               cm_comments = cm_comments,
                               se_comments = se_comments,
                               fe_comments = fe_comments,
+                              dep_comments = dep_comments,
                               maint_metrics = mm_data,
                               com_metrics = comm_cards,
                               com_metrics_raw = comm_data,

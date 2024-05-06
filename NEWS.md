@@ -19,7 +19,9 @@
 * updated manifest file and deployments article
 * Adds about page to help users understand the project a little more, providing useful resources and attribution
 * Updated version of `{riskmetric}` being used to v0.2.4.9000
+* Added Suggests option to Reports (#721)
 * Updated the Dependency Cards to be slightly more informative
+
 
 # riskassessment 3.0.0
 
