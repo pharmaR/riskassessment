@@ -6163,7 +6163,7 @@
       "checksum": "c0baef024db9ec1299aae4098e904e9c"
     },
     ".github/workflows/write-manifest.yaml": {
-      "checksum": "4a5d91eff58b626862344b4924a4736b"
+      "checksum": "4886ba22a4282ccc2627be6bb5695eb5"
     },
     ".open": {
       "checksum": "d41d8cd98f00b204e9800998ecf8427e"
@@ -6172,7 +6172,7 @@
       "checksum": "70824d07d35cb82e0d1e78f58783e73b"
     },
     ".Rprofile": {
-      "checksum": "e86b2db09f5ce46d8a88f9f556238062"
+      "checksum": "d1c065ed0b84691d10d2b20a46566019"
     },
     "app.R": {
       "checksum": "4ea07f590cf6a7980f5d997ad9cd55d2"
