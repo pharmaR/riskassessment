@@ -65,7 +65,7 @@ metric_gauge <- function(score) { #, id = "meter") { # could add id arg here
 #' @importFrom stats lm
 #' @keywords internal
 #' 
-build_comm_cards <- function(data){
+build_comm_cards <- function(data, db_name = golem::get_golem_options('assessment_db_name')){
   
   cards <- dplyr::tibble(
     name = character(),
@@ -134,7 +134,7 @@ build_comm_cards <- function(data){
   
   
   # pull in some riskmetric data
-  comm <- get_metric_data(data$id[1], metric_class = 'community', golem::get_golem_options('assessment_db_name'))
+  comm <- get_metric_data(data$id[1], metric_class = 'community', db_name)
   
   
   # get downloads in the last year
@@ -162,7 +162,7 @@ build_comm_cards <- function(data){
   
   
   # get reverse dependency info
-  rev_deps <- get_assess_blob(data$id[1], metric_lst = "reverse_dependencies")$reverse_dependencies[[1]]
+  rev_deps <- get_assess_blob(data$id[1], db_name, "reverse_dependencies")$reverse_dependencies[[1]]
   
   comm_rev <- comm %>% filter(name == "reverse_dependencies")
   # new

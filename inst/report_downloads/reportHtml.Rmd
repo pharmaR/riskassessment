@@ -26,6 +26,7 @@ params:
   cm_comments: NA
   se_comments: NA
   fe_comments: NA
+  dep_comments: NA
   maint_metrics: NA
   com_metrics: NA
   com_metrics_raw: NA
@@ -360,21 +361,32 @@ tagList(
 
 ```{r package_dependencies}
 tagList(
-  if('Package Dependencies' %in% params$report_includes) {
+  if(any(c('Package Dependencies', 'Dependency Comments') %in% params$report_includes)) {
     tagList(
       br(),
       hr(),
       br(), 
       h5("Package Dependencies", style = "text-align: center;"),
       br(),
-      createGrid(metrics = params$dep_cards),
-      br(), 
-      DT::datatable(params$dep_table,
-          options = list(dom = "t", searching = FALSE, pageLength = -1,
-                         lengthChange = FALSE, info = FALSE, 
-                         columnDefs = list(list(className = 'dt-center', targets = 2))))
+      if ('Package Dependencies' %in% params$report_includes)
+        tagList(
+          createGrid(metrics = params$dep_cards),
+          br(), 
+          DT::datatable(params$dep_table,
+                        options = list(dom = "t", searching = FALSE, pageLength = -1,
+                                       lengthChange = FALSE, info = FALSE, 
+                                       columnDefs = list(list(className = 'dt-center', targets = 2))))
+        ),
+      if('Dependency Comments' %in% params$report_includes)
+        tagList(
+          br(),
+          h5('Comments', style = "padding-bottom:10px;"),
+          wellPanel(
+            HTML(showComments(
+              pkg_name = params$pkg$name,
+              comments = params$dep_comments))
+          ))
     )
-
   } else ""
 )
 ```

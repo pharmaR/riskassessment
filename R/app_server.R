@@ -31,6 +31,7 @@ app_server <- function(input, output, session) {
     update_report_pref_inclusions = 0
   )
   session$userData$repo_pkgs <- reactiveVal()
+  session$userData$suggests <- reactiveVal(FALSE)
   
   
   # this skips authentication if the application is running in test mode
@@ -210,12 +211,12 @@ app_server <- function(input, output, session) {
     if (file.exists(session$userData$user_report$user_file)) {
       session$userData$user_report$report_includes <- readLines(session$userData$user_report$user_file)
     } else {
-      session$userData$user_report$report_includes <- rpt_choices
+      session$userData$user_report$report_includes <- rpt_choices[rpt_choices != 'Include Suggests']
     }
   })
   
   observeEvent(input$apptabs, {
-    req(input$apptabs %in% c("about-tab", "database-tab"))
+    req(input$apptabs %in% c("risk-assessment-tab", "database-tab"))
     session$userData$trigger_events$update_report_pref_inclusions <- session$userData$trigger_events$update_report_pref_inclusions + 1
   })
   
@@ -293,6 +294,7 @@ app_server <- function(input, output, session) {
   dependencies_data <- packageDependenciesServer('packageDependencies',
                                                   selected_pkg,
                                                   user,
+                                                  credential_config,
                                                   parent = session)
   
   # Load server of the report preview tab.
@@ -304,6 +306,7 @@ app_server <- function(input, output, session) {
                       mm_comments = maintenance_data$comments,
                       cm_comments = community_data$comments,
                       # se_comments = src_explorer_data$comments, # not an arg
+                      dep_comments = dependencies_data$comments,
                       downloads_plot_data = community_data$downloads_plot_data,
                       user = user,
                       credential_config,

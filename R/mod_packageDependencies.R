@@ -27,7 +27,7 @@ packageDependenciesUI <- function(id) {
 #'
 #' @keywords internal
 #'
-packageDependenciesServer <- function(id, selected_pkg, user, parent) {
+packageDependenciesServer <- function(id, selected_pkg, user, credentials, parent) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
@@ -259,6 +259,11 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
                 style = "max-height: 500px; overflow: auto"
               )
             )
+          ),
+          br(), br(),
+          fluidRow(div(id = "comments_for_dep",
+                       if ("general_comment" %in% unlist(credentials$privileges[user$role], use.names = FALSE)) addCommentUI(NS(id, 'add_comment')),
+                       viewCommentsUI(NS(id, 'view_comments')))
           )
         ) # taglist
       }
@@ -387,5 +392,25 @@ packageDependenciesServer <- function(id, selected_pkg, user, parent) {
       if(input$incl_suggests == TRUE | toggled() == 1L) toggled(1L - isolate(toggled()))
     })
     
+    # Call module that creates section to add comments.
+    comment_added <- addCommentServer(id = "add_comment",
+                                      metric_abrv = 'dep',
+                                      user = user,
+                                      credentials = credentials,
+                                      pkg_name = selected_pkg$name)
+    
+    comments <- eventReactive(list(comment_added(), selected_pkg$name()), {
+      get_dep_comments(selected_pkg$name())
+    })
+    
+    # Call module that creates comments view.
+    viewCommentsServer(id = "view_comments",
+                       comments = comments,
+                       pkg_name = selected_pkg$name)
+    
+    list(
+      comments = comments,
+      comment_added = comment_added
+    )
   }) # moduleServer
 }

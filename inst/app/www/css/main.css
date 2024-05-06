@@ -167,3 +167,7 @@ h4, .h4, h5, .h5, h6, .h6 {
   border-radius: 0;
   border-color: rgb(206, 212, 218);
 }
+
+.pretty:has(input[type="checkbox"][value="Include Suggests"]) {
+  margin-left: 2em;
+}
