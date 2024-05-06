@@ -325,7 +325,7 @@ build_dep_cards <- function(data, loaded, toggled){
     )
   
   
-  # Card 3: Base-R Percent
+  # Card 3: Base-R Packages
   x3 <- tibble("base" = levels(deps$base))
   y3 <- full_join(x3, deps, by = "base")
   
@@ -346,7 +346,7 @@ build_dep_cards <- function(data, loaded, toggled){
   cards <- cards %>%
     dplyr::add_row(
       name = 'base_cat_count',
-      title = 'Base-R Percent',
+      title = 'Base-R Packages',
       desc = 'Percent of Packages from Base R',
       value = base_cat_rows,
       score = "NULL",
