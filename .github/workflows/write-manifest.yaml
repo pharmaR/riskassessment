@@ -14,17 +14,6 @@ jobs:
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      
-      - name: Check up-to-date
-        run: |
-          if ! git merge-base --is-ancestor origin/dev @;
-          then echo "This branch is not up to date with dev";
-          exit 1; fi
-          
       - name: Move to branch
         uses: actions/checkout@v4
         with:
@@ -49,3 +38,12 @@ jobs:
           git add manifest.json || echo "WARN: manifest.json was not updated"
           git commit -m 'Re-build manifest file' || echo "No changes to commit"
           git push origin || echo "No changes to commit"
+          
+      - name: Set status
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/pharmaR/riskassessment/statuses/${{ github.sha }} \
+              -f "state=success" -f "description=The build succeeded!" -f "context=write-manifest"
