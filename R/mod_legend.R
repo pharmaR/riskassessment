@@ -46,7 +46,7 @@ legendServer <- function(id){
           br(),br(),br(),
           div(style = "display: flex; align-items: center;",
               metric_gauge("NA"),
-              div(style = "position: absolute; left: 8rem; padding-right: 20px;", "An 'NA' indicates an assessment value exists for {riskmetric}, but there is no score recorded. This is usually an intention practice performed by {riskmetric}'s development team when scoring such a metric is ambiguous or strange, thus a score is not applicable")),
+              div(style = "position: absolute; left: 8rem; padding-right: 20px;", "An 'NA' indicates an assessment value exists for {riskmetric}, but there is no score recorded. This is usually an intentional practice performed by {riskmetric}'s development team when scoring such a metric is ambiguous or strange, thus a score is not applicable")),
           br(),
           div(style = "display: flex; align-items: center;",
               metric_gauge("0"),
