@@ -37,7 +37,7 @@ jobs:
         run: |
           git config --local user.name "Github Actions"
           git config --local user.email "actions@github.com"
-          git add manifest.json || echo "WARN: manifest.json was not updated"
+          git add . || echo "WARN: manifest.json was not updated"
           git commit -m 'Re-build manifest file' || echo "No changes to commit"
           git push origin || echo "No changes to commit"
           echo "commit-sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
