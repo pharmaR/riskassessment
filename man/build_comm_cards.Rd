@@ -4,7 +4,10 @@
 \alias{build_comm_cards}
 \title{The 'Build Community Cards' function}
 \usage{
-build_comm_cards(data)
+build_comm_cards(
+  data,
+  db_name = golem::get_golem_options("assessment_db_name")
+)
 }
 \arguments{
 \item{data}{a data.frame}
