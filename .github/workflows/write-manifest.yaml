@@ -49,4 +49,4 @@ jobs:
             -H "Accept: application/vnd.github+json" \
             -H "X-GitHub-Api-Version: 2022-11-28" \
             /repos/pharmaR/riskassessment/statuses/${{ steps.commit-results.outputs.commit-sha }} \
-              -f "state=success" -f "description=The build succeeded!" -f "context=write-manifest"
+              -f "state=success" -f "description=manifest.json build succeeded!" -f "context=manifest-built"
