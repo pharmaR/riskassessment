@@ -175,7 +175,7 @@
         "Maintainer": "Brian Ripley <ripley@stats.ox.ac.uk>",
         "Repository": "CRAN",
         "Date/Publication": "2024-01-13 13:36:16 UTC",
-        "Built": "R 4.3.3; x86_64-pc-linux-gnu; 2024-04-24 20:32:56 UTC; unix"
+        "Built": "R 4.3.3; x86_64-pc-linux-gnu; 2024-05-06 22:13:23 UTC; unix"
       }
     },
     "Matrix": {
@@ -208,7 +208,7 @@
         "Maintainer": "Martin Maechler <mmaechler+Matrix@gmail.com>",
         "Repository": "CRAN",
         "Date/Publication": "2024-01-11 17:50:15 UTC",
-        "Built": "R 4.3.3; x86_64-pc-linux-gnu; 2024-04-24 20:33:20 UTC; unix"
+        "Built": "R 4.3.3; x86_64-pc-linux-gnu; 2024-05-06 22:13:34 UTC; unix"
       }
     },
     "R.methodsS3": {
@@ -3436,7 +3436,7 @@
         "Packaged": "2023-12-20 10:39:06 UTC; sw283",
         "Repository": "CRAN",
         "Date/Publication": "2023-12-21 00:30:02 UTC",
-        "Built": "R 4.3.3; x86_64-pc-linux-gnu; 2024-04-24 20:38:02 UTC; unix"
+        "Built": "R 4.3.3; x86_64-pc-linux-gnu; 2024-05-06 22:15:46 UTC; unix"
       }
     },
     "mime": {
@@ -3569,7 +3569,7 @@
         "Maintainer": "R Core Team <R-core@R-project.org>",
         "Repository": "CRAN",
         "Date/Publication": "2023-11-27 15:26:12 UTC",
-        "Built": "R 4.3.3; x86_64-pc-linux-gnu; 2024-04-24 20:36:05 UTC; unix"
+        "Built": "R 4.3.3; x86_64-pc-linux-gnu; 2024-05-06 22:14:51 UTC; unix"
       }
     },
     "officer": {
@@ -6163,7 +6163,7 @@
       "checksum": "c0baef024db9ec1299aae4098e904e9c"
     },
     ".github/workflows/write-manifest.yaml": {
-      "checksum": "bce8b6e0282e4318099b9259a3e0ec8a"
+      "checksum": "d898097a403db152d8f887bde141698c"
     },
     ".open": {
       "checksum": "d41d8cd98f00b204e9800998ecf8427e"
