@@ -4,13 +4,12 @@ name: write-manifest
 on:
   pull_request:
     branches: [dev]
-    type: [ready_for_review]
+    types: [ready_for_review]
   workflow_dispatch:
   
 
 jobs:
   write-manifest:
-    if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
