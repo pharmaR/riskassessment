@@ -3,16 +3,21 @@
 name: write-manifest
 on:
   pull_request:
-    branches: [master]
+    branches: [dev]
+    types: [review_requested]
+  workflow_dispatch:
+  
 
 jobs:
   write-manifest:
+    if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
+      - name: Move to branch
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           
@@ -29,9 +34,20 @@ jobs:
         run: Rscript -e 'rsconnect::writeManifest()'
           
       - name: Commit results
+        id: commit-results
         run: |
-          git config --local user.name "$GITHUB_ACTOR"
-          git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config --local user.name "Github Actions"
+          git config --local user.email "actions@github.com"
           git add manifest.json || echo "WARN: manifest.json was not updated"
           git commit -m 'Re-build manifest file' || echo "No changes to commit"
           git push origin || echo "No changes to commit"
+          echo "commit-sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          
+      - name: Set status
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/pharmaR/riskassessment/statuses/${{ steps.commit-results.outputs.commit-sha }} \
+              -f "state=success" -f "description=manifest.json build succeeded!" -f "context=manifest-built"
