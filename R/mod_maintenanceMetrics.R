@@ -45,7 +45,7 @@ maintenanceMetricsServer <- function(id, selected_pkg, maint_metrics, user, cred
           )
       }
     })
-
+                  
     # IntroJS.
     introJSServer(id = "introJS", text = reactive(mm_steps), user, credentials)
 

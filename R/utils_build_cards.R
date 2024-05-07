@@ -3,28 +3,39 @@
 #' An HTML meter element, used for displaying metric scores in the app
 #' 
 #' @param score a whole number between 0 and 100
+#' 
 #' @importFrom dplyr case_when
+#' @importFrom bslib tooltip
 #' @return tagList object
 #' @keywords internal
 #'
-metric_gauge <- function(score) { # could add id arg here
+metric_gauge <- function(score) { #, id = "meter") { # could add id arg here
+
   
+  if(toupper(score) %in% c("NA", "NULL") | is.na(score)) {
+    lab <- "NA"
+    tip <- dplyr::if_else(score == "NULL", "Not a {riskmetric} assessment", # shouldn't show up
+                          "'NA' indicates an assessment value exists, but there is no score recorded")
+  } else {
+    # flip the label display of the score to mimic the package score...
+    lab <- HTML(case_when(
+      round(as.numeric(score), 2) == 0 ~ "1 <span style='color:#FF765B; font-family:FontAwesome; text-shadow:-1px 0 #777, 0 1px #777, 1px 0 #777, 0 -1px #777;'>&#10060;</span>",
+      round(as.numeric(score), 2) == 1 ~ "0 <span style='color:#9CFF94; font-family:FontAwesome; text-shadow:-1px 0 #777, 0 1px #777, 1px 0 #777, 0 -1px #777;'>&#10004;</span>",
+      TRUE ~ as.character(round(1 - as.numeric(score), 2))
+    ))
+    tip <- HTML(case_when(
+      round(as.numeric(score), 2) == 0 ~ "Score: 1 indicates the highest risk possible",
+      round(as.numeric(score), 2) == 1 ~ "Score: 0 indicates the lowest risk possible",
+      TRUE ~ "Scores close to 1 indicate high risk while scores closer to 0 are low risk"))
+  }
+  
+  # insert label, meter, and tooltip into a tagList
   tagList(
     div(style = "width: 78px; text-align:center;",
+        div(tags$label(style = "font-size:32px; cursor: var(--cursor, default)", lab) #`for` = id,
+        ) ,
         div(
-          tags$label(style = "font-size:32px", # `for` = id,
-                     if(toupper(score) %in% c("NA", "NULL")) "NA" else {
-                       # flip the label display of the score to mimic the package score...
-                       HTML(case_when(
-                         round(as.numeric(score), 2) == 0 ~ "1 <span style='color:#FF765B; font-family:FontAwesome; text-shadow:-1px 0 #777, 0 1px #777, 1px 0 #777, 0 -1px #777;'>&#10060;</span>",
-                         round(as.numeric(score), 2) == 1 ~ "0 <span style='color:#9CFF94; font-family:FontAwesome; text-shadow:-1px 0 #777, 0 1px #777, 1px 0 #777, 0 -1px #777;'>&#10004;</span>",
-                         TRUE ~ as.character(round(1 - as.numeric(score), 2))
-                       ))
-                     }
-          )
-        ),
-        div(
-          tags$meter( # id = id,
+          tags$meter( #id = id,
             min = 0,
             max = 1,
             optimum = 1,
@@ -35,10 +46,14 @@ metric_gauge <- function(score) { # could add id arg here
             else ifelse(between(round(as.numeric(score), 2), 0, .08), .08, round(as.numeric(score), 2)),
             style = "height: 30px; width: 100%;"
           )
-        )
-    )
-  ) 
+        ) 
+    ) 
+  ) |> bslib::tooltip(tip)
 }
+
+
+
+
 
 #' The 'Build Community Cards' function
 #' 

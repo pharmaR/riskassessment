@@ -29,19 +29,29 @@ metricGridServer <- function(id, metrics) {
       columns <- 3
       column_vector_grid_split <- split(seq_len(nrow(metrics())), rep(1:columns, length.out = nrow(metrics())))
 
-      fluidRow(style = "padding-right: 10px", class = "card-group",
-               map(column_vector_grid_split, 
-                   ~ column(width= 4,map(.x,~ metricBoxUI(session$ns(metrics()$name[.x]))))),
-      if(any(!(metrics()$title %in% metric_tbl$long_name)) & stringr::str_extract(session$ns(id), "\\w+") != "databaseView") {
-        tags$em("* Provided for additional context. Not a {riskmetric} assessment, so this measure will not impact the risk score.")
-      } 
+      
+      tagList(
+        if(any(metrics()$title %in% metric_tbl$long_name) & stringr::str_extract(session$ns(id), "\\w+") != "databaseView") {
+          div(style = "display: block; margin: auto;", legendUI(session$ns("legend_details")))
+        } else { NULL },
+        fluidRow(style = "padding-right: 10px", class = "card-group",
+                 map(column_vector_grid_split, 
+                     ~ column(width= 4,map(.x,~ metricBoxUI(session$ns(metrics()$name[.x]))))),
+                 if(any(!(metrics()$title %in% metric_tbl$long_name)) & stringr::str_extract(session$ns(id), "\\w+") != "databaseView") {
+                   tags$em("* Provided for additional context. Not a {riskmetric} assessment, so this measure will not impact the risk score.")
+                 } 
+        )
       )
     })
     
     
+    # Legend Details
+    legendServer(id = "legend_details")
+    
     observeEvent(req(nrow(metrics()) > 0), {
-      apply(metrics(), 1, function(m)
-        metricBoxServer(id = m['name'],
+      apply(metrics(), 1, function(m) {
+        metricBoxServer(
+            id = m['name'],
             title = m['title'],
             desc = m['desc'],
             value = dplyr::case_when(m['name'] != 'has_bug_reports_url' ~ m['value'],
@@ -54,7 +64,8 @@ metricGridServer <- function(id, metrics) {
             icon_class = m['icon_class'],
             type = m['type']
           )
-        )
+        }
+      )
     })
   })
 }
