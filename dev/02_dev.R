@@ -77,6 +77,7 @@ usethis::use_dev_package("chromote",type = "suggests")#, min_version = "0.2.2")
 # ## Create a module infrastructure in R/
 # ## Only argument is Name of the module
 # 
+golem::add_module( name = "legend" )      #ran
 # golem::add_module( name = "dataUpload" ) # ran
 # golem::add_module( name = "dataComply" ) # ran
 # golem::add_module( name = "dataComplyRules" ) # ran

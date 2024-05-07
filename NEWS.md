@@ -20,6 +20,8 @@
 * Adds about page to help users understand the project a little more, providing useful resources and attribution
 * Updated version of `{riskmetric}` being used to v0.2.4.9000
 * Added Suggests option to Reports (#721)
+* Added more context to the metric score card visuals by inserting tool tips & creating a legend modal that describes & interprets all possible visuals (#652)
+* Added `{riskmetric}` assessment documentation URLs to About tab, on Risk Assessment Criteria page.
 
 # riskassessment 3.0.0
 

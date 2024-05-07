@@ -1,2 +1,2 @@
-Metric,Measure,Reason for Inclusion
-Code coverage,Percentage,"For packages that implement a test framework, it is possible to use the R package, covr, to work out the proportion of the source code covered by these tests.  Although there are an infinite number of ways of testing code, a 100% covr score would mean that every line of source code is at least called when running the tests."
+Metric,Measure,Documentation,Reason for Inclusion
+Code coverage,Percentage,<a href='https://pharmar.github.io/riskmetric/reference/assess_covr_coverage.html' target='_blank'>assess_covr_coverage()</a>,"For packages that implement a test framework, it is possible to use the R package, covr, to work out the proportion of the source code covered by these tests.  Although there are an infinite number of ways of testing code, a 100% covr score would mean that every line of source code is at least called when running the tests."
