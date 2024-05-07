@@ -77,7 +77,7 @@ build_comm_cards <- function(data, db_name = golem::get_golem_options('assessmen
     icon_class = character(),
     is_perc = numeric(),
     is_url = numeric(),
-    type = "information"
+    type = character()
   )
   
   if (nrow(data) == 0)
@@ -254,7 +254,7 @@ build_dep_cards <- function(data, loaded, toggled){
     icon_class = character(),
     is_perc = numeric(),
     is_url = numeric(),
-    type = "information"
+    type = character()
   )
   
   deps <- data %>% 
