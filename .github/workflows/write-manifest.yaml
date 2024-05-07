@@ -5,6 +5,7 @@ on:
   pull_request_review:
     branches: [dev]
     type: [submitted]
+  workflow_dispatch:
   
 
 jobs:
