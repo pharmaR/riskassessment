@@ -10,6 +10,7 @@ on:
 
 jobs:
   write-manifest:
+    if: ${{ !github.event.pull_request.draft }}
     runs-on: ubuntu-latest
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
