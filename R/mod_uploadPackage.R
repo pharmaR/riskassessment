@@ -199,15 +199,17 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       if(np == 0)
         uploaded_pkgs00(validate('Please upload a nonempty CSV file.'))
       
-      if(!all(colnames(uploaded_packages) == colnames(template)))
+      if(!"package" %in% colnames(uploaded_packages))
         uploaded_pkgs00(validate("Please upload a CSV with a valid format."))
       
       # Add status column and remove white space around package names.
       uploaded_packages <- uploaded_packages %>%
         dplyr::mutate(
           status = rep('', np),
-          package = trimws(package),
-          version = trimws(version)
+          dplyr::across(
+            dplyr::matches("package|version|decision"),
+            trimws
+          )
         )
       
       uploaded_pkgs00(uploaded_packages)
@@ -315,7 +317,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       uploaded_pkgs00(NULL)
       uploaded_packages$score <- NA_real_
       if (!rlang::is_empty(auto_list())) {
-        uploaded_packages$decision <- ""
+        uploaded_packages$decision <- dplyr::coalesce(uploaded_packages$decision, "")
         uploaded_packages$decision_rule <- ""
       }
       np <- nrow(uploaded_packages)

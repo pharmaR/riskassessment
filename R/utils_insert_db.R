@@ -445,10 +445,26 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, updateProgress 
       insert_community_metrics_to_db(uploaded_packages$package[i], assess_db)
       
       uploaded_packages$score[i] <- get_pkg_info(uploaded_packages$package[i], assess_db)$score
-      if (!rlang::is_empty(rule_lst)) {
-        assigned_decision <- assign_decisions(rule_lst, uploaded_packages$package[i], assess_db)
-        uploaded_packages$decision[i] <- assigned_decision$decision
-        uploaded_packages$decision_rule[i] <- assigned_decision$decision_rule
+      if (!is.null(uploaded_packages$decision) && uploaded_packages$decision[i] != "") {
+        decision_id <- dbSelect("SELECT id FROM decision_categories WHERE decision = {uploaded_packages$decision[i]}", assess_db)
+        log_message <- glue::glue("Decision for the package {uploaded_packages$package[i]} was assigned {uploaded_packages$decision[i]} by upload designation.")
+        db_message <- glue::glue("Decision was assigned '{uploaded_packages$decision[i]}' by upload designation.")
+        dbUpdate("UPDATE package SET decision_id = {decision_id},
+                        decision_by = 'Auto Assigned', decision_date = {get_Date()}
+                         WHERE name = {uploaded_packages$package[i]}",
+                 assess_db)
+        loggit::loggit("INFO", log_message)
+        dbUpdate(
+          "INSERT INTO comments
+          VALUES ({uploaded_packages$package[i]}, 'Auto Assigned', 'admin',
+          {db_message}, 'o', {getTimeStamp()})",
+          assess_db)
+      } else {
+        if (!rlang::is_empty(rule_lst)) {
+          assigned_decision <- assign_decisions(rule_lst, uploaded_packages$package[i], assess_db)
+          uploaded_packages$decision[i] <- assigned_decision$decision
+          uploaded_packages$decision_rule[i] <- assigned_decision$decision_rule
+        }
       }
     }
     if (is.function(updateProgress))
