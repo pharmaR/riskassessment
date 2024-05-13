@@ -45,9 +45,12 @@ uploadPackageUI <- function(id) {
                 label = "Or Upload a CSV file",
                 accept = ".csv",
                 placeholder = "No file selected"
-              )),
+              ) %>%
+                tagAppendAttributes(style = "margin-bottom: .25rem")),
             tags$script(glue::glue('$("#{NS(id, \'uploaded_file\')}").parents("span").addClass("disabled")'))
         ),
+        textOutput(NS(id, "upload_error_txt")) %>%
+          tagAppendAttributes(style = "color: red;"),
         uiOutput(NS(id, "upload_format_lnk"))
       ),
     ),
@@ -112,6 +115,9 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       
       actionLink(NS(id, "upload_format"), "View Sample Dataset")
     })
+    
+    error_txt <- reactiveVal()
+    output$upload_error_txt <- renderText(error_txt())
     
     # Determine which guide to use for IntroJS.
     upload_pkg_txt <- reactive({
@@ -191,17 +197,31 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
     observeEvent(input$uploaded_file, {
       req(input$uploaded_file)
       
-      if(is.null(input$uploaded_file$datapath))
+      if (is.null(input$uploaded_file$datapath))
         uploaded_pkgs00(validate('Please upload a nonempty CSV file.'))
       
       uploaded_packages <- utils::read.csv(input$uploaded_file$datapath, stringsAsFactors = FALSE)
       np <- nrow(uploaded_packages)
-      if(np == 0)
-        uploaded_pkgs00(validate('Please upload a nonempty CSV file.'))
+      if (np == 0) {
+        msg <- 'Please upload a nonempty CSV file.'
+        error_txt(msg)
+        uploaded_pkgs00(validate(msg))
+      }
       
-      if(!"package" %in% colnames(uploaded_packages))
-        uploaded_pkgs00(validate("Please upload a CSV with a valid format."))
+      if (!"package" %in% colnames(uploaded_packages)) {
+        msg <- "Please upload a CSV with a valid format."
+        error_txt(msg)
+        uploaded_pkgs00(validate(msg))
+      }
       
+      if (!"final_decision" %in% unlist(credentials$privileges[user$role], use.names = FALSE) && 
+          "decision" %in% colnames(uploaded_packages)) {
+        msg <- "Your role does not allow assigning decisions."
+        error_txt(msg)
+        uploaded_pkgs00(validate(msg))
+      }
+      
+      error_txt(NULL)
       # Add status column and remove white space around package names.
       uploaded_packages <- uploaded_packages %>%
         dplyr::mutate(
