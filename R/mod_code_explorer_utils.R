@@ -183,7 +183,7 @@ renderCode <- function(lines, hlindex) {
         
         var $target = document.querySelector('#code_explorer-file_viewer')
         $target.scrollTop = 0;
-        $target.scrollTop = $curr_sel.offsetTop  - 40; 
+        $target.scrollTop = $curr_sel.offsetTop  - 40;
         var $highlights_list = document.querySelectorAll('.highlight')
        if(typeof($highlights_list) != 'undefined'){
         var $gh = document.querySelector('.highlight')
@@ -192,6 +192,9 @@ renderCode <- function(lines, hlindex) {
         $target.scrollTop = 0;
         $target.scrollTop = $gh.offsetTop  - $target.offsetTop + $target.scrollTop; 
 
+        var $index1 =Array.from($highlights_list).findIndex(node => node.isEqualNode($curr_sel)) +1;
+                   
+        search_index.innerHTML =   $index1 + ' of ' + $highlights_list.length;
        }
       "))
   )
