@@ -180,11 +180,11 @@ renderCode <- function(lines, hlindex) {
         var $highlights_list = document.querySelectorAll('.highlight')
        if(typeof($highlights_list) != 'undefined'){
        
-        var $gh = document.querySelector('.highlight')
+        var $curr_sel = document.querySelector('.highlight')
         
         var $target = document.querySelector('#code_explorer-file_viewer')
         $target.scrollTop = 0;
-        $target.scrollTop = $gh.offsetTop  - 40; 
+        $target.scrollTop = $curr_sel.offsetTop  - 40; 
        }
       "))
   )
