@@ -85,7 +85,7 @@ aboutInfoUI <- function(id) {
                 <br>
                 
                 <br>
-                <h3> Current Contributors </h3>
+                <h3> Core Contributors </h3>
                 <ul>
                   <li> Aaron Clark, Arcus Biosciences </li>
                   <li> Narayanan Iyer, Pfizer </li>
@@ -110,25 +110,27 @@ aboutInfoUI <- function(id) {
                 </ul>
                 <br>
                 
-                <h3> Contributing Companies </h3>
-                
-                <img src='www/images/appsilon_logo.jpg' alt='Appsilon' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'> 
-                <img src='www/images/arcus_logo.png' alt='Arcus Biosciences' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'> 
-                <img src='www/images/bi_logo.png' alt='Boehringer Ingelheim' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/biogen_logo.jpg' alt='Biogen' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/cytel.png' alt='Cytel' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/fission_logo.png' alt='Fission Labs India Pvt Ltd' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/gcp_logo.png' alt='GCP-Service International' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/GSK_logo.jpg' alt='GSK' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/katalyzedata_logo.jpg' alt='Katalyze Data' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/merck_logo.png' alt='Merck' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/pfizer_logo.png' alt='Pfizer' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/roche_logo.png' alt='Roche' style = 'height:100px;padding-top:15px;padding-bottom:15px;'>
                 <br>
                 <br>
                 <br>
                 <br>
                ")
+            # On Hold - if we every get permission to display company logos. See issue #778
+            #   <h3> Contributing Companies </h3>
+            #   
+            #   <img src='www/images/appsilon_logo.jpg' alt='Appsilon' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'> 
+            #   <img src='www/images/arcus_logo.png' alt='Arcus Biosciences' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'> 
+            #   <img src='www/images/bi_logo.png' alt='Boehringer Ingelheim' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/biogen_logo.jpg' alt='Biogen' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/cytel.png' alt='Cytel' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/fission_logo.png' alt='Fission Labs India Pvt Ltd' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/gcp_logo.png' alt='GCP-Service International' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/GSK_logo.jpg' alt='GSK' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/katalyzedata_logo.jpg' alt='Katalyze Data' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/merck_logo.png' alt='Merck' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/pfizer_logo.png' alt='Pfizer' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/roche_logo.png' alt='Roche' style = 'height:100px;padding-top:15px;padding-bottom:15px;'>
+              
           ))
           )
         )
