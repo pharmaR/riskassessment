@@ -201,7 +201,6 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
                 
                     var $target = document.querySelector("#code_explorer-file_viewer")
                     $target.scrollTop = 0;
-                    $target.scrollTop =$curr_sel.offsetTop -40; 
               ')
       }
       
@@ -221,8 +220,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
                       }  
                       var $target = document.querySelector("#code_explorer-file_viewer")
                       $target.scrollTop = 0; # scroll to the top 
-                      $target.scrollTop = $curr_sel.offsetTop  - 40; 
-              ')
+                      $target.scrollTop = $curr_sel.offsetTop  - 40; ')
       }
       
     })

@@ -175,8 +175,7 @@ renderCode <- function(lines, hlindex) {
                              
         document.querySelectorAll('.code pre').forEach(bl => {
           hljs.highlightBlock(bl);
-        }); 
-       
+        });
         var $highlights_list = document.querySelectorAll('.highlight')
        if(typeof($highlights_list) != 'undefined'){
        
