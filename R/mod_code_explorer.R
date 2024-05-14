@@ -135,7 +135,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
       close(con)
       func_list <- c(input$exported_function, paste0("`", input$exported_function, "`"))
       highlight_index <- parse_data() %>% 
-        filter(stringr::str_ends(file, input$test_files) & func %in% func_list) %>% 
+        filter(basename(file) == input$test_files & func %in% func_list) %>% 
         pull(line)
       renderCode(lines, highlight_index)
     }) %>%
@@ -152,7 +152,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
       close(con)
       func_list <- c(input$exported_function, paste0("`", input$exported_function, "`"))
       highlight_index <- parse_data() %>% 
-        filter(stringr::str_ends(file, input$source_files) & func %in% func_list) %>% 
+        filter(basename(file) ==  input$source_files & func %in% func_list) %>% 
         pull(line)
       renderCode(lines, highlight_index)
     }) %>%
@@ -178,42 +178,43 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
     observeEvent(input$next_button,{
       if (input$next_button > 0){
       shinyjs::runjs('
-                      // debugger;
-                     var $index =Array.from(window.$highlights_list).findIndex(node => node.isEqualNode(window.$gh));
-              if( $index == window.$highlights_list.length -1) {
+                     
+                     var $index =Array.from($highlights_list).findIndex(node => node.isEqualNode($gh));
+              if( $index == $highlights_list.length -1) {
               
-              var $gh = window.$highlights_list[0]
+              $gh = $highlights_list[0]
               
               }
               else 
               {
-              var $gh = window.$highlights_list[$index +1]
+              $gh = $highlights_list[$index +1]
               }  
+                
               var $target = document.querySelector("#code_explorer-file_viewer")
         $target.scrollTop = 0;
-        $target.scrollTop = $gh.offsetTop  - $target.offsetTop + $target.scrollTop; 
+        $target.scrollTop =$gh.offsetTop -40; 
               ')
       }
       
     })
     
     observeEvent(input$prev_button,{
-      if (input$next_button > 0){
+      if (input$prev_button > 0){
         shinyjs::runjs('
-                      // debugger;
-                     var $index =Array.from(window.$highlights_list).findIndex(node => node.isEqualNode(window.$gh));
+                      
+                     var $index =Array.from($highlights_list).findIndex(node => node.isEqualNode($gh));
               if( $index ==0) {
-              var $gh = window.$highlights_list[window.$highlights_list.length -1]
+              $gh = $highlights_list[$highlights_list.length -1]
               
               
               }
               else 
               {
-              var $gh = window.$highlights_list[$index -1]
+             $gh = $highlights_list[$index -1]
               }  
               var $target = document.querySelector("#code_explorer-file_viewer")
         $target.scrollTop = 0;
-        $target.scrollTop = $gh.offsetTop  - $target.offsetTop + $target.scrollTop; 
+        $target.scrollTop = $gh.offsetTop  - 40; 
               ')
       }
       

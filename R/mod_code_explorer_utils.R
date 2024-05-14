@@ -177,14 +177,14 @@ renderCode <- function(lines, hlindex) {
           hljs.highlightBlock(bl);
         }); 
        
-        debugger;
         var $highlights_list = document.querySelectorAll('.highlight')
        if(typeof($highlights_list) != 'undefined'){
+       
         var $gh = document.querySelector('.highlight')
+        
         var $target = document.querySelector('#code_explorer-file_viewer')
-        // debugger;
         $target.scrollTop = 0;
-        $target.scrollTop = $gh.offsetTop  - $target.offsetTop + $target.scrollTop; 
+        $target.scrollTop = $gh.offsetTop  - 40; 
        }
       "))
   )
