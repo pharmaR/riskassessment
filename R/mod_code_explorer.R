@@ -31,28 +31,6 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
         showHelperMessage(message = glue::glue("Source code not available for {{{selected_pkg$name()}}}"))
       } else {
         div(introJSUI(NS(id, "introJS")),
- 
-          fluidRow(style = "height:35px !important;",
-                   column(2,offset = 10,
-                          conditionalPanel(
-                            condition = "typeof(window.$highlights_list) != 'undefined' && window.$highlights_list.length > 1",
-                          actionButton(ns("prev_button"),label = "",icon = icon("chevron-left"),
-                                       style ="width: 32px !important; 
-                            height: 32px !important;
-                            font-size: 16px !important;
-                            line-height: 5px !important;
-                            padding: 0px !important;") |>bslib::tooltip("Previous occurence"), style = "display: inline-block;"),
-                          conditionalPanel(
-                            condition = "typeof(window.$highlights_list) != 'undefined'  && window.$highlights_list.length > 1",
-                          actionButton(ns("next_button"),label = "",icon = icon("chevron-right"),
-                                       style = "width: 32px !important; 
-                            height: 32px !important;
-                            font-size: 16px !important;
-                            line-height: 5px !important;
-                            padding: 0px !important;")|>bslib::tooltip("Next occurence",placement ="right"), style = "display: inline-block;"))),
-
- 
- 
           fluidRow(
             column(3,
                    wellPanel(
@@ -214,7 +192,6 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
     observeEvent(input$next_button,{
       if (input$next_button > 0){
       shinyjs::runjs('
-       
                     var $index =Array.from($highlights_list).findIndex(node => node.isEqualNode($curr_sel));
                     if( $index == $highlights_list.length -1) 
                     {
@@ -232,32 +209,12 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
                     var $target = document.querySelector("#code_explorer-file_viewer")
                     $target.scrollTop = 0;
  
-                    $target.scrollTop =$curr_sel.offsetTop -40; 
-                      
-                     var $index =Array.from(window.$highlights_list).findIndex(node => node.isEqualNode(window.$gh));
-              if( $index == window.$highlights_list.length -1) {
-              
-              var $gh = window.$highlights_list[0]
-              
-              }
-              else 
-              {
-              var $gh = window.$highlights_list[$index +1]
-              }  
-              var $target = document.querySelector("#code_explorer-file_viewer")
-        $target.scrollTop = 0;
-        $target.scrollTop = $gh.offsetTop  - $target.offsetTop + $target.scrollTop; 
- 
-                    $target.scrollTop =$curr_sel.offsetTop -40;
-                   
- 
-              ')
+                    $target.scrollTop =$curr_sel.offsetTop -40; ')
       }
       
     })
     
     observeEvent(input$prev_button,{
- 
       if (input$prev_button > 0){
         
         shinyjs::runjs('var $index =Array.from($highlights_list).findIndex(node => node.isEqualNode($curr_sel));
@@ -273,15 +230,10 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
                       }  
                       var $target = document.querySelector("#code_explorer-file_viewer")
  
-                      $target.scrollTop = 0; # scroll to the top 
+                      $target.scrollTop = 0; 
                       $target.scrollTop = $curr_sel.offsetTop  - 40; 
 
               ')
- 
-                      $target.scrollTop = 0; // scroll to the top 
-                      $target.scrollTop = $curr_sel.offsetTop  - 40; 
-                     
-                      ')
  
       }
       
