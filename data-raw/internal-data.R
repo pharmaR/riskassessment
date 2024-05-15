@@ -99,6 +99,48 @@ rpt_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment"
                  "Package Dependencies", "Include Suggests", "Dependency Comments", "Source Explorer Comments", 
                  "Function Explorer Comments")
 
+
+# For making contributor cards on the `About` page
+team_info_df <- data.frame(
+  name = c("Aaron Clark", "Narayanan Iyer", "Robert Krajcik", "Barbara Mikulasova", "Jeff Thompson",
+           "Eduardo Almeida","Lars anderson","Andrew Borgman","Maya Gans",
+           "Marly Gotti","Munshi Imran Hossain","Aravid Reddy Kallem","Scott Schumacker",
+           "Various Contributors"
+  ),
+  status = c("current","current","current","current","current",
+             "past","past","past","past",
+             "past","past","past","past",
+             "past"
+  ),
+  role = c("Workstream Lead","Contributor","Core Contributor","Contributor","Core Contributor",
+           "Contributor","Contributor","Contributor","Core Contributor",
+           "Workstream Lead","Contributor","Core Contributor","Contributor",
+           "Package Explorer Author"
+  ),
+  priority = c(1, 4, 2, 4, 3,
+               4,4,4,2,
+               1,4,3,4,
+               4
+  ),
+  site = c("https://github.com/aclark02-arcus","https://github.com/narayanan-iyer-pfizer","https://github.com/Robert-Krajcik","https://github.com/BarbMik","https://github.com/jthompson-arcus",
+           "https://github.com/Eduardodudu","https://github.com/Xyarz","https://github.com/borgmaan","https://github.com/MayaGans",
+           "https://github.com/marlycormar","https://github.com/imran3004","https://github.com/aravindFL1412","https://github.com/ScottSchumacker",
+           "https://github.com/pharmaR/pkg_explorer"),
+  org = c("Arcus Biosciences", "Pfizer", "Cytel", "Katalyze Data", "Arcus Biosciences",
+          "Appsilon","Boehringer Ingelheim","Biogen","Cytel","Biogen",
+          "Cytel","Fission Labs","Canary Medical",
+          "Glaxo Smith Kline"
+  ),
+  photo_file = c(
+    "aaron_clark.png", "person_placeholder.png", "robert_krajcik.png", "barbara_mik.png", "jeff_thompson.png",
+    "eduardo_almeida1.png","lars_anderson1.png","andrew_borgman1.png","maya_gans1.png",
+    "marly_gotti1.png","imran_hossain1.png","person_placeholder.png","scott_schumacker1.png",
+    "gsk_logo1.png"
+  )
+) %>%
+  arrange(priority, name)
+
+
 # load(file = 'R/sysdata.rda') # helpful if changing just one object in sysdta.rda
 usethis::use_data(
   # app_version, 
@@ -111,5 +153,6 @@ usethis::use_data(
   privileges_tbl,
   test_pkg_lst, test_pkg_refs, test_pkg_info, test_pkg_assess, test_pkg_cum,
   color_palette, used_privileges, metric_lst, rpt_choices,
+  team_info_df,
   internal = TRUE, overwrite = TRUE)
 

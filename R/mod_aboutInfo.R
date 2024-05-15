@@ -69,52 +69,39 @@ aboutInfoUI <- function(id) {
             fluidRow(
               column(
                 width = 10, offset = 1,
+                br(),
+                shiny::HTML(
+                   "<h3> Official Workstream of the <a target='_blank' href='https://www.pharmar.org/'>R Validation Hub</a>.
+                    <br/>Sponsored by the <a target='_blank' href='https://www.r-consortium.org//'>R Consortium</a></h3>
+                    <br>
+                    <img src='www/images/pharmaRlogo_large.png' alt='R Validation Hub Logo' style = 'height:130px;padding-right:50px;padding-top:15px;padding-bottom:15px; margin-left:30px;'>  
+                    <img src='www/images/rc_logo.png' alt = 'ProCogia logo' style='height:130px;padding-top:15px;padding-bottom:15px;'> 
+                    <br>
+                    
+                    <br>
+                    <h3> Collaborative Deployment hosted by <a target='_blank' href='https://procogia.com/'> ProCogia </a> </h3>
+                    <br>
+                    <img src='www/images/procogia_logo.png' alt = 'ProCogia logo' style='height:100px; margin-left:30px;'> 
+                    <br>
+              "),
+                br(),
+                br(),
+                h3("Core Contributors"),
+                br(),
+                div(style = "margin-left:30px;", make_contrib_cards(team_info_df %>% filter(status %in% "current"))),
+                br(),
+                h3("Past Contributors"),
+                br(),
+                div(style = "margin-left:30px;", make_contrib_cards(team_info_df %>% filter(status %in% "past"))),
+                br(),
+              )
+            ),
+            
             br(),
-            shiny::HTML(
-               "<h3> Official Workstream of the <a target='_blank' href='https://www.pharmar.org/'>R Validation Hub</a>.
-                <br/>Sponsored by the <a target='_blank' href='https://www.r-consortium.org//'>R Consortium</a></h3>
-                <br>
-                <img src='www/images/pharmaRlogo_large.png' alt='R Validation Hub Logo' style = 'height:130px;padding-right:50px;padding-top:15px;padding-bottom:15px;'>  
-                <img src='www/images/rc_logo.png' alt = 'ProCogia logo' style='height:130px;padding-top:15px;padding-bottom:15px;'> 
-                <br>
-                
-                <br>
-                <h3> Collaborative Deployment hosted by <a target='_blank' href='https://procogia.com/'> ProCogia </a> </h3>
-                <br>
-                <img src='www/images/procogia_logo.png' alt = 'ProCogia logo' style='height:100px'> 
-                <br>
-                
-                <br>
-                <h3> Core Contributors </h3>
-                <ul>
-                  <li> Aaron Clark, Arcus Biosciences </li>
-                  <li> Narayanan Iyer, Pfizer </li>
-                  <li> Robert Krajcik, Cytel </li>
-                  <li> Barbara Mikulasova, Katalyze Data </li>
-                  <li> Jeff Thompson, Arcus Biosciences </li>
-                </ul>
-                
-                <br>
-                
-                <h3> Past Contributors </h3>
-                
-                <ul>
-                  <li> Eduardo Almeida, Appsilon </li>
-                  <li> Lars Andersen, Boehringer Ingelheim </li>
-                  <li> Andrew Borgman, Biogen </li>
-                  <li> Maya Gans, Cytel </li>
-                  <li> Marly Gotti, Biogen </li>
-                  <li> Munshi Imran Hossain, Cytel </li>
-                  <li> Aravid Reddy Kallem, Fission Labs </li>
-                  <li> Scott Schumacker, Canary Medical </li>
-                </ul>
-                <br>
-                
-                <br>
-                <br>
-                <br>
-                <br>
-               ")
+            br(),
+            br(),
+            br(),
+            
             # On Hold - if we every get permission to display company logos. See issue #778
             #   <h3> Contributing Companies </h3>
             #   
@@ -134,7 +121,7 @@ aboutInfoUI <- function(id) {
           ))
           )
         )
-      )))
+      )
 }
 
 #' Server Logic for 'About' Module
