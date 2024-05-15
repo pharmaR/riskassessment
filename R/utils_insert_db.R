@@ -464,6 +464,8 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, updateProgress 
         uploaded_packages$decision[i] <- assigned_decision$decision
         uploaded_packages$decision_rule[i] <- assigned_decision$decision_rule
       }
+    } else if ("decision" %in% names(uploaded_packages) && uploaded_packages$decision[i] != "") {
+      uploaded_packages$decision[i] <- ""
     }
     if (is.function(updateProgress))
       updateProgress(3)
