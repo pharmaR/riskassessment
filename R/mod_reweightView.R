@@ -225,7 +225,10 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
                tags$ul(
                  tags$li("The new package weights will be applied and risk metric scores re-calculated."),
                  tags$li("The risk re-calculation will be logged as a comment for each package."),
-                 tags$li("Previously finalized decisions & overall comments will be dropped for re-evaluation.")
+                 checkboxInput(NS(id, "reset_decisions"), width = "100%", value = isolate(input$reset_decisions) %||% FALSE,
+                               "Previously finalized decisions & overall comments will be dropped for re-evaluation.") %>%
+                   tagAppendAttributes(style = "position: absolute; left: 1rem; margin: 0",
+                                       .cssSelector = "input")
                )
             ),
             h3(strong("Note:"), "Updating the risk metrics cannot be reverted.", class = "mt-25 mb-0"),
@@ -271,34 +274,36 @@ reweightViewServer <- function(id, user, decision_list, credentials) {
       all_pkgs <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package")
       req(nrow(all_pkgs) > 0) # Stops re-weighting execution when no packages are in the database which crashes the app.
       
-      cmt_or_dec_pkgs <- unique(dplyr::bind_rows(
-        dbSelect("SELECT DISTINCT id AS pkg_name FROM comments where comment_type = 'o'"),
-        dbSelect("SELECT DISTINCT name AS pkg_name FROM package where decision_id IS NOT NULL")
-      ))
-      
-      cmt_or_dec_dropped_cmt <- " Since they may no longer be applicable, the final decision & comment have been dropped to allow for re-evaluation."
-      
-      # clear out any prior overall comments
-      dbUpdate("DELETE FROM comments WHERE comment_type = 'o'")
-      
-      for (i in 1:nrow(all_pkgs)) {
-        # insert comment for both mm and cum tabs
-        for (typ in c("mm","cum")) {
-          dbUpdate(
-            "INSERT INTO comments
+      if (input$reset_decisions) {
+        cmt_or_dec_pkgs <- unique(dplyr::bind_rows(
+          dbSelect("SELECT DISTINCT id AS pkg_name FROM comments where comment_type = 'o'"),
+          dbSelect("SELECT DISTINCT name AS pkg_name FROM package where decision_id IS NOT NULL")
+        ))
+        
+        cmt_or_dec_dropped_cmt <- " Since they may no longer be applicable, the final decision & comment have been dropped to allow for re-evaluation."
+        
+        # clear out any prior overall comments
+        dbUpdate("DELETE FROM comments WHERE comment_type = 'o'")
+        
+        for (i in 1:nrow(all_pkgs)) {
+          # insert comment for both mm and cum tabs
+          for (typ in c("mm","cum")) {
+            dbUpdate(
+              "INSERT INTO comments
             VALUES({all_pkgs$pkg_name[i]}, {user$name}, {paste(user$role, collapse = ', ')},
             {paste0(weight_risk_comment(all_pkgs$pkg_name[i]), 
                           ifelse(all_pkgs$pkg_name[i] %in% cmt_or_dec_pkgs$pkg_name, cmt_or_dec_dropped_cmt, ''))},
             {typ}, {getTimeStamp()})"
-          )
+            )
+          }
         }
-      }
-      
-      # Reset any decisions made prior to this.
-      pkg <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package WHERE decision_id IS NOT NULL")
-      if (nrow(pkg) > 0) {
-        for (i in 1:nrow(pkg)) {
-          dbUpdate("UPDATE package SET decision_id = NULL, decision_by = NULL, decision_date = NULL where name = {pkg$pkg_name[i]}")
+        
+        # Reset any decisions made prior to this.
+        pkg <- dbSelect("SELECT DISTINCT name AS pkg_name FROM package WHERE decision_id IS NOT NULL")
+        if (nrow(pkg) > 0) {
+          for (i in 1:nrow(pkg)) {
+            dbUpdate("UPDATE package SET decision_id = NULL, decision_by = NULL, decision_date = NULL where name = {pkg$pkg_name[i]}")
+          }
         }
       }
       
