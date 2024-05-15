@@ -14,23 +14,24 @@
 #' @importFrom glue glue
 #' @importFrom loggit loggit
 assign_decisions <- function(rule_list, package, db_name = golem::get_golem_options('assessment_db_name')) {
-  decision <- ""
-  dec_rule <- ""
+  # Checks if decision has already been made and skips assignment if the case
+  decision <- dbSelect("SELECT decision_id FROM package WHERE name = {package}", db_name)[[1]]
+  dec_rule <- NA_character_
   if (any(purrr::map_lgl(rule_list, ~ !is.na(.x$metric))))
     assessments <- get_assess_blob(package, db_name)
   
   for (i in seq_along(rule_list)) {
-    if (decision != "") break
+    if (!is.na(decision)) break
     rule <- rule_list[[i]]
     
     fn <- purrr::possibly(rule$mapper, otherwise = FALSE)
     if (rule$type == "overall_score") {
-      decision <- if (fn(get_pkg_info(package)$score)) rule$decision else ""
+      decision <- if (fn(get_pkg_info(package)$score)) rule$decision else NA_character_
       log_message <- glue::glue("Decision for the package {package} was assigned {decision} because the risk score returned TRUE for `{rule$condition}`")
       db_message <- glue::glue("Decision was assigned '{decision}' by decision rules because the risk score returned TRUE for `{rule$condition}`")
     } else if (rule$type == "assessment" && (rlang::is_function(rule$mapper) | rlang::is_formula(rule$mapper))) {
       test <- try(fn(assessments[[rule$metric]][[1]]), silent = TRUE)
-      decision <- if (is.logical(test) && length(test) == 1 && !is.na(test) && test) rule$decision else ""
+      decision <- if (is.logical(test) && length(test) == 1 && !is.na(test) && test) rule$decision else NA_character_
       log_message <- glue::glue("Decision for the package {package} was assigned {decision} because the {rule$metric} assessment returned TRUE for `{rule$condition}`")
       db_message <- glue::glue("Decision was assigned '{decision}' by decision rules because the {rule$metric} assessment returned TRUE for `{rule$condition}`")
     } else if (rule$type == "else") {
@@ -42,7 +43,7 @@ assign_decisions <- function(rule_list, package, db_name = golem::get_golem_opti
       decision <- ""
     }
     
-    if (decision == "") next
+    if (is.na(decision)) next
     dec_rule <- paste("Rule", i)
     
     decision_id <- dbSelect("SELECT id FROM decision_categories WHERE decision = {decision}", db_name)
