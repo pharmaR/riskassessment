@@ -82,6 +82,7 @@ test_that("reweightView works", {
   
   app$click("reweightInfo-update_pkg_risk")
   app$wait_for_idle()
+  app$set_inputs(`reweightInfo-reset_decisions` = TRUE)
   app$click("reweightInfo-confirm_update_risk")
   
   db_backup <- app$get_download("reweightInfo-download_database_btn")
