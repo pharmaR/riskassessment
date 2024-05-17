@@ -108,7 +108,7 @@ make_contrib_cards <- function(df = team_info_df){
       name = name,
       org = org)
   })
-  bslib::layout_column_wrap(fixed_width = TRUE, !!!contrib_group)
+  bslib::layout_column_wrap(fixed_width = TRUE, heights_equal = "row", !!!contrib_group)
 }
 
 
