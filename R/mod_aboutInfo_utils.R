@@ -38,8 +38,8 @@ contrib_card <- function(role, pic, site, name, org){
       fillable = FALSE,
       bslib::card_image(
         border_radius = "top",
-        file = NULL,
-        src = pic,
+        file = pic,
+        # src = pic,
         href = ifelse(is.na(site) | is.null(site), 'https://www.pharmar.org', site)
       ) |>
         tagAppendAttributes(target = "_blank", .cssSelector = "a"),
@@ -48,28 +48,7 @@ contrib_card <- function(role, pic, site, name, org){
     )
   )
 }
-# me <- contrib_card(role = "Workstream Lead",
-#              pic = 'inst/app/www/images/aaron_clark.png',
-#              site = 'https://github.com/aclark02-arcus',
-#              name = "Aaron Clark",
-#              org = "Arcus Biosciences")
-# jeff <- contrib_card(role = "Core Contributor",
-#                    pic = 'inst/app/www/images/jeff_thompson.png',
-#                    site = 'https://github.com/jthompson-arcus',
-#                    name = "Jeff Thompson",
-#                    org = "Arcus Biosciences")
-# robert <- contrib_card(role = "Core Contributor",
-#                        pic = 'inst/app/www/images/robert_krajcik.png',
-#                        site = 'https://github.com/jthompson-arcus',
-#                        name = "Robert Krajcik",
-#                        org = "Cytel")
-# ph <- contrib_card(role = "Core Contributor",
-#                    pic = 'inst/app/www/images/person_placeholder.png',
-#                    site = 'https://github.com/jthompson-arcus',
-#                    name = "Barbara Mikulasova ",
-#                    org = "Katalyze Data")
-# contrib_group <- list(me, jeff, robert, ph)
-# bslib::layout_column_wrap(fixed_width = TRUE, height = 650, !!!contrib_group)
+
 
 
 
@@ -104,7 +83,8 @@ make_contrib_cards <- function(df = team_info_df){
   contrib_group <- purrr::pmap(df, function(role, photo_file, site, name, org, ...){
     contrib_card(
       role = role,
-      pic = file.path('www/images',photo_file),
+      # pic = file.path('www/images',photo_file),
+      pic = app_sys('app','www','images',photo_file),
       site = site,
       name = name,
       org = org)
