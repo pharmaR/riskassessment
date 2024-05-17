@@ -22,7 +22,7 @@
 #'              site = 'https://github.com/aclark02-arcus',
 #'              name = "Aaron Clark",
 #'              org = "Arcus Biosciences")
-#'
+#' @noRd
 #' @keywords internal
 #' @family contrib_cards
 #' 
@@ -96,6 +96,7 @@ contrib_card <- function(role, pic, site, name, org){
 #' make_contrib_cards(team_info_df %>% filter(status %in% "current"))
 #' make_contrib_cards(team_info_df %>% filter(status %in% "past"))
 #'
+#' @noRd
 #' @keywords internal
 #' @family contrib_cards
 #' 
