@@ -38,7 +38,8 @@ contrib_card <- function(role, pic, site, name, org){
       fillable = TRUE,
       bslib::card_image(
         border_radius = "top",
-        file = pic,
+        file = NULL,
+        src = pic,
         href = ifelse(is.na(site) | is.null(site), 'https://www.pharmar.org', site),
         target = "_blank" # doesn't work as hoped
       ),
