@@ -102,7 +102,7 @@ make_contrib_cards <- function(df = team_info_df){
   contrib_group <- purrr::pmap(df, function(role, photo_file, site, name, org, ...){
     contrib_card(
       role = role,
-      pic = file.path('inst/app/www/images',photo_file),
+      pic = file.path('www/images',photo_file),
       # pic = app_sys(file.path('www/images',photo_file)),
       site = site,
       name = name,
