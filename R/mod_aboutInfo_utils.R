@@ -13,7 +13,7 @@
 #' @param org character, a organization that employs this individual, if
 #'   applicable
 #'
-#' @importFrom shiny em
+#' @importFrom shiny em tagAppendAttributes
 #' @importFrom bslib card card_header card_body card_image card_title
 #'
 #' @examples
