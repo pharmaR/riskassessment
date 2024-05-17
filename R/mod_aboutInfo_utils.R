@@ -40,9 +40,9 @@ contrib_card <- function(role, pic, site, name, org){
         border_radius = "top",
         file = NULL,
         src = pic,
-        href = ifelse(is.na(site) | is.null(site), 'https://www.pharmar.org', site),
-        target = "_blank" # doesn't work as hoped
-      ),
+        href = ifelse(is.na(site) | is.null(site), 'https://www.pharmar.org', site)
+      ) |>
+        tagAppendAttributes(target = "_blank", .cssSelector = "a"),
       bslib::card_title(name),
       shiny::em(org)
     )
