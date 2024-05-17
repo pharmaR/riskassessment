@@ -35,7 +35,7 @@ contrib_card <- function(role, pic, site, name, org){
     bslib::card_body(
       class = "align-items-center",
       gap = 0,
-      fillable = TRUE,
+      fillable = FALSE,
       bslib::card_image(
         border_radius = "top",
         file = NULL,
