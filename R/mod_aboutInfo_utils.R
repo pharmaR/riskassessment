@@ -38,8 +38,8 @@ contrib_card <- function(role, pic, site, name, org){
       fillable = FALSE,
       bslib::card_image(
         border_radius = "top",
-        file = pic,
-        # src = pic,
+        file = NULL,
+        src = pic,
         href = ifelse(is.na(site) | is.null(site), 'https://www.pharmar.org', site)
       ) |>
         tagAppendAttributes(target = "_blank", .cssSelector = "a"),
@@ -83,8 +83,8 @@ make_contrib_cards <- function(df = team_info_df){
   contrib_group <- purrr::pmap(df, function(role, photo_file, site, name, org, ...){
     contrib_card(
       role = role,
-      # pic = file.path('www/images',photo_file),
-      pic = app_sys('app','www','images',photo_file),
+      pic = file.path('www/images',photo_file),
+      # pic = app_sys('app','www','images',photo_file),
       site = site,
       name = name,
       org = org)
