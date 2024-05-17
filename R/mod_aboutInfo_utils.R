@@ -13,7 +13,7 @@
 #' @param org character, a organization that employes this individual, if
 #'   applicable
 #'
-#' @import shiny
+#' @importFrom shiny em
 #' @importFrom bslib card card_header card_body card_image card_title
 #'
 #' @examples
@@ -44,7 +44,7 @@ contrib_card <- function(role, pic, site, name, org){
         target = "_blank" # doesn't work as hoped
       ),
       bslib::card_title(name),
-      tags$i(org)
+      shiny::em(org)
     )
   )
 }
@@ -79,12 +79,12 @@ contrib_card <- function(role, pic, site, name, org){
 #' Make contributor cards
 #'
 #' Generate group of several 'contributor cards' from a data frame that contains
-#' the following columns:
+#' the following variables:
 #' - role
 #' - photo_file
 #' - site
 #' - name
-#' -org
+#' - org
 #'
 #' @param df character, role within the project, usually 'Workstream Lead',
 #'   'Core Contributor', or 'Contributor'
@@ -104,7 +104,6 @@ make_contrib_cards <- function(df = team_info_df){
     contrib_card(
       role = role,
       pic = file.path('www/images',photo_file),
-      # pic = app_sys(file.path('www/images',photo_file)),
       site = site,
       name = name,
       org = org)

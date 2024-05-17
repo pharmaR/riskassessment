@@ -132,10 +132,10 @@ team_info_df <- data.frame(
           "Glaxo Smith Kline"
   ),
   photo_file = c(
-    "aaron_clark.png", "person_placeholder.png", "robert_krajcik.png", "barbara_mik.png", "jeff_thompson.png",
-    "eduardo_almeida1.png","lars_anderson1.png","andrew_borgman1.png","maya_gans1.png",
-    "marly_gotti1.png","imran_hossain1.png","person_placeholder.png","scott_schumacker1.png",
-    "gsk_logo1.png"
+    "aaron_clark_sq.png", "person_placeholder_sq.png", "robert_krajcik_sq.png", "barbara_mik_sq.png", "jeff_thompson_sq.png",
+    "eduardo_almeida_sq.png","lars_anderson_sq.png","andrew_borgman_sq.png","maya_gans_sq.png",
+    "marly_gotti_sq.png","imran_hossain_sq.png","person_placeholder_sq.png","scott_schumacker_sq.png",
+    "gsk_logo_sq.png"
   )
 ) %>%
   arrange(priority, name)

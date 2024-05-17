@@ -12,13 +12,13 @@ make_contrib_cards(df = team_info_df)
 }
 \description{
 Generate group of several 'contributor cards' from a data frame that contains
-the following columns:
+the following variables:
 \itemize{
 \item role
 \item photo_file
 \item site
 \item name
--org
+\item org
 }
 }
 \examples{
