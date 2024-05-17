@@ -16,7 +16,7 @@ contrib_card(role, pic, site, name, org)
 
 \item{name}{character, first and last name of the contributor}
 
-\item{org}{character, a organization that employes this individual, if
+\item{org}{character, a organization that employs this individual, if
 applicable}
 }
 \description{

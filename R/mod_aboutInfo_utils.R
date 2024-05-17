@@ -10,7 +10,7 @@
 #' @param pic character, file path to image, 1.3" in width
 #' @param site character, if they have a personal of GitHub site to reference
 #' @param name character, first and last name of the contributor
-#' @param org character, a organization that employes this individual, if
+#' @param org character, a organization that employs this individual, if
 #'   applicable
 #'
 #' @importFrom shiny em
