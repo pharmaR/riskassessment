@@ -23,6 +23,7 @@
 * Added more context to the metric score card visuals by inserting tool tips & creating a legend modal that describes & interprets all possible visuals (#652)
 * Added `{riskmetric}` assessment documentation URLs to About tab, on Risk Assessment Criteria page.
 * Updated the Dependency Cards to be slightly more informative
+* Updated 'About' page to highlight individual contributors on the project, leveraging `bslib` cards.
 
 
 # riskassessment 3.0.0

@@ -29,6 +29,7 @@ ShinyProxy
 Started’
 Sys
 UI
+Workstream
 addComment
 arg
 asis
@@ -41,6 +42,7 @@ chromote
 cmd
 config
 configs
+contrib
 covr
 cran
 databaseView

@@ -3,11 +3,13 @@
 #' @param id a module id name
 #' 
 #' @importFrom DT dataTableOutput
+#' @importFrom bslib page_fluid
 #' 
 #' @keywords internal
 #' 
 aboutInfoUI <- function(id) {
-  fluidPage(
+  # fluidPage(
+  bslib::page_fluid(
     fluidRow(
       column(
         width = 10, offset = 1,
@@ -69,70 +71,59 @@ aboutInfoUI <- function(id) {
             fluidRow(
               column(
                 width = 10, offset = 1,
+                br(),
+                h3("Core Contributors"),
+                br(),
+                div(style = "margin-left:30px;", make_contrib_cards(team_info_df %>% filter(status %in% "current"))),
+                br(),
+                h3("Past Contributors"),
+                br(),
+                div(style = "margin-left:30px;", make_contrib_cards(team_info_df %>% filter(status %in% "past"))),
+                br(),
+                shiny::HTML(
+                  "<h3> Collaborative Deployment hosted by <a target='_blank' href='https://procogia.com/'> ProCogia </a> </h3>
+                    <br>
+                    <img src='www/images/procogia_logo.png' alt = 'ProCogia logo' style='height:100px; margin-left:30px;'> 
+                    <br>
+                    
+                    <br>
+                    <h3> Official Workstream of the <a target='_blank' href='https://www.pharmar.org/'>R Validation Hub</a>.
+                    <br/>Sponsored by the <a target='_blank' href='https://www.r-consortium.org//'>R Consortium</a></h3>
+                    <br>
+                    <img src='www/images/pharmaRlogo_large.png' alt='R Validation Hub Logo' style = 'height:130px;padding-right:50px;padding-top:15px;padding-bottom:15px; margin-left:30px;'>  
+                    <img src='www/images/rc_logo.png' alt = 'ProCogia logo' style='height:130px;padding-top:15px;padding-bottom:15px;'> 
+                    <br>
+                    
+              "),
+                br(),
+              )
+            ),
+            
             br(),
-            shiny::HTML(
-               "<h3> Official Workstream of the <a target='_blank' href='https://www.pharmar.org/'>R Validation Hub</a>.
-                <br/>Sponsored by the <a target='_blank' href='https://www.r-consortium.org//'>R Consortium</a></h3>
-                <br>
-                <img src='www/images/pharmaRlogo_large.png' alt='R Validation Hub Logo' style = 'height:130px;padding-right:50px;padding-top:15px;padding-bottom:15px;'>  
-                <img src='www/images/rc_logo.png' alt = 'ProCogia logo' style='height:130px;padding-top:15px;padding-bottom:15px;'> 
-                <br>
-                
-                <br>
-                <h3> Collaborative Deployment hosted by <a target='_blank' href='https://procogia.com/'> ProCogia </a> </h3>
-                <br>
-                <img src='www/images/procogia_logo.png' alt = 'ProCogia logo' style='height:100px'> 
-                <br>
-                
-                <br>
-                <h3> Current Contributors </h3>
-                <ul>
-                  <li> Aaron Clark, Arcus Biosciences </li>
-                  <li> Narayanan Iyer, Pfizer </li>
-                  <li> Robert Krajcik, Cytel </li>
-                  <li> Barbara Mikulasova, Katalyze Data </li>
-                  <li> Jeff Thompson, Arcus Biosciences </li>
-                </ul>
-                
-                <br>
-                
-                <h3> Past Contributors </h3>
-                
-                <ul>
-                  <li> Eduardo Almeida, Appsilon </li>
-                  <li> Lars Andersen, Boehringer Ingelheim </li>
-                  <li> Andrew Borgman, Biogen </li>
-                  <li> Maya Gans, Cytel </li>
-                  <li> Marly Gotti, Biogen </li>
-                  <li> Munshi Imran Hossain, Cytel </li>
-                  <li> Aravid Reddy Kallem, Fission Labs </li>
-                  <li> Scott Schumacker, Canary Medical </li>
-                </ul>
-                <br>
-                
-                <h3> Contributing Companies </h3>
-                
-                <img src='www/images/appsilon_logo.jpg' alt='Appsilon' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'> 
-                <img src='www/images/arcus_logo.png' alt='Arcus Biosciences' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'> 
-                <img src='www/images/bi_logo.png' alt='Boehringer Ingelheim' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/biogen_logo.jpg' alt='Biogen' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/cytel.png' alt='Cytel' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/fission_logo.png' alt='Fission Labs India Pvt Ltd' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/gcp_logo.png' alt='GCP-Service International' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/GSK_logo.jpg' alt='GSK' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/katalyzedata_logo.jpg' alt='Katalyze Data' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/merck_logo.png' alt='Merck' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/pfizer_logo.png' alt='Pfizer' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
-                <img src='www/images/roche_logo.png' alt='Roche' style = 'height:100px;padding-top:15px;padding-bottom:15px;'>
-                <br>
-                <br>
-                <br>
-                <br>
-               ")
+            br(),
+            br(),
+            br(),
+            
+            # On Hold - if we every get permission to display company logos. See issue #778
+            #   <h3> Contributing Companies </h3>
+            #   
+            #   <img src='www/images/appsilon_logo.jpg' alt='Appsilon' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'> 
+            #   <img src='www/images/arcus_logo.png' alt='Arcus Biosciences' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'> 
+            #   <img src='www/images/bi_logo.png' alt='Boehringer Ingelheim' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/biogen_logo.jpg' alt='Biogen' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/cytel.png' alt='Cytel' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/fission_logo.png' alt='Fission Labs India Pvt Ltd' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/gcp_logo.png' alt='GCP-Service International' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/GSK_logo.jpg' alt='GSK' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/katalyzedata_logo.jpg' alt='Katalyze Data' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/merck_logo.png' alt='Merck' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/pfizer_logo.png' alt='Pfizer' style = 'height:100px;padding-right:40px;padding-top:15px;padding-bottom:15px;'>
+            #   <img src='www/images/roche_logo.png' alt='Roche' style = 'height:100px;padding-top:15px;padding-bottom:15px;'>
+              
           ))
           )
         )
-      )))
+      )
 }
 
 #' Server Logic for 'About' Module

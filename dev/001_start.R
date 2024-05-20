@@ -115,6 +115,7 @@ usethis::use_package("glue")
 usethis::use_dev_package("riskmetric")
 
 usethis::use_package("rstudioapi", type = "Suggests")
+usethis::use_package("png", type = "Suggests")
 usethis::use_package("pkgload", type = "Suggests")
 usethis::use_package("shiny")
 usethis::use_package("shinymanager")
