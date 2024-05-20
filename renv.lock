@@ -3,6 +3,26 @@
     "Version": "4.3.3",
     "Repositories": [
       {
+        "Name": "BioCsoft",
+        "URL": "https://bioconductor.org/packages/3.18/bioc"
+      },
+      {
+        "Name": "BioCann",
+        "URL": "https://bioconductor.org/packages/3.18/data/annotation"
+      },
+      {
+        "Name": "BioCexp",
+        "URL": "https://bioconductor.org/packages/3.18/data/experiment"
+      },
+      {
+        "Name": "BioCworkflows",
+        "URL": "https://bioconductor.org/packages/3.18/workflows"
+      },
+      {
+        "Name": "BioCbooks",
+        "URL": "https://bioconductor.org/packages/3.18/books"
+      },
+      {
         "Name": "CRAN",
         "URL": "https://packagemanager.posit.co/cran/2024-04-08"
       }
@@ -1987,6 +2007,16 @@
         "viridisLite"
       ],
       "Hash": "a1ac5c03ad5ad12b9d1597e00e23c3dd"
+    },
+    "png": {
+      "Package": "png",
+      "Version": "0.1-8",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "bd54ba8a0a5faded999a7aab6e46b374"
     },
     "praise": {
       "Package": "praise",
