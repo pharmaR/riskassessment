@@ -190,6 +190,8 @@ usethis::use_test( "app" )
 usethis::use_test( "auto_font" )
 usethis::use_test( "generate_comm_data" )
 usethis::use_test( "metric_gauge" )
+usethis::use_test( "contrib_card" )
+usethis::use_test( "make_contrib_cards" )
 
 # Documentation
 ## Vignettes 

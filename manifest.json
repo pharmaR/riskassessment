@@ -3877,6 +3877,28 @@
         "Built": "R 4.3.0; ; 2024-01-15 15:45:30 UTC; unix"
       }
     },
+    "png": {
+      "Source": "CRAN",
+      "Repository": "https://packagemanager.posit.co/cran/2024-04-08",
+      "description": {
+        "Package": "png",
+        "Version": "0.1-8",
+        "Title": "Read and write PNG images",
+        "Author": "Simon Urbanek <Simon.Urbanek@r-project.org>",
+        "Maintainer": "Simon Urbanek <Simon.Urbanek@r-project.org>",
+        "Depends": "R (>= 2.9.0)",
+        "Description": "This package provides an easy and simple way to read, write and display bitmap images stored in the PNG format. It can read and write both files and in-memory raw vectors.",
+        "License": "GPL-2 | GPL-3",
+        "SystemRequirements": "libpng",
+        "URL": "http://www.rforge.net/png/",
+        "NeedsCompilation": "yes",
+        "Packaged": "2022-11-29 09:42:31 UTC; rforge",
+        "Repository": "RSPM",
+        "Date/Publication": "2022-11-29 11:12:53 UTC",
+        "Encoding": "UTF-8",
+        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-04-21 23:21:04 UTC; unix"
+      }
+    },
     "praise": {
       "Source": "CRAN",
       "Repository": "https://packagemanager.posit.co/cran/2024-04-08",
@@ -6187,7 +6209,7 @@
       "checksum": "b92bdc0d72dbb64e7cf767514486ec62"
     },
     "data-raw/internal-data.R": {
-      "checksum": "5112716176a4ae6a3688d14e9b2e0fcb"
+      "checksum": "33c0142c3bb1bbba56e83fa0439778e7"
     },
     "data-raw/maintenance.csv": {
       "checksum": "f5bb530b482daa092e9e20f6a069f1aa"
@@ -6205,7 +6227,7 @@
       "checksum": "77a60b438dc99504d00b3f1b8bbc68c8"
     },
     "DESCRIPTION": {
-      "checksum": "ed68114e40c06e742a6cdb0d34f5ddf9"
+      "checksum": "c3b036e6f8401a7c5609cee7a4a42f1c"
     },
     "inst/app/www/css/community_metrics.css": {
       "checksum": "f08eb25c2ee48ac22ed63b0d18994a04"
@@ -6231,11 +6253,20 @@
     "inst/app/www/favicon.ico": {
       "checksum": "cb6c05eadc2b19ec417dae94e3adbcd3"
     },
+    "inst/app/www/images/aaron_clark_sq.png": {
+      "checksum": "abf1ba1d6c798f8f25a3b4f8811946d2"
+    },
+    "inst/app/www/images/andrew_borgman_sq.png": {
+      "checksum": "0a4a2966cafc59b89eeebb566c20ed54"
+    },
     "inst/app/www/images/appsilon_logo.jpg": {
       "checksum": "4eb45e80954ac4d22d3d0ae87c7f05bf"
     },
     "inst/app/www/images/arcus_logo.png": {
       "checksum": "dfa8ba4df14136cd3e7ba836f070afab"
+    },
+    "inst/app/www/images/barbara_mik_sq.png": {
+      "checksum": "4705c7e9fa3084df623f9bd9c74fd962"
     },
     "inst/app/www/images/bi_logo.png": {
       "checksum": "7f2896d6740e052f0c02c8371822a9aa"
@@ -6246,20 +6277,44 @@
     "inst/app/www/images/cytel.png": {
       "checksum": "1efd10241805ad4f72822212fac68968"
     },
+    "inst/app/www/images/eduardo_almeida_sq.png": {
+      "checksum": "41afa0135f421c0d1e309c81113877df"
+    },
     "inst/app/www/images/fission_logo.png": {
       "checksum": "f4bc619a2d201b95fc3af8bce7940db5"
     },
     "inst/app/www/images/gcp_logo.png": {
       "checksum": "c756d1f33afb06ebcc4e8f06da9ef4a7"
     },
+    "inst/app/www/images/gsk_logo_sq.png": {
+      "checksum": "75b507d1df69271ebba7690af8bb42a0"
+    },
     "inst/app/www/images/GSK_logo.jpg": {
       "checksum": "b80ab053fe29a840fe39bb14ccf164d4"
+    },
+    "inst/app/www/images/imran_hossain_sq.png": {
+      "checksum": "f4a9a71cfc1b66700dc023f0dd970af0"
+    },
+    "inst/app/www/images/jeff_thompson_sq.png": {
+      "checksum": "e77b44a50898acd9477e3d239ca31742"
     },
     "inst/app/www/images/katalyzedata_logo.jpg": {
       "checksum": "9cc9ec743a35f63679ec2c77d02c6c08"
     },
+    "inst/app/www/images/lars_anderson_sq.png": {
+      "checksum": "0ef78b679e765d4574aa00bd85699c32"
+    },
+    "inst/app/www/images/marly_gotti_sq.png": {
+      "checksum": "1ec8c5356ff9a5f526241dc4c3b19b68"
+    },
+    "inst/app/www/images/maya_gans_sq.png": {
+      "checksum": "8d4ed8106e40ac7ae4a594961950ce00"
+    },
     "inst/app/www/images/merck_logo.png": {
       "checksum": "cb5ccd1701519d4a4e7326161a31f91f"
+    },
+    "inst/app/www/images/person_placeholder_sq.png": {
+      "checksum": "f4c1924f700c6607bb19f9669b10c41b"
     },
     "inst/app/www/images/pfizer_logo.png": {
       "checksum": "9330169f1ac27f9198cc98382b193dd8"
@@ -6291,8 +6346,14 @@
     "inst/app/www/images/rc_logo.png": {
       "checksum": "de77043fc1dc41c249e74089dcf62dc3"
     },
+    "inst/app/www/images/robert_krajcik_sq.png": {
+      "checksum": "33702df637d3f624ef87a751e4c5f253"
+    },
     "inst/app/www/images/roche_logo.png": {
       "checksum": "4405843c3e4ca95db8766166a5138360"
+    },
+    "inst/app/www/images/scott_schumacker_sq.png": {
+      "checksum": "f187e7f289a83b5974c7317e81907069"
     },
     "inst/app/www/js/highlight.min.js": {
       "checksum": "d51bfc932a1bd10f2868d76a768bce6d"
@@ -6397,7 +6458,7 @@
       "checksum": "5fc0bfdb844b4ce7df8a183e2a4a2f96"
     },
     "inst/WORDLIST": {
-      "checksum": "52903eb411c9301dc68168bbca5bc4c1"
+      "checksum": "ad214434052cd9e20e2542994162b5f7"
     },
     "LICENSE": {
       "checksum": "ab496eda3728cf54db7cbf3e6f752572"
@@ -6406,10 +6467,10 @@
       "checksum": "4dc36d59abf62731a297c44ac0434200"
     },
     "NAMESPACE": {
-      "checksum": "60c2908e00b99b39cc28bdab6d6a5f3c"
+      "checksum": "97d1232340e04c53088bc8f814133dcd"
     },
     "NEWS.md": {
-      "checksum": "3a683ee2adb456bdc7a58ab604c4c241"
+      "checksum": "f518495963c1cf72c8121cce535c1088"
     },
     "R/app_config.R": {
       "checksum": "c2b61f270b86b6833f0ee39c44a1a440"
@@ -6423,8 +6484,11 @@
     "R/global.R": {
       "checksum": "3b969b3b79cfdf02d2a66fe78b3106c5"
     },
+    "R/mod_aboutInfo_utils.R": {
+      "checksum": "23ff3c99869bd59ed973d031ee2962fd"
+    },
     "R/mod_aboutInfo.R": {
-      "checksum": "bcfea5566d43ac2b9ad5c6f8d7840c1a"
+      "checksum": "5240534ac7d4291a0514c01106442e6f"
     },
     "R/mod_addComment.R": {
       "checksum": "9a4f5a5b10f127040705dbdaa312b693"
@@ -6505,7 +6569,7 @@
       "checksum": "6c4740fd1aea22825c231eec5d8d9578"
     },
     "R/sysdata.rda": {
-      "checksum": "3e2f6a3f810c776276e6c16ea61b5aa5"
+      "checksum": "de827805f58551c6b97b1bf043b69435"
     },
     "R/utils_build_cards.R": {
       "checksum": "d18d58e66e64b22eb2fcf5a3a0f59694"
@@ -6532,7 +6596,7 @@
       "checksum": "633aa5476aee5b230f43f1b935be34d7"
     },
     "renv.lock": {
-      "checksum": "2ac1ec22b13ea3adc616371ea1070e42"
+      "checksum": "d7b9816932ef58733e25081235f6fc78"
     }
   },
   "users": null
