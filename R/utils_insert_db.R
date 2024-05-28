@@ -346,6 +346,16 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, updateProgress 
   if (is.data.frame(pkg_lst)) {
     np <- nrow(pkg_lst)
     uploaded_packages <- pkg_lst
+    if ('decision' %in% names(pkg_lst)) {
+      decisions <- 
+        pkg_lst$decision |>
+        unique() |>
+        {\(x) x[!is.na(x) & x != ""]}()
+      decision_lst <-
+        dbSelect("SELECT decision FROM decision_categories", assess_db)[[1]]
+      if (length(decisions) > 0 && !all(decisions %in% decision_lst))
+        stop("Provided decisions do not match allowable list from assessment database.")
+    }
   } else {
     np <- length(pkg_lst)
     uploaded_packages <-
