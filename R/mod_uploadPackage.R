@@ -390,13 +390,23 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       }
       
       uploaded_packages <-
-        upload_pkg_lst(uploaded_packages, 
-                       golem::get_golem_options("assessment_db_name"), 
-                       getOption("repos"),
-                       reactiveValuesToList(user),
-                       session$userData$repo_pkgs(),
-                       updateProgress)
-
+        tryCatch(
+          upload_pkg_lst(uploaded_packages, 
+                         golem::get_golem_options("assessment_db_name"), 
+                         getOption("repos"),
+                         reactiveValuesToList(user),
+                         session$userData$repo_pkgs(),
+                         updateProgress),
+          error = function(e) {
+            if (e$message == "Provided decisions do not match allowable list from assessment database.") {
+              error_txt(e$message)
+              validate(e$message)
+            } else {
+              stop(e$message)
+            }
+          }
+        )
+      
       uploaded_pkgs(uploaded_packages)
       
     })
