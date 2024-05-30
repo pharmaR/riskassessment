@@ -309,13 +309,14 @@ insert_community_metrics_to_db <- function(pkg_name,
 #' @param pkg_lst character vector of packages to upload
 #' @param assess_db character name (and file path) of the database
 #' @param repos character vector, the base URL(s) of the repositories to use
+#' @param user list containing user name and role
 #' @param repo_pkgs for internal use only, allows the function
 #'   `available.packages()` to be run only once
 #' @param updateProgress for internal use only, provides a function to update
 #'   progress meter in the application
 #' 
 #' @return A data frame object containing a summary of the upload process
-upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, updateProgress = NULL) {
+upload_pkg_lst <- function(pkg_lst, assess_db, repos, user, repo_pkgs, updateProgress = NULL) {
   
   if (missing(assess_db)) {
     warning("No value supplied for `assess_db`. Will try to use configuration file.")
@@ -329,6 +330,10 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, updateProgress 
     repos <- get_db_config("package_repo")
   }
   check_repos(repos)
+  
+  if (missing(user)) {
+    user <- list(name = "system_bot", role = "admin")
+  }
   
   if (!isTRUE(all.equal(getOption("repos"), repos))) {
     old_options <- options()
@@ -460,13 +465,13 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, updateProgress 
         log_message <- glue::glue("Decision for the package {uploaded_packages$package[i]} was assigned {uploaded_packages$decision[i]} by upload designation.")
         db_message <- glue::glue("Decision was assigned '{uploaded_packages$decision[i]}' by upload designation.")
         dbUpdate("UPDATE package SET decision_id = {decision_id},
-                        decision_by = 'Auto Assigned', decision_date = {get_Date()}
+                        decision_by = {user$name}, decision_date = {get_Date()}
                          WHERE name = {uploaded_packages$package[i]}",
                  assess_db)
         loggit::loggit("INFO", log_message)
         dbUpdate(
           "INSERT INTO comments
-          VALUES ({uploaded_packages$package[i]}, 'Auto Assigned', 'admin',
+          VALUES ({uploaded_packages$package[i]}, {user$name}, {paste(user$role, collapse = ', ')},
           {db_message}, 'o', {getTimeStamp()})",
           assess_db)
       } else if (!rlang::is_empty(rule_lst)) {

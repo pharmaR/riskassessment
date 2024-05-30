@@ -393,6 +393,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
         upload_pkg_lst(uploaded_packages, 
                        golem::get_golem_options("assessment_db_name"), 
                        getOption("repos"),
+                       reactiveValuesToList(user),
                        session$userData$repo_pkgs(),
                        updateProgress)
 
