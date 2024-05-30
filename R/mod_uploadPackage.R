@@ -201,6 +201,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
         uploaded_pkgs00(validate('Please upload a nonempty CSV file.'))
       
       uploaded_packages <- utils::read.csv(input$uploaded_file$datapath, stringsAsFactors = FALSE)
+      names(uploaded_packages) <- tolower(names(uploaded_packages))
       np <- nrow(uploaded_packages)
       if (np == 0) {
         msg <- 'Please upload a nonempty CSV file.'
