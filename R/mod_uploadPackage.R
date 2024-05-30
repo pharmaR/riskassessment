@@ -215,7 +215,8 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
       }
       
       if (!"final_decision" %in% unlist(credentials$privileges[user$role], use.names = FALSE) && 
-          "decision" %in% colnames(uploaded_packages)) {
+          "decision" %in% colnames(uploaded_packages) && 
+          !all(is.na(uploaded_packages$decision) | uploaded_packages$decision == "")) {
         msg <- "Your role does not allow assigning decisions."
         error_txt(msg)
         uploaded_pkgs00(validate(msg))
@@ -228,7 +229,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
           status = rep('', np),
           dplyr::across(
             dplyr::matches("package|version|decision"),
-            trimws
+            \(x) dplyr::if_else(is.na(x), "", trimws(x))
           )
         )
       
