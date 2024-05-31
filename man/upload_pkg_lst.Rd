@@ -4,14 +4,7 @@
 \alias{upload_pkg_lst}
 \title{Upload a Package List}
 \usage{
-upload_pkg_lst(
-  pkg_lst,
-  assess_db,
-  repos,
-  user,
-  repo_pkgs,
-  updateProgress = NULL
-)
+upload_pkg_lst(pkg_lst, assess_db, repos, repo_pkgs, updateProgress = NULL)
 }
 \arguments{
 \item{pkg_lst}{character vector of packages to upload}
@@ -19,8 +12,6 @@ upload_pkg_lst(
 \item{assess_db}{character name (and file path) of the database}
 
 \item{repos}{character vector, the base URL(s) of the repositories to use}
-
-\item{user}{list containing user name and role}
 
 \item{repo_pkgs}{for internal use only, allows the function
 \code{available.packages()} to be run only once}
