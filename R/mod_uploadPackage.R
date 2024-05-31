@@ -418,7 +418,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
         paste("template", ".csv", sep = "")
       },
       content = function(file) {
-        file.copy(app_sys("data-raw", "upload_format.csv"), file)
+        write.csv(template, file, na = "", row.names = FALSE)
       }
     )
     
