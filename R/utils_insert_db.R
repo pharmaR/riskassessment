@@ -237,7 +237,7 @@ insert_riskmetric_to_db <- function(pkg_name, pkg_version = "",
       sug_vctr <- character(0)
     }
   } else {
-    sug_vctr <- unlist(tools::package_dependencies(pkg_name, available.packages(contrib.url(repos = "http://cran.us.r-project.org")),
+    sug_vctr <- unlist(tools::package_dependencies(pkg_name, available.packages(contrib.url(repos = "http://cran.r-project.org")),
                                                    which=c("Suggests"), recursive=FALSE)) %>% unname() %>% sort()
   }
 
