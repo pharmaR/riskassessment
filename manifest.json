@@ -54,7 +54,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2024-01-10 11:53:35 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2024-01-11 12:55:08 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-05-30 01:39:27 UTC; unix"
       }
     },
     "BiocManager": {
@@ -304,7 +304,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2021-08-19 14:00:05 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2023-04-21 21:51:10 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-05-30 00:32:53 UTC; unix"
       }
     },
     "RColorBrewer": {
@@ -386,7 +386,7 @@
         "Packaged": "2024-01-08 12:50:16 UTC; edd",
         "Repository": "RSPM",
         "Date/Publication": "2024-01-09 08:20:35 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-01-11 12:55:37 UTC; unix"
+        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-05-30 01:39:06 UTC; unix"
       }
     },
     "anytime": {
@@ -940,7 +940,7 @@
         "RoxygenNote": "7.3.0",
         "Author": "Sebastien Rochette [aut, cre] (<https://orcid.org/0000-0002-1565-9313>),\n  Vincent Guyader [aut] (<https://orcid.org/0000-0003-0671-9270>),\n  Arthur Bréant [aut] (<https://orcid.org/0000-0003-1668-0963>),\n  Murielle Delmotte [aut] (<https://orcid.org/0000-0002-1339-2424>),\n  ThinkR [cph]",
         "Maintainer": "Sebastien Rochette <sebastien@thinkr.fr>",
-        "Built": "R 4.3.3; ; 2024-05-28 12:56:41 UTC; unix",
+        "Built": "R 4.3.3; ; 2024-05-31 13:28:09 UTC; unix",
         "RemoteType": "github",
         "RemoteUsername": "thinkr-open",
         "RemoteRepo": "checkhelper",
@@ -1303,7 +1303,7 @@
         "Imports": "callr,\ncranlike (>= 1.0.2),\ncurl,\ndesc (>= 1.1.0),\ndigest,\nparsedate,\nrappdirs,\nrematch2,\ntools,\nutils,\nwithr",
         "Suggests": "covr,\npingr,\ntestthat,\nzip",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.3; ; 2024-05-28 12:56:49 UTC; unix",
+        "Built": "R 4.3.3; ; 2024-05-31 13:28:18 UTC; unix",
         "RemoteType": "github",
         "RemoteHost": "api.github.com",
         "RemoteUsername": "r-lib",
@@ -1531,7 +1531,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2024-03-30 23:50:02 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-03-31 04:04:02 UTC; unix"
+        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-05-30 00:32:55 UTC; unix"
       }
     },
     "dbplyr": {
@@ -4425,7 +4425,7 @@
         "RoxygenNote": "7.2.3",
         "Author": "Gábor Csárdi [cre, aut, cph],\n  Hadley Wickham [aut],\n  RConsortium [cph],\n  RStudio [cph, fnd]",
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
-        "Built": "R 4.3.3; ; 2024-05-28 12:57:21 UTC; unix",
+        "Built": "R 4.3.3; ; 2024-05-31 13:28:51 UTC; unix",
         "RemoteType": "github",
         "RemoteUsername": "r-lib",
         "RemoteRepo": "revdepcheck",
@@ -4543,7 +4543,7 @@
         "Config/testthat/edition": "3",
         "Author": "R Validation Hub [aut],\n  Doug Kelkhoff [aut],\n  Marly Gotti [aut],\n  Eli Miller [cre, aut],\n  Kevin K [aut],\n  Yilong Zhang [aut],\n  Eric Milliman [aut],\n  Juliane Manitz [aut],\n  Mark Padgham [ctb],\n  PSI special interest group Application and Implementation of\n    Methodologies in Statistics [cph]",
         "Maintainer": "Eli Miller <eli.miller@atorusresearch.com>",
-        "Built": "R 4.3.3; ; 2024-05-28 12:57:27 UTC; unix",
+        "Built": "R 4.3.3; ; 2024-05-31 13:28:56 UTC; unix",
         "RemoteType": "github",
         "RemoteUsername": "pharmaR",
         "RemoteRepo": "riskmetric",
@@ -6220,7 +6220,7 @@
       "checksum": "99c5575cb81828e20a7fe1d205551316"
     },
     "DESCRIPTION": {
-      "checksum": "c3b036e6f8401a7c5609cee7a4a42f1c"
+      "checksum": "980fd095da6772e5345174c2270abc95"
     },
     "inst/app/www/css/community_metrics.css": {
       "checksum": "f08eb25c2ee48ac22ed63b0d18994a04"
@@ -6463,7 +6463,7 @@
       "checksum": "97d1232340e04c53088bc8f814133dcd"
     },
     "NEWS.md": {
-      "checksum": "f518495963c1cf72c8121cce535c1088"
+      "checksum": "620d2738d3b34a24f584dd342c32d25e"
     },
     "R/app_config.R": {
       "checksum": "c2b61f270b86b6833f0ee39c44a1a440"
@@ -6550,7 +6550,7 @@
       "checksum": "23b9449e99966583e564db213543ff97"
     },
     "R/mod_uploadPackage.R": {
-      "checksum": "65cccd6f069e11339abe440d340baf4b"
+      "checksum": "2c71c26d2377612815435bf641100d29"
     },
     "R/mod_user_roles.R": {
       "checksum": "269c932105ac12a53c92759e5d2c8a84"
