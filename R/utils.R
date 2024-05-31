@@ -565,10 +565,10 @@ datatable_custom <- function(
     colnames = c("Package", "Type", "Name", "Version", "Score", "Decision", "Review Package"), 
     hide_names = "name",
     pLength = list(c(15, -1), c("15", "All")), plChange = TRUE,
+    decision_lst = if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk"),
+    color_lst = get_colors(golem::get_golem_options("assessment_db_name")),
     ...
 ){
-  decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
-  color_lst <- get_colors(golem::get_golem_options("assessment_db_name"))
   
   colnames <- colnames %||% character(0)
   hide_names <- hide_names %||% character(0)
@@ -604,7 +604,9 @@ datatable_custom <- function(
           style = x ~ formattable::style(display = "block",
                                          "border-radius" = "4px",
                                          "padding-right" = "4px",
-                                         "color" = ifelse(x %in% decision_lst, get_text_color(get_colors(golem::get_golem_options("assessment_db_name"))[x]), "inherit"),
+                                         "color" = ifelse(x %in% decision_lst, #'black', 
+                                                          get_text_color(color_lst[x]),
+                                                          "inherit"),
                                          "background-color" = 
                                            ifelse(x %in% decision_lst,
                                                   glue::glue("var(--{risk_lbl(x, type = 'attribute')}-color)"),
