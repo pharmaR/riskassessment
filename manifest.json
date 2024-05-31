@@ -6217,7 +6217,7 @@
       "checksum": "0a25d9a22e5ba1aa35d46f30b215fe4d"
     },
     "data-raw/upload_format.csv": {
-      "checksum": "77a60b438dc99504d00b3f1b8bbc68c8"
+      "checksum": "99c5575cb81828e20a7fe1d205551316"
     },
     "DESCRIPTION": {
       "checksum": "c3b036e6f8401a7c5609cee7a4a42f1c"
@@ -6511,7 +6511,7 @@
       "checksum": "2e3e958ef24dbb49984d83daa998544d"
     },
     "R/mod_introJS_utils_text.R": {
-      "checksum": "5bc49ddf95ed6f6996ee6bcb345ca654"
+      "checksum": "d98620a891752cf54b0d0282ddaa4af6"
     },
     "R/mod_introJS.R": {
       "checksum": "ffa17207fe4a91d3ad61c4377d88ea3b"
@@ -6550,7 +6550,7 @@
       "checksum": "23b9449e99966583e564db213543ff97"
     },
     "R/mod_uploadPackage.R": {
-      "checksum": "16e6a635b6c067473f9a3b47da8fc25d"
+      "checksum": "65cccd6f069e11339abe440d340baf4b"
     },
     "R/mod_user_roles.R": {
       "checksum": "269c932105ac12a53c92759e5d2c8a84"
@@ -6562,7 +6562,7 @@
       "checksum": "6c4740fd1aea22825c231eec5d8d9578"
     },
     "R/sysdata.rda": {
-      "checksum": "de827805f58551c6b97b1bf043b69435"
+      "checksum": "b610fc73187b7cd23521deb9339d54cf"
     },
     "R/utils_build_cards.R": {
       "checksum": "d18d58e66e64b22eb2fcf5a3a0f59694"
@@ -6574,7 +6574,7 @@
       "checksum": "680af236ded2012453e02affafa4c9d4"
     },
     "R/utils_insert_db.R": {
-      "checksum": "525c7c688a84c367cc968202af64a346"
+      "checksum": "ee28bd9e4f053e7ee936d7d8ef5fe887"
     },
     "R/utils_startup.R": {
       "checksum": "b689ee96f0761480ac65ca22cbbb4980"
