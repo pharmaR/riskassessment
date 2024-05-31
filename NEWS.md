@@ -24,6 +24,7 @@
 * Added `{riskmetric}` assessment documentation URLs to About tab, on Risk Assessment Criteria page.
 * Updated the Dependency Cards to be slightly more informative
 * Updated 'About' page to highlight individual contributors on the project, leveraging `bslib` cards.
+* Allow users to specify decisions in the CSV upload file (#663)
 * Fix bug causing application to crash when trying to delete zero packages (#781)
 
 
