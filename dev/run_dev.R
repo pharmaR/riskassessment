@@ -12,6 +12,9 @@ golem::document_and_reload()
 
 # Run the application  
 run_app(pre_auth_user = 'admin')
+# run_app(pre_auth_user = 'lead')
+# run_app(pre_auth_user = 'reviewer')
+# run_app(pre_auth_user = 'viewer')
 
 # # turn off any options
 # options(shiny.autoload.r=NULL)
