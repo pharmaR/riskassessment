@@ -342,9 +342,12 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, user, repo_pkgs, updatePro
   }
   
   if (missing(repo_pkgs))
-    repo_pkgs <- as.data.frame(utils::available.packages()[,1:2])
-  
-  if (missing(assess_db)) assess_db <- get_db_config("assessment_db")
+    repo_pkgs <- 
+    if (isTRUE(getOption("shiny.testmode"))) {
+      purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x, col.names = c("Package", "Version", "Source")))
+    } else {
+      as.data.frame(utils::available.packages()[,1:2])
+    }
   
   rule_lst <- process_rule_tbl(assess_db)
   
