@@ -48,7 +48,7 @@ upload_pkg <- data.frame(
 )
 upload_pkg_add <- data.frame(
   element = "#upload_package-upload_format",
-  intro = "Follow format of this sample data when creating your csv. Or you can even download it to use as a template.",
+  intro = "Follow format of this sample data when creating your csv. Or you can even download it to use as a template. Note: the `decision` column is optional and will only work for users with the correct privileges.",
   position = "top"
 )
 

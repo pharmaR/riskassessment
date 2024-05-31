@@ -237,7 +237,7 @@ insert_riskmetric_to_db <- function(pkg_name, pkg_version = "",
       sug_vctr <- character(0)
     }
   } else {
-    sug_vctr <- unlist(tools::package_dependencies(pkg_name, available.packages(contrib.url(repos = "http://cran.us.r-project.org")),
+    sug_vctr <- unlist(tools::package_dependencies(pkg_name, available.packages(contrib.url(repos = "http://cran.r-project.org")),
                                                    which=c("Suggests"), recursive=FALSE)) %>% unname() %>% sort()
   }
 
@@ -337,15 +337,28 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, updateProgress 
   }
   
   if (missing(repo_pkgs))
-    repo_pkgs <- as.data.frame(utils::available.packages()[,1:2])
-  
-  if (missing(assess_db)) assess_db <- get_db_config("assessment_db")
+    repo_pkgs <- 
+    if (isTRUE(getOption("shiny.testmode"))) {
+      purrr::map_dfr(test_pkg_refs, ~ as.data.frame(.x, col.names = c("Package", "Version", "Source")))
+    } else {
+      as.data.frame(utils::available.packages()[,1:2])
+    }
   
   rule_lst <- process_rule_tbl(assess_db)
   
   if (is.data.frame(pkg_lst)) {
     np <- nrow(pkg_lst)
     uploaded_packages <- pkg_lst
+    if ('decision' %in% names(pkg_lst)) {
+      decisions <- 
+        pkg_lst$decision |>
+        unique() |>
+        {\(x) x[!is.na(x) & x != ""]}()
+      decision_lst <-
+        dbSelect("SELECT decision FROM decision_categories", assess_db)[[1]]
+      if (length(decisions) > 0 && !all(decisions %in% decision_lst))
+        stop("Provided decisions do not match allowable list from assessment database.")
+    }
   } else {
     np <- length(pkg_lst)
     uploaded_packages <-
@@ -445,11 +458,27 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, updateProgress 
       insert_community_metrics_to_db(uploaded_packages$package[i], assess_db)
       
       uploaded_packages$score[i] <- get_pkg_info(uploaded_packages$package[i], assess_db)$score
-      if (!rlang::is_empty(rule_lst)) {
+      if ("decision" %in% names(uploaded_packages) && uploaded_packages$decision[i] != "") {
+        decision_id <- dbSelect("SELECT id FROM decision_categories WHERE decision = {uploaded_packages$decision[i]}", assess_db)
+        log_message <- glue::glue("Decision for the package {uploaded_packages$package[i]} was assigned {uploaded_packages$decision[i]} by upload designation.")
+        db_message <- glue::glue("Decision was assigned '{uploaded_packages$decision[i]}' by upload designation.")
+        dbUpdate("UPDATE package SET decision_id = {decision_id},
+                        decision_by = 'Batch Upload', decision_date = {get_Date()}
+                         WHERE name = {uploaded_packages$package[i]}",
+                 assess_db)
+        loggit::loggit("INFO", log_message)
+        dbUpdate(
+          "INSERT INTO comments
+          VALUES ({uploaded_packages$package[i]}, 'Batch Upload', 'admin',
+          {db_message}, 'o', {getTimeStamp()})",
+          assess_db)
+      } else if (!rlang::is_empty(rule_lst)) {
         assigned_decision <- assign_decisions(rule_lst, uploaded_packages$package[i], assess_db)
         uploaded_packages$decision[i] <- assigned_decision$decision
         uploaded_packages$decision_rule[i] <- assigned_decision$decision_rule
       }
+    } else if ("decision" %in% names(uploaded_packages) && uploaded_packages$decision[i] != "") {
+      uploaded_packages$decision[i] <- ""
     }
     if (is.function(updateProgress))
       updateProgress(3)
