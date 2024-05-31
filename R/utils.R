@@ -562,10 +562,14 @@ shinyInput <- function(FUN, len, id, ...) {
 #' 
 datatable_custom <- function(
     data, 
-    colnames = c("Package", "Type", "Name", "Version", "Score", "Review Package"), 
+    colnames = c("Package", "Type", "Name", "Version", "Score", "Decision", "Review Package"), 
     hide_names = "name",
+    pLength = list(c(15, -1), c("15", "All")), plChange = TRUE,
     ...
 ){
+  decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
+  color_lst <- get_colors(golem::get_golem_options("assessment_db_name"))
+  
   colnames <- colnames %||% character(0)
   hide_names <- hide_names %||% character(0)
   data <- data %||% as.data.frame(matrix(nrow = 0, ncol = pmax(length(colnames), 1) )) 
@@ -588,39 +592,32 @@ datatable_custom <- function(
       list(
         score = formattable::formatter(
           "span",
-          style = x ~ formattable::style(
-            display = "block",
-            "border-radius" = "4px",
-            "padding-right" = "4px",
-            "color" = "#000000",
-            "order" = x,
-            "background-color" = formattable::csscolor(
-              setColorPalette(100)[round(as.numeric(x)*100)]
-            )
-          )
-        ),
+          style = x ~ formattable::style(display = "block",
+                                         "border-radius" = "4px",
+                                         "padding-right" = "4px",
+                                         "color" = "black",
+                                         "order" = x,
+                                         "background-color" = formattable::csscolor(
+                                           setColorPalette(100)[round(as.numeric(x)*100)]))),
         decision = formattable::formatter(
           "span",
-          style = x ~ formattable::style(
-            display = "block",
-            "border-radius" = "4px",
-            "padding-right" = "4px",
-            "font-weight" = "bold",
-            "color" = ifelse(x %in% decision_lst, "white", "inherit"),
-            "background-color" =
-              ifelse(x %in% decision_lst,
-                     color_lst[x],
-                     "transparent"
-              )
-          )
-        )
+          style = x ~ formattable::style(display = "block",
+                                         "border-radius" = "4px",
+                                         "padding-right" = "4px",
+                                         "color" = ifelse(x %in% decision_lst, get_text_color(get_colors(golem::get_golem_options("assessment_db_name"))[x]), "inherit"),
+                                         "background-color" = 
+                                           ifelse(x %in% decision_lst,
+                                                  glue::glue("var(--{risk_lbl(x, type = 'attribute')}-color)"),
+                                                  "transparent")))
       )
     ),
     selection = "none",
     colnames = colnames,
     rownames = FALSE,
     options = list(
-      lengthMenu = list(c(15, -1), c("15", "All")),
+      # pageLength = pLength[1],
+      lengthMenu = pLength,
+      lengthChange = plChange,
       columnDefs = list(list(visible = FALSE, targets = target)),
       searchable = FALSE
     ),

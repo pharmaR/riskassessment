@@ -372,10 +372,13 @@ tagList(
         tagList(
           createGrid(metrics = params$dep_cards),
           br(), 
-          DT::datatable(params$dep_table,
-                        options = list(dom = "t", searching = FALSE, pageLength = -1,
-                                       lengthChange = FALSE, info = FALSE, 
-                                       columnDefs = list(list(className = 'dt-center', targets = 2))))
+          # datatable_custom(
+            DT::datatable(
+              params$dep_table #, pLength = list(-1), plChange = FALSE
+                        ,options = list(dom = "t", searching = FALSE, pageLength = -1,
+                                       lengthChange = FALSE, info = FALSE,
+                                       columnDefs = list(list(className = 'dt-center', targets = 2)))
+              )#)
         ),
       if('Dependency Comments' %in% params$report_includes)
         tagList(

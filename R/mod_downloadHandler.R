@@ -287,7 +287,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                 } else {
                 purrr::map_df(dep_metrics$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>%
                   right_join(dep_metrics, by = "name") %>%
-                  select(package, type, version, score) %>%
+                  select(package, type, version, score, decision) %>%
                   arrange(package, type) %>%
                   distinct()
                 }

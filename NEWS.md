@@ -24,6 +24,7 @@
 * Added `{riskmetric}` assessment documentation URLs to About tab, on Risk Assessment Criteria page.
 * Updated the Dependency Cards to be slightly more informative
 * Updated 'About' page to highlight individual contributors on the project, leveraging `bslib` cards.
+* Add `Decision` column to Package Dependencies tab so that users (#774)
 
 
 # riskassessment 3.0.0

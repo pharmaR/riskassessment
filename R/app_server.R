@@ -248,7 +248,10 @@ app_server <- function(input, output, session) {
   })
   
   session$userData$loaded2_db <- eventReactive({uploaded_pkgs(); changes()}, {
-    dbSelect("SELECT name, version, score FROM package")
+    dbSelect("SELECT name, version, score, decision_id, decision
+             FROM package as pi
+             LEFT JOIN decision_categories as dc
+              ON pi.decision_id = dc.id")
   })
   
   create_src_dir <- eventReactive(input$tabs, input$tabs == "Source Explorer")

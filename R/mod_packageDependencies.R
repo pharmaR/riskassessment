@@ -141,7 +141,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
       
       purrr::map_df(pkginfo$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>% 
         right_join(pkginfo, by = "name") %>% 
-        select(package, type, name, version, score) %>%
+        select(package, type, name, version, score, decision) %>% # need id?
         arrange(name, type) %>% 
         distinct()
       
@@ -248,8 +248,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
               br(), 
               DT::renderDataTable({
                 datatable_custom(
-                  table_revdeps_local(), 
-                  colnames = c("Package", "Version", "Score", "Review Package"),
+                  table_revdeps_local() |> select(-decision_id), 
+                  colnames = c("Package", "Version", "Score", "Decision", "Review Package"),
                   hide_names = NULL
                 )
               }),

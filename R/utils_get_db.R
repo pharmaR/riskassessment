@@ -382,16 +382,22 @@ get_versnScore <- function(pkg_name, verify_data, cran_pkgs) {
     return(list(name = character(), version = character(), score = character()))
   
   if (pkg_name %in% verify_data$name) { #loaded2_db()$name
-    tmp_df <- verify_data %>% filter(name == pkg_name) %>% select(score, version)
+    tmp_df <- verify_data %>% filter(name == pkg_name) %>% select(score, version, decision_id, decision)
     pkg_score <- tmp_df %>% pull(score) %>% as.character
     pkg_versn <- tmp_df %>% pull(version) %>% as.character
+    pkg_decision_id <- tmp_df %>% pull(decision_id) %>% as.character
+    pkg_decision <- tmp_df %>% pull(decision) %>% as.character
   } else {
     pkg_score <- ""
     pkg_versn <- if_else(pkg_name %in% c(rownames(installed.packages(priority="base"))), "",
                  subset(cran_pkgs, Package == pkg_name, c("Version")) %>% as.character())
+    pkg_decision_id <- ""
+    pkg_decision <- ""
   } 
   
-  return(list(name = pkg_name, version = pkg_versn, score = pkg_score))   
+  return(list(name = pkg_name, version = pkg_versn, score = pkg_score,
+              decision_id = pkg_decision_id, decision = pkg_decision
+              ))   
 }
 
 
