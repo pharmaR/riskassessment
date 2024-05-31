@@ -246,6 +246,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
     })
     
     observeEvent(input$rem_pkg_btn, {
+      req(input$rem_pkg_lst)
       req("delete_package" %in% unlist(credentials$privileges[user$role], use.names = FALSE)) 
       
       np <- length(input$rem_pkg_lst)
