@@ -141,7 +141,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
       
       purrr::map_df(pkginfo$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>% 
         right_join(pkginfo, by = "name") %>% 
-        select(package, type, name, version, score, decision) %>% # need id?
+        select(package, type, name, version, score, decision) %>%
         arrange(name, type) %>% 
         distinct()
       

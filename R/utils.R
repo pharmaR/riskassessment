@@ -588,7 +588,8 @@ datatable_custom <- function(
   
   formattable::as.datatable(
     formattable::formattable(
-      data,
+      data %>%
+        mutate(decision = if_else(is.na(decision) | toupper(decision) == "NA", "", decision)),
       list(
         score = formattable::formatter(
           "span",
@@ -599,9 +600,10 @@ datatable_custom <- function(
                                          "order" = x,
                                          "background-color" = formattable::csscolor(
                                            setColorPalette(100)[round(as.numeric(x)*100)]))),
-        decision = formattable::formatter(
-          "span",
-          style = x ~ formattable::style(display = "block",
+        decision = 
+              formattable::formatter(
+              "span",
+              style = x ~ formattable::style(display = "block",
                                          "border-radius" = "4px",
                                          "padding-right" = "4px",
                                          "color" = ifelse(x %in% decision_lst, #'black', 
@@ -611,6 +613,7 @@ datatable_custom <- function(
                                            ifelse(x %in% decision_lst,
                                                   glue::glue("var(--{risk_lbl(x, type = 'attribute')}-color)"),
                                                   "transparent")))
+        
       )
     ),
     selection = "none",
