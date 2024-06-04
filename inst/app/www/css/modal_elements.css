@@ -7,7 +7,7 @@ div[data-rank-id] {
   display: flex;
   border: 1px solid black;
   margin-bottom: 5px;
-  padding-top: 5px;
+  padding: 5px 0;
   border-radius: 10px;
 }
 
@@ -29,6 +29,18 @@ div[data-rank-id] > div:not(.icon) {
 
 div[data-rank-id] div.shiny-input-container {
   width: 33.33%;
+}
+
+div[data-rank-id] div.shiny-input-container > div {
+  height: 100%;
+}
+
+div[data-rank-id] div.shiny-input-select.selectize-control {
+  height: inherit;
+}
+
+div[data-rank-id] div.selectize-input {
+  height: inherit;
 }
 
 div[data-rank-id] div.shiny-bound-output {
