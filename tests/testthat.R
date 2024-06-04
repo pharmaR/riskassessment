@@ -19,3 +19,4 @@ while (!chromote::has_default_chromote_object() && Sys.time() - tmpt < 1) {
 }
 
 test_check("riskassessment")
+# test_file("tests/testthat/test-downloadHandler.R")

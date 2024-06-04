@@ -192,12 +192,10 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                                DT::renderDataTable({
                                  req(selected_pkg$name())
                                  
-                                 dep_table()
+                                 datatable_custom(dep_table(), pLength = list(-1), PlChange = FALSE,
+                                                  colnames = c("Package", "Type", "Version", "Score", "Decision"))
                                  
-                               }, options = list(dom = "t", searching = FALSE, pageLength = -1, lengthChange = FALSE,
-                                                 info = FALSE,
-                                                 columnDefs = list(list(className = 'dt-center', targets = 2))
-                               )
+                               }
                                )
                         ))
                     ),
@@ -471,7 +469,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
       
       purrr::map_df(dep_metrics()$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>%
       right_join(dep_metrics(), by = "name") %>%
-      select(package, type, version, score) %>%
+      select(package, type, version, score, decision) %>%
       arrange(package, type) %>%
       distinct()
     })

@@ -191,22 +191,32 @@ test_that(
 ) 
 
 test_that("datatable_custom works", {
-  output <- datatable_custom(mtcars, colnames = paste0("custom_", names(mtcars)))
+  output <- datatable_custom(mtcars, colnames = paste0("custom_", names(mtcars)),
+                             decision_lst = c("Low Risk", "Medium Risk", "High Risk"),
+                             color_lst = get_colors(app_sys("testdata", "skeleton.sqlite"))) #c("#9CFF94FF", "#FFD070FF", "#FF765BFF")
   expect_true(inherits(output, "datatables"))
   # it errors if not a data frame is provided:
-  expect_error(datatable_custom(matrix()))
+  expect_error(datatable_custom(matrix(),
+                                decision_lst = c("Low Risk", "Medium Risk", "High Risk"),
+                                color_lst = get_colors(app_sys("testdata", "skeleton.sqlite"))))
   # it defaults to data frame names with a warning if colnames is not of equal 
   # length as names(data)
   expect_warning(
-    datatable_custom(mtcars[, 1:2], colnames = c("a", "b", "c")),
+    datatable_custom(mtcars[, 1:2], colnames = c("a", "b", "c"),
+                     decision_lst = c("Low Risk", "Medium Risk", "High Risk"),
+                     color_lst = get_colors(app_sys("testdata", "skeleton.sqlite"))),
     "Defaulting to original data frame names"
   )
   #it returns an empty datatable if the data frame provided is NULL
-  output_no_df <- datatable_custom(NULL, colnames = paste0("custom_", names(mtcars)))
+  output_no_df <- datatable_custom(NULL, colnames = paste0("custom_", names(mtcars)),
+                                   decision_lst = c("Low Risk", "Medium Risk", "High Risk"),
+                                   color_lst = get_colors(app_sys("testdata", "skeleton.sqlite")))
   expect_true(inherits(output_no_df, "datatables"))
   expect_equal(nrow(output_no_df$x$data), 0)
   # and if the colnames parameter is also NULL:
-  output_no_df_no_colnames <- datatable_custom(NULL, colnames = NULL)
+  output_no_df_no_colnames <- datatable_custom(NULL, colnames = NULL,
+                                               decision_lst = c("Low Risk", "Medium Risk", "High Risk"),
+                                               color_lst = get_colors(app_sys("testdata", "skeleton.sqlite")))
   expect_true(inherits(output_no_df_no_colnames, "datatables"))
   expect_equal(nrow(output_no_df_no_colnames$x$data), 0)
   

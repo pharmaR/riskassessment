@@ -40,7 +40,13 @@ server <- function(input, output, session) {
   session$userData$suggests <- reactiveVal(FALSE)
   
   session$userData$loaded2_db <- reactive({
-    riskassessment:::dbSelect("select name, version, score from package")
+    riskassessment:::dbSelect("
+            SELECT name, version, score, decision_id, decision
+             FROM package as pi
+             LEFT JOIN decision_categories as dc
+              ON pi.decision_id = dc.id
+                              ") # "select name, version, score from package"
+    
   })
   
   riskassessment:::mod_downloadHandler_server("downloadHandler_1", pkg, user, metric_weights)
