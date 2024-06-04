@@ -234,7 +234,7 @@ build_comm_cards <- function(data, db_name = golem::get_golem_options('assessmen
 #' The 'Build Dependency Cards' function
 #' 
 #' @param data a data.frame
-#' @param loaded a vector of package names loaded to db 
+#' @param loaded a vector of package names and other info
 #' 
 #' @import dplyr
 #' @importFrom glue glue
@@ -256,14 +256,15 @@ build_dep_cards <- function(data, loaded, toggled){
     is_url = numeric(),
     type = character()
   )
+  # req(data)
   
+  # print(data)
   deps <- data %>% 
     mutate(base = if_else(name %in% c(rownames(installed.packages(priority = "base"))), "Base", "Non-Base")) %>% 
     mutate(non_base = ifelse(base != "Base", 1, 0)) %>%
     mutate(base = factor(base, levels = c("Base", "Tidyverse"), labels = c("Base", "Non-Base"))) %>% 
     mutate(upld = if_else(name %in% loaded, 1, 0)) %>%
     mutate(upld_non_base = if_else((name %in% loaded) & non_base == 1, 1, 0))
-  
   
   if (toggled == 0L) {
     deps <- deps %>% 
@@ -272,6 +273,7 @@ build_dep_cards <- function(data, loaded, toggled){
     deps <- deps %>% 
       mutate(type = factor(type, levels = c("Imports", "Depends", "LinkingTo", "Suggests"), ordered = TRUE)) 
   }
+  print(deps)
   
   # Card 1: Dependencies Uploaded
   upld_dat <-
@@ -343,21 +345,21 @@ build_dep_cards <- function(data, loaded, toggled){
   # Card 3: Base-R Packages
   x3 <- tibble("base" = levels(deps$base))
   y3 <- full_join(x3, deps, by = "base")
-  
+
   base_cat_rows <-
     y3 %>%
     mutate(cnt = ifelse(is.na(name), 0, 1)) %>%
     group_by(base) %>%
     summarize(base_cat_sum = sum(cnt)) %>%
     ungroup() %>%
-    mutate(base_cat_pct = 100 * (base_cat_sum / nrow(deps))) %>% 
+    mutate(base_cat_pct = 100 * (base_cat_sum / nrow(deps))) %>%
     mutate(base_cat_disp = if_else(is.nan(base_cat_pct),
                                    glue::glue('{base_cat_sum} ( 0%)       '),
-                                   glue::glue('{base_cat_sum} ({format(base_cat_pct, digits = 1)}%)'))) %>% 
-    filter(base == "Base") %>% 
+                                   glue::glue('{base_cat_sum} ({format(base_cat_pct, digits = 1)}%)'))) %>%
+    filter(base == "Base") %>%
     pull(base_cat_disp) %>%
     paste(., collapse = "\n")
-  
+
   cards <- cards %>%
     dplyr::add_row(
       name = 'base_cat_count',
@@ -371,7 +373,58 @@ build_dep_cards <- function(data, loaded, toggled){
       is_url = 0
     )
   
+  
+  # Card 4: Base-R Packages
+  
+  decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
+  decision_key <- tibble::tibble(decision = decision_lst) |>
+    dplyr::mutate(decision_id = dplyr::row_number()) # I don't think I need this
+  high_decision <- decision_key |>
+    dplyr::filter(decision_id == max(decision_key$decision_id)) |>
+    dplyr::pull(decision)
+
+  
+  dec_cat_rows0 <-
+    deps %>%
+    mutate(cnt = ifelse(is.na(name), 0, 1)) %>%
+    mutate(dec_cat = factor(if_else(decision == "" | is.na(decision), "No Decision", decision),
+                            levels = c("No Decision", decision_key$decision))) %>%
+    # mutate(dec_id = if_else(decision == "" | is.na(decision), "0", decision_id)) %>%
+    group_by(dec_cat) %>%
+    summarize(dec_cat_sum = sum(cnt)) %>%
+    ungroup() %>%
+    mutate(dec_cat_pct  = 100 * (dec_cat_sum / nrow(deps))) %>%
+    mutate(dec_cat_disp = if_else(is.nan(dec_cat_pct),
+                                   glue::glue('{dec_cat}: {dec_cat_sum} ( 0%)'),
+                                   glue::glue('{dec_cat}: {dec_cat_sum} ({format(dec_cat_pct, digits = 1)}%)'))) %>%
+    arrange(dec_cat) 
+  print(dec_cat_rows0)
+  if(nrow(dec_cat_rows0) == 0) {
+    dec_cat_rows <- "No Decisions"
+  } else {
+    dec_cat_rows <- dec_cat_rows0 %>%
+      pull(dec_cat_disp) %>%
+      paste(., collapse = " \n")
+  }
+
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'dec_cat_count',
+      title = 'Decision Summary',
+      desc = 'Package Dependencies by Decision',
+      value = dec_cat_rows,
+      score = "NULL",
+      succ_icon = 'boxes-stacked',
+      icon_class = "text-info", # this gets overwritten by `type` arg below
+      is_perc = 0,
+      is_url = 0,
+      type = if_else(pull(upld_dat, upld_non_base_pct) < 100, "danger", "information")
+    )
+  
+  
+  # return cards object
   cards
+  
 }
 
 

@@ -64,28 +64,62 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
       req(pkgref())
       tryCatch(
         expr = {
-          depends(pkgref()$dependencies[[1]] %>% dplyr::as_tibble() %>% 
-                    mutate(package = stringr::str_replace(package, "\n", " ")) %>%
-                    mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")))
+          deep_ends <- pkgref()$dependencies[[1]] %>% dplyr::as_tibble() %>% 
+            mutate(package = stringr::str_replace(package, "\n", " ")) %>%
+            mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
+          
+          deps_decision_data <- purrr::map_df(deep_ends$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs()))
+          if(nrow(deps_decision_data) == 0) {
+            deps_w_decision <- dplyr::tibble(name = character(0), version = character(0),
+                score = character(0), decision = character(0), decision_id = character(0))
+          } else {
+            deps_w_decision <- deps_decision_data
+          }
+          depends(
+            deps_w_decision %>% 
+              right_join(deep_ends, by = "name") %>% 
+              select(package, type, name, version, score, decision, decision_id) %>%
+              arrange(name, type) %>% 
+              distinct()
+            )
         },
         error = function(e) {
           msg <- paste("Detailed dependency information is not available for package", selected_pkg$name())
           rlang::warn(msg)
           rlang::warn(paste("info:", e))
-          depends(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
+          depends(dplyr::tibble(package = character(0), type = character(0), name = character(0),
+                                version = character(0), score = character(0), decision = character(0),
+                                decision_id = character(0)))
         }
       )
       tryCatch(
         expr = {
-          suggests(pkgref()$suggests[[1]] %>% dplyr::as_tibble()%>% 
-                     mutate(package = stringr::str_replace(package, "\n", " ")) %>%
-                     mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")))
+          shrug_jests <- pkgref()$suggests[[1]] %>% dplyr::as_tibble()%>% 
+            mutate(package = stringr::str_replace(package, "\n", " ")) %>%
+            mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
+          
+          sugg_decision_data <- purrr::map_df(shrug_jests$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs()))
+          if(nrow(sugg_decision_data) == 0) {
+            suggs_w_decision <- dplyr::tibble(name = character(0), version = character(0),
+                score = character(0), decision = character(0), decision_id = character(0))
+          } else {
+            suggs_w_decision <- sugg_decision_data
+          }
+          suggests(
+            suggs_w_decision %>%
+              right_join(shrug_jests, by = "name") %>% 
+              select(package, type, name, version, score, decision, decision_id) %>%
+              arrange(name, type) %>% 
+              distinct()
+          )
         },
         error = function(e) {
           msg <- paste("Detailed suggests information is not available for package", selected_pkg$name())
           rlang::warn(msg)
           rlang::warn(paste("info:", e))
-          suggests(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
+          suggests(dplyr::tibble(package = character(0), type = character(0), name = character(0),
+                                 version = character(0), score = character(0), decision = character(0),
+                                 decision_id = character(0)))
         }
       )
       # this is so the dependencies is also a 0x2 tibble like suggests
@@ -96,8 +130,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
       # send either depends() or both to build_dep_cards(), depending on toggled()
       if (toggled() == 0L) {
         cards(build_dep_cards(data = depends(), loaded = session$userData$loaded2_db()$name, toggled = 0L))
+        # print(depends())
       } else {
         cards(build_dep_cards(data = dplyr::bind_rows(depends(), suggests()), loaded = session$userData$loaded2_db()$name, toggled = 1L))
+        # print(suggests())
       }
     })
     
@@ -139,10 +175,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
         }
       }
       
-      purrr::map_df(pkginfo$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>% 
-        right_join(pkginfo, by = "name") %>% 
+      pkginfo %>%
         select(package, type, name, version, score, decision) %>%
-        arrange(name, type) %>% 
+        arrange(name, type) %>%
         distinct()
       
     }, ignoreInit = TRUE)

@@ -585,11 +585,11 @@ datatable_custom <- function(
   # Hiding name from DT table. 
   # The - 1 is because js uses 0 index instead of 1 like R
   target <- which(names(data) %in% hide_names) - 1
+  if("decision" %in% colnames(data)) data <- data %>% mutate(decision = dplyr::if_else(is.na(decision) | toupper(decision) == "NA", "", decision))
   
   formattable::as.datatable(
     formattable::formattable(
-      data %>%
-        mutate(decision = if_else(is.na(decision) | toupper(decision) == "NA", "", decision)),
+      data,
       list(
         score = formattable::formatter(
           "span",

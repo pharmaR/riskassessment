@@ -277,7 +277,10 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               downloads_plot <- build_comm_plotly(comm_data)
               metric_tbl <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
               
-              dep_metrics <- get_depends_data(this_pkg, session$userData$suggests(), db_name = golem::get_golem_options("assessment_db_name"))
+              dep_metrics <- get_depends_data(this_pkg,
+                                              session$userData$suggests(),
+                                              db_name = golem::get_golem_options("assessment_db_name"),
+                                              fun_session = session)
 
               dep_cards <- build_dep_cards(data = dep_metrics, loaded = session$userData$loaded2_db()$name, toggled = session$userData$suggests())
 

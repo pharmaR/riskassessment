@@ -450,7 +450,10 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     })
 
      dep_metrics <- eventReactive(list(selected_pkg$name(), session$userData$suggests()), {
-       get_depends_data(selected_pkg$name(), session$userData$suggests(), db_name = golem::get_golem_options("assessment_db_name"))
+       get_depends_data(selected_pkg$name(),
+                        session$userData$suggests(),
+                        db_name = golem::get_golem_options("assessment_db_name"),
+                        fun_session = session)
     })
 
     dep_cards <- eventReactive(dep_metrics(), {

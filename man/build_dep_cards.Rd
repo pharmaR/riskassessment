@@ -9,7 +9,7 @@ build_dep_cards(data, loaded, toggled)
 \arguments{
 \item{data}{a data.frame}
 
-\item{loaded}{a vector of package names loaded to db}
+\item{loaded}{a vector of package names and other info}
 }
 \description{
 The 'Build Dependency Cards' function
