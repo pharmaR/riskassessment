@@ -6220,7 +6220,7 @@
       "checksum": "99c5575cb81828e20a7fe1d205551316"
     },
     "DESCRIPTION": {
-      "checksum": "980fd095da6772e5345174c2270abc95"
+      "checksum": "c4ce70d1592eea23d969d53b917c4a5b"
     },
     "inst/app/www/css/community_metrics.css": {
       "checksum": "f08eb25c2ee48ac22ed63b0d18994a04"
@@ -6508,7 +6508,7 @@
       "checksum": "e22e1f4c044bc9f11c46a5fcdba33063"
     },
     "R/mod_downloadHandler.R": {
-      "checksum": "430a55358e979be5a4137660e3c8af32"
+      "checksum": "923e810fb1c8c7afe2d111cd42703579"
     },
     "R/mod_introJS_utils_text.R": {
       "checksum": "d98620a891752cf54b0d0282ddaa4af6"
@@ -6532,7 +6532,7 @@
       "checksum": "a894eb9114e258feb99b76cdca557cd2"
     },
     "R/mod_packageDependencies.R": {
-      "checksum": "7f2be1861ff5a38054aa7f9e091e7beb"
+      "checksum": "05b1fbde1ace35aa787552552744b057"
     },
     "R/mod_pkg_explorer_utils.R": {
       "checksum": "b7792e08cc4a67296c9df0f452c0a72a"
@@ -6580,7 +6580,7 @@
       "checksum": "b689ee96f0761480ac65ca22cbbb4980"
     },
     "R/utils.R": {
-      "checksum": "f82f71505446fa2494502ce38b690bb9"
+      "checksum": "dd8cda3fb9deb392b6f82798f26bd668"
     },
     "README.md": {
       "checksum": "d7e84fce2c891619912b6cc552eecc94"
