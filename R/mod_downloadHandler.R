@@ -286,11 +286,12 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
 
               dep_table <- 
                 if (nrow(dep_metrics) == 0) {
-                  dplyr::tibble(package = character(), type = character(), version = character(), score = character())
+                  dplyr::tibble(package = character(), type = character(), version = character(), score = character(), decision = character())
                 } else {
                 purrr::map_df(dep_metrics$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>%
                   right_join(dep_metrics, by = "name") %>%
                   select(package, type, version, score, decision) %>%
+                  mutate(decision = if_else(is.na(decision) | toupper(decision) == "NA", "", decision)) %>%
                   arrange(package, type) %>%
                   distinct()
                 }

@@ -269,7 +269,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
             column(
               width = 8,
               DT::renderDataTable(server = FALSE, {
-                datatable_custom(data_table())                      
+                datatable_custom(data_table(), custom_dom = "lftpi")                      
               })
             )
           ), 

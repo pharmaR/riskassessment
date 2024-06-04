@@ -565,6 +565,7 @@ datatable_custom <- function(
     colnames = c("Package", "Type", "Name", "Version", "Score", "Decision", "Review Package"), 
     hide_names = "name",
     pLength = list(c(15, -1), c("15", "All")), plChange = TRUE,
+    custom_dom = "t",
     decision_lst = if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk"),
     color_lst = get_colors(golem::get_golem_options("assessment_db_name")),
     ...
@@ -582,6 +583,8 @@ datatable_custom <- function(
             Defaulting to original data frame names.")
     colnames <- names(data)
   } 
+  if("decision" %in% colnames(data)) data <- data %>% mutate(decision = if_else(is.na(decision) | toupper(decision) == "NA", "", decision))
+  
   # Hiding name from DT table. 
   # The - 1 is because js uses 0 index instead of 1 like R
   target <- which(names(data) %in% hide_names) - 1
@@ -620,7 +623,7 @@ datatable_custom <- function(
     colnames = colnames,
     rownames = FALSE,
     options = list(
-      # pageLength = pLength[1],
+      dom = custom_dom,
       lengthMenu = pLength,
       lengthChange = plChange,
       columnDefs = list(list(visible = FALSE, targets = target)),
@@ -628,7 +631,7 @@ datatable_custom <- function(
     ),
     style = "default"
   ) %>%
-    DT::formatStyle(names(data), textAlign = "center")
+    DT::formatStyle(names(data), textAlign = "center") 
 }
 
 #' Add buttons to data frame
