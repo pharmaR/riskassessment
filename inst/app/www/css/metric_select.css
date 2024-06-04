@@ -24,6 +24,14 @@
   width: 90%;
 }
 
+.selectize-input {
+  padding: .75rem 1.5rem;
+}
+
+.shiny-input-select.selectize-control.multi .selectize-input.has-items {
+  padding: .75rem 1.5rem calc(.75rem - 5px);
+}
+
 .file_browser h1,
 .file_browser .h1,
 .file_browser h2,
