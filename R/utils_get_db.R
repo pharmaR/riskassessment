@@ -268,7 +268,7 @@ get_depends_data <- function(pkg_name,
       mutate(package = stringr::str_replace(package, "\n", " ")) %>%
       mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")) 
     
-    deps_decision_data <- purrr::map_df(deep_ends$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs()))
+    deps_decision_data <- purrr::map_df(deep_ends$name, ~get_versnScore(.x, fun_session$userData$loaded2_db(), fun_session$userData$repo_pkgs()))
     if(nrow(deps_decision_data) == 0) {
       deps_w_decision <- dplyr::tibble(name = character(0), version = character(0),
                                        score = character(0), decision = character(0), decision_id = character(0))
@@ -292,7 +292,7 @@ get_depends_data <- function(pkg_name,
         mutate(package = stringr::str_replace(package, "\n", " ")) %>%
         mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")) 
       
-      sugg_decision_data <- purrr::map_df(shrug_jests$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs()))
+      sugg_decision_data <- purrr::map_df(shrug_jests$name, ~get_versnScore(.x, fun_session$userData$loaded2_db(), fun_session$userData$repo_pkgs()))
       if(nrow(sugg_decision_data) == 0) {
         suggs_w_decision <- dplyr::tibble(name = character(0), version = character(0),
                                           score = character(0), decision = character(0), decision_id = character(0))

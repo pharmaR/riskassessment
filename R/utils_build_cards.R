@@ -234,7 +234,7 @@ build_comm_cards <- function(data, db_name = golem::get_golem_options('assessmen
 #' The 'Build Dependency Cards' function
 #' 
 #' @param data a data.frame
-#' @param loaded a vector of package names and other info
+#' @param loaded a vector of package names loaded to db
 #' 
 #' @import dplyr
 #' @importFrom glue glue
@@ -256,9 +256,8 @@ build_dep_cards <- function(data, loaded, toggled){
     is_url = numeric(),
     type = character()
   )
-  # req(data)
+
   
-  # print(data)
   deps <- data %>% 
     mutate(base = if_else(name %in% c(rownames(installed.packages(priority = "base"))), "Base", "Non-Base")) %>% 
     mutate(non_base = ifelse(base != "Base", 1, 0)) %>%
@@ -273,7 +272,6 @@ build_dep_cards <- function(data, loaded, toggled){
     deps <- deps %>% 
       mutate(type = factor(type, levels = c("Imports", "Depends", "LinkingTo", "Suggests"), ordered = TRUE)) 
   }
-  print(deps)
   
   # Card 1: Dependencies Uploaded
   upld_dat <-
@@ -352,14 +350,14 @@ build_dep_cards <- function(data, loaded, toggled){
     group_by(base) %>%
     summarize(base_cat_sum = sum(cnt)) %>%
     ungroup() %>%
-    mutate(base_cat_pct = 100 * (base_cat_sum / nrow(deps))) %>%
+    mutate(base_cat_pct = 100 * (base_cat_sum / nrow(deps))) %>% 
     mutate(base_cat_disp = if_else(is.nan(base_cat_pct),
                                    glue::glue('{base_cat_sum} ( 0%)       '),
-                                   glue::glue('{base_cat_sum} ({format(base_cat_pct, digits = 1)}%)'))) %>%
-    filter(base == "Base") %>%
+                                   glue::glue('{base_cat_sum} ({format(base_cat_pct, digits = 1)}%)'))) %>% 
+    filter(base == "Base") %>% 
     pull(base_cat_disp) %>%
     paste(., collapse = "\n")
-
+  
   cards <- cards %>%
     dplyr::add_row(
       name = 'base_cat_count',
@@ -384,13 +382,13 @@ build_dep_cards <- function(data, loaded, toggled){
     dplyr::pull(decision)
 
   
-  dec_cat_rows0 <-
+  dec_cat_dat <-
     deps %>%
     mutate(cnt = ifelse(is.na(name), 0, 1)) %>%
     mutate(dec_cat = factor(if_else(decision == "" | is.na(decision), "No Decision", decision),
                             levels = c("No Decision", decision_key$decision))) %>%
-    # mutate(dec_id = if_else(decision == "" | is.na(decision), "0", decision_id)) %>%
-    group_by(dec_cat) %>%
+    mutate(dec_id = if_else(decision == "" | is.na(decision), "0", decision_id)) %>%
+    group_by(dec_cat, dec_id) %>%
     summarize(dec_cat_sum = sum(cnt)) %>%
     ungroup() %>%
     mutate(dec_cat_pct  = 100 * (dec_cat_sum / nrow(deps))) %>%
@@ -398,11 +396,11 @@ build_dep_cards <- function(data, loaded, toggled){
                                    glue::glue('{dec_cat}: {dec_cat_sum} ( 0%)'),
                                    glue::glue('{dec_cat}: {dec_cat_sum} ({format(dec_cat_pct, digits = 1)}%)'))) %>%
     arrange(dec_cat) 
-  print(dec_cat_rows0)
-  if(nrow(dec_cat_rows0) == 0) {
+  
+  if(nrow(dec_cat_dat) == 0) {
     dec_cat_rows <- "No Decisions"
   } else {
-    dec_cat_rows <- dec_cat_rows0 %>%
+    dec_cat_rows <- dec_cat_dat %>%
       pull(dec_cat_disp) %>%
       paste(., collapse = " \n")
   }
@@ -414,11 +412,11 @@ build_dep_cards <- function(data, loaded, toggled){
       desc = 'Package Dependencies by Decision',
       value = dec_cat_rows,
       score = "NULL",
-      succ_icon = 'boxes-stacked',
+      succ_icon = 'rocket',
       icon_class = "text-info", # this gets overwritten by `type` arg below
       is_perc = 0,
       is_url = 0,
-      type = if_else(pull(upld_dat, upld_non_base_pct) < 100, "danger", "information")
+      type = if_else(any(pull(dec_cat_dat, dec_id) == max(decision_key$decision_id)), "danger", "information")
     )
   
   
