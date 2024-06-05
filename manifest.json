@@ -6400,13 +6400,13 @@
       "checksum": "d3436d70ab382e65f2979ca0c4c20041"
     },
     "inst/report_downloads/reportDocx.Rmd": {
-      "checksum": "788fc881cc4446504a88888fa55e2cfa"
+      "checksum": "449e8dcb07732ecd9a0963bada90e53e"
     },
     "inst/report_downloads/reportHtml.Rmd": {
-      "checksum": "dc9c51d3badaf67a4f13fe5a5bbb57f4"
+      "checksum": "65972e4c1beeea7e91fcfc668503196b"
     },
     "inst/report_downloads/reportPdf.Rmd": {
-      "checksum": "86b922fc17ccc912a82a6cb881281b0a"
+      "checksum": "ecb9a19c6264832e7c8a9d39143335f5"
     },
     "inst/sql_queries/create_comments_table.sql": {
       "checksum": "514c169e358f7613d8026e6a9fd211ce"
@@ -6451,7 +6451,7 @@
       "checksum": "5fc0bfdb844b4ce7df8a183e2a4a2f96"
     },
     "inst/WORDLIST": {
-      "checksum": "ad214434052cd9e20e2542994162b5f7"
+      "checksum": "52903eb411c9301dc68168bbca5bc4c1"
     },
     "LICENSE": {
       "checksum": "ab496eda3728cf54db7cbf3e6f752572"
@@ -6475,7 +6475,7 @@
       "checksum": "50d68f46171151cd36457a7154e5a7a3"
     },
     "R/global.R": {
-      "checksum": "3b969b3b79cfdf02d2a66fe78b3106c5"
+      "checksum": "87f66254b0afb272fd6321659259cdc4"
     },
     "R/mod_aboutInfo_utils.R": {
       "checksum": "23ff3c99869bd59ed973d031ee2962fd"
@@ -6508,7 +6508,7 @@
       "checksum": "e22e1f4c044bc9f11c46a5fcdba33063"
     },
     "R/mod_downloadHandler.R": {
-      "checksum": "923e810fb1c8c7afe2d111cd42703579"
+      "checksum": "c568d64e82a40cb5b84bd185f93e97a1"
     },
     "R/mod_introJS_utils_text.R": {
       "checksum": "d98620a891752cf54b0d0282ddaa4af6"
@@ -6532,7 +6532,7 @@
       "checksum": "a894eb9114e258feb99b76cdca557cd2"
     },
     "R/mod_packageDependencies.R": {
-      "checksum": "05b1fbde1ace35aa787552552744b057"
+      "checksum": "6fffb51829775826e242824f268062b6"
     },
     "R/mod_pkg_explorer_utils.R": {
       "checksum": "b7792e08cc4a67296c9df0f452c0a72a"
@@ -6541,7 +6541,7 @@
       "checksum": "dbbfdfde47d106e0deaf20822c69bf94"
     },
     "R/mod_reportPreview.R": {
-      "checksum": "56d62f285d64f5846cf266c79bac5b6a"
+      "checksum": "d6067e801094b87feebddfa0b05b45d4"
     },
     "R/mod_reweightView.R": {
       "checksum": "d3988b7b6168f0560dc9525f1c6138ed"
@@ -6565,22 +6565,22 @@
       "checksum": "b610fc73187b7cd23521deb9339d54cf"
     },
     "R/utils_build_cards.R": {
-      "checksum": "d18d58e66e64b22eb2fcf5a3a0f59694"
+      "checksum": "f79316fe637bb1f4038f085621d298f5"
     },
     "R/utils_config_db.R": {
       "checksum": "74cf2ee5e7283483a88f08d60e3728b0"
     },
     "R/utils_get_db.R": {
-      "checksum": "270a240f5882ec130989f252fe18011f"
+      "checksum": "6483b7bae8a58e0bea456acb68f16bc3"
     },
     "R/utils_insert_db.R": {
-      "checksum": "ee28bd9e4f053e7ee936d7d8ef5fe887"
+      "checksum": "d890c439c8ece5dd9236681efee4ab9c"
     },
     "R/utils_startup.R": {
       "checksum": "b689ee96f0761480ac65ca22cbbb4980"
     },
     "R/utils.R": {
-      "checksum": "dd8cda3fb9deb392b6f82798f26bd668"
+      "checksum": "995d947896038bdcec381ff4b4e94fd0"
     },
     "README.md": {
       "checksum": "d7e84fce2c891619912b6cc552eecc94"
