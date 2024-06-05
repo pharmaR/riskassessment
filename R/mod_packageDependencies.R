@@ -231,74 +231,78 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
           br(), br(),
           div(id = "dep_infoboxes", metricGridUI(NS(id, 'metricGrid'))),
           br(),
-          fluidRow(
-            column(4, 
-                   tags$strong(
-                     glue::glue("First-order dependencies for package: ", {selected_pkg$name()})
-                   )
-            ),
-            column(2,
-                   shinyWidgets::materialSwitch(
-                     inputId =  ns("incl_suggests"),
-                     label = "Include Suggests",
-                     value = toggled(),
-                     inline = TRUE,
-                     status = "success"
-                   )
-            ),
-            column(2,
-                   if (pkg_updates$render_upload) {
-                     actionButton(
-                       inputId =  ns("update_all_packages"),
-                       label = "Upload all",
-                       icon = icon("fas fa-upload", class = "fa-regular", lib = "font-awesome"),
-                       size = "xs",
-                       style = "height:30px; padding-top:1px;"
+          div(style = "padding-left: 40px;",
+            HTML(glue::glue("<span class='h3 center txtasis'>FIRST-ORDER DEPENDENDENCIES OF {selected_pkg$name()}</span><br>")),
+            br(),
+            fluidRow(
+              column(4, ""),
+              column(3,
+                     shinyWidgets::materialSwitch(
+                       inputId =  ns("incl_suggests"),
+                       label = "Include Suggests",
+                       value = toggled(),
+                       inline = TRUE,
+                       status = "success"
                      )
-                   } 
-            )
-          ),
-          br(),
-          # remove DT "search:" rectangle
-          tags$head(
-            tags$style(type = "text/css", ".dataTables_filter {display: none;    }")
-          ),
-          fluidRow(
-            column(
-              width = 8,
-              DT::renderDataTable(server = FALSE, {
-                datatable_custom(data_table(), custom_dom = "lftpi")                      
-              })
-            )
-          ), 
-          br(), br(),
-          h3(glue::glue("All reverse Dependencies: {length(revdeps())}"), style = "text-align: left;"),
-          br(),
-          fluidRow(
-            column(
-              width = 8,
-              h4(glue::glue("Reverse Dependencies available in database: {nrow(table_revdeps_local()) %||% 0}"), style = "text-align: left;"),
-              br(), 
-              DT::renderDataTable({
-                datatable_custom(
-                  table_revdeps_local() |> select(-decision_id), 
-                  colnames = c("Package", "Version", "Score", "Decision", "Review Package"),
-                  hide_names = NULL
-                )
-              }),
-              br(), br(),
-              wellPanel(
-                renderText(revdeps() %>% sort()),
-                style = "max-height: 500px; overflow: auto"
+              ),
+              column(2,
+                     if (pkg_updates$render_upload) {
+                       actionButton(
+                         inputId =  ns("update_all_packages"),
+                         label = "Upload all",
+                         icon = icon("fas fa-upload", class = "fa-regular", lib = "font-awesome"),
+                         size = "xs",
+                         style = "height:30px; padding-top:1px;"
+                       )
+                     } 
               )
+            ),
+            br(),
+            # remove DT "search:" rectangle
+            tags$head(
+              tags$style(type = "text/css", ".dataTables_filter {display: none;    }")
+            ),
+            fluidRow(
+              column(
+                width = 9,
+                DT::renderDataTable(server = FALSE, {
+                  datatable_custom(data_table(), custom_dom = "lftpi")                      
+                })
+              )
+            ), 
+            br(), br(),
+            
+            HTML(glue::glue("<span class='h3 center txtasis'>REVERSE DEPENDENDENCIES OF {selected_pkg$name()}</span><br>")),
+            # h3("Reverse Dependencies", style = "text-align: left;"),
+            br(),
+            fluidRow(
+              column(
+                width = 9,
+                h4(glue::glue("Available in database: {nrow(table_revdeps_local()) %||% 0}"), style = "text-align: left;"),
+                br(), 
+                DT::renderDataTable({
+                  datatable_custom(
+                    table_revdeps_local() |> select(-decision_id), 
+                    colnames = c("Package", "Version", "Score", "Decision", "Review Package"),
+                    hide_names = NULL
+                  )
+                }),
+                br(), br(),
+                h4(glue::glue("All reverse Dependencies: {length(revdeps())}"), style = "text-align: left;"),
+                br(),
+                wellPanel(
+                  renderText(revdeps() %>% sort()),
+                  style = "max-height: 500px; overflow: auto"
+                )
+              )
+            ),
+            br(), br(),
+            fluidRow(div(id = "comments_for_dep",
+                         if ("general_comment" %in% unlist(credentials$privileges[user$role], use.names = FALSE)) addCommentUI(NS(id, 'add_comment')),
+                         viewCommentsUI(NS(id, 'view_comments')))
             )
-          ),
-          br(), br(),
-          fluidRow(div(id = "comments_for_dep",
-                       if ("general_comment" %in% unlist(credentials$privileges[user$role], use.names = FALSE)) addCommentUI(NS(id, 'add_comment')),
-                       viewCommentsUI(NS(id, 'view_comments')))
-          )
-        ) # taglist
+          ) # taglist
+        ) #div
       }
     }) # renderUI
     
