@@ -192,7 +192,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                                DT::renderDataTable({
                                  req(selected_pkg$name())
                                  
-                                 datatable_custom(dep_table(), pLength = list(-1), PlChange = FALSE,
+                                 datatable_custom(dep_metrics() |> select(-decision_id), custom_dom = "t", pLength = list(-1), PlChange = FALSE,
                                                   colnames = c("Package", "Type", "Version", "Score", "Decision"))
                                  
                                }
@@ -464,18 +464,32 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     # Package Dependencies metrics cards.
     metricGridServer("dep_metricGrid", metrics = dep_cards)
 
-    dep_table <- eventReactive(dep_metrics(), {
-      req(dep_metrics())
-
-      if (nrow(dep_metrics()) == 0)
-        return(dplyr::tibble(package = character(), type = character(), version = character(), score = character()))
-      
-      purrr::map_df(dep_metrics()$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>%
-      right_join(dep_metrics(), by = "name") %>%
-      select(package, type, version, score, decision) %>%
-      arrange(package, type) %>%
-      distinct()
-    })
+    # dep_table <- eventReactive(dep_metrics(), {
+    #   req(dep_metrics())
+    # 
+    #   if (nrow(dep_metrics()) == 0)
+    #     return(dplyr::tibble(package = character(), type = character(), version = character(), score = character(), decision = character()))
+    #   
+    #   
+    #   # deps_decision_data <- purrr::map_df(dep_metrics()$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs()))
+    #   # if(nrow(deps_decision_data) == 0) {
+    #   #   deps_w_decision <- dplyr::tibble(name = character(0), version = character(0),
+    #   #                                    score = character(0), decision = character(0), decision_id = character(0))
+    #   # } else {
+    #   #   deps_w_decision <- deps_decision_data
+    #   # }
+    #   # deps_w_decision %>% 
+    #   #   right_join(dep_metrics(), by = "name") %>% 
+    #   #   select(package, type, name, version, score, decision) %>%
+    #   #   arrange(name, type) %>% 
+    #   #   distinct()
+    #   
+    #   purrr::map_df(dep_metrics()$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>%
+    #   right_join(dep_metrics(), by = "name") %>%
+    #   select(package, type, version, score, decision) %>%
+    #   arrange(package, type) %>%
+    #   distinct()
+    # })
     
     output$communityMetrics_ui <- renderUI({
       req(selected_pkg$name())

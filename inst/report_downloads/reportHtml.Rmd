@@ -371,6 +371,8 @@ tagList(
       if ('Package Dependencies' %in% params$report_includes)
         tagList(
           createGrid(metrics = params$dep_cards),
+          br(),
+          HTML(glue::glue("<br><span class='h3 txtasis'>First Order Dependencies of {params$pkg$name}</span><br>")),
           br(), 
           # datatable_custom(
             DT::datatable(

@@ -284,17 +284,31 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
 
               dep_cards <- build_dep_cards(data = dep_metrics, loaded = session$userData$loaded2_db()$name, toggled = session$userData$suggests())
 
-              dep_table <- 
-                if (nrow(dep_metrics) == 0) {
-                  dplyr::tibble(package = character(), type = character(), version = character(), score = character(), decision = character())
-                } else {
-                purrr::map_df(dep_metrics$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>%
-                  right_join(dep_metrics, by = "name") %>%
-                  select(package, type, version, score, decision) %>%
-                  mutate(decision = if_else(is.na(decision) | toupper(decision) == "NA", "", decision)) %>%
-                  arrange(package, type) %>%
-                  distinct()
-                }
+              # this is now down inside of get_depends_data()
+              # dep_table <- 
+              #   if (nrow(dep_metrics) == 0) {
+              #     dplyr::tibble(package = character(), type = character(), version = character(), score = character(), decision = character())
+              #   } else {
+              #     
+              #   # deps_decision_data <- purrr::map_df(dep_metrics$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs()))
+              #   # if(nrow(deps_decision_data) == 0) {
+              #   #   deps_w_decision <- dplyr::tibble(name = character(0), version = character(0),
+              #   #                                    score = character(0), decision = character(0), decision_id = character(0))
+              #   # } else {
+              #   #   deps_w_decision <- deps_decision_data
+              #   # }
+              #   # deps_w_decision %>%
+              #   #   right_join(dep_metrics, by = "name") %>%
+              #   #   select(package, type, name, version, score, decision) %>%
+              #   #   arrange(name, type) %>%
+              #   #   distinct()
+              #   purrr::map_df(dep_metrics$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>%
+              #     right_join(dep_metrics, by = "name") %>%
+              #     select(package, type, version, score, decision) %>%
+              #     mutate(decision = if_else(is.na(decision) | toupper(decision) == "NA", "", decision)) %>%
+              #     arrange(package, type) %>%
+              #     distinct()
+              #   }
 
               # Render the report, passing parameters to the rmd file.
               rmarkdown::render(
@@ -320,7 +334,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                               com_metrics_raw = comm_data,
                               downloads_plot_data = downloads_plot,
                               dep_cards = dep_cards,
-                              dep_table = dep_table,
+                              dep_table = dep_metrics |> select(-decision_id),
                               metric_tbl = metric_tbl
                 )
               )

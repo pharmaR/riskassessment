@@ -298,6 +298,15 @@ if('Community Usage Comments' %in% params$report_includes){
 
 `r if ('Package Dependencies' %in% params$report_includes) {"\\* Metrics whose score is NA will not impact the package {riskmetric} score"}`
 
+```{r package_dependencies_table_header}
+  if(any(c('Package Dependencies', 'Dependency Comments') %in% params$report_includes)) {
+    tagList(
+      br(),
+      h3(glue::glue("First Order Dependencies of {params$pkg$name}"))
+    )
+  }
+```
+
 ```{r package_dependencies_table, eval=dm_ind}
 if('Package Dependencies' %in% params$report_includes) {
   params$dep_table %>%
