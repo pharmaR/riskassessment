@@ -308,7 +308,7 @@ build_dep_cards <- function(data, loaded, toggled){
   
   # Card 2: Type Summary
   # base R replacement for tidyr::complete(type)
-  x2 <- tibble("type" = levels(deps$type))
+  x2 <- dplyr::tibble("type" = levels(deps$type))
   y2 <- full_join(x2, deps, by = "type") %>% 
     mutate(type = factor(type, ordered = TRUE))
   
@@ -342,7 +342,7 @@ build_dep_cards <- function(data, loaded, toggled){
   
   # Card 3: Decision Summary
   decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
-  decision_key <- tibble::tibble(decision = decision_lst) |>
+  decision_key <- dplyr::tibble(decision = decision_lst) |>
     dplyr::mutate(decision_id = dplyr::row_number()) # I don't think I need this
   high_decision <- decision_key |>
     dplyr::filter(decision_id == max(decision_key$decision_id)) |>
@@ -388,7 +388,7 @@ build_dep_cards <- function(data, loaded, toggled){
   
   
   # Card 4: Base-R Packages
-  x3 <- tibble("base" = levels(deps$base))
+  x3 <- dplyr::tibble("base" = levels(deps$base))
   y3 <- full_join(x3, deps, by = "base")
 
   base_cat_rows <-

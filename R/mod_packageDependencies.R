@@ -149,10 +149,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
         if (toggled() == 0L || nrow(suggests()) == 0) {
         return(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
           } else {
-            pkginfo <- suggests() %>%  as_tibble() 
+            pkginfo <- suggests() %>%  dplyr::as_tibble() 
           } 
       } else {
-        pkginfo <- dplyr::bind_rows(depends(), suggests()) %>% as_tibble()
+        pkginfo <- dplyr::bind_rows(depends(), suggests()) %>% dplyr::as_tibble()
       }
       pkginfo <- pkginfo %>% 
           mutate(package = stringr::str_replace(package, "\n", " ")) %>%

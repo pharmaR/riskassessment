@@ -241,7 +241,7 @@ insert_riskmetric_to_db <- function(pkg_name, pkg_version = "",
                                                    which=c("Suggests"), recursive=FALSE)) %>% unname() %>% sort()
   }
 
-  tbl_suggests <- tibble("package" = sug_vctr, type = "Suggests") 
+  tbl_suggests <- dplyr::tibble("package" = sug_vctr, type = "Suggests") 
   attr(tbl_suggests, "class") <- c('pkg_metric_dependencies', 'pkg_metric', 'data.frame')
   lst_suggests <- list(suggests = tbl_suggests)
   mostattributes(lst_suggests) <- attributes(riskmetric_assess$dependencies)
