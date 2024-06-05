@@ -91,10 +91,14 @@ get_text_color <- function(hex) {
   lum <-
     hex %>%
     stringr::str_remove("#") %>%
-    substring(0:2*2+1,1:3*2) %>%
-    strtoi(16) %>%
-    `*`(c(299, 587, 114)) %>%
-    sum() %>%
+    purrr::map_dbl(
+      ~ {
+        .x %>%
+          substring(0:2*2+1,1:3*2) %>%
+          strtoi(16) %>%
+          `*`(c(299, 587, 114)) %>%
+          sum() 
+      }) %>%
     `/`(1000)
 
   ifelse(lum <= 130, "#ffffff", "#000000")
