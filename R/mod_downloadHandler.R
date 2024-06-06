@@ -280,7 +280,9 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               dep_metrics <- get_depends_data(this_pkg,
                                               session$userData$suggests(),
                                               db_name = golem::get_golem_options("assessment_db_name"),
-                                              fun_session = session)
+                                              loaded2_db = session$userData$loaded2_db(),
+                                              repo_pkgs = session$userData$repo_pkgs()
+                                              )
 
               dep_cards <- build_dep_cards(data = dep_metrics, loaded = session$userData$loaded2_db()$name, toggled = session$userData$suggests())
 

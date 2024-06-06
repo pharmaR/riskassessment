@@ -192,7 +192,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                                DT::renderDataTable({
                                  req(selected_pkg$name())
                                  
-                                 datatable_custom(dep_metrics() |> select(-decision_id), custom_dom = "t", pLength = list(-1), PlChange = FALSE,
+                                 datatable_custom(dep_metrics() |> select(-decision_id, -name), custom_dom = "t", pLength = list(-1), PlChange = FALSE,
                                                   colnames = c("Package", "Type", "Version", "Score", "Decision"))
                                  
                                }
@@ -453,7 +453,9 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
        get_depends_data(selected_pkg$name(),
                         session$userData$suggests(),
                         db_name = golem::get_golem_options("assessment_db_name"),
-                        fun_session = session)
+                        loaded2_db = session$userData$loaded2_db(),
+                        repo_pkgs = session$userData$repo_pkgs()
+       )
     })
 
     dep_cards <- eventReactive(dep_metrics(), {
