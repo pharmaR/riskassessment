@@ -38,6 +38,7 @@ utils::globalVariables(
     'dec_cat_sum',
     'dec_cat_pct',
     'dec_cat_disp',
+    'dec_id',
     'decision_cat_disp',
     'decision_cat_sum',
     'decision_date',
