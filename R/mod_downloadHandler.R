@@ -58,6 +58,9 @@ mod_downloadHandler_include_server <- function(id) {
     ns <- session$ns
 
     output$mod_downloadHandler_incl_output <- renderUI({
+      # Freezing the input will cause it to trigger again after rendering. This
+      # is necessary for the shinyjs code to disable/enable "Includes Suggests"
+      freezeReactiveValue(input, "report_includes")
       div(
         strong(p("Elements to include:")),
         div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
@@ -67,7 +70,8 @@ mod_downloadHandler_include_server <- function(id) {
             )
         )
       )
-    })
+    }) %>%
+      bindEvent(session$userData$trigger_events$update_report_pref_inclusions) # Triggers when switching packages on other tabs
     
     # save user selections and notify user
     observeEvent(input$store_prefs, {
