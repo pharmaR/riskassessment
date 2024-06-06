@@ -4367,7 +4367,7 @@
         "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-02-29 01:10:07 UTC",
-        "Built": "R 4.3.0; ; 2024-03-01 11:32:02 UTC; unix"
+        "Built": "R 4.3.3; ; 2024-06-06 17:15:02 UTC; unix"
       }
     },
     "reprex": {
@@ -6178,7 +6178,7 @@
       "checksum": "c0baef024db9ec1299aae4098e904e9c"
     },
     ".github/workflows/write-manifest.yaml": {
-      "checksum": "64262504d53caa2823ff8987bca08a66"
+      "checksum": "cdfc1470af653982867daed2b99d5b97"
     },
     ".open": {
       "checksum": "d41d8cd98f00b204e9800998ecf8427e"
@@ -6508,7 +6508,7 @@
       "checksum": "e22e1f4c044bc9f11c46a5fcdba33063"
     },
     "R/mod_downloadHandler.R": {
-      "checksum": "c568d64e82a40cb5b84bd185f93e97a1"
+      "checksum": "20126728855935201f75b0e36d444175"
     },
     "R/mod_introJS_utils_text.R": {
       "checksum": "d98620a891752cf54b0d0282ddaa4af6"

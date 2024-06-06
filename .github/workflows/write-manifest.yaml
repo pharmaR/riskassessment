@@ -24,11 +24,11 @@ jobs:
       - uses: r-lib/actions/setup-r@v2
         with:
           r-version: 'renv'
-          use-public-rspm: true
+          use-public-rspm: false
       - uses: r-lib/actions/setup-renv@v2
 
       - name: Install required packages
-        run: Rscript -e 'install.packages("rsconnect")'
+        run: Rscript -e 'renv::install("rsconnect")'
 
       - name: Create manifest.json
         run: Rscript -e 'rsconnect::writeManifest()'
