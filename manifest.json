@@ -4367,7 +4367,7 @@
         "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-02-29 01:10:07 UTC",
-        "Built": "R 4.3.3; ; 2024-06-06 17:15:02 UTC; unix"
+        "Built": "R 4.3.3; ; 2024-06-06 18:46:47 UTC; unix"
       }
     },
     "reprex": {
@@ -6403,10 +6403,10 @@
       "checksum": "449e8dcb07732ecd9a0963bada90e53e"
     },
     "inst/report_downloads/reportHtml.Rmd": {
-      "checksum": "65972e4c1beeea7e91fcfc668503196b"
+      "checksum": "0e49db815a61c6698acad37894a9c0c1"
     },
     "inst/report_downloads/reportPdf.Rmd": {
-      "checksum": "ecb9a19c6264832e7c8a9d39143335f5"
+      "checksum": "3c7cfa456a7a171df1f10f9c1690718c"
     },
     "inst/sql_queries/create_comments_table.sql": {
       "checksum": "514c169e358f7613d8026e6a9fd211ce"
@@ -6475,7 +6475,7 @@
       "checksum": "50d68f46171151cd36457a7154e5a7a3"
     },
     "R/global.R": {
-      "checksum": "87f66254b0afb272fd6321659259cdc4"
+      "checksum": "dec06e3d38ec3811b87ecb8c85a0c38f"
     },
     "R/mod_aboutInfo_utils.R": {
       "checksum": "23ff3c99869bd59ed973d031ee2962fd"
@@ -6508,7 +6508,7 @@
       "checksum": "e22e1f4c044bc9f11c46a5fcdba33063"
     },
     "R/mod_downloadHandler.R": {
-      "checksum": "20126728855935201f75b0e36d444175"
+      "checksum": "9c00f033ca9565f3a466e7381025e368"
     },
     "R/mod_introJS_utils_text.R": {
       "checksum": "d98620a891752cf54b0d0282ddaa4af6"
@@ -6541,7 +6541,7 @@
       "checksum": "dbbfdfde47d106e0deaf20822c69bf94"
     },
     "R/mod_reportPreview.R": {
-      "checksum": "d6067e801094b87feebddfa0b05b45d4"
+      "checksum": "1fff75a23e54c9d8dac895731b03ac3a"
     },
     "R/mod_reweightView.R": {
       "checksum": "d3988b7b6168f0560dc9525f1c6138ed"
@@ -6571,7 +6571,7 @@
       "checksum": "74cf2ee5e7283483a88f08d60e3728b0"
     },
     "R/utils_get_db.R": {
-      "checksum": "6483b7bae8a58e0bea456acb68f16bc3"
+      "checksum": "06aec1c0da86324550c33f54e9c6fd68"
     },
     "R/utils_insert_db.R": {
       "checksum": "d890c439c8ece5dd9236681efee4ab9c"
@@ -6580,7 +6580,7 @@
       "checksum": "b689ee96f0761480ac65ca22cbbb4980"
     },
     "R/utils.R": {
-      "checksum": "995d947896038bdcec381ff4b4e94fd0"
+      "checksum": "73970f1dc6224cd251eff059748a8a7c"
     },
     "README.md": {
       "checksum": "d7e84fce2c891619912b6cc552eecc94"
