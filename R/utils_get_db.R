@@ -221,7 +221,8 @@ get_metric_data <- function(pkg_name, metric_class = 'maintenance', db_name = go
 
   dbSelect(
     "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
-                    metric.is_url, package_metrics.value, package_metrics.metric_score
+                    metric.is_url, package_metrics.value, package_metrics.metric_score,
+                    'information' as type
                     FROM metric
                     INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
                     INNER JOIN package on package_metrics.package_id = package.id
