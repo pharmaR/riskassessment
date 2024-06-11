@@ -208,8 +208,8 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
                 
                     var $target = document.querySelector("#code_explorer-file_viewer")
                     $target.scrollTop = 0;
- 
                     $target.scrollTop =$curr_sel.offsetTop -40; ')
+              
       }
       
     })
@@ -222,7 +222,6 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
                       {
                             $curr_sel = $highlights_list[$highlights_list.length -1]
                             search_index.innerHTML =   $highlights_list.length + " of " + $highlights_list.length;
-                      }
                         else 
                       {
                             $curr_sel = $highlights_list[$index -1]
@@ -234,7 +233,6 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
                       $target.scrollTop = $curr_sel.offsetTop  - 40; 
 
               ')
- 
       }
       
     })
