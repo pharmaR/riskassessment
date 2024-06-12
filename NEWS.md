@@ -26,7 +26,8 @@
 * Updated 'About' page to highlight individual contributors on the project, leveraging `bslib` cards.
 * Allow users to specify decisions in the CSV upload file (#663)
 * Fix bug causing application to crash when trying to delete zero packages (#781)
-* Add `Decision` column to Package Dependencies tab so that users (#774)
+* Add `Decision` column to Package Dependencies tab's table output (#774)
+* Add `Decision Summary` card to Package Dependencies tab (#774)
 
 
 
