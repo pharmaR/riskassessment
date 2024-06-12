@@ -172,9 +172,19 @@ renderCode <- function(lines, hlindex) {
                })
              ),
              tags$script(HTML("
+                             
         document.querySelectorAll('.code pre').forEach(bl => {
           hljs.highlightBlock(bl);
         }); 
+        var $highlights_list = document.querySelectorAll('.highlight')
+        var $curr_sel = document.querySelector('.highlight')
+       if(typeof($highlights_list) != 'undefined' & $curr_sel != null){
+        var $target = document.querySelector('#code_explorer-file_viewer')
+        $target.scrollTop = 0;
+        $target.scrollTop = $curr_sel.offsetTop  - 40;
+        var $index1 =Array.from($highlights_list).findIndex(node => node.isEqualNode($curr_sel)) +1;
+        search_index.innerHTML =   $index1 + ' of ' + $highlights_list.length;
+       }
       "))
   )
 }
