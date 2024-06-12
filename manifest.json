@@ -4367,7 +4367,7 @@
         "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-02-29 01:10:07 UTC",
-        "Built": "R 4.3.3; ; 2024-06-06 17:15:02 UTC; unix"
+        "Built": "R 4.3.3; ; 2024-06-12 12:30:38 UTC; unix"
       }
     },
     "reprex": {
@@ -6220,7 +6220,7 @@
       "checksum": "99c5575cb81828e20a7fe1d205551316"
     },
     "DESCRIPTION": {
-      "checksum": "c4ce70d1592eea23d969d53b917c4a5b"
+      "checksum": "c7e19a728e7d1cb04961c5695ed151c2"
     },
     "inst/app/www/css/community_metrics.css": {
       "checksum": "f08eb25c2ee48ac22ed63b0d18994a04"
@@ -6463,7 +6463,7 @@
       "checksum": "97d1232340e04c53088bc8f814133dcd"
     },
     "NEWS.md": {
-      "checksum": "f9bc97131b3753ea173bff4248b97e1f"
+      "checksum": "876dad435c429e277f1f9b234ed8ec5c"
     },
     "R/app_config.R": {
       "checksum": "c2b61f270b86b6833f0ee39c44a1a440"
@@ -6490,10 +6490,10 @@
       "checksum": "61459e71d1e62587597ac1dac2c7c650"
     },
     "R/mod_code_explorer_utils.R": {
-      "checksum": "8c8d69c2431385b76971f6b413923c7e"
+      "checksum": "2588e180a69a79b7be4e3818eb3931dc"
     },
     "R/mod_code_explorer.R": {
-      "checksum": "4be660d4a8b6f4b9835ec236d4f14dd5"
+      "checksum": "13c706c439a980b617e960b93414ad5c"
     },
     "R/mod_communityMetrics.R": {
       "checksum": "fdd39bd2a7e19b8dccc195aaec57a3d8"
