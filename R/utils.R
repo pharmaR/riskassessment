@@ -579,11 +579,6 @@ datatable_custom <- function(
   stopifnot(is.character(colnames))
   colnames <- if(length(colnames) == 0) names(data) else colnames
   if(length(colnames) != ncol(data)) {
-    print("\ncolnames:")
-    print(colnames)
-    print("\nnames(data):")
-    print(names(data))
-    print(data)
     warning("number of provided colnames unequal to number of columns in data. 
             Defaulting to original data frame names.")
     colnames <- names(data)
