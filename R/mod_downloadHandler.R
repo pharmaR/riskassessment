@@ -281,21 +281,15 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
               downloads_plot <- build_comm_plotly(comm_data)
               metric_tbl <- dbSelect("select * from metric", db_name = golem::get_golem_options('assessment_db_name'))
               
-              dep_metrics <- get_depends_data(this_pkg, session$userData$suggests(), db_name = golem::get_golem_options("assessment_db_name"))
+              dep_metrics <- get_depends_data(this_pkg,
+                                              session$userData$suggests(),
+                                              db_name = golem::get_golem_options("assessment_db_name"),
+                                              loaded2_db = session$userData$loaded2_db(),
+                                              repo_pkgs = session$userData$repo_pkgs()
+                                              )
 
               dep_cards <- build_dep_cards(data = dep_metrics, loaded = session$userData$loaded2_db()$name, toggled = session$userData$suggests())
 
-              dep_table <- 
-                if (nrow(dep_metrics) == 0) {
-                  dplyr::tibble(package = character(), type = character(), version = character(), score = character(), decision = character())
-                } else {
-                purrr::map_df(dep_metrics$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>%
-                  right_join(dep_metrics, by = "name") %>%
-                  select(package, type, version, score, decision) %>%
-                  mutate(decision = if_else(is.na(decision) | toupper(decision) == "NA", "", decision)) %>%
-                  arrange(package, type) %>%
-                  distinct()
-                }
 
               # Render the report, passing parameters to the rmd file.
               rmarkdown::render(
@@ -321,7 +315,7 @@ mod_downloadHandler_server <- function(id, pkgs, user, metric_weights){
                               com_metrics_raw = comm_data,
                               downloads_plot_data = downloads_plot,
                               dep_cards = dep_cards,
-                              dep_table = dep_table,
+                              dep_table = dep_metrics |> select(-decision_id),
                               metric_tbl = metric_tbl
                 )
               )

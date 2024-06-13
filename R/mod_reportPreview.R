@@ -192,7 +192,7 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
                                DT::renderDataTable({
                                  req(selected_pkg$name())
                                  
-                                 datatable_custom(dep_table(), pLength = list(-1), PlChange = FALSE,
+                                 datatable_custom(dep_metrics() |> select(-decision_id, -name), custom_dom = "t", pLength = list(-1), PlChange = FALSE,
                                                   colnames = c("Package", "Type", "Version", "Score", "Decision"))
                                  
                                }
@@ -450,7 +450,12 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     })
 
      dep_metrics <- eventReactive(list(selected_pkg$name(), session$userData$suggests()), {
-       get_depends_data(selected_pkg$name(), session$userData$suggests(), db_name = golem::get_golem_options("assessment_db_name"))
+       get_depends_data(selected_pkg$name(),
+                        session$userData$suggests(),
+                        db_name = golem::get_golem_options("assessment_db_name"),
+                        loaded2_db = session$userData$loaded2_db(),
+                        repo_pkgs = session$userData$repo_pkgs()
+       )
     })
 
     dep_cards <- eventReactive(dep_metrics(), {
@@ -461,18 +466,6 @@ reportPreviewServer <- function(id, selected_pkg, maint_metrics, com_metrics,
     # Package Dependencies metrics cards.
     metricGridServer("dep_metricGrid", metrics = dep_cards)
 
-    dep_table <- eventReactive(dep_metrics(), {
-      req(dep_metrics())
-
-      if (nrow(dep_metrics()) == 0)
-        return(dplyr::tibble(package = character(), type = character(), version = character(), score = character()))
-      
-      purrr::map_df(dep_metrics()$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>%
-      right_join(dep_metrics(), by = "name") %>%
-      select(package, type, version, score, decision) %>%
-      arrange(package, type) %>%
-      distinct()
-    })
     
     output$communityMetrics_ui <- renderUI({
       req(selected_pkg$name())

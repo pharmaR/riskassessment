@@ -588,7 +588,7 @@ datatable_custom <- function(
   # Hiding name from DT table. 
   # The - 1 is because js uses 0 index instead of 1 like R
   target <- which(names(data) %in% hide_names) - 1
-  
+
   formattable::as.datatable(
     formattable::formattable(
       data,

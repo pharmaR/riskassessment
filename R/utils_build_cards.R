@@ -234,7 +234,7 @@ build_comm_cards <- function(data, db_name = golem::get_golem_options('assessmen
 #' The 'Build Dependency Cards' function
 #' 
 #' @param data a data.frame
-#' @param loaded a vector of package names loaded to db 
+#' @param loaded a vector of package names loaded to db
 #' 
 #' @import dplyr
 #' @importFrom glue glue
@@ -256,6 +256,7 @@ build_dep_cards <- function(data, loaded, toggled){
     is_url = numeric(),
     type = character()
   )
+
   
   deps <- data %>% 
     mutate(base = if_else(name %in% c(rownames(installed.packages(priority = "base"))), "Base", "Non-Base")) %>% 
@@ -263,7 +264,6 @@ build_dep_cards <- function(data, loaded, toggled){
     mutate(base = factor(base, levels = c("Base", "Tidyverse"), labels = c("Base", "Non-Base"))) %>% 
     mutate(upld = if_else(name %in% loaded, 1, 0)) %>%
     mutate(upld_non_base = if_else((name %in% loaded) & non_base == 1, 1, 0))
-  
   
   if (toggled == 0L) {
     deps <- deps %>% 
@@ -308,7 +308,7 @@ build_dep_cards <- function(data, loaded, toggled){
   
   # Card 2: Type Summary
   # base R replacement for tidyr::complete(type)
-  x2 <- tibble("type" = levels(deps$type))
+  x2 <- dplyr::tibble("type" = levels(deps$type))
   y2 <- full_join(x2, deps, by = "type") %>% 
     mutate(type = factor(type, ordered = TRUE))
   
@@ -340,10 +340,57 @@ build_dep_cards <- function(data, loaded, toggled){
     )
   
   
-  # Card 3: Base-R Packages
-  x3 <- tibble("base" = levels(deps$base))
-  y3 <- full_join(x3, deps, by = "base")
+  # Card 3: Decision Summary
+  decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
+  decision_key <- dplyr::tibble(decision = decision_lst) |>
+    dplyr::mutate(decision_id = dplyr::row_number()) # I don't think I need this
+  high_decision <- decision_key |>
+    dplyr::filter(decision_id == max(decision_key$decision_id)) |>
+    dplyr::pull(decision)
   
+  
+  dec_cat_dat <-
+    deps %>%
+    mutate(cnt = ifelse(is.na(name), 0, 1)) %>%
+    mutate(dec_cat = factor(if_else(decision == "" | is.na(decision), "No Decision", decision),
+                            levels = c("No Decision", decision_key$decision))) %>%
+    mutate(dec_id = if_else(decision == "" | is.na(decision), "0", decision_id)) %>%
+    group_by(dec_cat, dec_id) %>%
+    summarize(dec_cat_sum = sum(cnt)) %>%
+    ungroup() %>%
+    mutate(dec_cat_pct  = 100 * (dec_cat_sum / nrow(deps))) %>%
+    mutate(dec_cat_disp = if_else(is.nan(dec_cat_pct),
+                                  glue::glue('{dec_cat}: {dec_cat_sum} ( 0%)'),
+                                  glue::glue('{dec_cat}: {dec_cat_sum} ({format(dec_cat_pct, digits = 1)}%)'))) %>%
+    arrange(dec_cat) 
+  
+  if(nrow(dec_cat_dat) == 0) {
+    dec_cat_rows <- "No Decisions"
+  } else {
+    dec_cat_rows <- dec_cat_dat %>%
+      pull(dec_cat_disp) %>%
+      paste(., collapse = " \n")
+  }
+  
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'dec_cat_count',
+      title = 'Decision Summary',
+      desc = 'Package Dependencies by Decision',
+      value = dec_cat_rows,
+      score = "NULL",
+      succ_icon = 'rocket',
+      icon_class = "text-info", # this gets overwritten by `type` arg below
+      is_perc = 0,
+      is_url = 0,
+      type = if_else(any(pull(dec_cat_dat, dec_id) == max(decision_key$decision_id)), "danger", "information")
+    )
+  
+  
+  # Card 4: Base-R Packages
+  x3 <- dplyr::tibble("base" = levels(deps$base))
+  y3 <- full_join(x3, deps, by = "base")
+
   base_cat_rows <-
     y3 %>%
     mutate(cnt = ifelse(is.na(name), 0, 1)) %>%
@@ -371,7 +418,13 @@ build_dep_cards <- function(data, loaded, toggled){
       is_url = 0
     )
   
+  
+  
+  
+  
+  # return cards object
   cards
+  
 }
 
 
