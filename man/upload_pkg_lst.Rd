@@ -4,7 +4,14 @@
 \alias{upload_pkg_lst}
 \title{Upload a Package List}
 \usage{
-upload_pkg_lst(pkg_lst, assess_db, repos, repo_pkgs, updateProgress = NULL)
+upload_pkg_lst(
+  pkg_lst,
+  assess_db,
+  repos,
+  repo_pkgs,
+  user_name = "system",
+  updateProgress = NULL
+)
 }
 \arguments{
 \item{pkg_lst}{character vector of packages to upload}
@@ -15,6 +22,8 @@ upload_pkg_lst(pkg_lst, assess_db, repos, repo_pkgs, updateProgress = NULL)
 
 \item{repo_pkgs}{for internal use only, allows the function
 \code{available.packages()} to be run only once}
+
+\item{user_name}{character name of user}
 
 \item{updateProgress}{for internal use only, provides a function to update
 progress meter in the application}
