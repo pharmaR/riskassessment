@@ -3,7 +3,7 @@
 ### User Enhancements
 * Allow users to specify decisions within the CSV file used to upload pkgs (#663)
 * Drastically shorten waiting time in `Code explorer`/ `Package explorer` by reading tarballs in memory (#707)
-* Move package upload process to an exported functiond, allowing users to populate the database outside of the application
+* Move package upload process to an exported function, allowing users to populate the database outside of the application
 * Added `Package Dependencies` content to Reports (#721)
 * Added option to include `Suggests` pkgs in downloadable Reports (#721)
 * Added `Decision` column to Package Dependencies tab's table output (#774)
