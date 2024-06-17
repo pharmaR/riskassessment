@@ -28,6 +28,7 @@
 * Fix bug causing application to crash when trying to delete zero packages (#781)
 * Add `Decision` column to Package Dependencies tab's table output (#774)
 * Add `Decision Summary` card to Package Dependencies tab (#774)
+* Attach user name to batch upload decisions (#785)
 
 
 
