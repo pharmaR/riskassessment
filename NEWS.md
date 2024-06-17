@@ -3,7 +3,6 @@
 ### User Enhancements
 * Allow users to specify decisions within the CSV file used to upload pkgs (#663)
 * Drastically shorten waiting time in `Code explorer`/ `Package explorer` by reading tarballs in memory (#707)
-* Move package upload process to an exported function, allowing users to populate the database outside of the application
 * Added `Package Dependencies` content to Reports (#721)
 * Added option to include `Suggests` pkgs in downloadable Reports (#721)
 * Added `Decision` column to Package Dependencies tab's table output (#774)
@@ -28,6 +27,7 @@
 
 ### For Devs
 * Added non-`shinymanager` deployment option so that users may use their Posit Credentials instead (#700)
+* Move package upload process to a function, allowing devs to populate the database outside of the application
 * Added tests for the `Code Explorer` and `Function explorer` modules
 * Added repo specification to configuration file (#701)
 * Ensured configuration checkers run when configuring the database
