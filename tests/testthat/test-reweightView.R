@@ -68,7 +68,7 @@ test_that("reweightView works", {
   # Set decision
   dbUpdate(
     "UPDATE package
-          SET decision_id = 1
+          SET decision_id = 1, decision_by = 'tester', decision_date = 'TODAY'
           WHERE name = 'dplyr'",
     app_db_loc
   )
@@ -78,10 +78,11 @@ test_that("reweightView works", {
   app$click(selector = "#confirmation_id button")
   
   expect_equal(nrow(dbSelect("select * from comments", db_backup)), 2)
-  expect_equal(dbSelect("select * from package", db_backup)[["decision_id"]], 1)
+  expect_equal(dbSelect("select decision_id, decision_by, decision_date from package", db_backup) |> unlist(use.names = FALSE), c("1", "tester", "TODAY"))
   
   app$click("reweightInfo-update_pkg_risk")
   app$wait_for_idle()
+  app$set_inputs(`reweightInfo-reset_decisions` = TRUE)
   app$click("reweightInfo-confirm_update_risk")
   
   db_backup <- app$get_download("reweightInfo-download_database_btn")
@@ -90,7 +91,7 @@ test_that("reweightView works", {
   
   expect_equal(nrow(dbSelect("select * from comments where comment_type = 'o'", db_backup)), 0)
   expect_equal(nrow(dbSelect("select * from comments", db_backup)), 3)
-  expect_equal(dbSelect("select * from package", db_backup)[["decision"]], NULL)
+  expect_equal(dbSelect("select decision_id, decision_by, decision_date from package", db_backup) |> unlist(use.names = FALSE), rep(NA_character_, 3))
   
   metric_weights <- app$get_value(export = "metric_weights")
   curr_new_wts <- app$get_value(export = "reweightInfo-curr_new_wts")

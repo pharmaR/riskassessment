@@ -30,7 +30,7 @@ configure_db <- function(dbname, config) {
   check_decision_config(config[["decisions"]])
   if (!is.null(config[["metric_weights"]]))
     check_metric_weights(config[["metric_weights"]])
-  check_credentials(config[["credentials"]])
+  config[["credentials"]] <- check_credentials(config[["credentials"]])
   
   # Set decision categories
   purrr::walk(config[["decisions"]]$categories, ~ dbUpdate("INSERT INTO decision_categories (decision) VALUES ({.x})", dbname))
@@ -143,7 +143,7 @@ check_dec_rules <- function(decision_categories, decision_rules) {
       stop("Rules for metrics must contain the following three elements: 'metric', 'condition', & 'decision'")
 
     if (!all(purrr::map_chr(dec_metric_rules, ~ as.character(.x$metric)) %in% metric_lst))
-      stop("Rules for metrics must have a valid value for the 'metric' element: ", paste(metric_lst, collapse = ", "))
+      stop("Rules for metrics must have a valid value for the 'metric' element: ", paste(as.character(metric_lst), collapse = ", "))
     
     mappers <- purrr::map(dec_metric_rules, ~ evalSetTimeLimit(parse(text = .x$condition))) %>%
       purrr::map_lgl(~ rlang::is_formula(.x) || rlang::is_function(.x))
@@ -176,7 +176,7 @@ check_metric_weights <- function(metric_weights) {
   config_active <- Sys.getenv("GOLEM_CONFIG_ACTIVE", Sys.getenv("R_CONFIG_ACTIVE", "default"))
   
   if (!all(names(metric_weights) %in% metric_lst))
-    stop(glue::glue("The metric weights must be a subset of the following: {paste(metric_lst, collapse = ', ')}"))
+    stop(glue::glue("The metric weights must be a subset of the following: {paste(as.character(metric_lst), collapse = ', ')}"))
   
   if (length(names(metric_weights)) != length(unique(names(metric_weights))))
     stop("The metric weights must be unique")
@@ -215,12 +215,21 @@ check_credentials <- function(credentials_lst) {
   if (!"admin" %in% privileges)
     stop("The roles corresponding to 'admin' privileges must be specified")
   
+  if (isFALSE(get_db_config("use_shinymanger"))) {
+    if (!"default" %in% credentials_lst$roles) {
+      credentials_lst$roles <- c(credentials_lst$roles, "default")
+      warning("When using {riskassessment} without {shinymanger}, the role 'default' is mandatory. If omitted in `db-config.yml`, it will be initialized with no privileges.")
+    }
+  }
+  
   if (!all(privileges_roles %in% credentials_lst$roles))
     warning(glue::glue("The following role(s) designated under privileges is(are) not present in the 'roles' configuration: {paste(privileges_roles[!privileges_roles %in% credentials_lst$roles], collapse = ', ')}"))
   
   valid_privileges <- unique(unlist(credentials_lst$privileges[credentials_lst$roles], use.names = FALSE))
   if (!all(used_privileges %in% valid_privileges))
     warning(glue::glue("The following privilege(s) is(are) not assigned to any 'role' in the credentials configuration: {paste(used_privileges[!used_privileges %in% valid_privileges], collapse = ', ')}"))
+  
+  credentials_lst
 }
 
 parse_rules <- function(dec_config) {
@@ -230,7 +239,7 @@ parse_rules <- function(dec_config) {
     default_config <- get_db_config("decisions", "default")[["rules"]]
     common_rules <- intersect(default_config, dec_config[["rules"]])
     if (length(common_rules) > 0) {
-      warning(glue::glue("The following rules were applied from the default configuration:\n{purrr::imap_chr(common_rules, ~ paste(.y, .x, sep = ': ')) %>% paste(collapse = '\n')}"))
+      warning(glue::glue("The following rules were applied from the default configuration:\n{purrr::imap_chr(common_rules, ~ paste(.y, paste(.x, collapse = ', '), sep = ': ')) %>% paste(collapse = '\n')}"))
     }
   }
   
@@ -240,7 +249,7 @@ parse_rules <- function(dec_config) {
       .x
     } else if (.x$decision %in% dec_config[["categories"]]) {
       .x$decision_id <- match(.x$decision, dec_config[["categories"]])
-      .x$metric_id <- match(.x$metric, metric_lst)
+      .x$metric_id <- as.numeric(names(metric_lst)[match(.x$metric, metric_lst)])
       .x
     }) %>%
     purrr::compact()

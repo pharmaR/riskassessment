@@ -43,7 +43,7 @@ test_that("utils_get_db functions other than dbSelect", {
     dbUpdate(command, app_db_loc)
   }
 
-  insert_riskmetric_to_db(pkg_name, app_db_loc)
+  insert_riskmetric_to_db(pkg_name, db_name = app_db_loc)
   insert_community_metrics_to_db(pkg_name, app_db_loc)
   
   pkg_id <- dbSelect("SELECT id FROM package WHERE name = {pkg_name}", app_db_loc)
@@ -81,7 +81,7 @@ test_that("utils_get_db functions other than dbSelect", {
   test_that("get_mm_data works", {
     mmdata <- get_metric_data(pkg_name, metric_class = "maintenance", db_name = app_db_loc)
     expect_s3_class(mmdata, "data.frame")
-    expect_equal(names(mmdata), c("name", "is_perc", "is_url", "value", "title", "desc", "score", "succ_icon", "unsucc_icon", "icon_class"))
+    expect_equal(names(mmdata), c("name", "is_perc", "is_url", "value", "type", "title", "desc", "score", "succ_icon", "unsucc_icon", "icon_class"))
     expect_equal(mmdata$name[1], "has_vignettes")
   })
   

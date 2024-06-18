@@ -75,7 +75,7 @@ test_that("check_dec_rules works", {
 test_that("check_metric_weights works", {
   expect_error(
     check_metric_weights(list(has_vignette = -2, has_vignette = 0)),
-    glue::glue("The metric weights must be a subset of the following: {paste(metric_lst, collapse = ', ')}")
+    glue::glue("The metric weights must be a subset of the following: {paste(as.character(metric_lst), collapse = ', ')}")
   )
   
   expect_error(
@@ -133,9 +133,10 @@ test_that("check_credentials works", {
     fixed = TRUE
   )
   
+  test_creds <- list(roles = c("admin", "lead", "reviewer"), privileges = list(admin = used_privileges))
   expect_equal(
-    check_credentials(list(roles = c("admin", "lead", "reviewer"), privileges = list(admin = used_privileges))),
-    NULL
+    check_credentials(test_creds),
+    test_creds
   )
 })
 

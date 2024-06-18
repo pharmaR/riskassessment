@@ -14,5 +14,5 @@ docs/
 *.sqlite
 !*demo.sqlite
 tarballs/
-source/
 report_preferences/
+.Renviron

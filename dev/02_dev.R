@@ -77,6 +77,7 @@ usethis::use_dev_package("chromote",type = "suggests")#, min_version = "0.2.2")
 # ## Create a module infrastructure in R/
 # ## Only argument is Name of the module
 # 
+golem::add_module( name = "legend" )      #ran
 # golem::add_module( name = "dataUpload" ) # ran
 # golem::add_module( name = "dataComply" ) # ran
 # golem::add_module( name = "dataComplyRules" ) # ran
@@ -189,6 +190,8 @@ usethis::use_test( "app" )
 usethis::use_test( "auto_font" )
 usethis::use_test( "generate_comm_data" )
 usethis::use_test( "metric_gauge" )
+usethis::use_test( "contrib_card" )
+usethis::use_test( "make_contrib_cards" )
 
 # Documentation
 ## Vignettes 
@@ -209,7 +212,7 @@ pkgbuild::build(vignettes = FALSE) # 1.2 MB don't build vignettes to save time o
 
 # update pkgdown site only if user needs refreshed documentation
 devtools::install_version("pkgdown", version = "2.0.3",
-                          repos = "http://cran.us.r-project.org")
+                          repos = "http://cran.r-project.org")
 # usethis::use_pkgdown() # Run once to configure your package to use pkgdown
 pkgdown::build_articles() #
 pkgdown::build_articles_index() #TRUE

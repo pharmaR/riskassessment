@@ -1,3 +1,44 @@
+# riskassessment 3.1.0
+
+### User Enhancements
+* Allow users to specify decisions within the CSV file used to upload pkgs (#663)
+* Drastically shortened waiting time in `Code explorer`/ `Package explorer` by reading tarballs in memory (#707)
+* Added `Package Dependencies` content to Reports (#721)
+* Added option to include `Suggests` pkgs in downloadable Reports (#721)
+* Added `Decision` column to Package Dependencies tab's table output (#774)
+* Added `Decision Summary` card to Package Dependencies tab (#774)
+* Added hyperlink on dependencies/reverse dependencies cards, directing users to `Package Dependencies` page for more detail (#597)
+* Added new table to display reverse dependencies which highlights pkgs that already exist in the database
+
+### Squashed Bugs
+* Fixed bug causing application to crash when trying to delete zero packages (#781)
+* Fixed bug where app doesn't reset the `decision by` and `decision date` fields when re-scoring/re-weighting packages (#680)
+* Fixed bug where the `user privileges` table was not aligned with the available privileges in the application (#697)
+* Fixed typo in privileges table (#719)
+* Fixed bug where HTML reports displayed a darker green in the cards' meters
+* Updated logo in reports to lighter version to match application UI
+* Updated the Dependency Cards to be slightly more informative
+
+### Docs
+* Added `About` page to introduce our audience to the project a little better, providing useful resources and attribution that highlights individual contributors
+* Added more context to the metric score card visuals by inserting tool tips & creating a legend modal that describes & interprets all possible visuals (#652)
+* Added introjs for file browser & function explorer( #581)
+* Added `{riskmetric}` assessment documentation URLs to About tab, on Risk Assessment Criteria page.
+
+### For Devs
+* Added non-`shinymanager` deployment option so that users may use their Posit Credentials instead (#700)
+* Moved package upload process to a function, allowing devs to populate the database outside of the application
+* Added tests for the `Code Explorer` and `Function explorer` modules
+* Added repo specification to configuration file (#701)
+* Ensured configuration checkers run when configuring the database
+* Utilized `{archive}` to parse DESCRIPTION file, increasing speed in package upload process
+* Updated manifest file and deployments article
+* Updated version of `{riskmetric}` being used to v0.2.4.9000
+* Updated version of R to `v4.3.3` & Posit Package Manager snapshot dates to 2024-04-08
+
+
+
+
 # riskassessment 3.0.0
 
 ### Enhancements
@@ -14,16 +55,18 @@
 * Made color palette used through the app even more colorblind-friendly and created lighter "User Guide" logo (#654)
 
 ### Squashed Bugs
-* Fixed tests showing "Package Downloads" community usage card as non-metric (#621)
-* Fixed bug with the logo's hyperlink not functioning in the expected zone (#633)
-* Removed suggests from riskcalc weights table (#646)
-* Forced new lines in card paragraphs (#671)
+* Fixed the app's logo hyperlink to docs not functioning in the expected "zone" (#633)
+* Fixed tests showing "Package Downloads" community usage card as a non-metric (#621)
+* Removed "Suggests" from Riskassessment Criteria weights table (#646)
+* Forced formation of new lines in cards (#671)
+* Ensured users couldn't create & select packages from CRAN that don't exist on Upload Packages tab
 
 ### For Devs
 * Migrated from `{jsTreeR}` to `{shinyTree}` (#585)
 * Removed some unneeded/unused dependencies
 * Updated `{shinytest2}` and `{chromote}` to more recent versions for testing
 * Added correct remotes reference in `DESCRIPTION` file for pharmar/riskmetric & rstudio/chromote
+* Stopped using CRAN repo snapshot date in `renv` (#677)
 
 # riskassessment 2.0.0
 
