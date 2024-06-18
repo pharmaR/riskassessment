@@ -32,7 +32,7 @@
 * Added repo specification to configuration file (#701)
 * Ensured configuration checkers run when configuring the database
 * Utilized `{archive}` to parse DESCRIPTION file, increasing speed in package upload process
-* updated manifest file and deployments article
+* Updated manifest file and deployments article
 * Updated version of `{riskmetric}` being used to v0.2.4.9000
 
 
