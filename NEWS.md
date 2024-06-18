@@ -31,7 +31,7 @@
 * Added tests for the `Code Explorer` and `Function explorer` modules
 * Added repo specification to configuration file (#701)
 * Ensured configuration checkers run when configuring the database
-* Utilize `{archive}` to parse DESCRIPTION file, increasing speed in package upload process
+* Utilized `{archive}` to parse DESCRIPTION file, increasing speed in package upload process
 * updated manifest file and deployments article
 * Updated version of `{riskmetric}` being used to v0.2.4.9000
 
