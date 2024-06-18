@@ -27,7 +27,7 @@
 
 ### For Devs
 * Added non-`shinymanager` deployment option so that users may use their Posit Credentials instead (#700)
-* Move package upload process to a function, allowing devs to populate the database outside of the application
+* Moved package upload process to a function, allowing devs to populate the database outside of the application
 * Added tests for the `Code Explorer` and `Function explorer` modules
 * Added repo specification to configuration file (#701)
 * Ensured configuration checkers run when configuring the database
