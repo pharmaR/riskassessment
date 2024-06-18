@@ -34,6 +34,7 @@
 * Utilized `{archive}` to parse DESCRIPTION file, increasing speed in package upload process
 * Updated manifest file and deployments article
 * Updated version of `{riskmetric}` being used to v0.2.4.9000
+* Updated version of R to `v4.3.3` & Posit Package Manager snapshot dates to 2024-04-08
 
 
 
