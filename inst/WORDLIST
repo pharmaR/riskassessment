@@ -17,6 +17,7 @@ MetricBox
 Munshi
 PR's
 PeterParker
+Pkgs
 Preload
 RSPM
 RStudio
@@ -80,14 +81,15 @@ px
 renv
 repo
 repo's
-repo’s
 reportDownload
-riskcalc
+repo’s
+reweightViewServer
 riskmetric
 rstudio
 serverless
 shinyapps
 shinylogs
+shinymanager
 shinytest
 showComments
 showHelperMessage
@@ -102,4 +104,3 @@ userid
 viewComment
 www
 ’s
- 

@@ -12,6 +12,7 @@ reportPreviewServer(
   com_metrics_raw,
   mm_comments,
   cm_comments,
+  dep_comments,
   downloads_plot_data,
   user,
   credentials,

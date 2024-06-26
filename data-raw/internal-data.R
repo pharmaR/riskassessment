@@ -5,6 +5,7 @@ passphrase <- 'somepassphrase'
 # credentials_name <- "credentials.sqlite"
 
 
+
 # Overall descriptive text for community usage. Please edit text file to make changes.
 community_usage_txt <- readLines(file.path("data-raw", "community.txt"))
 
@@ -56,6 +57,7 @@ template <- read.csv(file.path('data-raw', 'upload_format.csv'),  stringsAsFacto
 
 test_pkg_lst <- c("dplyr", "tidyr", "readr", "purrr", "tibble", "stringr", "forcats")
 
+library(magrittr)
 test_pkg_refs_compl <-
   test_pkg_lst %>%
   purrr::map(riskmetric::pkg_ref, source = "pkg_cran_remote", repos = c("https://cran.rstudio.com")) %>%
@@ -65,6 +67,7 @@ test_pkg_refs <-
   test_pkg_refs_compl %>%
   purrr::map(~ .x[c("name", "version", "source")] %>% purrr::set_names(c("name", "version", "source")))
 
+devtools::load_all()
 test_pkg_info <-
   test_pkg_lst %>%
   purrr::map(get_latest_pkg_info) %>%
@@ -93,8 +96,52 @@ metric_lst <- c("1"='has_vignettes', "2"='has_news', "3"='news_current', "4"='ha
 
 rpt_choices <- c("Report Author", "Report Date", "Risk Score", "Overall Comment", "Package Summary",
                  "Maintenance Metrics", "Maintenance Comments", "Community Usage Metrics", "Community Usage Comments",
-                 "Source Explorer Comments", "Function Explorer Comments")
+                 "Package Dependencies", "Include Suggests", "Dependency Comments", "Source Explorer Comments", 
+                 "Function Explorer Comments")
 
+
+# For making contributor cards on the `About` page
+team_info_df <- data.frame(
+  name = c("Aaron Clark", "Narayanan Iyer", "Robert Krajcik", "Barbara Mikulasova", "Jeff Thompson",
+           "Eduardo Almeida","Lars anderson","Andrew Borgman","Maya Gans",
+           "Marly Gotti","Munshi Imran Hossain","Aravid Reddy Kallem","Scott Schumacker",
+           "Various Contributors"
+  ),
+  status = c("current","current","current","current","current",
+             "past","past","past","past",
+             "past","past","past","past",
+             "past"
+  ),
+  role = c("Workstream Lead","Contributor","Core Contributor","Contributor","Core Contributor",
+           "Contributor","Contributor","Contributor","Core Contributor",
+           "Workstream Lead","Contributor","Core Contributor","Contributor",
+           "Package Explorer Author"
+  ),
+  priority = c(1, 4, 2, 4, 3,
+               4,4,4,2,
+               1,4,3,4,
+               4
+  ),
+  site = c("https://github.com/aclark02-arcus","https://github.com/narayanan-iyer-pfizer","https://github.com/Robert-Krajcik","https://github.com/BarbMik","https://github.com/jthompson-arcus",
+           "https://github.com/Eduardodudu","https://github.com/Xyarz","https://github.com/borgmaan","https://github.com/MayaGans",
+           "https://github.com/marlycormar","https://github.com/imran3004","https://github.com/aravindFL1412","https://github.com/ScottSchumacker",
+           "https://github.com/pharmaR/pkg_explorer"),
+  org = c("Arcus Biosciences", "Pfizer", "Cytel", "Katalyze Data", "Arcus Biosciences",
+          "Appsilon","Boehringer Ingelheim","Biogen","Cytel","Biogen",
+          "Cytel","Fission Labs","Canary Medical",
+          "Glaxo Smith Kline"
+  ),
+  photo_file = c(
+    "aaron_clark_sq.png", "person_placeholder_sq.png", "robert_krajcik_sq.png", "barbara_mik_sq.png", "jeff_thompson_sq.png",
+    "eduardo_almeida_sq.png","lars_anderson_sq.png","andrew_borgman_sq.png","maya_gans_sq.png",
+    "marly_gotti_sq.png","imran_hossain_sq.png","person_placeholder_sq.png","scott_schumacker_sq.png",
+    "gsk_logo_sq.png"
+  )
+) %>%
+  arrange(priority, name)
+
+
+# load(file = 'R/sysdata.rda') # helpful if changing just one object in sysdta.rda
 usethis::use_data(
   # app_version, 
   # database_name, #credentials_name,
@@ -106,5 +153,6 @@ usethis::use_data(
   privileges_tbl,
   test_pkg_lst, test_pkg_refs, test_pkg_info, test_pkg_assess, test_pkg_cum,
   color_palette, used_privileges, metric_lst, rpt_choices,
+  team_info_df,
   internal = TRUE, overwrite = TRUE)
 

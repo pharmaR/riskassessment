@@ -29,9 +29,11 @@ mod_user_roles_ui <- function(id){
 #' @noRd 
 mod_user_roles_server <- function(id, user, credentials){
   if (missing(credentials))
-    credentials <- get_db_config("credentials")
+    credentials <- get_credential_config()
   moduleServer( id, function(input, output, session){
     ns <- session$ns
+    
+    use_shinymanager <- !isFALSE(get_db_config("use_shinymanager"))
     
     initial_tbl <- get_roles_table()
     roles_dbtbl <- reactiveVal(initial_tbl)
@@ -83,7 +85,7 @@ mod_user_roles_server <- function(id, user, credentials){
     output$modal_table <- 
       DT::renderDataTable({
         i <- match("admin", rownames(roles_dbtbl()))
-        j <- match(role_changes() %>% dplyr::filter(old_role == user$role) %>% dplyr::pull(new_role), colnames(roles_dbtbl()))
+        j <- match(role_changes() %>% dplyr::filter(old_role %in% user$role) %>% dplyr::pull(new_role), colnames(roles_dbtbl()))
         DT::datatable(
           roles_dbtbl(),
           escape = FALSE,
@@ -103,7 +105,6 @@ mod_user_roles_server <- function(id, user, credentials){
               "    var value = $(this).is(':checked') ? 1 : 0",
               "    var info = [{row: row, col: col, value: value}]",
               glue::glue("    Shiny.setInputValue('{ns(\"modal_table\")}_cell_edit:DT.cellInfo', info)"),
-              "    console.log(info)",
               "  })",
               "}"
               ),
@@ -114,8 +115,10 @@ mod_user_roles_server <- function(id, user, credentials){
                 targets = "_all",
                 render = DT::JS(glue::glue(
                   "function(data, type, row, meta) {{",
+                  "  var cols = {jsonlite::toJSON(j)};",
                   "  if(meta.col != 0){{",
-                  "    return `<input type=\"checkbox\" ${{meta.row == {i-1} & meta.col == {j} ? 'disabled' : ''}} row=${{meta.row}} col=${{meta.col}} ${{data ? 'checked' : ''}}/>`;", 
+                  "    console.log(row);",
+                  "    return `<input type=\"checkbox\" ${{meta.row == {i-1} & cols.reduce((rsum, x) => {{return rsum + row[x]}}, 0) === 1 & cols.includes(meta.col) & data ? 'disabled' : ''}} row=${{meta.row}} col=${{meta.col}} ${{data ? 'checked' : ''}}/>`;", 
                   "  }}",
                   "  return data;",
                   "}}"
@@ -126,8 +129,24 @@ mod_user_roles_server <- function(id, user, credentials){
       bindEvent(roles_dbtbl())
     
     observeEvent(input$edit_dropdown, {
-      user_table(get_credentials_table(passphrase = passphrase))
-      used_roles <- role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
+      user_table({
+        if (!use_shinymanager)
+          dbSelect("SELECT user_role AS role FROM roles") %>%
+          dplyr::filter(role %in% c(user$role, "default"))
+        else
+          get_credentials_table(passphrase = passphrase)
+      })
+      used_roles <- 
+        if (!use_shinymanager) {
+          unique(c(user$role, "default"))
+        } else {
+          role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
+        }
+      used_roles_admin <-
+        intersect(names(purrr::keep(credentials$privileges, ~ "admin" %in% .x)), user$role) %>%
+        c("default") %>%
+        unique()
+
       showModal(modalDialog(
         size = "l",
         footer = tagList(
@@ -148,16 +167,16 @@ mod_user_roles_server <- function(id, user, credentials){
         tags$label("Edit Role Name", class = "control-label"),
         div(
           style = "display: flex",
-          selectInput(ns("select_edit_col"), NULL, choices = colnames(proxy_tbl()), width = "25%"),
+          selectInput(ns("select_edit_col"), NULL, choices = if (use_shinymanager) colnames(proxy_tbl()) else setdiff(colnames(proxy_tbl()), used_roles), width = "25%"),
           textInput(ns("edit_col"), NULL, width = "25%"),
           actionButton(ns("edit_col_submit"), shiny::icon("pen-to-square"),
                        style = 'height: calc(1.5em + 1.5rem + 2px)')
         ),
-        tags$label("Delete Role", icon("circle-info", class = "fa-xs", title = "A role can only be deleted if no users are assigned to it. If the role is not visible, first ensure no users are assigned that role in the Credential Manager."), class = "control-label"),
+        tags$label("Delete Role", icon("circle-info", class = "fa-xs", title = if (use_shinymanager) "A role can only be deleted if no users are assigned to it. If the role is not visible, first ensure no users are assigned that role in the Credential Manager." else "A role/group can only be deleted if you as the user are not assigned it and it is not the default."), class = "control-label"),
         div(
           style = "display: flex",
-          selectInput(ns("delete_col"), NULL, choices = setdiff(colnames(proxy_tbl()), used_roles), width = "50%") %>%
-            tagAppendAttributes(class = if(length(setdiff(colnames(proxy_tbl()), used_roles)) == 0) "shinyjs-disabled"),
+          selectInput(ns("delete_col"), NULL, choices = setdiff(colnames(proxy_tbl()), if (use_shinymanager) used_roles else used_roles_admin), width = "50%") %>%
+            tagAppendAttributes(class = if(length(setdiff(colnames(proxy_tbl()), if (use_shinymanager) used_roles else used_roles_admin)) == 0) "shinyjs-disabled"),
           actionButton(ns("delete_col_submit"), shiny::icon("trash-can"),
                        style = 'height: calc(1.5em + 1.5rem + 2px)')
         ),
@@ -178,13 +197,22 @@ mod_user_roles_server <- function(id, user, credentials){
       reset_table <- get_roles_table()
       roles_dbtbl(reset_table)
       role_changes(dplyr::tibble(old_role = colnames(reset_table), new_role = colnames(reset_table)))
-      used_roles <- role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
+      used_roles <- 
+        if (!use_shinymanager) {
+          unique(c(user$role, "default"))
+        } else {
+          role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
+        }
+      used_roles_admin <-
+        intersect(names(purrr::keep(credentials$privileges, ~ "admin" %in% .x)), user$role) %>%
+        c("default") %>%
+        unique()
       
       updateTextInput(session, "add_col", value = "")
-      updateSelectInput(session, "select_edit_col", choices = colnames(reset_table))
+      updateSelectInput(session, "select_edit_col", choices = if (use_shinymanager) colnames(reset_table) else setdiff(colnames(reset_table), used_roles))
       updateTextInput(session, "edit_col", value = "")
-      updateSelectInput(session, "delete_col", choices = setdiff(colnames(reset_table), used_roles))
-      if (length(setdiff(colnames(reset_table), used_roles)) == 0)
+      updateSelectInput(session, "delete_col", choices = setdiff(colnames(reset_table), if (use_shinymanager) used_roles else used_roles_admin))
+      if (length(setdiff(colnames(reset_table), if (use_shinymanager) used_roles else used_roles_admin)) == 0)
         shinyjs::disable("delete_col")
       else
         shinyjs::enable("delete_col")
@@ -193,7 +221,13 @@ mod_user_roles_server <- function(id, user, credentials){
     observeEvent(input$modal_table_cell_edit, {
       i <- match("admin", rownames(roles_dbtbl()))
       j <- match(user$role, colnames(roles_dbtbl()))
-      req(i != input$modal_table_cell_edit$row || j != input$modal_table_cell_edit$col)
+      req(i != input$modal_table_cell_edit$row || 
+            i == input$modal_table_cell_edit$row & 
+              sum(proxy_tbl()[i, j]) > 1 || 
+            i == input$modal_table_cell_edit$row & 
+              sum(proxy_tbl()[i, j]) == 1 & 
+              input$modal_table_cell_edit$value == 1 || 
+            !input$modal_table_cell_edit$col %in% j)
       
       proxy_tbl(DT::editData(proxy_tbl(), input$modal_table_cell_edit))
       DT::replaceData(proxy, proxy_tbl(), resetPaging = FALSE)
@@ -207,12 +241,21 @@ mod_user_roles_server <- function(id, user, credentials){
       colnames(tbl) <- c(colnames(proxy_tbl()), input$add_col)
       roles_dbtbl(tbl)
       role_changes(dplyr::add_row(role_changes(), new_role = input$add_col))
-      used_roles <- role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
+      used_roles <- 
+        if (!use_shinymanager) {
+          unique(c(user$role, "default"))
+        } else {
+          role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
+        }
+      used_roles_admin <-
+        intersect(names(purrr::keep(credentials$privileges, ~ "admin" %in% .x)), user$role) %>%
+        c("default") %>%
+        unique()
       
       updateTextInput(session, "add_col", value = "")
-      updateSelectInput(session, "select_edit_col", choices = colnames(tbl))
+      updateSelectInput(session, "select_edit_col", choices = if (use_shinymanager) colnames(tbl) else setdiff(colnames(tbl), used_roles))
       updateTextInput(session, "edit_col", value = "")
-      updateSelectInput(session, "delete_col", choices = setdiff(colnames(tbl), used_roles))
+      updateSelectInput(session, "delete_col", choices = setdiff(colnames(tbl), if (use_shinymanager) used_roles else used_roles_admin))
       shinyjs::enable("delete_col")
       
     })
@@ -229,40 +272,58 @@ mod_user_roles_server <- function(id, user, credentials){
                                  new_role = if_else(new_role == input$select_edit_col, 
                                                     input$edit_col, 
                                                     new_role)))
-      used_roles <- role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
+      used_roles <-  
+        if (!use_shinymanager) {
+          unique(c(user$role, "default"))
+        } else {
+          role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
+        }
+      used_roles_admin <-
+        intersect(names(purrr::keep(credentials$privileges, ~ "admin" %in% .x)), user$role) %>%
+        c("default") %>%
+        unique()
       
       updateTextInput(session, "add_col", value = "")
-      updateSelectInput(session, "select_edit_col", choices = colnames(tbl))
+      updateSelectInput(session, "select_edit_col", choices = if (use_shinymanager) colnames(tbl) else setdiff(colnames(tbl), used_roles))
       updateTextInput(session, "edit_col", value = "")
-      updateSelectInput(session, "delete_col", choices = setdiff(colnames(tbl), used_roles))
+      updateSelectInput(session, "delete_col", choices = setdiff(colnames(tbl), if (use_shinymanager) used_roles else used_roles_admin))
     })
     
     observeEvent(input$delete_col_submit, {
       o_role <- role_changes() %>% dplyr::filter(new_role == input$delete_col) %>% dplyr::pull(name = old_role)
-      req(!o_role %in% user_table()$role)
+      used_roles_admin <-
+        intersect(names(purrr::keep(credentials$privileges, ~ "admin" %in% .x)), user$role) %>%
+        c("default") %>%
+        unique()
+      req(!o_role %in% if (use_shinymanager) user_table()$role else used_roles_admin)
       
       tbl <- proxy_tbl()
       i <- match(input$delete_col, colnames(tbl))
-      tbl <- tbl[,-i]
+      tbl <- tbl[,-i, drop = FALSE]
       roles_dbtbl(tbl)
       role_changes(dplyr::mutate(role_changes(), 
                                  new_role = if_else(new_role == input$delete_col, 
                                                     NA_character_, 
                                                     new_role)))
-      used_roles <- role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
+      used_roles <- 
+        if (!use_shinymanager) {
+          unique(c(user$role, "default"))
+        } else {
+          role_changes() %>% dplyr::filter(old_role %in% user_table()$role) %>% dplyr::pull(new_role)
+        }
       
       updateTextInput(session, "add_col", value = "")
-      updateSelectInput(session, "select_edit_col", choices = colnames(tbl))
+      updateSelectInput(session, "select_edit_col", choices = if (use_shinymanager) colnames(tbl) else setdiff(colnames(tbl), used_roles))
       updateTextInput(session, "edit_col", value = "")
-      updateSelectInput(session, "delete_col", choices = setdiff(colnames(tbl), used_roles))
-      if (length(setdiff(colnames(tbl), used_roles)) == 0)
+      updateSelectInput(session, "delete_col", choices = setdiff(colnames(tbl), if (use_shinymanager) used_roles else used_roles_admin))
+      if (length(setdiff(colnames(tbl), if (use_shinymanager) used_roles else used_roles_admin)) == 0)
         shinyjs::disable("delete_col")
       else
         shinyjs::enable("delete_col")
     })
     
     observeEvent(input$submit_changes, {
-      req("admin" %in% credentials$privileges[[user$role]])
+      req("admin" %in% unlist(credentials$privileges[user$role], use.names = FALSE))
       
       chng_lst <- dplyr::filter(role_changes(), paste(old_role) != paste(new_role))
       purrr::pmap(chng_lst, function(old_role, new_role) {
@@ -275,24 +336,36 @@ mod_user_roles_server <- function(id, user, credentials){
       })
       purrr::iwalk(as.data.frame(proxy_tbl()), ~ dbUpdate(glue::glue("UPDATE roles SET {paste(used_privileges, ' = ', .x, collapse = ', ')} WHERE user_role = '{.y}'")))
       
-      updated_user_tbl <-
-        user_table() %>%
-        dplyr::rowwise() %>%
-        dplyr::mutate(
-          role = role_changes() %>% `[`(!is.na(.$old_role) & .$old_role == role, "new_role") %>% `[[`(1),
-          admin = purrr::map(role, ~ dplyr::if_else(proxy_tbl()["admin", .x] == 1, 'TRUE', 'FALSE')) %>% unlist()
-        )
-      set_credentials_table(updated_user_tbl, passphrase = passphrase)
-      
-      user$role <- role_changes() %>% `[`(!is.na(.$old_role) & .$old_role == user$role, "new_role") %>% `[[`(1)
+      if (use_shinymanager) {
+        updated_user_tbl <-
+          user_table() %>%
+          dplyr::rowwise() %>%
+          dplyr::mutate(
+            role = role_changes() %>% `[`(!is.na(.$old_role) & .$old_role == role, "new_role") %>% `[[`(1),
+            admin = purrr::map(role, ~ dplyr::if_else(proxy_tbl()["admin", .x] == 1, 'TRUE', 'FALSE')) %>% unlist()
+          )
+        set_credentials_table(updated_user_tbl, passphrase = passphrase)
+      }
+
+      user$role <- role_changes() %>% `[`(!is.na(.$old_role) & .$old_role %in% user$role, "new_role") %>% `[[`(1)
       
       update_tbl <- get_roles_table()
       roles_dbtbl(update_tbl)
       role_changes(dplyr::tibble(old_role = colnames(update_tbl), new_role = colnames(update_tbl)))
       
       purrr::iwalk(get_credential_config(), ~ `<-`(credentials[[.y]], .x))
+
+      user_table({
+        if (!use_shinymanager)
+          dbSelect("SELECT user_role AS role FROM roles") %>%
+          dplyr::filter(role %in% c(user$role, "default"))
+        else
+          get_credentials_table(passphrase = passphrase)
+      })
       
-      user_table(get_credentials_table(passphrase = passphrase))
+      # Make sure the user roles are reflected with changes
+      if (!use_shinymanager)
+        user$role <- intersect(unlist(session$groups, use.names = FALSE), dbSelect("select user_role from roles")[[1]]) %||% c("default")
       
       session$userData$trigger_events[["reset_sidebar"]] <- session$userData$trigger_events[["reset_sidebar"]] + 1
       

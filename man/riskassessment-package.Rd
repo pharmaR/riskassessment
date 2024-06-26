@@ -17,12 +17,13 @@ context for validation within regulated industries.
 Useful links:
 \itemize{
   \item \url{https://github.com/pharmaR/riskassessment}
+  \item \url{https://pharmar.github.io/riskassessment/}
   \item Report bugs at \url{https://github.com/pharmaR/riskassessment/issues}
 }
 
 }
 \author{
-\strong{Maintainer}: Aaron Clark \email{aaron.clark@biogen.com}
+\strong{Maintainer}: Aaron Clark \email{clark.aaronchris@gmail.com}
 
 Authors:
 \itemize{
@@ -41,6 +42,7 @@ Other contributors:
   \item Munshi Imran Hossain [contributor]
   \item Scott Schumacker \email{scottschu97@gmail.com} [contributor]
   \item Eduardo Almeida \email{eduardoalmeida7393@gmail.com} [contributor]
+  \item Narayanan Iyer \email{NarayananSeshan.Iyer@pfizer.com} [contributor]
   \item  PSI special interest group Application and Implementation of Methodologies in Statistics [copyright holder, funder]
   \item  R Validation Hub [copyright holder, funder]
   \item  GSK contributors (Author of 'pharmaR/pkg_explorer' repo) [contributor]

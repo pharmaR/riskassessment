@@ -13,24 +13,25 @@
 #' @importFrom rlang is_function is_formula
 #' @importFrom glue glue
 #' @importFrom loggit loggit
-assign_decisions <- function(rule_list, package) {
-  decision <- ""
-  dec_rule <- ""
+assign_decisions <- function(rule_list, package, db_name = golem::get_golem_options('assessment_db_name')) {
+  # Checks if decision has already been made and skips assignment if the case
+  decision <- dbSelect("SELECT decision_id FROM package WHERE name = {package}", db_name)[[1]]
+  dec_rule <- NA_character_
   if (any(purrr::map_lgl(rule_list, ~ !is.na(.x$metric))))
-    assessments <- get_assess_blob(package)
+    assessments <- get_assess_blob(package, db_name)
   
   for (i in seq_along(rule_list)) {
-    if (decision != "") break
+    if (!is.na(decision)) break
     rule <- rule_list[[i]]
     
     fn <- purrr::possibly(rule$mapper, otherwise = FALSE)
     if (rule$type == "overall_score") {
-      decision <- if (fn(get_pkg_info(package)$score)) rule$decision else ""
+      decision <- if (fn(get_pkg_info(package)$score)) rule$decision else NA_character_
       log_message <- glue::glue("Decision for the package {package} was assigned {decision} because the risk score returned TRUE for `{rule$condition}`")
       db_message <- glue::glue("Decision was assigned '{decision}' by decision rules because the risk score returned TRUE for `{rule$condition}`")
     } else if (rule$type == "assessment" && (rlang::is_function(rule$mapper) | rlang::is_formula(rule$mapper))) {
       test <- try(fn(assessments[[rule$metric]][[1]]), silent = TRUE)
-      decision <- if (is.logical(test) && length(test) == 1 && !is.na(test) && test) rule$decision else ""
+      decision <- if (is.logical(test) && length(test) == 1 && !is.na(test) && test) rule$decision else NA_character_
       log_message <- glue::glue("Decision for the package {package} was assigned {decision} because the {rule$metric} assessment returned TRUE for `{rule$condition}`")
       db_message <- glue::glue("Decision was assigned '{decision}' by decision rules because the {rule$metric} assessment returned TRUE for `{rule$condition}`")
     } else if (rule$type == "else") {
@@ -42,18 +43,20 @@ assign_decisions <- function(rule_list, package) {
       decision <- ""
     }
     
-    if (decision == "") next
+    if (is.na(decision)) next
     dec_rule <- paste("Rule", i)
     
-    decision_id <- dbSelect("SELECT id FROM decision_categories WHERE decision = {decision}")
+    decision_id <- dbSelect("SELECT id FROM decision_categories WHERE decision = {decision}", db_name)
     dbUpdate("UPDATE package SET decision_id = {decision_id},
                         decision_by = 'Auto Assigned', decision_date = {get_Date()}
-                         WHERE name = {package}")
+                         WHERE name = {package}",
+             db_name)
     loggit::loggit("INFO", log_message)
     dbUpdate(
       "INSERT INTO comments
           VALUES ({package}, 'Auto Assigned', 'admin',
-          {db_message}, 'o', {getTimeStamp()})")
+          {db_message}, 'o', {getTimeStamp()})",
+      db_name)
   }
   
   list(decision = decision, decision_rule = dec_rule)
@@ -88,10 +91,14 @@ get_text_color <- function(hex) {
   lum <-
     hex %>%
     stringr::str_remove("#") %>%
-    substring(0:2*2+1,1:3*2) %>%
-    strtoi(16) %>%
-    `*`(c(299, 587, 114)) %>%
-    sum() %>%
+    purrr::map_dbl(
+      ~ {
+        .x %>%
+          substring(0:2*2+1,1:3*2) %>%
+          strtoi(16) %>%
+          `*`(c(299, 587, 114)) %>%
+          sum() 
+      }) %>%
     `/`(1000)
 
   ifelse(lum <= 130, "#ffffff", "#000000")
@@ -229,7 +236,9 @@ create_rule_obs <- function(rv, rule_lst, .input, ns = NS(NULL), session = getDe
     session$onFlushed(function() {
       shinyjs::runjs(glue::glue("Shiny.setInputValue('{ns(\"rules_order\")}:sortablejs.rank_list', $.map($('#{ns(\"rules_list\")}').children(), function(child) {{return $(child).attr('data-rank-id') || $.trim(child.innerText);}}))"))
     })
-    .subset2(rule_lst, "impl")$.values$remove(rv)
+    rv_r6 <- .subset2(rule_lst, "impl")
+    rv_r6$.values$remove(rv)
+    rv_r6$.nameOrder = setdiff(rv_r6$.nameOrder, rv)
     o$destroy()
   })
 }

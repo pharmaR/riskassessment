@@ -3,28 +3,39 @@
 #' An HTML meter element, used for displaying metric scores in the app
 #' 
 #' @param score a whole number between 0 and 100
+#' 
 #' @importFrom dplyr case_when
+#' @importFrom bslib tooltip
 #' @return tagList object
 #' @keywords internal
 #'
-metric_gauge <- function(score) { # could add id arg here
+metric_gauge <- function(score) { #, id = "meter") { # could add id arg here
+
   
+  if(toupper(score) %in% c("NA", "NULL") | is.na(score)) {
+    lab <- "NA"
+    tip <- dplyr::if_else(score == "NULL", "Not a {riskmetric} assessment", # shouldn't show up
+                          "'NA' indicates an assessment value exists, but there is no score recorded")
+  } else {
+    # flip the label display of the score to mimic the package score...
+    lab <- HTML(case_when(
+      round(as.numeric(score), 2) == 0 ~ "1 <span style='color:#FF765B; font-family:FontAwesome; text-shadow:-1px 0 #777, 0 1px #777, 1px 0 #777, 0 -1px #777;'>&#10060;</span>",
+      round(as.numeric(score), 2) == 1 ~ "0 <span style='color:#9CFF94; font-family:FontAwesome; text-shadow:-1px 0 #777, 0 1px #777, 1px 0 #777, 0 -1px #777;'>&#10004;</span>",
+      TRUE ~ as.character(round(1 - as.numeric(score), 2))
+    ))
+    tip <- HTML(case_when(
+      round(as.numeric(score), 2) == 0 ~ "Score: 1 indicates the highest risk possible",
+      round(as.numeric(score), 2) == 1 ~ "Score: 0 indicates the lowest risk possible",
+      TRUE ~ "Scores close to 1 indicate high risk while scores closer to 0 are low risk"))
+  }
+  
+  # insert label, meter, and tooltip into a tagList
   tagList(
     div(style = "width: 78px; text-align:center;",
+        div(tags$label(style = "font-size:32px; cursor: var(--cursor, default)", lab) #`for` = id,
+        ) ,
         div(
-          tags$label(style = "font-size:32px", # `for` = id,
-                     if(toupper(score) %in% c("NA", "NULL")) "NA" else {
-                       # flip the label display of the score to mimic the package score...
-                       HTML(case_when(
-                         round(as.numeric(score), 2) == 0 ~ "1 <span style='color:#FF765B; font-family:FontAwesome; text-shadow:-1px 0 #777, 0 1px #777, 1px 0 #777, 0 -1px #777;'>&#10060;</span>",
-                         round(as.numeric(score), 2) == 1 ~ "0 <span style='color:#9CFF94; font-family:FontAwesome; text-shadow:-1px 0 #777, 0 1px #777, 1px 0 #777, 0 -1px #777;'>&#10004;</span>",
-                         TRUE ~ as.character(round(1 - as.numeric(score), 2))
-                       ))
-                     }
-          )
-        ),
-        div(
-          tags$meter( # id = id,
+          tags$meter( #id = id,
             min = 0,
             max = 1,
             optimum = 1,
@@ -35,10 +46,14 @@ metric_gauge <- function(score) { # could add id arg here
             else ifelse(between(round(as.numeric(score), 2), 0, .08), .08, round(as.numeric(score), 2)),
             style = "height: 30px; width: 100%;"
           )
-        )
-    )
-  ) 
+        ) 
+    ) 
+  ) |> bslib::tooltip(tip)
 }
+
+
+
+
 
 #' The 'Build Community Cards' function
 #' 
@@ -50,7 +65,7 @@ metric_gauge <- function(score) { # could add id arg here
 #' @importFrom stats lm
 #' @keywords internal
 #' 
-build_comm_cards <- function(data){
+build_comm_cards <- function(data, db_name = golem::get_golem_options('assessment_db_name')){
   
   cards <- dplyr::tibble(
     name = character(),
@@ -62,7 +77,7 @@ build_comm_cards <- function(data){
     icon_class = character(),
     is_perc = numeric(),
     is_url = numeric(),
-    type = "information"
+    type = character()
   )
   
   if (nrow(data) == 0)
@@ -119,7 +134,7 @@ build_comm_cards <- function(data){
   
   
   # pull in some riskmetric data
-  comm <- get_metric_data(data$id[1], metric_class = 'community', golem::get_golem_options('assessment_db_name'))
+  comm <- get_metric_data(data$id[1], metric_class = 'community', db_name)
   
   
   # get downloads in the last year
@@ -147,7 +162,7 @@ build_comm_cards <- function(data){
   
   
   # get reverse dependency info
-  rev_deps <- get_assess_blob(data$id[1])$reverse_dependencies[[1]]
+  rev_deps <- get_assess_blob(data$id[1], db_name, "reverse_dependencies")$reverse_dependencies[[1]]
   
   comm_rev <- comm %>% filter(name == "reverse_dependencies")
   # new
@@ -219,7 +234,7 @@ build_comm_cards <- function(data){
 #' The 'Build Dependency Cards' function
 #' 
 #' @param data a data.frame
-#' @param loaded a vector of package names loaded to db 
+#' @param loaded a vector of package names loaded to db
 #' 
 #' @import dplyr
 #' @importFrom glue glue
@@ -238,15 +253,17 @@ build_dep_cards <- function(data, loaded, toggled){
     succ_icon = character(),
     icon_class = character(),
     is_perc = numeric(),
-    is_url = numeric()
+    is_url = numeric(),
+    type = character()
   )
+
   
   deps <- data %>% 
-    mutate(package = stringr::str_replace(package, "\n", "")) %>% 
-    mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")) %>% 
-    mutate(base = if_else(name %in% c(rownames(installed.packages(priority = "base"))), "Base", "Tidyverse")) %>% 
-    mutate(base = factor(base, levels = c("Base", "Tidyverse"), labels = c("Base", "Tidyverse"))) %>% 
-    mutate(upld = if_else(name %in% loaded, 1, 0)) 
+    mutate(base = if_else(name %in% c(rownames(installed.packages(priority = "base"))), "Base", "Non-Base")) %>% 
+    mutate(non_base = ifelse(base != "Base", 1, 0)) %>%
+    mutate(base = factor(base, levels = c("Base", "Tidyverse"), labels = c("Base", "Non-Base"))) %>% 
+    mutate(upld = if_else(name %in% loaded, 1, 0)) %>%
+    mutate(upld_non_base = if_else((name %in% loaded) & non_base == 1, 1, 0))
   
   if (toggled == 0L) {
     deps <- deps %>% 
@@ -256,14 +273,22 @@ build_dep_cards <- function(data, loaded, toggled){
       mutate(type = factor(type, levels = c("Imports", "Depends", "LinkingTo", "Suggests"), ordered = TRUE)) 
   }
   
-  upld_cat_rows <-
+  # Card 1: Dependencies Uploaded
+  upld_dat <-
     deps %>%
-    summarize(upld_cat_sum = sum(upld)) %>%
+    summarize(
+      upld_cat_sum = sum(upld),
+      upld_non_base_sum = sum(upld_non_base), # can't upload base pkgs, 
+      non_base_sum = sum(non_base)       # so they shouldn't be included
+    ) %>% 
     mutate(upld_cat_pct  = 100 * (upld_cat_sum / nrow(deps))) %>% 
-    mutate(upld_cat_disp = if_else(is.nan(upld_cat_pct),
-                                   glue::glue('{upld_cat_sum} ( 0%)'),
-                                   glue::glue('{upld_cat_sum} of {nrow(deps)} ({format(upld_cat_pct, digits = 1)}%)'))) %>% 
-    pull(upld_cat_disp) 
+    mutate(upld_non_base_pct  = if_else(non_base_sum == 0, 100, 100 * (upld_non_base_sum / non_base_sum))) %>% 
+    mutate(upld_cat_disp = 
+       if_else(is.nan(upld_cat_pct),
+         glue::glue('{upld_cat_sum} ( 100%)'),
+         glue::glue('{upld_cat_sum} of {nrow(deps)} ({format(upld_cat_pct, digits = 1)}%)')))
+  upld_cat_rows <- upld_dat %>% pull(upld_cat_disp) 
+  
   
   # Get the Number of uploaded dependencies in the db
   cards <- cards %>%
@@ -274,17 +299,21 @@ build_dep_cards <- function(data, loaded, toggled){
       value = upld_cat_rows,
       score = "NULL",
       succ_icon = 'upload',
-      icon_class = "text-info",
+      icon_class = "text-info", # this get's overwritten by "type" arg
       is_perc = 0,
-      is_url = 0
+      is_url = 0,
+      type = if_else(pull(upld_dat, upld_non_base_pct) < 100, "danger", "information")
     )
+  
+  
+  # Card 2: Type Summary
   # base R replacement for tidyr::complete(type)
-  x <- tibble("type" = levels(deps$type))
-  y <- full_join(x, deps, by = "type") %>% 
+  x2 <- dplyr::tibble("type" = levels(deps$type))
+  y2 <- full_join(x2, deps, by = "type") %>% 
     mutate(type = factor(type, ordered = TRUE))
   
   type_cat_rows <-
-    y %>%
+    y2 %>%
     mutate(cnt = ifelse(is.na(name), 0, 1)) %>%
     group_by(type) %>%
     summarize(type_cat_sum = sum(cnt)) %>%
@@ -310,11 +339,60 @@ build_dep_cards <- function(data, loaded, toggled){
       is_url = 0
     )
   
-  x <- tibble("base" = levels(deps$base))
-  y <- full_join(x, deps, by = "base")
   
+  # Card 3: Decision Summary
+  decision_lst <- if (!is.null(golem::get_golem_options("decision_categories"))) golem::get_golem_options("decision_categories") else c("Low Risk", "Medium Risk", "High Risk")
+  decision_key <- dplyr::tibble(decision = decision_lst) |>
+    dplyr::mutate(decision_id = dplyr::row_number()) # I don't think I need this
+  high_decision <- decision_key |>
+    dplyr::filter(decision_id == max(decision_key$decision_id)) |>
+    dplyr::pull(decision)
+  
+  
+  dec_cat_dat <-
+    deps %>%
+    mutate(cnt = ifelse(is.na(name), 0, 1)) %>%
+    mutate(dec_cat = factor(if_else(decision == "" | is.na(decision), "No Decision", decision),
+                            levels = c("No Decision", decision_key$decision))) %>%
+    mutate(dec_id = if_else(decision == "" | is.na(decision), "0", decision_id)) %>%
+    group_by(dec_cat, dec_id) %>%
+    summarize(dec_cat_sum = sum(cnt)) %>%
+    ungroup() %>%
+    mutate(dec_cat_pct  = 100 * (dec_cat_sum / nrow(deps))) %>%
+    mutate(dec_cat_disp = if_else(is.nan(dec_cat_pct),
+                                  glue::glue('{dec_cat}: {dec_cat_sum} ( 0%)'),
+                                  glue::glue('{dec_cat}: {dec_cat_sum} ({format(dec_cat_pct, digits = 1)}%)'))) %>%
+    arrange(dec_cat) 
+  
+  if(nrow(dec_cat_dat) == 0) {
+    dec_cat_rows <- "No Decisions"
+  } else {
+    dec_cat_rows <- dec_cat_dat %>%
+      pull(dec_cat_disp) %>%
+      paste(., collapse = " \n")
+  }
+  
+  cards <- cards %>%
+    dplyr::add_row(
+      name = 'dec_cat_count',
+      title = 'Decision Summary',
+      desc = 'Package Dependencies by Decision',
+      value = dec_cat_rows,
+      score = "NULL",
+      succ_icon = 'rocket',
+      icon_class = "text-info", # this gets overwritten by `type` arg below
+      is_perc = 0,
+      is_url = 0,
+      type = if_else(any(pull(dec_cat_dat, dec_id) == max(decision_key$decision_id)), "danger", "information")
+    )
+  
+  
+  # Card 4: Base-R Packages
+  x3 <- dplyr::tibble("base" = levels(deps$base))
+  y3 <- full_join(x3, deps, by = "base")
+
   base_cat_rows <-
-    y %>%
+    y3 %>%
     mutate(cnt = ifelse(is.na(name), 0, 1)) %>%
     group_by(base) %>%
     summarize(base_cat_sum = sum(cnt)) %>%
@@ -330,48 +408,54 @@ build_dep_cards <- function(data, loaded, toggled){
   cards <- cards %>%
     dplyr::add_row(
       name = 'base_cat_count',
-      title = 'Base R Summary',
+      title = 'Base-R Packages',
       desc = 'Percent of Packages from Base R',
       value = base_cat_rows,
       score = "NULL",
-      succ_icon = 'boxes-stacked',
+      succ_icon = 'house-circle-check',
       icon_class = "text-info",
       is_perc = 0,
       is_url = 0
     )
   
+  
+  
+  
+  
+  # return cards object
   cards
+  
 }
 
 
 # # test data fro build_db_cards()
 # data <- structure(list(
-#   name = c("zoo", "xts", "vcd", "tidyverse", "tidyr", 
-#           "tidymodels", "testthat", "stringr", "sp", "shiny", "samplesizeCMH", 
-#           "roxygen2", "riskmetric", "rgl", "purrr", "odbc", "editData", 
-#           "dplyr", "AalenJohansen", "A3"), 
-#   date_added = structure(c(19649, 
-#         19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 
-#         19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 
+#   name = c("zoo", "xts", "vcd", "tidyverse", "tidyr",
+#           "tidymodels", "testthat", "stringr", "sp", "shiny", "samplesizeCMH",
+#           "roxygen2", "riskmetric", "rgl", "purrr", "odbc", "editData",
+#           "dplyr", "AalenJohansen", "A3"),
+#   date_added = structure(c(19649,
+#         19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649,
+#         19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649,
 #         19649), class = "Date"),
-#   version = c("1.8-12", "0.13.1", "1.4-11", 
-#        "2.0.0", "1.3.0", "1.1.1", "3.2.0", "1.5.0", "2.1-1", "1.7.5.1", 
-#        "0.0.0", "7.2.3", "0.2.3", "1.2.1", "1.0.2", "1.3.5", "0.1.8", 
+#   version = c("1.8-12", "0.13.1", "1.4-11",
+#        "2.0.0", "1.3.0", "1.1.1", "3.2.0", "1.5.0", "2.1-1", "1.7.5.1",
+#        "0.0.0", "7.2.3", "0.2.3", "1.2.1", "1.0.2", "1.3.5", "0.1.8",
 #        "1.1.3", "1.0", "1.0.0"),
 #   score = c(0.43, 0.21, 0.55, 0.25, 0.29, 0.29, 0.26, 0.25, 0.32, 0.34, 0.53,
 #             0.29, 0.43, 0.24, 0.24, 0.36, 0.4, 0.27, 0.76, 0.74),
 #   decision = structure(c(3L, 2L, 3L, 2L,2L, 2L, 2L, 2L, 2L, 3L, 3L,
 #                          2L, 3L, 2L,2L, 3L, 3L, 2L, 1L, 1L
-#        ), levels = c("High Risk", "Low Risk", "Medium Risk"), class = "factor"), 
-#  decision_by = structure(c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 
-#        1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L), levels = "Auto Assigned", class = "factor"), 
-#  decision_date = structure(c(19649, 19649, 19649, 19649, 19649, 
-#        19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 
-#        19649, 19649, 19649, 19649, 19649, 19649), class = "Date"), 
-#  last_comment = structure(c(1697709264, 1697709291, 1697709318, 
-#       1697709337, 1697709375, 1697709397, 1697709433, 1697709457, 
-#       1697709489, 1697709547, 1697706022, 1697709582, 1697709624, 
-#       1697709670, 1697709703, 1697709726, 1697706095, 1697706073, 
+#        ), levels = c("High Risk", "Low Risk", "Medium Risk"), class = "factor"),
+#  decision_by = structure(c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L,
+#        1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L), levels = "Auto Assigned", class = "factor"),
+#  decision_date = structure(c(19649, 19649, 19649, 19649, 19649,
+#        19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649, 19649,
+#        19649, 19649, 19649, 19649, 19649, 19649), class = "Date"),
+#  last_comment = structure(c(1697709264, 1697709291, 1697709318,
+#       1697709337, 1697709375, 1697709397, 1697709433, 1697709457,
+#       1697709489, 1697709547, 1697706022, 1697709582, 1697709624,
+#       1697709670, 1697709703, 1697709726, 1697706095, 1697706073,
 #       1697708816, 1697708016), class = c("POSIXct", "POSIXt"), tzone = "UTC")),
 #  class = "data.frame", row.names = c(NA, -20L))
 

@@ -1,0 +1,53 @@
+# Workflow derived from https://solutions.posit.co/operations/deploy-methods/ci-cd/github-actions/#overview-of-deploying-to-connect
+
+name: write-manifest
+on:
+  pull_request:
+    branches: [dev]
+    types: [review_requested]
+  workflow_dispatch:
+  
+
+jobs:
+  write-manifest:
+    if: ${{ !github.event.pull_request.draft }}
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Move to branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: 'renv'
+          use-public-rspm: false
+      - uses: r-lib/actions/setup-renv@v2
+
+      - name: Install required packages
+        run: Rscript -e 'renv::install("rsconnect")'
+
+      - name: Create manifest.json
+        run: Rscript -e 'rsconnect::writeManifest()'
+          
+      - name: Commit results
+        id: commit-results
+        run: |
+          git config --local user.name "Github Actions"
+          git config --local user.email "actions@github.com"
+          git add manifest.json || echo "WARN: manifest.json was not updated"
+          git commit -m 'Re-build manifest file' || echo "No changes to commit"
+          git push origin || echo "No changes to commit"
+          echo "commit-sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          
+      - name: Set status
+        run: |
+          gh api \
+            --method POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            /repos/pharmaR/riskassessment/statuses/${{ steps.commit-results.outputs.commit-sha }} \
+              -f "state=success" -f "description=manifest.json build succeeded!" -f "context=manifest-built"

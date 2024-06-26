@@ -1,8 +1,12 @@
 \usepackage{graphicx}
 \usepackage{fancyhdr}
 \usepackage{unicode-math}
+\usepackage{booktabs}
+\usepackage{tabularx}
 \fancypagestyle{plain}{\pagestyle{fancy}}
+\pagestyle{fancy}
 \fancyhf{}% Clear header/footer
-\setlength{\headheight}{15pt}
-\fancyhead[R]{\includegraphics[width=6em]{raa-image.png}}
+\fancyhead[R]{
+  \raisebox{-35pt}[0pt][0pt]{\includegraphics[width=6em]{raa-image.png}}
+}
 \renewcommand{\headrulewidth}{0.0pt}

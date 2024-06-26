@@ -42,3 +42,55 @@ test_that("module can produce a table of package dependencies", {
   rm(out_htm, id_strng, json, actual, expected, app_db_loc)
 
 })
+
+test_that(
+  "Feature 1. module packageDependencies selects all reverse dependencies 
+  in the database.
+    Scenario 1. Given the selected package is 'dplyr',  
+    and the packages names in the package database are 'dplyr' and 'dbplyr', 
+    I expect that the package names 'plotly', 'admiral', 'dbplyr' and 'glue' are found in [revdeps],
+    and that [table_revdeps_local] contains the package name 'dbplyr',
+    and that [table_revdeps_local] contains an action button",
+  {
+    testargs <- list(
+      selected_pkg =  list(
+        name = reactiveVal("dplyr")
+      ),
+      user = "test_user",
+      parent = reactiveValues(
+        input = reactiveValues(
+          tabs = "Package Metrics",
+          metric_type = "dep"
+        )
+      )
+    )
+    
+    test_db_loc <- test_path("test-apps", "downloadHandler-app", 
+                                "dplyr_tidyr.sqlite")
+    temp_db_loc <- withr::local_tempfile(fileext = ".database")
+    file.copy(test_db_loc, temp_db_loc)
+    
+    # add test db location to the app session:
+    app_session <- MockShinySession$new()
+    app_session$options$golem_options <- list(
+      assessment_db_name = temp_db_loc
+    )
+    app_session$userData$loaded2_db <- reactiveVal(
+      riskassessment:::dbSelect("
+            SELECT name, version, score, decision_id, decision
+             FROM package as pi
+             LEFT JOIN decision_categories as dc
+              ON pi.decision_id = dc.id", temp_db_loc)) # "select name, version, score from package"
+    
+    testServer(packageDependenciesServer, args = testargs,  {
+      session$flushReact()
+      session$setInputs(incl_suggests = TRUE)
+      expect_true(all(c("plotly", "admiral", "dbplyr", "glue", "tidyr") %in% revdeps()))
+      expect_equal(table_revdeps_local()$name, "tidyr")
+      # the table contains an action button:
+      expect_true(grepl('button id=\"button_1\"',table_revdeps_local()$Actions))
+    },
+    session = app_session)
+  }
+)
+

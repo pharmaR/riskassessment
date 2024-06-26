@@ -155,7 +155,7 @@ Feel free to use this information as you see fit! Similar to the `assessment_db`
 ```yml
 default:
   assessment_db: ./dev/database.sqlite
-  assessment_db: ./dev/loggit.json
+  loggit_json: ./dev/loggit.json
 ```
 
 <br>
@@ -170,7 +170,7 @@ Similar to the assessment database, when the `riskassessment::run_app()` functio
 ```yml
 default:
   assessment_db: ./dev/database.sqlite
-  assessment_db: ./dev/loggit.json
+  loggit_json: ./dev/loggit.json
   credential_db: ./dev/credentials.sqlite
 ```
 
@@ -201,32 +201,62 @@ Note the ["User Roles and Privileges" guide](../articles/User_Roles_and_Privileg
 
 ### Decisions configuration
 
-The **decisions** element contains up to three sub-elements: **categories** (mandatory), **rules**, and **colors**. Here is a snipped from one of the example configurations:
+The **decisions** element contains up to three sub-elements: **categories** (mandatory), **rules**, and **colors**. Here is an example configuration we'll walk through together:
 
 
 ```yml
 decisions:
   categories:
-    - Insignificant Risk
-    - Minor Risk
-    - Moderate Risk
-    - Major Risk
-    - Severe Risk
-  rules:
-    Insignificant Risk:
-      - 0
-      - .1
-    Severe Risk:
-      - .7
-      - 1
+      - Insignificant Risk
+      - Minor Risk
+      - Needs Review
+      - Moderate Risk
+      - Major Risk
+      - Severe Risk
+    rules:
+      rule_1:
+        metric: bugs_status
+        condition: ~ metric_score(.x) <= .25
+        decision: Severe Risk
+      rule_2:
+        metric: dependencies
+        condition: ~ length(.x) >= 30
+        decision: Major Risk
+      rule_3:
+        metric: has_vignettes
+        condition: ~ .x == 0
+        decision: Moderate Risk
+      Severe Risk:
+        - .7
+        - 1
+      Insignificant Risk:
+        - 0
+        - .1
+      rule_else:
+        decision: Needs Review
   colors:
     Moderate Risk: !expr grDevices::rgb(52, 235, 229, maxColorValue = 255)
 ```
 
+#### Categories
 
-Notice that you can set as many decision `categories` as you wish, but you must specify at least two! If you want to set up automatic decision rules before deploying the app, you can do so using the `rules` element. Just list the category name and underneath it, a mutually exclusive range of values so that when a package is uploaded, if it's risk score falls between those values, it will automatically get labelled with the appropriate decision. Categories not addressed under the `rules` banner will not receive automated decisions. However, users with this privilege can change this configuration in the app at a later time.
+Notice that you can set as many decision `categories` as you wish, but you must specify at least two! It's suggested that the category names you define should be ordinal in some way, where the first category is the lowest risk designation and the last category is the highest risk. In the example configuration above, you can see the categories are defined with a low risk category of "Insignificant Risk" and a high risk category of "Severe Risk". If you have a non-ordinal category you'd like to use, like "Needs Review" for example, that's possible - just don't list it first or last.
 
-Similarly for `colors`, you can detail specific colors be assigned to certain categories. If you don't care what color is used for each category, then a color-blind friendly color palette is used to fill in the rest.
+#### Rules
+
+Using the `rules` element, you may set up with automated decision rules prior to launching the app. That is, when a package is uploaded, it will automatically get labelled with the appropriate decision when a `rules` condition is met. These rules are executed in order, from top-to-bottom, so it's important to place rules with greatest priority at the top of the list. To implement a decision based on risk score, list the category name and then a mutually exclusive range of values directly beneath it to label those packages whose risk score falls between those two values. Above, we've defined rules that dictate risk scores between 0.7 and 1 should automatically be categorized as "Severe Risk". Similarly, packages scoring between 0 and 0.1 should get labelled "Insignificant Risk".
+
+In addition, the configuration file can evaluate expressions to define rules. To do so, the rule needs three elements: `metric`, `condition`, and `decision` as seen above. The `metric` element is simply the name of the `riskmetric` assessment you'd like to evaluate. Next, provide the R code (including `riskmetric` code) to help define your rules using formula syntax. Note: `.x` will be translated to to the selected `metric`'s assessment value. If you wish to convert this to a metric score, use `riskmetric::metric_score(.x)` as shown above. Last, provide the decision category to apply when this condition is met. Above, we specified hypothetical rules 1 - 3 that apply decisions in this manner; Below, we spell out these expressions in sentence format, taking into account that when the previous condition isn't met:
+
+- packages with a bug closure rate less than 25% should be considered "Severe Risk"
+- packages with more than 30 dependencies (and >25% bug close rate) are "Major Risk"
+- packages with no vignettes (and <30 dependencies and >25% bug close rate) are"Moderate Risk"
+
+Categories not addressed under the `rules` banner will not receive automated decisions. However, you can provide an optional `rule_else` element to define a decision category to apply to any packages that don't meet the rules above it. Also, keep in mind that users with privileges to edit decision rules may change any of these configuration in the app at a later time.
+
+#### Colors
+
+Last, using the `colors` element you can detail specific colors be assigned to certain categories. Notice that this element will accept an expression to evaluate when launching the application. If you don't care what color is used for a category, then a color-blind friendly color palette is used to fill in those categories not specified. 
 
 <br>
 
@@ -294,7 +324,7 @@ On Posit Connect, you need to use an absolute path to specify the directory wher
 
 <br>
 
-Beyond that, it's important to note that we strongly encourage those deploying the app to take advantage of the `renv.lock` file used to maintain package version dependencies. For more information on how to use `renv.lock` and our general dev philosophy as it pertains to package management, please read the ["Using `renv`"](https://pharmar.github.io/riskassessment/articles/dev_renv.html) article. Highly related, we encourage the use of git-backed deployment when possible. So, immediately after you update/sync your package dependencies using `renv`, you may want to run `rsconnect::writeManifest()` before deploying from a dedicated branch. For more information on git-backed deployment & manifest files, please read the Posit article on [git-backed content](https://docs.posit.co/connect/user/git-backed/).
+Beyond that, it's important to note that we strongly encourage those deploying the app to take advantage of the `renv.lock` file used to maintain package version dependencies. For more information on how to use `renv.lock` and our general dev philosophy as it pertains to package management, please read the ["Using `renv`"](https://pharmar.github.io/riskassessment/articles/dev_renv.html) article. Highly related, we encourage the use of git-backed deployment when possible. So, immediately after you update/sync your package dependencies using `renv`, you may want to run `rsconnect::writeManifest()` before deploying from a dedicated branch. For convenience, we maintain a current `manifest.json` that should follow the `renv.lock` file in our GitHub repo. So, if you've forked the application, you should be able to deploy the latest version of the app as-is, directly from our `master` branch. For more information on git-backed deployment & manifest files, please read the Posit article on [git-backed content](https://docs.posit.co/connect/user/git-backed/).
 
 <br>
 

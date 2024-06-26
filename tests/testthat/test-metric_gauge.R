@@ -15,7 +15,7 @@ meter_val <- function(x) {
 }
 
 test_that("metric_gauge() 'Label' tag working...", {
-  expect_equal(class(metric_gauge("NA")), c("shiny.tag.list", "list"))
+  expect_equal(class(metric_gauge("NA")), c("bslib_fragment", "shiny.tag"))
   
   expect_equal(metric_gauge("NA") |> my_attr("label") ,"NA")
   expect_equal(metric_gauge("0") |> my_attr("label") |> substr(1,1),"1")
@@ -31,3 +31,28 @@ test_that("metric_gauge() 'value' working...", {
   expect_equal(metric_gauge(".45") |> meter_val() ,"0.45")
   expect_equal(metric_gauge("1") |> meter_val(), "1")
 })
+
+# For interactive use only, to visualize the meters in a browser
+if(interactive()) {
+  # library(bslib)
+  # library(shiny)
+  ui <- fluidPage(
+    tags$head(tags$style(
+           "meter::-webkit-meter-optimum-value {background: #9CFF94;}
+            meter::-webkit-meter-suboptimum-value{background:#FFD070;}
+            meter::-webkit-meter-even-less-good-value{background:#FF765B;}
+            meter::-moz-meter-bar {background: #FF765B;}  /* color of bar*/
+            meter::-moz-meter-optimum-value {background: #9CFF94;}
+            meter::-moz-meter-suboptimum-value{background:#FFD070;}")),
+    metric_gauge("NA"), br(),
+    metric_gauge("0"), br(),
+    # metric_gauge(".25"), br(),
+    metric_gauge(".50"), br(),
+    metric_gauge("1")
+  )
+  server <- function(input, output, session) {}
+  shinyApp(ui, server)
+}
+
+
+

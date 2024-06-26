@@ -23,8 +23,8 @@ sidebar_steps <-
 # appui tab widgets
 apptab_steps <- data.frame(
   element = c(
-  "[data-value=assessment-criteria-tab]", "[data-value=database-tab]"),
-  intro = c("Discover the package assessment process & criteria",
+    "[data-value=about-tab]", "[data-value=database-tab]"),
+  intro = c("Discover more about the project, including the package assessment process & how to contact the maintainers.",
             "Review the R packages that already exist in the database"),
   position = c(rep("bottom", 2))
 )
@@ -48,7 +48,7 @@ upload_pkg <- data.frame(
 )
 upload_pkg_add <- data.frame(
   element = "#upload_package-upload_format",
-  intro = "Follow format of this sample data when creating your csv. Or you can even download it to use as a template.",
+  intro = "Follow format of this sample data when creating your csv. Or you can even download it to use as a template. Note: the `decision` column is optional and will only work for users with the correct privileges.",
   position = "top"
 )
 
@@ -64,14 +64,13 @@ upload_pkg_dec_adj <- data.frame(
   position = "left"
 )
 upload_pkg_comp <-  data.frame(
-      element = c("#upload_summary_div", "#upload_package-upload_pkgs_table"),
-      intro = c(
-        "Text description of packages uploaded. Counts by type: 'Total', 'New', 'Undiscovered', 'Duplicate'.",
-        "Confirm uploaded packages list, filter by type"
-      ),
-      position = c("bottom", "top")
+  element = c("#upload_summary_div", "#upload_package-upload_pkgs_table"),
+  intro = c(
+    "An overall summary of packages uploaded, giving you a synopsis of your most recent upload request.",
+    "A detailed upload summary, by package, including a quick look at scores and any automated decisions made. Click the 'Explore Metrics' button to dive deeper into any one assessment!"
+  ),
+  position = c("bottom", "top")
 )
-
 
 # Maintenance metrics.
 mm_steps <- 
@@ -79,9 +78,35 @@ mm_steps <-
     element = c(".card-group", "#comments_for_mm"),
     intro = c(
       "Several ways to measuring package maintenance are assessed here. Please review each!",
-      "Have something to share within your organization? Add a comment and keep track of the on-going conversation for this package's maintainence metrics"
+      "Have something to share within your organization? Add a comment and keep track of the ongoing conversation for this package's maintainence metrics"
     ),
     position = c(rep("left", 2))
+  )
+
+# Package Explorer
+pe_steps <- 
+  data.frame(
+    element = c("#pkg_explorer-file_tree", "#pkg_explorer-file_editor","#pkg_explorer-comments_for_se"),
+    intro = c(
+      "This 'file tree' displays all files the author included in the R package build. Select one to preview the contents of the file or click the '+' to expand directories to explore more files. Note: not all file types can be previewed.",
+      "Review the contents of a file. Use this viewer to explore code, documentation, or tests. Note: not all file types can be previewed.",
+      "Have something to share within your organization? Add a comment and keep track of the ongoing conversation for this package's file browser."
+    ),
+    position = c("left","left","top")
+  )
+
+# Function Explorer
+fe_steps <- 
+  data.frame(
+    element = c("#code_explorer-function_list", "#code_explorer-file_type_div","#code_explorer-file_list","#code_explorer-file_viewer","#code_explorer-comments_for_fe"),
+    intro = c(
+      "A list of exported functions. Click to view and select.",
+      "After selecting a function, choose which kind of files you want to preview: tests, source code, or help docs.",
+      "If multiple files are found, they'll be displayed here. Click through each to see how the function is defined & used throughout the package.",
+      "Observe function usage with this handy file viewer. The selected function will be highlighted for your convenience.",
+      "Have something to share within your organization? Add a comment and keep track of the ongoing conversation for this package's exported functions."
+    ),
+    position = c(rep("right", 3), rep("top", 2))
   )
 
 
@@ -102,7 +127,7 @@ cum_steps <- data.frame(
   intro = c(
     "Several ways of measuring community usage are assessed here. Please review each!",
     "Digest the 'downloads per month' metric by selecting a pre-defined time periods or toggling the date slider at bottom of plot for custom date range",
-    "Have something to share within your organization? Add a comment and keep track of the on-going conversation for this package's community usage metrics"
+    "Have something to share within your organization? Add a comment and keep track of the ongoing conversation for this package's community usage metrics"
   ),
   position = c(rep("left", 3))
   

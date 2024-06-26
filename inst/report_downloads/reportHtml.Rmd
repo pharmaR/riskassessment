@@ -26,10 +26,13 @@ params:
   cm_comments: NA
   se_comments: NA
   fe_comments: NA
+  dep_comments: NA
   maint_metrics: NA
   com_metrics: NA
   com_metrics_raw: NA
   downloads_plot_data: NA
+  dep_cards: NA
+  dep_table: NA
   metric_tbl: NA
 ---
 
@@ -47,6 +50,7 @@ params:
 ```{r setup, include=FALSE}
 library(knitr)
 library(shiny)
+library(bslib)
 library(shinyjs)
 
 knitr::opts_chunk$set(echo = F, fig.width = 5.5, fig.height = 3.4)
@@ -77,18 +81,6 @@ createCard <- function(title, desc, value, score = "NULL",
         # outside the card when val_max_nchar is too large.
   else if(value %in% c('TRUE', 'FALSE'))
     value <- ifelse(value == 'TRUE', 'Yes', 'No')
-
-  # icon_name <- succ_icon
-  # 
-  # if(!is_true){
-  #   icon_name <- unsucc_icon
-  #   icon_class <- "text-warning"
-  # }
-  # 
-  # if(is_perc){
-  #   icon_name <- "percent"
-  #   icon_class <- "text-info"
-  # }
   
   # add asterisk to title if it is not in the metric table
   # There are no databaseView cards here.
@@ -101,40 +93,41 @@ createCard <- function(title, desc, value, score = "NULL",
   body_p_style = glue::glue('font-size: {auto_font_out}vw;')
       
   
-  # build the html card
-      if(score == "NULL" | # usually for non-riskmetric cards (like on comm or database tab)
-         # riskmetric cards, both value and score must be missing to show an icon
-         # if value is missing, but score isn't, then we need to show a meter
-         # if score is missing, but value isn't, we need to show an NA meter
-         (score == "NA" | is.na(score)) & any(value %in% "Not found")) { # use icon version
+  # Build the card's metric visual - either an icon or a meter
+  if(score == "NULL" | # usually for non-riskmetric cards (like on comm or database tab)
+     # riskmetric cards, both value and score must be missing to show an icon
+     # if value is missing, but score isn't, then we need to show a meter
+     # if score is missing, but value isn't, we need to show an NA meter
+     (score == "NA" | is.na(score)) & any(unlist(value) %in% "Not found")) { # use icon version
     
-    # maintain icon logic
-    # succ_icon should only show up for non-riskmetric cards
-    icon_name <- succ_icon 
-    if (value == "Not found") {
-      icon_name <- unsucc_icon
-      icon_class <- "text-warning"
-    }
-
-    display_obj <- icon(icon_name,
-         class = icon_class, verify_fa = FALSE,
-         style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
-    )
-  } else { # use html version (displaying riskmetric score on a meter)
-    display_obj <- 
-      div(style = "padding-top: 30%; padding-left: 10%;",
-         metric_gauge(score = score)
-      )
-  }
+    if (value == "Not found") { # For 'not found' cards
+          display_obj <- icon(unsucc_icon,
+                              class = "text-warning", verify_fa = FALSE,
+                              style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
+          ) |> bslib::tooltip("Assessment not found, due to {riskmetric} source type")
+          
+        } else {  # usually for non-riskmetric cards
+          display_obj <- icon(succ_icon,
+                              class = icon_class, verify_fa = FALSE,
+                              style = "padding-top: 40%; font-size:60px; padding-left: 20%;"
+          )
+        }
+      } else { # use html version (displaying riskmetric score on a meter)
+        display_obj <- div(style = "padding-top: 30%; padding-left: 10%;",
+                           metric_gauge(score = score))
+      }
   
+  # Build HTML Card
   html_component <- div(class="card mb-3 text-center border-info", style=card_style,
       div(class ="row no-gutters",
           div(class="col-md-4 text-center border-info",
+              style = "width: calc(100% / 3) !important;",
               display_obj
               # icon(icon_name, class=icon_class, verify_fa = FALSE,
               #      style="padding-top: 40%; font-size:60px; padding-left: 20%;")
               ),
           div(class="col-md-8",
+              style = "width: calc(100% * 2 / 3) !important;",
               h5(class="card-header bg-transparent", style="font-size: 1vw",
                  title),
               div(class="card-body text-info",
@@ -170,8 +163,7 @@ createGrid <- function(metrics){
                           is_url = metrics$is_url[i] == 1,
                           succ_icon = metrics$succ_icon[i],
                           icon_class = metrics$icon_class[i]
-                          ,type = dplyr::if_else(metrics$name[i] == "downloads_trend" & metrics$value[i] < 0, "danger", "information")
-                            # metrics$type[i] # doesn't exist in table
+                          ,type = metrics$type[i] 
                           )
              })
            }),
@@ -187,8 +179,7 @@ createGrid <- function(metrics){
                           is_url = metrics$is_url[i] == 1,
                           succ_icon = metrics$succ_icon[i],
                           icon_class = metrics$icon_class[i]
-                          ,type = dplyr::if_else(metrics$name[i] == "downloads_trend" & metrics$value[i] < 0, "danger", "information")
-                            # metrics$type[i] # doesn't exist in table
+                          ,type = metrics$type[i]
                           )
              })
            }),
@@ -204,8 +195,7 @@ createGrid <- function(metrics){
                           is_url = metrics$is_url[i] == 1,
                           succ_icon = metrics$succ_icon[i],
                           icon_class = metrics$icon_class[i]
-                          ,type = dplyr::if_else(metrics$name[i] == "downloads_trend" & metrics$value[i] < 0, "danger", "information")
-                            # metrics$type[i] # doesn't exist in table
+                          ,type = metrics$type[i]
                           )
              })
            }),
@@ -227,6 +217,14 @@ createGrid <- function(metrics){
   padding-right: 6em;
   height: 6em;
 }
+
+meter::-webkit-meter-optimum-value {background: #9CFF94;}
+meter::-webkit-meter-suboptimum-value{background:#FFD070;}
+meter::-webkit-meter-even-less-good-value{background:#FF765B;}
+
+meter::-moz-meter-bar {background: #FF765B;}  /* color of bar*/
+meter::-moz-meter-optimum-value {background: #9CFF94;} 
+meter::-moz-meter-suboptimum-value{background:#FFD070;}  
 ```
 
 ```{r general_pkg_info}
@@ -286,7 +284,7 @@ tagList(
       br(),
       hr(),
       br(), br(),
-      h5("Maintenance Metrics", style = "text-align: center;"),
+      h5("Maintenance Metrics", style = "text-align: center; page-break-before: always;"),
       br()
     )
   } else "",
@@ -320,7 +318,7 @@ tagList(
       br(),
       hr(),
       br(), br(),
-      h5("Community Usage Metrics", style = "text-align: center;"),
+      h5("Community Usage Metrics", style = "text-align: center; page-break-before: always;"),
       br()
     )
   } else "",
@@ -354,6 +352,44 @@ tagList(
       } else ""
     )
   }
+)
+```
+
+
+```{r package_dependencies}
+tagList(
+  if(any(c('Package Dependencies', 'Dependency Comments') %in% params$report_includes)) {
+    tagList(
+      br(),
+      hr(),
+      br(), 
+      h5("Package Dependencies", style = "text-align: center;"),
+      br(),
+      if ('Package Dependencies' %in% params$report_includes)
+        tagList(
+          createGrid(metrics = params$dep_cards),
+          br(),
+          HTML(glue::glue("<br><span class='h3 txtasis'>First Order Dependencies of {params$pkg$name}</span><br>")),
+          br(), 
+          # datatable_custom(
+            DT::datatable(
+              params$dep_table #, pLength = list(-1), plChange = FALSE
+                        ,options = list(dom = "t", searching = FALSE, pageLength = -1,
+                                       lengthChange = FALSE, info = FALSE,
+                                       columnDefs = list(list(className = 'dt-center', targets = 2)))
+              )#)
+        ),
+      if('Dependency Comments' %in% params$report_includes)
+        tagList(
+          br(),
+          h5('Comments', style = "padding-bottom:10px;"),
+          wellPanel(
+            HTML(showComments(
+              pkg_name = params$pkg$name,
+              comments = params$dep_comments))
+          ))
+    )
+  } else ""
 )
 ```
 
@@ -419,7 +455,7 @@ tagList(
   strong('{riskassessment} App Version:'), br(), getElement(params, 'app_version'), br(), br(),
   strong('{riskmetric} Version:'), br(), getElement(params, 'riskmetric_version'), br(), br(),
   strong('Generated on:'), br(), format(Sys.time(), usetz = TRUE), br(), br(),
-  if('Risk Score' %in% params$report_includes) strong('Metric Weights:') else ""
+  if('Risk Score' %in% params$report_includes) tagList(hr(),br(),strong('Metric Weights:')) else ""
 )
 
 if('Risk Score' %in% params$report_includes) {
