@@ -64,9 +64,9 @@ full robustness and reliability of any software may (and likely will)
 require deeper inspection by the reviewing party.
 
 *Note:* Development of both `riskassessment` and `riskmetric` were made
-possible thanks to the [R Validation
-Hub](https://www.pharmar.org/about/), a collaboration to support the
-adoption of R within a biopharmaceutical regulatory setting.
+possible thanks to the [R Validation Hub](https://www.pharmar.org), a
+collaboration to support the adoption of R within a biopharmaceutical
+regulatory setting.
 
 ### Usage
 
