@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-Welcome! This guide will help users get started with the `riskassessment` application for the first time. For more information about how to deploy the application, please reference the `Deployments` [INSERT LINK] guide. And note: this guide assumes you have already downloaded the `riskassessment` package & all of it's dependencies following the [installation instructions](../index.html#installation).
+Welcome! This guide will help users get started with the `riskassessment` application for the first time. For more information about how to deploy the application, please reference the [`Deployment`](./Deployment.html) guide. And note: this guide assumes you have already downloaded the `riskassessment` package & all of it's dependencies following the [installation instructions](../index.html#installation).
 
 <br>
 
