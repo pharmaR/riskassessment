@@ -46,6 +46,12 @@
     <loc>https://pharmar.github.io/riskassessment/news/index.html</loc>
   </url>
   <url>
+    <loc>https://pharmar.github.io/riskassessment/reference/aboutInfoServer.html</loc>
+  </url>
+  <url>
+    <loc>https://pharmar.github.io/riskassessment/reference/aboutInfoUI.html</loc>
+  </url>
+  <url>
     <loc>https://pharmar.github.io/riskassessment/reference/addCommentServer.html</loc>
   </url>
   <url>
@@ -188,6 +194,9 @@
   </url>
   <url>
     <loc>https://pharmar.github.io/riskassessment/reference/uploadPackageUI.html</loc>
+  </url>
+  <url>
+    <loc>https://pharmar.github.io/riskassessment/reference/upload_pkg_lst.html</loc>
   </url>
   <url>
     <loc>https://pharmar.github.io/riskassessment/reference/viewCommentsServer.html</loc>
