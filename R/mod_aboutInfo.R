@@ -48,10 +48,11 @@ aboutInfoUI <- function(id) {
                 <br>
                 
                 <h3><i class='fa fa-coffee' aria-hidden='true'></i> Development Team </h3> 
-                <p> Most all inquiries should flow through the GitHub page reference above (start there), but you may reach out to the lead developer at any time, especially if you would like to start contributing to the project!</p>
+                <p> Most all inquiries should flow through the GitHub page reference above (start there), but you may reach out to one of the co-lead developer at any time, especially if you would like to start contributing to the project!</p>
                 <br>
                 <ul>  
                   <li>Aaron Clark [ <a href= 'mailto:clark.aaronchris@gmail.com?subject={riskassessment} inquiry'> Send Email </a> ] </li>
+                  <li>Jeff Thompson [ <a href= 'mailto:jeff.thompson51317@gmail.com?subject={riskassessment} inquiry'> Send Email </a> ] </li>
                 </ul> 
                 <br>                           
                 
