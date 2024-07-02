@@ -112,12 +112,12 @@ team_info_df <- data.frame(
              "past","past","past","past",
              "past"
   ),
-  role = c("Workstream Lead","Contributor","Core Contributor","Contributor","Core Contributor",
+  role = c("Workstream Lead","Contributor","Core Contributor","Contributor","Workstream Lead",
            "Contributor","Contributor","Contributor","Core Contributor",
            "Workstream Lead","Contributor","Core Contributor","Contributor",
            "Package Explorer Author"
   ),
-  priority = c(1, 4, 2, 4, 3,
+  priority = c(1, 4, 2, 4, 1,
                4,4,4,2,
                1,4,3,4,
                4

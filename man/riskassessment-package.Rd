@@ -27,8 +27,8 @@ Useful links:
 
 Authors:
 \itemize{
+  \item Jeff Thompson \email{jeff.thompson51317@gmail.com} (Co-Lead)
   \item Robert Krajcik \email{robert.krajcik@biogen.com}
-  \item Jeff Thompson \email{jeff.thompson51317@gmail.com}
   \item Lars Andersen \email{lars.andersen@boehringer-ingelheim.com}
   \item Andrew Borgman \email{andrew.borgman@biogen.com}
   \item Marly Gotti \email{marly.cormar@biogen.com}
