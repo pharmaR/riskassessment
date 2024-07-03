@@ -291,12 +291,21 @@ if('Community Usage Comments' %in% params$report_includes){
      
       kableExtra::kbl(cards, format = 'latex', booktabs = T, linesep = "") %>% 
       kableExtra::kable_styling("basic", latex_options = "hold_position", full_width = F, position = 'left') %>% 
-      kableExtra::column_spec(3, width = "1.5in", latex_valign = "p")
+      kableExtra::column_spec(3, width = "1.4in", latex_valign = "p")
 
   }
 ```
 
 `r if ('Package Dependencies' %in% params$report_includes) {"\\* Metrics whose score is NA will not impact the package {riskmetric} score"}`
+
+```{r package_dependencies_table_header}
+  if(any(c('Package Dependencies', 'Dependency Comments') %in% params$report_includes)) {
+    tagList(
+      br(),
+      h3(glue::glue("First Order Dependencies of {params$pkg$name}"))
+    )
+  }
+```
 
 ```{r package_dependencies_table, eval=dm_ind}
 if('Package Dependencies' %in% params$report_includes) {

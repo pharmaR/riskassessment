@@ -163,8 +163,7 @@ createGrid <- function(metrics){
                           is_url = metrics$is_url[i] == 1,
                           succ_icon = metrics$succ_icon[i],
                           icon_class = metrics$icon_class[i]
-                          ,type = dplyr::if_else(metrics$name[i] == "downloads_trend" & metrics$value[i] < 0, "danger", "information")
-                            # metrics$type[i] # doesn't exist in table
+                          ,type = metrics$type[i] 
                           )
              })
            }),
@@ -180,8 +179,7 @@ createGrid <- function(metrics){
                           is_url = metrics$is_url[i] == 1,
                           succ_icon = metrics$succ_icon[i],
                           icon_class = metrics$icon_class[i]
-                          ,type = dplyr::if_else(metrics$name[i] == "downloads_trend" & metrics$value[i] < 0, "danger", "information")
-                            # metrics$type[i] # doesn't exist in table
+                          ,type = metrics$type[i]
                           )
              })
            }),
@@ -197,8 +195,7 @@ createGrid <- function(metrics){
                           is_url = metrics$is_url[i] == 1,
                           succ_icon = metrics$succ_icon[i],
                           icon_class = metrics$icon_class[i]
-                          ,type = dplyr::if_else(metrics$name[i] == "downloads_trend" & metrics$value[i] < 0, "danger", "information")
-                            # metrics$type[i] # doesn't exist in table
+                          ,type = metrics$type[i]
                           )
              })
            }),
@@ -371,6 +368,8 @@ tagList(
       if ('Package Dependencies' %in% params$report_includes)
         tagList(
           createGrid(metrics = params$dep_cards),
+          br(),
+          HTML(glue::glue("<br><span class='h3 txtasis'>First Order Dependencies of {params$pkg$name}</span><br>")),
           br(), 
           # datatable_custom(
             DT::datatable(

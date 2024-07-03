@@ -221,7 +221,8 @@ get_metric_data <- function(pkg_name, metric_class = 'maintenance', db_name = go
 
   dbSelect(
     "SELECT metric.name, metric.long_name, metric.description, metric.is_perc,
-                    metric.is_url, package_metrics.value, package_metrics.metric_score
+                    metric.is_url, package_metrics.value, package_metrics.metric_score,
+                    'information' as type
                     FROM metric
                     INNER JOIN package_metrics ON metric.id = package_metrics.metric_id
                     INNER JOIN package on package_metrics.package_id = package.id
@@ -245,31 +246,70 @@ get_metric_data <- function(pkg_name, metric_class = 'maintenance', db_name = go
 #' 
 #' @param pkg_name character name of package
 #' @param db_name character name (and file path) of the database
+#' @param loaded2_db a data.frame containing variables: name, version, score, decision_id, decision
+#' @param repo_pkgs a data.frame containing variables: Package & Version, defaulting to output from available.packages()
 #' 
 #' @import dplyr
 #' @importFrom stringr str_replace
 #' 
 #' @returns a data frame with package, type, and name
 #' @noRd
-get_depends_data <- function(pkg_name, suggests, db_name = golem::get_golem_options('assessment_db_name')){
+get_depends_data <- function(pkg_name,
+                             suggests,
+                             db_name = golem::get_golem_options('assessment_db_name'),
+                             loaded2_db = dplyr::tibble(package = character(0), type = character(0), name = character(0),
+                                                        version = character(0), score = character(0), decision_id = character(0),
+                                                        decision = character(0)
+                                                        ),
+                             repo_pkgs = as.data.frame(utils::available.packages()[,1:2])){
   
   pkgref <- get_assess_blob(pkg_name, db_name, metric_lst = c("dependencies", "suggests"))
   
   if(suppressWarnings(is.null(nrow(pkgref$dependencies[[1]])) || nrow(pkgref$dependencies[[1]]) == 0)) {
-    deps <- dplyr::tibble(package = character(0), type = character(0), name = character(0))
+    deps <- dplyr::tibble(package = character(0), type = character(0), name = character(0),
+                          version = character(0), score = character(0), decision = character(0),
+                          decision_id = character(0))
   } else {
-    deps <- pkgref$dependencies[[1]] %>% dplyr::as_tibble() %>% 
+    deep_ends <- pkgref$dependencies[[1]] %>% dplyr::as_tibble() %>% 
       mutate(package = stringr::str_replace(package, "\n", " ")) %>%
       mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")) 
+    
+    deps_decision_data <- purrr::map_df(deep_ends$name, ~get_versnScore(.x, loaded2_db, repo_pkgs))
+    if(nrow(deps_decision_data) == 0) {
+      deps_w_decision <- dplyr::tibble(name = character(0), version = character(0),
+                                       score = character(0), decision = character(0), decision_id = character(0))
+    } else {
+      deps_w_decision <- deps_decision_data
+    }
+    deps <- deps_w_decision %>%
+      right_join(deep_ends, by = "name") %>% 
+      select(package, type, name, version, score, decision, decision_id) %>%
+      arrange(name, type) %>% 
+      distinct()
   }
   
   if(isTruthy(suggests)) {
     if(suppressWarnings(is.null(nrow(pkgref$suggests[[1]])) || nrow(pkgref$suggests[[1]]) == 0)) {
-      sugg <- dplyr::tibble(package = character(0), type = character(0), name = character(0))
+      sugg <- dplyr::tibble(package = character(0), type = character(0), name = character(0),
+                            version = character(0), score = character(0), decision = character(0),
+                            decision_id = character(0))
     } else {
-      sugg <- pkgref$suggests[[1]] %>% dplyr::as_tibble() %>% 
+      shrug_jests <- pkgref$suggests[[1]] %>% dplyr::as_tibble() %>% 
         mutate(package = stringr::str_replace(package, "\n", " ")) %>%
         mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")) 
+      
+      sugg_decision_data <- purrr::map_df(shrug_jests$name, ~get_versnScore(.x, loaded2_db, repo_pkgs))
+      if(nrow(sugg_decision_data) == 0) {
+        suggs_w_decision <- dplyr::tibble(name = character(0), version = character(0),
+                                          score = character(0), decision = character(0), decision_id = character(0))
+      } else {
+        suggs_w_decision <- sugg_decision_data
+      }
+      sugg <- suggs_w_decision %>%
+        right_join(shrug_jests, by = "name") %>% 
+        select(package, type, name, version, score, decision, decision_id) %>%
+        arrange(name, type) %>% 
+        distinct()
     }
     return(bind_rows(deps, sugg))
   } else {
@@ -379,7 +419,8 @@ get_assess_blob <- function(pkg_lst, db_name = golem::get_golem_options('assessm
 get_versnScore <- function(pkg_name, verify_data, cran_pkgs) {
   
   if (rlang::is_empty(pkg_name)) 
-    return(list(name = character(), version = character(), score = character()))
+    return(list(name = character(), version = character(), score = character(),
+                decision_id = character(), decision = character()))
   
   if (pkg_name %in% verify_data$name) { #loaded2_db()$name
     tmp_df <- verify_data %>% filter(name == pkg_name) %>% select(score, version, decision_id, decision)

@@ -75,7 +75,12 @@ test_that(
     app_session$options$golem_options <- list(
       assessment_db_name = temp_db_loc
     )
-    app_session$userData$loaded2_db <- reactiveVal(dbSelect("SELECT name, version, score FROM package", temp_db_loc))
+    app_session$userData$loaded2_db <- reactiveVal(
+      riskassessment:::dbSelect("
+            SELECT name, version, score, decision_id, decision
+             FROM package as pi
+             LEFT JOIN decision_categories as dc
+              ON pi.decision_id = dc.id", temp_db_loc)) # "select name, version, score from package"
     
     testServer(packageDependenciesServer, args = testargs,  {
       session$flushReact()

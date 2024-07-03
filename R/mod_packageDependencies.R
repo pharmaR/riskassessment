@@ -64,28 +64,62 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
       req(pkgref())
       tryCatch(
         expr = {
-          depends(pkgref()$dependencies[[1]] %>% dplyr::as_tibble() %>% 
-                    mutate(package = stringr::str_replace(package, "\n", " ")) %>%
-                    mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")))
+          deep_ends <- pkgref()$dependencies[[1]] %>% dplyr::as_tibble() %>% 
+            mutate(package = stringr::str_replace(package, "\n", " ")) %>%
+            mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
+          
+          deps_decision_data <- purrr::map_df(deep_ends$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs()))
+          if(nrow(deps_decision_data) == 0) {
+            deps_w_decision <- dplyr::tibble(name = character(0), version = character(0),
+                score = character(0), decision = character(0), decision_id = character(0))
+          } else {
+            deps_w_decision <- deps_decision_data
+          }
+          depends(
+            deps_w_decision %>% 
+              right_join(deep_ends, by = "name") %>% 
+              select(package, type, name, version, score, decision, decision_id) %>%
+              arrange(name, type) %>% 
+              distinct()
+            )
         },
         error = function(e) {
           msg <- paste("Detailed dependency information is not available for package", selected_pkg$name())
           rlang::warn(msg)
           rlang::warn(paste("info:", e))
-          depends(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
+          depends(dplyr::tibble(package = character(0), type = character(0), name = character(0),
+                                version = character(0), score = character(0), decision = character(0),
+                                decision_id = character(0)))
         }
       )
       tryCatch(
         expr = {
-          suggests(pkgref()$suggests[[1]] %>% dplyr::as_tibble()%>% 
-                     mutate(package = stringr::str_replace(package, "\n", " ")) %>%
-                     mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])")))
+          shrug_jests <- pkgref()$suggests[[1]] %>% dplyr::as_tibble()%>% 
+            mutate(package = stringr::str_replace(package, "\n", " ")) %>%
+            mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
+          
+          sugg_decision_data <- purrr::map_df(shrug_jests$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs()))
+          if(nrow(sugg_decision_data) == 0) {
+            suggs_w_decision <- dplyr::tibble(name = character(0), version = character(0),
+                score = character(0), decision = character(0), decision_id = character(0))
+          } else {
+            suggs_w_decision <- sugg_decision_data
+          }
+          suggests(
+            suggs_w_decision %>%
+              right_join(shrug_jests, by = "name") %>% 
+              select(package, type, name, version, score, decision, decision_id) %>%
+              arrange(name, type) %>% 
+              distinct()
+          )
         },
         error = function(e) {
           msg <- paste("Detailed suggests information is not available for package", selected_pkg$name())
           rlang::warn(msg)
           rlang::warn(paste("info:", e))
-          suggests(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
+          suggests(dplyr::tibble(package = character(0), type = character(0), name = character(0),
+                                 version = character(0), score = character(0), decision = character(0),
+                                 decision_id = character(0)))
         }
       )
       # this is so the dependencies is also a 0x2 tibble like suggests
@@ -115,10 +149,10 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
         if (toggled() == 0L || nrow(suggests()) == 0) {
         return(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
           } else {
-            pkginfo <- suggests() %>%  as_tibble() 
+            pkginfo <- suggests() %>%  dplyr::as_tibble() 
           } 
       } else {
-        pkginfo <- dplyr::bind_rows(depends(), suggests()) %>% as_tibble()
+        pkginfo <- dplyr::bind_rows(depends(), suggests()) %>% dplyr::as_tibble()
       }
       pkginfo <- pkginfo %>% 
           mutate(package = stringr::str_replace(package, "\n", " ")) %>%
@@ -139,10 +173,9 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
         }
       }
       
-      purrr::map_df(pkginfo$name, ~get_versnScore(.x, session$userData$loaded2_db(), session$userData$repo_pkgs())) %>% 
-        right_join(pkginfo, by = "name") %>% 
+      pkginfo %>%
         select(package, type, name, version, score, decision) %>%
-        arrange(name, type) %>% 
+        arrange(name, type) %>%
         distinct()
       
     }, ignoreInit = TRUE)
@@ -198,74 +231,78 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
           br(), br(),
           div(id = "dep_infoboxes", metricGridUI(NS(id, 'metricGrid'))),
           br(),
-          fluidRow(
-            column(4, 
-                   tags$strong(
-                     glue::glue("First-order dependencies for package: ", {selected_pkg$name()})
-                   )
-            ),
-            column(2,
-                   shinyWidgets::materialSwitch(
-                     inputId =  ns("incl_suggests"),
-                     label = "Include Suggests",
-                     value = toggled(),
-                     inline = TRUE,
-                     status = "success"
-                   )
-            ),
-            column(2,
-                   if (pkg_updates$render_upload) {
-                     actionButton(
-                       inputId =  ns("update_all_packages"),
-                       label = "Upload all",
-                       icon = icon("fas fa-upload", class = "fa-regular", lib = "font-awesome"),
-                       size = "xs",
-                       style = "height:30px; padding-top:1px;"
+          div(style = "padding-left: 40px;",
+            HTML(glue::glue("<span class='h3 center txtasis'>FIRST-ORDER DEPENDENDENCIES OF {selected_pkg$name()}</span><br>")),
+            br(),
+            fluidRow(
+              column(4, ""),
+              column(3,
+                     shinyWidgets::materialSwitch(
+                       inputId =  ns("incl_suggests"),
+                       label = "Include Suggests",
+                       value = toggled(),
+                       inline = TRUE,
+                       status = "success"
                      )
-                   } 
-            )
-          ),
-          br(),
-          # remove DT "search:" rectangle
-          tags$head(
-            tags$style(type = "text/css", ".dataTables_filter {display: none;    }")
-          ),
-          fluidRow(
-            column(
-              width = 8,
-              DT::renderDataTable(server = FALSE, {
-                datatable_custom(data_table(), custom_dom = "lftpi")                      
-              })
-            )
-          ), 
-          br(), br(),
-          h3(glue::glue("All reverse Dependencies: {length(revdeps())}"), style = "text-align: left;"),
-          br(),
-          fluidRow(
-            column(
-              width = 8,
-              h4(glue::glue("Reverse Dependencies available in database: {nrow(table_revdeps_local()) %||% 0}"), style = "text-align: left;"),
-              br(), 
-              DT::renderDataTable({
-                datatable_custom(
-                  table_revdeps_local() |> select(-decision_id), 
-                  colnames = c("Package", "Version", "Score", "Decision", "Review Package"),
-                  hide_names = NULL
-                )
-              }),
-              br(), br(),
-              wellPanel(
-                renderText(revdeps() %>% sort()),
-                style = "max-height: 500px; overflow: auto"
+              ),
+              column(2,
+                     if (pkg_updates$render_upload) {
+                       actionButton(
+                         inputId =  ns("update_all_packages"),
+                         label = "Upload all",
+                         icon = icon("fas fa-upload", class = "fa-regular", lib = "font-awesome"),
+                         size = "xs",
+                         style = "height:30px; padding-top:1px;"
+                       )
+                     } 
               )
+            ),
+            br(),
+            # remove DT "search:" rectangle
+            tags$head(
+              tags$style(type = "text/css", ".dataTables_filter {display: none;    }")
+            ),
+            fluidRow(
+              column(
+                width = 9,
+                DT::renderDataTable(server = FALSE, {
+                  datatable_custom(data_table(), custom_dom = "lftpi")                      
+                })
+              )
+            ), 
+            br(), br(),
+            
+            HTML(glue::glue("<span class='h3 center txtasis'>REVERSE DEPENDENDENCIES OF {selected_pkg$name()}</span><br>")),
+            # h3("Reverse Dependencies", style = "text-align: left;"),
+            br(),
+            fluidRow(
+              column(
+                width = 9,
+                h4(glue::glue("Available in database: {nrow(table_revdeps_local()) %||% 0}"), style = "text-align: left;"),
+                br(), 
+                DT::renderDataTable({
+                  datatable_custom(
+                    table_revdeps_local() |> select(-decision_id), 
+                    colnames = c("Package", "Version", "Score", "Decision", "Review Package"),
+                    hide_names = NULL
+                  )
+                }),
+                br(), br(),
+                h4(glue::glue("All reverse Dependencies: {length(revdeps())}"), style = "text-align: left;"),
+                br(),
+                wellPanel(
+                  renderText(revdeps() %>% sort()),
+                  style = "max-height: 500px; overflow: auto"
+                )
+              )
+            ),
+            br(), br(),
+            fluidRow(div(id = "comments_for_dep",
+                         if ("general_comment" %in% unlist(credentials$privileges[user$role], use.names = FALSE)) addCommentUI(NS(id, 'add_comment')),
+                         viewCommentsUI(NS(id, 'view_comments')))
             )
-          ),
-          br(), br(),
-          fluidRow(div(id = "comments_for_dep",
-                       if ("general_comment" %in% unlist(credentials$privileges[user$role], use.names = FALSE)) addCommentUI(NS(id, 'add_comment')),
-                       viewCommentsUI(NS(id, 'view_comments')))
-          )
-        ) # taglist
+          ) # taglist
+        ) #div
       }
     }) # renderUI
     

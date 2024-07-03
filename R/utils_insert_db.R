@@ -241,7 +241,7 @@ insert_riskmetric_to_db <- function(pkg_name, pkg_version = "",
                                                    which=c("Suggests"), recursive=FALSE)) %>% unname() %>% sort()
   }
 
-  tbl_suggests <- tibble("package" = sug_vctr, type = "Suggests") 
+  tbl_suggests <- dplyr::tibble("package" = sug_vctr, type = "Suggests") 
   attr(tbl_suggests, "class") <- c('pkg_metric_dependencies', 'pkg_metric', 'data.frame')
   lst_suggests <- list(suggests = tbl_suggests)
   mostattributes(lst_suggests) <- attributes(riskmetric_assess$dependencies)
@@ -311,11 +311,12 @@ insert_community_metrics_to_db <- function(pkg_name,
 #' @param repos character vector, the base URL(s) of the repositories to use
 #' @param repo_pkgs for internal use only, allows the function
 #'   `available.packages()` to be run only once
+#' @param user_name character name of user
 #' @param updateProgress for internal use only, provides a function to update
 #'   progress meter in the application
 #' 
 #' @return A data frame object containing a summary of the upload process
-upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, updateProgress = NULL) {
+upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, user_name = "system", updateProgress = NULL) {
   
   if (missing(assess_db)) {
     warning("No value supplied for `assess_db`. Will try to use configuration file.")
@@ -460,10 +461,10 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, updateProgress 
       uploaded_packages$score[i] <- get_pkg_info(uploaded_packages$package[i], assess_db)$score
       if ("decision" %in% names(uploaded_packages) && uploaded_packages$decision[i] != "") {
         decision_id <- dbSelect("SELECT id FROM decision_categories WHERE decision = {uploaded_packages$decision[i]}", assess_db)
-        log_message <- glue::glue("Decision for the package {uploaded_packages$package[i]} was assigned {uploaded_packages$decision[i]} by upload designation.")
-        db_message <- glue::glue("Decision was assigned '{uploaded_packages$decision[i]}' by upload designation.")
+        log_message <- glue::glue("Decision for the package {uploaded_packages$package[i]} was assigned {uploaded_packages$decision[i]} by upload designation ({user_name}).")
+        db_message <- glue::glue("Decision was assigned '{uploaded_packages$decision[i]}' by upload designation ({user_name}).")
         dbUpdate("UPDATE package SET decision_id = {decision_id},
-                        decision_by = 'Batch Upload', decision_date = {get_Date()}
+                        decision_by = {paste0('Batch Upload (', user_name, ')')}, decision_date = {get_Date()}
                          WHERE name = {uploaded_packages$package[i]}",
                  assess_db)
         loggit::loggit("INFO", log_message)

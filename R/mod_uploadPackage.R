@@ -398,6 +398,7 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
                          golem::get_golem_options("assessment_db_name"), 
                          getOption("repos"),
                          session$userData$repo_pkgs(),
+                         user$name,
                          updateProgress),
           error = function(e) {
             if (e$message == "Provided decisions do not match allowable list from assessment database.") {

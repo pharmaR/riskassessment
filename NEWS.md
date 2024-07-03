@@ -1,33 +1,46 @@
 # riskassessment (development version)
 
-* Fixes bug that doesn't reset decision by and date fields when re-scoring/re-weighting packages (#680)
-* Fixes bug where the privileges table was not aligned with the used privileges in the application (#697)
-* Added introjs for file browser & function explorer( #581)
-* Added tests for the code and function explorers
-* Added repo specification to configuration file (#701)
-* Fix typo in Privileges table (#719)
-* Fixed bug where HTML reports displayed a darker green in the cards' meters
-* Only run configuration checkers when configuring the database
-* Added dependencies/reverse dependencies card hyperlink (#597)
-* Added non-shinymanager deployment option (#700)
-* Added Package Dependencies to Reports (#721)
-* Shorten waiting time in code explorer/package explorer by reading tarballs in memory (#707)
-* Move package upload process to a function
-* Updated logo in reports to lighter version to match application UI
-* Utilize `{archive}` to parse DESCRIPTION file in package upload process
-* Incorporates table to show reverse dependencies included in the database
-* updated manifest file and deployments article
-* Adds about page to help users understand the project a little more, providing useful resources and attribution
-* Updated version of `{riskmetric}` being used to v0.2.4.9000
-* Added Suggests option to Reports (#721)
-* Added more context to the metric score card visuals by inserting tool tips & creating a legend modal that describes & interprets all possible visuals (#652)
-* Added `{riskmetric}` assessment documentation URLs to About tab, on Risk Assessment Criteria page.
-* Updated the Dependency Cards to be slightly more informative
-* Updated 'About' page to highlight individual contributors on the project, leveraging `bslib` cards.
-* Allow users to specify decisions in the CSV upload file (#663)
-* Fix bug causing application to crash when trying to delete zero packages (#781)
-* Add `Decision` column to Package Dependencies tab so that users (#774)
 * Added navigation controls in Function Explorer tab (#644)
+
+# riskassessment 3.1.0
+
+### User Enhancements
+* Allow users to specify decisions within the CSV file used to upload pkgs (#663)
+* Drastically shortened waiting time in `Code explorer`/ `Package explorer` by reading tarballs in memory (#707)
+* Added `Package Dependencies` content to Reports (#721)
+* Added option to include `Suggests` pkgs in downloadable Reports (#721)
+* Added `Decision` column to Package Dependencies tab's table output (#774)
+* Added `Decision Summary` card to Package Dependencies tab (#774)
+* Added hyperlink on dependencies/reverse dependencies cards, directing users to `Package Dependencies` page for more detail (#597)
+* Added new table to display reverse dependencies which highlights pkgs that already exist in the database
+
+### Squashed Bugs
+* Fixed bug causing application to crash when trying to delete zero packages (#781)
+* Fixed bug where app doesn't reset the `decision by` and `decision date` fields when re-scoring/re-weighting packages (#680)
+* Fixed bug where the `user privileges` table was not aligned with the available privileges in the application (#697)
+* Fixed typo in privileges table (#719)
+* Fixed bug where HTML reports displayed a darker green in the cards' meters
+* Updated logo in reports to lighter version to match application UI
+* Updated the Dependency Cards to be slightly more informative
+
+### Docs
+* Added `About` page to introduce our audience to the project a little better, providing useful resources and attribution that highlights individual contributors
+* Added more context to the metric score card visuals by inserting tool tips & creating a legend modal that describes & interprets all possible visuals (#652)
+* Added introjs for file browser & function explorer( #581)
+* Added `{riskmetric}` assessment documentation URLs to About tab, on Risk Assessment Criteria page.
+
+### For Devs
+* Added non-`shinymanager` deployment option so that users may use their Posit Credentials instead (#700)
+* Moved package upload process to a function, allowing devs to populate the database outside of the application
+* Added tests for the `Code Explorer` and `Function explorer` modules
+* Added repo specification to configuration file (#701)
+* Ensured configuration checkers run when configuring the database
+* Utilized `{archive}` to parse DESCRIPTION file, increasing speed in package upload process
+* Updated manifest file and deployments article
+* Updated version of `{riskmetric}` being used to v0.2.4.9000
+* Updated version of R to `v4.3.3` & Posit Package Manager snapshot dates to 2024-04-08
+
+
 
 
 # riskassessment 3.0.0
