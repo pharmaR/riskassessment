@@ -31,6 +31,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
         showHelperMessage(message = glue::glue("Source code not available for {{{selected_pkg$name()}}}"))
       } else {
         div(introJSUI(NS(id, "introJS")),
+            br(),
           fluidRow(
             column(3,
                    wellPanel(
@@ -177,8 +178,12 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
       con <- archive::archive_read(file.path("tarballs",
                                              glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")),
                                    file = fp)
+      
       Rdfile <-tools::parse_Rd(con)
       close(con)
+      shinyjs::runjs('
+                    $highlights_list = undefined;')
+                    
       HTML(paste0(utils::capture.output(tools::Rd2HTML(Rdfile,
                                                package = c(selected_pkg$name(),
                                                            selected_pkg$version()), out = "")), collapse = "\n"))
@@ -222,6 +227,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
                       {
                             $curr_sel = $highlights_list[$highlights_list.length -1]
                             search_index.innerHTML =   $highlights_list.length + " of " + $highlights_list.length;
+                      }
                         else 
                       {
                             $curr_sel = $highlights_list[$index -1]
