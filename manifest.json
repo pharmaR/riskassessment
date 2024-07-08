@@ -4367,7 +4367,7 @@
         "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-02-29 01:10:07 UTC",
-        "Built": "R 4.3.3; ; 2024-06-26 14:42:15 UTC; unix"
+        "Built": "R 4.3.3; ; 2024-07-08 12:36:44 UTC; unix"
       }
     },
     "reprex": {
@@ -6202,7 +6202,7 @@
       "checksum": "b92bdc0d72dbb64e7cf767514486ec62"
     },
     "data-raw/internal-data.R": {
-      "checksum": "33c0142c3bb1bbba56e83fa0439778e7"
+      "checksum": "1012b9a74fd027e081b3a81bc863358e"
     },
     "data-raw/maintenance.csv": {
       "checksum": "f5bb530b482daa092e9e20f6a069f1aa"
@@ -6220,7 +6220,7 @@
       "checksum": "99c5575cb81828e20a7fe1d205551316"
     },
     "DESCRIPTION": {
-      "checksum": "9bc40f8d2e36a15c64868dc35aa47977"
+      "checksum": "ea81f750b1ae3fa6b3ebf79e5668a3ee"
     },
     "inst/app/www/css/community_metrics.css": {
       "checksum": "f08eb25c2ee48ac22ed63b0d18994a04"
@@ -6463,7 +6463,7 @@
       "checksum": "97d1232340e04c53088bc8f814133dcd"
     },
     "NEWS.md": {
-      "checksum": "9fd91891f54e18c5f702df550768e91a"
+      "checksum": "29db451dbb57771e940e1911eac5407f"
     },
     "R/app_config.R": {
       "checksum": "c2b61f270b86b6833f0ee39c44a1a440"
@@ -6481,7 +6481,7 @@
       "checksum": "23ff3c99869bd59ed973d031ee2962fd"
     },
     "R/mod_aboutInfo.R": {
-      "checksum": "5240534ac7d4291a0514c01106442e6f"
+      "checksum": "1ccb24c4960467461139c1050aafc91e"
     },
     "R/mod_addComment.R": {
       "checksum": "9a4f5a5b10f127040705dbdaa312b693"
@@ -6490,10 +6490,10 @@
       "checksum": "61459e71d1e62587597ac1dac2c7c650"
     },
     "R/mod_code_explorer_utils.R": {
-      "checksum": "fe3bd5c1243d0ba649d070a6ecf29560"
+      "checksum": "2588e180a69a79b7be4e3818eb3931dc"
     },
     "R/mod_code_explorer.R": {
-      "checksum": "72a36a8c4d7f15e0da013104177328b1"
+      "checksum": "1ec3f3aac096efff1e0c360b347e2d32"
     },
     "R/mod_communityMetrics.R": {
       "checksum": "fdd39bd2a7e19b8dccc195aaec57a3d8"
@@ -6562,7 +6562,7 @@
       "checksum": "6c4740fd1aea22825c231eec5d8d9578"
     },
     "R/sysdata.rda": {
-      "checksum": "b610fc73187b7cd23521deb9339d54cf"
+      "checksum": "e5835b81f48d93ee0175507abbb3186f"
     },
     "R/utils_build_cards.R": {
       "checksum": "f79316fe637bb1f4038f085621d298f5"

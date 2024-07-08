@@ -1,5 +1,7 @@
 # riskassessment (development version)
 
+* Added navigation controls in Function Explorer tab (#644)
+
 # riskassessment 3.1.0
 
 ### User Enhancements

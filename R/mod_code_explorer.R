@@ -31,7 +31,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
         showHelperMessage(message = glue::glue("Source code not available for {{{selected_pkg$name()}}}"))
       } else {
         div(introJSUI(NS(id, "introJS")),
-          br(),
+            br(),
           fluidRow(
             column(3,
                    wellPanel(
@@ -69,7 +69,28 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
                    div(id = ns("file_viewer"),
                      uiOutput(ns("file_output"), class = "file_browser"),
                      style = "height: 62vh; overflow: auto; border: 1px solid var(--bs-border-color-translucent);"
-                   )
+                   ),
+                   br(),
+                   fluidRow(style = "height:35px !important;",
+                            column(4,offset = 8,
+                                   conditionalPanel(
+                                     condition = "typeof(window.$highlights_list) != 'undefined' && window.$highlights_list.length > 1",
+                                     actionButton(ns("prev_button"),label = "",icon = icon("chevron-left"),
+                                                  style ="width: 32px !important; 
+                            height: 32px !important;
+                            font-size: 16px !important;
+                            line-height: 5px !important;
+                            padding: 0px !important;") |>bslib::tooltip("Previous occurence"), style = "display: inline-block;",
+                            
+                            div(id = "search_index","",style ="display:inline"),
+                            actionButton(ns("next_button"),label = "",icon = icon("chevron-right"),
+                                           style = "width: 32px !important; 
+                            height: 32px !important;
+                            font-size: 16px !important;
+                            line-height: 5px !important;
+                            padding: 0px !important;
+                            display:inline;
+                            ")|>bslib::tooltip("Next occurence",placement ="right"), style = "display: inline-block;")))
             )
           ),
           br(), br(),
@@ -127,7 +148,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
       close(con)
       func_list <- c(input$exported_function, paste0("`", input$exported_function, "`"))
       highlight_index <- parse_data() %>% 
-        filter(stringr::str_ends(file, input$test_files) & func %in% func_list) %>% 
+        filter(basename(file) == input$test_files & func %in% func_list) %>% 
         pull(line)
       renderCode(lines, highlight_index)
     }) %>%
@@ -144,7 +165,7 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
       close(con)
       func_list <- c(input$exported_function, paste0("`", input$exported_function, "`"))
       highlight_index <- parse_data() %>% 
-        filter(stringr::str_ends(file, input$source_files) & func %in% func_list) %>% 
+        filter(basename(file) ==  input$source_files & func %in% func_list) %>% 
         pull(line)
       renderCode(lines, highlight_index)
     }) %>%
@@ -157,8 +178,12 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
       con <- archive::archive_read(file.path("tarballs",
                                              glue::glue("{selected_pkg$name()}_{selected_pkg$version()}.tar.gz")),
                                    file = fp)
+      
       Rdfile <-tools::parse_Rd(con)
       close(con)
+      shinyjs::runjs('
+                    $highlights_list = undefined;')
+                    
       HTML(paste0(utils::capture.output(tools::Rd2HTML(Rdfile,
                                                package = c(selected_pkg$name(),
                                                            selected_pkg$version()), out = "")), collapse = "\n"))
@@ -166,7 +191,57 @@ mod_code_explorer_server <- function(id, selected_pkg, pkgarchive = reactiveVal(
       bindEvent(input$man_files, input$exported_function, ignoreNULL = FALSE)
     
     introJSServer("introJS", text = reactive(fe_steps), user, credentials)
+    search_index_value <- reactiveVal(1)
+    highlight_list <- reactiveVal(1)
     
+    observeEvent(input$next_button,{
+      if (input$next_button > 0){
+      shinyjs::runjs('
+                    var $index =Array.from($highlights_list).findIndex(node => node.isEqualNode($curr_sel));
+                    if( $index == $highlights_list.length -1) 
+                    {
+              
+                          $curr_sel = $highlights_list[0]
+                          search_index.innerHTML = 1 + " of " + $highlights_list.length;
+              
+                    }
+                else 
+                    {
+                          $curr_sel = $highlights_list[$index +1]
+                          search_index.innerHTML =  ( $index+2) + " of " + $highlights_list.length;
+                    }  
+                
+                    var $target = document.querySelector("#code_explorer-file_viewer")
+                    $target.scrollTop = 0;
+                    $target.scrollTop =$curr_sel.offsetTop -40; ')
+              
+      }
+      
+    })
+    
+    observeEvent(input$prev_button,{
+      if (input$prev_button > 0){
+        
+        shinyjs::runjs('var $index =Array.from($highlights_list).findIndex(node => node.isEqualNode($curr_sel));
+                      if( $index ==0) 
+                      {
+                            $curr_sel = $highlights_list[$highlights_list.length -1]
+                            search_index.innerHTML =   $highlights_list.length + " of " + $highlights_list.length;
+                      }
+                        else 
+                      {
+                            $curr_sel = $highlights_list[$index -1]
+                            search_index.innerHTML =   ($index) + " of " + $highlights_list.length;
+                      }  
+                      var $target = document.querySelector("#code_explorer-file_viewer")
+ 
+                      $target.scrollTop = 0; 
+                      $target.scrollTop = $curr_sel.offsetTop  - 40; 
+
+              ')
+      }
+      
+    })
     output$file_output <- renderUI({
       switch (input$file_type,
               test = test_code(),
