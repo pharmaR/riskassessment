@@ -239,6 +239,42 @@ get_metric_data <- function(pkg_name, metric_class = 'maintenance', db_name = go
     )
 }
 
+#' Get Dependency Pkg Versions and Scores
+#'
+#' 
+#' @param pkg_name character name of the package
+#' @param verify_data a data.frame used to verify whether a pkg exists in the db
+#' @param cran_pkgs a data.frame containing all available cran package names/versions
+#'
+#' @returns a list
+#' @noRd
+get_versnScore <- function(pkg_name, verify_data, cran_pkgs) {
+  
+  if (rlang::is_empty(pkg_name)) 
+    return(list(name = character(), version = character(), score = character(),
+                decision_id = character(), decision = character()))
+  
+  if (pkg_name %in% verify_data$name) { #loaded2_db()$name
+    tmp_df <- verify_data %>% filter(name == pkg_name) %>% select(score, version, decision_id, decision)
+    pkg_score <- tmp_df %>% pull(score) %>% as.character
+    pkg_versn <- tmp_df %>% pull(version) %>% as.character
+    pkg_decision_id <- tmp_df %>% pull(decision_id) %>% as.character
+    pkg_decision <- tmp_df %>% pull(decision) %>% as.character
+  } else {
+    pkg_score <- ""
+    pkg_versn <- if_else(pkg_name %in% c(rownames(installed.packages(priority="base"))), "",
+                         subset(cran_pkgs, Package == pkg_name, c("Version")) %>% as.character())
+    pkg_decision_id <- ""
+    pkg_decision <- ""
+  } 
+  
+  return(list(name = pkg_name, version = pkg_versn, score = pkg_score,
+              decision_id = pkg_decision_id, decision = pkg_decision
+  ))   
+}
+
+
+
 #' The 'Get Dependencies Metrics Data' function
 #' 
 #' Pull the depenencies data for a specific package id, and create 
@@ -277,7 +313,7 @@ get_depends_data <- function(pkg_name,
     deps_decision_data <- purrr::map_df(deep_ends$name, ~get_versnScore(.x, loaded2_db, repo_pkgs))
     if(nrow(deps_decision_data) == 0) {
       deps_w_decision <- dplyr::tibble(name = character(0), version = character(0),
-                                       score = character(0), decision = character(0), decision_id = character(0))
+             score = character(0), decision = character(0), decision_id = character(0))
     } else {
       deps_w_decision <- deps_decision_data
     }
@@ -406,40 +442,6 @@ get_assess_blob <- function(pkg_lst, db_name = golem::get_golem_options('assessm
     purrr::reduce(dplyr::bind_rows)
 }
 
-
-#' Get Dependency Pkg Versions and Scores
-#'
-#' 
-#' @param pkg_name character name of the package
-#' @param verify_data a data.frame used to verify whether a pkg exists in the db
-#' @param cran_pkgs a data.frame containing all available cran package names/versions
-#'
-#' @returns a list
-#' @noRd
-get_versnScore <- function(pkg_name, verify_data, cran_pkgs) {
-  
-  if (rlang::is_empty(pkg_name)) 
-    return(list(name = character(), version = character(), score = character(),
-                decision_id = character(), decision = character()))
-  
-  if (pkg_name %in% verify_data$name) { #loaded2_db()$name
-    tmp_df <- verify_data %>% filter(name == pkg_name) %>% select(score, version, decision_id, decision)
-    pkg_score <- tmp_df %>% pull(score) %>% as.character
-    pkg_versn <- tmp_df %>% pull(version) %>% as.character
-    pkg_decision_id <- tmp_df %>% pull(decision_id) %>% as.character
-    pkg_decision <- tmp_df %>% pull(decision) %>% as.character
-  } else {
-    pkg_score <- ""
-    pkg_versn <- if_else(pkg_name %in% c(rownames(installed.packages(priority="base"))), "",
-                 subset(cran_pkgs, Package == pkg_name, c("Version")) %>% as.character())
-    pkg_decision_id <- ""
-    pkg_decision <- ""
-  } 
-  
-  return(list(name = pkg_name, version = pkg_versn, score = pkg_score,
-              decision_id = pkg_decision_id, decision = pkg_decision
-              ))   
-}
 
 
 
