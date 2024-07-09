@@ -123,14 +123,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
                                  decision_id = character(0)))
         }
       )
-      # this is so the dependencies is also a 0x2 tibble like suggests
-      if (rlang::is_empty(pkgref()$dependencies[[1]])) {
-        depends(
-          dplyr::tibble(package = character(0), type = character(0), name = character(0),
-                        version = character(0), score = character(0), decision = character(0),
-                        decision_id = character(0))
-          )
-      }
+
         
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
       
