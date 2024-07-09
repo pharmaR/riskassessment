@@ -1,6 +1,7 @@
-# riskassessment (development version)
+# riskassessment 3.1.1
 
 * Added navigation controls in Function Explorer tab (#644)
+* Fixed bug that crashed the Package Dependencies page for pkgs without any dependency info available (#802)
 
 # riskassessment 3.1.0
 
