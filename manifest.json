@@ -4367,7 +4367,7 @@
         "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-02-29 01:10:07 UTC",
-        "Built": "R 4.3.3; ; 2024-07-09 13:27:11 UTC; unix"
+        "Built": "R 4.3.3; ; 2024-07-09 14:01:48 UTC; unix"
       }
     },
     "reprex": {
@@ -6532,7 +6532,7 @@
       "checksum": "a894eb9114e258feb99b76cdca557cd2"
     },
     "R/mod_packageDependencies.R": {
-      "checksum": "ff0b276e6d166a922415e68cc2267360"
+      "checksum": "f8cee3c4845b4d3c3c2f66796af28359"
     },
     "R/mod_pkg_explorer_utils.R": {
       "checksum": "b7792e08cc4a67296c9df0f452c0a72a"
