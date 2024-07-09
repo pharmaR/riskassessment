@@ -4367,7 +4367,7 @@
         "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-02-29 01:10:07 UTC",
-        "Built": "R 4.3.3; ; 2024-07-08 14:08:48 UTC; unix"
+        "Built": "R 4.3.3; ; 2024-07-09 13:27:11 UTC; unix"
       }
     },
     "reprex": {
@@ -6220,7 +6220,7 @@
       "checksum": "99c5575cb81828e20a7fe1d205551316"
     },
     "DESCRIPTION": {
-      "checksum": "b5ee23e93cf6e02fbaf74b0f44ec8a7c"
+      "checksum": "43f16dae5ba2122f4fd55e23f7229a40"
     },
     "inst/app/www/css/community_metrics.css": {
       "checksum": "f08eb25c2ee48ac22ed63b0d18994a04"
@@ -6463,7 +6463,7 @@
       "checksum": "97d1232340e04c53088bc8f814133dcd"
     },
     "NEWS.md": {
-      "checksum": "2a60a34e769071b45f30ee1f0bbacf47"
+      "checksum": "72bdae63c42eb2750d86e97fc0996a79"
     },
     "R/app_config.R": {
       "checksum": "c2b61f270b86b6833f0ee39c44a1a440"
