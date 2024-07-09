@@ -2,6 +2,7 @@
 
 * Added navigation controls in Function Explorer tab (#644)
 * Fixed bug that crashed the Package Dependencies page for pkgs without any dependency info available (#802)
+* Fixed bug that incorrectly displayed 0 dependencies as 1 (#805)
 
 # riskassessment 3.1.0
 
