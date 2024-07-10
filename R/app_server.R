@@ -13,7 +13,13 @@ app_server <- function(input, output, session) {
   onStop(function() {
     options(old)
     })
-  options(repos = get_db_config("package_repo"))
+  options(
+    # Set session repo to value specified in configuration file
+    repos = get_db_config("package_repo"),
+    # Removes filters based on R version, OS type, sub-architecture. Only
+    # duplicates will be removed from the available package list
+    available_packages_filters = "duplicates"
+  )
   
   # Collect user info.
   user <- reactiveValues()
