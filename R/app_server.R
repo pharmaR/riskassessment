@@ -11,8 +11,13 @@ app_server <- function(input, output, session) {
   
   old <- options()
   onStop(function() {
-    options(old)
-    })
+    options(c(
+      # Unsets available packages filter if unset previously. Will be overriden
+      # otherwise.
+      list(available_packages_filters = NULL),
+      old
+    ))
+  })
   options(
     # Set session repo to value specified in configuration file
     repos = get_db_config("package_repo"),
