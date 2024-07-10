@@ -6463,7 +6463,7 @@
       "checksum": "97d1232340e04c53088bc8f814133dcd"
     },
     "NEWS.md": {
-      "checksum": "72bdae63c42eb2750d86e97fc0996a79"
+      "checksum": "2273640b8da14304bc919f4fc83a58d7"
     },
     "R/app_config.R": {
       "checksum": "c2b61f270b86b6833f0ee39c44a1a440"
@@ -6574,7 +6574,7 @@
       "checksum": "6c0e6fb4b3716cdd0c0d2953a1cf4393"
     },
     "R/utils_insert_db.R": {
-      "checksum": "2c02e4eab4d9262ef8c8e64eb0f1b4f5"
+      "checksum": "5eaa94311e33014f000eb3cc5aec8282"
     },
     "R/utils_startup.R": {
       "checksum": "b689ee96f0761480ac65ca22cbbb4980"
