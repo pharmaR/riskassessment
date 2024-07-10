@@ -4367,7 +4367,7 @@
         "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-02-29 01:10:07 UTC",
-        "Built": "R 4.3.3; ; 2024-07-09 17:38:19 UTC; unix"
+        "Built": "R 4.3.3; ; 2024-07-10 13:11:46 UTC; unix"
       }
     },
     "reprex": {
@@ -6175,7 +6175,7 @@
       "checksum": "d74482ddef0a4941a51c077f5ea60e10"
     },
     ".github/workflows/test-coverage.yaml": {
-      "checksum": "c0baef024db9ec1299aae4098e904e9c"
+      "checksum": "a854cdb9e1cfbcbbf5ccffdf4755606b"
     },
     ".github/workflows/write-manifest.yaml": {
       "checksum": "cdfc1470af653982867daed2b99d5b97"
