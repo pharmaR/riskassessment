@@ -1,5 +1,5 @@
 default:
-  package_repo: https://CRAN.R-project.org
+  package_repo: https://cloud.r-project.org
   assessment_db: database.sqlite
   loggit_json: loggit.json
   use_shinymanager: true
