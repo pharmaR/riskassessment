@@ -64,7 +64,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
       req(pkgref())
       tryCatch(
         expr = {
-          deep_ends <- pkgref()$dependencies[[1]] %>% dplyr::as_tibble() %>% 
+          deep_ends <- {if(suppressWarnings(is.null(nrow(pkgref()$dependencies[[1]])) || nrow(pkgref()$dependencies[[1]]) == 0)) dplyr::tibble(package = character(0), type = character(0)) else pkgref()$dependencies[[1]] %>% dplyr::as_tibble()} %>% 
             mutate(package = stringr::str_replace(package, "\n", " ")) %>%
             mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
           
@@ -94,7 +94,8 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
       )
       tryCatch(
         expr = {
-          shrug_jests <- pkgref()$suggests[[1]] %>% dplyr::as_tibble()%>% 
+          shrug_jests <- 
+            {if(suppressWarnings(is.null(nrow(pkgref()$suggests[[1]])) || nrow(pkgref()$suggests[[1]]) == 0)) dplyr::tibble(package = character(0), type = character(0)) else pkgref()$suggests[[1]] %>% dplyr::as_tibble()} %>% 
             mutate(package = stringr::str_replace(package, "\n", " ")) %>%
             mutate(name = stringr::str_extract(package, "^((([[A-z]]|[.][._[A-z]])[._[A-z0-9]]*)|[.])"))
           
@@ -122,8 +123,7 @@ packageDependenciesServer <- function(id, selected_pkg, user, credentials, paren
                                  decision_id = character(0)))
         }
       )
-      # this is so the dependencies is also a 0x2 tibble like suggests
-      if (rlang::is_empty(pkgref()$dependencies[[1]])) depends(dplyr::tibble(package = character(0), type = character(0), name = character(0)))
+
         
       revdeps(pkgref()$reverse_dependencies[[1]] %>% as.vector())
       
