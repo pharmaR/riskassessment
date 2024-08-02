@@ -20,6 +20,7 @@ default:
   decisions:
     categories:
       - Low Risk
+      - Undecided
       - Medium Risk
       - High Risk
 example:
