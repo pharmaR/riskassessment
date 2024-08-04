@@ -6175,7 +6175,7 @@
       "checksum": "d74482ddef0a4941a51c077f5ea60e10"
     },
     ".github/workflows/test-coverage.yaml": {
-      "checksum": "c0baef024db9ec1299aae4098e904e9c"
+      "checksum": "a854cdb9e1cfbcbbf5ccffdf4755606b"
     },
     ".github/workflows/write-manifest.yaml": {
       "checksum": "cdfc1470af653982867daed2b99d5b97"
@@ -6463,13 +6463,13 @@
       "checksum": "97d1232340e04c53088bc8f814133dcd"
     },
     "NEWS.md": {
-      "checksum": "9fd91891f54e18c5f702df550768e91a"
+      "checksum": "8f1dc97771e1911ac13a12a45300a516"
     },
     "R/app_config.R": {
       "checksum": "c2b61f270b86b6833f0ee39c44a1a440"
     },
     "R/app_server.R": {
-      "checksum": "e2a53d90bd4289198e29bec4ff19eba7"
+      "checksum": "8408e324004d2991c855c03040cb2dca"
     },
     "R/app_ui.R": {
       "checksum": "50d68f46171151cd36457a7154e5a7a3"
@@ -6490,10 +6490,10 @@
       "checksum": "61459e71d1e62587597ac1dac2c7c650"
     },
     "R/mod_code_explorer_utils.R": {
-      "checksum": "fe3bd5c1243d0ba649d070a6ecf29560"
+      "checksum": "2588e180a69a79b7be4e3818eb3931dc"
     },
     "R/mod_code_explorer.R": {
-      "checksum": "72a36a8c4d7f15e0da013104177328b1"
+      "checksum": "1ec3f3aac096efff1e0c360b347e2d32"
     },
     "R/mod_communityMetrics.R": {
       "checksum": "fdd39bd2a7e19b8dccc195aaec57a3d8"
@@ -6532,7 +6532,7 @@
       "checksum": "a894eb9114e258feb99b76cdca557cd2"
     },
     "R/mod_packageDependencies.R": {
-      "checksum": "6fffb51829775826e242824f268062b6"
+      "checksum": "f8cee3c4845b4d3c3c2f66796af28359"
     },
     "R/mod_pkg_explorer_utils.R": {
       "checksum": "b7792e08cc4a67296c9df0f452c0a72a"
@@ -6565,13 +6565,13 @@
       "checksum": "e5835b81f48d93ee0175507abbb3186f"
     },
     "R/utils_build_cards.R": {
-      "checksum": "f79316fe637bb1f4038f085621d298f5"
+      "checksum": "a7cfdc1f9a4ad1c2835cd22eb279d8dc"
     },
     "R/utils_config_db.R": {
       "checksum": "74cf2ee5e7283483a88f08d60e3728b0"
     },
     "R/utils_get_db.R": {
-      "checksum": "6e87d4d43f93b4a4b556d72b848dc3f1"
+      "checksum": "6c0e6fb4b3716cdd0c0d2953a1cf4393"
     },
     "R/utils_insert_db.R": {
       "checksum": "240f4647cb71a94cb19db8088c85a609"

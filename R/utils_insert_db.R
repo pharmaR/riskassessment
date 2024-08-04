@@ -170,7 +170,7 @@ insert_riskmetric_to_db <- function(pkg_name, pkg_version = "",
   # Get the metrics weights to be used during pkg_score.
   metric_weights <- metric_weights_df$weight
   names(metric_weights) <- metric_weights_df$name
-  
+
   riskmetric_score <-
     riskmetric_assess %>%
     riskmetric::pkg_score(weights = metric_weights)
@@ -215,7 +215,7 @@ insert_riskmetric_to_db <- function(pkg_name, pkg_version = "",
 
     metric_value <- case_when(
       "pkg_metric_error" %in% class(riskmetric_assess[[metric$name]][[1]]) ~ "pkg_metric_error",
-      metric$name == "dependencies" ~ as.character(length(unlist(as.vector(riskmetric_assess[[metric$name]][[1]][1])))),
+      metric$name == "dependencies" ~ as.character(NROW(riskmetric_assess[[metric$name]][[1]])),
       metric$name == "reverse_dependencies" ~ as.character(length(as.vector(riskmetric_assess[[metric$name]][[1]]))),
       metric$is_perc == 1L ~ as.character(round(riskmetric_score[[metric$name]]*100, 2)[[1]]),
       TRUE ~ as.character(riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])])

@@ -20,10 +20,9 @@ default:
   decisions:
     categories:
       - Low Risk
+      - Undecided
       - Medium Risk
       - High Risk
-  metric_weights:
-    covr_coverage: 0
 example:
   assessment_db: database_ex.sqlite
   credential_db: credentials_ex.sqlite
@@ -75,6 +74,27 @@ example2:
       - GxP Compliant
       - Needs Review
       - Not GxP Compliant
+demo:
+  assessment_db: database_demo.sqlite
+  credential_db: credentials_demo.sqlite
+  metric_weights:
+    covr_coverage: 0
+  decisions:
+    rules:
+      rule_1:
+        metric: bugs_status
+        condition: ~ metric_score(.x) <= .25
+        decision: High Risk
+      rule_2:
+        metric: dependencies
+        condition: ~ length(.x) >= 30
+        decision: High Risk
+      Medium Risk:
+        - .3983
+        - .6391
+      High Risk:
+        - .6391
+        - 1
 noncredentialed:
   use_shinymanager: false
   assessment_db: database_noncredentialed.sqlite
