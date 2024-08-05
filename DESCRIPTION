@@ -1,6 +1,6 @@
 Package: riskassessment
 Title: A web app designed to interface with the `riskmetric` package
-Version: 3.1.1
+Version: 3.1.1.9000
 Authors@R: c( 
     person("Aaron", "Clark", role = c("aut", "cre"), email = "clark.aaronchris@gmail.com"),
     person("Jeff", "Thompson", role = c("aut"),  email = "jeff.thompson51317@gmail.com", comment = "Co-Lead"),
