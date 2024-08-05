@@ -13,6 +13,5 @@ auto_decisions.json
 docs/
 *.sqlite
 !*demo.sqlite
-tarballs/
 report_preferences/
 .Renviron

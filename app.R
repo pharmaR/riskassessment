@@ -12,11 +12,7 @@ riskassessment::run_app(
   "<em>Note:</em><br>
   Use the following credentials to log on with varying roles & privileges in the app, expanded upon <a href='https://pharmar.github.io/riskassessment/articles/User_Roles_and_Privileges.html#roles' target='_blank'>here</a>:
   <br><br>
-    U: <span style='text-transform:none;'><u>demo_admin</u></span>; &nbsp;&nbsp;&nbsp; P: <u><span style='text-transform:none;'>Admin@1</span></u>
-  <br>
-    U: <span style='text-transform:none;'><u>demo_lead</u></span>; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; P: <u><span style='text-transform:none;'>Lead@1</span></u>
-  <br>
-    U: <span style='text-transform:none;'><u>demo_reviewer</u></span>; P: <u><span style='text-transform:none;'>Reviewer@1</span></u>
+    U: <span style='text-transform:none;'><u>pkg_reviewer</u></span>; P: <u><span style='text-transform:none;'>Reviewer@1</span></u>
     <br>
-    U: <span style='text-transform:none;'><u>demo_viewer</u></span>; &nbsp;&nbsp;  P: <u><span style='text-transform:none;'>Viewer@1</span></u>")
+    U: <span style='text-transform:none;'><u>pkg_viewer</u></span>; &nbsp;&nbsp;  P: <u><span style='text-transform:none;'>Viewer@1</span></u>")
   ) 
