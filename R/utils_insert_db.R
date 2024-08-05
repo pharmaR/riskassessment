@@ -183,7 +183,20 @@ insert_riskmetric_to_db <- function(pkg_name, pkg_version = "",
     loggit::loggit("WARN", paste("Package", pkg_name, "not found."))
     return()
   }
-
+  
+  riskmetric_assess <-
+    lapply(riskmetric_assess[-(1:3)], \(x) {
+      out <-
+        list(
+          structure(
+            x[[1]],
+            .recording = NULL,
+            class = setdiff(class(x[[1]]), "with_eval_recording")
+          )
+        )
+      attributes(out) <- attributes(x)
+      out
+    })
   assessment_serialized <- data.frame(pkg_assess = I(lapply(riskmetric_assess, serialize, connection = NULL)))
   
   # Insert all the metrics (columns of class "pkg_score") into the db.
@@ -202,7 +215,7 @@ insert_riskmetric_to_db <- function(pkg_name, pkg_version = "",
 
     metric_value <- case_when(
       "pkg_metric_error" %in% class(riskmetric_assess[[metric$name]][[1]]) ~ "pkg_metric_error",
-      metric$name == "dependencies" ~ as.character(length(unlist(as.vector(riskmetric_assess[[metric$name]][[1]][1])))),
+      metric$name == "dependencies" ~ as.character(NROW(riskmetric_assess[[metric$name]][[1]])),
       metric$name == "reverse_dependencies" ~ as.character(length(as.vector(riskmetric_assess[[metric$name]][[1]]))),
       metric$is_perc == 1L ~ as.character(round(riskmetric_score[[metric$name]]*100, 2)[[1]]),
       TRUE ~ as.character(riskmetric_assess[[metric$name]][[1]][1:length(riskmetric_assess[[metric$name]])])

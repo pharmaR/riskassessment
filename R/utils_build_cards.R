@@ -256,7 +256,6 @@ build_dep_cards <- function(data, loaded, toggled){
     is_url = numeric(),
     type = character()
   )
-
   
   deps <- data %>% 
     mutate(base = if_else(name %in% c(rownames(installed.packages(priority = "base"))), "Base", "Non-Base")) %>% 

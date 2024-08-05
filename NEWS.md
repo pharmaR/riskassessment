@@ -1,3 +1,12 @@
+# riskassessment 3.1.1
+
+* Added navigation controls in Function Explorer tab (#644)
+* Fixed bug that crashed the Package Dependencies page for pkgs without any dependency info available (#802)
+* Fixed bug that incorrectly displayed 0 dependencies as 1 (#805)
+* Fixed bug that kept full list of available packages from populating (#776)
+* Removed `.recording` attribute from `riskmetric` assessments for storage purposes
+* Ensured `tarballs` directory existed before returning from `initialize_raa()`
+
 # riskassessment 3.1.0
 
 ### User Enhancements
