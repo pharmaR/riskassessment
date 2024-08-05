@@ -5,6 +5,7 @@
 * Fixed bug that incorrectly displayed 0 dependencies as 1 (#805)
 * Fixed bug that kept full list of available packages from populating (#776)
 * Removed `.recording` attribute from `riskmetric` assessments for storage purposes
+* Ensured `tarballs` directory existed before returning from `initialize_raa()`
 
 # riskassessment 3.1.0
 
