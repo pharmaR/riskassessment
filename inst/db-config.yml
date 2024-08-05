@@ -14,7 +14,7 @@ default:
       - viewer
     privileges:
       admin: [admin, weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]
-      lead: [weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]
+      lead: [final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]
       reviewer: [add_package, general_comment]
       viewer:
   decisions:
