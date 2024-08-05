@@ -4,6 +4,7 @@
 * Fixed bug that crashed the Package Dependencies page for pkgs without any dependency info available (#802)
 * Fixed bug that incorrectly displayed 0 dependencies as 1 (#805)
 * Fixed bug that kept full list of available packages from populating (#776)
+* Removed `.recording` attribute from `riskmetric` assessments for storage purposes
 
 # riskassessment 3.1.0
 
