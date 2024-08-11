@@ -9,7 +9,7 @@
 #'
 #' @noRd
 app_sys <- function(...) {
-  system.file(..., package = "riskassessment")
+  system.file(..., package = "riskassessment", mustWork = TRUE)
 }
 
 
