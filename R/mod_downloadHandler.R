@@ -66,7 +66,10 @@ mod_downloadHandler_include_server <- function(id) {
         div(align = 'left', class = 'twocol', style = 'margin-top: 0px;',
             shinyWidgets::prettyCheckboxGroup(
               ns("report_includes"), label = NULL, inline = FALSE,
-              choices = rpt_choices, selected = isolate(session$userData$user_report$report_includes) %||% rpt_choices
+              choices = if (!golem::get_golem_options("risk_score_display_on")) 
+                            { setdiff(rpt_choices,"Risk Score")}
+                            else {
+                               rpt_choices}, selected = isolate(session$userData$user_report$report_includes) %||% rpt_choices
             )
         )
       )

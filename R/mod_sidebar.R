@@ -57,11 +57,15 @@ sidebarUI <- function(id) {
         h5("Status"),
         htmlOutput(NS(id, "status"))
       ))),
+      if(golem::get_golem_options("risk_score_display_on")){
       column(6, div(id = NS(id, "score-wp"), wellPanel(
         h5("Metric Risk"),
         htmlOutput(NS(id, "score"))
       ))
-    ),
+    )}
+    else {
+      NULL
+    },
     
     br(), br(), br(),
     
