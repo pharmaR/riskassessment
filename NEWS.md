@@ -1,4 +1,5 @@
 # riskassessment (development version)
+* Added toggle in config for risk scores (#583)
 
 # riskassessment 3.1.1
 

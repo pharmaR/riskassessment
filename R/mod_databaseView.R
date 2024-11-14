@@ -23,77 +23,77 @@ databaseViewUI <- function(id) {
     fluidRow(
       column(
         width = 10, offset = 1,
-    tabsetPanel(
-      tabPanel(
-        "Uploaded Packages",
-        column(
-          width = 10, offset = 1, align = "center",
-          tags$section(
-            div(class = "box",
-              div(class = "box-header",
-                h3(class = "box-title",
-                h3("Uploaded Packages", style = "margin-top: 5px")
-                )
-              ),
-              div(class = "box-body",
-                br(),
-                metricGridUI(NS(id, 'metricGrid')),
-                br(),
-                DT::dataTableOutput(NS(id, "packages_table")),
-                div(style = "font-size: 25px;", align = "left",
-                    shinyWidgets::prettyToggle(NS(id, "dt_sel"), 
-                                               label_on  = "All Rows Selected",
-                                               label_off = "Select All Rows",
-                                               icon_on = icon("check"),
-                                               width = "100%",
-                                               status_off = "primary",
-                                               status_on = "primary",
-                                               outline = TRUE,
-                                               inline = TRUE,
-                                               bigger = TRUE)),
-                br(), br(),
-                div(id = "dwnld_rp",
-                    fluidRow(
-                      column(4, h5("Report Configurations"),),
-                      column(3, mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)),
-                      column(3, shiny::actionButton(NS(id, "downloadHandler-store_prefs"), "Store Preferences", 
-                                                    icon = icon("fas fa-floppy-disk", class = "fa-reqular", lib = "font-awesome")))
+        tabsetPanel(
+          tabPanel(
+            "Uploaded Packages",
+            column(
+              width = 10, offset = 1, align = "center",
+              tags$section(
+                div(class = "box",
+                    div(class = "box-header",
+                        h3(class = "box-title",
+                           h3("Uploaded Packages", style = "margin-top: 5px")
+                        )
                     ),
-                    br(),
-                    fluidRow(
-                      column(4,
-                             mod_downloadHandler_filetype_ui(NS(id, "downloadHandler"))
-                      ),
-                      column(8, 
-                             mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
-                      )
-                    ),
-                ),
+                    div(class = "box-body",
+                        br(),
+                        metricGridUI(NS(id, 'metricGrid')),
+                        br(),
+                        DT::dataTableOutput(NS(id, "packages_table")),
+                        div(style = "font-size: 25px;", align = "left",
+                            shinyWidgets::prettyToggle(NS(id, "dt_sel"), 
+                                                       label_on  = "All Rows Selected",
+                                                       label_off = "Select All Rows",
+                                                       icon_on = icon("check"),
+                                                       width = "100%",
+                                                       status_off = "primary",
+                                                       status_on = "primary",
+                                                       outline = TRUE,
+                                                       inline = TRUE,
+                                                       bigger = TRUE)),
+                        br(), br(),
+                        div(id = "dwnld_rp",
+                            fluidRow(
+                              column(4, h5("Report Configurations"),),
+                              column(3, mod_downloadHandler_button_ui(NS(id, "downloadHandler"), multiple = FALSE)),
+                              column(3, shiny::actionButton(NS(id, "downloadHandler-store_prefs"), "Store Preferences", 
+                                                            icon = icon("fas fa-floppy-disk", class = "fa-reqular", lib = "font-awesome")))
+                            ),
+                            br(),
+                            fluidRow(
+                              column(4,
+                                     mod_downloadHandler_filetype_ui(NS(id, "downloadHandler"))
+                              ),
+                              column(8, 
+                                     mod_downloadHandler_include_ui(NS(id, "downloadHandler"))
+                              )
+                            ),
+                        ),
+                    )
+                ) %>%
+                  column(width = 12)
               )
-            ) %>%
-              column(width = 12)
-          )
-        )),
-      tabPanel(
-        "Decision Categories",
-        column(
-          width = 8, offset = 2, align = "center",
-          tags$section(
-            div(class = "box",
-              div(class = "box-header",
-                h3(class = "box-title",
-                h3("Decision Categories", style = "margin-top: 5px")
-                )
-              ),
-              mod_decision_automation_ui_2("automate") %>%
-                div(class = "box-body")
-            ) %>%
-              column(width = 12)
-            )
-        ))
-    )
-  )
-  ))
+            )),
+          tabPanel(
+            "Decision Categories",
+            column(
+              width = 8, offset = 2, align = "center",
+              tags$section(
+                div(class = "box",
+                    div(class = "box-header",
+                        h3(class = "box-title",
+                           h3("Decision Categories", style = "margin-top: 5px")
+                        )
+                    ),
+                    mod_decision_automation_ui_2("automate") %>%
+                      div(class = "box-body")
+                ) %>%
+                  column(width = 12)
+              )
+            ))
+        )
+      )
+    ))
 }
 
 #' Server logic for 'Database View' module
@@ -126,7 +126,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     
     # Update table_data if a package has been uploaded
     table_data <- eventReactive({uploaded_pkgs(); changes()}, {
-     
+      
       db_pkg_overview <- dbSelect(
         'SELECT pi.name, pi.date_added, pi.version, pi.score, dc.decision, pi.decision_by, pi.decision_date, c.last_comment
         FROM package as pi
@@ -138,7 +138,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
         ORDER BY 1 DESC'
       )
       
-      db_pkg_overview %>%
+      db_pkg_overview <- db_pkg_overview %>%
         dplyr::mutate(date_added = as.Date(date_added)) %>% # new
         dplyr::mutate(score = as.numeric(score)) %>% # new
         
@@ -151,11 +151,18 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
         # dplyr::mutate(decision_date = ifelse(is.na(decision_date) | decision_date == "NA", "-", decision_date)) %>% # old
         dplyr::mutate(decision_date = as.Date(decision_date)) %>% # new
         
-        dplyr::mutate(last_comment = lubridate::as_datetime(last_comment)) %>% # new
-        # dplyr::mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>% # old
-        # dplyr::mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>% # old
-        
-        dplyr::select(name, date_added, version, score, decision, decision_by, decision_date, last_comment)
+        dplyr::mutate(last_comment = lubridate::as_datetime(last_comment)) # new
+      # dplyr::mutate(last_comment = as.character(lubridate::as_datetime(last_comment))) %>% # old
+      # dplyr::mutate(last_comment = ifelse(is.na(last_comment), "-", last_comment)) %>% # old
+      # browser()
+      if (!golem::get_golem_options("risk_score_display_on")) {
+        db_pkg_overview  %>%
+          dplyr::select(name, date_added, version, decision, decision_by, decision_date, last_comment)
+      }
+      else {
+        db_pkg_overview  %>%
+          dplyr::select(name, date_added, version, score, decision, decision_by, decision_date, last_comment)
+      }
     })
     
     exportTestValues(
@@ -183,44 +190,53 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       
       my_data_table <- reactive({
         cbind(table_data(), 
-        data.frame(
-          Actions = shinyInput(actionButton, nrow(table_data()),
-                               'button_',
-                               size = "xs",
-                               style='height:24px; padding-top:1px;',
-                               label = icon("arrow-right", class="fa-regular", lib = "font-awesome"),
-                               onclick = paste0('Shiny.setInputValue(\"' , ns("select_button"), '\", this.id, {priority: \"event\"})')
-          )
-        )
+              data.frame(
+                Actions = shinyInput(actionButton, nrow(table_data()),
+                                     'button_',
+                                     size = "xs",
+                                     style='height:24px; padding-top:1px;',
+                                     label = icon("arrow-right", class="fa-regular", lib = "font-awesome"),
+                                     onclick = paste0('Shiny.setInputValue(\"' , ns("select_button"), '\", this.id, {priority: \"event\"})')
+                )
+              )
         )
       })
-
-      formattable::as.datatable(
-      formattable::formattable(
+      #browser()
+      if(!golem::get_golem_options("risk_score_display_on")){
+        colnames_ <-c("Package", "Date Uploaded", "Version", "Decision",
+                      "Decision by", "Decision Date", "Last Comment", "Explore Metrics")
+      } 
+      else 
+        {
+        colnames_ <- c("Package", "Date Uploaded", "Version", "Score", "Decision",
+                       "Decision by", "Decision Date", "Last Comment", "Explore Metrics")
+      }
+       formattable::as.datatable(
+        formattable::formattable(
           my_data_table(),
           list(
             score = formattable::formatter(
               "span",
               style = x ~ formattable::style(display = "block",
-                                "border-radius" = "4px",
-                                "padding-right" = "4px",
-                                "color" = "black",
-                                "order" = x,
-                                "background-color" = formattable::csscolor(
-                                  setColorPalette(100)[round(as.numeric(x)*100)]))),
+                                             "border-radius" = "4px",
+                                             "padding-right" = "4px",
+                                             "color" = "black",
+                                             "order" = x,
+                                             "background-color" = formattable::csscolor(
+                                               setColorPalette(100)[round(as.numeric(x)*100)]))),
             decision = formattable::formatter(
               "span",
               style = x ~ formattable::style(display = "block",
-                                "border-radius" = "4px",
-                                "padding-right" = "4px",
-                                "color" = ifelse(x %in% decision_lst, get_text_color(get_colors(golem::get_golem_options("assessment_db_name"))[x]), "inherit"),
-                                "background-color" = 
-                                  ifelse(x %in% decision_lst,
-                                         glue::glue("var(--{risk_lbl(x, type = 'attribute')}-color)"),
-                                         "transparent")))
+                                             "border-radius" = "4px",
+                                             "padding-right" = "4px",
+                                             "color" = ifelse(x %in% decision_lst, get_text_color(get_colors(golem::get_golem_options("assessment_db_name"))[x]), "inherit"),
+                                             "background-color" = 
+                                               ifelse(x %in% decision_lst,
+                                                      glue::glue("var(--{risk_lbl(x, type = 'attribute')}-color)"),
+                                                      "transparent")))
           )),
         selection = list(mode = 'multiple'),
-        colnames = c("Package", "Date Uploaded", "Version", "Score", "Decision", "Decision by", "Decision Date", "Last Comment", "Explore Metrics"),
+        colnames = colnames_,
         rownames = FALSE,
         filter = list(
           position = "top",
@@ -235,8 +251,8 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
           lengthMenu = list(c(15, 60, 120, -1), c('15', '60', '120', "All")),
           columnDefs = list(
             list(className = 'dt-center', targets = "_all"),
-            list(targets = 8, searchable = FALSE) # make sure 'Explore Metrics' column filter is disabled
-            ),
+            list(targets = ifelse(!golem::get_golem_options("risk_score_display_on"),7,8), searchable = FALSE) # make sure 'Explore Metrics' column filter is disabled
+          ),
           buttons = list(
             list(extend = "excel", text = shiny::HTML('<i class="fas fa-download"></i> Excel'),
                  exportOptions = list(columns = c(0:6)), # which columns to download
@@ -266,7 +282,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
       
       # grab the package name
       pkg_name <- table_data()[selectedRow, 1]
-
+      
       # update sidebar-select_pkg
       updateSelectizeInput(
         session = parent,
@@ -305,7 +321,7 @@ databaseViewServer <- function(id, user, uploaded_pkgs, metric_weights, changes,
     
     # return vector of elements to include in the report
     report_includes <- mod_downloadHandler_include_server("downloadHandler")
-
+    
     mod_downloadHandler_server("downloadHandler", pkgs, user, metric_weights)
     
   })

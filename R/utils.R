@@ -572,6 +572,9 @@ datatable_custom <- function(
 ){
   
   colnames <- colnames %||% character(0)
+  if(!golem::get_golem_options("risk_score_display_on")) { 
+    hide_names <- c(hide_names,"score")
+  } 
   hide_names <- hide_names %||% character(0)
   data <- data %||% as.data.frame(matrix(nrow = 0, ncol = pmax(length(colnames), 1) )) 
   stopifnot(is.data.frame(data))
