@@ -30,7 +30,7 @@ run_app <- function(
   if(is.null(credentials_db_name)) credentials_db_name <- "credentials.sqlite"
   decisions <- get_db_config('decisions')
   decision_categories <- if(is.null(decisions) || is.null(decisions$categories)) c("Low Risk", "Medium Risk", "High Risk") else decisions$categories
-  
+  risk_score_display_on <- get_db_config("risk_score_display_prefs")
   if(is.null(login_note)) {
     # https://github.com/rstudio/fontawesome/issues/99
     # Here, we make sure user has a functional version of fontawesome
@@ -48,20 +48,20 @@ run_app <- function(
   pre_auth_user <- NULL
   if (isFALSE(getOption("golem.app.prod"))) {
     arg_lst <- as.list(match.call())
-  
+    
     login_creds <- list(user_id = "",
                         user_pwd = "cxk1QEMYSpYcrNB")
-  if (!is.null(arg_lst$pre_auth_user)) {
-    pre_auth_user <- arg_lst$pre_auth_user
-    if (isTRUE(pre_auth_user) || pre_auth_user == "admin") {
-      login_creds$user_id <- "admin"
-    } else {
-      login_creds$user_id <- pre_auth_user
+    if (!is.null(arg_lst$pre_auth_user)) {
+      pre_auth_user <- arg_lst$pre_auth_user
+      if (isTRUE(pre_auth_user) || pre_auth_user == "admin") {
+        login_creds$user_id <- "admin"
+      } else {
+        login_creds$user_id <- pre_auth_user
+      }
+      credentials_db_name <- gsub("\\.sqlite", "_dev\\.sqlite", credentials_db_name)
     }
-    credentials_db_name <- gsub("\\.sqlite", "_dev\\.sqlite", credentials_db_name)
   }
-  }
-  
+  browser()
   # Run the app
   with_golem_options(
     app = shinyApp(
@@ -78,6 +78,7 @@ run_app <- function(
                       pre_auth_user = pre_auth_user,
                       login_creds = login_creds,
                       decision_categories = decision_categories,
+                      risk_score_display_on = risk_score_display_on,
                       ...)
   )
 }

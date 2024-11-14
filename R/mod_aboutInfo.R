@@ -17,6 +17,7 @@ aboutInfoUI <- function(id) {
         br(),
         # Assessment criteria sub-tab
         tabsetPanel(
+          if(golem::get_golem_options("risk_score_display_on")) {
           tabPanel(
             title = "Assessment Criteria",
             icon = icon("circle-info"),
@@ -26,7 +27,8 @@ aboutInfoUI <- function(id) {
                 width = 10, offset = 1,
             assessmentInfoUI(NS(id,"assessmentInfo"))  # call assessment module UI
                ))
-            ),
+            ) }
+          else {NULL},
         # Contacts sub-tab  
           tabPanel(
             title = "Contact",

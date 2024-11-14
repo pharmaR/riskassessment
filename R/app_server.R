@@ -112,7 +112,8 @@ app_server <- function(input, output, session) {
                         title = "Roles & Privileges",
                         mod_user_roles_ui("userRoles")
                       ),
-                    if ("weight_adjust" %in% unlist(credential_config$privileges[res_auth$role]))
+                    if ("weight_adjust" %in% unlist(credential_config$privileges[res_auth$role]) &
+                        golem::get_golem_options("risk_score_display_on"))
                     tabPanel(
                       id = "reweight_id",
                       title = "Assessment Reweighting",

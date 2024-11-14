@@ -502,6 +502,10 @@ uploadPackageServer <- function(id, user, auto_list, credentials, parent) {
         } else {
           uploaded_pkgs()
         }
+      if (!golem::get_golem_options("risk_score_display_on")) {
+        uploaded_pkgs_ext <-uploaded_pkgs_ext %>%
+          select(-score)
+      }
       
       formattable::as.datatable(
         formattable::formattable(
