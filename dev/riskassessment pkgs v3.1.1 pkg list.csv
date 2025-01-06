@@ -1,0 +1,302 @@
+Package,Version,Decision
+zoo,1.8-12,Medium Risk
+zip,2.3.0,High Risk
+yaml,2.3.7,High Risk
+xts,0.13.1,-
+xtable,1.8-4,Medium Risk
+xportr,0.3.1,Medium Risk
+xopen,1.0.0,High Risk
+xml2,1.3.5,-
+xlsxjars,0.6.1,High Risk
+xlsx,0.6.5,Medium Risk
+xfun,0.4,-
+writexl,1.4.2,High Risk
+wk,0.9.0,High Risk
+withr,2.5.1,-
+whisker,0.4.1,High Risk
+webshot,0.5.5,High Risk
+waterfalls,1.0.0,High Risk
+waldo,0.5.1,High Risk
+vroom,1.6.4,-
+visR,0.3.1,Medium Risk
+viridisLite,0.4.2,High Risk
+viridis,0.6.4,-
+vctrs,0.6.4,-
+uuid,1.1-1,High Risk
+utf8,1.2.4,Medium Risk
+usethis,2.2.2,High Risk
+urlchecker,1.0.1,High Risk
+urca,1.3-3,High Risk
+units,0.8-4,Low Risk
+tzdb,0.4.0,High Risk
+tseries,0.10-54,High Risk
+tinytex,0.48,High Risk
+timechange,0.2.0,High Risk
+timeDate,4022.108,High Risk
+tidyverse,2.0.0,-
+tidytlg,0.1.4,Medium Risk
+tidyselect,1.2.0,-
+tidyr,1.3.0,-
+tidyCDISC,0.2.1,Medium Risk
+tibble,3.2.1,-
+tfrmt,0.1.0,High Risk
+textshaping,0.3.7,-
+testthat,3.2.0,-
+terra,1.7-55,High Risk
+tern,0.9.0,Medium Risk
+systemfonts,1.0.5,-
+sys,3.4.2,High Risk
+svglite,2.1.2,-
+survival,3.5-7,-
+stringr,1.5.0,-
+stringi,1.7.12,High Risk
+sparklyr,1.8.3,High Risk
+sp,2.1-1,-
+sourcetools,0.1.7-1,High Risk
+shiny,1.7.5.1,High Risk
+shape,1.4.6,High Risk
+sf,1.0-14,-
+sessioninfo,1.2.2,High Risk
+selectr,0.4-2,High Risk
+scatterplot3d,0.3-44,High Risk
+scales,1.2.1,High Risk
+sass,0.4.7,-
+sandwich,3.0-2,-
+s2,1.1.4,High Risk
+rvest,1.0.3,-
+rversions,2.1.2,High Risk
+rtables,0.6.3,Medium Risk
+rstudioapi,0.15.0,-
+rstatix,0.7.2,High Risk
+rprojroot,2.0.3,-
+roxygen2,7.2.3,-
+rmarkdown,2.25,-
+rlang,1.1.1,High Risk
+riskmetric,0.2.3,Medium Risk
+rio,1.0.1,-
+rgl,1.2.1,-
+rex,1.2.1,-
+reticulate,1.34.0,-
+reshape2,1.4.4,High Risk
+reshape,0.8.9,High Risk
+reprex,2.0.2,-
+renv,1.0.3,-
+remotes,2.4.2.1,-
+rematch2,2.1.2,High Risk
+rematch,2.0.0,High Risk
+recipes,1.0.8,-
+readxl,1.4.3,-
+readr,2.1.4,-
+rcmdcheck,1.4.0,High Risk
+raster,3.6-26,High Risk
+rappdirs,0.3.3,High Risk
+ragg,1.2.6,High Risk
+rJava,1.0-6,High Risk
+quantreg,5.97,Medium Risk
+quantmod,0.4.25,High Risk
+quadprog,1.5-8,High Risk
+purrr,1.0.2,-
+psych,2.3.9,Medium Risk
+ps,1.7.5,High Risk
+proxy,0.4-27,Medium Risk
+promises,1.2.1,-
+progressr,0.14.0,-
+progress,1.2.2,High Risk
+profvis,0.3.8,High Risk
+prodlim,2023.08.28,High Risk
+processx,3.8.2,High Risk
+prettyunits,1.2.0,High Risk
+praise,1.0.0,High Risk
+polynom,1.4-1,High Risk
+png,0.1-8,High Risk
+plyr,1.8.9,High Risk
+plotly,4.10.3,High Risk
+pkgload,1.3.3,High Risk
+pkglite,0.2.1,-
+pkgdown,2.0.7,High Risk
+pkgconfig,2.0.3,High Risk
+pkgbuild,1.4.2,High Risk
+pillar,1.9.0,-
+pharmaRTF,0.1.4,Medium Risk
+pbkrtest,0.5.2,Medium Risk
+patchwork,1.1.3,-
+parallelly,1.36.0,High Risk
+pROC,1.18.4,High Risk
+openxlsx,4.2.5.2,-
+openssl,2.1.1,-
+numDeriv,2016.8-1.1,Medium Risk
+nloptr,2.0.3,-
+mvtnorm,1.2-3,Medium Risk
+munsell,0.5.0,High Risk
+multcomp,1.4-25,Medium Risk
+modelr,0.1.11,High Risk
+mnormt,2.1.1,High Risk
+minqa,1.2.6,High Risk
+miniUI,0.1.1.1,High Risk
+mime,0.12,High Risk
+metatools,0.1.5,High Risk
+metacore,0.1.2,Medium Risk
+memoise,2.0.1,High Risk
+matrixStats,1.0.0,-
+markdown,1.11,Low Risk
+maps,3.4.1,High Risk
+magrittr,2.0.3,-
+magick,2.8.1,-
+lubridate,1.9.3,-
+logrx,0.3.0,Medium Risk
+lmtest,0.9-40,Medium Risk
+lme4,1.1-34,-
+listenv,0.9.0,-
+lifecycle,1.0.3,-
+leaps,3.1,High Risk
+lazyeval,0.2.2,Medium Risk
+lava,1.7.2.1,Medium Risk
+lattice,0.22-5,Medium Risk
+later,1.3.1,-
+labeling,0.4.3,High Risk
+knitr,1.44,Medium Risk
+jsonlite,1.8.7,-
+jquerylib,0.1.4,High Risk
+jpeg,0.1-10,High Risk
+jose,1.2.0,-
+janitor,2.2.0,-
+iterators,1.0.14,-
+isoband,0.2.7,Medium Risk
+ipred,0.9-14,Medium Risk
+insight,0.19.6,-
+ini,0.3.1,High Risk
+igraph,1.5.1,-
+ids,1.0.1,Medium Risk
+httr2,0.2.3,-
+httr,1.4.7,-
+httpuv,1.6.12,High Risk
+htmlwidgets,1.6.2,-
+htmltools,0.5.6.1,High Risk
+htmlTable,2.4.1,Medium Risk
+hrbrthemes,0.8.0,-
+hms,1.1.3,High Risk
+highr,0.1,-
+here,1.0.1,-
+haven,2.5.3,-
+hardhat,1.3.0,-
+gtools,3.9.4,High Risk
+gtable,0.3.4,-
+gridExtra,2.3,Medium Risk
+gower,1.0.1,-
+googlesheets4,1.1.1,High Risk
+googledrive,2.1.1,-
+glue,1.6.2,Low Risk
+globals,0.16.2,High Risk
+glmnet,4.1-8,Medium Risk
+gitcreds,0.1.2,-
+gh,1.4.0,-
+ggsurvfit,0.3.1,-
+ggsignif,0.6.4,-
+ggsci,3.0.0,-
+ggrepel,0.9.4,-
+ggpubr,0.6.0,High Risk
+ggplot2,3.4.4,-
+gert,2.0.0,Medium Risk
+generics,0.1.3,High Risk
+gargle,1.5.2,-
+future.apply,1.11.0,-
+future,1.33.0,-
+fs,1.6.3,Low Risk
+fracdiff,1.5-2,High Risk
+forecast,8.21.1,-
+foreach,1.5.2,High Risk
+forcats,1.0.0,-
+fontawesome,0.5.2,High Risk
+fastmap,1.1.1,High Risk
+farver,2.1.1,High Risk
+fansi,1.0.5,-
+evaluate,0.22,High Risk
+estimability,1.4.1,High Risk
+emmeans,1.8.9,-
+ellipsis,0.3.2,High Risk
+e1071,1.7-13,Medium Risk
+dtplyr,1.3.1,-
+dplyr,1.1.3,-
+downlit,0.4.3,High Risk
+doParallel,1.0.17,-
+digest,0.6.33,Medium Risk
+diffobj,0.3.5,-
+diagram,1.6.5,High Risk
+devtools,2.4.5,-
+desc,1.4.2,High Risk
+deldir,1.0-9,High Risk
+dbplyr,2.3.4,-
+datawizard,0.9.0,-
+datacutr,0.1.0,High Risk
+data.table,1.14.8,-
+curl,5.1.0,-
+crosstalk,1.2.0,High Risk
+credentials,2.0.1,Medium Risk
+crayon,1.5.2,High Risk
+cpp11,0.4.6,-
+cowplot,1.1.1,-
+covr,3.6.3,-
+corrplot,0.92,-
+conflicted,1.2.0,High Risk
+commonmark,1.9.0,High Risk
+colorspace,2.1-0,-
+coda,0.19-4,High Risk
+clock,0.7.0,-
+clipr,0.8.0,-
+cli,3.6.1,High Risk
+classInt,0.4-10,-
+checkmate,2.2.0,-
+cellranger,1.1.0,-
+caret,6.0-94,-
+carData,3.0-5,High Risk
+car,3.1-2,Medium Risk
+callr,3.7.3,High Risk
+cachem,1.0.8,High Risk
+caTools,1.18.2,High Risk
+bslib,0.5.1,High Risk
+broom,1.0.5,-
+brio,1.1.3,High Risk
+brew,1.0-8,High Risk
+blob,1.2.4,High Risk
+bitops,1.0-7,High Risk
+bit64,4.0.5,High Risk
+bit,4.0.5,-
+base64enc,0.1-3,High Risk
+backports,1.4.1,High Risk
+assertthat,0.2.1,High Risk
+askpass,1.2.0,High Risk
+admiralophtha,0.3.0,Medium Risk
+admiralonco,0.5.0,Medium Risk
+admiraldev,1.1.0,-
+admiral,0.12.3,Medium Risk
+abind,1.4-5,High Risk
+XML,3.99-0.14,High Risk
+V8,4.4.0,-
+Tplyr,1.1.0,Medium Risk
+TTR,0.24.3,High Risk
+TH.data,1.1-2,High Risk
+SparseM,1.81,Medium Risk
+SQUAREM,2021.1,Medium Risk
+RcppTOML,0.2.2,High Risk
+RcppEigen,0.3.3.9.3,-
+RcppArmadillo,0.12.6.4.0,-
+Rcpp,1.0.11,-
+RSQLite,2.3.1,-
+RMySQL,0.10.26,High Risk
+RCurl,1.98-1.12,High Risk
+RColorBrewer,1.1-3,High Risk
+R6,2.5.1,High Risk
+R.utils,2.12.2,High Risk
+R.oo,1.25.0,High Risk
+R.methodsS3,1.8.2,High Risk
+MatrixModels,0.5-2,High Risk
+Matrix,1.6-1.1,-
+MASS,7.3-60,High Risk
+IDEAFilter,0.1.2,High Risk
+Hmisc,5.1-1,High Risk
+Formula,1.2-5,Medium Risk
+FSelector,0.34,High Risk
+DT,0.3,-
+DBI,1.1.3,-
+BiocManager,1.30.22,-
+BH,1.81.0-1,High Risk
