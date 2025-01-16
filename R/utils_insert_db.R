@@ -183,7 +183,20 @@ insert_riskmetric_to_db <- function(pkg_name, pkg_version = "",
     loggit::loggit("WARN", paste("Package", pkg_name, "not found."))
     return()
   }
-
+  
+  riskmetric_assess <-
+    lapply(riskmetric_assess[-(1:3)], \(x) {
+      out <-
+        list(
+          structure(
+            x[[1]],
+            .recording = NULL,
+            class = setdiff(class(x[[1]]), "with_eval_recording")
+          )
+        )
+      attributes(out) <- attributes(x)
+      out
+    })
   assessment_serialized <- data.frame(pkg_assess = I(lapply(riskmetric_assess, serialize, connection = NULL)))
   
   # Insert all the metrics (columns of class "pkg_score") into the db.

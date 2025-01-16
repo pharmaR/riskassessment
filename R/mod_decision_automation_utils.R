@@ -24,7 +24,8 @@ assign_decisions <- function(rule_list, package, db_name = golem::get_golem_opti
     if (!is.na(decision)) break
     rule <- rule_list[[i]]
     
-    fn <- purrr::possibly(rule$mapper, otherwise = FALSE)
+    if (rlang::is_function(rule$mapper) || rlang::is_formula(rule$mapper))
+      fn <- purrr::possibly(rule$mapper, otherwise = FALSE)
     if (rule$type == "overall_score") {
       decision <- if (fn(get_pkg_info(package)$score)) rule$decision else NA_character_
       log_message <- glue::glue("Decision for the package {package} was assigned {decision} because the risk score returned TRUE for `{rule$condition}`")

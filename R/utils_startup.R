@@ -218,8 +218,10 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   
   check_repos(db_config[["package_repo"]])
   
-  if (file.exists(assessment_db) && (isTRUE(getOption("shiny.testmode")) || use_shinymanager && file.exists(credentials_db)))
-    return(invisible(c(assessment_db, if (!isTRUE(getOption("shiny.testmode")) & use_shinymanager) credentials_db)))
+  if (!dir.exists("tarballs")) dir.create("tarballs")
+  
+  if (file.exists(assessment_db) && (use_shinymanager && file.exists(credentials_db)))
+    return(invisible(c(assessment_db, if (use_shinymanager) credentials_db)))
   
   check_credentials(db_config[["credentials"]])
 
@@ -243,8 +245,6 @@ initialize_raa <- function(assess_db, cred_db, configuration) {
   } else if (!identical(decisions$decision, decision_categories)) {
     stop("The decision categories in the configuration file do not match those in the assessment database.")
   }
-  
-  if (!dir.exists("tarballs")) dir.create("tarballs")
 
   invisible(c(assessment_db, if (use_shinymanager) credentials_db))
 }
