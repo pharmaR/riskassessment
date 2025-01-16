@@ -134,6 +134,8 @@ webinardemo:
         metric: reverse_dependencies
         condition: ~ length(.x) <= 5
         decision: Needs Review
+      rule_else:
+        decision: Low Risk
 noncredentialed:
   use_shinymanager: false
   assessment_db: database_noncredentialed.sqlite
