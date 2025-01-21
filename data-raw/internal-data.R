@@ -57,6 +57,16 @@ template <- read.csv(file.path('data-raw', 'upload_format.csv'),  stringsAsFacto
 
 test_pkg_lst <- c("dplyr", "tidyr", "readr", "purrr", "tibble", "stringr", "forcats")
 
+demo_package_tbl <- 
+  RSQLite::SQLite() |> 
+  DBI::dbConnect("demo_database.sqlite") |> 
+  dplyr::tbl("package")
+
+demo_pkg_lst <- 
+  demo_package_tbl |> 
+  dplyr::pull(name) |> 
+  sort()
+
 library(magrittr)
 test_pkg_refs_compl <-
   test_pkg_lst %>%
@@ -67,11 +77,27 @@ test_pkg_refs <-
   test_pkg_refs_compl %>%
   purrr::map(~ .x[c("name", "version", "source")] %>% purrr::set_names(c("name", "version", "source")))
 
+demo_pkg_refs <- 
+  demo_pkg_lst |> 
+  purrr::map(\(x) demo_package_tbl |> 
+               dplyr::filter(name == x) |> 
+               dplyr::mutate(source = "pkg_cran_remote") |> 
+               dplyr::select(name, version, source) |> 
+               as.data.frame() |> 
+               as.list()) |> 
+  purrr::set_names(demo_pkg_lst)
+
 devtools::load_all()
 test_pkg_info <-
   test_pkg_lst %>%
   purrr::map(get_latest_pkg_info) %>%
   purrr::set_names(test_pkg_lst)
+
+demo_pkg_info <-
+  demo_pkg_lst |> 
+  purrr::map(\(x) get_pkg_info(x, "demo_database.sqlite") |> 
+               dplyr::select(Version=version, Maintainer=maintainer, Author=author, License=license, Published=published_on, Title=title, Description=description)) |> 
+  purrr::set_names(demo_pkg_lst)
 
 test_pkg_assess <-
   test_pkg_refs_compl %>%
@@ -79,10 +105,20 @@ test_pkg_assess <-
                 dplyr::as_tibble() %>%
                 riskmetric::pkg_assess())
 
+demo_pkg_assess <-
+  demo_pkg_lst |> 
+  purrr::map(\(x) get_assess_blob(x, "demo_database.sqlite")) |> 
+  purrr::set_names(demo_pkg_lst)
+
 test_pkg_cum <-
   test_pkg_lst %>%
   purrr::map(generate_comm_data) %>%
   purrr::set_names(test_pkg_lst)
+
+demo_pkg_cum <-
+  demo_pkg_lst |> 
+  purrr::map(\(x) get_comm_data(x, "demo_database.sqlite")) |> 
+  purrr::set_names(demo_pkg_lst)
 
 # New light palette, verified as color-blind friendly here:
 # https://davidmathlogic.com/colorblind/#%239CFF94-%23B3FF87-%23BCFF43-%23D8F244-%23F2E24B-%23FFD070-%23FFBE82-%23FFA87C-%23FF8F6C-%23FF765B
@@ -154,5 +190,6 @@ usethis::use_data(
   test_pkg_lst, test_pkg_refs, test_pkg_info, test_pkg_assess, test_pkg_cum,
   color_palette, used_privileges, metric_lst, rpt_choices,
   team_info_df,
+  demo_pkg_lst, demo_pkg_refs, demo_pkg_info, demo_pkg_assess, demo_pkg_cum,
   internal = TRUE, overwrite = TRUE)
 

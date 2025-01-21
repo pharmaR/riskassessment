@@ -75,6 +75,7 @@ example2:
       - GxP Compliant
       - Needs Review
       - Not GxP Compliant
+      - Something
 noncredentialed:
   use_shinymanager: false
   assessment_db: database_noncredentialed.sqlite
@@ -83,3 +84,13 @@ noncredentialed:
       - default
     privileges:
       default: [admin, weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]
+demo_database:
+  assessment_db: demo_database.sqlite
+  decisions:
+    categories:
+      - Approved
+      - Low Risk
+      - Needs Review
+      - High Risk
+demo:
+  inherits: demo_database

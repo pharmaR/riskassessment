@@ -63,6 +63,9 @@ insert_pkg_info_to_db <- function(pkg_name, pkg_version,
       # pkg_name <- "dplyr" # testing
       if (isTRUE(getOption("shiny.testmode")))
         pkg_info <- test_pkg_info[[pkg_name]]
+      else if (identical(Sys.getenv("GOLEM_CONFIG_ACTIVE"), "demo") && 
+               (pkg_name %in% demo_pkg_lst))
+        pkg_info <- demo_pkg_info[[pkg_name]]
       else if (identical(Sys.getenv("TESTTHAT"), "true"))
         pkg_info <- get_latest_pkg_info(pkg_name)
       else
@@ -154,7 +157,11 @@ upload_package_to_db <- function(name, version, title, description,
 insert_riskmetric_to_db <- function(pkg_name, pkg_version = "",
     db_name = golem::get_golem_options('assessment_db_name')){
 
-  if (!isTRUE(getOption("shiny.testmode"))) {
+  if (identical(Sys.getenv("GOLEM_CONFIG_ACTIVE"), "demo") && 
+      (pkg_name %in% demo_pkg_lst)) {
+    riskmetric_assess <-
+      demo_pkg_assess[[pkg_name]]
+  } else if (!isTRUE(getOption("shiny.testmode"))) {
     riskmetric_assess <-
       riskmetric::pkg_ref(pkg_name,
                           source = "pkg_cran_remote") %>%
@@ -296,7 +303,10 @@ insert_riskmetric_to_db <- function(pkg_name, pkg_version = "",
 insert_community_metrics_to_db <- function(pkg_name, 
                                            db_name = golem::get_golem_options('assessment_db_name')) {
   
-  if (!isTRUE(getOption("shiny.testmode")))
+  if (identical(Sys.getenv("GOLEM_CONFIG_ACTIVE"), "demo") && 
+      (pkg_name %in% demo_pkg_lst))
+    pkgs_cum_metrics <- demo_pkg_cum[[pkg_name]]
+  else if (!isTRUE(getOption("shiny.testmode")))
     pkgs_cum_metrics <- generate_comm_data(pkg_name)
   else
     pkgs_cum_metrics <- test_pkg_cum[[pkg_name]]
@@ -394,7 +404,10 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, user_name = "sy
       updateProgress(1, glue::glue("{uploaded_packages$package[i]}"))
       
     if (grepl("^[[:alpha:]][[:alnum:].]*[[:alnum:]]$", uploaded_packages$package[i])) {
-      if (!isTRUE(getOption("shiny.testmode")))
+      if (identical(Sys.getenv("GOLEM_CONFIG_ACTIVE"), "demo") && 
+          (uploaded_packages$package[i] %in% demo_pkg_lst))
+        ref <- demo_pkg_refs[[uploaded_packages$package[i]]]
+      else if (!isTRUE(getOption("shiny.testmode")))
         ref <- riskmetric::pkg_ref(uploaded_packages$package[i],
                                    source = "pkg_cran_remote")
       else
@@ -449,7 +462,8 @@ upload_pkg_lst <- function(pkg_lst, assess_db, repos, repo_pkgs, user_name = "sy
       if (is.function(updateProgress))
         updateProgress(1)
 
-      if (!isTRUE(getOption("shiny.testmode"))) {
+      if (!isTRUE(getOption("shiny.testmode")) && 
+          (!identical(Sys.getenv("GOLEM_CONFIG_ACTIVE"), "demo") || !ref$name %in% demo_pkg_lst)) {
         dwn_ld <- try(utils::download.file(ref$tarball_url, file.path("tarballs", basename(ref$tarball_url)), 
                                            quiet = TRUE, mode = "wb"),
                       silent = TRUE)
