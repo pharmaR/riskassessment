@@ -105,32 +105,28 @@ webinardemo:
       - Low Risk # else decision
       - Needs Review # if any issues below
       - Rejected # some rejected on upload? Which
-    rules:
+    rules: # https://pharmar.github.io/riskmetric/reference/index.html
       rule_1: # needs news, else "needs review"
         metric: has_news
         condition: ~ .x == 0
         decision: Needs Review
-      rule_2: # needs vingettes, else "needs review"
-        metric: has_vignettes
-        condition: ~ .x == 0
-        decision: Needs Review
-      rule_3: # needs source code else "needs review"
+      rule_2: # needs source code else "needs review"
         metric: has_source_control
         condition: ~ metric_score(.x) == 0
         decision: Needs Review
-      rule_4: # needs spot to report bugs, else "needs review"
+      rule_3: # needs spot to report bugs, else "needs review"
         metric: has_bug_reports_url
         condition: ~ metric_score(.x) == FALSE
         decision: Needs Review
-      rule_5: # Needs less than 30 deps, else "needs review"
+      rule_4: # Needs less than 30 deps, else "needs review"
         metric: dependencies
         condition: ~ length(.x) >= 30
         decision: Needs Review
-      rule_6: # needs downloads > 48k, else "needs review"
+      rule_5: # needs downloads > 48k, else "needs review"
         metric: downloads_1yr
         condition: ~ .x <= 48000
         decision: Needs Review
-      rule_7: # needs reverse deps >= 6, else "needs review"
+      rule_6: # needs reverse deps >= 6, else "needs review"
         metric: reverse_dependencies
         condition: ~ length(.x) <= 5
         decision: Needs Review
