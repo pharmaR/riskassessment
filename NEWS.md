@@ -2,6 +2,8 @@
 
 * Open hyperlinks in a new tab from cards.
 * Fix bug causing app to crash with ELSE condition in rules
+* Add `inherits` to list of used configs
+* Incorporate bug fix for dependency assessment from `riskmetric`
 
 # riskassessment 3.1.1
 
