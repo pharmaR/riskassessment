@@ -1,9 +1,11 @@
-# riskassessment (development version)
+# riskassessment 3.1.2
 
-* Open hyperlinks in a new tab from cards.
-* Fix bug causing app to crash with ELSE condition in rules
+Mostly minor changes here!
+
+* Open hyperlinks in a **new tab** from cards.
+* Fix bug causing app to crash with `ELSE` condition in rules
 * Add `inherits` to list of used configs
-* Incorporate bug fix for dependency assessment from `riskmetric`
+* Incorporate bug fix for dependency assessment from `riskmetric` repo
 
 # riskassessment 3.1.1
 
