@@ -1,0 +1,371 @@
+Package,Version,Decision
+abind,0.0.0,Low Risk
+admiral,0.0.0,Low Risk
+admiraldev,0.0.0,Low Risk
+admiralonco,0.0.0,Low Risk
+admiralophtha,0.0.0,Low Risk
+askpass,0.0.0,Low Risk
+assertthat,0.0.0,Low Risk
+backports,0.0.0,Low Risk
+base64enc,0.0.0,
+BH,0.0.0,Low Risk
+BiocManager,0.0.0,Low Risk
+bit,0.0.0,
+bit64,0.0.0,
+bitops,0.0.0,
+blob,0.0.0,Low Risk
+brew,0.0.0,
+brio,0.0.0,
+broom,0.0.0,Low Risk
+bslib,0.0.0,
+cachem,0.0.0,
+callr,0.0.0,Low Risk
+car,0.0.0,
+carData,0.0.0,
+caret,0.0.0,
+caTools,0.0.0,
+cellranger,0.0.0,Low Risk
+checkmate,0.0.0,
+classInt,0.0.0,
+cli,0.0.0,Low Risk
+clipr,0.0.0,Low Risk
+clock,0.0.0,
+coda,0.0.0,
+colorspace,0.0.0,
+commonmark,0.0.0,
+conflicted,0.0.0,Low Risk
+corrplot,0.0.0,
+covr,0.0.0,
+cowplot,0.0.0,
+cpp11,0.0.0,Low Risk
+crayon,0.0.0,Low Risk
+credentials,0.0.0,
+crosstalk,0.0.0,
+curl,0.0.0,Low Risk
+data.table,0.0.0,Low Risk
+datacutr,0.0.0,
+datawizard,0.0.0,
+DBI,0.0.0,Low Risk
+dbplyr,0.0.0,Low Risk
+deldir,0.0.0,
+desc,0.0.0,
+devtools,0.0.0,
+diagram,0.0.0,
+diffobj,0.0.0,
+digest,0.0.0,
+doParallel,0.0.0,
+downlit,0.0.0,
+dplyr,0.0.0,Low Risk
+DT,0.0.0,Low Risk
+dtplyr,0.0.0,Low Risk
+e1071,0.0.0,
+ellipsis,0.0.0,
+emmeans,0.0.0,
+estimability,0.0.0,
+evaluate,0.0.0,
+fansi,0.0.0,Low Risk
+farver,0.0.0,
+fastmap,0.0.0,
+fontawesome,0.0.0,
+forcats,0.0.0,Low Risk
+foreach,0.0.0,
+forecast,0.0.0,
+Formula,0.0.0,Low Risk
+fracdiff,0.0.0,
+fs,0.0.0,Low Risk
+FSelector,0.0.0,Low Risk
+future,0.0.0,
+future.apply,0.0.0,
+gargle,0.0.0,Low Risk
+generics,0.0.0,Low Risk
+gert,0.0.0,
+ggplot2,0.0.0,Low Risk
+ggpubr,0.0.0,
+ggrepel,0.0.0,
+ggsci,0.0.0,
+ggsignif,0.0.0,
+ggsurvfit,0.0.0,
+gh,0.0.0,
+gitcreds,0.0.0,
+glmnet,0.0.0,
+globals,0.0.0,
+glue,0.0.0,Low Risk
+googledrive,0.0.0,Low Risk
+googlesheets4,0.0.0,Low Risk
+gower,0.0.0,
+gridExtra,0.0.0,
+gtable,0.0.0,Low Risk
+gtools,0.0.0,
+hardhat,0.0.0,
+haven,0.0.0,Low Risk
+here,0.0.0,
+highr,0.0.0,
+Hmisc,0.0.0,Low Risk
+hms,0.0.0,Low Risk
+hrbrthemes,0.0.0,
+htmlTable,0.0.0,
+htmltools,0.0.0,
+htmlwidgets,0.0.0,
+httpuv,0.0.0,
+httr,0.0.0,Low Risk
+httr2,0.0.0,
+IDEAFilter,0.0.0,Low Risk
+ids,0.0.0,Low Risk
+igraph,0.0.0,
+ini,0.0.0,
+insight,0.0.0,
+ipred,0.0.0,
+isoband,0.0.0,Low Risk
+iterators,0.0.0,
+janitor,0.0.0,
+jose,0.0.0,
+jpeg,0.0.0,
+jquerylib,0.0.0,
+jsonlite,0.0.0,Low Risk
+knitr,0.0.0,Low Risk
+labeling,0.0.0,
+later,0.0.0,
+lattice,0.0.0,
+lava,0.0.0,
+lazyeval,0.0.0,
+leaps,0.0.0,
+lifecycle,0.0.0,Low Risk
+listenv,0.0.0,
+lme4,0.0.0,
+lmtest,0.0.0,
+logrx,0.0.0,
+lubridate,0.0.0,Low Risk
+magick,0.0.0,
+magrittr,0.0.0,Low Risk
+maps,0.0.0,
+markdown,0.0.0,
+MASS,0.0.0,Low Risk
+Matrix,0.0.0,Low Risk
+MatrixModels,0.0.0,Low Risk
+matrixStats,0.0.0,
+memoise,0.0.0,Low Risk
+metacore,0.0.0,
+metatools,0.0.0,
+mgcv,0.0.0,Low Risk
+mime,0.0.0,Low Risk
+miniUI,0.0.0,
+minqa,0.0.0,
+mnormt,0.0.0,
+modelr,0.0.0,Low Risk
+multcomp,0.0.0,
+munsell,0.0.0,
+mvtnorm,0.0.0,
+nloptr,0.0.0,
+numDeriv,0.0.0,
+openssl,0.0.0,Low Risk
+openxlsx,0.0.0,
+parallelly,0.0.0,
+patchwork,0.0.0,
+pbkrtest,0.0.0,
+pharmaRTF,0.0.0,
+pillar,0.0.0,Low Risk
+pkgbuild,0.0.0,
+pkgconfig,0.0.0,Low Risk
+pkgdown,0.0.0,
+pkglite,0.0.0,
+pkgload,0.0.0,
+plotly,0.0.0,
+plyr,0.0.0,
+png,0.0.0,
+polynom,0.0.0,
+praise,0.0.0,
+prettyunits,0.0.0,
+pROC,0.0.0,
+processx,0.0.0,
+prodlim,0.0.0,
+profvis,0.0.0,
+progress,0.0.0,Low Risk
+progressr,0.0.0,
+promises,0.0.0,
+proxy,0.0.0,
+ps,0.0.0,
+psych,0.0.0,
+purrr,0.0.0,Low Risk
+quadprog,0.0.0,
+quantmod,0.0.0,
+quantreg,0.0.0,
+R.methodsS3,0.0.0,Low Risk
+R.oo,0.0.0,Low Risk
+R.utils,0.0.0,Low Risk
+R6,0.0.0,Low Risk
+ragg,0.0.0,Low Risk
+rappdirs,0.0.0,
+raster,0.0.0,
+rcmdcheck,0.0.0,
+RColorBrewer,0.0.0,Low Risk
+Rcpp,0.0.0,Low Risk
+RcppArmadillo,0.0.0,Low Risk
+RcppEigen,0.0.0,Low Risk
+RcppTOML,0.0.0,Low Risk
+RCurl,0.0.0,Low Risk
+readr,0.0.0,Low Risk
+readxl,0.0.0,Low Risk
+recipes,0.0.0,
+rematch,0.0.0,
+rematch2,0.0.0,Low Risk
+remotes,0.0.0,
+renv,0.0.0,
+reprex,0.0.0,Low Risk
+reshape,0.0.0,
+reshape2,0.0.0,
+reticulate,0.0.0,
+rex,0.0.0,
+rgl,0.0.0,
+rio,0.0.0,
+riskmetric,0.0.0,
+rJava,0.0.0,
+rlang,0.0.0,Low Risk
+rmarkdown,0.0.0,Low Risk
+RMySQL,0.0.0,Low Risk
+roxygen2,0.0.0,
+rprojroot,0.0.0,
+RSQLite,0.0.0,Low Risk
+rstatix,0.0.0,
+rstudioapi,0.0.0,Low Risk
+rtables,0.0.0,
+rversions,0.0.0,
+rvest,0.0.0,Low Risk
+s2,0.0.0,
+sandwich,0.0.0,
+sass,0.0.0,
+scales,0.0.0,Low Risk
+scatterplot3d,0.0.0,
+selectr,0.0.0,Low Risk
+sessioninfo,0.0.0,
+sf,0.0.0,
+shape,0.0.0,
+shiny,0.0.0,
+sourcetools,0.0.0,
+sp,0.0.0,
+sparklyr,0.0.0,
+SparseM,0.0.0,Low Risk
+SQUAREM,0.0.0,Low Risk
+stringi,0.0.0,Low Risk
+stringr,0.0.0,Low Risk
+survival,0.0.0,
+svglite,0.0.0,
+sys,0.0.0,
+systemfonts,0.0.0,
+tern,0.0.0,
+terra,0.0.0,
+testthat,0.0.0,
+textshaping,0.0.0,
+tfrmt,0.0.0,
+TH.data,0.0.0,Low Risk
+tibble,0.0.0,Low Risk
+tidyCDISC,0.0.0,
+tidyr,0.0.0,Low Risk
+tidyselect,0.0.0,Low Risk
+tidytlg,0.0.0,
+tidyverse,0.0.0,
+timechange,0.0.0,
+timeDate,0.0.0,
+tinytex,0.0.0,
+Tplyr,0.0.0,Low Risk
+tseries,0.0.0,
+TTR,0.0.0,Low Risk
+tzdb,0.0.0,Low Risk
+units,0.0.0,
+urca,0.0.0,
+urlchecker,0.0.0,
+usethis,0.0.0,
+utf8,0.0.0,
+uuid,0.0.0,Low Risk
+V8,0.0.0,Low Risk
+vctrs,0.0.0,Low Risk
+viridis,0.0.0,
+viridisLite,0.0.0,
+visR,0.0.0,
+vroom,0.0.0,Low Risk
+waldo,0.0.0,
+waterfalls,0.0.0,
+webshot,0.0.0,
+whisker,0.0.0,
+withr,0.0.0,Low Risk
+wk,0.0.0,
+writexl,0.0.0,
+xfun,0.0.0,
+xlsx,0.0.0,
+xlsxjars,0.0.0,
+XML,0.0.0,Low Risk
+xml2,0.0.0,Low Risk
+xopen,0.0.0,
+xportr,0.0.0,
+xtable,0.0.0,
+xts,0.0.0,
+yaml,0.0.0,
+zip,0.0.0,
+zoo,0.0.0,
+admiral,0.0.0,
+admiral.test,0.0.0,
+admiralonco,0.0.0,
+admiralophtha,0.0.0,
+admiralvaccine,0.0.0,
+autoslider.core,0.0.0,
+cards,0.0.0,
+cardx,0.0.0,
+chevron,0.0.0,
+covtracer,0.0.0,
+crmPack,0.0.0,
+CTP,0.0.0,
+descem,0.0.0,
+dunlin,0.0.0,
+envsetup,0.0.0,
+facetsr,0.0.0,
+flexsurvPlus,0.0.0,
+formatters,0.0.0,
+gemtcPlus,0.0.0,
+ggplot2.utils,0.0.0,
+goshawk,0.0.0,
+hermes,0.0.0,
+MAIC,0.0.0,
+mmrm,0.0.0,
+mtdesign,0.0.0,
+nestcolor,0.0.0,
+nesttemplate,0.0.0,
+osprey,0.0.0,
+pharmaverseadam,0.0.0,
+pharmaversesdtm,0.0.0,
+psborrow,0.0.0,
+r.pkg.template,0.0.0,
+r2rtf,0.0.0,
+random.cdisc.data,0.0.0,
+rbmi,0.0.0,
+RDO,0.0.0,
+respectables,0.0.0,
+riskassessment,0.0.0,
+rlistings,0.0.0,
+roxy.shinylive,0.0.0,
+rpsftmPlus,0.0.0,
+rtables.officer,0.0.0,
+scda,0.0.0,
+scda.2021,0.0.0,
+scda.2022,0.0.0,
+sdtmchecks,0.0.0,
+simaerep,0.0.0,
+simIDM,0.0.0,
+staged.dependencies,0.0.0,
+syntrial,0.0.0,
+teal,0.0.0,
+teal.code,0.0.0,
+teal.data,0.0.0,
+teal.goshawk,0.0.0,
+teal.logger,0.0.0,
+teal.modules.clinical,0.0.0,
+teal.modules.general,0.0.0,
+teal.modules.hermes,0.0.0,
+teal.osprey,0.0.0,
+teal.reporter,0.0.0,
+teal.slice,0.0.0,
+teal.transform,0.0.0,
+teal.widgets,0.0.0,
+tern.gee,0.0.0,
+tern.mmrm,0.0.0,
+tern.rbmi,0.0.0,
+Tplyr,0.0.0,
+valtools,0.0.0,

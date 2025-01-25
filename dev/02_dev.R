@@ -364,3 +364,32 @@ devtools::release(check = FALSE, args = "--no-build-vignettes")
 # go to dev/03_deploy.R
 rstudioapi::navigateToFile("dev/03_deploy.R")
 
+
+
+
+
+
+
+
+
+install.packages("pharmaverse")
+
+# June 2023
+# 32 pkgs
+pharmaverse2023 <- 
+  c("admiral","tidytlg","tern","teal.slice","admiralvaccine","scda","scda.2022",
+   "sdtmcecks","ggsurvfit","logrx","tfrmt","riskassessment","xportr","rtables",
+   "teal.widgets","teal.logger","teal.data","admiralonco","admiralophtha",
+   "teal.code","teal.transform","teal","teal.reporter","riskmetric","covtracer",
+   "envsetup","pkglite","tidyCDISC","datacutr","covr","metatools","metacore",
+   "Tplyr","visR","synthetic.cdisc.data","valtools","respectables","pharmaRTF")
+length(pharmaverse2023)
+
+# Look at the APIs text string. 
+# https://pharmaverse.r-universe.dev/apis
+
+# Jan 2025
+# Should be 82 pkgs, but there is only 81
+pharmaverse <- c("admiral","admiral.test","admiralonco","admiralophtha","admiralvaccine","autoslider.core","cards","cardx","chevron","covtracer","crmPack","CTP","datacutr","descem","dunlin","envsetup","facetsr","flexsurvPlus","formatters","gemtcPlus","ggplot2.utils","ggsurvfit","goshawk","hermes","logrx","MAIC","metacore","metatools","mmrm","mtdesign","nestcolor","nesttemplate","osprey","pharmaRTF","pharmaverseadam","pharmaversesdtm","psborrow","r.pkg.template","r2rtf","random.cdisc.data","rbmi","RDO","respectables","riskassessment","rlistings","roxy.shinylive","rpsftmPlus","rtables","rtables.officer","scda","scda.2021","scda.2022","sdtmchecks","simaerep","simIDM","staged.dependencies","syntrial","teal","teal.code","teal.data","teal.goshawk","teal.logger","teal.modules.clinical","teal.modules.general","teal.modules.hermes","teal.osprey","teal.reporter","teal.slice","teal.transform","teal.widgets","tern","tern.gee","tern.mmrm","tern.rbmi","tfrmt","tidyCDISC","tidytlg","Tplyr","valtools","visR","xportr")
+length(pharmaverse)
+data.frame(pharmaverse) |> write.csv("pharmaverse_Jan2025.csv")

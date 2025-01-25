@@ -2,8 +2,8 @@
 # To deploy, run: rsconnect::deployApp()
 # Or use the blue button on top of this file
 
-# Sys.setenv(GOLEM_CONFIG_ACTIVE = "demo")
-Sys.setenv(GOLEM_CONFIG_ACTIVE = "webinardemo")
+Sys.setenv(GOLEM_CONFIG_ACTIVE = "demo")
+# Sys.setenv(GOLEM_CONFIG_ACTIVE = "webinardemo")
 # options(rsconnect.max.bundle.files = 20000)
 options(shiny.fullstacktrace = TRUE)
 pkgload::load_all(export_all = FALSE,helpers = FALSE,attach_testthat = FALSE)
