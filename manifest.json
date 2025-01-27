@@ -4374,7 +4374,7 @@
         "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-02-29 01:10:07 UTC",
-        "Built": "R 4.3.3; ; 2025-01-23 16:15:10 UTC; unix"
+        "Built": "R 4.3.3; ; 2025-01-27 04:47:42 UTC; unix"
       }
     },
     "reprex": {
@@ -4550,7 +4550,7 @@
         "Config/testthat/edition": "3",
         "Author": "R Validation Hub [aut],\n  Doug Kelkhoff [aut],\n  Marly Gotti [aut],\n  Eli Miller [cre, aut],\n  Kevin K [aut],\n  Yilong Zhang [aut],\n  Eric Milliman [aut],\n  Juliane Manitz [aut],\n  Mark Padgham [ctb],\n  PSI special interest group Application and Implementation of\n    Methodologies in Statistics [cph]",
         "Maintainer": "Eli Miller <eli.miller@atorusresearch.com>",
-        "Built": "R 4.3.3; ; 2025-01-23 15:41:39 UTC; unix",
+        "Built": "R 4.3.3; ; 2025-01-23 17:14:14 UTC; unix",
         "RemoteType": "github",
         "RemoteHost": "api.github.com",
         "RemoteRepo": "riskmetric",
@@ -6227,7 +6227,7 @@
       "checksum": "99c5575cb81828e20a7fe1d205551316"
     },
     "DESCRIPTION": {
-      "checksum": "12e481058ce37c76bd7036879d7dee13"
+      "checksum": "2cc9cb76a0952395d0c5699eca46b372"
     },
     "inst/app/www/css/community_metrics.css": {
       "checksum": "f08eb25c2ee48ac22ed63b0d18994a04"
@@ -6470,7 +6470,7 @@
       "checksum": "97d1232340e04c53088bc8f814133dcd"
     },
     "NEWS.md": {
-      "checksum": "4bfd8192cb4473f04cc2185e48c79e1b"
+      "checksum": "b6195b38a38523dac7db505937d94f49"
     },
     "R/app_config.R": {
       "checksum": "c2b61f270b86b6833f0ee39c44a1a440"
@@ -6512,7 +6512,7 @@
       "checksum": "505a1d327144bb1153fad488c5c1d7ab"
     },
     "R/mod_decision_automation.R": {
-      "checksum": "e22e1f4c044bc9f11c46a5fcdba33063"
+      "checksum": "69ba429d1f781c34d84e2f660e4dbc5f"
     },
     "R/mod_downloadHandler.R": {
       "checksum": "9c00f033ca9565f3a466e7381025e368"

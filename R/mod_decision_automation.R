@@ -511,7 +511,7 @@ mod_decision_automation_server <- function(id, user, credentials){
           ),
           uiOutput(ns("empty_auto")),
         )
-      } else if (!rlang::is_empty(auto_decision_initial)) {
+      } else if (!rlang::is_empty(risk_rule_update())) {
         tagList(
           br(),br(),
           hr(),
