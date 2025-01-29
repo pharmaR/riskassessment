@@ -1,5 +1,4 @@
 rsconnect/
-/*.sqlite
 .Rproj.user
 .Rhistory
 .RData
@@ -12,6 +11,7 @@ inst/doc
 auto_decisions.json
 ^docs$
 docs/
-tarballs/
+*.sqlite
+!*demo.sqlite
 report_preferences/
 .Renviron

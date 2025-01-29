@@ -79,12 +79,12 @@ create_credentials_db <- function(db_name, admin_role = ""){
   
   # Init the credentials table for credentials database
   credentials <- data.frame(
-    user = "ADMIN",
-    password = "QWERTY1",
+    user = c("demo_admin", "demo_lead", "demo_reviewer", "demo_viewer"),
+    password = c("Admin@1", "Lead@1", "Reviewer@1", "Viewer@1"),
     # password will automatically be hashed
     admin = TRUE,
     expire = as.character(get_Date()),
-    role = admin_role,
+    role = c("admin", "lead", "reviewer", "viewer"),
     stringsAsFactors = FALSE
   )
   
@@ -101,7 +101,8 @@ create_credentials_db <- function(db_name, admin_role = ""){
     con, name = "pwd_mngt",
     passphrase = passphrase) %>%
     dplyr::mutate(must_change = ifelse(
-      have_changed == "TRUE", must_change, as.character(TRUE)))
+      user == "ADMIN" & have_changed == "FALSE",
+      as.character(TRUE), must_change))
   
   shinymanager::write_db_encrypt(
     con,
