@@ -76,7 +76,7 @@ createCard <- function(title, desc, value, score = "NULL",
   else if(is_url)
     value <- a(ifelse(nchar(value) <= val_max_nchar, value,
                     glue::glue('{stringr::str_sub(value, 1, (val_max_nchar - 3))}...')
-                 ), href = value)
+                 ), target = "_blank", href = value)
         # unfortunately, adding the href can sometimes force the footer to fall
         # outside the card when val_max_nchar is too large.
   else if(value %in% c('TRUE', 'FALSE'))

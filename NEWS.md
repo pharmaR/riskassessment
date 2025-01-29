@@ -1,9 +1,21 @@
+# riskassessment 3.1.2
+
+Mostly minor changes here!
+
+* Can now Open hyperlinks in a **new tab** from cards.
+* Added `inherits` to list of used configs
+* Fixed bug causing app to crash with `ELSE` condition in rules
+* Fixed bug where 'Decision Automation' header would disappear when non-risk decision automation rules existed but failed to include any that were based on the pkg risk score.
+* Incorporate newer version of `riskmetric` for dependency assessment
+
 # riskassessment 3.1.1
 
 * Added navigation controls in Function Explorer tab (#644)
 * Fixed bug that crashed the Package Dependencies page for pkgs without any dependency info available (#802)
 * Fixed bug that incorrectly displayed 0 dependencies as 1 (#805)
 * Fixed bug that kept full list of available packages from populating (#776)
+* Removed `.recording` attribute from `riskmetric` assessments for storage purposes
+* Ensured `tarballs` directory existed before returning from `initialize_raa()`
 
 # riskassessment 3.1.0
 
