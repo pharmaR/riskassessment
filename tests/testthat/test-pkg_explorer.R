@@ -31,7 +31,11 @@ test_that("pkg_explorer works", {
     untar(app_tar_loc, exdir = dirname(app_src_loc))
   }
   
-  app <- shinytest2::AppDriver$new(test_path("test-apps", "explorer-app"))
+  app <- shinytest2::AppDriver$new(
+    test_path("test-apps", "explorer-app"),
+    height = 1080,
+    width = 1920
+    )
 
   expect_equal(
     app$get_value(output = "src_explorer-is_file"),

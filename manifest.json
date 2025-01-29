@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "locale": "C",
+  "locale": "en_US",
   "platform": "4.3.3",
   "metadata": {
     "appmode": "shiny",
@@ -31,7 +31,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2022-12-08 08:12:34 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2023-04-22 01:31:05 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:39:34 UTC; windows"
       }
     },
     "BH": {
@@ -54,7 +54,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2024-01-10 11:53:35 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:46 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:39:11 UTC; windows"
       }
     },
     "BiocManager": {
@@ -80,7 +80,7 @@
         "Maintainer": "Marcel Ramos <marcel.ramos@roswellpark.org>",
         "Repository": "RSPM",
         "Date/Publication": "2023-08-08 23:40:06 UTC",
-        "Built": "R 4.3.0; ; 2023-08-09 11:24:46 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 02:46:42 UTC; windows"
       }
     },
     "DBI": {
@@ -112,7 +112,7 @@
         "Maintainer": "Kirill Müller <kirill@cynkra.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-02-16 13:00:02 UTC",
-        "Built": "R 4.3.0; ; 2024-02-19 11:24:16 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-02-19 11:46:32 UTC; windows"
       }
     },
     "DT": {
@@ -139,7 +139,7 @@
         "Maintainer": "Joe Cheng <joe@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-04-04 05:03:17 UTC",
-        "Built": "R 4.3.0; ; 2024-04-05 04:37:00 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-04-05 04:35:25 UTC; windows"
       }
     },
     "MASS": {
@@ -168,7 +168,8 @@
         "Maintainer": "Brian Ripley <ripley@stats.ox.ac.uk>",
         "Repository": "CRAN",
         "Date/Publication": "2024-01-13 13:36:16 UTC",
-        "Built": "R 4.3.3; x86_64-pc-linux-gnu; 2024-08-01 23:58:31 UTC; unix"
+        "Built": "R 4.3.3; x86_64-w64-mingw32; 2024-02-29 11:07:23 UTC; windows",
+        "Archs": "x64"
       }
     },
     "Matrix": {
@@ -201,7 +202,8 @@
         "Maintainer": "Martin Maechler <mmaechler+Matrix@gmail.com>",
         "Repository": "CRAN",
         "Date/Publication": "2024-01-11 17:50:15 UTC",
-        "Built": "R 4.3.3; x86_64-pc-linux-gnu; 2024-08-01 23:58:46 UTC; unix"
+        "Built": "R 4.3.3; x86_64-w64-mingw32; 2024-02-29 11:08:05 UTC; windows",
+        "Archs": "x64"
       }
     },
     "R.methodsS3": {
@@ -227,7 +229,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2022-06-13 22:00:14 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2023-05-30 12:53:15 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:19:47 UTC; windows"
       }
     },
     "R.oo": {
@@ -253,7 +255,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2024-01-24 05:12:50 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2024-01-25 11:25:32 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-25 11:57:07 UTC; windows"
       }
     },
     "R.utils": {
@@ -279,7 +281,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2023-11-18 01:00:02 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2023-11-20 11:24:04 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 02:58:06 UTC; windows"
       }
     },
     "R6": {
@@ -304,7 +306,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2021-08-19 14:00:05 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:45 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:47:13 UTC; windows"
       }
     },
     "RColorBrewer": {
@@ -326,7 +328,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2022-04-03 19:20:13 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:35 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 02:10:18 UTC; windows"
       }
     },
     "RSQLite": {
@@ -360,7 +362,8 @@
         "Maintainer": "Kirill Müller <kirill@cynkra.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-31 22:20:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-04-01 04:32:06 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-04-01 04:33:06 UTC; windows",
+        "Archs": "x64"
       }
     },
     "Rcpp": {
@@ -386,7 +389,8 @@
         "Packaged": "2024-01-08 12:50:16 UTC; edd",
         "Repository": "RSPM",
         "Date/Publication": "2024-01-09 08:20:35 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:45:39 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 02:45:40 UTC; windows",
+        "Archs": "x64"
       }
     },
     "anytime": {
@@ -414,7 +418,8 @@
         "Packaged": "2020-08-26 17:46:45.898451 UTC; edd",
         "Repository": "RSPM",
         "Date/Publication": "2020-08-27 11:40:21 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-07-18 06:49:15 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 05:10:22 UTC; windows",
+        "Archs": "x64"
       }
     },
     "archive": {
@@ -444,7 +449,8 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-11 12:40:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-12-12 11:29:22 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-06 22:51:06 UTC; windows",
+        "Archs": "x64"
       }
     },
     "askpass": {
@@ -471,7 +477,8 @@
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
         "Repository": "RSPM",
         "Date/Publication": "2023-09-03 20:00:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:35 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:33:49 UTC; windows",
+        "Archs": "x64"
       }
     },
     "assertthat": {
@@ -495,7 +502,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2019-03-21 14:53:46 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:44 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:42:44 UTC; windows"
       }
     },
     "attachment": {
@@ -526,7 +533,7 @@
         "Maintainer": "Sébastien Rochette <sebastien@thinkr.fr>",
         "Repository": "RSPM",
         "Date/Publication": "2024-01-22 09:32:46 UTC",
-        "Built": "R 4.3.0; ; 2024-01-23 11:14:16 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 11:49:39 UTC; windows"
       }
     },
     "attempt": {
@@ -552,7 +559,7 @@
         "Maintainer": "Colin Fay <contact@colinfay.me>",
         "Repository": "RSPM",
         "Date/Publication": "2020-05-03 20:50:02 UTC",
-        "Built": "R 4.3.0; ; 2023-04-21 23:12:54 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:33:02 UTC; windows"
       }
     },
     "backports": {
@@ -578,7 +585,8 @@
         "Author": "Michel Lang [cre, aut] (<https://orcid.org/0000-0001-9754-0393>),\n  R Core Team [aut]",
         "Repository": "RSPM",
         "Date/Publication": "2021-12-13 11:30:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-04-21 21:51:08 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:49:27 UTC; windows",
+        "Archs": "x64"
       }
     },
     "base64enc": {
@@ -600,7 +608,8 @@
         "Repository": "RSPM",
         "Date/Publication": "2015-07-28 08:03:37",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:29 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 03:54:22 UTC; windows",
+        "Archs": "x64"
       }
     },
     "billboarder": {
@@ -628,7 +637,7 @@
         "Maintainer": "Victor Perrier <victor.perrier@dreamrs.fr>",
         "Repository": "RSPM",
         "Date/Publication": "2023-09-29 14:02:38 UTC",
-        "Built": "R 4.3.0; ; 2023-10-02 11:44:12 UTC; unix"
+        "Built": "R 4.3.0; ; 2023-10-02 11:58:03 UTC; windows"
       }
     },
     "bit": {
@@ -656,7 +665,8 @@
         "Packaged": "2022-11-13 21:22:09 UTC; jo",
         "Repository": "RSPM",
         "Date/Publication": "2022-11-15 21:20:16 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:39 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:31:47 UTC; windows",
+        "Archs": "x64"
       }
     },
     "bit64": {
@@ -684,7 +694,8 @@
         "Date/Publication": "2020-08-30 07:20:02 UTC",
         "NeedsCompilation": "yes",
         "Packaged": "2020-08-29 10:56:45 UTC; jo",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:53 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:37:45 UTC; windows",
+        "Archs": "x64"
       }
     },
     "blob": {
@@ -712,7 +723,7 @@
         "Maintainer": "Kirill Müller <kirill@cynkra.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-03-17 12:00:06 UTC",
-        "Built": "R 4.3.0; ; 2023-04-21 21:47:56 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 06:39:52 UTC; windows"
       }
     },
     "brew": {
@@ -737,7 +748,7 @@
         "Author": "Jeffrey Horner [aut, cph],\n  Greg Hunt [aut, cre, cph]",
         "Maintainer": "Greg Hunt <greg@firmansyah.com>",
         "Date/Publication": "2023-12-16 08:30:02 UTC",
-        "Built": "R 4.3.0; ; 2024-01-16 22:31:00 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:21:27 UTC; windows"
       }
     },
     "brio": {
@@ -764,7 +775,8 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-10 10:50:07 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-12-11 11:23:07 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:26:18 UTC; windows",
+        "Archs": "x64"
       }
     },
     "broom": {
@@ -795,7 +807,7 @@
         "Maintainer": "Simon Couch <simon.couch@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-06-09 22:50:02 UTC",
-        "Built": "R 4.3.0; ; 2023-06-12 11:47:13 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 09:17:19 UTC; windows"
       }
     },
     "bslib": {
@@ -828,7 +840,7 @@
         "Maintainer": "Carson Sievert <carson@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-29 01:00:03 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:48:24 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-03-29 04:51:06 UTC; windows"
       }
     },
     "cachem": {
@@ -855,7 +867,8 @@
         "Maintainer": "Winston Chang <winston@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-05-01 16:40:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-05-03 00:20:55 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 02:32:03 UTC; windows",
+        "Archs": "x64"
       }
     },
     "callr": {
@@ -884,7 +897,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-25 13:30:06 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:45:50 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-03-26 04:37:06 UTC; windows"
       }
     },
     "cellranger": {
@@ -912,7 +925,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2016-07-27 03:17:48",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2023-08-11 13:58:08 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 07:12:10 UTC; windows"
       }
     },
     "checkhelper": {
@@ -940,7 +953,7 @@
         "RoxygenNote": "7.3.0",
         "Author": "Sebastien Rochette [aut, cre] (<https://orcid.org/0000-0002-1565-9313>),\n  Vincent Guyader [aut] (<https://orcid.org/0000-0003-0671-9270>),\n  Arthur Bréant [aut] (<https://orcid.org/0000-0003-1668-0963>),\n  Murielle Delmotte [aut] (<https://orcid.org/0000-0002-1339-2424>),\n  ThinkR [cph]",
         "Maintainer": "Sebastien Rochette <sebastien@thinkr.fr>",
-        "Built": "R 4.3.3; ; 2024-08-02 18:20:49 UTC; unix",
+        "Built": "R 4.3.3; ; 2024-04-29 15:37:25 UTC; windows",
         "RemoteType": "github",
         "RemoteUsername": "thinkr-open",
         "RemoteRepo": "checkhelper",
@@ -982,7 +995,8 @@
         "Maintainer": "Michel Lang <michellang@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-04 10:20:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:45:35 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 02:30:08 UTC; windows",
+        "Archs": "x64"
       }
     },
     "chromote": {
@@ -1011,7 +1025,7 @@
         "Maintainer": "Winston Chang <winston@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-02-12 16:20:06 UTC",
-        "Built": "R 4.3.0; ; 2024-02-13 11:16:31 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-03-15 15:19:32 UTC; windows"
       }
     },
     "cli": {
@@ -1039,7 +1053,8 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-11 07:40:13 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-01-09 01:08:15 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:55:55 UTC; windows",
+        "Archs": "x64"
       }
     },
     "clipr": {
@@ -1068,7 +1083,7 @@
         "Maintainer": "Matthew Lincoln <matthew.d.lincoln@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-02-22 00:58:45 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:52 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:35:19 UTC; windows"
       }
     },
     "clisymbols": {
@@ -1091,7 +1106,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2017-05-21 17:19:19 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:45:27 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 02:41:07 UTC; windows"
       }
     },
     "codetools": {
@@ -1113,7 +1128,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2024-03-31 20:10:06 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2024-06-26 20:45:04 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-04-01 04:30:02 UTC; windows"
       }
     },
     "colorspace": {
@@ -1142,7 +1157,8 @@
         "Maintainer": "Achim Zeileis <Achim.Zeileis@R-project.org>",
         "Repository": "RSPM",
         "Date/Publication": "2023-01-23 11:40:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:43 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:38:26 UTC; windows",
+        "Archs": "x64"
       }
     },
     "commonmark": {
@@ -1168,7 +1184,8 @@
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
         "Repository": "RSPM",
         "Date/Publication": "2024-01-30 12:40:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:43 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-31 11:34:08 UTC; windows",
+        "Archs": "x64"
       }
     },
     "config": {
@@ -1197,7 +1214,7 @@
         "Maintainer": "Andrie de Vries <apdevries@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-08-30 16:50:36 UTC",
-        "Built": "R 4.3.0; ; 2023-08-31 11:21:14 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:41:43 UTC; windows"
       }
     },
     "conflicted": {
@@ -1225,7 +1242,7 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-02-01 08:20:06 UTC",
-        "Built": "R 4.3.0; ; 2023-04-21 21:46:42 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 03:29:40 UTC; windows"
       }
     },
     "covr": {
@@ -1252,7 +1269,8 @@
         "Maintainer": "Jim Hester <james.f.hester@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-11-09 08:10:06 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-11-10 11:18:49 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 03:27:59 UTC; windows",
+        "Archs": "x64"
       }
     },
     "cpp11": {
@@ -1281,7 +1299,7 @@
         "Maintainer": "Davis Vaughan <davis@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-02 13:20:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:42 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:46:42 UTC; windows"
       }
     },
     "crancache": {
@@ -1303,7 +1321,7 @@
         "Imports": "callr,\ncranlike (>= 1.0.2),\ncurl,\ndesc (>= 1.1.0),\ndigest,\nparsedate,\nrappdirs,\nrematch2,\ntools,\nutils,\nwithr",
         "Suggests": "covr,\npingr,\ntestthat,\nzip",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.3; ; 2024-08-02 18:20:57 UTC; unix",
+        "Built": "R 4.3.3; ; 2024-04-29 15:37:38 UTC; windows",
         "RemoteType": "github",
         "RemoteHost": "api.github.com",
         "RemoteUsername": "r-lib",
@@ -1339,7 +1357,7 @@
         "Packaged": "2018-11-26 09:54:46 UTC; gaborcsardi",
         "Repository": "RSPM",
         "Date/Publication": "2018-11-26 10:10:03 UTC",
-        "Built": "R 4.3.0; ; 2023-04-27 01:21:58 UTC; unix"
+        "Built": "R 4.3.0; ; 2023-04-28 05:54:00 UTC; windows"
       }
     },
     "cranlogs": {
@@ -1364,7 +1382,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2019-04-29 19:30:07 UTC",
-        "Built": "R 4.3.0; ; 2023-04-21 23:12:09 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 03:51:59 UTC; windows"
       }
     },
     "crayon": {
@@ -1390,7 +1408,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-09-29 16:20:24 UTC",
-        "Built": "R 4.3.0; ; 2023-04-21 21:45:59 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:25:24 UTC; windows"
       }
     },
     "credentials": {
@@ -1419,7 +1437,7 @@
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
         "Repository": "RSPM",
         "Date/Publication": "2023-09-06 21:32:31 UTC",
-        "Built": "R 4.3.0; ; 2023-09-07 11:34:11 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 03:15:02 UTC; windows"
       }
     },
     "crosstalk": {
@@ -1445,7 +1463,7 @@
         "Maintainer": "Carson Sievert <carson@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-11-23 08:50:07 UTC",
-        "Built": "R 4.3.0; ; 2023-11-24 11:47:37 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 04:54:33 UTC; windows"
       }
     },
     "crul": {
@@ -1475,7 +1493,7 @@
         "Maintainer": "Scott Chamberlain <myrmecocystus@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-05-17 07:30:02 UTC",
-        "Built": "R 4.3.0; ; 2023-05-18 11:50:55 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 06:09:34 UTC; windows"
       }
     },
     "curl": {
@@ -1504,7 +1522,8 @@
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-01 23:22:46 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:45:35 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-03-04 12:43:11 UTC; windows",
+        "Archs": "x64"
       }
     },
     "data.table": {
@@ -1531,7 +1550,8 @@
         "Repository": "RSPM",
         "Date/Publication": "2024-03-30 23:50:02 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:59 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-03-31 04:30:15 UTC; windows",
+        "Archs": "x64"
       }
     },
     "dbplyr": {
@@ -1564,7 +1584,7 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-19 17:00:05 UTC",
-        "Built": "R 4.3.0; ; 2024-03-20 04:08:39 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-03-20 04:22:36 UTC; windows"
       }
     },
     "debugme": {
@@ -1589,7 +1609,7 @@
         "Packaged": "2017-10-22 09:14:23 UTC; gaborcsardi",
         "Repository": "RSPM",
         "Date/Publication": "2017-10-22 14:18:09 UTC",
-        "Built": "R 4.3.0; ; 2023-04-22 06:26:24 UTC; unix"
+        "Built": "R 4.3.0; ; 2023-04-25 05:33:27 UTC; windows"
       }
     },
     "desc": {
@@ -1619,7 +1639,7 @@
         "Author": "Gábor Csárdi [aut, cre],\n  Kirill Müller [aut],\n  Jim Hester [aut],\n  Maëlle Salmon [ctb] (<https://orcid.org/0000-0002-2815-0399>),\n  Posit Software, PBC [cph, fnd]",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-10 11:40:08 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:45:09 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 02:20:09 UTC; windows"
       }
     },
     "devtools": {
@@ -1649,7 +1669,7 @@
         "Maintainer": "Jennifer Bryan <jenny@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-10-11 17:12:36 UTC",
-        "Built": "R 4.3.0; ; 2023-04-22 01:47:07 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 09:06:25 UTC; windows"
       }
     },
     "diffobj": {
@@ -1678,7 +1698,8 @@
         "Maintainer": "Brodie Gaslam <brodie.gaslam@yahoo.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-10-05 07:10:17 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:52 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:44:25 UTC; windows",
+        "Archs": "x64"
       }
     },
     "digest": {
@@ -1704,7 +1725,8 @@
         "Repository": "RSPM",
         "Date/Publication": "2024-03-11 14:10:06 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-03-12 11:12:18 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-03-12 11:32:53 UTC; windows",
+        "Archs": "x64"
       }
     },
     "downlit": {
@@ -1732,7 +1754,7 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-06-29 22:40:08 UTC",
-        "Built": "R 4.3.0; ; 2023-06-30 11:29:05 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 06:24:41 UTC; windows"
       }
     },
     "dplyr": {
@@ -1763,7 +1785,8 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-11-17 16:50:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:46:52 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 07:21:53 UTC; windows",
+        "Archs": "x64"
       }
     },
     "dtplyr": {
@@ -1792,7 +1815,7 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-03-22 13:10:05 UTC",
-        "Built": "R 4.3.0; ; 2023-04-21 21:56:04 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 08:08:33 UTC; windows"
       }
     },
     "ellipsis": {
@@ -1818,7 +1841,8 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-04-29 12:40:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-04-21 21:46:20 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:37:52 UTC; windows",
+        "Archs": "x64"
       }
     },
     "evaluate": {
@@ -1846,7 +1870,7 @@
         "Maintainer": "Yihui Xie <xie@yihui.name>",
         "Repository": "RSPM",
         "Date/Publication": "2023-11-01 14:10:02 UTC",
-        "Built": "R 4.3.0; ; 2023-11-03 18:33:13 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:37:41 UTC; windows"
       }
     },
     "fansi": {
@@ -1874,7 +1898,8 @@
         "Maintainer": "Brodie Gaslam <brodie.gaslam@yahoo.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-08 03:30:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:34 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:36:27 UTC; windows",
+        "Archs": "x64"
       }
     },
     "farver": {
@@ -1901,7 +1926,8 @@
         "Author": "Thomas Lin Pedersen [cre, aut]\n    (<https://orcid.org/0000-0002-5147-4711>),\n  Berendea Nicolae [aut] (Author of the ColorSpace C++ library),\n  Romain François [aut] (<https://orcid.org/0000-0002-2444-4226>)",
         "Repository": "RSPM",
         "Date/Publication": "2022-07-06 13:50:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-04-21 21:44:54 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 02:03:15 UTC; windows",
+        "Archs": "x64"
       }
     },
     "fastmap": {
@@ -1925,7 +1951,8 @@
         "Maintainer": "Winston Chang <winston@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-02-24 16:30:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-04-21 21:46:07 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 02:31:07 UTC; windows",
+        "Archs": "x64"
       }
     },
     "flextable": {
@@ -1952,7 +1979,7 @@
         "Maintainer": "David Gohel <david.gohel@ardata.fr>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-06 14:00:02 UTC",
-        "Built": "R 4.3.0; ; 2024-03-07 11:34:03 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-03-07 11:30:28 UTC; windows"
       }
     },
     "fontBitstreamVera": {
@@ -1976,7 +2003,7 @@
         "License_is_FOSS": "yes",
         "Repository": "RSPM",
         "Date/Publication": "2017-02-01 00:53:34",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:35 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 02:38:16 UTC; windows"
       }
     },
     "fontLiberation": {
@@ -2000,7 +2027,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2016-10-15 11:24:18",
         "License_is_FOSS": "yes",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:31 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 03:19:46 UTC; windows"
       }
     },
     "fontawesome": {
@@ -2029,7 +2056,7 @@
         "Maintainer": "Richard Iannone <rich@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-08-19 04:52:40 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:45:27 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 05:18:17 UTC; windows"
       }
     },
     "fontquiver": {
@@ -2055,7 +2082,7 @@
         "Maintainer": "Lionel Henry <lionel@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2017-02-01 00:52:56",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:48 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 03:20:34 UTC; windows"
       }
     },
     "forcats": {
@@ -2085,7 +2112,7 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-01-29 22:20:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:46:49 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 06:58:38 UTC; windows"
       }
     },
     "formattable": {
@@ -2115,7 +2142,7 @@
         "Maintainer": "Kun Ren <ken@renkun.me>",
         "Repository": "RSPM",
         "Date/Publication": "2021-01-07 20:20:10 UTC",
-        "Built": "R 4.3.0; ; 2023-04-21 23:47:25 UTC; unix"
+        "Built": "R 4.3.0; ; 2023-04-25 05:32:56 UTC; windows"
       }
     },
     "fs": {
@@ -2148,7 +2175,8 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-07-20 10:30:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-09-12 03:14:52 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 02:16:55 UTC; windows",
+        "Archs": "x64"
       }
     },
     "gargle": {
@@ -2178,7 +2206,7 @@
         "Maintainer": "Jennifer Bryan <jenny@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-07-20 18:50:08 UTC",
-        "Built": "R 4.3.0; ; 2023-07-21 11:14:11 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 05:10:04 UTC; windows"
       }
     },
     "gdtools": {
@@ -2206,7 +2234,8 @@
         "Maintainer": "David Gohel <david.gohel@ardata.fr>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-05 05:30:36 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-07-18 07:39:09 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-03-06 11:45:38 UTC; windows",
+        "Archs": "x64"
       }
     },
     "generics": {
@@ -2234,7 +2263,7 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-07-05 19:40:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:26 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:51:21 UTC; windows"
       }
     },
     "gert": {
@@ -2263,7 +2292,8 @@
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-04 13:10:05 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-12-05 15:37:08 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 03:16:02 UTC; windows",
+        "Archs": "x64"
       }
     },
     "gfonts": {
@@ -2291,7 +2321,7 @@
         "Maintainer": "Victor Perrier <victor.perrier@dreamrs.fr>",
         "Repository": "RSPM",
         "Date/Publication": "2023-01-08 18:50:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:50:55 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 08:35:41 UTC; windows"
       }
     },
     "ggplot2": {
@@ -2323,7 +2353,7 @@
         "Maintainer": "Thomas Lin Pedersen <thomas.pedersen@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-02-23 09:30:02 UTC",
-        "Built": "R 4.3.0; ; 2024-02-26 11:37:44 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-02-26 11:53:14 UTC; windows"
       }
     },
     "gh": {
@@ -2353,7 +2383,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-28 16:40:07 UTC",
-        "Built": "R 4.3.0; ; 2024-03-29 04:17:23 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-03-29 04:42:20 UTC; windows"
       }
     },
     "gitcreds": {
@@ -2382,7 +2412,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-09-08 10:42:55 UTC",
-        "Built": "R 4.3.0; ; 2024-01-16 22:21:11 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:13:09 UTC; windows"
       }
     },
     "globals": {
@@ -2409,7 +2439,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2024-03-08 00:00:03 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2024-06-26 20:45:21 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-03-08 11:24:28 UTC; windows"
       }
     },
     "glue": {
@@ -2439,7 +2469,8 @@
         "Maintainer": "Jennifer Bryan <jenny@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-01-09 23:13:08 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:45:27 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:34:37 UTC; windows",
+        "Archs": "x64"
       }
     },
     "gmailr": {
@@ -2468,7 +2499,7 @@
         "Maintainer": "Jennifer Bryan <jenny@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-06-30 05:40:02 UTC",
-        "Built": "R 4.3.0; ; 2023-07-03 12:12:59 UTC; unix"
+        "Built": "R 4.3.0; ; 2023-07-03 12:20:07 UTC; windows"
       }
     },
     "golem": {
@@ -2497,7 +2528,7 @@
         "Maintainer": "Colin Fay <contact@colinfay.me>",
         "Repository": "RSPM",
         "Date/Publication": "2023-06-05 15:50:03 UTC",
-        "Built": "R 4.3.0; ; 2023-06-06 11:32:16 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 08:12:58 UTC; windows"
       }
     },
     "googledrive": {
@@ -2527,7 +2558,7 @@
         "Maintainer": "Jennifer Bryan <jenny@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-06-11 19:30:08 UTC",
-        "Built": "R 4.3.0; ; 2023-06-12 11:48:00 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 06:57:14 UTC; windows"
       }
     },
     "googlesheets4": {
@@ -2557,7 +2588,7 @@
         "Maintainer": "Jennifer Bryan <jenny@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-06-11 04:00:02 UTC",
-        "Built": "R 4.3.0; ; 2023-06-12 11:48:42 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 07:14:07 UTC; windows"
       }
     },
     "gtable": {
@@ -2586,7 +2617,7 @@
         "Maintainer": "Thomas Lin Pedersen <thomas.pedersen@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-08-21 11:20:02 UTC",
-        "Built": "R 4.3.0; ; 2023-08-22 11:58:57 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 03:51:11 UTC; windows"
       }
     },
     "haven": {
@@ -2617,7 +2648,8 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-11-30 15:10:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:49:38 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 08:04:22 UTC; windows",
+        "Archs": "x64"
       }
     },
     "here": {
@@ -2646,7 +2678,7 @@
         "Maintainer": "Kirill Müller <krlmlr+r@mailbox.org>",
         "Repository": "RSPM",
         "Date/Publication": "2020-12-13 07:30:02 UTC",
-        "Built": "R 4.3.0; ; 2023-04-21 23:11:59 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 02:06:41 UTC; windows"
       }
     },
     "highr": {
@@ -2674,7 +2706,7 @@
         "Maintainer": "Yihui Xie <xie@yihui.name>",
         "Repository": "RSPM",
         "Date/Publication": "2022-12-22 07:00:02 UTC",
-        "Built": "R 4.3.0; ; 2023-04-21 21:46:33 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:42:32 UTC; windows"
       }
     },
     "hms": {
@@ -2704,7 +2736,7 @@
         "Maintainer": "Kirill Müller <kirill@cynkra.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-03-21 18:10:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:46:16 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 06:39:56 UTC; windows"
       }
     },
     "htmltools": {
@@ -2735,7 +2767,8 @@
         "Maintainer": "Carson Sievert <carson@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-04-04 05:03:00 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:45:16 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-04-05 04:33:11 UTC; windows",
+        "Archs": "x64"
       }
     },
     "htmlwidgets": {
@@ -2763,7 +2796,7 @@
         "Maintainer": "Carson Sievert <carson@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-06 06:00:06 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:49:51 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 07:52:51 UTC; windows"
       }
     },
     "httpcode": {
@@ -2788,7 +2821,7 @@
         "Maintainer": "Scott Chamberlain <myrmecocystus@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2020-04-10 06:20:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:29 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 02:40:13 UTC; windows"
       }
     },
     "httpuv": {
@@ -2818,7 +2851,8 @@
         "Maintainer": "Winston Chang <winston@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-26 05:50:06 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-07-18 06:39:42 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-03-27 04:37:41 UTC; windows",
+        "Archs": "x64"
       }
     },
     "httr": {
@@ -2846,7 +2880,7 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-08-15 09:00:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:45:56 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 02:52:42 UTC; windows"
       }
     },
     "httr2": {
@@ -2875,7 +2909,7 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-04-01 19:30:02 UTC",
-        "Built": "R 4.3.0; ; 2024-04-02 04:14:26 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-04-02 05:07:30 UTC; windows"
       }
     },
     "hunspell": {
@@ -2905,7 +2939,8 @@
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
         "Repository": "RSPM",
         "Date/Publication": "2023-10-06 07:10:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-07-18 07:08:15 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 02:47:36 UTC; windows",
+        "Archs": "x64"
       }
     },
     "ids": {
@@ -2931,7 +2966,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2017-05-31 08:49:59 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2023-04-21 21:46:53 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 02:33:53 UTC; windows"
       }
     },
     "ini": {
@@ -2957,7 +2992,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2018-05-20 03:26:39 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2024-01-16 22:22:09 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 03:20:38 UTC; windows"
       }
     },
     "isoband": {
@@ -2986,7 +3021,8 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2022-12-20 10:00:13 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:29 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 02:23:57 UTC; windows",
+        "Archs": "x64"
       }
     },
     "jquerylib": {
@@ -3010,7 +3046,7 @@
         "Maintainer": "Carson Sievert <carson@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-04-26 17:10:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:45:27 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 05:28:57 UTC; windows"
       }
     },
     "jsonlite": {
@@ -3036,7 +3072,8 @@
         "Author": "Jeroen Ooms [aut, cre] (<https://orcid.org/0000-0002-4035-0289>),\n  Duncan Temple Lang [ctb],\n  Lloyd Hilaiel [cph] (author of bundled libyajl)",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-04 15:20:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:28 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:24:48 UTC; windows",
+        "Archs": "x64"
       }
     },
     "kableExtra": {
@@ -3066,7 +3103,7 @@
         "Maintainer": "Hao Zhu <haozhu233@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-01-24 14:20:02 UTC",
-        "Built": "R 4.3.0; ; 2024-01-25 11:26:31 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-25 12:01:19 UTC; windows"
       }
     },
     "knitr": {
@@ -3096,7 +3133,7 @@
         "Maintainer": "Yihui Xie <xie@yihui.name>",
         "Repository": "RSPM",
         "Date/Publication": "2024-04-06 18:13:00 UTC",
-        "Built": "R 4.3.0; ; 2024-04-07 04:06:27 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-04-07 04:31:18 UTC; windows"
       }
     },
     "labeling": {
@@ -3119,7 +3156,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2023-08-29 22:20:02 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2024-06-26 20:45:27 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 03:12:29 UTC; windows"
       }
     },
     "later": {
@@ -3147,7 +3184,8 @@
         "Maintainer": "Winston Chang <winston@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-06 09:10:05 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-07-18 06:30:24 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 04:27:15 UTC; windows",
+        "Archs": "x64"
       }
     },
     "lattice": {
@@ -3177,7 +3215,8 @@
         "Repository": "RSPM",
         "Date/Publication": "2024-03-20 06:10:02 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:45:04 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-03-21 04:22:38 UTC; windows",
+        "Archs": "x64"
       }
     },
     "lazyeval": {
@@ -3202,7 +3241,8 @@
         "Repository": "RSPM",
         "Date/Publication": "2019-03-15 17:50:07 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-04-21 22:19:30 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:53:15 UTC; windows",
+        "Archs": "x64"
       }
     },
     "learnr": {
@@ -3233,7 +3273,7 @@
         "Maintainer": "Garrick Aden-Buie <garrick@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-09-28 05:00:02 UTC",
-        "Built": "R 4.3.0; ; 2023-09-29 11:12:58 UTC; unix"
+        "Built": "R 4.3.0; ; 2023-09-29 11:35:46 UTC; windows"
       }
     },
     "lifecycle": {
@@ -3262,7 +3302,7 @@
         "Maintainer": "Lionel Henry <lionel@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-11-07 10:10:10 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:45:36 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 03:39:59 UTC; windows"
       }
     },
     "loggit": {
@@ -3289,7 +3329,7 @@
         "Maintainer": "Ryan Price <ryapric@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-02-28 05:30:02 UTC",
-        "Built": "R 4.3.0; ; 2023-04-27 02:41:22 UTC; unix"
+        "Built": "R 4.3.0; ; 2023-04-30 08:53:23 UTC; windows"
       }
     },
     "lubridate": {
@@ -3323,7 +3363,8 @@
         "Author": "Vitalie Spinu [aut, cre],\n  Garrett Grolemund [aut],\n  Hadley Wickham [aut],\n  Davis Vaughan [ctb],\n  Ian Lyttle [ctb],\n  Imanuel Costigan [ctb],\n  Jason Law [ctb],\n  Doug Mitarotonda [ctb],\n  Joseph Larmarange [ctb],\n  Jonathan Boiser [ctb],\n  Chel Hee Lee [ctb]",
         "Repository": "RSPM",
         "Date/Publication": "2023-09-27 09:20:06 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:45:17 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 02:44:32 UTC; windows",
+        "Archs": "x64"
       }
     },
     "magrittr": {
@@ -3352,7 +3393,8 @@
         "Maintainer": "Lionel Henry <lionel@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-03-30 07:30:09 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:43 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 02:23:43 UTC; windows",
+        "Archs": "x64"
       }
     },
     "markdown": {
@@ -3380,7 +3422,7 @@
         "Maintainer": "Yihui Xie <xie@yihui.name>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-06 00:20:02 UTC",
-        "Built": "R 4.3.0; ; 2023-12-07 11:15:11 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 02:01:11 UTC; windows"
       }
     },
     "memoise": {
@@ -3405,7 +3447,7 @@
         "Maintainer": "Winston Chang <winston@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-11-26 16:11:10 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:45:24 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 03:25:11 UTC; windows"
       }
     },
     "mgcv": {
@@ -3429,7 +3471,8 @@
         "Packaged": "2023-12-20 10:39:06 UTC; sw283",
         "Repository": "CRAN",
         "Date/Publication": "2023-12-21 00:30:02 UTC",
-        "Built": "R 4.3.3; x86_64-pc-linux-gnu; 2024-08-02 00:01:34 UTC; unix"
+        "Built": "R 4.3.3; x86_64-w64-mingw32; 2024-02-29 11:16:08 UTC; windows",
+        "Archs": "x64"
       }
     },
     "mime": {
@@ -3454,7 +3497,8 @@
         "Maintainer": "Yihui Xie <xie@yihui.name>",
         "Repository": "RSPM",
         "Date/Publication": "2021-09-28 05:00:05 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:36 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:26:41 UTC; windows",
+        "Archs": "x64"
       }
     },
     "miniUI": {
@@ -3478,7 +3522,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2018-05-18 18:37:18 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2023-04-21 22:21:36 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 08:52:11 UTC; windows"
       }
     },
     "modelr": {
@@ -3507,7 +3551,7 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-03-22 13:00:07 UTC",
-        "Built": "R 4.3.0; ; 2023-04-21 21:56:21 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 09:35:09 UTC; windows"
       }
     },
     "munsell": {
@@ -3532,7 +3576,7 @@
         "Packaged": "2024-04-01 20:42:09 UTC; charlottewickham",
         "Repository": "RSPM",
         "Date/Publication": "2024-04-01 23:40:10 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:59 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-04-02 05:09:56 UTC; windows"
       }
     },
     "nlme": {
@@ -3562,7 +3606,8 @@
         "Maintainer": "R Core Team <R-core@R-project.org>",
         "Repository": "CRAN",
         "Date/Publication": "2023-11-27 15:26:12 UTC",
-        "Built": "R 4.3.3; x86_64-pc-linux-gnu; 2024-08-02 00:00:23 UTC; unix"
+        "Built": "R 4.3.3; x86_64-w64-mingw32; 2024-02-29 11:12:34 UTC; windows",
+        "Archs": "x64"
       }
     },
     "officer": {
@@ -3588,7 +3633,7 @@
         "Maintainer": "David Gohel <david.gohel@ardata.fr>",
         "Repository": "RSPM",
         "Date/Publication": "2024-02-24 16:10:06 UTC",
-        "Built": "R 4.3.0; ; 2024-02-26 11:37:59 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-02-26 11:50:13 UTC; windows"
       }
     },
     "openssl": {
@@ -3616,7 +3661,8 @@
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
         "Repository": "RSPM",
         "Date/Publication": "2023-09-25 19:10:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-09-26 11:26:46 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:52:33 UTC; windows",
+        "Archs": "x64"
       }
     },
     "parsedate": {
@@ -3639,7 +3685,8 @@
         "Packaged": "2022-10-27 10:25:40 UTC; gaborcsardi",
         "Repository": "RSPM",
         "Date/Publication": "2022-10-27 10:52:37 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-04-22 05:43:18 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2023-04-25 05:32:48 UTC; windows",
+        "Archs": "x64"
       }
     },
     "pillar": {
@@ -3672,7 +3719,7 @@
         "Maintainer": "Kirill Müller <kirill@cynkra.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-03-22 08:10:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:46:17 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 06:40:35 UTC; windows"
       }
     },
     "pingr": {
@@ -3700,7 +3747,8 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-10 14:10:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-12-11 11:23:32 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2023-12-11 11:58:55 UTC; windows",
+        "Archs": "x64"
       }
     },
     "pkgbuild": {
@@ -3728,7 +3776,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-17 14:40:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:46:03 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-03-18 15:44:35 UTC; windows"
       }
     },
     "pkgconfig": {
@@ -3752,7 +3800,7 @@
         "Packaged": "2019-09-22 08:42:40 UTC; gaborcsardi",
         "Repository": "RSPM",
         "Date/Publication": "2019-09-22 09:20:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:38 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 03:17:51 UTC; windows"
       }
     },
     "pkgdown": {
@@ -3783,7 +3831,7 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-12-14 11:40:06 UTC",
-        "Built": "R 4.3.0; ; 2023-04-22 01:45:16 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 08:27:11 UTC; windows"
       }
     },
     "pkgload": {
@@ -3813,7 +3861,7 @@
         "Maintainer": "Lionel Henry <lionel@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-01-16 12:20:04 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:46:23 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-19 11:44:17 UTC; windows"
       }
     },
     "plogr": {
@@ -3839,7 +3887,7 @@
         "Maintainer": "Kirill Müller <krlmlr+r@mailbox.org>",
         "Repository": "RSPM",
         "Date/Publication": "2018-03-25 15:25:27 UTC",
-        "Built": "R 4.3.0; ; 2023-04-21 23:45:01 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:38:58 UTC; windows"
       }
     },
     "plotly": {
@@ -3867,7 +3915,7 @@
         "Maintainer": "Carson Sievert <cpsievert1@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-01-13 22:40:02 UTC",
-        "Built": "R 4.3.0; ; 2024-01-15 15:45:30 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-19 19:00:20 UTC; windows"
       }
     },
     "png": {
@@ -3889,7 +3937,15 @@
         "Repository": "RSPM",
         "Date/Publication": "2022-11-29 11:12:53 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-04-21 23:21:04 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 02:25:34 UTC; windows",
+        "Archs": "x64",
+        "RemoteType": "standard",
+        "RemotePkgRef": "png",
+        "RemoteRef": "png",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/2024-04-08",
+        "RemoteReposName": "CRAN",
+        "RemotePkgPlatform": "x86_64-w64-mingw32",
+        "RemoteSha": "0.1-8"
       }
     },
     "praise": {
@@ -3913,7 +3969,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2015-08-11 08:22:28",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:29 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:29:27 UTC; windows"
       }
     },
     "prettyunits": {
@@ -3938,7 +3994,7 @@
         "Maintainer": "Gabor Csardi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-09-24 21:10:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:26 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 02:11:41 UTC; windows"
       }
     },
     "processx": {
@@ -3966,7 +4022,8 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-16 14:50:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:45:38 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-03-18 14:11:52 UTC; windows",
+        "Archs": "x64"
       }
     },
     "profvis": {
@@ -3992,7 +4049,8 @@
         "Maintainer": "Winston Chang <winston@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-05-02 18:00:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-05-09 11:15:06 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 08:42:55 UTC; windows",
+        "Archs": "x64"
       }
     },
     "progress": {
@@ -4020,7 +4078,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-06 10:30:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:46:31 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 06:41:03 UTC; windows"
       }
     },
     "promises": {
@@ -4050,7 +4108,8 @@
         "Maintainer": "Joe Cheng <joe@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-04-05 15:00:06 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-07-18 06:34:47 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-04-06 04:33:15 UTC; windows",
+        "Archs": "x64"
       }
     },
     "ps": {
@@ -4079,7 +4138,8 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-01-18 06:40:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:45:26 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-19 11:42:53 UTC; windows",
+        "Archs": "x64"
       }
     },
     "purrr": {
@@ -4110,7 +4170,8 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-08-10 08:20:07 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:46:17 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 06:41:05 UTC; windows",
+        "Archs": "x64"
       }
     },
     "ragg": {
@@ -4140,7 +4201,8 @@
         "Author": "Thomas Lin Pedersen [cre, aut]\n    (<https://orcid.org/0000-0002-5147-4711>),\n  Maxim Shemanarev [aut, cph] (Author of AGG),\n  Tony Juricic [ctb, cph] (Contributor to AGG),\n  Milan Marusinec [ctb, cph] (Contributor to AGG),\n  Spencer Garrett [ctb] (Contributor to AGG),\n  Posit, PBC [cph, fnd]",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-13 21:00:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-03-14 15:14:55 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-03-14 15:20:08 UTC; windows",
+        "Archs": "x64"
       }
     },
     "rappdirs": {
@@ -4168,7 +4230,8 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-01-31 05:40:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:29 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-02-29 11:44:47 UTC; windows",
+        "Archs": "x64"
       }
     },
     "rcmdcheck": {
@@ -4194,7 +4257,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-09-27 15:10:02 UTC",
-        "Built": "R 4.3.0; ; 2023-04-22 00:28:57 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 06:38:31 UTC; windows"
       }
     },
     "readr": {
@@ -4226,7 +4289,8 @@
         "Maintainer": "Jennifer Bryan <jenny@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-01-10 23:20:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:48:28 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 07:44:56 UTC; windows",
+        "Archs": "x64"
       }
     },
     "readxl": {
@@ -4257,7 +4321,8 @@
         "Maintainer": "Jennifer Bryan <jenny@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-07-06 22:00:09 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-12-07 11:15:38 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 07:59:18 UTC; windows",
+        "Archs": "x64"
       }
     },
     "rematch": {
@@ -4280,7 +4345,7 @@
         "Packaged": "2023-08-30 12:10:51 UTC; gaborcsardi",
         "Repository": "RSPM",
         "Date/Publication": "2023-08-30 16:50:02 UTC",
-        "Built": "R 4.3.0; ; 2023-08-31 11:21:16 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:25:55 UTC; windows"
       }
     },
     "rematch2": {
@@ -4306,7 +4371,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2020-05-01 06:50:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:46:49 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 06:56:32 UTC; windows"
       }
     },
     "remotes": {
@@ -4336,7 +4401,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-17 13:20:02 UTC",
-        "Built": "R 4.3.0; ; 2024-03-18 15:33:51 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-03-18 15:43:59 UTC; windows"
       }
     },
     "renv": {
@@ -4367,7 +4432,7 @@
         "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-02-29 01:10:07 UTC",
-        "Built": "R 4.3.3; ; 2024-08-04 11:59:17 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-03-01 11:42:47 UTC; windows"
       }
     },
     "reprex": {
@@ -4400,7 +4465,7 @@
         "Maintainer": "Jennifer Bryan <jenny@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-01-11 08:30:04 UTC",
-        "Built": "R 4.3.0; ; 2024-01-12 11:30:13 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 08:53:21 UTC; windows"
       }
     },
     "revdepcheck": {
@@ -4425,7 +4490,7 @@
         "RoxygenNote": "7.2.3",
         "Author": "Gábor Csárdi [cre, aut, cph],\n  Hadley Wickham [aut],\n  RConsortium [cph],\n  RStudio [cph, fnd]",
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
-        "Built": "R 4.3.3; ; 2024-08-02 18:21:30 UTC; unix",
+        "Built": "R 4.3.3; ; 2024-04-29 15:38:19 UTC; windows",
         "RemoteType": "github",
         "RemoteUsername": "r-lib",
         "RemoteRepo": "revdepcheck",
@@ -4465,7 +4530,7 @@
         "Maintainer": "Kevin Ushey <kevinushey@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-11-26 16:11:02 UTC",
-        "Built": "R 4.3.0; ; 2023-04-22 02:43:41 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 03:26:59 UTC; windows"
       }
     },
     "rhub": {
@@ -4491,7 +4556,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-08-31 13:00:11 UTC",
-        "Built": "R 4.3.0; ; 2023-04-25 17:18:16 UTC; unix"
+        "Built": "R 4.3.0; ; 2023-04-30 23:40:45 UTC; windows"
       }
     },
     "rintrojs": {
@@ -4519,7 +4584,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2024-01-11 21:30:02 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2024-01-12 11:30:11 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 07:59:40 UTC; windows"
       }
     },
     "riskmetric": {
@@ -4543,18 +4608,18 @@
         "Config/testthat/edition": "3",
         "Author": "R Validation Hub [aut],\n  Doug Kelkhoff [aut],\n  Marly Gotti [aut],\n  Eli Miller [cre, aut],\n  Kevin K [aut],\n  Yilong Zhang [aut],\n  Eric Milliman [aut],\n  Juliane Manitz [aut],\n  Mark Padgham [ctb],\n  PSI special interest group Application and Implementation of\n    Methodologies in Statistics [cph]",
         "Maintainer": "Eli Miller <eli.miller@atorusresearch.com>",
-        "Built": "R 4.3.3; ; 2024-08-02 18:21:36 UTC; unix",
+        "Built": "R 4.3.3; ; 2025-01-23 17:00:30 UTC; windows",
         "RemoteType": "github",
-        "RemoteUsername": "pharmaR",
-        "RemoteRepo": "riskmetric",
-        "RemoteRef": "HEAD",
-        "RemoteSha": "7c7bf3c15c02c33bc788e1070f25302b203d6d9e",
         "RemoteHost": "api.github.com",
+        "RemoteRepo": "riskmetric",
+        "RemoteUsername": "pharmaR",
+        "RemoteRef": "HEAD",
+        "RemoteSha": "39489b26dbb3b7e5731bbcf55d975755fbb841e4",
         "GithubHost": "api.github.com",
         "GithubRepo": "riskmetric",
         "GithubUsername": "pharmaR",
         "GithubRef": "HEAD",
-        "GithubSHA1": "7c7bf3c15c02c33bc788e1070f25302b203d6d9e"
+        "GithubSHA1": "39489b26dbb3b7e5731bbcf55d975755fbb841e4"
       }
     },
     "rjson": {
@@ -4576,7 +4641,8 @@
         "Packaged": "2022-01-08 19:22:39 UTC; root",
         "NeedsCompilation": "yes",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-04-21 23:45:36 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 04:04:31 UTC; windows",
+        "Archs": "x64"
       }
     },
     "rlang": {
@@ -4607,7 +4673,8 @@
         "Maintainer": "Lionel Henry <lionel@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-01-10 12:00:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-01-11 12:53:47 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:11:35 UTC; windows",
+        "Archs": "x64"
       }
     },
     "rmarkdown": {
@@ -4637,7 +4704,7 @@
         "Author": "JJ Allaire [aut],\n  Yihui Xie [aut, cre] (<https://orcid.org/0000-0003-0645-5666>),\n  Christophe Dervieux [aut] (<https://orcid.org/0000-0003-4474-2498>),\n  Jonathan McPherson [aut],\n  Javier Luraschi [aut],\n  Kevin Ushey [aut],\n  Aron Atkins [aut],\n  Hadley Wickham [aut],\n  Joe Cheng [aut],\n  Winston Chang [aut],\n  Richard Iannone [aut] (<https://orcid.org/0000-0003-3925-190X>),\n  Andrew Dunning [ctb] (<https://orcid.org/0000-0003-0464-5036>),\n  Atsushi Yasumoto [ctb, cph] (<https://orcid.org/0000-0002-8335-495X>,\n    Number sections Lua filter),\n  Barret Schloerke [ctb],\n  Carson Sievert [ctb] (<https://orcid.org/0000-0002-4958-2844>),\n  Devon Ryan [ctb] (<https://orcid.org/0000-0002-8549-0971>),\n  Frederik Aust [ctb] (<https://orcid.org/0000-0003-4900-788X>),\n  Jeff Allen [ctb],\n  JooYoung Seo [ctb] (<https://orcid.org/0000-0002-4064-6012>),\n  Malcolm Barrett [ctb],\n  Rob Hyndman [ctb],\n  Romain Lesur [ctb],\n  Roy Storey [ctb],\n  Ruben Arslan [ctb],\n  Sergio Oller [ctb],\n  Posit Software, PBC [cph, fnd],\n  jQuery UI contributors [ctb, cph] (jQuery UI library; authors listed in\n    inst/rmd/h/jqueryui/AUTHORS.txt),\n  Mark Otto [ctb] (Bootstrap library),\n  Jacob Thornton [ctb] (Bootstrap library),\n  Bootstrap contributors [ctb] (Bootstrap library),\n  Twitter, Inc [cph] (Bootstrap library),\n  Alexander Farkas [ctb, cph] (html5shiv library),\n  Scott Jehl [ctb, cph] (Respond.js library),\n  Ivan Sagalaev [ctb, cph] (highlight.js library),\n  Greg Franko [ctb, cph] (tocify library),\n  John MacFarlane [ctb, cph] (Pandoc templates),\n  Google, Inc. [ctb, cph] (ioslides library),\n  Dave Raggett [ctb] (slidy library),\n  W3C [cph] (slidy library),\n  Dave Gandy [ctb, cph] (Font-Awesome),\n  Ben Sperry [ctb] (Ionicons),\n  Drifty [cph] (Ionicons),\n  Aidan Lister [ctb, cph] (jQuery StickyTabs),\n  Benct Philip Jonsson [ctb, cph] (pagebreak Lua filter),\n  Albert Krewinkel [ctb, cph] (pagebreak Lua filter)",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-05 17:40:02 UTC",
-        "Built": "R 4.3.0; ; 2024-03-06 12:26:33 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-03-06 11:34:26 UTC; windows"
       }
     },
     "roxygen2": {
@@ -4670,7 +4737,8 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-01-22 21:10:03 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-01-23 11:13:22 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 12:14:40 UTC; windows",
+        "Archs": "x64"
       }
     },
     "rprojroot": {
@@ -4697,7 +4765,7 @@
         "Maintainer": "Kirill Müller <kirill@cynkra.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-11-05 10:20:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:57 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:32:07 UTC; windows"
       }
     },
     "rstudioapi": {
@@ -4722,7 +4790,7 @@
         "Author": "Kevin Ushey [aut, cre],\n  JJ Allaire [aut],\n  Hadley Wickham [aut],\n  Gary Ritchie [aut],\n  RStudio [cph]",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-24 11:30:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:34 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-03-25 11:53:55 UTC; windows"
       }
     },
     "rversions": {
@@ -4747,7 +4815,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-08-31 10:30:02 UTC",
-        "Built": "R 4.3.0; ; 2023-04-22 00:27:53 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 03:41:05 UTC; windows"
       }
     },
     "rvest": {
@@ -4778,7 +4846,7 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-02-12 20:10:02 UTC",
-        "Built": "R 4.3.0; ; 2024-02-13 11:16:42 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-02-13 11:50:59 UTC; windows"
       }
     },
     "sass": {
@@ -4807,7 +4875,8 @@
         "Maintainer": "Carson Sievert <carson@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-15 22:30:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:46:11 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-03-17 04:17:23 UTC; windows",
+        "Archs": "x64"
       }
     },
     "scales": {
@@ -4836,7 +4905,7 @@
         "Maintainer": "Thomas Lin Pedersen <thomas.pedersen@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-11-28 09:10:06 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:45:50 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 03:41:03 UTC; windows"
       }
     },
     "scrypt": {
@@ -4862,7 +4931,8 @@
         "Repository": "RSPM",
         "Date/Publication": "2023-01-29 15:40:02 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-07-18 06:27:20 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 07:19:21 UTC; windows",
+        "Archs": "x64"
       }
     },
     "selectr": {
@@ -4889,7 +4959,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2019-11-20 07:30:03 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2023-04-21 21:53:58 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 06:40:31 UTC; windows"
       }
     },
     "sessioninfo": {
@@ -4918,7 +4988,7 @@
         "Author": "Gábor Csárdi [cre],\n  Hadley Wickham [aut],\n  Winston Chang [aut],\n  Robert Flight [aut],\n  Kirill Müller [aut],\n  Jim Hester [aut],\n  R Core team [ctb]",
         "Repository": "RSPM",
         "Date/Publication": "2021-12-06 11:50:02 UTC",
-        "Built": "R 4.3.0; ; 2023-04-22 00:27:35 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 02:39:21 UTC; windows"
       }
     },
     "shiny": {
@@ -4949,7 +5019,7 @@
         "Maintainer": "Winston Chang <winston@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-04-02 17:22:03 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:49:51 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-04-03 04:31:44 UTC; windows"
       }
     },
     "shinyAce": {
@@ -4977,7 +5047,7 @@
         "Maintainer": "Vincent Nijs <radiant@rady.ucsd.edu>",
         "Repository": "RSPM",
         "Date/Publication": "2022-05-06 06:50:08 UTC",
-        "Built": "R 4.3.0; ; 2023-04-22 00:38:38 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 08:09:51 UTC; windows"
       }
     },
     "shinyTree": {
@@ -5004,7 +5074,7 @@
         "Author": "Trestle Technology, LLC [aut],\n  Jeff Allen [aut],\n  Institut de Radioprotection et de Sûreté Nucléaire [cph],\n  Ivan Bozhanov [ctb, cph] (jsTree),\n  The Dojo Foundation [ctb, cph] (require.js),\n  jQuery Foundation, Inc. [ctb, cph],\n  Mike Schaffer [ctb],\n  Timm Danker [ctb],\n  Michael Bell [cre],\n  Sebastian Gatscha [ctb],\n  Thorn Thaler [ctb]",
         "Repository": "RSPM",
         "Date/Publication": "2023-08-07 18:30:02 UTC",
-        "Built": "R 4.3.0; ; 2023-08-08 19:13:13 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 08:08:46 UTC; windows"
       }
     },
     "shinyWidgets": {
@@ -5031,7 +5101,7 @@
         "Maintainer": "Victor Perrier <victor.perrier@dreamrs.fr>",
         "Repository": "RSPM",
         "Date/Publication": "2024-04-04 17:40:02 UTC",
-        "Built": "R 4.3.0; ; 2024-04-05 04:37:03 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-04-05 04:37:23 UTC; windows"
       }
     },
     "shinyjs": {
@@ -5058,7 +5128,7 @@
         "Maintainer": "Dean Attali <daattali@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-12-23 10:10:02 UTC",
-        "Built": "R 4.3.0; ; 2023-04-21 22:20:41 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 08:45:44 UTC; windows"
       }
     },
     "shinymanager": {
@@ -5083,7 +5153,7 @@
         "Maintainer": "Benoit Thieurmel <bthieurmel@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-09-27 07:00:02 UTC",
-        "Built": "R 4.3.0; ; 2023-04-25 06:00:56 UTC; unix"
+        "Built": "R 4.3.0; ; 2023-05-01 03:39:18 UTC; windows"
       }
     },
     "shinytest2": {
@@ -5116,7 +5186,8 @@
         "Maintainer": "Barret Schloerke <barret@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-08-26 13:50:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-08-28 11:40:29 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2023-12-04 14:32:45 UTC; windows",
+        "Archs": "x64"
       }
     },
     "sortable": {
@@ -5145,7 +5216,7 @@
         "Maintainer": "Andrie de Vries <apdevries@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-03-26 17:20:09 UTC",
-        "Built": "R 4.3.0; ; 2023-04-22 06:24:18 UTC; unix"
+        "Built": "R 4.3.0; ; 2023-04-25 17:06:41 UTC; windows"
       }
     },
     "sourcetools": {
@@ -5169,7 +5240,8 @@
         "Packaged": "2023-01-31 18:03:04 UTC; kevin",
         "Repository": "RSPM",
         "Date/Publication": "2023-02-01 10:10:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:36 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 02:50:19 UTC; windows",
+        "Archs": "x64"
       }
     },
     "spelling": {
@@ -5195,7 +5267,7 @@
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-05 05:40:02 UTC",
-        "Built": "R 4.3.0; ; 2024-03-06 12:26:34 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-03-06 11:55:14 UTC; windows"
       }
     },
     "stringi": {
@@ -5224,7 +5296,8 @@
         "License_is_FOSS": "yes",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-11 22:50:03 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-12-12 11:28:56 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:24:17 UTC; windows",
+        "Archs": "x64"
       }
     },
     "stringr": {
@@ -5254,7 +5327,7 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-11-14 23:10:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:46:21 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 06:39:35 UTC; windows"
       }
     },
     "svglite": {
@@ -5285,7 +5358,8 @@
         "Maintainer": "Thomas Lin Pedersen <thomas.pedersen@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-08 16:20:13 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-05-16 04:12:57 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-03-08 11:30:26 UTC; windows",
+        "Archs": "x64"
       }
     },
     "sys": {
@@ -5311,7 +5385,8 @@
         "Maintainer": "Jeroen Ooms <jeroen@berkeley.edu>",
         "Repository": "RSPM",
         "Date/Publication": "2023-05-23 07:50:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:09 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:33:11 UTC; windows",
+        "Archs": "x64"
       }
     },
     "systemfonts": {
@@ -5341,7 +5416,8 @@
         "Maintainer": "Thomas Lin Pedersen <thomas.pedersen@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-07 09:10:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-03-08 03:45:17 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-03-08 03:54:37 UTC; windows",
+        "Archs": "x64"
       }
     },
     "testthat": {
@@ -5372,7 +5448,8 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-02 11:50:05 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-12-04 11:51:39 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 07:12:37 UTC; windows",
+        "Archs": "x64"
       }
     },
     "textshaping": {
@@ -5401,7 +5478,8 @@
         "Maintainer": "Thomas Lin Pedersen <thomas.pedersen@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-10-09 14:00:06 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-10-10 11:07:20 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-03-08 03:56:26 UTC; windows",
+        "Archs": "x64"
       }
     },
     "tibble": {
@@ -5435,7 +5513,8 @@
         "Maintainer": "Kirill Müller <kirill@cynkra.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-03-20 06:30:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:46:33 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 06:42:05 UTC; windows",
+        "Archs": "x64"
       }
     },
     "tidyr": {
@@ -5466,7 +5545,8 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-01-24 14:50:09 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:47:29 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-25 11:53:52 UTC; windows",
+        "Archs": "x64"
       }
     },
     "tidyselect": {
@@ -5496,7 +5576,7 @@
         "Maintainer": "Lionel Henry <lionel@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-11 14:10:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:46:16 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-03-12 11:24:08 UTC; windows"
       }
     },
     "tidyverse": {
@@ -5525,7 +5605,7 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-02-22 09:20:06 UTC",
-        "Built": "R 4.3.0; ; 2023-04-21 22:01:22 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 09:38:45 UTC; windows"
       }
     },
     "timechange": {
@@ -5552,7 +5632,8 @@
         "Maintainer": "Vitalie Spinu <spinuvit@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-01-18 09:20:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:50 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-19 12:09:49 UTC; windows",
+        "Archs": "x64"
       }
     },
     "tinytex": {
@@ -5578,7 +5659,7 @@
         "Maintainer": "Yihui Xie <xie@yihui.name>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-16 05:20:02 UTC",
-        "Built": "R 4.3.0; ; 2024-03-18 14:02:45 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-03-18 14:11:01 UTC; windows"
       }
     },
     "triebeard": {
@@ -5606,7 +5687,8 @@
         "Packaged": "2023-03-04 21:40:31 UTC; ironholds",
         "Repository": "RSPM",
         "Date/Publication": "2023-03-04 23:30:07 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-07-18 06:45:50 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 05:41:09 UTC; windows",
+        "Archs": "x64"
       }
     },
     "tzdb": {
@@ -5635,7 +5717,8 @@
         "Maintainer": "Davis Vaughan <davis@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-05-12 23:00:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:50 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:59:51 UTC; windows",
+        "Archs": "x64"
       }
     },
     "urlchecker": {
@@ -5661,7 +5744,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-11-30 13:40:02 UTC",
-        "Built": "R 4.3.0; ; 2023-04-22 00:27:46 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 04:59:22 UTC; windows"
       }
     },
     "urltools": {
@@ -5691,7 +5774,8 @@
         "Packaged": "2019-04-14 22:25:08 UTC; ironholds",
         "Repository": "RSPM",
         "Date/Publication": "2019-04-14 23:02:47 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-07-18 07:11:18 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 06:06:48 UTC; windows",
+        "Archs": "x64"
       }
     },
     "usethis": {
@@ -5722,7 +5806,7 @@
         "Maintainer": "Jennifer Bryan <jenny@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-02-19 16:00:02 UTC",
-        "Built": "R 4.3.0; ; 2024-02-20 11:19:46 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-02-20 11:37:35 UTC; windows"
       }
     },
     "utf8": {
@@ -5749,7 +5833,8 @@
         "Maintainer": "Kirill Müller <kirill@cynkra.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-10-22 21:50:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:35 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 02:36:54 UTC; windows",
+        "Archs": "x64"
       }
     },
     "uuid": {
@@ -5771,7 +5856,8 @@
         "Repository": "RSPM",
         "Date/Publication": "2024-01-14 15:20:05 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:45:28 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-19 11:41:20 UTC; windows",
+        "Archs": "x64"
       }
     },
     "vctrs": {
@@ -5801,7 +5887,8 @@
         "Maintainer": "Davis Vaughan <davis@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-01 23:50:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:45:47 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 06:22:19 UTC; windows",
+        "Archs": "x64"
       }
     },
     "viridisLite": {
@@ -5828,7 +5915,7 @@
         "Author": "Simon Garnier [aut, cre],\n  Noam Ross [ctb, cph],\n  Bob Rudis [ctb, cph],\n  Marco Sciaini [ctb, cph],\n  Antônio Pedro Camargo [ctb, cph],\n  Cédric Scherer [ctb, cph]",
         "Repository": "RSPM",
         "Date/Publication": "2023-05-02 23:50:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:44:58 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 02:42:35 UTC; windows"
       }
     },
     "vroom": {
@@ -5861,7 +5948,8 @@
         "Maintainer": "Jennifer Bryan <jenny@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-05 23:50:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:46:55 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 07:34:07 UTC; windows",
+        "Archs": "x64"
       }
     },
     "waldo": {
@@ -5889,7 +5977,7 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-11-02 13:10:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:47:07 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 06:57:46 UTC; windows"
       }
     },
     "websocket": {
@@ -5917,7 +6005,8 @@
         "Maintainer": "Winston Chang <winston@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2021-08-18 20:30:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2023-05-06 07:08:02 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 04:47:51 UTC; windows",
+        "Archs": "x64"
       }
     },
     "whisker": {
@@ -5941,7 +6030,7 @@
         "Repository": "RSPM",
         "Date/Publication": "2022-12-05 15:33:50 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2023-07-10 02:59:29 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 02:28:59 UTC; windows"
       }
     },
     "whoami": {
@@ -5966,7 +6055,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2019-03-19 12:00:03 UTC",
-        "Built": "R 4.3.0; ; 2023-04-22 08:15:15 UTC; unix"
+        "Built": "R 4.3.0; ; 2023-04-28 22:08:22 UTC; windows"
       }
     },
     "withr": {
@@ -5996,7 +6085,7 @@
         "Maintainer": "Lionel Henry <lionel@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-01-16 14:20:02 UTC",
-        "Built": "R 4.3.0; ; 2024-06-26 20:43:27 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-19 11:34:37 UTC; windows"
       }
     },
     "xfun": {
@@ -6023,7 +6112,8 @@
         "Maintainer": "Yihui Xie <xie@yihui.name>",
         "Repository": "RSPM",
         "Date/Publication": "2024-03-25 17:00:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-03-26 04:09:14 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-03-26 04:37:08 UTC; windows",
+        "Archs": "x64"
       }
     },
     "xml2": {
@@ -6054,7 +6144,8 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-04 16:30:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:45:22 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 03:39:50 UTC; windows",
+        "Archs": "x64"
       }
     },
     "xopen": {
@@ -6081,7 +6172,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2018-09-17 13:10:03 UTC",
-        "Built": "R 4.3.0; ; 2023-04-22 00:28:07 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 04:47:24 UTC; windows"
       }
     },
     "xtable": {
@@ -6107,7 +6198,7 @@
         "Author": "David B. Dahl [aut],\n  David Scott [aut, cre],\n  Charles Roosen [aut],\n  Arni Magnusson [aut],\n  Jonathan Swinton [aut],\n  Ajay Shah [ctb],\n  Arne Henningsen [ctb],\n  Benno Puetz [ctb],\n  Bernhard Pfaff [ctb],\n  Claudio Agostinelli [ctb],\n  Claudius Loehnert [ctb],\n  David Mitchell [ctb],\n  David Whiting [ctb],\n  Fernando da Rosa [ctb],\n  Guido Gay [ctb],\n  Guido Schulz [ctb],\n  Ian Fellows [ctb],\n  Jeff Laake [ctb],\n  John Walker [ctb],\n  Jun Yan [ctb],\n  Liviu Andronic [ctb],\n  Markus Loecher [ctb],\n  Martin Gubri [ctb],\n  Matthieu Stigler [ctb],\n  Robert Castelo [ctb],\n  Seth Falcon [ctb],\n  Stefan Edwards [ctb],\n  Sven Garbade [ctb],\n  Uwe Ligges [ctb]",
         "Date/Publication": "2019-04-21 12:20:03 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; ; 2024-06-26 20:45:38 UTC; unix"
+        "Built": "R 4.3.0; ; 2024-01-23 01:13:04 UTC; windows"
       }
     },
     "yaml": {
@@ -6131,7 +6222,8 @@
         "Repository": "RSPM",
         "Date/Publication": "2023-12-11 18:50:02 UTC",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:44:58 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-23 01:40:37 UTC; windows",
+        "Archs": "x64"
       }
     },
     "zip": {
@@ -6157,91 +6249,110 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-01-27 10:00:02 UTC",
-        "Built": "R 4.3.0; x86_64-pc-linux-gnu; 2024-06-26 20:45:27 UTC; unix"
+        "Built": "R 4.3.0; x86_64-w64-mingw32; 2024-01-30 11:53:29 UTC; windows",
+        "Archs": "x64"
       }
     }
   },
   "files": {
-    "_pkgdown.yml": {
-      "checksum": "ad6dc982082a6e0619cfee61b44632ba"
-    },
     ".github/workflows/pkgdown.yaml": {
-      "checksum": "5672e25aad19ca20ba7c2d23a8362245"
+      "checksum": "64a7caf52160d9dd655afd5da7c3524a"
     },
     ".github/workflows/R-CMD-check.yaml": {
-      "checksum": "f3b8ba11fdfeb87ccfbca0723895f82f"
+      "checksum": "e688a3bedd9940c0a9ebf9385419a8d7"
     },
     ".github/workflows/render-readme.yml": {
-      "checksum": "d74482ddef0a4941a51c077f5ea60e10"
+      "checksum": "15f2e5f953b415f1a5ec699ec3c66fc1"
     },
     ".github/workflows/test-coverage.yaml": {
-      "checksum": "a854cdb9e1cfbcbbf5ccffdf4755606b"
+      "checksum": "537839b1d680568aa9d75066f3ae6295"
     },
     ".github/workflows/write-manifest.yaml": {
-      "checksum": "cdfc1470af653982867daed2b99d5b97"
+      "checksum": "c157370eac4a082c8efc068667daf8cd"
     },
     ".open": {
       "checksum": "d41d8cd98f00b204e9800998ecf8427e"
     },
     ".Rbuildignore": {
-      "checksum": "70824d07d35cb82e0d1e78f58783e73b"
+      "checksum": "e1d317537e0f0293ca54ad01dde4f028"
+    },
+    "_pkgdown.yml": {
+      "checksum": "3daabb4d253fb2ec57861d00f1fab0ce"
     },
     "app.R": {
-      "checksum": "4ea07f590cf6a7980f5d997ad9cd55d2"
+      "checksum": "ccd0a03a87e4a09c07e229bf87695697"
     },
     "codecov.yml": {
-      "checksum": "c0d5bfa1e9e25f39e6197d9adcc21703"
+      "checksum": "95dfbfc38a2669bc0c6af49bce10dc39"
+    },
+    "credentials.sqlite": {
+      "checksum": "289af2f2e8a1e5e94e85abdfad95b0db"
+    },
+    "credentials_demo.sqlite": {
+      "checksum": "8c577e46cdfd8a291041ceb34f82eed3"
+    },
+    "credentials_demo_dev.sqlite": {
+      "checksum": "433f2466b6098aa747c624fdcd93fabf"
+    },
+    "credentials_dev.sqlite": {
+      "checksum": "836b0fa64e0c23848c8c202527fcbd90"
     },
     "data-raw/community.csv": {
-      "checksum": "aedfde3e393beaaf6b57f8c8f3ba5572"
+      "checksum": "c23e4cfe1d411755ca39d875fce197e0"
     },
     "data-raw/community.txt": {
-      "checksum": "3095b710eecfb6c681dd339ea0cc2dcb"
+      "checksum": "c68548214eac7a82ce0eebe47985437b"
     },
     "data-raw/create_testing_databases.R": {
-      "checksum": "b92bdc0d72dbb64e7cf767514486ec62"
+      "checksum": "a3c0bf5e951a1484422f4f8d75aeac85"
     },
     "data-raw/internal-data.R": {
-      "checksum": "1012b9a74fd027e081b3a81bc863358e"
+      "checksum": "883af83da899b9cc3e5a677e28881528"
     },
     "data-raw/maintenance.csv": {
-      "checksum": "f5bb530b482daa092e9e20f6a069f1aa"
+      "checksum": "86f24d95938aa8a979783b71fd07c370"
     },
     "data-raw/privileges.csv": {
-      "checksum": "b79ec0b5d475f4c2e8c18300f1e3e9ee"
+      "checksum": "6838ae303403f534a942ef6a8d043d8f"
     },
     "data-raw/testing.csv": {
-      "checksum": "8b4a41ca7d7961f81d8c5e0c59949e90"
+      "checksum": "de4e703205a4ab439be8cfaa42061a4e"
     },
     "data-raw/testing.txt": {
-      "checksum": "0a25d9a22e5ba1aa35d46f30b215fe4d"
+      "checksum": "4e8070ec459e861d08b9cf35c7f9fba4"
     },
     "data-raw/upload_format.csv": {
-      "checksum": "99c5575cb81828e20a7fe1d205551316"
+      "checksum": "772cc4d82ce69606adf25a3007c30514"
+    },
+    "database.sqlite": {
+      "checksum": "4650eccd9e78f80e0783c7338f9db1a2"
+    },
+    "database_demo.sqlite": {
+      "checksum": "c623ce74d2f95fefe5b2515a5bb5d92f"
     },
     "DESCRIPTION": {
-      "checksum": "0ac64ff9839c5972f7a5faba4595c09b"
+      "checksum": "fcbedcf6365f54f75c219bd120fe957a"
     },
     "inst/app/www/css/community_metrics.css": {
-      "checksum": "f08eb25c2ee48ac22ed63b0d18994a04"
+      "checksum": "1961b3f85311f077befd15e45b032b7b"
     },
     "inst/app/www/css/download_handler.css": {
-      "checksum": "96c49f9b33748c3b5667bbf1ed974665"
+      "checksum": "b8cc86fe0e37782293da1aa94b56d620"
     },
     "inst/app/www/css/hljs-styles.css": {
-      "checksum": "a7648bdbdc6b58935f7ade91311e18ee"
+      "checksum": "25180da1dbe4a97f7cdc98421a74e775"
     },
     "inst/app/www/css/login_screen.css": {
-      "checksum": "57edffa05647b6bdc6cc6f98369f266f"
+      "checksum": "5092def469fbaa2997964b1c3b8c5b26"
     },
     "inst/app/www/css/main.css": {
-      "checksum": "db3fa629d919a07f029f3d98d171c916"
+      "checksum": "fffa6c6c62fd34281108c36f1b2c17c2"
     },
     "inst/app/www/css/metric_select.css": {
-      "checksum": "86c09f9af929a374ed3a3c2cf4757a09"
+      "checksum": "124743b31d609d4f4cfd1cace56d6fc6"
     },
     "inst/app/www/css/modal_elements.css": {
-      "checksum": "c36fa09520fd60baa577d3b9f2268c2e"
+      "checksum": "0e830c7e4d500f92a68760e98cd3af40"
     },
     "inst/app/www/favicon.ico": {
       "checksum": "cb6c05eadc2b19ec417dae94e3adbcd3"
@@ -6279,11 +6390,11 @@
     "inst/app/www/images/gcp_logo.png": {
       "checksum": "c756d1f33afb06ebcc4e8f06da9ef4a7"
     },
-    "inst/app/www/images/gsk_logo_sq.png": {
-      "checksum": "75b507d1df69271ebba7690af8bb42a0"
-    },
     "inst/app/www/images/GSK_logo.jpg": {
       "checksum": "b80ab053fe29a840fe39bb14ccf164d4"
+    },
+    "inst/app/www/images/gsk_logo_sq.png": {
+      "checksum": "75b507d1df69271ebba7690af8bb42a0"
     },
     "inst/app/www/images/imran_hossain_sq.png": {
       "checksum": "f4a9a71cfc1b66700dc023f0dd970af0"
@@ -6349,10 +6460,10 @@
       "checksum": "f187e7f289a83b5974c7317e81907069"
     },
     "inst/app/www/js/highlight.min.js": {
-      "checksum": "d51bfc932a1bd10f2868d76a768bce6d"
+      "checksum": "613f40aaddaa3ffeea28ef28cd9fa6bf"
     },
     "inst/app/www/js/role.js": {
-      "checksum": "5a259c0f00694743ec2d8db3c5819878"
+      "checksum": "b1a1715df2872a8f01e68e719de0e3f0"
     },
     "inst/app/www/raa_alt_favicon.ico": {
       "checksum": "464ae1348030dd37080c9b8785706e59"
@@ -6361,31 +6472,31 @@
       "checksum": "cb6c05eadc2b19ec417dae94e3adbcd3"
     },
     "inst/db-config.yml": {
-      "checksum": "9e7dd992edb6e4d7ec8c17984b4db224"
+      "checksum": "64a67c29d08ab2a9aad48a7969172560"
     },
     "inst/golem-config.yml": {
-      "checksum": "55117066df043383fb51ec5306f880c0"
+      "checksum": "0d04d05034dfe6f958f2633127d2ef6f"
     },
     "inst/report_downloads/fancyhdr.sty": {
-      "checksum": "8df365a93885d6ac7552e2c9e65216ac"
+      "checksum": "c546bedf2ad89fd1d59464025f90f079"
     },
     "inst/report_downloads/header.docx": {
       "checksum": "044aeabc883bdfca177ac7208b5aa7e9"
     },
     "inst/report_downloads/header.html": {
-      "checksum": "9252816275d4d7766d04fb42e4b8ecc5"
+      "checksum": "fb9abadd6d2bc3fa4213656659ea6bf2"
     },
     "inst/report_downloads/header.tex": {
-      "checksum": "82cf09587135c44c013b06176e175619"
+      "checksum": "8f6874af05788b2809bc1a50430b2e88"
     },
     "inst/report_downloads/images/calendar-alt.png": {
       "checksum": "c74d0dc5b94eb9116637d2282dafb6eb"
     },
-    "inst/report_downloads/images/logo_no_text.png": {
-      "checksum": "6b9904e59ba7d569a495a59fad482971"
-    },
     "inst/report_downloads/images/logo.png": {
       "checksum": "64b14596015fd6fa98c070240ceba61a"
+    },
+    "inst/report_downloads/images/logo_no_text.png": {
+      "checksum": "6b9904e59ba7d569a495a59fad482971"
     },
     "inst/report_downloads/images/user-shield.png": {
       "checksum": "f861760125225b682e2c7acf96758872"
@@ -6397,43 +6508,43 @@
       "checksum": "8062579150b806ba5bb30ac3fff60d75"
     },
     "inst/report_downloads/read_html.lua": {
-      "checksum": "d3436d70ab382e65f2979ca0c4c20041"
+      "checksum": "93f2911e346c6f8faed0bc62205a65ae"
     },
     "inst/report_downloads/reportDocx.Rmd": {
-      "checksum": "449e8dcb07732ecd9a0963bada90e53e"
+      "checksum": "9a6ddf65c62d18449bc2c9b360dbd9a3"
     },
     "inst/report_downloads/reportHtml.Rmd": {
-      "checksum": "0e49db815a61c6698acad37894a9c0c1"
+      "checksum": "9545504cde1f65cd63f073e036c4c8ca"
     },
     "inst/report_downloads/reportPdf.Rmd": {
-      "checksum": "3c7cfa456a7a171df1f10f9c1690718c"
+      "checksum": "5a988b84d5e1f8550bc7c840e339d057"
     },
     "inst/sql_queries/create_comments_table.sql": {
-      "checksum": "514c169e358f7613d8026e6a9fd211ce"
+      "checksum": "6cbc1f894eafe76fc41d2bb899777ca4"
     },
     "inst/sql_queries/create_community_usage_metrics_table.sql": {
-      "checksum": "51b3814d8abf660f44e32e8cd7beffa9"
+      "checksum": "159a6bfbcb2a2b328a3d2c8dac26e4f5"
     },
     "inst/sql_queries/create_decision_table.sql": {
-      "checksum": "247678460aa3f3f2f6ec8073baaff2b2"
+      "checksum": "d83256370794a6ccf7c58a080d673d53"
     },
     "inst/sql_queries/create_metric_table.sql": {
-      "checksum": "f32a84048b5373f4802a620f691019a6"
+      "checksum": "c9c48d67bb2f8449a100afc6931327b7"
     },
     "inst/sql_queries/create_package_metrics_table.sql": {
-      "checksum": "baf881ca626c88c2505cf0567cf3a877"
+      "checksum": "8a912bb420cdf03537c8c519e7a77b38"
     },
     "inst/sql_queries/create_package_table.sql": {
-      "checksum": "6fecdd1a66d09270d5a807076a47c58d"
+      "checksum": "9e4fb197a6e4f4673c88ce764435d13b"
     },
     "inst/sql_queries/create_roles_table.sql": {
-      "checksum": "c2bda81b8d8440f27e577e2e25b10fd9"
+      "checksum": "151e06530c167e5141189baefd2d2cf6"
     },
     "inst/sql_queries/create_rules_table.sql": {
-      "checksum": "1bcd9cfb9b323beee0d7f3e9f731b394"
+      "checksum": "6bb67dadc6c53340ebd225c12173f1de"
     },
     "inst/sql_queries/initialize_metric_table.sql": {
-      "checksum": "0708247e139b4b40e5383209cda07a7d"
+      "checksum": "e1ca2e74ae4b067b4e0bed8f3543400f"
     },
     "inst/testdata/decision_automation_ex1.sqlite": {
       "checksum": "2e57d65d46d90d4be3c71beb76cd11a7"
@@ -6445,151 +6556,1582 @@
       "checksum": "6fdb01b3e141d34b8e057b3debafba49"
     },
     "inst/testdata/upload_format.csv": {
-      "checksum": "9920642ebf5f2b32eeaffcaa2accafd5"
+      "checksum": "0aea6fe47eaf18a4cabbae25f8badab7"
     },
     "inst/testdata/upload_format.database": {
       "checksum": "5fc0bfdb844b4ce7df8a183e2a4a2f96"
     },
     "inst/WORDLIST": {
-      "checksum": "52903eb411c9301dc68168bbca5bc4c1"
+      "checksum": "563249d7f479b7332f7b554086eb0df2"
     },
     "LICENSE": {
-      "checksum": "ab496eda3728cf54db7cbf3e6f752572"
+      "checksum": "d3ffdaec5c788a5ccca5a67ff73e0c5b"
     },
     "LICENSE.md": {
-      "checksum": "4dc36d59abf62731a297c44ac0434200"
+      "checksum": "a935dd2840ae8d4dab5b90bfdc795609"
+    },
+    "loggit.json": {
+      "checksum": "a3c47488513a898340e6f366daf5e749"
     },
     "NAMESPACE": {
-      "checksum": "97d1232340e04c53088bc8f814133dcd"
+      "checksum": "d55b537a43835fdb4c4675be135f8003"
     },
     "NEWS.md": {
-      "checksum": "8f1dc97771e1911ac13a12a45300a516"
+      "checksum": "02b9ebe07ca014eeff3e8c31a72f4999"
     },
     "R/app_config.R": {
-      "checksum": "c2b61f270b86b6833f0ee39c44a1a440"
+      "checksum": "44ca4933ad03b2b7d113900fe8d141bc"
     },
     "R/app_server.R": {
-      "checksum": "8408e324004d2991c855c03040cb2dca"
+      "checksum": "db567067242fe9e716ad8031468a8ca7"
     },
     "R/app_ui.R": {
-      "checksum": "50d68f46171151cd36457a7154e5a7a3"
+      "checksum": "6cabcb07a0804884c6c513067b0a5ed4"
     },
     "R/global.R": {
-      "checksum": "dec06e3d38ec3811b87ecb8c85a0c38f"
-    },
-    "R/mod_aboutInfo_utils.R": {
-      "checksum": "23ff3c99869bd59ed973d031ee2962fd"
+      "checksum": "171bda79fb4de00fb0d369d0d3f357af"
     },
     "R/mod_aboutInfo.R": {
-      "checksum": "1ccb24c4960467461139c1050aafc91e"
+      "checksum": "06936a66a70bcc1fa9b6cdb8e4128c8e"
+    },
+    "R/mod_aboutInfo_utils.R": {
+      "checksum": "dbf3cc92c62bfb994433482e000a193f"
     },
     "R/mod_addComment.R": {
-      "checksum": "9a4f5a5b10f127040705dbdaa312b693"
+      "checksum": "0581e0f04230c69498c426e05ae6a58d"
     },
     "R/mod_assessmentInfo.R": {
-      "checksum": "61459e71d1e62587597ac1dac2c7c650"
-    },
-    "R/mod_code_explorer_utils.R": {
-      "checksum": "2588e180a69a79b7be4e3818eb3931dc"
+      "checksum": "78ac9b5fd4929b72914bb42e9ef94630"
     },
     "R/mod_code_explorer.R": {
-      "checksum": "1ec3f3aac096efff1e0c360b347e2d32"
+      "checksum": "8d4754ce735642473965dc52b166126f"
+    },
+    "R/mod_code_explorer_utils.R": {
+      "checksum": "59b928687d2bf91af3ae1af6ca5a00b6"
     },
     "R/mod_communityMetrics.R": {
-      "checksum": "fdd39bd2a7e19b8dccc195aaec57a3d8"
+      "checksum": "d085cb2c4e3a5bb9ed9170692f2ff4d8"
     },
     "R/mod_databaseView.R": {
-      "checksum": "91d23477f73284b74e4f452911214986"
-    },
-    "R/mod_decision_automation_utils.R": {
-      "checksum": "c8b8f4676b824effbafddcd136de7998"
+      "checksum": "a5e55c3ee30b8208731a788eb1e56b97"
     },
     "R/mod_decision_automation.R": {
-      "checksum": "e22e1f4c044bc9f11c46a5fcdba33063"
+      "checksum": "94668b4628d8018fd9a73b5d3511d2a4"
+    },
+    "R/mod_decision_automation_utils.R": {
+      "checksum": "0ce1272b09312059ea5734bd33db0530"
     },
     "R/mod_downloadHandler.R": {
-      "checksum": "9c00f033ca9565f3a466e7381025e368"
-    },
-    "R/mod_introJS_utils_text.R": {
-      "checksum": "d98620a891752cf54b0d0282ddaa4af6"
+      "checksum": "68f391cf7267995af1de9a0125483b3a"
     },
     "R/mod_introJS.R": {
-      "checksum": "ffa17207fe4a91d3ad61c4377d88ea3b"
+      "checksum": "067e17964b3293273aa458b046431da7"
+    },
+    "R/mod_introJS_utils_text.R": {
+      "checksum": "d75e83a871d5afe6fbd0e1179a7d3737"
     },
     "R/mod_legend.R": {
-      "checksum": "32c532ff0cccb8f33fd8da398b2a7d56"
+      "checksum": "6b9c0b1ddb080ea2512c3a1b4f93afd4"
     },
     "R/mod_maintenanceMetrics.R": {
-      "checksum": "e0b402edaec57c91fdf717b23db8576f"
+      "checksum": "5cdbcc0f70ad407d006fec67ab2f0ec6"
     },
     "R/mod_metric_rule.R": {
-      "checksum": "31ad6d7cf277573e4fcca1260e676ee7"
+      "checksum": "2eeaeddf08d9d79af747346afe54857b"
     },
     "R/mod_metricBox.R": {
-      "checksum": "92210692560ef3bce21814f437f9643d"
+      "checksum": "9b4da8340c4564ce82a469866691a38b"
     },
     "R/mod_metricGrid.R": {
-      "checksum": "a894eb9114e258feb99b76cdca557cd2"
+      "checksum": "ede962a8876afed6542e50fd5c69f918"
     },
     "R/mod_packageDependencies.R": {
-      "checksum": "f8cee3c4845b4d3c3c2f66796af28359"
-    },
-    "R/mod_pkg_explorer_utils.R": {
-      "checksum": "b7792e08cc4a67296c9df0f452c0a72a"
+      "checksum": "80a3f218ea895681b6e4d3c5abfd0e6c"
     },
     "R/mod_pkg_explorer.R": {
-      "checksum": "dbbfdfde47d106e0deaf20822c69bf94"
+      "checksum": "b99dddfa6338bdc17734815af97e456b"
+    },
+    "R/mod_pkg_explorer_utils.R": {
+      "checksum": "97305d75aa5946b93536724d24388459"
     },
     "R/mod_reportPreview.R": {
-      "checksum": "1fff75a23e54c9d8dac895731b03ac3a"
+      "checksum": "26ab265e5d4c9137537fca0a0440c2c8"
     },
     "R/mod_reweightView.R": {
-      "checksum": "d3988b7b6168f0560dc9525f1c6138ed"
+      "checksum": "d12df738a014ea76a43b69f89775398f"
     },
     "R/mod_sidebar.R": {
-      "checksum": "23b9449e99966583e564db213543ff97"
+      "checksum": "2584455c430f3578ba605d315bc5626e"
     },
     "R/mod_uploadPackage.R": {
-      "checksum": "abe41b854f1f97505cd3230386f5e3c3"
+      "checksum": "8a8b9e65cdb97620a7227325c3a632dd"
     },
     "R/mod_user_roles.R": {
-      "checksum": "269c932105ac12a53c92759e5d2c8a84"
+      "checksum": "4970e186414e1ea1dab89d8bbfe76656"
     },
     "R/mod_viewComments.R": {
-      "checksum": "e1e324a01ec58a64d7ee8e54de0c6f7a"
+      "checksum": "c9fee0dd1c6c62f1f0157712ea04b764"
     },
     "R/run_app.R": {
-      "checksum": "6c4740fd1aea22825c231eec5d8d9578"
+      "checksum": "b92560482bf1cfe81c22bf15df351cff"
     },
     "R/sysdata.rda": {
       "checksum": "e5835b81f48d93ee0175507abbb3186f"
     },
+    "R/utils.R": {
+      "checksum": "c238fe6c5e55fdddc748dc5ea2f720bd"
+    },
     "R/utils_build_cards.R": {
-      "checksum": "a7cfdc1f9a4ad1c2835cd22eb279d8dc"
+      "checksum": "71bda9d302d54d026c60228a70405f3a"
     },
     "R/utils_config_db.R": {
-      "checksum": "74cf2ee5e7283483a88f08d60e3728b0"
+      "checksum": "cc46b4dff559fd50a40604cefc3cf44e"
     },
     "R/utils_get_db.R": {
-      "checksum": "6c0e6fb4b3716cdd0c0d2953a1cf4393"
+      "checksum": "374d9fa1ffa8af25a33ad504f70ccbbf"
     },
     "R/utils_insert_db.R": {
-      "checksum": "240f4647cb71a94cb19db8088c85a609"
+      "checksum": "f64c0d65c8b8f12f8c37f745be82e2ce"
     },
     "R/utils_startup.R": {
-      "checksum": "b689ee96f0761480ac65ca22cbbb4980"
-    },
-    "R/utils.R": {
-      "checksum": "995d947896038bdcec381ff4b4e94fd0"
+      "checksum": "81846e484a364ff260813031bf3a6bc6"
     },
     "README.md": {
-      "checksum": "3050edd46ad46d37978030b0026d5d1f"
+      "checksum": "f8e0332e1b82008ebb9d6ebaa641e55e"
     },
     "README.Rmd": {
-      "checksum": "a2eefba927d32d8c78d4e385178a93b7"
+      "checksum": "d77528878db02d2822a607f5e4a6a588"
     },
     "renv.lock": {
-      "checksum": "d7b9816932ef58733e25081235f6fc78"
+      "checksum": "b3fc37f8c13167a66252c7076379b7ef"
+    },
+    "report_preferences/report_prefs_admin.txt": {
+      "checksum": "d3434b2f6dc0a551fd4486ff1f50b80e"
+    },
+    "source/dummy_placeholder_file": {
+      "checksum": "201447a3bac7a468a7d4a2a34d814493"
+    },
+    "tarballs/A3_1.0.0.tar.gz": {
+      "checksum": "027ebdd8affce8f0effaecfcd5f5ade2"
+    },
+    "tarballs/AalenJohansen_1.0.tar.gz": {
+      "checksum": "d7eb2a6275daa6af43bf8a980398b312"
+    },
+    "tarballs/abind_1.4-5.tar.gz": {
+      "checksum": "136f981e1c4f618b64a87faaa7797c97"
+    },
+    "tarballs/abind_1.4-8.tar.gz": {
+      "checksum": "7a440111cd1e24356d558ac55a65dc98"
+    },
+    "tarballs/admiral.test_0.7.0.tar.gz": {
+      "checksum": "ba429cee7c4e9188f1958358f8e93edd"
+    },
+    "tarballs/admiral_1.1.1.tar.gz": {
+      "checksum": "c8dd425735c7738ef887e732a363f58f"
+    },
+    "tarballs/admiral_1.2.0.tar.gz": {
+      "checksum": "36b9bf3b82a57b1c6b1d192a428cb33b"
+    },
+    "tarballs/admiraldev_1.1.0.tar.gz": {
+      "checksum": "52a57bb0f51ca36aae23b97acd2ffbb7"
+    },
+    "tarballs/admiraldev_1.2.0.tar.gz": {
+      "checksum": "c9b53495543faac349ca0357d42143d7"
+    },
+    "tarballs/admiralonco_1.1.0.tar.gz": {
+      "checksum": "4bfdd07c7d14091c8bdc933c505af9a1"
+    },
+    "tarballs/admiralophtha_1.1.0.tar.gz": {
+      "checksum": "9f6e6c5fe46c09011c841a2ecda35364"
+    },
+    "tarballs/admiralophtha_1.2.0.tar.gz": {
+      "checksum": "610a6b92b392753372f0aa41c5ae3074"
+    },
+    "tarballs/admiralvaccine_0.3.0.tar.gz": {
+      "checksum": "9f36fdf5247c4424a22d345e6c21026f"
+    },
+    "tarballs/aod_1.3.3.tar.gz": {
+      "checksum": "1be0359bcffcbec8fa4bbbd78e4df84a"
+    },
+    "tarballs/askpass_1.2.0.tar.gz": {
+      "checksum": "59d2bbfe6bd3a7bf05d56006f1cb1d6a"
+    },
+    "tarballs/askpass_1.2.1.tar.gz": {
+      "checksum": "fc2c6a61b6a354707586b01950366f37"
+    },
+    "tarballs/assertthat_0.2.1.tar.gz": {
+      "checksum": "9f2eae3d20a9d6b40856a6fed013cb05"
+    },
+    "tarballs/autoslider.core_0.2.3.tar.gz": {
+      "checksum": "55a4fd76429264247ce27e0905dc7ba0"
+    },
+    "tarballs/backports_1.5.0.tar.gz": {
+      "checksum": "f8b5a18e90e7baa72ae9824238245777"
+    },
+    "tarballs/base64enc_0.1-3.tar.gz": {
+      "checksum": "0f476dacdd11a3e0ad56d13f5bc2f190"
+    },
+    "tarballs/BH_1.84.0-0.tar.gz": {
+      "checksum": "34c6a9cf6213e6e93417b3168c4c84b4"
+    },
+    "tarballs/BH_1.87.0-1.tar.gz": {
+      "checksum": "55959f3c42d4229724aa73b450c881fe"
+    },
+    "tarballs/BiocManager_1.30.23.tar.gz": {
+      "checksum": "1c5b1c37196520a84d0e20292c5c8d85"
+    },
+    "tarballs/BiocManager_1.30.25.tar.gz": {
+      "checksum": "e9a0f96e5f3f22ba297b12745735d75e"
+    },
+    "tarballs/bit_4.0.5.tar.gz": {
+      "checksum": "df4e6215d31058ea2860fadc7a7c80f4"
+    },
+    "tarballs/bit_4.5.0.1.tar.gz": {
+      "checksum": "36794143b3cfc96be9829b5fe95a0d74"
+    },
+    "tarballs/bit64_4.0.5.tar.gz": {
+      "checksum": "bdccc76b8505827a6f295181de2b308a"
+    },
+    "tarballs/bit64_4.6.0-1.tar.gz": {
+      "checksum": "38f3c84f193c30336db1578291f24100"
+    },
+    "tarballs/bitops_1.0-8.tar.gz": {
+      "checksum": "d6b21c1b112ee5021959514d4ee9d729"
+    },
+    "tarballs/bitops_1.0-9.tar.gz": {
+      "checksum": "2214ea9a069223af2bdc9e7528876025"
+    },
+    "tarballs/blob_1.2.4.tar.gz": {
+      "checksum": "3133f827ee7c1e4ca99c16659984627e"
+    },
+    "tarballs/brew_1.0-10.tar.gz": {
+      "checksum": "c1ebbea7284161a8884ffe9ae5ca451f"
+    },
+    "tarballs/brio_1.1.5.tar.gz": {
+      "checksum": "01e1a782f87242f9ca9c80acf9deeeff"
+    },
+    "tarballs/broom.helpers_1.18.0.tar.gz": {
+      "checksum": "5e1e8b94dee00a62e0bc65c6bfa412eb"
+    },
+    "tarballs/broom.mixed_0.2.9.6.tar.gz": {
+      "checksum": "10b5033dfca195b4a7adce39369aba9d"
+    },
+    "tarballs/broom_1.0.6.tar.gz": {
+      "checksum": "d2f271004c3187ba327177dd76d603b1"
+    },
+    "tarballs/broom_1.0.7.tar.gz": {
+      "checksum": "0e04807a66a2cff6c42374fd45484695"
+    },
+    "tarballs/bslib_0.8.0.tar.gz": {
+      "checksum": "bb7b56a88b3a8cb1901dfcec51d58364"
+    },
+    "tarballs/cachem_1.1.0.tar.gz": {
+      "checksum": "53980eb40dd09b0cd44673d3a6fabe36"
+    },
+    "tarballs/callr_3.7.6.tar.gz": {
+      "checksum": "9bd3ca85c73b182bce6367962ce8e59a"
+    },
+    "tarballs/car_3.1-2.tar.gz": {
+      "checksum": "f8be85a665aa367951aacf80d89eb5e9"
+    },
+    "tarballs/car_3.1-3.tar.gz": {
+      "checksum": "9103307ef76967da60b98da4f26f9ee9"
+    },
+    "tarballs/carData_3.0-5.tar.gz": {
+      "checksum": "88dc01e1d94d67652d4c4c38d33a8981"
+    },
+    "tarballs/cards_0.4.0.tar.gz": {
+      "checksum": "cef71180716bfa6b54d633564a1b9d8e"
+    },
+    "tarballs/cardx_0.2.2.tar.gz": {
+      "checksum": "385792ae94c228514e849b022042573b"
+    },
+    "tarballs/caret_6.0-94.tar.gz": {
+      "checksum": "5f4c1945b20e632187f5534a59a12c8c"
+    },
+    "tarballs/caret_7.0-1.tar.gz": {
+      "checksum": "c11d2d954241566f577841a58d101f75"
+    },
+    "tarballs/caTools_1.18.2.tar.gz": {
+      "checksum": "c95edd3f71a8fe1ad2cfd0ae274ad9ab"
+    },
+    "tarballs/caTools_1.18.3.tar.gz": {
+      "checksum": "cf1ba4c24b336db45c98084ad282a25f"
+    },
+    "tarballs/cellranger_1.1.0.tar.gz": {
+      "checksum": "1abcfea6af5ab2e277cb99e86880456f"
+    },
+    "tarballs/checkmate_2.3.2.tar.gz": {
+      "checksum": "95849df2e80c38e37528a7dbbbbf31cc"
+    },
+    "tarballs/chevron_0.2.7.tar.gz": {
+      "checksum": "63c04e7f7cd94c934494d3dd4fe45f22"
+    },
+    "tarballs/classInt_0.4-10.tar.gz": {
+      "checksum": "dea675fe7569cbc455b10bc994d7ea1f"
+    },
+    "tarballs/classInt_0.4-11.tar.gz": {
+      "checksum": "ef2a4750f70e32d9d8838a00f144df2e"
+    },
+    "tarballs/cleanepi_1.0.2.tar.gz": {
+      "checksum": "8af23cc03b0163dddda6c564911d095b"
+    },
+    "tarballs/cli_3.6.3.tar.gz": {
+      "checksum": "4691dd066c26e428327eb40e46a4e8c2"
+    },
+    "tarballs/clipr_0.8.0.tar.gz": {
+      "checksum": "558ddf145114bbc0272e6aed05b8e5fe"
+    },
+    "tarballs/clock_0.7.1.tar.gz": {
+      "checksum": "1d18204eb746247d7dde0cc1353300b8"
+    },
+    "tarballs/clock_0.7.2.tar.gz": {
+      "checksum": "762d8374cd6998be0c059861f4de8bcb"
+    },
+    "tarballs/cmprsk_2.2-12.tar.gz": {
+      "checksum": "ae85888a4daf6417d48fc35cb306e909"
+    },
+    "tarballs/coda_0.19-4.1.tar.gz": {
+      "checksum": "ad15d9b971ee8593ddfeb74430775c81"
+    },
+    "tarballs/colorspace_2.1-1.tar.gz": {
+      "checksum": "194f0bd09b21f970127ff43f3582c638"
+    },
+    "tarballs/commonmark_1.9.1.tar.gz": {
+      "checksum": "c95e6412ef2937d110128f35fd85be78"
+    },
+    "tarballs/commonmark_1.9.2.tar.gz": {
+      "checksum": "02c2b4ba170610b672092708a39fa479"
+    },
+    "tarballs/conflicted_1.2.0.tar.gz": {
+      "checksum": "22c2c1253ab5868c846cb19a481cc2e9"
+    },
+    "tarballs/corrplot_0.92.tar.gz": {
+      "checksum": "487452ee9efd5cfbf710e379321f42f8"
+    },
+    "tarballs/corrplot_0.95.tar.gz": {
+      "checksum": "3c286cc324af904bf06124270848a1c3"
+    },
+    "tarballs/covr_3.6.4.tar.gz": {
+      "checksum": "8fadf3538ed1edfefb3a20bd5c5e887d"
+    },
+    "tarballs/covtracer_0.0.1.tar.gz": {
+      "checksum": "0753cd40225169e0b12ca70e34678823"
+    },
+    "tarballs/cowplot_1.1.3.tar.gz": {
+      "checksum": "fbfdde59c0b5521ace81bdf96e79f2f6"
+    },
+    "tarballs/cpp11_0.4.7.tar.gz": {
+      "checksum": "3e1399c740f88a8a76cc6c688dcc9337"
+    },
+    "tarballs/cpp11_0.5.1.tar.gz": {
+      "checksum": "a18e930a9f2c4d2d933d46d433fa8903"
+    },
+    "tarballs/crayon_1.5.3.tar.gz": {
+      "checksum": "bb290c70d23b2200006187ac7839116f"
+    },
+    "tarballs/credentials_2.0.1.tar.gz": {
+      "checksum": "7d4f697f7af872bfa8ccaf1326d5d650"
+    },
+    "tarballs/credentials_2.0.2.tar.gz": {
+      "checksum": "ccd7d6675ac6172d64270e086a20c800"
+    },
+    "tarballs/crmPack_1.0.6.tar.gz": {
+      "checksum": "9476a4b96994197117c0801f38e17981"
+    },
+    "tarballs/crosstalk_1.2.1.tar.gz": {
+      "checksum": "f9e4a6f7e1cb679a69a8c10059bd0ecf"
+    },
+    "tarballs/curl_5.2.1.tar.gz": {
+      "checksum": "9380107ee0b1331ab730bd1e18b61c72"
+    },
+    "tarballs/curl_6.1.0.tar.gz": {
+      "checksum": "1f03dea9d43c84ce498d55406c024670"
+    },
+    "tarballs/data.table_1.15.4.tar.gz": {
+      "checksum": "c3826bb214e777df145c0570cf597847"
+    },
+    "tarballs/data.table_1.16.4.tar.gz": {
+      "checksum": "92f79a78f404fc50b945cafcc6fca46f"
+    },
+    "tarballs/datacutr_0.1.0.tar.gz": {
+      "checksum": "bc60c502a5d075683468dd721f3e1808"
+    },
+    "tarballs/datacutr_0.2.2.tar.gz": {
+      "checksum": "fc1d6b2e46bb34346d1e76ede60008b4"
+    },
+    "tarballs/datawizard_0.12.2.tar.gz": {
+      "checksum": "d3021c1b37572d113bf1f9bfe098325a"
+    },
+    "tarballs/datawizard_1.0.0.tar.gz": {
+      "checksum": "0cf4ed6c6a2983b200d126609382c344"
+    },
+    "tarballs/DBI_1.2.3.tar.gz": {
+      "checksum": "062e1bf5ed04772ecb1623c076c2128c"
+    },
+    "tarballs/dbplyr_2.5.0.tar.gz": {
+      "checksum": "e72abd281aaaeeabe1a88e9c1877c0fe"
+    },
+    "tarballs/deldir_2.0-4.tar.gz": {
+      "checksum": "dba584ac3a3f26871618d7b2c0d2338a"
+    },
+    "tarballs/desc_1.4.3.tar.gz": {
+      "checksum": "25e3c3be23e19c0f9164ed251c79f677"
+    },
+    "tarballs/devtools_2.4.5.tar.gz": {
+      "checksum": "1ed0f5c335c961d5681a31698088468b"
+    },
+    "tarballs/diagram_1.6.5.tar.gz": {
+      "checksum": "58198d8486863f032a89989c8b858f02"
+    },
+    "tarballs/diffobj_0.3.5.tar.gz": {
+      "checksum": "dffa0a111b1f8766d0b64a2cd7138d09"
+    },
+    "tarballs/digest_0.6.36.tar.gz": {
+      "checksum": "c7cf622332bd8f3a5c967d05bc962598"
+    },
+    "tarballs/digest_0.6.37.tar.gz": {
+      "checksum": "f1772a9a1587e99f25f6d640b1a9e1fd"
+    },
+    "tarballs/doParallel_1.0.17.tar.gz": {
+      "checksum": "df72884b8d87b06c6bdd4f8caf7e5bf7"
+    },
+    "tarballs/downlit_0.4.4.tar.gz": {
+      "checksum": "e273fd889a40a2bda55a2e8cae84087b"
+    },
+    "tarballs/dplyr_1.1.4.tar.gz": {
+      "checksum": "29bdf98592722336f0d07484baf2a959"
+    },
+    "tarballs/DT_0.33.tar.gz": {
+      "checksum": "360d1d38b0f28485d564bb246a27c1f2"
+    },
+    "tarballs/dtplyr_1.3.1.tar.gz": {
+      "checksum": "d1cc10d74af58ac44a99392237aca50e"
+    },
+    "tarballs/dunlin_0.1.8.tar.gz": {
+      "checksum": "803110bc3f5e5d85c978584747409563"
+    },
+    "tarballs/e1071_1.7-14.tar.gz": {
+      "checksum": "03776052baef3f5e7cf8ccc1e493cfb2"
+    },
+    "tarballs/e1071_1.7-16.tar.gz": {
+      "checksum": "c7bbeba044310808a8aaceddf3080742"
+    },
+    "tarballs/effectsize_1.0.0.tar.gz": {
+      "checksum": "5fdf998816825883fd9b386604b3da5e"
+    },
+    "tarballs/ellipsis_0.3.2.tar.gz": {
+      "checksum": "c453b4514da3717af5d5b97f0e3d2415"
+    },
+    "tarballs/emmeans_1.10.3.tar.gz": {
+      "checksum": "92efd4eb5613dae9760a8b742ffb25c7"
+    },
+    "tarballs/emmeans_1.10.6.tar.gz": {
+      "checksum": "fbab0e2c76491fc9208bb3f6b03e5266"
+    },
+    "tarballs/estimability_1.5.1.tar.gz": {
+      "checksum": "90c2834919962894b19fa023eed3072e"
+    },
+    "tarballs/evaluate_0.24.0.tar.gz": {
+      "checksum": "b0334c46aa126a22105882ae559bcba8"
+    },
+    "tarballs/evaluate_1.0.3.tar.gz": {
+      "checksum": "bb6f78106640f1e1b35010385524ed21"
+    },
+    "tarballs/fansi_1.0.6.tar.gz": {
+      "checksum": "27eb3b066918811ce7080f45b18eda04"
+    },
+    "tarballs/farver_2.1.2.tar.gz": {
+      "checksum": "1fa98878bb985e28d968630c7e7597b6"
+    },
+    "tarballs/fastmap_1.2.0.tar.gz": {
+      "checksum": "f53773acd6ba9a86413e8c2dc6441544"
+    },
+    "tarballs/flextable_0.9.7.tar.gz": {
+      "checksum": "293933f96b0ba9be70f1ee70490db451"
+    },
+    "tarballs/fontawesome_0.5.2.tar.gz": {
+      "checksum": "d5e7d3d788f1145dd8cb5b74c85045b9"
+    },
+    "tarballs/fontawesome_0.5.3.tar.gz": {
+      "checksum": "95b072a27418b962792410dfb21c3d2b"
+    },
+    "tarballs/forcats_1.0.0.tar.gz": {
+      "checksum": "5ccbd57663812028250e25cf7c43c2bc"
+    },
+    "tarballs/foreach_1.5.2.tar.gz": {
+      "checksum": "726beb5a50a3cec75261b4405158386c"
+    },
+    "tarballs/forecast_8.23.0.tar.gz": {
+      "checksum": "3b2406df4e7e20b7b352cb5dee8895db"
+    },
+    "tarballs/formatters_0.5.10.tar.gz": {
+      "checksum": "9c3953af92d195c19dca5324ce6ddb87"
+    },
+    "tarballs/Formula_1.2-5.tar.gz": {
+      "checksum": "fa5128b436b67051b231e0a8281f36a4"
+    },
+    "tarballs/fracdiff_1.5-3.tar.gz": {
+      "checksum": "f709c0a691bc7287bb5ab1f014885a4f"
+    },
+    "tarballs/fs_1.6.4.tar.gz": {
+      "checksum": "ee7f7d9c49c0084e18764db238cac915"
+    },
+    "tarballs/fs_1.6.5.tar.gz": {
+      "checksum": "92e1204fc8d567e5fedc06e0ac9e8c1d"
+    },
+    "tarballs/FSelector_0.34.tar.gz": {
+      "checksum": "a6622536232fa7c2e79543424df4b650"
+    },
+    "tarballs/future.apply_1.11.2.tar.gz": {
+      "checksum": "6ce189126a14e288f34d3d84d8898855"
+    },
+    "tarballs/future.apply_1.11.3.tar.gz": {
+      "checksum": "264da036546e5c295724d130c2be3ce9"
+    },
+    "tarballs/future_1.34.0.tar.gz": {
+      "checksum": "4f6dcf593ea495d2df51db19342c91fb"
+    },
+    "tarballs/gargle_1.5.2.tar.gz": {
+      "checksum": "d18b3d01e31e0dd4f4482aed5b85dc9c"
+    },
+    "tarballs/geepack_1.3.12.tar.gz": {
+      "checksum": "0aa69a81e1069144183b182c4b31b731"
+    },
+    "tarballs/generics_0.1.3.tar.gz": {
+      "checksum": "655261e97ea23c9193b047a27eee5d0e"
+    },
+    "tarballs/gert_2.1.0.tar.gz": {
+      "checksum": "9d2f6e725934d09a2a683358e3c8d518"
+    },
+    "tarballs/gert_2.1.4.tar.gz": {
+      "checksum": "a763a5db47146716a536ecb5d624c92b"
+    },
+    "tarballs/ggplot2.utils_0.3.2.tar.gz": {
+      "checksum": "e2a86e392c9fd176f22f47253dc171a6"
+    },
+    "tarballs/ggplot2_3.5.1.tar.gz": {
+      "checksum": "f2add92370293ac6078f1963427d6ab2"
+    },
+    "tarballs/ggpubr_0.6.0.tar.gz": {
+      "checksum": "95bf0dd0bb7114412aa283799c42c90a"
+    },
+    "tarballs/ggrepel_0.9.5.tar.gz": {
+      "checksum": "07e2c7cac82ce345ea35ca0522c72ea9"
+    },
+    "tarballs/ggrepel_0.9.6.tar.gz": {
+      "checksum": "d84bbecfeb624fe1ec70f11712596b13"
+    },
+    "tarballs/ggsci_3.2.0.tar.gz": {
+      "checksum": "d61da25ec28351019d31983703e6e0e9"
+    },
+    "tarballs/ggsignif_0.6.4.tar.gz": {
+      "checksum": "0321f3399b29485e880c3ce3dd980b9b"
+    },
+    "tarballs/ggstats_0.8.0.tar.gz": {
+      "checksum": "81c313472cdca8e61b3c6e276a9d81ef"
+    },
+    "tarballs/ggsurvfit_1.1.0.tar.gz": {
+      "checksum": "eebb682ee79bd6d0224a66a959e901a3"
+    },
+    "tarballs/gh_1.4.1.tar.gz": {
+      "checksum": "d3453d1c49ae99431e77ebe4e050aa79"
+    },
+    "tarballs/gitcreds_0.1.2.tar.gz": {
+      "checksum": "b79f9a70433189507d3eb0bdc07fae6e"
+    },
+    "tarballs/glmnet_4.1-8.tar.gz": {
+      "checksum": "98a316b4857ea3f46b44285dc5764068"
+    },
+    "tarballs/globals_0.16.3.tar.gz": {
+      "checksum": "79f5d4cfcb149b881b5b6e4bae618504"
+    },
+    "tarballs/glue_1.7.0.tar.gz": {
+      "checksum": "e4e7b07da0c02b008d9a9759b2acbc99"
+    },
+    "tarballs/glue_1.8.0.tar.gz": {
+      "checksum": "283bba07f61d89e32f9895021bf5099c"
+    },
+    "tarballs/googledrive_2.1.1.tar.gz": {
+      "checksum": "2741deb58d88bacd81489316df7cf9e2"
+    },
+    "tarballs/googlesheets4_1.1.1.tar.gz": {
+      "checksum": "8b017d8e142ceb41bd0baaee823a6508"
+    },
+    "tarballs/gower_1.0.1.tar.gz": {
+      "checksum": "e83037d172ecc81bf45b69dbd902d216"
+    },
+    "tarballs/gower_1.0.2.tar.gz": {
+      "checksum": "5144ebfeff1a92799431352cd9f4cc28"
+    },
+    "tarballs/gridExtra_2.3.tar.gz": {
+      "checksum": "01e0ea88610756a0fd3b260e83c9bd43"
+    },
+    "tarballs/gt_0.11.1.tar.gz": {
+      "checksum": "9e3232ba6327accb0d514ededf74242c"
+    },
+    "tarballs/gtable_0.3.5.tar.gz": {
+      "checksum": "da63868144f70175016aaaf559d949e9"
+    },
+    "tarballs/gtable_0.3.6.tar.gz": {
+      "checksum": "545f07ada570ec8e3f4b22843974ac6d"
+    },
+    "tarballs/gtools_3.9.5.tar.gz": {
+      "checksum": "6d7837a6d8b8019e16a7c9eb567899db"
+    },
+    "tarballs/hardhat_1.4.0.tar.gz": {
+      "checksum": "944be6ebd162bb6fce66496c1a6f063f"
+    },
+    "tarballs/haven_2.5.4.tar.gz": {
+      "checksum": "ef0337da48b61ae98b03413e02177822"
+    },
+    "tarballs/here_1.0.1.tar.gz": {
+      "checksum": "67367162e286ae95c06abb6e7d70dd75"
+    },
+    "tarballs/highr_0.11.tar.gz": {
+      "checksum": "6d32bee4188607bcc5d3676c5cd55197"
+    },
+    "tarballs/Hmisc_5.1-3.tar.gz": {
+      "checksum": "958ab21830ec18875d65b1255a1b6433"
+    },
+    "tarballs/Hmisc_5.2-2.tar.gz": {
+      "checksum": "0d4f08f1b9dba89081cd7329a2f94488"
+    },
+    "tarballs/hms_1.1.3.tar.gz": {
+      "checksum": "a22ab123d81a65578aabd80be82dd610"
+    },
+    "tarballs/hrbrthemes_0.8.7.tar.gz": {
+      "checksum": "2c239ee48ed2bf410b7e99f8c746c7ef"
+    },
+    "tarballs/htmlTable_2.4.3.tar.gz": {
+      "checksum": "4696c4984737ee22dffd3192b97e720c"
+    },
+    "tarballs/htmltools_0.5.8.1.tar.gz": {
+      "checksum": "f8035f661d3c6cc1c894dfd851ea00d1"
+    },
+    "tarballs/htmlwidgets_1.6.4.tar.gz": {
+      "checksum": "e1ea7f9774ad7a79fcf31e52c2074fd1"
+    },
+    "tarballs/httpuv_1.6.15.tar.gz": {
+      "checksum": "36b144ddfa37b5d0ed7f10d07a3b0c29"
+    },
+    "tarballs/httr_1.4.7.tar.gz": {
+      "checksum": "8965ffef86aea39922f435c019daf9fb"
+    },
+    "tarballs/httr2_1.0.2.tar.gz": {
+      "checksum": "f4751d2a3e020d04d5561b88d6ab4f99"
+    },
+    "tarballs/httr2_1.1.0.tar.gz": {
+      "checksum": "64b1aa8915b84a1cb2ad4eaca4e19c45"
+    },
+    "tarballs/huxtable_5.5.7.tar.gz": {
+      "checksum": "6ef3720c37a58a55f3e08af638f11c0a"
+    },
+    "tarballs/IDEAFilter_0.2.0.tar.gz": {
+      "checksum": "7157817aaa9098116fe9c94b559fc36c"
+    },
+    "tarballs/ids_1.0.1.tar.gz": {
+      "checksum": "da97e1c97b795a9c0e4f51dcb1d928bb"
+    },
+    "tarballs/igraph_2.0.3.tar.gz": {
+      "checksum": "36b28af2a8910060551629b306165f75"
+    },
+    "tarballs/igraph_2.1.4.tar.gz": {
+      "checksum": "2ba38da12cf0fcd1ca4ecc95619298b6"
+    },
+    "tarballs/ini_0.3.1.tar.gz": {
+      "checksum": "b0e2d7388fc69327d3c4bbaab9067f3d"
+    },
+    "tarballs/insight_0.20.2.tar.gz": {
+      "checksum": "edf35974f67064b7c4c6ac11d5e63c38"
+    },
+    "tarballs/insight_1.0.1.tar.gz": {
+      "checksum": "12e65c8572654b60531c14c52e978987"
+    },
+    "tarballs/ipred_0.9-15.tar.gz": {
+      "checksum": "32f9947b3c62965e7f1b61ebd64e184a"
+    },
+    "tarballs/isoband_0.2.7.tar.gz": {
+      "checksum": "7241f95bafb46b44aa380b9a71b10467"
+    },
+    "tarballs/iterators_1.0.14.tar.gz": {
+      "checksum": "e1d875f0ddec6834dd33e56c4f04a706"
+    },
+    "tarballs/janitor_2.2.0.tar.gz": {
+      "checksum": "79e678b9adef3e00af11fe528c62a450"
+    },
+    "tarballs/janitor_2.2.1.tar.gz": {
+      "checksum": "602dd5f791aa6a7d92bf029e1035d185"
+    },
+    "tarballs/jose_1.2.0.tar.gz": {
+      "checksum": "977518b8c7369d6cac8507a86038df67"
+    },
+    "tarballs/jose_1.2.1.tar.gz": {
+      "checksum": "ad1cfb133b45fd6925f987eef8361e2a"
+    },
+    "tarballs/jpeg_0.1-10.tar.gz": {
+      "checksum": "a8b2893917c1766343f0876459784435"
+    },
+    "tarballs/jquerylib_0.1.4.tar.gz": {
+      "checksum": "3607a34ac45ff420bc325d84eab4b0cb"
+    },
+    "tarballs/jsonlite_1.8.8.tar.gz": {
+      "checksum": "d1ec8467abf43d41aabeec24d5a9096a"
+    },
+    "tarballs/jsonlite_1.8.9.tar.gz": {
+      "checksum": "ff89aba357dfa4574e1947066fd5cfe1"
+    },
+    "tarballs/kableExtra_1.4.0.tar.gz": {
+      "checksum": "94d47966ff22e10e9280f0c39568f7cd"
+    },
+    "tarballs/knitr_1.48.tar.gz": {
+      "checksum": "230565deedd16f98e50aea9bb083abe6"
+    },
+    "tarballs/knitr_1.49.tar.gz": {
+      "checksum": "fd195b5d3881af92282cd1b23d477923"
+    },
+    "tarballs/labeling_0.4.3.tar.gz": {
+      "checksum": "915e6c823c1d8243641ce97253389f14"
+    },
+    "tarballs/later_1.3.2.tar.gz": {
+      "checksum": "d051b4ebe4f306287003877aae5ab95c"
+    },
+    "tarballs/later_1.4.1.tar.gz": {
+      "checksum": "34689763fedb5bac8012cfc54de32813"
+    },
+    "tarballs/lattice_0.22-6.tar.gz": {
+      "checksum": "8d912f14f62d3d2e86200ea51514536a"
+    },
+    "tarballs/lava_1.8.0.tar.gz": {
+      "checksum": "3e67327f96b08caeac828871968a4f8b"
+    },
+    "tarballs/lava_1.8.1.tar.gz": {
+      "checksum": "d09dd78ac2364d14c2b8931bd6bdd574"
+    },
+    "tarballs/lazyeval_0.2.2.tar.gz": {
+      "checksum": "1de725fe0cd496a2535020867458641a"
+    },
+    "tarballs/leaps_3.2.tar.gz": {
+      "checksum": "b4432034faf4eeda50279acbaee4c63a"
+    },
+    "tarballs/lifecycle_1.0.4.tar.gz": {
+      "checksum": "4490cb8f9777f1ff4bae184d51d24405"
+    },
+    "tarballs/listenv_0.9.1.tar.gz": {
+      "checksum": "c9eb64179893d8a0e5851366c259ed54"
+    },
+    "tarballs/lme4_1.1-35.5.tar.gz": {
+      "checksum": "7ad0838bf050e579598e3b5358678e3f"
+    },
+    "tarballs/lme4_1.1-36.tar.gz": {
+      "checksum": "cc51e48a49c82049bc81cae18a0bef2c"
+    },
+    "tarballs/lmtest_0.9-40.tar.gz": {
+      "checksum": "f3ae15407707b219b2bdc5c72405d21b"
+    },
+    "tarballs/logrx_0.3.1.tar.gz": {
+      "checksum": "4df67530313874390735bf01268da2d6"
+    },
+    "tarballs/lubridate_1.9.3.tar.gz": {
+      "checksum": "eaa5966c86bf744c2f5d58bbb39cbec3"
+    },
+    "tarballs/lubridate_1.9.4.tar.gz": {
+      "checksum": "ea3efcbcf373e986f6dfb851f720a1a1"
+    },
+    "tarballs/magick_2.8.4.tar.gz": {
+      "checksum": "336ef5353240d9ca8c17d9bbcf19be14"
+    },
+    "tarballs/magick_2.8.5.tar.gz": {
+      "checksum": "3ba4e29b0419fcd3e37ac94c313aed4a"
+    },
+    "tarballs/magrittr_2.0.3.tar.gz": {
+      "checksum": "86a110ed23536ebe26c51ff90f2a1435"
+    },
+    "tarballs/maps_3.4.2.1.tar.gz": {
+      "checksum": "286906ed93b0c7ca2933744d3063f1c2"
+    },
+    "tarballs/maps_3.4.2.tar.gz": {
+      "checksum": "78e2f51ccf17274313305b0916edee7b"
+    },
+    "tarballs/markdown_1.13.tar.gz": {
+      "checksum": "9ac2acb8a5631e219ffa3322aa5f3d5c"
+    },
+    "tarballs/MASS_7.3-61.tar.gz": {
+      "checksum": "0a2323f89b6230862768819171fc1bb3"
+    },
+    "tarballs/MASS_7.3-64.tar.gz": {
+      "checksum": "2a19e9ab19328df9c39c5a45fc164aef"
+    },
+    "tarballs/Matrix_1.7-0.tar.gz": {
+      "checksum": "e7e8dbd1ae48476f0eef0a640c107901"
+    },
+    "tarballs/Matrix_1.7-1.tar.gz": {
+      "checksum": "955a3ca647ba402353b78636b689947c"
+    },
+    "tarballs/MatrixModels_0.5-3.tar.gz": {
+      "checksum": "5ad7c5222f8f8322a307de4445ab9985"
+    },
+    "tarballs/matrixStats_1.3.0.tar.gz": {
+      "checksum": "f26a029c24c5ec31e1511a22aefbde9e"
+    },
+    "tarballs/matrixStats_1.5.0.tar.gz": {
+      "checksum": "8bece992ad950d8528407acee0bc2d1e"
+    },
+    "tarballs/memoise_2.0.1.tar.gz": {
+      "checksum": "89da4ce771967d851db47132b762ce6f"
+    },
+    "tarballs/metacore_0.1.3.tar.gz": {
+      "checksum": "469ec260d7360c3f287d9c63f1844b12"
+    },
+    "tarballs/metatools_0.1.6.tar.gz": {
+      "checksum": "fff48501d97d67b1a2699872ce8f946a"
+    },
+    "tarballs/mgcv_1.9-1.tar.gz": {
+      "checksum": "458c552f0fd41c12cdddbc5af6bf1fca"
+    },
+    "tarballs/mice_3.17.0.tar.gz": {
+      "checksum": "240d70772d09ee62371d7a2ca57588f5"
+    },
+    "tarballs/mime_0.12.tar.gz": {
+      "checksum": "7314f3b57f70474d9b4d2b831d6bb59d"
+    },
+    "tarballs/miniUI_0.1.1.1.tar.gz": {
+      "checksum": "4f174186bb12a76cc6b1249a1a13a4b0"
+    },
+    "tarballs/minqa_1.2.7.tar.gz": {
+      "checksum": "cf1b103299adfa63eb69282afd8ee3a3"
+    },
+    "tarballs/minqa_1.2.8.tar.gz": {
+      "checksum": "220bfece6840be5600cce3cb24850cdf"
+    },
+    "tarballs/mmrm_0.3.14.tar.gz": {
+      "checksum": "948a35100090786a3365afc0b5d48562"
+    },
+    "tarballs/mnormt_2.1.1.tar.gz": {
+      "checksum": "ba4df780cf81a10c7ace080973342390"
+    },
+    "tarballs/modelr_0.1.11.tar.gz": {
+      "checksum": "ddfa4fdf1446004a7b75289eb81e8548"
+    },
+    "tarballs/mtdesign_0.1.2.tar.gz": {
+      "checksum": "f67205595d105b8d9abb6bb0b018106f"
+    },
+    "tarballs/multcomp_1.4-26.tar.gz": {
+      "checksum": "e6f7aefb6857294dd72f21701b8d9c25"
+    },
+    "tarballs/munsell_0.5.1.tar.gz": {
+      "checksum": "16b9314466b17a8b694f331faa65eff8"
+    },
+    "tarballs/mvtnorm_1.2-5.tar.gz": {
+      "checksum": "ef07c750c4a4cd133b7de356280f4136"
+    },
+    "tarballs/mvtnorm_1.3-3.tar.gz": {
+      "checksum": "a92c5415eb4791787885a3fa6fe5d51f"
+    },
+    "tarballs/nestcolor_0.1.3.tar.gz": {
+      "checksum": "49e13638567b59078caa00cec28607a3"
+    },
+    "tarballs/nloptr_2.1.1.tar.gz": {
+      "checksum": "d11015f1c48bc8eeb0cb6bfa94603dbd"
+    },
+    "tarballs/nnet_7.3-20.tar.gz": {
+      "checksum": "7fa3a91bfd92035fffb9d124b52b5e1d"
+    },
+    "tarballs/numDeriv_2016.8-1.1.tar.gz": {
+      "checksum": "f894081f6d73822a362f156e849c9657"
+    },
+    "tarballs/officer_0.6.7.tar.gz": {
+      "checksum": "17b8701e578e2800500132a2005c6106"
+    },
+    "tarballs/openssl_2.2.0.tar.gz": {
+      "checksum": "1b21b471570b78fe6decc672b520e14c"
+    },
+    "tarballs/openssl_2.3.1.tar.gz": {
+      "checksum": "f6fa96b1bac9cba66ffd37eb128313b9"
+    },
+    "tarballs/openxlsx_4.2.6.1.tar.gz": {
+      "checksum": "fde4d25fa09042041e180557a0a0182e"
+    },
+    "tarballs/openxlsx_4.2.7.1.tar.gz": {
+      "checksum": "1bfe5cff258af42817de0c2d233715aa"
+    },
+    "tarballs/parallelly_1.38.0.tar.gz": {
+      "checksum": "bb5b579b1f3865dcff2d7f3a50a00f9c"
+    },
+    "tarballs/parallelly_1.41.0.tar.gz": {
+      "checksum": "b9a231b2145990d97968aee7ac27f901"
+    },
+    "tarballs/parameters_0.24.1.tar.gz": {
+      "checksum": "386fdff521faba5b53b4189154d70a53"
+    },
+    "tarballs/parsnip_1.2.1.tar.gz": {
+      "checksum": "8963904d37b6296869d29d0a8c22e61a"
+    },
+    "tarballs/patchwork_1.2.0.tar.gz": {
+      "checksum": "3cf908b531cf600341be463a542a6e6e"
+    },
+    "tarballs/patchwork_1.3.0.tar.gz": {
+      "checksum": "60577f2b9110285fb28052d6ff88320c"
+    },
+    "tarballs/pbkrtest_0.5.3.tar.gz": {
+      "checksum": "d4501121ded98c6ced803b89c7abe4d9"
+    },
+    "tarballs/pharmaRTF_0.1.4.tar.gz": {
+      "checksum": "5ec5bb469ec6928598a14edbe5419f22"
+    },
+    "tarballs/pharmaverseadam_1.1.0.tar.gz": {
+      "checksum": "d4cb14dfb55272770e7dbedc84f4b310"
+    },
+    "tarballs/pharmaversesdtm_1.2.0.tar.gz": {
+      "checksum": "917f3b12cb0d800227798bd55369a5b6"
+    },
+    "tarballs/pillar_1.10.1.tar.gz": {
+      "checksum": "5e874c0f95946919775bd6e77b79ddfb"
+    },
+    "tarballs/pillar_1.9.0.tar.gz": {
+      "checksum": "f292b6c6189be4669f004dce6f32f226"
+    },
+    "tarballs/pkgbuild_1.4.4.tar.gz": {
+      "checksum": "736ff24115553c3f4035cfc97f1fbc1b"
+    },
+    "tarballs/pkgbuild_1.4.6.tar.gz": {
+      "checksum": "97c9d8fcde775f6cb718f9eca7984b77"
+    },
+    "tarballs/pkgconfig_2.0.3.tar.gz": {
+      "checksum": "7b9ca1d45d941238381cb55d13ff4d68"
+    },
+    "tarballs/pkgdown_2.1.0.tar.gz": {
+      "checksum": "fa52d1489dc5875063b68a9fff366c78"
+    },
+    "tarballs/pkgdown_2.1.1.tar.gz": {
+      "checksum": "ba571cbaa05f261248445d9618d4143a"
+    },
+    "tarballs/pkglite_0.2.2.tar.gz": {
+      "checksum": "76f019ed1de82f866a60c619a099c5a0"
+    },
+    "tarballs/pkglite_0.2.4.tar.gz": {
+      "checksum": "27f5bca14e4494e48e811acbd9d0a36f"
+    },
+    "tarballs/pkgload_1.4.0.tar.gz": {
+      "checksum": "264e54f059ddbface95d0627f272a47b"
+    },
+    "tarballs/plotly_4.10.4.tar.gz": {
+      "checksum": "2b5620465fc14e4b294be3a18ffc2115"
+    },
+    "tarballs/plyr_1.8.9.tar.gz": {
+      "checksum": "5a8b129534abace172059ecc5c0b5072"
+    },
+    "tarballs/png_0.1-8.tar.gz": {
+      "checksum": "5667528b7bbdd8c058018ea7ac6573a7"
+    },
+    "tarballs/polynom_1.4-1.tar.gz": {
+      "checksum": "5511178c91fd6eb33fdeefc64deb0546"
+    },
+    "tarballs/praise_1.0.0.tar.gz": {
+      "checksum": "9318724cec0454884b5f762bee2da6a1"
+    },
+    "tarballs/prettyunits_1.2.0.tar.gz": {
+      "checksum": "2e2db8105f214b80d3d4254b8aabb255"
+    },
+    "tarballs/pROC_1.18.5.tar.gz": {
+      "checksum": "61d0e89dd7b4cb5e506cdfb6fc28848a"
+    },
+    "tarballs/processx_3.8.4.tar.gz": {
+      "checksum": "57e96dd74090594f1b1a63ec1d59091b"
+    },
+    "tarballs/processx_3.8.5.tar.gz": {
+      "checksum": "4feeb1991775bd4385ddffdc50226e2f"
+    },
+    "tarballs/prodlim_2024.06.25.tar.gz": {
+      "checksum": "cf4cc7858664ad00a4e227aa544b6f0e"
+    },
+    "tarballs/profvis_0.3.8.tar.gz": {
+      "checksum": "2c363c19fb6cb898dd3061d9a7035def"
+    },
+    "tarballs/profvis_0.4.0.tar.gz": {
+      "checksum": "1efc692263635add522f6f1737c2a1cf"
+    },
+    "tarballs/progress_1.2.3.tar.gz": {
+      "checksum": "db78636d2dd5ee346f5caf48bfa69f5e"
+    },
+    "tarballs/progressr_0.14.0.tar.gz": {
+      "checksum": "553ed3dd68689ea70694f2672fa3766a"
+    },
+    "tarballs/progressr_0.15.1.tar.gz": {
+      "checksum": "568d6baa5300b9a13c39fca94916552d"
+    },
+    "tarballs/promises_1.3.0.tar.gz": {
+      "checksum": "1b1184329736b045e11ba2dff81ce6ea"
+    },
+    "tarballs/promises_1.3.2.tar.gz": {
+      "checksum": "1a2106ac7c685146c6ce5382504260c4"
+    },
+    "tarballs/proxy_0.4-27.tar.gz": {
+      "checksum": "3e202df039c271d439193557645a54ba"
+    },
+    "tarballs/ps_1.7.7.tar.gz": {
+      "checksum": "8c0dd99a89635cb7a8f837f7f0ab6e93"
+    },
+    "tarballs/ps_1.8.1.tar.gz": {
+      "checksum": "03975e103eb4516c2fa803c4aa7e6f90"
+    },
+    "tarballs/psborrow_0.2.1.tar.gz": {
+      "checksum": "5142190f10cfd7199b35127073f16bbe"
+    },
+    "tarballs/psych_2.4.12.tar.gz": {
+      "checksum": "cb692d1baa1fb35f50caea139619ad94"
+    },
+    "tarballs/psych_2.4.6.26.tar.gz": {
+      "checksum": "86d1ff498870a6e3a65fecc62ccfdabc"
+    },
+    "tarballs/purrr_1.0.2.tar.gz": {
+      "checksum": "95f46bc5efc262accece5c71f81c7600"
+    },
+    "tarballs/quadprog_1.5-8.tar.gz": {
+      "checksum": "4483c9a4606a3a19da46fa68f02c8486"
+    },
+    "tarballs/quantmod_0.4.26.tar.gz": {
+      "checksum": "e84c3fe025e88a496f3bd87b9cf01fd3"
+    },
+    "tarballs/quantreg_5.98.tar.gz": {
+      "checksum": "842e99be00d66ba8c41178a102bd2312"
+    },
+    "tarballs/quantreg_5.99.1.tar.gz": {
+      "checksum": "76c95a94aa589ef54e6f2c5e0b8a301c"
+    },
+    "tarballs/R.methodsS3_1.8.2.tar.gz": {
+      "checksum": "8af7a9c90f4f1daebfa0e6c7722e05b8"
+    },
+    "tarballs/R.oo_1.26.0.tar.gz": {
+      "checksum": "7575e8599deb1b6387dd50a85364c3b7"
+    },
+    "tarballs/R.oo_1.27.0.tar.gz": {
+      "checksum": "92aade73892f5344eb8d974aa5df2170"
+    },
+    "tarballs/R.utils_2.12.3.tar.gz": {
+      "checksum": "c76bb7365b00306ed536d8151d380594"
+    },
+    "tarballs/r2rtf_1.1.1.tar.gz": {
+      "checksum": "9d62b3fb3e13298f3f7762d11f848f57"
+    },
+    "tarballs/R6_2.5.1.tar.gz": {
+      "checksum": "e84fd376e246738402e5529b6d52e101"
+    },
+    "tarballs/ragg_1.3.2.tar.gz": {
+      "checksum": "50f4afaee72d2de2109e0a4065233aae"
+    },
+    "tarballs/ragg_1.3.3.tar.gz": {
+      "checksum": "17fb3fca5d53f4927c5661685ebab80c"
+    },
+    "tarballs/random.cdisc.data_0.3.16.tar.gz": {
+      "checksum": "5e1af4a063cb9570c216a06e714afa49"
+    },
+    "tarballs/rappdirs_0.3.3.tar.gz": {
+      "checksum": "cafdd5478c4a6094a9f3d7335fb4f889"
+    },
+    "tarballs/raster_3.6-26.tar.gz": {
+      "checksum": "ad7c711017003e97af9828e1547d14ab"
+    },
+    "tarballs/raster_3.6-31.tar.gz": {
+      "checksum": "015f72202c45a78306b942c4a3027f5e"
+    },
+    "tarballs/rbmi_1.3.1.tar.gz": {
+      "checksum": "684facd71013fcb24105fc44fcf62d44"
+    },
+    "tarballs/rcmdcheck_1.4.0.tar.gz": {
+      "checksum": "a3d880f759b8d53de41155fc922c6b5c"
+    },
+    "tarballs/RColorBrewer_1.1-3.tar.gz": {
+      "checksum": "9b687595bbe02a7e43fc195ba33f065c"
+    },
+    "tarballs/Rcpp_1.0.13.tar.gz": {
+      "checksum": "fc222f94a58a26bf57864433d36c884a"
+    },
+    "tarballs/Rcpp_1.0.14.tar.gz": {
+      "checksum": "586ea2169464c4f35365bd1b8243428b"
+    },
+    "tarballs/RcppArmadillo_14.0.0-1.tar.gz": {
+      "checksum": "e0dff645150d5f8c0c69a9d8a2487ac3"
+    },
+    "tarballs/RcppArmadillo_14.2.2-1.tar.gz": {
+      "checksum": "9ff57e2edf220744b908a4f8fce9409c"
+    },
+    "tarballs/RcppEigen_0.3.4.0.0.tar.gz": {
+      "checksum": "70b0b58a661991465f725397c2efcd81"
+    },
+    "tarballs/RcppEigen_0.3.4.0.2.tar.gz": {
+      "checksum": "d636083ce19deae8f32883170314f2ea"
+    },
+    "tarballs/RcppTOML_0.2.2.tar.gz": {
+      "checksum": "7ee285ee18fa1630c6595cb246a5a870"
+    },
+    "tarballs/RCurl_1.98-1.16.tar.gz": {
+      "checksum": "3727edecf0189d460661535b6e7b1a46"
+    },
+    "tarballs/readr_2.1.5.tar.gz": {
+      "checksum": "7ddf0894538a42d06035937ee6f79711"
+    },
+    "tarballs/readxl_1.4.3.tar.gz": {
+      "checksum": "94e24bba88d6d9505261f0cdc2035d14"
+    },
+    "tarballs/recipes_1.1.0.tar.gz": {
+      "checksum": "ee911057a93ba41dd3054d9ff2cb671c"
+    },
+    "tarballs/rematch_2.0.0.tar.gz": {
+      "checksum": "64ad138fd1cec37d50683cbf2958e47b"
+    },
+    "tarballs/rematch2_2.1.2.tar.gz": {
+      "checksum": "41627df5d3fbf98f0cf98c027e14af00"
+    },
+    "tarballs/remotes_2.5.0.tar.gz": {
+      "checksum": "4cb0cd9d66630548fedd4e56d3564b90"
+    },
+    "tarballs/renv_1.0.11.tar.gz": {
+      "checksum": "5d143e5f534dc987a657762cc48f09c5"
+    },
+    "tarballs/renv_1.0.7.tar.gz": {
+      "checksum": "7f77341c1fa3c97605d3f0b935f73b5b"
+    },
+    "tarballs/reprex_2.1.1.tar.gz": {
+      "checksum": "cddc2f1334ad703df88a18926432470f"
+    },
+    "tarballs/reshape_0.8.9.tar.gz": {
+      "checksum": "e725f060313e74d5736e6c34b061e8a4"
+    },
+    "tarballs/reshape2_1.4.4.tar.gz": {
+      "checksum": "ab6b937ba184817a8f33690b5ed6ffcb"
+    },
+    "tarballs/reticulate_1.38.0.tar.gz": {
+      "checksum": "b7d3215ccb5ac8552f303bd43f635b4c"
+    },
+    "tarballs/reticulate_1.40.0.tar.gz": {
+      "checksum": "3c80c84b78670530b6d78f0e9d62e44d"
+    },
+    "tarballs/rex_1.2.1.tar.gz": {
+      "checksum": "a00d400d525345bb8551b4b18075eb3a"
+    },
+    "tarballs/rgl_1.3.1.tar.gz": {
+      "checksum": "f128b97dddba6dc0ce51b9fc881e8b0b"
+    },
+    "tarballs/rgl_1.3.17.tar.gz": {
+      "checksum": "6f8203af0d07edcdee6882ed6e79bf90"
+    },
+    "tarballs/rio_1.2.1.tar.gz": {
+      "checksum": "5b0d23deb7da2a35c064e43143e8208d"
+    },
+    "tarballs/rio_1.2.3.tar.gz": {
+      "checksum": "333f6e1b3624b7722c5b6896e2d59120"
+    },
+    "tarballs/riskmetric_0.2.4.tar.gz": {
+      "checksum": "bde9f5b4579b7a76f5357f0d7813fbea"
+    },
+    "tarballs/rJava_1.0-11.tar.gz": {
+      "checksum": "4d8eff03a23cb797f01e710ea7528dd2"
+    },
+    "tarballs/rlang_1.1.4.tar.gz": {
+      "checksum": "bdd011076f986c9d8b4af8462fbfd2a1"
+    },
+    "tarballs/rlang_1.1.5.tar.gz": {
+      "checksum": "1cd39638f16aec3de5f85af026037411"
+    },
+    "tarballs/rlistings_0.2.10.tar.gz": {
+      "checksum": "cfa651da367ae0430ab092436d030b98"
+    },
+    "tarballs/rmarkdown_2.27.tar.gz": {
+      "checksum": "8eba2269baef8019b571ec136c579f83"
+    },
+    "tarballs/rmarkdown_2.29.tar.gz": {
+      "checksum": "8c967d7e2c8cb7c51366363340a76e15"
+    },
+    "tarballs/RMySQL_0.10.27.tar.gz": {
+      "checksum": "82055849b6008a804c59c5f1a9dafdaf"
+    },
+    "tarballs/RMySQL_0.10.29.tar.gz": {
+      "checksum": "06ab457dd94ad863ccac3854b6feb87b"
+    },
+    "tarballs/roxy.shinylive_1.0.0.tar.gz": {
+      "checksum": "fe14caca43e881dccc6dedb838d63816"
+    },
+    "tarballs/roxygen2_7.3.2.tar.gz": {
+      "checksum": "8af3993e6c09ac98dbd1379f5be2a4d1"
+    },
+    "tarballs/rprojroot_2.0.4.tar.gz": {
+      "checksum": "4cbcf2cb74cbb76a6065182adf01b051"
+    },
+    "tarballs/RSQLite_2.3.7.tar.gz": {
+      "checksum": "b7dad69abc164564e34ad46a31a8a8c9"
+    },
+    "tarballs/RSQLite_2.3.9.tar.gz": {
+      "checksum": "b9666ee04a39ebfd8b0d7492855c7d76"
+    },
+    "tarballs/rstatix_0.7.2.tar.gz": {
+      "checksum": "f042819edc65cdc9dddf7b75b6e12b4e"
+    },
+    "tarballs/rstudioapi_0.16.0.tar.gz": {
+      "checksum": "7d15c1023d57d4922453880d0c1a13f5"
+    },
+    "tarballs/rstudioapi_0.17.1.tar.gz": {
+      "checksum": "e127b1fe52f148584b0ebd789e50b979"
+    },
+    "tarballs/rtables.officer_0.0.2.tar.gz": {
+      "checksum": "9641c86371d580e14cb3521c9d13d4f3"
+    },
+    "tarballs/rtables_0.6.11.tar.gz": {
+      "checksum": "33ced42a881333ca5c1258b86ed06f84"
+    },
+    "tarballs/rtables_0.6.9.tar.gz": {
+      "checksum": "38e58b4da21180e0ff7d90a3f5acf06b"
+    },
+    "tarballs/rversions_2.1.2.tar.gz": {
+      "checksum": "94a7f22e8be08c8693537a6b9ba10f50"
+    },
+    "tarballs/rvest_1.0.4.tar.gz": {
+      "checksum": "bd391a4e91e6f5867761c99526ffc251"
+    },
+    "tarballs/s2_1.1.7.tar.gz": {
+      "checksum": "e1dcc9312a5bcab90a49053db3d280c1"
+    },
+    "tarballs/sandwich_3.1-0.tar.gz": {
+      "checksum": "a5abc91469c1f1ae604dba272268b10b"
+    },
+    "tarballs/sandwich_3.1-1.tar.gz": {
+      "checksum": "fe33d8ee7c66fddae484817ca295f405"
+    },
+    "tarballs/sass_0.4.9.tar.gz": {
+      "checksum": "7d4e8b37ce87b4307b6661b9fe62e393"
+    },
+    "tarballs/scales_1.3.0.tar.gz": {
+      "checksum": "eeaf1b6727eceab473f4c139e99601c8"
+    },
+    "tarballs/scatterplot3d_0.3-44.tar.gz": {
+      "checksum": "0acaab2e9eba4ece27e1444f769d006b"
+    },
+    "tarballs/sdtmchecks_1.0.0.tar.gz": {
+      "checksum": "bb457f0d60031b2fb9ab64310d6715e1"
+    },
+    "tarballs/selectr_0.4-2.tar.gz": {
+      "checksum": "165e7b67a11f58c53e55fee4b0da944e"
+    },
+    "tarballs/sessioninfo_1.2.2.tar.gz": {
+      "checksum": "b373f83a971b68402825e699fce7cb4d"
+    },
+    "tarballs/sf_1.0-16.tar.gz": {
+      "checksum": "23f6a4017327db84e4f5b28807ccf962"
+    },
+    "tarballs/sf_1.0-19.tar.gz": {
+      "checksum": "569dc735592f472aa0570a9f3120844a"
+    },
+    "tarballs/shape_1.4.6.1.tar.gz": {
+      "checksum": "42b7951c69b6c93178c07f2d189d0c89"
+    },
+    "tarballs/shiny_1.10.0.tar.gz": {
+      "checksum": "b8a598f6d1289a4cbd338088f119ce75"
+    },
+    "tarballs/shiny_1.9.1.tar.gz": {
+      "checksum": "37ec5947b5486c468273de92b4e809f2"
+    },
+    "tarballs/simaerep_0.6.0.tar.gz": {
+      "checksum": "2af7e24604ee27f1304de08fe0b92cad"
+    },
+    "tarballs/simIDM_0.1.0.tar.gz": {
+      "checksum": "b4dabe9e983d2be4a447d06f757309f8"
+    },
+    "tarballs/smd_0.7.0.tar.gz": {
+      "checksum": "64d22733775017d550e746a8f7cb0fe2"
+    },
+    "tarballs/sourcetools_0.1.7-1.tar.gz": {
+      "checksum": "dd4a9af00de6e874802f6e6622b774fb"
+    },
+    "tarballs/sp_2.1-4.tar.gz": {
+      "checksum": "695160eb09d2287bbda3ce3621f3a3be"
+    },
+    "tarballs/sparklyr_1.8.6.tar.gz": {
+      "checksum": "6afb9e254cbf9f44e5d0b18d94136236"
+    },
+    "tarballs/SparseM_1.84-2.tar.gz": {
+      "checksum": "60d64c3f007a57f293abf261e3e6aa58"
+    },
+    "tarballs/spelling_2.3.1.tar.gz": {
+      "checksum": "8f964c41da0f7e876a82f662545f7cb3"
+    },
+    "tarballs/SQUAREM_2021.1.tar.gz": {
+      "checksum": "529ce81903111315c68131f0452a939f"
+    },
+    "tarballs/stringi_1.8.4.tar.gz": {
+      "checksum": "e3696c0a666f2f2dc8e280f2298cba0d"
+    },
+    "tarballs/stringr_1.5.1.tar.gz": {
+      "checksum": "75dd96fdaac6520418c92f6c434d3afc"
+    },
+    "tarballs/survey_4.4-2.tar.gz": {
+      "checksum": "565ca8d5fc141cbc6bcacdd8bc2e2f0f"
+    },
+    "tarballs/survival_3.7-0.tar.gz": {
+      "checksum": "3c5e99c6936bf040c8364305ab448f94"
+    },
+    "tarballs/survival_3.8-3.tar.gz": {
+      "checksum": "41e0d3c63232bace9062357050c2aba4"
+    },
+    "tarballs/svglite_2.1.3.tar.gz": {
+      "checksum": "46154cf187ad6ec377269b6307de16f4"
+    },
+    "tarballs/sys_3.4.2.tar.gz": {
+      "checksum": "79b75f8ec16557df22600458b6044ebe"
+    },
+    "tarballs/sys_3.4.3.tar.gz": {
+      "checksum": "ffb4244c6d4cacdd4ac8ef187699707c"
+    },
+    "tarballs/systemfonts_1.1.0.tar.gz": {
+      "checksum": "4d61e295aec92fe75f388ad4b4c67736"
+    },
+    "tarballs/systemfonts_1.2.1.tar.gz": {
+      "checksum": "55e5fbed422030307b1fa21e07cde12c"
+    },
+    "tarballs/teal.code_0.5.0.tar.gz": {
+      "checksum": "8ab7f3254af379f3037036f12fdc2661"
+    },
+    "tarballs/teal.data_0.6.0.tar.gz": {
+      "checksum": "85a8b1be126f16a9a3f79b13433895d5"
+    },
+    "tarballs/teal.logger_0.3.1.tar.gz": {
+      "checksum": "3bd754cd0dede288e363b13f74929a0a"
+    },
+    "tarballs/teal.modules.clinical_0.9.1.tar.gz": {
+      "checksum": "f800303c61eb59699e543cd85ea73ae5"
+    },
+    "tarballs/teal.modules.general_0.3.0.tar.gz": {
+      "checksum": "7f756deb52d3f1218b341230a56844c9"
+    },
+    "tarballs/teal.reporter_0.3.1.tar.gz": {
+      "checksum": "6b88309ac1bf98f83e83262fa8045239"
+    },
+    "tarballs/teal.slice_0.5.1.tar.gz": {
+      "checksum": "3c3c073960d74f506aae2cb241e576c6"
+    },
+    "tarballs/teal.transform_0.5.0.tar.gz": {
+      "checksum": "e1676185b225f09165435e9addbe49b4"
+    },
+    "tarballs/teal.widgets_0.4.2.tar.gz": {
+      "checksum": "ef3b01d69991822a2b025ee5a8e9d8d9"
+    },
+    "tarballs/teal_0.15.2.tar.gz": {
+      "checksum": "2937842bbfac5fdabd0be67851990cfa"
+    },
+    "tarballs/tern.gee_0.1.5.tar.gz": {
+      "checksum": "d9269bff949d95489972d5c664939e7f"
+    },
+    "tarballs/tern.mmrm_0.3.2.tar.gz": {
+      "checksum": "8ab80699337d4f455f96b5ddcf33ac11"
+    },
+    "tarballs/tern.rbmi_0.1.4.tar.gz": {
+      "checksum": "4c38efe4ed2b5b7a4a91df444dc126ac"
+    },
+    "tarballs/tern_0.9.5.tar.gz": {
+      "checksum": "ad0ad040f3e3c67fad4a1ffc59b7ed1c"
+    },
+    "tarballs/tern_0.9.7.tar.gz": {
+      "checksum": "f3d09b42ddb46232dd58159148520a0b"
+    },
+    "tarballs/terra_1.7-78.tar.gz": {
+      "checksum": "e616c3bb194bc4204f2407fbaa8f9814"
+    },
+    "tarballs/terra_1.8-10.tar.gz": {
+      "checksum": "98ba52e4981b1b49d1c184b4facfa632"
+    },
+    "tarballs/testthat_3.2.1.1.tar.gz": {
+      "checksum": "72b01c9522f22cb961ad185fd798118a"
+    },
+    "tarballs/testthat_3.2.3.tar.gz": {
+      "checksum": "19f81521b3bb056cc22df8585379a007"
+    },
+    "tarballs/textshaping_0.4.0.tar.gz": {
+      "checksum": "fac64803fa2677b0a346851d7b076e11"
+    },
+    "tarballs/textshaping_1.0.0.tar.gz": {
+      "checksum": "4723981f9cb381f266f2ea31c7ead77b"
+    },
+    "tarballs/tfrmt_0.1.2.tar.gz": {
+      "checksum": "0bfba4ce30bac863f970a74d5c1a0de4"
+    },
+    "tarballs/tfrmt_0.1.3.tar.gz": {
+      "checksum": "3fcf1a554bec94f751cf63636722c63d"
+    },
+    "tarballs/TH.data_1.1-2.tar.gz": {
+      "checksum": "4e6e59fee15e056be3721f7c0d4e017c"
+    },
+    "tarballs/TH.data_1.1-3.tar.gz": {
+      "checksum": "5b984967b15c3e2da7b3fa7534e64673"
+    },
+    "tarballs/tibble_3.2.1.tar.gz": {
+      "checksum": "e4ccfbe28c84b11f86388379c8b43925"
+    },
+    "tarballs/tidyCDISC_0.2.1.tar.gz": {
+      "checksum": "2a20ac459fd1aa1a6ade4762468660ac"
+    },
+    "tarballs/tidyr_1.3.1.tar.gz": {
+      "checksum": "0491d9d3359af7baf8ad9003ce44aa1d"
+    },
+    "tarballs/tidyselect_1.2.1.tar.gz": {
+      "checksum": "49c581292e819a2a39aac321f27ab0a8"
+    },
+    "tarballs/tidytlg_0.1.5.tar.gz": {
+      "checksum": "2a1bca1420bd9c4bf0ba9eac5d33e7de"
+    },
+    "tarballs/tidyverse_2.0.0.tar.gz": {
+      "checksum": "f5705d42feb6697e214d8b007fda2f55"
+    },
+    "tarballs/timechange_0.3.0.tar.gz": {
+      "checksum": "f62746e78800a3edb8bfdc2ceffe0722"
+    },
+    "tarballs/timeDate_4032.109.tar.gz": {
+      "checksum": "96ed5f3e9a0bd034dfb65dc2a4aff33f"
+    },
+    "tarballs/timeDate_4041.110.tar.gz": {
+      "checksum": "cf80d711592025e00fea0f7d3bd7c1f8"
+    },
+    "tarballs/tinytex_0.52.tar.gz": {
+      "checksum": "e8e4aa4730bb92b11afca0e6094dbe5f"
+    },
+    "tarballs/tinytex_0.54.tar.gz": {
+      "checksum": "ad658cf60236ff35d3d84824862f45ea"
+    },
+    "tarballs/Tplyr_1.2.1.tar.gz": {
+      "checksum": "67f8e242148b434d3d729624a1caac52"
+    },
+    "tarballs/tseries_0.10-56.tar.gz": {
+      "checksum": "01ccd9f83e582382377bd3f004ced285"
+    },
+    "tarballs/tseries_0.10-58.tar.gz": {
+      "checksum": "57cc0ddf4a8737c5566550a4f365acc0"
+    },
+    "tarballs/TTR_0.24.4.tar.gz": {
+      "checksum": "6c9c67ca98639d233f89d4bb002b6c8f"
+    },
+    "tarballs/tzdb_0.4.0.tar.gz": {
+      "checksum": "c92e89379dd5c49a03b5b3996abcd0f1"
+    },
+    "tarballs/units_0.8-5.tar.gz": {
+      "checksum": "a6d32757cf3662c53fc43ba0eb7bef59"
+    },
+    "tarballs/urca_1.3-4.tar.gz": {
+      "checksum": "9bcc2ab304c406a66f494f34a02ed1d7"
+    },
+    "tarballs/urlchecker_1.0.1.tar.gz": {
+      "checksum": "7d59ef7e05f22dd95bb1693fc74bbea0"
+    },
+    "tarballs/usethis_3.0.0.tar.gz": {
+      "checksum": "af500f6dba844811dd9781b6b1839de0"
+    },
+    "tarballs/usethis_3.1.0.tar.gz": {
+      "checksum": "63b0da785ed4131afc17d37dd60da66a"
+    },
+    "tarballs/utf8_1.2.4.tar.gz": {
+      "checksum": "b12b4a8b7c9fc8429a0c0633c59c7c18"
+    },
+    "tarballs/uuid_1.2-1.tar.gz": {
+      "checksum": "33baac9b2bfbc4406d4d806875a91747"
+    },
+    "tarballs/V8_4.4.2.tar.gz": {
+      "checksum": "f34175ae36832619da40067f3d278c46"
+    },
+    "tarballs/V8_6.0.0.tar.gz": {
+      "checksum": "be1aa13069b1f93e905436fbefaf136b"
+    },
+    "tarballs/vctrs_0.6.5.tar.gz": {
+      "checksum": "191f3037d9b6f3f8640661f61e2aeb93"
+    },
+    "tarballs/viridis_0.6.5.tar.gz": {
+      "checksum": "d3379572b7c9e31148c52c8e85417d9e"
+    },
+    "tarballs/viridisLite_0.4.2.tar.gz": {
+      "checksum": "059e754e58fd6735dd50a1799f95c8c1"
+    },
+    "tarballs/vroom_1.6.5.tar.gz": {
+      "checksum": "8e6351782f34b6ae20bdc66836b52052"
+    },
+    "tarballs/waldo_0.5.2.tar.gz": {
+      "checksum": "51dbfeb0bcc974efcdd7f3d636043984"
+    },
+    "tarballs/waldo_0.6.1.tar.gz": {
+      "checksum": "4b471f1c51f0e891a7d0170b30a601dc"
+    },
+    "tarballs/waterfalls_1.0.0.tar.gz": {
+      "checksum": "5321be9186d29cab12321cc1f3ca3ecf"
+    },
+    "tarballs/webshot_0.5.5.tar.gz": {
+      "checksum": "72d833c018161458889af9d9aae8f399"
+    },
+    "tarballs/whisker_0.4.1.tar.gz": {
+      "checksum": "eda4d778ea813e892c86511d355ee26c"
+    },
+    "tarballs/withr_3.0.1.tar.gz": {
+      "checksum": "1c0854042816a0572ce7bf4a4cac1297"
+    },
+    "tarballs/withr_3.0.2.tar.gz": {
+      "checksum": "f2e3780a71f6258d6f9055f138d474f2"
+    },
+    "tarballs/wk_0.9.2.tar.gz": {
+      "checksum": "f86adebe32d18628e640be6c30dc0a5b"
+    },
+    "tarballs/wk_0.9.4.tar.gz": {
+      "checksum": "933c94239cf90e341d562dab8a2b0c4c"
+    },
+    "tarballs/workflows_1.1.4.tar.gz": {
+      "checksum": "6e78b96d1969bfd9f87c841a8a36464d"
+    },
+    "tarballs/writexl_1.5.0.tar.gz": {
+      "checksum": "17dacf647864aed0b745bdd174601b4c"
+    },
+    "tarballs/writexl_1.5.1.tar.gz": {
+      "checksum": "60ece27d9ad7f316ef242437678f9af8"
+    },
+    "tarballs/xfun_0.46.tar.gz": {
+      "checksum": "1c29048028b875c0820035b5c2e61dcf"
+    },
+    "tarballs/xfun_0.50.tar.gz": {
+      "checksum": "104f5b01655aa168df99888d8d4bbd22"
+    },
+    "tarballs/xlsx_0.6.5.tar.gz": {
+      "checksum": "838e6843c8e958afced89b64c1c563f3"
+    },
+    "tarballs/xlsxjars_0.6.1.tar.gz": {
+      "checksum": "5a1721d5733cb42f3a29e3f353e39166"
+    },
+    "tarballs/XML_3.99-0.17.tar.gz": {
+      "checksum": "88b6598cf17176e215ade9a3055a275d"
+    },
+    "tarballs/XML_3.99-0.18.tar.gz": {
+      "checksum": "8c0fc2a49bb0aeaef88d5c820ad15f96"
+    },
+    "tarballs/xml2_1.3.6.tar.gz": {
+      "checksum": "fc6679028dca1f3047c8c745fb724524"
+    },
+    "tarballs/xopen_1.0.1.tar.gz": {
+      "checksum": "776adc6fa99158dab522b3bd9096cb61"
+    },
+    "tarballs/xportr_0.4.0.tar.gz": {
+      "checksum": "9fef061b259881657ce99269773a5118"
+    },
+    "tarballs/xportr_0.4.2.tar.gz": {
+      "checksum": "715ef7ad46fac642181fb5a7b2c7b06c"
+    },
+    "tarballs/xtable_1.8-4.tar.gz": {
+      "checksum": "0a7da6c3b34b2974110a7d00fe9afa79"
+    },
+    "tarballs/xts_0.14.0.tar.gz": {
+      "checksum": "7ea717ebda1c29287f3abf4c361fbebd"
+    },
+    "tarballs/xts_0.14.1.tar.gz": {
+      "checksum": "06716389f3ef7c1468caf67f1191f4b7"
+    },
+    "tarballs/yaml_2.3.10.tar.gz": {
+      "checksum": "f5fad2fbfe3dd8ccb29125fa6361150d"
+    },
+    "tarballs/zip_2.3.1.tar.gz": {
+      "checksum": "8a8a132cd0456e498d479d21c91facce"
+    },
+    "tarballs/zoo_1.8-12.tar.gz": {
+      "checksum": "9bf826a22610f5a3f8ebd063404e7183"
     }
   },
   "users": null

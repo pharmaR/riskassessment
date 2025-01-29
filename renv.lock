@@ -2366,11 +2366,11 @@
       "Version": "0.2.4.9000",
       "Source": "GitHub",
       "RemoteType": "github",
-      "RemoteUsername": "pharmaR",
-      "RemoteRepo": "riskmetric",
-      "RemoteRef": "HEAD",
-      "RemoteSha": "7c7bf3c15c02c33bc788e1070f25302b203d6d9e",
       "RemoteHost": "api.github.com",
+      "RemoteRepo": "riskmetric",
+      "RemoteUsername": "pharmaR",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "39489b26dbb3b7e5731bbcf55d975755fbb841e4",
       "Requirements": [
         "BiocManager",
         "backports",
@@ -2389,7 +2389,7 @@
         "vctrs",
         "xml2"
       ],
-      "Hash": "74a42c9c6546b6b67b247f91007369f9"
+      "Hash": "0760a20553721c30ee74c7c62b1b052e"
     },
     "rjson": {
       "Package": "rjson",
