@@ -771,7 +771,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-10 10:50:07 UTC",
-        "Built": "R 4.3.3; x86_64-pc-linux-gnu; 2025-01-16 19:54:53 UTC; unix"
+        "Built": "R 4.3.3; x86_64-pc-linux-gnu; 2025-02-14 15:15:42 UTC; unix"
       }
     },
     "broom": {
@@ -947,7 +947,7 @@
         "RoxygenNote": "7.3.0",
         "Author": "Sebastien Rochette [aut, cre] (<https://orcid.org/0000-0002-1565-9313>),\n  Vincent Guyader [aut] (<https://orcid.org/0000-0003-0671-9270>),\n  Arthur Bréant [aut] (<https://orcid.org/0000-0003-1668-0963>),\n  Murielle Delmotte [aut] (<https://orcid.org/0000-0002-1339-2424>),\n  ThinkR [cph]",
         "Maintainer": "Sebastien Rochette <sebastien@thinkr.fr>",
-        "Built": "R 4.3.3; ; 2025-01-16 19:55:43 UTC; unix",
+        "Built": "R 4.3.3; ; 2025-02-14 15:16:32 UTC; unix",
         "RemoteType": "github",
         "RemoteUsername": "thinkr-open",
         "RemoteRepo": "checkhelper",
@@ -1310,7 +1310,7 @@
         "Imports": "callr,\ncranlike (>= 1.0.2),\ncurl,\ndesc (>= 1.1.0),\ndigest,\nparsedate,\nrappdirs,\nrematch2,\ntools,\nutils,\nwithr",
         "Suggests": "covr,\npingr,\ntestthat,\nzip",
         "Encoding": "UTF-8",
-        "Built": "R 4.3.3; ; 2025-01-16 19:55:53 UTC; unix",
+        "Built": "R 4.3.3; ; 2025-02-14 15:16:43 UTC; unix",
         "RemoteType": "github",
         "RemoteHost": "api.github.com",
         "RemoteUsername": "r-lib",
@@ -1346,7 +1346,7 @@
         "Packaged": "2018-11-26 09:54:46 UTC; gaborcsardi",
         "Repository": "RSPM",
         "Date/Publication": "2018-11-26 10:10:03 UTC",
-        "Built": "R 4.3.3; ; 2025-01-16 19:55:50 UTC; unix"
+        "Built": "R 4.3.3; ; 2025-02-14 15:16:40 UTC; unix"
       }
     },
     "cranlogs": {
@@ -1482,7 +1482,7 @@
         "Maintainer": "Scott Chamberlain <myrmecocystus@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2023-05-17 07:30:02 UTC",
-        "Built": "R 4.3.3; ; 2025-01-16 19:55:58 UTC; unix"
+        "Built": "R 4.3.3; ; 2025-02-14 15:16:48 UTC; unix"
       }
     },
     "curl": {
@@ -1596,7 +1596,7 @@
         "Packaged": "2017-10-22 09:14:23 UTC; gaborcsardi",
         "Repository": "RSPM",
         "Date/Publication": "2017-10-22 14:18:09 UTC",
-        "Built": "R 4.3.3; ; 2025-01-16 19:55:49 UTC; unix"
+        "Built": "R 4.3.3; ; 2025-02-14 15:16:39 UTC; unix"
       }
     },
     "desc": {
@@ -2330,7 +2330,7 @@
         "Maintainer": "Thomas Lin Pedersen <thomas.pedersen@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2024-02-23 09:30:02 UTC",
-        "Built": "R 4.3.3; ; 2025-01-16 19:54:36 UTC; unix"
+        "Built": "R 4.3.3; ; 2025-02-14 15:15:25 UTC; unix"
       }
     },
     "gh": {
@@ -2593,7 +2593,7 @@
         "Maintainer": "Thomas Lin Pedersen <thomas.pedersen@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-08-21 11:20:02 UTC",
-        "Built": "R 4.3.3; ; 2025-01-16 19:54:30 UTC; unix"
+        "Built": "R 4.3.3; ; 2025-02-14 15:15:19 UTC; unix"
       }
     },
     "haven": {
@@ -3790,7 +3790,7 @@
         "Maintainer": "Hadley Wickham <hadley@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-12-14 11:40:06 UTC",
-        "Built": "R 4.3.3; ; 2025-01-16 19:55:04 UTC; unix"
+        "Built": "R 4.3.3; ; 2025-02-14 15:15:53 UTC; unix"
       }
     },
     "pkgload": {
@@ -4374,7 +4374,7 @@
         "Maintainer": "Kevin Ushey <kevin@rstudio.com>",
         "Repository": "RSPM",
         "Date/Publication": "2024-02-29 01:10:07 UTC",
-        "Built": "R 4.3.3; ; 2025-01-27 04:47:42 UTC; unix"
+        "Built": "R 4.3.3; ; 2025-02-14 15:12:00 UTC; unix"
       }
     },
     "reprex": {
@@ -4432,7 +4432,7 @@
         "RoxygenNote": "7.2.3",
         "Author": "Gábor Csárdi [cre, aut, cph],\n  Hadley Wickham [aut],\n  RConsortium [cph],\n  RStudio [cph, fnd]",
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
-        "Built": "R 4.3.3; ; 2025-01-16 19:56:28 UTC; unix",
+        "Built": "R 4.3.3; ; 2025-02-14 15:17:18 UTC; unix",
         "RemoteType": "github",
         "RemoteUsername": "r-lib",
         "RemoteRepo": "revdepcheck",
@@ -4498,7 +4498,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2022-08-31 13:00:11 UTC",
-        "Built": "R 4.3.3; ; 2025-01-16 19:56:33 UTC; unix"
+        "Built": "R 4.3.3; ; 2025-02-14 15:17:22 UTC; unix"
       }
     },
     "rintrojs": {
@@ -4550,7 +4550,7 @@
         "Config/testthat/edition": "3",
         "Author": "R Validation Hub [aut],\n  Doug Kelkhoff [aut],\n  Marly Gotti [aut],\n  Eli Miller [cre, aut],\n  Kevin K [aut],\n  Yilong Zhang [aut],\n  Eric Milliman [aut],\n  Juliane Manitz [aut],\n  Mark Padgham [ctb],\n  PSI special interest group Application and Implementation of\n    Methodologies in Statistics [cph]",
         "Maintainer": "Eli Miller <eli.miller@atorusresearch.com>",
-        "Built": "R 4.3.3; ; 2025-01-23 17:14:14 UTC; unix",
+        "Built": "R 4.3.3; ; 2025-02-14 15:17:26 UTC; unix",
         "RemoteType": "github",
         "RemoteHost": "api.github.com",
         "RemoteRepo": "riskmetric",
@@ -5038,7 +5038,7 @@
         "Maintainer": "Victor Perrier <victor.perrier@dreamrs.fr>",
         "Repository": "RSPM",
         "Date/Publication": "2024-04-04 17:40:02 UTC",
-        "Built": "R 4.3.3; ; 2025-01-16 19:57:06 UTC; unix"
+        "Built": "R 4.3.3; ; 2025-02-14 15:17:56 UTC; unix"
       }
     },
     "shinyjs": {
@@ -5379,7 +5379,7 @@
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
         "Repository": "RSPM",
         "Date/Publication": "2023-12-02 11:50:05 UTC",
-        "Built": "R 4.3.3; x86_64-pc-linux-gnu; 2025-01-16 19:55:14 UTC; unix"
+        "Built": "R 4.3.3; x86_64-pc-linux-gnu; 2025-02-14 15:16:03 UTC; unix"
       }
     },
     "textshaping": {
@@ -6088,7 +6088,7 @@
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
         "Repository": "RSPM",
         "Date/Publication": "2018-09-17 13:10:03 UTC",
-        "Built": "R 4.3.3; ; 2025-01-16 19:55:09 UTC; unix"
+        "Built": "R 4.3.3; ; 2025-02-14 15:15:58 UTC; unix"
       }
     },
     "xtable": {
@@ -6227,7 +6227,7 @@
       "checksum": "99c5575cb81828e20a7fe1d205551316"
     },
     "DESCRIPTION": {
-      "checksum": "2cc9cb76a0952395d0c5699eca46b372"
+      "checksum": "26cf9ed341c0db986309fc43d9289b80"
     },
     "inst/app/www/css/community_metrics.css": {
       "checksum": "f08eb25c2ee48ac22ed63b0d18994a04"
@@ -6470,7 +6470,7 @@
       "checksum": "97d1232340e04c53088bc8f814133dcd"
     },
     "NEWS.md": {
-      "checksum": "b6195b38a38523dac7db505937d94f49"
+      "checksum": "68d14866f1ea2f5d007b2e5fe1b3bd21"
     },
     "R/app_config.R": {
       "checksum": "c2b61f270b86b6833f0ee39c44a1a440"
