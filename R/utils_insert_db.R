@@ -170,7 +170,7 @@ insert_riskmetric_to_db <- function(pkg_name, pkg_version = "",
   # Get the metrics weights to be used during pkg_score.
   metric_weights <- metric_weights_df$weight
   names(metric_weights) <- metric_weights_df$name
-  
+
   riskmetric_score <-
     riskmetric_assess %>%
     riskmetric::pkg_score(weights = metric_weights)

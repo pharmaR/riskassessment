@@ -14,16 +14,14 @@ default:
       - viewer
     privileges:
       admin: [admin, weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]
-      lead: [weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, overall_comment, general_comment]
-      reviewer: [add_package, general_comment]
+      lead: [weight_adjust, auto_decision_adjust, final_decision, revert_decision, add_package, delete_package, general_comment]
+      reviewer: [add_package, general_comment, overall_comment]
       viewer:
   decisions:
     categories:
       - Low Risk
       - Medium Risk
       - High Risk
-  metric_weights:
-    covr_coverage: 0
 example:
   assessment_db: database_ex.sqlite
   credential_db: credentials_ex.sqlite
@@ -75,6 +73,69 @@ example2:
       - GxP Compliant
       - Needs Review
       - Not GxP Compliant
+demo:
+  assessment_db: database_demo.sqlite
+  credential_db: credentials_demo.sqlite
+  metric_weights:
+    covr_coverage: 0
+  decisions:
+    rules:
+      rule_1:
+        metric: has_vignettes
+        condition: ~ .x == 0
+        decision: Medium Risk
+      rule_2:
+        metric: bugs_status
+        condition: ~ metric_score(.x) <= .25
+        decision: High Risk
+      rule_3:
+        metric: dependencies
+        condition: ~ length(.x) >= 30
+        decision: High Risk
+      Medium Risk:
+        - .3983
+        - .6391
+      High Risk:
+        - .6391
+        - 1
+webinardemo:
+  assessment_db: database_webinar_demo.sqlite
+  credential_db: credentials_webinar_demo.sqlite
+  metric_weights:
+    covr_coverage: 0
+  decisions:
+    categories:
+      - Approved # we should auto approve all tidyverse on upload
+      - Low Risk # else decision
+      - Needs Review # if any issues below
+      - Rejected # some rejected on upload? Which
+    rules: # https://pharmar.github.io/riskmetric/reference/index.html
+      rule_1: # needs news, else "needs review"
+        metric: has_news
+        condition: ~ .x == 0
+        decision: Needs Review
+      rule_2: # needs source code else "needs review"
+        metric: has_source_control
+        condition: ~ metric_score(.x) == 0
+        decision: Needs Review
+      rule_3: # needs spot to report bugs, else "needs review"
+        metric: has_bug_reports_url
+        condition: ~ metric_score(.x) == FALSE
+        decision: Needs Review
+      rule_4: # Needs less than 30 deps, else "needs review"
+        metric: dependencies
+        condition: ~ length(.x) >= 30
+        decision: Needs Review
+      rule_5: # needs downloads > 48k, else "needs review"
+        metric: downloads_1yr
+        condition: ~ .x <= 48000
+        decision: Needs Review
+      rule_6: # needs reverse deps >= 6, else "needs review"
+        metric: reverse_dependencies
+        condition: ~ length(.x) <= 5
+        decision: Needs Review
+      rule_else:
+        decision: Low Risk
 noncredentialed:
   use_shinymanager: false
   assessment_db: database_noncredentialed.sqlite
